@@ -545,7 +545,9 @@ export class SelfPlayTrainer {
     // 1) 새로운 정밀 핸드 티어 분류 (AIR 버그 수정 적용)
     const { tier } = classifyHandTier(hole, board);
     const multiEq = estimateEquity(hole,board,activeOpponents);
-    const potOdds = afterRakeOdds(pot,Math.min(callAmount,myStack));
+    const position = context?.position;
+    const positionCost = board.length === 0 ? (position?.preflopEquityPremium || 0) : 0;
+    const potOdds = Math.min(1, afterRakeOdds(pot,Math.min(callAmount,myStack)) + positionCost);
 
     // 2) 베팅 압박 수위 (0~3)
     let pressure: number;
@@ -565,12 +567,41 @@ export class SelfPlayTrainer {
     const anchor = this._getWarmStartAnchor(pressure, tier, persona);
     const logits = [...anchor];
 
+    // Protect the OOP checking range: strong hands must not always lead.
+    // Draws/air also check, so checking does not disclose a trap. This mixture
+    // only takes a FREE check; facing a bet still goes through equity/masks.
+    if (board.length > 0 && callAmount === 0 && position?.isOOP) {
+      const strong = tier >= HandTier.TOP_PAIR;
+      const checkMix = strong ? (tier === HandTier.TOP_PAIR ? 0.45 : 0.40)
+        : tier === HandTier.DRAW ? 0.35 : 0.65;
+      const multiway = position.opponents > 1 ? 0.10 : 0;
+      if (Math.random() < checkMix + multiway) {
+        return { action: 1, amount: 0, isBluff: false, tier };
+      }
+    }
+
+    if (position?.isOOP) {
+      const disadvantage = 1 - position.relativePosition;
+      logits[0] += 0.45 * disadvantage;
+      logits[2] -= 0.30 * disadvantage;
+      logits[3] -= 0.45 * disadvantage;
+      // Check-raise with value, retaining check-call and fold alternatives.
+      // Top pair remains cautious, especially multiway or against large bets.
+      if (board.length > 0 && position.checkedThisStreet && callAmount > 0
+          && pressure <= 2 && callAmount <= pot * 0.75 && tier >= HandTier.TOP_PAIR) {
+        const boost = tier >= HandTier.TWO_PAIR_PLUS ? 1.35
+          : position.opponents === 1 ? 0.35 : 0;
+        logits[2] += boost;
+        logits[3] += boost * 0.65;
+      }
+    }
+
     // ★ 트랩 플레이: 강한 핸드(TOP_PAIR 이상)를 가진 타이트 캐릭터가
     // 10% 확률로 레이즈 대신 체크/콜로 트랩 (체크-레이즈 유도)
     // 주로 tightness가 높은 캐릭터에게 발동
     const tightness = 1 - persona.vpip; // vpip가 낮을수록 타이트
     const isStrongHand = tier >= HandTier.TOP_PAIR;
-    const canTrap = isStrongHand && tightness > 0.5 && Math.random() < 0.10;
+    const canTrap = !position?.isOOP && isStrongHand && tightness > 0.5 && Math.random() < 0.10;
     if (canTrap) {
       // 레이즈 액션(2,3,4)의 가중치를 낮추고 콜/체크(1)로 유도
       logits[2] -= 3.0;
@@ -616,7 +647,7 @@ export class SelfPlayTrainer {
     const weakHand = tier <= HandTier.OVERCARDS;
     const hasOpponent = !context || hasBettingOpponent(context.seats, context.actorId);
     const bluffEligible = persona.aggression > 0.7 && weakHand && canRaise && pressure < 3 && hasOpponent;
-    const attemptBluff = bluffEligible && Math.random() < bluffFrequency(persona);
+    const attemptBluff = bluffEligible && Math.random() < bluffFrequency(persona) * (position?.isOOP ? 0.55 : 1);
     if (bluffEligible) {
       mask[2] = false;
       mask[3] = false;

@@ -4,9 +4,10 @@ import { hasBettingOpponent } from './poker-rules';
 import { RPG_BOT_POOL, applyStrategyToPersona, getStrategyForHand, type BotPersona } from './personas';
 import { classifyHandTier } from './equity-engine';
 import type { SelfPlayTrainer } from './self-play-trainer';
+import { positionContext } from './poker-position';
 
 export const LIVE_RULES = Object.freeze({
-  version: "1.2.0",
+  version: "1.3.0",
   seats: 8, smallBlind: 100, bigBlind: 200, buyIn: 20000,
   botCashOut: 100000, userSeconds: 10, maxActions: 256,
   botThinkMin: 700, botThinkJitter: 900, actionPause: 800, resultPause: 5000,
@@ -81,6 +82,7 @@ export function decideLiveBot(trainer: SelfPlayTrainer, ctx: {
   actor: BettingSeat & { holeCards: Card[]; persona?: BotPersona };
   seats: BettingSeat[]; board: Card[]; pot: number; minRaise: number; maxRaise: number;
   button: number; smallBlind: number; bigBlind: number; hand: number; raiseLevel: number;
+  checkedThisStreet?: boolean;
 }): LiveAction {
   const { actor, seats, board } = ctx;
   const persona = applyStrategyToPersona(actor.persona || RPG_BOT_POOL[0], getStrategyForHand(ctx.hand));
@@ -89,7 +91,8 @@ export function decideLiveBot(trainer: SelfPlayTrainer, ctx: {
   const nn = trainer.decideActionForLive(actor.holeCards, board, call, ctx.minRaise, ctx.maxRaise,
     livePot, actor.stack, actor.currentBet, seats.filter(s => s.inHand && !s.folded).length - 1,
     actor.seatId, seats.length, ctx.raiseLevel, ctx.button, persona,
-    { actorId: actor.seatId, seats: seats.map(({seatId,stack,currentBet,totalBet,inHand,folded,allIn}) => ({seatId,stack,currentBet,totalBet,inHand,folded,allIn})) });
+    { actorId: actor.seatId, position: positionContext(seats, actor.seatId, ctx.button, ctx.checkedThisStreet),
+      seats: seats.map(({seatId,stack,currentBet,totalBet,inHand,folded,allIn}) => ({seatId,stack,currentBet,totalBet,inHand,folded,allIn})) });
   const decision = mapLiveDecision(nn, call, actor.stack, actor.currentBet);
   const highest = actor.currentBet + call;
   const limped = ctx.raiseLevel === 0 && highest <= LIVE_RULES.bigBlind;

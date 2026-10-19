@@ -20,6 +20,24 @@ function roomWith(bets: number[] = [200, 400]) {
   return room;
 }
 
+test('real server retains check history through a raise and clears it on the next street', async () => {
+  const room = roomWith([0, 0]);
+  const checked: boolean[] = [];
+  const actions = [
+    {action:'check',amount:0}, {action:'raise',amount:200},
+    {action:'raise',amount:600}, {action:'call',amount:400},
+    {action:'check',amount:0}, {action:'check',amount:0},
+  ];
+  room.getDecision = async (_actor:any, _call:number, _min:number, _max:number, _user:boolean, wasChecked:boolean) => {
+    checked.push(wasChecked);
+    assert.ok(actions.length, 'betting loop must terminate');
+    return actions.shift();
+  };
+  await room.runBettingRound(0, 0, []);
+  await room.runBettingRound(0, 0, []);
+  assert.deepEqual(checked, [false, false, true, false, false, false]);
+});
+
 test('spectators and seated players always have positions and correct own seat', () => {
   const seats = Array.from({length:8}, (_, seatId) => ({seatId}));
   const spectator = rotateSeatView(seats, -1);

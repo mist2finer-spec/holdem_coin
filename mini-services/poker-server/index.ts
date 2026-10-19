@@ -516,6 +516,7 @@ export class HybridHoldemRoom {
     // Emergency action ceiling; exceeding it refunds the incomplete hand.
     const MAX_ACTIONS = LIVE_RULES.maxActions;
     let safety = 0;
+    const checkedThisStreet = new Set<number>();
 
     while (safety < MAX_ACTIONS) {
       // ★ safety를 최상단에서 증가 - 어떤 continue/break 시에도 무한루프 방지
@@ -581,10 +582,10 @@ export class HybridHoldemRoom {
         if (validAction) {
           decision = validAction;
         } else {
-          decision = await this.getDecision(actor, callAmt, minR, maxR, isUser || false);
+          decision = await this.getDecision(actor, callAmt, minR, maxR, isUser || false, checkedThisStreet.has(actor.seatId));
         }
       } else {
-        decision = await this.getDecision(actor, callAmt, minR, maxR, isUser || false);
+        decision = await this.getDecision(actor, callAmt, minR, maxR, isUser || false, checkedThisStreet.has(actor.seatId));
       }
 
       // Validate bot decisions too. A stale/invalid decision falls back safely.
@@ -617,6 +618,8 @@ export class HybridHoldemRoom {
 
       // 액션 적용
       this.applyAction(actorIdx, decision);
+      if (decision.action === "check") checkedThisStreet.add(actor.seatId);
+      else checkedThisStreet.delete(actor.seatId);
       if (st.seats[actorIdx].currentBet > maxBet && raisesBet) {
         st.lastAggression = { seatId: actor.seatId, isBluff: intendedBluff };
       }
@@ -658,7 +661,8 @@ export class HybridHoldemRoom {
     callAmt: number,
     minR: number,
     maxR: number,
-    isUser: boolean
+    isUser: boolean,
+    checkedThisStreet = false
   ): Promise<{ action: ActionType; amount: number; isBluff?: boolean }> {
     if (isUser) {
       // Same decision window as single player.
@@ -672,6 +676,7 @@ export class HybridHoldemRoom {
         minRaise: minR, maxRaise: maxR, button: this.state.buttonSeat,
         smallBlind: this.state.smallBlindSeat, bigBlind: this.state.bigBlindSeat,
         hand: this.state.handNumber, raiseLevel: this.state.raiseLevel,
+        checkedThisStreet,
       });
     }
   }

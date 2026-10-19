@@ -345,6 +345,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     await sleep(300);
 
     let safetyCounter = 0;
+    const checkedThisStreet = new Set<number>();
     let lastActorIdx = -1; // 직전 액터 (턴 순서 추적용)
     while (safetyCounter < LIVE_RULES.maxActions) {
       safetyCounter++;
@@ -409,6 +410,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
           minRaise: minR, maxRaise: maxR, button: st.buttonSeat,
           smallBlind: st.smallBlindSeat, bigBlind: st.bigBlindSeat,
           hand: st.handNumber, raiseLevel: st.raiseLevel,
+          checkedThisStreet: checkedThisStreet.has(actor.seatId),
         });
       }
       const intendedBluff = !actor.isUser && decision.isBluff === true;
@@ -441,6 +443,8 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
 
       // 액션 적용 (직접 ref 수정)
       applyActionToState(st, actorIdx, decision);
+      if (decision.action === "check") checkedThisStreet.add(actor.seatId);
+      else checkedThisStreet.delete(actor.seatId);
       if (st.seats[actorIdx].currentBet > maxBet && (decision.action === "raise" || decision.action === "allin")) {
         st.lastAggression = { seatId: actor.seatId, isBluff: intendedBluff };
       }
