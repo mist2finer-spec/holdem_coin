@@ -382,8 +382,11 @@ class HybridHoldemRoom {
       const bbSeat = (st.buttonSeat + 2) % NUM_SEATS;
       st.seats[sbSeat].currentBet = Math.min(SMALL_BLIND, st.seats[sbSeat].stack);
       st.seats[sbSeat].stack -= st.seats[sbSeat].currentBet;
+      // ★ totalBet에도 블라인드 추가 (사이드팟 계산용)
+      st.seats[sbSeat].totalBet += st.seats[sbSeat].currentBet;
       st.seats[bbSeat].currentBet = Math.min(BIG_BLIND, st.seats[bbSeat].stack);
       st.seats[bbSeat].stack -= st.seats[bbSeat].currentBet;
+      st.seats[bbSeat].totalBet += st.seats[bbSeat].currentBet;
       // console.log("[Hand] 블라인드 완료");
 
       // 홀카드 딜
@@ -846,44 +849,70 @@ class HybridHoldemRoom {
 
   private async finishHand(isShowdown: boolean) {
     const st = this.state;
-    const currentPot = st.pot;
     const alive = st.seats.filter(s => s.inHand && !s.folded);
 
-    let winnerIndices: number[];
-    if (alive.length === 1) {
-      winnerIndices = [0];
-    } else {
-      winnerIndices = determineWinners(
-        alive.map(c => ({ holeCards: c.holeCards })),
-        st.board
-      );
-    }
-    const winners = winnerIndices.map(i => alive[i]);
-    const share = Math.floor(currentPot / winners.length);
-    const remainder = currentPot - share * winners.length;
+    // ★ 사이드팟 계산
+    // 각 플레이어의 totalBet (이번 핸드에 베팅한 총액)를 기준으로
+    // 메인팟과 사이드팟을 분리
+    const pots = this.calculateSidePots(alive);
 
-    let handName = "";
-    if (isShowdown && winners[0]) {
-      const score = evaluateBestHand(winners[0].holeCards, st.board);
-      handName = scoreToCategoryName(score);
-    } else if (winners.length === 1 && !isShowdown) {
-      handName = "기본 승 (모두 폴드)";
+    console.log(`[Finish] pots: ${pots.length}개`);
+    for (const pot of pots) {
+      console.log(`[Finish] pot amount=${pot.amount}, eligible=${pot.eligibleSeatIds.map(s => s + 1).join(",")}`);
     }
 
-    const winnerNames = winners.map(w => w.name).join(", ");
-    st.winnerInfo = { name: winnerNames, amount: currentPot, hand: handName };
+    // 각 팟별로 승자 결정 및 분배
+    const allWinners: { seatId: number; amount: number; handName: string }[] = [];
+    let totalWinnerAmount = 0;
+    let bestHandName = "";
 
-    // 스택 분배
-    st.seats = st.seats.map(s => {
-      const idx = winners.findIndex(w => w.seatId === s.seatId);
-      if (idx >= 0) {
-        const bonus = idx === 0 ? remainder : 0;
-        return { ...s, stack: s.stack + share + bonus };
+    for (const pot of pots) {
+      if (pot.eligibleSeats.length === 0) continue;
+      if (pot.amount === 0) continue;
+
+      let potWinners: number[];
+      if (pot.eligibleSeats.length === 1) {
+        // 한 명만 남은 팟 (다른 사람이 폴드)
+        potWinners = [0];
+      } else {
+        potWinners = determineWinners(
+          pot.eligibleSeats.map(s => ({ holeCards: s.holeCards })),
+          st.board
+        );
       }
-      return s;
-    });
-    st.pot = 0;
 
+      const potWinningSeats = potWinners.map(i => pot.eligibleSeats[i]);
+      const share = Math.floor(pot.amount / potWinningSeats.length);
+      const remainder = pot.amount - share * potWinningSeats.length;
+
+      // 스택에 추가
+      st.seats = st.seats.map(s => {
+        const idx = potWinningSeats.findIndex(ws => ws.seatId === s.seatId);
+        if (idx >= 0) {
+          const bonus = idx === 0 ? remainder : 0;
+          return { ...s, stack: s.stack + share + bonus };
+        }
+        return s;
+      });
+
+      // 승자 정보 기록
+      for (let i = 0; i < potWinningSeats.length; i++) {
+        const ws = potWinningSeats[i];
+        const handName = isShowdown
+          ? scoreToCategoryName(evaluateBestHand(ws.holeCards, st.board))
+          : "기본 승";
+        allWinners.push({ seatId: ws.seatId, amount: share + (i === 0 ? remainder : 0), handName });
+        totalWinnerAmount += share + (i === 0 ? remainder : 0);
+        if (!bestHandName && isShowdown) bestHandName = handName;
+      }
+    }
+
+    // 승자 정보 표시 (총 획득액 기준)
+    const winnerNames = [...new Set(allWinners.map(w => st.seats[w.seatId].name))].join(", ");
+    const displayHand = isShowdown ? bestHandName : (alive.length === 1 ? "기본 승 (모두 폴드)" : "");
+    st.winnerInfo = { name: winnerNames, amount: totalWinnerAmount, hand: displayHand };
+
+    st.pot = 0;
     this.broadcastTableState();
 
     // 결과 표시 5초 유지
@@ -892,6 +921,85 @@ class HybridHoldemRoom {
     st.showdownReveal = false;
     st.showdownHands = [];
     this.broadcastTableState();
+  }
+
+  // ============================================================
+  // ★ 사이드팟 계산 (핵심 로직)
+  // ============================================================
+  // 올인한 금액별로 팟을 분리:
+  // - 메인팟: 가장 적게 올인한 사람의 금액까지
+  // - 사이드팟: 그 이상의 금액
+  //
+  // 예: A 올인 15000, B 올인 20000, C 콜 20000
+  // → 메인팟: 15000 × 3 = 45000 (A, B, C 모두 참여)
+  // → 사이드팟1: (20000-15000) × 2 = 10000 (B, C만 참여)
+  // A가 이기면 메인팟 45000만 가져감, 사이드팟은 B vs C
+  // ============================================================
+
+  private calculateSidePots(alive: ServerSeat[]): {
+    amount: number;
+    eligibleSeats: ServerSeat[];
+    eligibleSeatIds: number[];
+  }[] {
+    // 1. 각 플레이어의 totalBet 수집 (올인 포함)
+    const contributions = alive.map(s => ({
+      seatId: s.seatId,
+      totalBet: s.totalBet,
+      seat: s,
+    }));
+
+    // 2. totalBet 기준 오름차순 정렬
+    contributions.sort((a, b) => a.totalBet - b.totalBet);
+
+    // 3. 고유한 totalBet 레벨 추출 (올인 금액별)
+    const betLevels = [...new Set(contributions.map(c => c.totalBet))].sort((a, b) => a - b);
+
+    const pots: { amount: number; eligibleSeats: ServerSeat[]; eligibleSeatIds: number[] }[] = [];
+    let prevLevel = 0;
+
+    for (const level of betLevels) {
+      if (level <= prevLevel) continue;
+
+      // 이 레벨의 팟 금액 = (level - prevLevel) × 이 레벨 이상 베팅한 플레이어 수
+      const eligibleSeats = contributions
+        .filter(c => c.totalBet >= level)
+        .map(c => c.seat);
+
+      const layerAmount = (level - prevLevel) * eligibleSeats.length;
+
+      if (layerAmount > 0) {
+        pots.push({
+          amount: layerAmount,
+          eligibleSeats,
+          eligibleSeatIds: eligibleSeats.map(s => s.seatId),
+        });
+      }
+
+      prevLevel = level;
+    }
+
+    // 4. 폴드한 플레이어의 베팅도 팟에 추가 (포기된 칩)
+    // 폴드한 플레이어의 totalBet는 메인팟(가장 낮은 레벨)에 합산
+    const allSeats = this.state.seats;
+    const foldedSeats = allSeats.filter(s => s.folded && s.totalBet > 0);
+    if (foldedSeats.length > 0 && pots.length > 0) {
+      const foldedChips = foldedSeats.reduce((a, s) => a + s.totalBet, 0);
+      pots[0].amount += foldedChips;
+    }
+
+    // 5. 팟이 없으면 (모두 체크만 한 경우) 단일 팟 생성
+    if (pots.length === 0) {
+      const totalChips = contributions.reduce((a, c) => a + c.totalBet, 0);
+      if (totalChips > 0) {
+        pots.push({
+          amount: totalChips,
+          eligibleSeats: alive,
+          eligibleSeatIds: alive.map(s => s.seatId),
+        });
+      }
+    }
+
+    return pots;
   }
 
   // ============================================================
