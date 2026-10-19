@@ -89,16 +89,13 @@ class HybridHoldemRoom {
   public state: ServerGameState;
   public trainer: SelfPlayTrainer;
   private users: Map<string, ConnectedUser> = new Map();
-  private joinQueue: ConnectedUser[] = [];
+  private pendingJoinQueue: ConnectedUser[] = []; // ★ 핸드 종료 후 착석 대기열
   private leaveSeats: Set<number> = new Set();
   private pendingActionResolve: ((action: { action: string; amount: number }) => void) | null = null;
   private isRunning = false;
 
   constructor() {
-    // ★ trainer 학습 루프 비활성화 (crash 방지)
-    // 서버에서는 학습하지 않고 게임만 진행
     this.trainer = new SelfPlayTrainer();
-    // this.trainer.start(); // ← 주석 처리
     this.state = this.createInitialState();
     this.startGameLoop();
   }
@@ -148,21 +145,18 @@ class HybridHoldemRoom {
   // ============================================================
 
   onUserConnect(socket: Socket, name: string) {
-    // ★ 고유 플레이어 ID 생성 (서버 사이드)
+    // ★ 고유 플레이어 ID 생성
     const playerId = `P${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`.toUpperCase();
     const baseName = (name || "용사").trim().slice(0, 8);
 
-    // ★ 중복 이름 방지: 이미 같은 baseName을 쓰는 유저가 있으면 번호 추가
+    // 중복 이름 방지
     const existingNames = new Set(
       Array.from(this.users.values()).map(u => u.baseName)
     );
     let uniqueName = baseName;
     if (existingNames.has(baseName)) {
-      // 같은 이름이 있으면 #2, #3... 번호 추가
       let suffix = 2;
-      while (existingNames.has(`${baseName}#${suffix}`)) {
-        suffix++;
-      }
+      while (existingNames.has(`${baseName}#${suffix}`)) suffix++;
       uniqueName = `${baseName}#${suffix}`;
     }
 
@@ -181,99 +175,38 @@ class HybridHoldemRoom {
       && this.state.phase !== "HAND_END"
       && this.state.activeSeatId >= 0;
 
-    // 빈 자리 찾기 (BB+2 = UTG 자리 우선, 없으면 아무 빈 AI 자리)
-    const botSeats = this.state.seats.filter(s => s.isBot);
-    const hasEmptySeat = botSeats.length > 0;
-
-    if (hasEmptySeat) {
-      // ★ BB+2 자리 (UTG) 찾기
-      const bbSeat = (this.state.buttonSeat + 2) % NUM_SEATS;
-      const utgSeat = (this.state.buttonSeat + 3) % NUM_SEATS;
-      // UTG 자리가 비어있으면(봇이면) 거기로, 아니면 첫 번째 봇 자리로
-      let targetSeatId: number;
-      if (this.state.seats[utgSeat]?.isBot) {
-        targetSeatId = utgSeat;
-      } else {
-        targetSeatId = botSeats[0].seatId;
-      }
-
-      // ★ 현재 턴인 좌석(activeSeatId)은 변경 금지 - race condition 방지
-      if (targetSeatId === this.state.activeSeatId) {
-        // 현재 턴인 좌석이면 다른 봇 자리 찾기
-        const safeBotSeats = botSeats.filter(s => s.seatId !== this.state.activeSeatId);
-        if (safeBotSeats.length === 0) {
-          // 안전한 자리가 없으면 관전 모드
-          this.joinQueue.push(user);
-          socket.emit("SYSTEM_NOTICE", {
-            messages: [
-              `👀 [${user.name}]님이 관전 모드로 입장했습니다.`,
-              `⏳ 다음 핸드에 착석됩니다.`,
-            ],
-          });
-          socket.emit("TABLE_STATE", this.getMaskedState(socket.id));
-          return;
-        }
-        targetSeatId = safeBotSeats[0].seatId;
-      }
-
-      if (handInProgress) {
-        // ★ 핸드 진행 중: 자리는 차지하지만 이번 핸드는 관전
-        const seat = this.state.seats[targetSeatId];
-        seat.isBot = false;
-        seat.name = user.name;  // ★ 고유 이름 사용
-        seat.socketId = user.socketId;
-        seat.persona = undefined;
-        seat.folded = true; // 이번 핸드는 폴드 처리
-        seat.inHand = false;
-        user.seatId = targetSeatId;
-
-        // 이 플레이어에게만 "핸드 진행 중" 메시지 전송
-        socket.emit("SYSTEM_NOTICE", {
-          messages: [
-            `👀 [${user.name}]님이 #${targetSeatId + 1}번 좌석에 착석했습니다.`,
-            `⏳ 현재 핸드 #${this.state.handNumber}이(가) 진행 중입니다. 다음 핸드부터 참여할 수 있습니다.`,
-          ],
-        });
-        // 다른 플레이어들에게는 일반 입장 메시지
-        this.broadcastExcept("SYSTEM_NOTICE", {
-          messages: [`👀 [${user.name}]님이 #${targetSeatId + 1}번 좌석에 착석했습니다. (다음 핸드부터 참여)`],
-        }, socket.id);
-      } else {
-        // 핸드 사이: 즉시 참여 가능
-        const seat = this.state.seats[targetSeatId];
-        seat.isBot = false;
-        seat.name = user.name;
-        seat.socketId = user.socketId;
-        seat.persona = undefined;
-        seat.stack = DEFAULT_BUYIN;
-        user.seatId = targetSeatId;
-
-        this.broadcast("SYSTEM_NOTICE", {
-          messages: [`🔄 [${user.name}]님이 #${targetSeatId + 1}번 좌석에 착석했습니다!`],
-        });
-      }
-    } else {
-      // 빈 자리 없음: 관전 모드
-      this.joinQueue.push(user);
+    // ★ 핵심 수정: 핸드 진행 중에는 절대 seats 배열을 건드리지 않음!
+    // 오직 pendingJoinQueue에 넣고 관전 상태로 둠
+    if (handInProgress) {
+      this.pendingJoinQueue.push(user);
+      console.log(`[User] ${user.name} 접속 → 대기열 (handInProgress, queue: ${this.pendingJoinQueue.length})`);
       socket.emit("SYSTEM_NOTICE", {
         messages: [
-          `👀 [${user.name}]님이 관전 모드로 입장했습니다.`,
-          `⏳ 테이블이 가득 찼습니다. 빈자리가 생기면 자동 착석됩니다.`,
+          `👀 [${user.name}]님이 입장했습니다.`,
+          `⏳ 현재 핸드 #${this.state.handNumber}이(가) 진행 중입니다. 다음 핸드부터 참여할 수 있습니다.`,
         ],
+      });
+    } else {
+      // 핸드 사이: 즉시 좌석 할당
+      this.pendingJoinQueue.push(user);
+      console.log(`[User] ${user.name} 접속 → 대기열 (핸드 사이, 즉시 할당 예정)`);
+      socket.emit("SYSTEM_NOTICE", {
+        messages: [`👀 [${user.name}]님이 입장했습니다. 곧 착석됩니다.`],
       });
     }
 
-    // 접속 즉시 현재 테이블 상태 전송 (시점 회전 적용)
-    socket.emit("TABLE_STATE", this.getMaskedState(socket.id));
-    console.log(`[User] ${user.name} 접속 (seatId: ${user.seatId}, handInProgress: ${handInProgress})`);
+    // 관전자에게 현재 상태 전송 (순수 DTO만)
+    socket.emit("TABLE_STATE", this.createSafeSnapshot(socket.id));
   }
 
   onUserDisconnect(socketId: string) {
     const user = this.users.get(socketId);
-    console.log(`[Disconnect] socketId:${socketId.slice(0,8)}, user:${user?.name ?? "없음"}, seat:${user?.seatId ?? "없음"}`);
+    // console.log(`[Disconnect] socketId:${socketId.slice(0,8)}, user:${user?.name ?? "없음"}, seat:${user?.seatId ?? "없음"}`);
     if (!user) return;
 
-    this.joinQueue = this.joinQueue.filter(u => u.socketId !== socketId);
+    // ★ 대기열에서 제거
+    const idx = this.pendingJoinQueue.findIndex(u => u.socketId === socketId);
+    if (idx >= 0) this.pendingJoinQueue.splice(idx, 1);
 
     if (user.seatId !== null) {
       this.leaveSeats.add(user.seatId);
@@ -282,13 +215,12 @@ class HybridHoldemRoom {
         this.pendingActionResolve({ action: "fold", amount: 0 });
         this.pendingActionResolve = null;
       }
-      // 사전 액션도 취소
       user.preAction = null;
     }
 
     this.users.delete(socketId);
     this.broadcast("SYSTEM_NOTICE", {
-      messages: [`👋 [${user.name}]님이 퇴장했습니다. AI가 자리를 대체합니다.`],
+      messages: [`👋 [${user.name}]님이 퇴장했습니다.`],
     });
     console.log(`[User] ${user.name} 퇴장 (남은 유저: ${this.users.size})`);
   }
@@ -303,7 +235,7 @@ class HybridHoldemRoom {
     if (this.state.activeSeatId !== user.seatId) return; // 내 턴이 아니면 무시
     if (!this.pendingActionResolve) return;
 
-    console.log(`[Action] ${user.name}: ${action.action} ${action.amount}`);
+    // console.log(`[Action] ${user.name}: ${action.action} ${action.amount}`);
     this.pendingActionResolve(action);
     this.pendingActionResolve = null;
   }
@@ -313,11 +245,11 @@ class HybridHoldemRoom {
     const user = this.users.get(socketId);
     if (!user) return;
     user.preAction = preAction;
-    console.log(`[PreAction] ${user.name}: ${preAction ? preAction.type : "취소"}`);
+    // console.log(`[PreAction] ${user.name}: ${preAction ? preAction.type : "취소"}`);
   }
 
   // ============================================================
-  // 핸드 간 AI <-> 유저 Hot-Swap
+  // 핸드 간 AI <-> 유저 Hot-Swap (오직 핸드 사이에만 실행)
   // ============================================================
 
   private processSeatSwaps() {
@@ -337,14 +269,13 @@ class HybridHoldemRoom {
     }
     this.leaveSeats.clear();
 
-    // 2) 관전 대기열 유저를 빈 AI 자리에 투입 (핸드 사이에만)
-    // ★ 입장 시 즉시 자리 배정은 onUserConnect에서 처리하므로
-    //    여기서는 관전 모드였던 유저만 처리
-    while (this.joinQueue.length > 0) {
+    // 2) ★ pendingJoinQueue에서 대기 중인 유저를 빈 AI 자리에 할당
+    //    오직 이 시점(핸드 사이)에서만 seats 배열 수정!
+    while (this.pendingJoinQueue.length > 0) {
       const botSeats = this.state.seats.filter(s => s.isBot);
       if (botSeats.length === 0) break;
 
-      const user = this.joinQueue.shift()!;
+      const user = this.pendingJoinQueue.shift()!;
       const targetSeat = botSeats[Math.floor(Math.random() * botSeats.length)];
 
       targetSeat.isBot = false;
@@ -368,7 +299,7 @@ class HybridHoldemRoom {
   private async startGameLoop() {
     if (this.isRunning) return;
     this.isRunning = true;
-    console.log("[GameLoop] 하이브리드 홀덤 게임 루프 시작");
+    console.log("[GL] 하이브리드 홀덤 게임 루프 시작");
 
     let handCount = 0;
     while (this.isRunning) {
@@ -378,22 +309,22 @@ class HybridHoldemRoom {
         await this.playOneHand();
         console.log(`[GameLoop] 핸드 ${handCount} 완료`);
       } catch (e: any) {
-        console.error("[GameLoop] 핸드 처리 에러:", e?.message || e);
+        console.error("[GL ERR] 핸드 처리 에러:", e?.message || e);
         console.error(e?.stack);
         await this.sleep(2000);
       }
     }
-    console.log("[GameLoop] 루프 종료");
+    console.log("[GL] 루프 종료");
   }
 
   private async playOneHand() {
     const st = this.state;
-    console.log("[Hand] playOneHand 시작");
+    // console.log("[Hand] playOneHand 시작");
 
     try {
       // 핸드 시작 전 Hot-Swap
       this.processSeatSwaps();
-      console.log("[Hand] Hot-Swap 완료");
+      // console.log("[Hand] Hot-Swap 완료");
 
       // 상태 리셋
       st.handNumber++;
@@ -407,7 +338,7 @@ class HybridHoldemRoom {
       st.raiseLevel = 0;
       st.lastRaiseSize = BIG_BLIND;
       st.buttonSeat = (st.buttonSeat + 1) % NUM_SEATS;
-      console.log(`[Hand] 상태 리셋 완료 (hand #${st.handNumber})`);
+      // console.log(`[Hand] 상태 리셋 완료 (hand #${st.handNumber})`);
 
       // 좌석 리셋 (파산 봇 리필)
       const usedNames = new Set<string>();
@@ -440,11 +371,11 @@ class HybridHoldemRoom {
           hasActed: false,
         };
       });
-      console.log("[Hand] 좌석 리셋 완료");
+      // console.log("[Hand] 좌석 리셋 완료");
 
       // 덱 생성
       const deck = makeDeck();
-      console.log("[Hand] 덱 생성 완료");
+      // console.log("[Hand] 덱 생성 완료");
 
       // 블라인드
       const sbSeat = (st.buttonSeat + 1) % NUM_SEATS;
@@ -453,7 +384,7 @@ class HybridHoldemRoom {
       st.seats[sbSeat].stack -= st.seats[sbSeat].currentBet;
       st.seats[bbSeat].currentBet = Math.min(BIG_BLIND, st.seats[bbSeat].stack);
       st.seats[bbSeat].stack -= st.seats[bbSeat].currentBet;
-      console.log("[Hand] 블라인드 완료");
+      // console.log("[Hand] 블라인드 완료");
 
       // 홀카드 딜
       for (const seat of st.seats) {
@@ -461,22 +392,22 @@ class HybridHoldemRoom {
           seat.holeCards = [deck.pop()!, deck.pop()!];
         }
       }
-      console.log("[Hand] 홀카드 딜 완료");
+      // console.log("[Hand] 홀카드 딜 완료");
 
       this.broadcastTableState();
       this.broadcast("SYSTEM_NOTICE", { messages: [`◆ 핸드 #${st.handNumber} 시작`] });
       await this.sleep(800);
-      console.log("[Hand] 베팅 라운드 시작");
+      // console.log("[Hand] 베팅 라운드 시작");
 
       // 프리플랍 베팅 (UTG부터)
       await this.runBettingRound(st.buttonSeat, 3, deck);
-      console.log("[Hand] 프리플랍 베팅 완료");
+      // console.log("[Hand] 프리플랍 베팅 완료");
 
       // 다음 페이즈들
       await this.advancePhase(deck);
-      console.log("[Hand] 핸드 완료");
+      // console.log("[Hand] 핸드 완료");
     } catch (e: any) {
-      console.error("[Hand] 에러:", e?.message || e);
+      // console.error("[Hand] 에러:", e?.message || e);
       console.error(e?.stack);
       throw e;
     }
@@ -485,24 +416,30 @@ class HybridHoldemRoom {
   private async runBettingRound(btnSeat: number, startOffset: number, deck: Card[]) {
     const st = this.state;
     st.raiseLevel = 0;
-    st.lastRaiseSize = BIG_BLIND; // ★ 라운드 시작마다 BB로 리셋
+    st.lastRaiseSize = BIG_BLIND;
     st.seats = st.seats.map(s => ({ ...s, hasActed: false }));
     st.lastActions = {};
     this.broadcastTableState();
     await this.sleep(300);
 
     let lastActorIdx = -1;
+    // ★ MAX 32 (8인 × 4 = 32 액션 상한선)
+    const MAX_ACTIONS = 32;
     let safety = 0;
-    while (safety++ < 100) {
+
+    while (safety < MAX_ACTIONS) {
+      // ★ safety를 최상단에서 증가 - 어떤 continue/break 시에도 무한루프 방지
+      safety++;
+
       const alive = st.seats.filter(s => s.inHand && !s.folded);
-      if (alive.length <= 1) { console.log(`[Bet] safety=${safety} alive<=1, break`); break; }
+      if (alive.length <= 1) break;
 
       const notAllIn = alive.filter(s => !s.allIn);
-      if (notAllIn.length === 0) { console.log(`[Bet] safety=${safety} all allin, break`); break; }
+      if (notAllIn.length === 0) break;
 
       const maxBet = Math.max(...alive.map(s => s.currentBet));
       const needsAction = notAllIn.filter(s => !s.hasActed || s.currentBet < maxBet);
-      if (needsAction.length === 0) { console.log(`[Bet] safety=${safety} no needsAction, break`); break; }
+      if (needsAction.length === 0) break;
 
       // 다음 액터 찾기
       let actorIdx = -1;
@@ -518,7 +455,7 @@ class HybridHoldemRoom {
           break;
         }
       }
-      if (actorIdx === -1) { console.log(`[Bet] safety=${safety} no actor, break`); break; }
+      // if (actorIdx === -1) { console.log(`[Bet] safety=${safety} no actor, break`); break; }
 
       lastActorIdx = actorIdx;
       const actor = st.seats[actorIdx];
@@ -532,7 +469,7 @@ class HybridHoldemRoom {
       const maxR = actor.stack + actor.currentBet;
       st.minRaise = minR;
       st.maxRaise = maxR;
-      console.log(`[Bet] safety=${safety} actor=${actor.name}(${actorIdx}) call=${callAmt} minR=${minR} maxR=${maxR}`);
+      // console.log(`[Bet] safety=${safety} actor=${actor.name}(${actorIdx}) call=${callAmt} minR=${minR} maxR=${maxR}`);
 
       this.broadcastTableState();
 
@@ -580,29 +517,29 @@ class HybridHoldemRoom {
       }
 
       // 액션 적용
-      console.log(`[Bet] applyAction 전: ${actor.name} ${decision.action} ${decision.amount}`);
+      // console.log(`[Bet] applyAction 전: ${actor.name} ${decision.action} ${decision.amount}`);
       this.applyAction(actorIdx, decision);
-      console.log(`[Bet] applyAction 후: ${actor.name}`);
+      // console.log(`[Bet] applyAction 후: ${actor.name}`);
       const actionLabel = this.labelAction(decision.action, decision.amount, callAmt);
-      console.log(`[Bet] actionLabel: ${actionLabel}`);
+      // console.log(`[Bet] actionLabel: ${actionLabel}`);
       st.lastActions = { ...st.lastActions, [actorIdx]: actionLabel };
-      console.log(`[Bet] PLAYER_ACTION 브로드캐스트 전`);
+      // console.log(`[Bet] PLAYER_ACTION 브로드캐스트 전`);
       this.broadcast("PLAYER_ACTION", {
         seatId: actorIdx,
         name: actor.name,
         action: actionLabel,
         amount: decision.amount,
       });
-      console.log(`[Bet] PLAYER_ACTION 브로드캐스트 후`);
-      console.log(`[Bet] broadcastTableState 전`);
+      // console.log(`[Bet] PLAYER_ACTION 브로드캐스트 후`);
+      // console.log(`[Bet] broadcastTableState 전`);
       this.broadcastTableState();
-      console.log(`[Bet] broadcastTableState 후, sleep 800ms`);
+      // console.log(`[Bet] broadcastTableState 후, sleep 800ms`);
       await this.sleep(800);
-      console.log(`[Bet] sleep 후, stillAlive 체크`);
+      // console.log(`[Bet] sleep 후, stillAlive 체크`);
 
       const stillAlive = st.seats.filter(s => s.inHand && !s.folded);
-      console.log(`[Bet] stillAlive: ${stillAlive.length}`);
-      if (stillAlive.length <= 1) { console.log(`[Bet] stillAlive<=1, break`); break; }
+      // console.log(`[Bet] stillAlive: ${stillAlive.length}`);
+      // if (stillAlive.length <= 1) { console.log(`[Bet] stillAlive<=1, break`); break; }
     }
 
     st.activeSeatId = -1;
@@ -628,13 +565,13 @@ class HybridHoldemRoom {
   ): Promise<{ action: ActionType; amount: number; isBluff?: boolean }> {
     if (isUser) {
       // 유저 액션 대기 (15초 타임아웃)
-      console.log(`[Decision] 유저 대기: ${actor.name}`);
+      // console.log(`[Decision] 유저 대기: ${actor.name}`);
       const action = await this.waitForUserAction(actor.socketId!);
-      console.log(`[Decision] 유저 액션: ${actor.name} → ${action.action} ${action.amount}`);
+      // console.log(`[Decision] 유저 액션: ${actor.name} → ${action.action} ${action.amount}`);
       return action;
     } else {
       // 봇 결정
-      console.log(`[Decision] 봇 결정 시작: ${actor.name}`);
+      // console.log(`[Decision] 봇 결정 시작: ${actor.name}`);
       await this.sleep(400 + Math.random() * 400);
       try {
         // ★ 임시 간단 결정 로직 (trainer crash 방지)
@@ -702,8 +639,22 @@ class HybridHoldemRoom {
           }
         } else {
           // 콜 비용 있음
+          // ★ SB/BB 방어 로직: 림프(콜만 하는 행위)된 팟에서 SB/BB는
+          // 팟오즈가 불리해도 50% 확률로 콜하여 방어
+          const sbSeat = (this.state.buttonSeat + 1) % NUM_SEATS;
+          const bbSeat = (this.state.buttonSeat + 2) % NUM_SEATS;
+          const isBlind = (actor.seatId === sbSeat || actor.seatId === bbSeat);
+          // 림프 감지: 레이즈 없이 콜만 있는 상황 (raiseLevel === 0)
+          const isLimpedPot = this.state.raiseLevel === 0 && callAmt <= BIG_BLIND;
+
           if (multiStrength < potOdds) {
-            action = "fold";
+            // ★ 블라인드 방어: 림프된 팟에서 SB/BB는 50% 확률로 콜
+            if (isBlind && isLimpedPot && board.length === 0 && Math.random() < 0.5) {
+              action = "call";
+              amount = Math.min(callAmt, actor.stack);
+            } else {
+              action = "fold";
+            }
           } else if (multiStrength > 0.75 && Math.random() < persona.aggression * 0.7) {
             action = "raise";
             amount = Math.max(minR, Math.min(Math.floor(minR + livePot * 0.6), maxR));
@@ -713,10 +664,10 @@ class HybridHoldemRoom {
           }
         }
 
-        console.log(`[Decision] 봇 결정 완료(간단): ${actor.name} → ${action} ${amount} (strength:${multiStrength.toFixed(2)})`);
+        // console.log(`[Decision] 봇 결정 완료(간단): ${actor.name} → ${action} ${amount} (strength:${multiStrength.toFixed(2)})`);
         return { action, amount };
       } catch (e: any) {
-        console.error(`[Decision] 봇 결정 에러: ${actor.name}:`, e?.message || e);
+        // console.error(`[Decision] 봇 결정 에러: ${actor.name}:`, e?.message || e);
         return { action: "fold", amount: 0 };
       }
     }
@@ -944,10 +895,11 @@ class HybridHoldemRoom {
   }
 
   // ============================================================
-  // 상태 마스킹 & 브로드캐스트
+  // 상태 마스킹 & 브로드캐스트 (순수 DTO만 전송)
   // ============================================================
 
-  private getMaskedState(socketId: string | null) {
+  // ★ 순수 JSON DTO만 생성 (socket 참조, 순환 참조 완전 차단)
+  private createSafeSnapshot(socketId: string | null) {
     const st = this.state;
     const user = socketId ? this.users.get(socketId) : null;
     const mySeatId = user?.seatId ?? -1;
@@ -956,43 +908,72 @@ class HybridHoldemRoom {
       && st.phase !== "HAND_END"
       && st.activeSeatId >= 0
       && mySeatId >= 0
-      && !st.seats[mySeatId]?.inHand; // 내가 이번 핸드에 참여 안 함
+      && !st.seats[mySeatId]?.inHand;
+
+    // ★ 모든 값을 원시 타입으로 매핑 (Number, String, Boolean, Array)
+    const totalPot = Number(st.pot || 0) + st.seats.reduce((a, s) => a + Number(s.currentBet || 0), 0);
+
+    // 순수 배열로 복사 (참조 끊기)
+    const boardCards = st.board.map(c => String(c.rank) + String(c.suit));
+
+    // seats를 순수 DTO로 매핑
+    const seats = st.seats.map(s => {
+      const isMe = s.seatId === mySeatId;
+      const reveal = isMe || (isShowdown && !s.folded);
+      const rawHole = s.holeCards.map(c => String(c.rank) + String(c.suit));
+      return {
+        seatId: Number(s.seatId),
+        name: String(s.name || ""),
+        isBot: Boolean(s.isBot),
+        isMe: Boolean(isMe),
+        stack: Number(s.stack || 0),
+        currentBet: Number(s.currentBet || 0),
+        inHand: Boolean(s.inHand),
+        folded: Boolean(s.folded),
+        allIn: Boolean(s.allIn),
+        holeCards: reveal ? rawHole : (rawHole.length > 0 ? ["??", "??"] : []),
+      };
+    });
+
+    // showdownHands도 순수 DTO로
+    const showdownHands = Array.isArray(st.showdownHands)
+      ? st.showdownHands.map(h => ({
+          seatId: Number(h.seatId),
+          name: String(h.name || ""),
+          handCategory: String(h.handCategory || ""),
+          isWinner: Boolean(h.isWinner),
+          isUser: Boolean(h.isUser),
+        }))
+      : [];
+
+    // winnerInfo도 순수 DTO로
+    const winnerInfo = st.winnerInfo
+      ? {
+          name: String(st.winnerInfo.name || ""),
+          amount: Number(st.winnerInfo.amount || 0),
+          hand: String(st.winnerInfo.hand || ""),
+        }
+      : null;
 
     return {
       type: "TABLE_STATE",
-      handNumber: st.handNumber,
-      phase: st.phase,
-      buttonSeat: st.buttonSeat,
-      activeSeatId: st.activeSeatId,
-      totalPot: st.pot + st.seats.reduce((a, s) => a + s.currentBet, 0),
-      boardCards: st.board.map(c => `${c.rank}${c.suit}`),
-      callAmount: st.callAmount,
-      minRaise: st.minRaise,
-      maxRaise: st.maxRaise,
-      mySeatId,
-      myPlayerId: user?.playerId ?? null,  // ★ 고유 플레이어 ID
-      myName: user?.name ?? null,          // ★ 서버가 부여한 고유 이름
-      isUserTurn: st.activeSeatId === mySeatId && mySeatId >= 0 && st.seats[mySeatId]?.inHand,
-      handInProgress, // ★ 핸드 진행 중 입장 여부
-      showdownHands: st.showdownHands,
-      winnerInfo: st.winnerInfo,
-      seats: st.seats.map(s => {
-        const isMe = s.seatId === mySeatId;
-        const rawHole = s.holeCards.map(c => `${c.rank}${c.suit}`);
-        const reveal = isMe || (isShowdown && !s.folded);
-        return {
-          seatId: s.seatId,
-          name: s.name,
-          isBot: s.isBot,
-          isMe, // ★ 자신 좌석 표시
-          stack: s.stack,
-          currentBet: s.currentBet,
-          inHand: s.inHand,
-          folded: s.folded,
-          allIn: s.allIn,
-          holeCards: reveal ? rawHole : (rawHole.length > 0 ? ["??", "??"] : []),
-        };
-      }),
+      handNumber: Number(st.handNumber || 0),
+      phase: String(st.phase || "PREFLOP"),
+      buttonSeat: Number(st.buttonSeat || 0),
+      activeSeatId: Number(st.activeSeatId ?? -1),
+      totalPot: Number(totalPot),
+      boardCards,
+      callAmount: Number(st.callAmount || 0),
+      minRaise: Number(st.minRaise || 0),
+      maxRaise: Number(st.maxRaise || 0),
+      mySeatId: Number(mySeatId),
+      myPlayerId: user?.playerId ?? null,
+      myName: user?.name ?? null,
+      isUserTurn: Boolean(st.activeSeatId === mySeatId && mySeatId >= 0 && st.seats[mySeatId]?.inHand),
+      handInProgress: Boolean(handInProgress),
+      showdownHands,
+      winnerInfo,
+      seats,
       preAction: user?.preAction ?? null,
     };
   }
@@ -1001,13 +982,12 @@ class HybridHoldemRoom {
     io.emit(event, data);
   }
 
-  // ★ 테이블 상태를 각 클라이언트마다 개별 마스킹하여 전송
-  // (각 플레이어가 자신의 mySeatId, 자신의 카드만 보게 함)
+  // ★ 각 클라이언트마다 순수 DTO 스냅샷 전송
   private broadcastTableState() {
-    if (this.users.size === 0) return; // 유저 없으면 전송 안 함
-    for (const [socketId, user] of this.users) {
-      const masked = this.getMaskedState(socketId);
-      io.to(socketId).emit("TABLE_STATE", masked);
+    if (this.users.size === 0) return;
+    for (const [socketId] of this.users) {
+      const snapshot = this.createSafeSnapshot(socketId);
+      io.to(socketId).emit("TABLE_STATE", snapshot);
     }
   }
 
@@ -1067,12 +1047,15 @@ httpServer.listen(PORT, () => {
 process.on("uncaughtException", (err) => {
   console.error("[UNCAUGHT] 예외 발생:", err.message);
   console.error(err.stack);
-  // 프로세스 종료 방지 - 계속 실행
 });
 
 process.on("unhandledRejection", (reason) => {
   console.error("[UNHANDLED] Promise 거부:", reason);
-  // 프로세스 종료 방지 - 계속 실행
+});
+
+// ★ SIGPIPE 무시 (백그라운드 파이프 끊김 방지)
+process.on("SIGPIPE", () => {
+  console.warn("[SIGPIPE] 파이프 끊김 (무시됨)");
 });
 
 // ★ SIGTERM/SIGINT 시 정상 종료
