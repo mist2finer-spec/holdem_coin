@@ -519,11 +519,12 @@ export class SelfPlayTrainer {
 
   /**
    * 라이브 게임용 의사결정 (UI 훅에서 호출)
-   * GTO 스타일 핸드 강도 분류 + 신경망 보정
+   * GTO 스타일 핸드 강도 분류 + 포지션 기반 전략 + 신경망 보정
    * - Premium hands (top 5%): 레이즈/3-bet
    * - Strong hands (15%): 콜 위주, 가끔 레이즈
    * - Medium hands (30-50%): 콜 (팟 오즈 충족 시)
    * - Weak hands: 폴드 (가끔 블러프)
+   * - 포지션별 오프닝 레인지: UTG 타이트, BTN 루즈
    */
   decideActionForLive(
     hole: Card[],
@@ -538,6 +539,7 @@ export class SelfPlayTrainer {
     seatIndex: number,
     numSeats: number,
     raiseLevel: number,
+    buttonSeat: number,
     persona: { vpip: number; aggression: number; bluffFreq: number }
   ): { action: number; amount: number; isBluff?: boolean } {
     const eq = board.length === 0
@@ -549,11 +551,17 @@ export class SelfPlayTrainer {
     const evMargin = multiEq - potOdds;
     const stackCommitment = callAmount > 0 ? callAmount / (myStack + callAmount) : 0;
 
-    // GTO 핸드 강도 분류
-    const handTier = this._classifyHandTier(eq, multiEq, board.length);
+    // 포지션 계산 (UTG/MP/CO/BTN/SB/BB)
+    const position = this._getPosition(seatIndex, buttonSeat, numSeats);
+    const positionAdvantage = this._getPositionAdvantage(position);
+
+    // GTO 핸드 강도 분류 (포지션 보정 적용)
+    // 늦은 포지션(BTN/CO)일수록 같은 핸드라도 더 강하게 평가
+    const adjustedEq = eq + positionAdvantage * 0.05;
+    const handTier = this._classifyHandTier(adjustedEq, multiEq, board.length);
 
     // ========================================
-    // GTO 결정 트리
+    // GTO 결정 트리 (포지션 반영)
     // ========================================
 
     // === 1) 체크 가능한 상황 (callAmount === 0) ===
@@ -568,9 +576,10 @@ export class SelfPlayTrainer {
         const target = Math.max(minRaise, Math.floor(pot * 0.5));
         return { action: 2, amount: Math.min(target, maxRaise) };
       }
-      // Bluff (가끔)
+      // Bluff: 늦은 포지션에서 더 자주
+      const bluffChance = persona.bluffFreq * 0.3 * (1 + positionAdvantage);
       if (handTier === "air" && activeOpponents <= 2 && raiseLevel === 0
-          && Math.random() < persona.bluffFreq * 0.3) {
+          && Math.random() < bluffChance) {
         const target = Math.max(minRaise, Math.floor(pot * 0.5));
         return { action: 2, amount: Math.min(target, maxRaise), isBluff: true };
       }
@@ -580,8 +589,9 @@ export class SelfPlayTrainer {
 
     // === 2) 콜 비용이 있는 상황 ===
 
-    // (a) 명백한 -EV: 폴드
-    if (evMargin < -0.08) {
+    // (a) 명백한 -EV: 폴드 (포지션이 좋으면 조금 더 버팀)
+    const foldThreshold = -0.08 + positionAdvantage * 0.03;
+    if (evMargin < foldThreshold) {
       return { action: 0, amount: 0 };
     }
 
@@ -599,8 +609,10 @@ export class SelfPlayTrainer {
     }
 
     // (c) Strong: 보통 콜, 가끔 레이즈 (밸류)
+    // 늦은 포지션에서 더 공격적
     if (handTier === "strong") {
-      if (raiseLevel === 0 && Math.random() < persona.aggression * 0.3 && maxRaise > minRaise) {
+      const raiseChance = persona.aggression * 0.3 * (1 + positionAdvantage * 0.5);
+      if (raiseLevel === 0 && Math.random() < raiseChance && maxRaise > minRaise) {
         const target = Math.max(minRaise, Math.floor(minRaise + pot * 0.5));
         return { action: 2, amount: Math.min(target, maxRaise) };
       }
@@ -616,35 +628,45 @@ export class SelfPlayTrainer {
     }
 
     // (d) Medium: 팟 오즈 충족하면 콜
+    // 포지션이 좋으면 더 넓게 콜
     if (handTier === "medium") {
-      // 리레이즈(3-bet+) 상황이면 폴드
-      if (raiseLevel >= 2 && stackCommitment > 0.25) {
+      // 리레이즈(3-bet+) 상황이면 폴드 (포지션이 좋으면 조금 더 버팀)
+      const threeBetFoldThreshold = 0.25 - positionAdvantage * 0.05;
+      if (raiseLevel >= 2 && stackCommitment > threeBetFoldThreshold) {
         return { action: 0, amount: 0 };
       }
       // +EV 콜
-      if (evMargin > 0.02) {
+      const callThreshold = 0.02 - positionAdvantage * 0.03;
+      if (evMargin > callThreshold) {
         return { action: 1, amount: Math.min(callAmount, myStack) };
       }
-      // 애매하면 작은 베팅만 콜
-      if (stackCommitment < 0.15) {
+      // 애매하면 작은 베팅만 콜 (포지션이 좋으면 더 콜)
+      const smallBetThreshold = 0.15 + positionAdvantage * 0.05;
+      if (stackCommitment < smallBetThreshold) {
         return { action: 1, amount: Math.min(callAmount, myStack) };
       }
       return { action: 0, amount: 0 };
     }
 
     // (e) Weak (원페어 낮은 킥커, 바텀페어): 작은 베팅만 콜
+    // 포지션이 좋으면 더 넓게 콜
     if (handTier === "weak") {
-      if (raiseLevel >= 1) return { action: 0, amount: 0 };
-      if (stackCommitment < 0.10 && evMargin > -0.05) {
+      const weakCallRaiseLevel = 1; // 포지션 좋으면 1레이즈까지 콜
+      if (raiseLevel >= weakCallRaiseLevel && positionAdvantage < 0.5) return { action: 0, amount: 0 };
+      if (raiseLevel >= weakCallRaiseLevel + 1) return { action: 0, amount: 0 };
+      const weakStackThreshold = 0.10 + positionAdvantage * 0.05;
+      if (stackCommitment < weakStackThreshold && evMargin > -0.05) {
         return { action: 1, amount: Math.min(callAmount, myStack) };
       }
       return { action: 0, amount: 0 };
     }
 
     // (f) Air (하이카드): 거의 폴드, 가끔 블러프 콜
+    // 늦은 포지션에서 가끔 스틸 시도
     if (handTier === "air") {
+      const bluffCallChance = persona.bluffFreq * 0.2 * (1 + positionAdvantage);
       if (raiseLevel === 0 && stackCommitment < 0.05
-          && Math.random() < persona.bluffFreq * 0.2) {
+          && Math.random() < bluffCallChance) {
         return { action: 1, amount: Math.min(callAmount, myStack), isBluff: true };
       }
       return { action: 0, amount: 0 };
@@ -652,6 +674,52 @@ export class SelfPlayTrainer {
 
     // 기본: 콜 (이 경우는 거의 안 옴)
     return { action: 1, amount: Math.min(callAmount, myStack) };
+  }
+
+  /**
+   * 좌석 인덱스로부터 포지션 계산
+   * 8인 테이블 기준: BTN, SB, BB, UTG, UTG+1, MP, MP+1, CO
+   * @returns 포지션 이름
+   */
+  private _getPosition(seatIndex: number, buttonSeat: number, numSeats: number): string {
+    const offset = (seatIndex - buttonSeat + numSeats) % numSeats;
+    // 8인 테이블: BTN=0, SB=1, BB=2, UTG=3, UTG+1=4, MP1=5, MP2=6, CO=7
+    if (offset === 0) return "BTN";
+    if (offset === 1) return "SB";
+    if (offset === 2) return "BB";
+    if (numSeats === 8) {
+      if (offset === 3) return "UTG";
+      if (offset === 4) return "UTG1";
+      if (offset === 5) return "MP1";
+      if (offset === 6) return "MP2";
+      if (offset === 7) return "CO";
+    } else {
+      // 6인 테이블 등
+      if (offset === 3) return "UTG";
+      if (offset === 4) return "MP";
+      if (offset === 5) return "CO";
+    }
+    return "MP";
+  }
+
+  /**
+   * 포지션 이점 점수 (0.0 ~ 1.0)
+   * BTN이 가장 유리(1.0), UTG가 가장 불리(0.0)
+   * 빠른 포지션일수록 더 많은 상대가 뒤에 있어서 정보가 적음
+   */
+  private _getPositionAdvantage(position: string): number {
+    switch (position) {
+      case "BTN": return 1.0;  // 가장 유리
+      case "CO":  return 0.8;
+      case "MP2": return 0.6;
+      case "MP1": return 0.5;
+      case "MP":  return 0.4;
+      case "UTG1": return 0.3;
+      case "UTG": return 0.2;  // 가장 불리
+      case "BB":  return 0.5;  // 이미 블라인드 걸었음
+      case "SB":  return 0.3;  // 가장 불리한 위치
+      default:    return 0.4;
+    }
   }
 
   /**

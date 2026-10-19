@@ -19,15 +19,16 @@ function clampRaise(min: number, max: number, value: number): number {
 
 // 8좌석 테이블 상대 위치 (% 단위)
 // 0번 = 하단 중앙 (유저 자리), 시계 방향으로 배치
+// 모바일에서도 화면 안에 들어오도록 여백 확보
 const SEAT_POSITIONS = [
-  { top: "92%", left: "50%" },  // 0: 하단 중앙 (유저)
-  { top: "82%", left: "85%" },  // 1: 우하단
-  { top: "45%", left: "94%" },  // 2: 우측
-  { top: "12%", left: "82%" },  // 3: 우상단
-  { top: "5%",  left: "50%" },  // 4: 상단 중앙
-  { top: "12%", left: "18%" },  // 5: 좌상단
-  { top: "45%", left: "6%"  },  // 6: 좌측
-  { top: "82%", left: "15%" },  // 7: 좌하단
+  { top: "90%", left: "50%" },  // 0: 하단 중앙 (유저)
+  { top: "78%", left: "88%" },  // 1: 우하단
+  { top: "45%", left: "93%" },  // 2: 우측
+  { top: "14%", left: "82%" },  // 3: 우상단
+  { top: "7%",  left: "50%" },  // 4: 상단 중앙
+  { top: "14%", left: "18%" },  // 5: 좌상단
+  { top: "45%", left: "7%"  },  // 6: 좌측
+  { top: "78%", left: "12%" },  // 7: 좌하단
 ];
 
 export function PokerTable({ userName, onToast }: Props) {
@@ -109,30 +110,30 @@ export function PokerTable({ userName, onToast }: Props) {
       </div>
 
       {/* 테이블 (타원형) */}
-      <div className="absolute inset-0 flex items-center justify-center">
-        <div className="relative w-[min(95vw,1100px)] h-[min(85vh,640px)]">
+      <div className="absolute inset-0 flex items-center justify-center pt-12 pb-32 sm:pb-28">
+        <div className="relative w-[min(98vw,1100px)] h-[min(72vh,640px)] sm:h-[min(85vh,640px)]">
           {/* 테이블 외곽 (나무 테두리) */}
           <div className="absolute inset-0 rounded-[50%] bg-gradient-to-br from-amber-950 via-amber-900 to-amber-950 shadow-[0_0_60px_rgba(0,0,0,0.8),inset_0_0_30px_rgba(0,0,0,0.6)]" />
-          <div className="absolute inset-3 rounded-[50%] bg-gradient-to-br from-emerald-900 via-emerald-950 to-emerald-900 shadow-[inset_0_0_50px_rgba(0,0,0,0.7)] border-2 border-amber-700/40" />
+          <div className="absolute inset-2 sm:inset-3 rounded-[50%] bg-gradient-to-br from-emerald-900 via-emerald-950 to-emerald-900 shadow-[inset_0_0_50px_rgba(0,0,0,0.7)] border-2 border-amber-700/40" />
 
           {/* 테이블 중앙 패턴 */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="text-amber-700/10 text-[180px] font-bold">♠</div>
+            <div className="text-amber-700/10 text-[100px] sm:text-[180px] font-bold">♠</div>
           </div>
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="absolute top-[35%] text-rose-800/10 text-[100px] -translate-x-32">♥</div>
-            <div className="absolute top-[35%] text-rose-800/10 text-[100px] translate-x-32">♦</div>
-            <div className="absolute top-[60%] text-amber-700/10 text-[100px]">♣</div>
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none hidden sm:block">
+            <div className="absolute top-[35%] text-rose-800/10 text-[60px] sm:text-[100px] -translate-x-32">♥</div>
+            <div className="absolute top-[35%] text-rose-800/10 text-[60px] sm:text-[100px] translate-x-32">♦</div>
+            <div className="absolute top-[60%] text-amber-700/10 text-[60px] sm:text-[100px]">♣</div>
           </div>
 
           {/* 보드 카드 (중앙) */}
-          <div className="absolute top-[42%] left-1/2 -translate-x-1/2 -translate-y-1/2 flex gap-2 z-10">
+          <div className="absolute top-[42%] left-1/2 -translate-x-1/2 -translate-y-1/2 flex gap-1 sm:gap-2 z-10">
             {board.length === 0 && (
-              <div className="text-amber-700/30 text-xs italic">카드 대기중...</div>
+              <div className="text-amber-700/30 text-[10px] sm:text-xs italic">카드 대기중...</div>
             )}
             {board.map((c, i) => (
               <div key={i} className="animate-[fadeIn_0.4s_ease-out]">
-                <PlayingCard card={c} size="lg" />
+                <PlayingCard card={c} size="md" />
               </div>
             ))}
           </div>
@@ -140,9 +141,9 @@ export function PokerTable({ userName, onToast }: Props) {
           {/* 팟 표시 (중앙 하단) */}
           {livePot > 0 && (
             <div className="absolute top-[60%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
-              <div className="bg-slate-950/85 border-2 border-amber-500/70 rounded-full px-5 py-1.5 backdrop-blur-sm shadow-lg">
-                <span className="text-amber-400 text-[10px] font-bold tracking-wider">◈ POT</span>
-                <span className="text-amber-100 text-base font-bold ml-2 tabular-nums">{livePot.toLocaleString()}</span>
+              <div className="bg-slate-950/85 border-2 border-amber-500/70 rounded-full px-3 py-1 sm:px-5 sm:py-1.5 backdrop-blur-sm shadow-lg">
+                <span className="text-amber-400 text-[9px] sm:text-[10px] font-bold tracking-wider">◈ POT</span>
+                <span className="text-amber-100 text-sm sm:text-base font-bold ml-1 sm:ml-2 tabular-nums">{livePot.toLocaleString()}</span>
               </div>
             </div>
           )}
@@ -150,12 +151,12 @@ export function PokerTable({ userName, onToast }: Props) {
           {/* 승자 표시 */}
           {winnerInfo && (
             <div className="absolute top-[25%] left-1/2 -translate-x-1/2 z-30 animate-[fadeIn_0.3s_ease-out]">
-              <div className="bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 px-6 py-2 rounded-lg border-2 border-amber-200 shadow-2xl">
-                <div className="text-amber-950 text-[10px] font-bold tracking-widest text-center">★ WINNER ★</div>
-                <div className="text-amber-950 text-lg font-bold text-center">{winnerInfo.name}</div>
-                <div className="text-amber-900 text-xs font-bold text-center tabular-nums">
+              <div className="bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 px-4 py-1.5 sm:px-6 sm:py-2 rounded-lg border-2 border-amber-200 shadow-2xl">
+                <div className="text-amber-950 text-[9px] sm:text-[10px] font-bold tracking-widest text-center">★ WINNER ★</div>
+                <div className="text-amber-950 text-base sm:text-lg font-bold text-center">{winnerInfo.name}</div>
+                <div className="text-amber-900 text-[10px] sm:text-xs font-bold text-center tabular-nums">
                   +{winnerInfo.amount.toLocaleString()} 칩
-                  {winnerInfo.hand && <span className="ml-2">[{winnerInfo.hand}]</span>}
+                  {winnerInfo.hand && <span className="ml-1 sm:ml-2">[{winnerInfo.hand}]</span>}
                 </div>
               </div>
             </div>
@@ -179,15 +180,15 @@ export function PokerTable({ userName, onToast }: Props) {
       </div>
 
       {/* 하단 액션 패널 (유저 전용) */}
-      <div className="absolute bottom-0 left-0 right-0 z-20 p-3 bg-gradient-to-t from-slate-950 via-slate-950/95 to-transparent">
+      <div className="absolute bottom-0 left-0 right-0 z-20 p-1.5 sm:p-3 bg-gradient-to-t from-slate-950 via-slate-950/95 to-transparent">
         <div className="max-w-3xl mx-auto">
           {isUserTurn ? (
-            <div className="bg-slate-900/95 border-2 border-amber-600 rounded-xl p-3 shadow-2xl backdrop-blur-md">
-              <div className="flex items-center justify-between mb-2">
-                <div className="text-amber-200 text-xs font-bold flex items-center gap-2">
-                  ⚔️ 당신의 차례입니다 — 행동을 선택하세요
+            <div className="bg-slate-900/95 border-2 border-amber-600 rounded-xl p-2 sm:p-3 shadow-2xl backdrop-blur-md">
+              <div className="flex items-center justify-between mb-1.5 sm:mb-2">
+                <div className="text-amber-200 text-[10px] sm:text-xs font-bold flex items-center gap-1.5 sm:gap-2">
+                  ⚔️ 차례
                   {/* 10초 타이머 */}
-                  <span className={`inline-flex items-center justify-center w-7 h-7 rounded-full font-bold text-sm tabular-nums border-2 ${
+                  <span className={`inline-flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 rounded-full font-bold text-xs sm:text-sm tabular-nums border-2 ${
                     userTimer <= 3
                       ? "bg-rose-700 text-amber-100 border-rose-300 animate-pulse"
                       : userTimer <= 6
@@ -197,17 +198,17 @@ export function PokerTable({ userName, onToast }: Props) {
                     {userTimer}
                   </span>
                 </div>
-                <div className="text-amber-300 text-xs">
-                  콜 필요: <span className="font-bold tabular-nums">{callAmount.toLocaleString()}</span>
+                <div className="text-amber-300 text-[10px] sm:text-xs">
+                  콜: <span className="font-bold tabular-nums">{callAmount.toLocaleString()}</span>
                   {" / "}
                   잔고: <span className="font-bold tabular-nums">{userSeat?.stack.toLocaleString()}</span>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1 sm:gap-2">
                 <Button
                   variant="destructive"
-                  className="bg-rose-800 hover:bg-rose-700 text-rose-50 border border-rose-500 font-bold"
+                  className="bg-rose-800 hover:bg-rose-700 text-rose-50 border border-rose-500 font-bold h-8 sm:h-10 px-2 sm:px-4 text-[10px] sm:text-sm"
                   onClick={() => submitUserAction("fold", 0)}
                 >
                   FOLD
@@ -215,22 +216,22 @@ export function PokerTable({ userName, onToast }: Props) {
 
                 {callAmount === 0 ? (
                   <Button
-                    className="bg-emerald-700 hover:bg-emerald-600 text-emerald-50 border border-emerald-400 font-bold"
+                    className="bg-emerald-700 hover:bg-emerald-600 text-emerald-50 border border-emerald-400 font-bold h-8 sm:h-10 px-2 sm:px-4 text-[10px] sm:text-sm"
                     onClick={() => submitUserAction("check", 0)}
                   >
                     CHECK
                   </Button>
                 ) : (
                   <Button
-                    className="bg-emerald-700 hover:bg-emerald-600 text-emerald-50 border border-emerald-400 font-bold"
+                    className="bg-emerald-700 hover:bg-emerald-600 text-emerald-50 border border-emerald-400 font-bold h-8 sm:h-10 px-2 sm:px-4 text-[10px] sm:text-sm"
                     onClick={() => submitUserAction("call", Math.min(callAmount, userSeat?.stack ?? 0))}
                   >
                     CALL {Math.min(callAmount, userSeat?.stack ?? 0).toLocaleString()}
                   </Button>
                 )}
 
-                <div className="flex-1 flex items-center gap-2 px-3 bg-slate-950/70 rounded-md border border-amber-700/50">
-                  <span className="text-amber-300 text-[10px] font-bold">RAISE</span>
+                <div className="flex-1 flex items-center gap-1 sm:gap-2 px-2 sm:px-3 bg-slate-950/70 rounded-md border border-amber-700/50 h-8 sm:h-10">
+                  <span className="text-amber-300 text-[9px] sm:text-[10px] font-bold">R</span>
                   <Slider
                     value={[effectiveRaise]}
                     min={minRaise}
@@ -239,13 +240,13 @@ export function PokerTable({ userName, onToast }: Props) {
                     onValueChange={(v) => setRaiseAmount(v[0])}
                     className="flex-1"
                   />
-                  <span className="text-amber-100 text-xs font-bold tabular-nums min-w-[60px] text-right">
+                  <span className="text-amber-100 text-[10px] sm:text-xs font-bold tabular-nums min-w-[50px] sm:min-w-[60px] text-right">
                     {effectiveRaise.toLocaleString()}
                   </span>
                 </div>
 
                 <Button
-                  className="bg-amber-600 hover:bg-amber-500 text-amber-950 border border-amber-300 font-bold"
+                  className="bg-amber-600 hover:bg-amber-500 text-amber-950 border border-amber-300 font-bold h-8 sm:h-10 px-2 sm:px-4 text-[10px] sm:text-sm"
                   onClick={() => submitUserAction("raise", effectiveRaise)}
                   disabled={maxRaise <= minRaise}
                 >
@@ -254,7 +255,7 @@ export function PokerTable({ userName, onToast }: Props) {
 
                 <Button
                   variant="default"
-                  className="bg-rose-600 hover:bg-rose-500 text-amber-100 border border-rose-300 font-bold"
+                  className="bg-rose-600 hover:bg-rose-500 text-amber-100 border border-rose-300 font-bold h-8 sm:h-10 px-2 sm:px-4 text-[10px] sm:text-sm"
                   onClick={() => submitUserAction("allin", userSeat?.stack ?? 0)}
                 >
                   ALL-IN
@@ -262,12 +263,12 @@ export function PokerTable({ userName, onToast }: Props) {
               </div>
 
               {/* 퀵 베팅 버튼 행 (1/3, 1/2, 3/4, 1:1 pot, Min) */}
-              <div className="flex items-center gap-1.5 mt-2">
-                <span className="text-amber-300 text-[9px] font-bold mr-1">QUICK:</span>
+              <div className="flex items-center gap-1 sm:gap-1.5 mt-1.5 sm:mt-2 flex-wrap">
+                <span className="text-amber-300 text-[8px] sm:text-[9px] font-bold mr-0.5 sm:mr-1">QUICK:</span>
                 <Button
                   size="sm"
                   variant="outline"
-                  className="h-6 px-2 text-[10px] border-amber-700/50 text-amber-200 hover:bg-amber-900/40"
+                  className="h-5 sm:h-6 px-1.5 sm:px-2 text-[9px] sm:text-[10px] border-amber-700/50 text-amber-200 hover:bg-amber-900/40"
                   onClick={() => {
                     const target = clampRaise(minRaise, maxRaise, callAmount + Math.floor(livePot * 1 / 3));
                     setRaiseAmount(target);
@@ -275,12 +276,12 @@ export function PokerTable({ userName, onToast }: Props) {
                   disabled={maxRaise <= minRaise}
                   title={`팟의 1/3 = ${Math.floor(livePot * 1 / 3).toLocaleString()}`}
                 >
-                  1/3 pot
+                  1/3
                 </Button>
                 <Button
                   size="sm"
                   variant="outline"
-                  className="h-6 px-2 text-[10px] border-amber-700/50 text-amber-200 hover:bg-amber-900/40"
+                  className="h-5 sm:h-6 px-1.5 sm:px-2 text-[9px] sm:text-[10px] border-amber-700/50 text-amber-200 hover:bg-amber-900/40"
                   onClick={() => {
                     const target = clampRaise(minRaise, maxRaise, callAmount + Math.floor(livePot * 1 / 2));
                     setRaiseAmount(target);
@@ -288,12 +289,12 @@ export function PokerTable({ userName, onToast }: Props) {
                   disabled={maxRaise <= minRaise}
                   title={`팟의 1/2 = ${Math.floor(livePot * 1 / 2).toLocaleString()}`}
                 >
-                  1/2 pot
+                  1/2
                 </Button>
                 <Button
                   size="sm"
                   variant="outline"
-                  className="h-6 px-2 text-[10px] border-amber-700/50 text-amber-200 hover:bg-amber-900/40"
+                  className="h-5 sm:h-6 px-1.5 sm:px-2 text-[9px] sm:text-[10px] border-amber-700/50 text-amber-200 hover:bg-amber-900/40"
                   onClick={() => {
                     const target = clampRaise(minRaise, maxRaise, callAmount + Math.floor(livePot * 3 / 4));
                     setRaiseAmount(target);
@@ -301,12 +302,12 @@ export function PokerTable({ userName, onToast }: Props) {
                   disabled={maxRaise <= minRaise}
                   title={`팟의 3/4 = ${Math.floor(livePot * 3 / 4).toLocaleString()}`}
                 >
-                  3/4 pot
+                  3/4
                 </Button>
                 <Button
                   size="sm"
                   variant="outline"
-                  className="h-6 px-2 text-[10px] border-amber-700/50 text-amber-200 hover:bg-amber-900/40"
+                  className="h-5 sm:h-6 px-1.5 sm:px-2 text-[9px] sm:text-[10px] border-amber-700/50 text-amber-200 hover:bg-amber-900/40"
                   onClick={() => {
                     const target = clampRaise(minRaise, maxRaise, callAmount + livePot);
                     setRaiseAmount(target);
@@ -314,12 +315,12 @@ export function PokerTable({ userName, onToast }: Props) {
                   disabled={maxRaise <= minRaise}
                   title={`팟의 1:1 = ${livePot.toLocaleString()}`}
                 >
-                  1:1 pot
+                  1:1
                 </Button>
                 <Button
                   size="sm"
                   variant="outline"
-                  className="h-6 px-2 text-[10px] border-amber-700/50 text-amber-200 hover:bg-amber-900/40"
+                  className="h-5 sm:h-6 px-1.5 sm:px-2 text-[9px] sm:text-[10px] border-amber-700/50 text-amber-200 hover:bg-amber-900/40"
                   onClick={() => setRaiseAmount(minRaise)}
                   disabled={maxRaise <= minRaise}
                   title={`최소 레이즈 = ${minRaise.toLocaleString()}`}
@@ -329,16 +330,16 @@ export function PokerTable({ userName, onToast }: Props) {
                 <Button
                   size="sm"
                   variant="outline"
-                  className="h-6 px-2 text-[10px] border-amber-700/50 text-amber-200 hover:bg-amber-900/40"
+                  className="h-5 sm:h-6 px-1.5 sm:px-2 text-[9px] sm:text-[10px] border-amber-700/50 text-amber-200 hover:bg-amber-900/40"
                   onClick={() => setRaiseAmount(maxRaise)}
                   disabled={maxRaise <= minRaise}
                   title={`올인 = ${maxRaise.toLocaleString()}`}
                 >
                   Max
                 </Button>
-                <div className="ml-auto text-amber-200/60 text-[10px]">
+                <div className="ml-auto text-amber-200/60 text-[9px] sm:text-[10px] hidden sm:block">
                   팟: <span className="text-amber-200 font-bold tabular-nums">{livePot.toLocaleString()}</span>
-                  {" · "}레이즈 범위: <span className="text-amber-200 font-bold tabular-nums">{minRaise.toLocaleString()}~{maxRaise.toLocaleString()}</span>
+                  {" · "}레이즈: <span className="text-amber-200 font-bold tabular-nums">{minRaise.toLocaleString()}~{maxRaise.toLocaleString()}</span>
                 </div>
               </div>
             </div>

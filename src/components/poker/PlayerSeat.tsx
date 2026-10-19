@@ -35,19 +35,20 @@ export function PlayerSeat({
   const cardsBelow = topNum < 50;
 
   const cardsElement = (
-    <div className="flex gap-0.5 h-12 items-center">
-      {seat.holeCards.length > 0 && (seat.isUser || showCards || seat.allIn) ? (
+    <div className="flex gap-0.5 h-8 sm:h-12 items-center">
+      {/* 쇼다운에서도 폴드한 플레이어는 카드 표시 안 함 */}
+      {seat.holeCards.length > 0 && !seat.folded && (seat.isUser || showCards || seat.allIn) ? (
         <>
           <PlayingCard card={seat.holeCards[0]} size="sm" />
           <PlayingCard card={seat.holeCards[1]} size="sm" />
         </>
-      ) : seat.holeCards.length > 0 ? (
+      ) : seat.holeCards.length > 0 && !seat.folded ? (
         <>
           <PlayingCard hidden size="sm" />
           <PlayingCard hidden size="sm" />
         </>
       ) : (
-        <div className="w-16 h-12" />
+        <div className="w-12 sm:w-16 h-8 sm:h-12" />
       )}
     </div>
   );
@@ -56,34 +57,34 @@ export function PlayerSeat({
     <div
       className={`relative rounded-lg bg-gradient-to-br ${colorClass} p-[2px] shadow-xl ${
         isActive ? "ring-2 ring-amber-300 ring-offset-2 ring-offset-emerald-950 animate-pulse" : ""
-      } ${seat.folded ? "opacity-40 grayscale" : ""}`}
+      } ${seat.folded ? "opacity-30 grayscale" : ""}`}
     >
-      <div className="bg-slate-950/60 rounded-md p-1 flex items-center justify-center">
-        <PixelAvatar persona={persona} isUser={seat.isUser} size={48} isActive={isActive} />
+      <div className="bg-slate-950/60 rounded-md p-0.5 sm:p-1 flex items-center justify-center">
+        <PixelAvatar persona={persona} isUser={seat.isUser} size={36} isActive={isActive} />
       </div>
 
       {/* 딜러 버튼 */}
       {isDealer && (
-        <div className="absolute -top-2 -left-2 w-6 h-6 rounded-full bg-amber-400 text-amber-950 text-[10px] font-bold flex items-center justify-center border-2 border-amber-200 shadow-lg">
+        <div className="absolute -top-1.5 -left-1.5 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-amber-400 text-amber-950 text-[9px] sm:text-[10px] font-bold flex items-center justify-center border-2 border-amber-200 shadow-lg">
           D
         </div>
       )}
       {isSmallBlind && (
-        <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-sky-400 text-sky-950 text-[9px] font-bold flex items-center justify-center border-2 border-sky-200 shadow-lg">
+        <div className="absolute -top-1.5 -right-1.5 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-sky-400 text-sky-950 text-[8px] sm:text-[9px] font-bold flex items-center justify-center border-2 border-sky-200 shadow-lg">
           SB
         </div>
       )}
       {isBigBlind && (
-        <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-rose-400 text-rose-950 text-[9px] font-bold flex items-center justify-center border-2 border-rose-200 shadow-lg">
+        <div className="absolute -top-1.5 -right-1.5 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-rose-400 text-rose-950 text-[8px] sm:text-[9px] font-bold flex items-center justify-center border-2 border-rose-200 shadow-lg">
           BB
         </div>
       )}
 
       {/* 액션 말풍선 */}
       {lastActionText && (
-        <div className="absolute -top-7 left-1/2 -translate-x-1/2 whitespace-nowrap z-20">
+        <div className="absolute -top-6 sm:-top-7 left-1/2 -translate-x-1/2 whitespace-nowrap z-20">
           <div
-            className={`px-2 py-0.5 rounded-full text-[10px] font-bold border shadow-lg ${
+            className={`px-1.5 sm:px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold border shadow-lg ${
               lastActionText === "FOLD"
                 ? "bg-slate-800 text-slate-300 border-slate-500"
                 : lastActionText === "CHECK" || lastActionText === "CALL"
@@ -101,11 +102,11 @@ export function PlayerSeat({
   );
 
   const nameBlock = (
-    <div className="bg-slate-950/90 backdrop-blur-sm rounded-md px-2 py-0.5 border border-amber-900/50 min-w-[90px] text-center">
-      <div className={`text-[11px] font-bold ${accentClass} leading-tight truncate max-w-[100px]`}>
+    <div className="bg-slate-950/90 backdrop-blur-sm rounded-md px-1.5 py-0.5 sm:px-2 border border-amber-900/50 min-w-[70px] sm:min-w-[90px] text-center">
+      <div className={`text-[9px] sm:text-[11px] font-bold ${accentClass} leading-tight truncate max-w-[80px] sm:max-w-[100px]`}>
         {seat.name}
       </div>
-      <div className="text-[9px] text-amber-200/60 leading-tight truncate max-w-[100px]">
+      <div className="text-[8px] sm:text-[9px] text-amber-200/60 leading-tight truncate max-w-[80px] sm:max-w-[100px] hidden sm:block">
         {seat.isUser ? "용사님" : persona?.title}
       </div>
     </div>
@@ -113,17 +114,17 @@ export function PlayerSeat({
 
   const stackBlock = (
     <div className="flex flex-col items-center gap-0.5">
-      <div className="flex items-center gap-1 bg-amber-950/80 rounded-full px-2 py-0.5 border border-amber-700/50">
-        <span className="text-[10px] text-amber-400">◈</span>
-        <span className="text-[10px] font-bold text-amber-100 tabular-nums">
-          {seat.stack.toLocaleString()}
+      <div className="flex items-center gap-0.5 sm:gap-1 bg-amber-950/80 rounded-full px-1.5 py-0.5 sm:px-2 border border-amber-700/50">
+        <span className="text-[9px] sm:text-[10px] text-amber-400">◈</span>
+        <span className="text-[9px] sm:text-[10px] font-bold text-amber-100 tabular-nums">
+          {seat.stack > 9999 ? `${(seat.stack/1000).toFixed(0)}k` : seat.stack.toLocaleString()}
         </span>
       </div>
       {seat.currentBet > 0 && (
-        <div className="flex items-center gap-1 bg-rose-950/80 rounded-full px-2 py-0.5 border border-rose-700/50">
-          <span className="text-[9px] text-rose-300">bet</span>
-          <span className="text-[10px] font-bold text-rose-100 tabular-nums">
-            {seat.currentBet.toLocaleString()}
+        <div className="flex items-center gap-0.5 sm:gap-1 bg-rose-950/80 rounded-full px-1.5 py-0.5 sm:px-2 border border-rose-700/50">
+          <span className="text-[8px] sm:text-[9px] text-rose-300">bet</span>
+          <span className="text-[9px] sm:text-[10px] font-bold text-rose-100 tabular-nums">
+            {seat.currentBet > 9999 ? `${(seat.currentBet/1000).toFixed(0)}k` : seat.currentBet.toLocaleString()}
           </span>
         </div>
       )}

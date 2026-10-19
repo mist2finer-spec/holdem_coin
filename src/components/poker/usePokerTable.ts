@@ -288,6 +288,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
           actorIdx,
           NUM_SEATS,
           st.raiseLevel,
+          btnSeat, // 딜러 버튼 좌석 (포지션 계산용)
           { vpip: persona.vpip, aggression: persona.aggression, bluffFreq: persona.bluffFreq }
         );
         decision = mapNNActionToEngine(nnDecision, callAmt, actor.stack);
