@@ -54,6 +54,8 @@ export function PokerTable({ userName, onToast }: Props) {
     userSeatId,
     submitUserAction,
     userTimer,
+    preAction,
+    setPreActionQ,
     trainingStats,
     setTrainingMode,
     resetTraining,
@@ -450,6 +452,70 @@ export function PokerTable({ userName, onToast }: Props) {
                   </span>
                 )}
               </div>
+
+              {/* ★ 사전 액션 큐 (내 차례가 아닐 때 폴드/콜 미리 선택) */}
+              {!isDealing && !winnerInfo && !showdownReveal && activeSeatId >= 0 && activeSeatId !== userSeatId && (
+                <div className="mt-1.5 pt-1.5 border-t border-amber-800/30">
+                  {preAction ? (
+                    // 사전 액션이 예약된 상태
+                    <div className="flex items-center justify-center gap-2">
+                      <span className="text-amber-300 text-[10px] sm:text-xs font-bold">
+                        ✓ 사전 액션: <span className="text-amber-100">
+                          {preAction.type === "fold" ? "FOLD" : preAction.type === "call" ? `CALL ${preAction.amount.toLocaleString()}` : "CHECK"}
+                        </span>
+                      </span>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="h-5 px-2 text-[9px] sm:text-[10px] border-rose-700/50 text-rose-200 hover:bg-rose-900/40"
+                        onClick={() => setPreActionQ(null)}
+                      >
+                        ✕ 취소
+                      </Button>
+                      <span className="text-amber-200/40 text-[9px] hidden sm:inline">
+                        {preAction.type === "fold"
+                          ? "(레이즈 와도 유지)"
+                          : "(레이즈 오면 자동 취소)"}
+                      </span>
+                    </div>
+                  ) : (
+                    // 사전 액션 선택 가능
+                    <div className="flex items-center justify-center gap-1.5">
+                      <span className="text-amber-200/50 text-[9px] sm:text-[10px] font-bold mr-1">사전 선택:</span>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="h-6 px-2 text-[10px] border-rose-700/50 text-rose-200 hover:bg-rose-900/40"
+                        onClick={() => setPreActionQ({ type: "fold", amount: 0 })}
+                      >
+                        폴드 예약
+                      </Button>
+                      {callAmount > 0 ? (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-6 px-2 text-[10px] border-emerald-700/50 text-emerald-200 hover:bg-emerald-900/40"
+                          onClick={() => setPreActionQ({
+                            type: "call",
+                            amount: Math.min(callAmount, userSeat?.stack ?? 0)
+                          })}
+                        >
+                          콜 예약 ({Math.min(callAmount, userSeat?.stack ?? 0).toLocaleString()})
+                        </Button>
+                      ) : (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-6 px-2 text-[10px] border-emerald-700/50 text-emerald-200 hover:bg-emerald-900/40"
+                          onClick={() => setPreActionQ({ type: "check", amount: 0 })}
+                        >
+                          체크 예약
+                        </Button>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           )}
         </div>

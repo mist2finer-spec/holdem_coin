@@ -70,8 +70,9 @@ export class SelfPlayTrainer {
   private conclusionEMA = 0;
 
   // localStorage 저장용
-  private static STORAGE_KEY = "rpg_poker_policy_v1";
-  private static STATS_KEY = "rpg_poker_stats_v1";
+  // ★ 버전업: AIR 버그 수정 이전의 오염된 가중치 강제 초기화
+  private static STORAGE_KEY = "rpg_poker_policy_v3";
+  private static STATS_KEY = "rpg_poker_stats_v3";
 
   constructor() {
     // 저장된 가중치 로드 시도

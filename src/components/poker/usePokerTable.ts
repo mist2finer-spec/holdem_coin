@@ -106,6 +106,76 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
   const [, forceTick] = useState(0);
   const tick = useCallback(() => forceTick((n) => n + 1), []);
 
+  // ★ 사전 액션 큐 (Pre-action queue)
+  // - 내 차례가 오기 전에 폴드/콜을 미리 선택 가능
+  // - 취소 가능
+  // - 레이즈 발생 시 '콜'은 자동 취소 (다시 선택해야 함)
+  // - '폴드'는 레이즈가 와도 그대로 유지 (폴드는 폴드니까)
+  const [preAction, setPreAction] = useState<{
+    type: "fold" | "call" | "check";
+    amount: number;
+  } | null>(null);
+  // ref로도 관리 (베팅 라운드에서 접근하기 위함)
+  const preActionRef = useRef<typeof preAction>(null);
+  useEffect(() => { preActionRef.current = preAction; }, [preAction]);
+
+  // 사전 액션 설정/취소
+  const setPreActionQ = useCallback((action: {
+    type: "fold" | "call" | "check";
+    amount: number;
+  } | null) => {
+    setPreAction(action);
+  }, []);
+
+  // ★ 레이즈 발생 시 '콜/체크' 사전 액션 자동 취소 (폴드는 유지)
+  const cancelCallPreActionOnRaise = useCallback(() => {
+    const pa = preActionRef.current;
+    if (pa && (pa.type === "call" || pa.type === "check")) {
+      setPreAction(null);
+    }
+  }, []);
+
+  // 사전 액션 자동 실행 (내 차례가 되었을 때)
+  useEffect(() => {
+    const st = stateRef.current;
+    // 내 차례이고 사전 액션이 있고 아직 처리 안 된 경우
+    if (st.awaitingUser
+        && st.activeSeatId === userSeatId
+        && preAction
+        && pendingUserAction.current) {
+      // 사전 액션이 유효한지 검증
+      const callAmt = st.callAmount;
+      let validAction: { action: ActionType; amount: number } | null = null;
+
+      if (preAction.type === "fold" && callAmt > 0) {
+        // 폴드는 콜 비용이 있을 때만 의미
+        validAction = { action: "fold", amount: 0 };
+      } else if (preAction.type === "call" && callAmt > 0) {
+        // 콜은 콜 비용이 있을 때
+        validAction = { action: "call", amount: Math.min(callAmt, st.seats[userSeatId]?.stack ?? 0) };
+      } else if (preAction.type === "check" && callAmt === 0) {
+        // 체크는 콜 비용이 없을 때
+        validAction = { action: "check", amount: 0 };
+      }
+
+      if (validAction) {
+        const actionToSubmit = validAction;
+        setPreAction(null); // 실행 후 큐에서 제거
+        // 약간의 딜레이 후 실행 (UI 반영을 위해)
+        setTimeout(() => {
+          if (pendingUserAction.current) {
+            pendingUserAction.current(actionToSubmit);
+            pendingUserAction.current = null;
+          }
+        }, 200);
+      } else {
+        // 유효하지 않으면 사전 액션 취소
+        setPreAction(null);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stateRef.current.awaitingUser, stateRef.current.activeSeatId, preAction]);
+
   const [log, setLog] = useState<LogEntry[]>([]);
   const logIdRef = useRef(0);
   const pushLog = useCallback((text: string, tone: LogEntry["tone"] = "system") => {
@@ -314,6 +384,8 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
             st.seats[i].hasActed = false;
           }
         }
+        // ★ 레이즈 발생 시 유저의 '콜/체크' 사전 액션 자동 취소 (폴드는 유지)
+        cancelCallPreActionOnRaise();
       }
 
       // 액션 적용 (직접 ref 수정)
@@ -345,7 +417,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     st.pot += potAdd;
     tick();
     await sleep(400);
-  }, [pushLog, tick, onToast, trainer]);
+  }, [pushLog, tick, onToast, trainer, cancelCallPreActionOnRaise]);
 
   // =====================
   // 페이즈 진행
@@ -569,6 +641,8 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     userSeatId,
     submitUserAction,
     userTimer: st.userTimer,
+    preAction,
+    setPreActionQ,
     trainingStats,
     setTrainingMode: (mode: "HEURISTIC" | "NEURAL" | "HYBRID") => trainer.setMode(mode),
     resetTraining: () => trainer.resetTraining(),

@@ -1,0 +1,812 @@
+// ============================================================
+// poker-server/index.ts - 8인 하이브리드 홀덤 소켓 서버
+// ============================================================
+// 단일 인메모리 룸 기반:
+// - 8명 AI가 상시 게임 진행
+// - 유저 접속 시 다음 핸드에 AI 자리 교체 (Hot-Swap)
+// - 유저 이탈 시 즉시 AI로 복귀
+// - 포트 3003 (Caddy ?XTransformPort=3003 로 라우팅)
+// ============================================================
+
+import { createServer } from "http";
+import { Server, Socket } from "socket.io";
+import { SelfPlayTrainer } from "../../src/lib/self-play-trainer.ts";
+import { RPG_BOT_POOL, BotPersona } from "../../src/lib/personas.ts";
+import {
+  makeDeck,
+  Card,
+  ActionType,
+  evaluateBestHand,
+  determineWinners,
+  scoreToCategoryName,
+} from "../../src/lib/poker-engine.ts";
+import {
+  classifyHandTier,
+  HandTier,
+  HandTierNames,
+} from "../../src/lib/equity-engine.ts";
+
+const PORT = 3003;
+const NUM_SEATS = 8;
+const SMALL_BLIND = 100;
+const BIG_BLIND = 200;
+const DEFAULT_BUYIN = 20000;
+const USER_TIMEOUT_MS = 15000;
+
+// ============================================================
+// 타입 정의
+// ============================================================
+
+interface ServerSeat {
+  seatId: number;
+  name: string;
+  isBot: boolean;
+  socketId: string | null; // 유저인 경우 소켓 ID
+  stack: number;
+  currentBet: number;
+  totalBet: number;
+  inHand: boolean;
+  folded: boolean;
+  allIn: boolean;
+  holeCards: Card[];
+  hasActed: boolean;
+  persona?: BotPersona;
+}
+
+interface ServerGameState {
+  seats: ServerSeat[];
+  board: Card[];
+  pot: number;
+  phase: string; // "PREFLOP" | "FLOP" | "TURN" | "RIVER" | "SHOWDOWN"
+  handNumber: number;
+  buttonSeat: number;
+  activeSeatId: number;
+  lastActions: Record<number, string>;
+  showdownReveal: boolean;
+  showdownHands: any[];
+  winnerInfo: { name: string; amount: number; hand: string } | null;
+  callAmount: number;
+  minRaise: number;
+  maxRaise: number;
+  raiseLevel: number;
+}
+
+interface ConnectedUser {
+  socketId: string;
+  name: string;
+  seatId: number | null; // null = 관전 중
+  preAction: { type: "fold" | "call" | "check"; amount: number } | null;
+}
+
+// ============================================================
+// 하이브리드 홀덤 룸
+// ============================================================
+
+class HybridHoldemRoom {
+  public state: ServerGameState;
+  public trainer: SelfPlayTrainer;
+  private users: Map<string, ConnectedUser> = new Map();
+  private joinQueue: ConnectedUser[] = [];
+  private leaveSeats: Set<number> = new Set();
+  private pendingActionResolve: ((action: { action: string; amount: number }) => void) | null = null;
+  private isRunning = false;
+
+  constructor() {
+    this.trainer = new SelfPlayTrainer();
+    this.trainer.start();
+    this.state = this.createInitialState();
+    this.startGameLoop();
+  }
+
+  private createInitialState(): ServerGameState {
+    const personas: BotPersona[] = [...RPG_BOT_POOL].sort(() => Math.random() - 0.5).slice(0, NUM_SEATS);
+    const seats: ServerSeat[] = [];
+    for (let i = 0; i < NUM_SEATS; i++) {
+      seats.push({
+        seatId: i,
+        name: personas[i].name,
+        isBot: true,
+        socketId: null,
+        stack: DEFAULT_BUYIN,
+        currentBet: 0,
+        totalBet: 0,
+        inHand: true,
+        folded: false,
+        allIn: false,
+        holeCards: [],
+        hasActed: false,
+        persona: personas[i],
+      });
+    }
+    return {
+      seats,
+      board: [],
+      pot: 0,
+      phase: "PREFLOP",
+      handNumber: 0,
+      buttonSeat: 0,
+      activeSeatId: -1,
+      lastActions: {},
+      showdownReveal: false,
+      showdownHands: [],
+      winnerInfo: null,
+      callAmount: 0,
+      minRaise: BIG_BLIND,
+      maxRaise: 0,
+      raiseLevel: 0,
+    };
+  }
+
+  // ============================================================
+  // 유저 접속/이탈 처리
+  // ============================================================
+
+  onUserConnect(socket: Socket, name: string) {
+    const user: ConnectedUser = {
+      socketId: socket.id,
+      name: name || `Player_${socket.id.slice(0, 4)}`,
+      seatId: null,
+      preAction: null,
+    };
+    this.users.set(socket.id, user);
+    this.joinQueue.push(user);
+
+    // 접속 즉시 현재 테이블 상태 전송
+    socket.emit("TABLE_STATE", this.getMaskedState(socket.id));
+    this.broadcast("SYSTEM_NOTICE", {
+      messages: [`👀 [${user.name}]님이 입장했습니다. 다음 핸드에 AI와 교대하여 착석합니다.`],
+    });
+    console.log(`[User] ${user.name} 접속 (대기열: ${this.joinQueue.length}명)`);
+  }
+
+  onUserDisconnect(socketId: string) {
+    const user = this.users.get(socketId);
+    if (!user) return;
+
+    this.joinQueue = this.joinQueue.filter(u => u.socketId !== socketId);
+
+    if (user.seatId !== null) {
+      this.leaveSeats.add(user.seatId);
+      // 유저가 턴 중에 나갔다면 즉시 폴드 처리
+      if (this.state.activeSeatId === user.seatId && this.pendingActionResolve) {
+        this.pendingActionResolve({ action: "fold", amount: 0 });
+        this.pendingActionResolve = null;
+      }
+      // 사전 액션도 취소
+      user.preAction = null;
+    }
+
+    this.users.delete(socketId);
+    this.broadcast("SYSTEM_NOTICE", {
+      messages: [`👋 [${user.name}]님이 퇴장했습니다. AI가 자리를 대체합니다.`],
+    });
+    console.log(`[User] ${user.name} 퇴장`);
+  }
+
+  // ============================================================
+  // 유저 액션 처리
+  // ============================================================
+
+  onUserAction(socketId: string, action: { action: string; amount: number }) {
+    const user = this.users.get(socketId);
+    if (!user || user.seatId === null) return;
+    if (this.state.activeSeatId !== user.seatId) return; // 내 턴이 아니면 무시
+    if (!this.pendingActionResolve) return;
+
+    console.log(`[Action] ${user.name}: ${action.action} ${action.amount}`);
+    this.pendingActionResolve(action);
+    this.pendingActionResolve = null;
+  }
+
+  // 사전 액션 설정/취소
+  onUserPreAction(socketId: string, preAction: { type: "fold" | "call" | "check"; amount: number } | null) {
+    const user = this.users.get(socketId);
+    if (!user) return;
+    user.preAction = preAction;
+    console.log(`[PreAction] ${user.name}: ${preAction ? preAction.type : "취소"}`);
+  }
+
+  // ============================================================
+  // 핸드 간 AI <-> 유저 Hot-Swap
+  // ============================================================
+
+  private processSeatSwaps() {
+    // 1) 나간 유저 자리를 AI로 복구
+    for (const seatId of this.leaveSeats) {
+      const seat = this.state.seats[seatId];
+      const usedNames = new Set(this.state.seats.filter(s => s.seatId !== seatId).map(s => s.name));
+      const avail = RPG_BOT_POOL.filter(p => !usedNames.has(p.name));
+      const persona = avail.length > 0
+        ? avail[Math.floor(Math.random() * avail.length)]
+        : RPG_BOT_POOL[Math.floor(Math.random() * RPG_BOT_POOL.length)];
+      seat.isBot = true;
+      seat.name = persona.name;
+      seat.socketId = null;
+      seat.persona = persona;
+      if (seat.stack < BIG_BLIND * 2) seat.stack = DEFAULT_BUYIN;
+    }
+    this.leaveSeats.clear();
+
+    // 2) 대기열 유저를 AI 자리에 교체 투입
+    while (this.joinQueue.length > 0) {
+      const botSeats = this.state.seats.filter(s => s.isBot);
+      if (botSeats.length === 0) break;
+
+      const user = this.joinQueue.shift()!;
+      const targetSeat = botSeats[Math.floor(Math.random() * botSeats.length)];
+
+      targetSeat.isBot = false;
+      targetSeat.name = user.name;
+      targetSeat.socketId = user.socketId;
+      targetSeat.persona = undefined;
+      targetSeat.stack = DEFAULT_BUYIN;
+      user.seatId = targetSeat.seatId;
+
+      this.broadcast("SYSTEM_NOTICE", {
+        messages: [`🔄 AI가 자리를 비켜주고 [${user.name}]님이 #${targetSeat.seatId + 1}번 좌석에 착석했습니다!`],
+      });
+      console.log(`[Swap] ${user.name} → 좌석 ${targetSeat.seatId + 1}`);
+    }
+  }
+
+  // ============================================================
+  // 메인 게임 루프 (서버 권위)
+  // ============================================================
+
+  private async startGameLoop() {
+    if (this.isRunning) return;
+    this.isRunning = true;
+    console.log("[GameLoop] 하이브리드 홀덤 게임 루프 시작");
+
+    while (this.isRunning) {
+      try {
+        await this.playOneHand();
+      } catch (e) {
+        console.error("[GameLoop] 핸드 처리 에러:", e);
+        await this.sleep(2000);
+      }
+    }
+  }
+
+  private async playOneHand() {
+    const st = this.state;
+
+    // 핸드 시작 전 Hot-Swap
+    this.processSeatSwaps();
+
+    // 상태 리셋
+    st.handNumber++;
+    st.board = [];
+    st.pot = 0;
+    st.phase = "PREFLOP";
+    st.lastActions = {};
+    st.showdownReveal = false;
+    st.showdownHands = [];
+    st.winnerInfo = null;
+    st.raiseLevel = 0;
+    st.buttonSeat = (st.buttonSeat + 1) % NUM_SEATS;
+
+    // 좌석 리셋 (파산 봇 리필)
+    const usedNames = new Set<string>();
+    st.seats.forEach(s => { if (s.isBot) usedNames.add(s.name); });
+    st.seats = st.seats.map(s => {
+      let persona = s.persona;
+      let name = s.name;
+      if (s.isBot && s.stack < BIG_BLIND * 2) {
+        usedNames.delete(name);
+        const avail = RPG_BOT_POOL.filter(p => !usedNames.has(p.name));
+        const newP = avail.length > 0
+          ? avail[Math.floor(Math.random() * avail.length)]
+          : RPG_BOT_POOL[Math.floor(Math.random() * RPG_BOT_POOL.length)];
+        persona = newP;
+        name = newP.name;
+        usedNames.add(name);
+      }
+      const newStack = s.stack < BIG_BLIND * 2 ? DEFAULT_BUYIN : s.stack;
+      return {
+        ...s,
+        persona,
+        name,
+        stack: newStack,
+        currentBet: 0,
+        totalBet: 0,
+        inHand: newStack >= BIG_BLIND,
+        folded: false,
+        allIn: false,
+        holeCards: [],
+        hasActed: false,
+      };
+    });
+
+    // 덱 생성
+    const deck = makeDeck();
+
+    // 블라인드
+    const sbSeat = (st.buttonSeat + 1) % NUM_SEATS;
+    const bbSeat = (st.buttonSeat + 2) % NUM_SEATS;
+    st.seats[sbSeat].currentBet = Math.min(SMALL_BLIND, st.seats[sbSeat].stack);
+    st.seats[sbSeat].stack -= st.seats[sbSeat].currentBet;
+    st.seats[bbSeat].currentBet = Math.min(BIG_BLIND, st.seats[bbSeat].stack);
+    st.seats[bbSeat].stack -= st.seats[bbSeat].currentBet;
+
+    // 홀카드 딜
+    for (const seat of st.seats) {
+      if (seat.inHand) {
+        seat.holeCards = [deck.pop()!, deck.pop()!];
+      }
+    }
+
+    this.broadcast("TABLE_STATE", this.getMaskedState(null));
+    this.broadcast("SYSTEM_NOTICE", { messages: [`◆ 핸드 #${st.handNumber} 시작`] });
+    await this.sleep(800);
+
+    // 프리플랍 베팅 (UTG부터)
+    await this.runBettingRound(st.buttonSeat, 3, deck);
+
+    // 다음 페이즈들
+    await this.advancePhase(deck);
+  }
+
+  private async runBettingRound(btnSeat: number, startOffset: number, deck: Card[]) {
+    const st = this.state;
+    st.raiseLevel = 0;
+    st.seats = st.seats.map(s => ({ ...s, hasActed: false }));
+    st.lastActions = {};
+    this.broadcast("TABLE_STATE", this.getMaskedState(null));
+    await this.sleep(300);
+
+    let lastActorIdx = -1;
+    let safety = 0;
+    while (safety++ < 100) {
+      const alive = st.seats.filter(s => s.inHand && !s.folded);
+      if (alive.length <= 1) break;
+
+      const notAllIn = alive.filter(s => !s.allIn);
+      if (notAllIn.length === 0) break;
+
+      const maxBet = Math.max(...alive.map(s => s.currentBet));
+      const needsAction = notAllIn.filter(s => !s.hasActed || s.currentBet < maxBet);
+      if (needsAction.length === 0) break;
+
+      // 다음 액터 찾기
+      let actorIdx = -1;
+      const startSearchFrom = lastActorIdx === -1
+        ? (btnSeat + startOffset) % NUM_SEATS
+        : (lastActorIdx + 1) % NUM_SEATS;
+
+      for (let i = 0; i < NUM_SEATS; i++) {
+        const idx = (startSearchFrom + i) % NUM_SEATS;
+        const s = st.seats[idx];
+        if (s && s.inHand && !s.folded && !s.allIn && (!s.hasActed || s.currentBet < maxBet)) {
+          actorIdx = idx;
+          break;
+        }
+      }
+      if (actorIdx === -1) break;
+
+      lastActorIdx = actorIdx;
+      const actor = st.seats[actorIdx];
+      st.activeSeatId = actorIdx;
+      const callAmt = Math.max(0, maxBet - actor.currentBet);
+      st.callAmount = callAmt;
+      const minR = maxBet === 0 ? BIG_BLIND : maxBet + BIG_BLIND;
+      const maxR = actor.stack + actor.currentBet;
+      st.minRaise = minR;
+      st.maxRaise = maxR;
+
+      this.broadcast("TABLE_STATE", this.getMaskedState(null));
+
+      // 사전 액션 체크 (유저인 경우)
+      let decision: { action: ActionType; amount: number; isBluff?: boolean };
+      const isUser = !actor.isBot && actor.socketId;
+      const userObj = isUser ? this.users.get(actor.socketId!) : null;
+
+      // 사전 액션 자동 실행
+      if (isUser && userObj && userObj.preAction) {
+        const pa = userObj.preAction;
+        userObj.preAction = null;
+        let validAction: { action: ActionType; amount: number } | null = null;
+        if (pa.type === "fold" && callAmt > 0) validAction = { action: "fold", amount: 0 };
+        else if (pa.type === "call" && callAmt > 0) validAction = { action: "call", amount: Math.min(callAmt, actor.stack) };
+        else if (pa.type === "check" && callAmt === 0) validAction = { action: "check", amount: 0 };
+
+        if (validAction) {
+          decision = validAction;
+        } else {
+          decision = await this.getDecision(actor, callAmt, minR, maxR, isUser || false);
+        }
+      } else {
+        decision = await this.getDecision(actor, callAmt, minR, maxR, isUser || false);
+      }
+
+      // 레이즈 시 다른 유저의 콜/체크 사전 액션 취소
+      if (decision.action === "raise" || decision.action === "allin") {
+        st.raiseLevel += 1;
+        for (const u of this.users.values()) {
+          if (u.preAction && (u.preAction.type === "call" || u.preAction.type === "check")) {
+            u.preAction = null;
+            this.broadcast("TABLE_STATE", this.getMaskedState(null));
+          }
+        }
+      }
+
+      // 액션 적용
+      this.applyAction(actorIdx, decision);
+      const actionLabel = this.labelAction(decision.action, decision.amount, callAmt);
+      st.lastActions = { ...st.lastActions, [actorIdx]: actionLabel };
+      this.broadcast("PLAYER_ACTION", {
+        seatId: actorIdx,
+        name: actor.name,
+        action: actionLabel,
+        amount: decision.amount,
+      });
+      this.broadcast("TABLE_STATE", this.getMaskedState(null));
+      await this.sleep(800);
+
+      const stillAlive = st.seats.filter(s => s.inHand && !s.folded);
+      if (stillAlive.length <= 1) break;
+    }
+
+    st.activeSeatId = -1;
+    st.lastActions = {};
+
+    // 베팅 팟으로 합산
+    let potAdd = 0;
+    st.seats = st.seats.map(s => {
+      potAdd += s.currentBet;
+      return { ...s, currentBet: 0, hasActed: false };
+    });
+    st.pot += potAdd;
+    this.broadcast("TABLE_STATE", this.getMaskedState(null));
+    await this.sleep(400);
+  }
+
+  private async getDecision(
+    actor: ServerSeat,
+    callAmt: number,
+    minR: number,
+    maxR: number,
+    isUser: boolean
+  ): Promise<{ action: ActionType; amount: number; isBluff?: boolean }> {
+    if (isUser) {
+      // 유저 액션 대기 (15초 타임아웃)
+      const action = await this.waitForUserAction(actor.socketId!);
+      return action;
+    } else {
+      // 봇 결정
+      await this.sleep(600 + Math.random() * 600);
+      const persona = actor.persona || RPG_BOT_POOL[0];
+      const livePot = this.state.pot + this.state.seats.reduce((a, s) => a + s.currentBet, 0);
+      const activeOpp = this.state.seats.filter(s => s.inHand && !s.folded).length - 1;
+      const nnDecision = this.trainer.decideActionForLive(
+        actor.holeCards,
+        this.state.board,
+        callAmt,
+        minR,
+        maxR,
+        livePot,
+        actor.stack,
+        actor.currentBet,
+        activeOpp,
+        actor.seatId,
+        NUM_SEATS,
+        this.state.raiseLevel,
+        this.state.buttonSeat,
+        { vpip: 1 - persona.tightness, aggression: persona.aggression, bluffFreq: persona.bluffFreq }
+      );
+      return this.mapNNAction(nnDecision, callAmt, actor.stack);
+    }
+  }
+
+  private async waitForUserAction(socketId: string): Promise<{ action: ActionType; amount: number }> {
+    return new Promise((resolve) => {
+      const timer = setTimeout(() => {
+        this.pendingActionResolve = null;
+        const callAmt = this.state.callAmount;
+        const autoAction = callAmt === 0
+          ? { action: "check" as ActionType, amount: 0 }
+          : { action: "fold" as ActionType, amount: 0 };
+        this.broadcast("SYSTEM_NOTICE", { messages: ["⏱ 시간 초과! 자동 액션"] });
+        resolve(autoAction);
+      }, USER_TIMEOUT_MS);
+
+      this.pendingActionResolve = (act) => {
+        clearTimeout(timer);
+        const mapped = this.mapUserAction(act);
+        resolve(mapped);
+      };
+    });
+  }
+
+  private mapUserAction(act: { action: string; amount: number }): { action: ActionType; amount: number } {
+    switch (act.action) {
+      case "fold": return { action: "fold", amount: 0 };
+      case "check": return { action: "check", amount: 0 };
+      case "call": return { action: "call", amount: Math.min(act.amount, this.state.seats[this.state.activeSeatId]?.stack ?? 0) };
+      case "raise":
+        if (act.amount >= (this.state.seats[this.state.activeSeatId]?.stack ?? 0)) {
+          return { action: "allin", amount: this.state.seats[this.state.activeSeatId]?.stack ?? 0 };
+        }
+        return { action: "raise", amount: act.amount };
+      case "allin": return { action: "allin", amount: this.state.seats[this.state.activeSeatId]?.stack ?? 0 };
+      default: return { action: "fold", amount: 0 };
+    }
+  }
+
+  private mapNNAction(
+    nn: { action: number; amount: number; isBluff?: boolean },
+    callAmt: number,
+    myStack: number
+  ): { action: ActionType; amount: number; isBluff?: boolean } {
+    switch (nn.action) {
+      case 0: return { action: "fold", amount: 0, isBluff: nn.isBluff };
+      case 1:
+        if (callAmt === 0) return { action: "check", amount: 0 };
+        if (nn.amount >= myStack) return { action: "allin", amount: myStack };
+        return { action: "call", amount: nn.amount };
+      case 2:
+      case 3:
+        if (nn.amount >= myStack + (callAmt > 0 ? callAmt : 0)) {
+          return { action: "allin", amount: myStack, isBluff: nn.isBluff };
+        }
+        return { action: "raise", amount: nn.amount, isBluff: nn.isBluff };
+      case 4: return { action: "allin", amount: myStack, isBluff: nn.isBluff };
+      default: return { action: "fold", amount: 0 };
+    }
+  }
+
+  private applyAction(seatId: number, decision: { action: ActionType; amount: number }) {
+    const s = this.state.seats[seatId];
+    if (!s) return;
+    let { stack, currentBet, totalBet, folded, allIn, inHand, hasActed } = s;
+
+    switch (decision.action) {
+      case "fold":
+        folded = true; inHand = false; break;
+      case "check": break;
+      case "call": {
+        const cost = Math.min(decision.amount, stack);
+        stack -= cost; currentBet += cost; totalBet += cost;
+        if (stack === 0) allIn = true;
+        break;
+      }
+      case "raise": {
+        const target = decision.amount;
+        const cost = Math.min(target - currentBet, stack);
+        stack -= cost; currentBet += cost; totalBet += cost;
+        if (stack === 0) allIn = true;
+        break;
+      }
+      case "allin": {
+        const cost = stack; stack = 0;
+        currentBet += cost; totalBet += cost; allIn = true;
+        break;
+      }
+    }
+    this.state.seats[seatId] = { ...s, stack, currentBet, totalBet, folded, allIn, inHand, hasActed: true };
+  }
+
+  private labelAction(action: ActionType, amount: number, callAmt: number): string {
+    switch (action) {
+      case "fold": return "FOLD";
+      case "check": return "CHECK";
+      case "call": return `CALL ${amount.toLocaleString()}`;
+      case "raise": return `RAISE ${amount.toLocaleString()}`;
+      case "allin": return `ALL-IN ${amount.toLocaleString()}`;
+    }
+  }
+
+  // ============================================================
+  // 페이즈 진행
+  // ============================================================
+
+  private async advancePhase(deck: Card[]) {
+    const st = this.state;
+    const alive = st.seats.filter(s => s.inHand && !s.folded);
+
+    if (alive.length <= 1) {
+      await this.finishHand(false);
+      return;
+    }
+
+    if (st.phase === "PREFLOP") {
+      // 플랍 3장
+      deck.pop(); // burn
+      const flop = [deck.pop()!, deck.pop()!, deck.pop()!];
+      st.board = [...st.board, ...flop];
+      st.phase = "FLOP";
+      this.broadcast("TABLE_STATE", this.getMaskedState(null));
+      await this.runBettingRound(st.buttonSeat, 1, deck);
+      await this.advancePhase(deck);
+    } else if (st.phase === "FLOP") {
+      deck.pop();
+      const turn = deck.pop()!;
+      st.board = [...st.board, turn];
+      st.phase = "TURN";
+      this.broadcast("TABLE_STATE", this.getMaskedState(null));
+      await this.runBettingRound(st.buttonSeat, 1, deck);
+      await this.advancePhase(deck);
+    } else if (st.phase === "TURN") {
+      deck.pop();
+      const river = deck.pop()!;
+      st.board = [...st.board, river];
+      st.phase = "RIVER";
+      this.broadcast("TABLE_STATE", this.getMaskedState(null));
+      await this.runBettingRound(st.buttonSeat, 1, deck);
+      await this.advancePhase(deck);
+    } else if (st.phase === "RIVER") {
+      await this.doShowdown();
+    }
+  }
+
+  private async doShowdown() {
+    const st = this.state;
+    st.showdownReveal = true;
+    st.phase = "SHOWDOWN";
+    this.broadcast("TABLE_STATE", this.getMaskedState(null));
+    await this.sleep(1500);
+
+    const contenders = st.seats.filter(s => s.inHand && !s.folded);
+    const winnerIndices = determineWinners(
+      contenders.map(c => ({ holeCards: c.holeCards })),
+      st.board
+    );
+
+    st.showdownHands = contenders.map((c, i) => {
+      const score = evaluateBestHand(c.holeCards, st.board);
+      return {
+        seatId: c.seatId,
+        name: c.name,
+        handCategory: scoreToCategoryName(score),
+        isWinner: winnerIndices.includes(i),
+        isUser: !c.isBot,
+      };
+    });
+
+    this.broadcast("TABLE_STATE", this.getMaskedState(null));
+    await this.sleep(500);
+
+    await this.finishHand(true);
+  }
+
+  private async finishHand(isShowdown: boolean) {
+    const st = this.state;
+    const currentPot = st.pot;
+    const alive = st.seats.filter(s => s.inHand && !s.folded);
+
+    let winnerIndices: number[];
+    if (alive.length === 1) {
+      winnerIndices = [0];
+    } else {
+      winnerIndices = determineWinners(
+        alive.map(c => ({ holeCards: c.holeCards })),
+        st.board
+      );
+    }
+    const winners = winnerIndices.map(i => alive[i]);
+    const share = Math.floor(currentPot / winners.length);
+    const remainder = currentPot - share * winners.length;
+
+    let handName = "";
+    if (isShowdown && winners[0]) {
+      const score = evaluateBestHand(winners[0].holeCards, st.board);
+      handName = scoreToCategoryName(score);
+    } else if (winners.length === 1 && !isShowdown) {
+      handName = "기본 승 (모두 폴드)";
+    }
+
+    const winnerNames = winners.map(w => w.name).join(", ");
+    st.winnerInfo = { name: winnerNames, amount: currentPot, hand: handName };
+
+    // 스택 분배
+    st.seats = st.seats.map(s => {
+      const idx = winners.findIndex(w => w.seatId === s.seatId);
+      if (idx >= 0) {
+        const bonus = idx === 0 ? remainder : 0;
+        return { ...s, stack: s.stack + share + bonus };
+      }
+      return s;
+    });
+    st.pot = 0;
+
+    this.broadcast("TABLE_STATE", this.getMaskedState(null));
+
+    // 결과 표시 5초 유지
+    await this.sleep(5000);
+    st.winnerInfo = null;
+    st.showdownReveal = false;
+    st.showdownHands = [];
+    this.broadcast("TABLE_STATE", this.getMaskedState(null));
+  }
+
+  // ============================================================
+  // 상태 마스킹 & 브로드캐스트
+  // ============================================================
+
+  private getMaskedState(socketId: string | null) {
+    const st = this.state;
+    const user = socketId ? this.users.get(socketId) : null;
+    const mySeatId = user?.seatId ?? -1;
+    const isShowdown = st.phase === "SHOWDOWN";
+
+    return {
+      type: "TABLE_STATE",
+      handNumber: st.handNumber,
+      phase: st.phase,
+      buttonSeat: st.buttonSeat,
+      activeSeatId: st.activeSeatId,
+      totalPot: st.pot + st.seats.reduce((a, s) => a + s.currentBet, 0),
+      boardCards: st.board.map(c => `${c.rank}${c.suit}`),
+      callAmount: st.callAmount,
+      minRaise: st.minRaise,
+      maxRaise: st.maxRaise,
+      mySeatId,
+      isUserTurn: st.activeSeatId === mySeatId && mySeatId >= 0,
+      showdownHands: st.showdownHands,
+      winnerInfo: st.winnerInfo,
+      seats: st.seats.map(s => {
+        const isMe = s.seatId === mySeatId;
+        const rawHole = s.holeCards.map(c => `${c.rank}${c.suit}`);
+        const reveal = isMe || (isShowdown && !s.folded);
+        return {
+          seatId: s.seatId,
+          name: s.name,
+          isBot: s.isBot,
+          stack: s.stack,
+          currentBet: s.currentBet,
+          inHand: s.inHand,
+          folded: s.folded,
+          allIn: s.allIn,
+          holeCards: reveal ? rawHole : (rawHole.length > 0 ? ["??", "??"] : []),
+        };
+      }),
+      preAction: user?.preAction ?? null,
+    };
+  }
+
+  private broadcast(event: string, data: any) {
+    io.emit(event, data);
+  }
+
+  private sleep(ms: number) {
+    return new Promise<void>(r => setTimeout(r, ms));
+  }
+}
+
+// ============================================================
+// 서버 시작
+// ============================================================
+
+const httpServer = createServer();
+const io = new Server(httpServer, {
+  cors: { origin: "*", methods: ["GET", "POST"] },
+  pingTimeout: 60000,
+  pingInterval: 25000,
+});
+
+const room = new HybridHoldemRoom();
+
+io.on("connection", (socket: Socket) => {
+  console.log(`[Socket] 연결: ${socket.id}`);
+
+  socket.on("JOIN_ROOM", (data: { name: string }) => {
+    room.onUserConnect(socket, data?.name || "용사");
+  });
+
+  socket.on("PLAYER_ACTION", (data: { action: string; amount: number }) => {
+    room.onUserAction(socket.id, data);
+  });
+
+  socket.on("PRE_ACTION", (data: { type: "fold" | "call" | "check"; amount: number } | null) => {
+    room.onUserPreAction(socket.id, data);
+  });
+
+  socket.on("disconnect", () => {
+    room.onUserDisconnect(socket.id);
+  });
+});
+
+httpServer.listen(PORT, () => {
+  console.log(`🎰 8-Player Hybrid Holdem Server running on port ${PORT}`);
+  console.log(`   Caddy 라우팅: ?XTransformPort=${PORT}`);
+});

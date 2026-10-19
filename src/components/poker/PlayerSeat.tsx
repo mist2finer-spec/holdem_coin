@@ -36,8 +36,11 @@ export function PlayerSeat({
 
   const cardsElement = (
     <div className="flex gap-0.5 h-8 sm:h-12 items-center">
-      {/* 쇼다운에서도 폴드한 플레이어는 카드 표시 안 함 */}
-      {seat.holeCards.length > 0 && !seat.folded && (seat.isUser || showCards || seat.allIn) ? (
+      {/* ★ 쇼다운에서만 카드 공개 (올인이어도 쇼다운 전에는 카드 백)
+          - 본인 카드는 항상 보임
+          - 다른 플레이어는 showCards(=쇼다운)일 때만 공개
+          - 폴드한 플레이어는 쇼다운이어도 카드 숨김 */}
+      {seat.holeCards.length > 0 && !seat.folded && (seat.isUser || showCards) ? (
         <>
           <PlayingCard card={seat.holeCards[0]} size="sm" />
           <PlayingCard card={seat.holeCards[1]} size="sm" />
