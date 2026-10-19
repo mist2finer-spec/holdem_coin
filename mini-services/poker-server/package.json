@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "bun --hot index.ts",
-    "start": "bun index.ts"
+    "dev": "./start.sh",
+    "start": "./start.sh",
+    "dev:raw": "bun --hot index.ts",
+    "start:raw": "bun index.ts"
   },
   "dependencies": {
     "socket.io": "^4.7.2"

@@ -327,93 +327,116 @@ class HybridHoldemRoom {
     this.isRunning = true;
     console.log("[GameLoop] 하이브리드 홀덤 게임 루프 시작");
 
+    let handCount = 0;
     while (this.isRunning) {
       try {
+        handCount++;
+        console.log(`[GameLoop] 핸드 ${handCount} 시작 (users: ${this.users.size})`);
         await this.playOneHand();
-      } catch (e) {
-        console.error("[GameLoop] 핸드 처리 에러:", e);
+        console.log(`[GameLoop] 핸드 ${handCount} 완료`);
+      } catch (e: any) {
+        console.error("[GameLoop] 핸드 처리 에러:", e?.message || e);
+        console.error(e?.stack);
         await this.sleep(2000);
       }
     }
+    console.log("[GameLoop] 루프 종료");
   }
 
   private async playOneHand() {
     const st = this.state;
+    console.log("[Hand] playOneHand 시작");
 
-    // 핸드 시작 전 Hot-Swap
-    this.processSeatSwaps();
+    try {
+      // 핸드 시작 전 Hot-Swap
+      this.processSeatSwaps();
+      console.log("[Hand] Hot-Swap 완료");
 
-    // 상태 리셋
-    st.handNumber++;
-    st.board = [];
-    st.pot = 0;
-    st.phase = "PREFLOP";
-    st.lastActions = {};
-    st.showdownReveal = false;
-    st.showdownHands = [];
-    st.winnerInfo = null;
-    st.raiseLevel = 0;
-    st.buttonSeat = (st.buttonSeat + 1) % NUM_SEATS;
+      // 상태 리셋
+      st.handNumber++;
+      st.board = [];
+      st.pot = 0;
+      st.phase = "PREFLOP";
+      st.lastActions = {};
+      st.showdownReveal = false;
+      st.showdownHands = [];
+      st.winnerInfo = null;
+      st.raiseLevel = 0;
+      st.lastRaiseSize = BIG_BLIND;
+      st.buttonSeat = (st.buttonSeat + 1) % NUM_SEATS;
+      console.log(`[Hand] 상태 리셋 완료 (hand #${st.handNumber})`);
 
-    // 좌석 리셋 (파산 봇 리필)
-    const usedNames = new Set<string>();
-    st.seats.forEach(s => { if (s.isBot) usedNames.add(s.name); });
-    st.seats = st.seats.map(s => {
-      let persona = s.persona;
-      let name = s.name;
-      if (s.isBot && s.stack < BIG_BLIND * 2) {
-        usedNames.delete(name);
-        const avail = RPG_BOT_POOL.filter(p => !usedNames.has(p.name));
-        const newP = avail.length > 0
-          ? avail[Math.floor(Math.random() * avail.length)]
-          : RPG_BOT_POOL[Math.floor(Math.random() * RPG_BOT_POOL.length)];
-        persona = newP;
-        name = newP.name;
-        usedNames.add(name);
+      // 좌석 리셋 (파산 봇 리필)
+      const usedNames = new Set<string>();
+      st.seats.forEach(s => { if (s.isBot) usedNames.add(s.name); });
+      st.seats = st.seats.map(s => {
+        let persona = s.persona;
+        let name = s.name;
+        if (s.isBot && s.stack < BIG_BLIND * 2) {
+          usedNames.delete(name);
+          const avail = RPG_BOT_POOL.filter(p => !usedNames.has(p.name));
+          const newP = avail.length > 0
+            ? avail[Math.floor(Math.random() * avail.length)]
+            : RPG_BOT_POOL[Math.floor(Math.random() * RPG_BOT_POOL.length)];
+          persona = newP;
+          name = newP.name;
+          usedNames.add(name);
+        }
+        const newStack = s.stack < BIG_BLIND * 2 ? DEFAULT_BUYIN : s.stack;
+        return {
+          ...s,
+          persona,
+          name,
+          stack: newStack,
+          currentBet: 0,
+          totalBet: 0,
+          inHand: newStack >= BIG_BLIND,
+          folded: false,
+          allIn: false,
+          holeCards: [],
+          hasActed: false,
+        };
+      });
+      console.log("[Hand] 좌석 리셋 완료");
+
+      // 덱 생성
+      const deck = makeDeck();
+      console.log("[Hand] 덱 생성 완료");
+
+      // 블라인드
+      const sbSeat = (st.buttonSeat + 1) % NUM_SEATS;
+      const bbSeat = (st.buttonSeat + 2) % NUM_SEATS;
+      st.seats[sbSeat].currentBet = Math.min(SMALL_BLIND, st.seats[sbSeat].stack);
+      st.seats[sbSeat].stack -= st.seats[sbSeat].currentBet;
+      st.seats[bbSeat].currentBet = Math.min(BIG_BLIND, st.seats[bbSeat].stack);
+      st.seats[bbSeat].stack -= st.seats[bbSeat].currentBet;
+      console.log("[Hand] 블라인드 완료");
+
+      // 홀카드 딜
+      for (const seat of st.seats) {
+        if (seat.inHand) {
+          seat.holeCards = [deck.pop()!, deck.pop()!];
+        }
       }
-      const newStack = s.stack < BIG_BLIND * 2 ? DEFAULT_BUYIN : s.stack;
-      return {
-        ...s,
-        persona,
-        name,
-        stack: newStack,
-        currentBet: 0,
-        totalBet: 0,
-        inHand: newStack >= BIG_BLIND,
-        folded: false,
-        allIn: false,
-        holeCards: [],
-        hasActed: false,
-      };
-    });
+      console.log("[Hand] 홀카드 딜 완료");
 
-    // 덱 생성
-    const deck = makeDeck();
+      this.broadcastTableState();
+      this.broadcast("SYSTEM_NOTICE", { messages: [`◆ 핸드 #${st.handNumber} 시작`] });
+      await this.sleep(800);
+      console.log("[Hand] 베팅 라운드 시작");
 
-    // 블라인드
-    const sbSeat = (st.buttonSeat + 1) % NUM_SEATS;
-    const bbSeat = (st.buttonSeat + 2) % NUM_SEATS;
-    st.seats[sbSeat].currentBet = Math.min(SMALL_BLIND, st.seats[sbSeat].stack);
-    st.seats[sbSeat].stack -= st.seats[sbSeat].currentBet;
-    st.seats[bbSeat].currentBet = Math.min(BIG_BLIND, st.seats[bbSeat].stack);
-    st.seats[bbSeat].stack -= st.seats[bbSeat].currentBet;
+      // 프리플랍 베팅 (UTG부터)
+      await this.runBettingRound(st.buttonSeat, 3, deck);
+      console.log("[Hand] 프리플랍 베팅 완료");
 
-    // 홀카드 딜
-    for (const seat of st.seats) {
-      if (seat.inHand) {
-        seat.holeCards = [deck.pop()!, deck.pop()!];
-      }
+      // 다음 페이즈들
+      await this.advancePhase(deck);
+      console.log("[Hand] 핸드 완료");
+    } catch (e: any) {
+      console.error("[Hand] 에러:", e?.message || e);
+      console.error(e?.stack);
+      throw e;
     }
-
-    this.broadcastTableState();
-    this.broadcast("SYSTEM_NOTICE", { messages: [`◆ 핸드 #${st.handNumber} 시작`] });
-    await this.sleep(800);
-
-    // 프리플랍 베팅 (UTG부터)
-    await this.runBettingRound(st.buttonSeat, 3, deck);
-
-    // 다음 페이즈들
-    await this.advancePhase(deck);
   }
 
   private async runBettingRound(btnSeat: number, startOffset: number, deck: Card[]) {
@@ -429,14 +452,14 @@ class HybridHoldemRoom {
     let safety = 0;
     while (safety++ < 100) {
       const alive = st.seats.filter(s => s.inHand && !s.folded);
-      if (alive.length <= 1) break;
+      if (alive.length <= 1) { console.log(`[Bet] safety=${safety} alive<=1, break`); break; }
 
       const notAllIn = alive.filter(s => !s.allIn);
-      if (notAllIn.length === 0) break;
+      if (notAllIn.length === 0) { console.log(`[Bet] safety=${safety} all allin, break`); break; }
 
       const maxBet = Math.max(...alive.map(s => s.currentBet));
       const needsAction = notAllIn.filter(s => !s.hasActed || s.currentBet < maxBet);
-      if (needsAction.length === 0) break;
+      if (needsAction.length === 0) { console.log(`[Bet] safety=${safety} no needsAction, break`); break; }
 
       // 다음 액터 찾기
       let actorIdx = -1;
@@ -452,7 +475,7 @@ class HybridHoldemRoom {
           break;
         }
       }
-      if (actorIdx === -1) break;
+      if (actorIdx === -1) { console.log(`[Bet] safety=${safety} no actor, break`); break; }
 
       lastActorIdx = actorIdx;
       const actor = st.seats[actorIdx];
@@ -466,6 +489,7 @@ class HybridHoldemRoom {
       const maxR = actor.stack + actor.currentBet;
       st.minRaise = minR;
       st.maxRaise = maxR;
+      console.log(`[Bet] safety=${safety} actor=${actor.name}(${actorIdx}) call=${callAmt} minR=${minR} maxR=${maxR}`);
 
       this.broadcastTableState();
 
@@ -513,7 +537,9 @@ class HybridHoldemRoom {
       }
 
       // 액션 적용
+      console.log(`[Bet] applyAction 전: ${actor.name} ${decision.action} ${decision.amount}`);
       this.applyAction(actorIdx, decision);
+      console.log(`[Bet] applyAction 후: ${actor.name}`);
       const actionLabel = this.labelAction(decision.action, decision.amount, callAmt);
       st.lastActions = { ...st.lastActions, [actorIdx]: actionLabel };
       this.broadcast("PLAYER_ACTION", {
@@ -552,34 +578,46 @@ class HybridHoldemRoom {
   ): Promise<{ action: ActionType; amount: number; isBluff?: boolean }> {
     if (isUser) {
       // 유저 액션 대기 (15초 타임아웃)
+      console.log(`[Decision] 유저 대기: ${actor.name}`);
       const action = await this.waitForUserAction(actor.socketId!);
+      console.log(`[Decision] 유저 액션: ${actor.name} → ${action.action} ${action.amount}`);
       return action;
     } else {
       // 봇 결정
+      console.log(`[Decision] 봇 결정 시작: ${actor.name}`);
       await this.sleep(600 + Math.random() * 600);
-      const basePersona = actor.persona || RPG_BOT_POOL[0];
-      // ★ AI 전략 로테이션: 5핸드마다 AGGRESSIVE/TIGHT/LOOSE 순환
-      const currentStrategy = getStrategyForHand(this.state.handNumber);
-      const persona = applyStrategyToPersona(basePersona, currentStrategy);
-      const livePot = this.state.pot + this.state.seats.reduce((a, s) => a + s.currentBet, 0);
-      const activeOpp = this.state.seats.filter(s => s.inHand && !s.folded).length - 1;
-      const nnDecision = this.trainer.decideActionForLive(
-        actor.holeCards,
-        this.state.board,
-        callAmt,
-        minR,
-        maxR,
-        livePot,
-        actor.stack,
-        actor.currentBet,
-        activeOpp,
-        actor.seatId,
-        NUM_SEATS,
-        this.state.raiseLevel,
-        this.state.buttonSeat,
-        { vpip: 1 - persona.tightness, aggression: persona.aggression, bluffFreq: persona.bluffFreq }
-      );
-      return this.mapNNAction(nnDecision, callAmt, actor.stack);
+      try {
+        const basePersona = actor.persona || RPG_BOT_POOL[0];
+        // ★ AI 전략 로테이션: 5핸드마다 AGGRESSIVE/TIGHT/LOOSE 순환
+        const currentStrategy = getStrategyForHand(this.state.handNumber);
+        const persona = applyStrategyToPersona(basePersona, currentStrategy);
+        const livePot = this.state.pot + this.state.seats.reduce((a, s) => a + s.currentBet, 0);
+        const activeOpp = this.state.seats.filter(s => s.inHand && !s.folded).length - 1;
+        console.log(`[Decision] trainer.decideActionForLive 호출 전`);
+        const nnDecision = this.trainer.decideActionForLive(
+          actor.holeCards,
+          this.state.board,
+          callAmt,
+          minR,
+          maxR,
+          livePot,
+          actor.stack,
+          actor.currentBet,
+          activeOpp,
+          actor.seatId,
+          NUM_SEATS,
+          this.state.raiseLevel,
+          this.state.buttonSeat,
+          { vpip: persona.vpip, aggression: persona.aggression, bluffFreq: persona.bluffFreq }
+        );
+        console.log(`[Decision] 봇 결정 완료: ${actor.name} → action=${nnDecision.action} amount=${nnDecision.amount}`);
+        return this.mapNNAction(nnDecision, callAmt, actor.stack);
+      } catch (e: any) {
+        console.error(`[Decision] 봇 결정 에러: ${actor.name}:`, e?.message || e);
+        console.error(e?.stack);
+        // 폴백: 폴드
+        return { action: "fold", amount: 0 };
+      }
     }
   }
 

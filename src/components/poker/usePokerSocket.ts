@@ -89,32 +89,34 @@ export function usePokerSocket({ userName, onToast }: UsePokerSocketOpts) {
 
   // 소켓 연결
   useEffect(() => {
-    // ★ 개발 환경에서는 직접 포트 3003으로 연결
-    // 프로덕션에서는 Caddy를 통해 ?XTransformPort=3003으로 라우팅
-    const isDev = typeof window !== "undefined" && window.location.port === "3000";
-    const socketUrl = isDev ? "http://localhost:3003" : "/";
-    // ★ websocket 우선, polling 폴백
-    const socketOpts = isDev
-      ? {
-          transports: ["websocket", "polling"],
-          reconnection: true,
-          reconnectionDelay: 1000,
-          reconnectionAttempts: 10,
-        }
-      : {
-          transports: ["websocket", "polling"],
-          reconnection: true,
-          reconnectionDelay: 1000,
-          reconnectionAttempts: 10,
-          query: { XTransformPort: "3003" },
-        };
+    // ★ 로컬 개발 환경 감지 (localhost:3000 또는 127.0.0.1:3000)
+    const isLocal =
+      typeof window !== "undefined" &&
+      ["localhost", "127.0.0.1"].includes(window.location.hostname) &&
+      window.location.port === "3000";
+
+    // ★ 로컬: 직접 포트 3003, 프리뷰/프로덕션: window.location.origin + Caddy 라우팅
+    const socketUrl = isLocal ? "http://localhost:3003" : window.location.origin;
+
+    const socketOpts: any = {
+      path: "/socket.io/",
+      // ★ polling만 사용 (websocket 안정성 문제로 인해)
+      // 안정화 후 websocket 추가 예정
+      transports: ["polling"],
+      timeout: 10000,
+      reconnection: true,
+      reconnectionDelay: 1000,
+      reconnectionAttempts: 10,
+      // ★ 프리뷰/프로덕션에서는 Caddy를 통해 XTransformPort=3003으로 라우팅
+      ...(isLocal ? {} : { query: { XTransformPort: "3003" } }),
+    };
 
     const socket = io(socketUrl, socketOpts);
     socketRef.current = socket;
 
     socket.on("connect", () => {
       setConnected(true);
-      console.log("[Socket] 연결됨:", socket.id);
+      console.log("[Socket] 연결됨:", socket.id, "(transport:", socket.io.engine.transport.name, ")");
       // 입장
       socket.emit("JOIN_ROOM", { name: userName });
     });
