@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { PokerTable } from "@/components/poker/PokerTable";
 import { PokerTableSocket } from "@/components/poker/PokerTableSocket";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,8 +8,11 @@ import { RPG_BOT_POOL } from "@/lib/personas";
 import { PixelAvatar } from "@/components/poker/PixelAvatar";
 import { toast } from "sonner";
 
+type GameMode = "single" | "server";
+
 export default function Home() {
   const [entered, setEntered] = useState(false);
+  const [mode, setMode] = useState<GameMode>("single");
   const [userName, setUserName] = useState("용사");
 
   const handleToast = (msg: string, tone?: "info" | "win" | "lose") => {
@@ -28,16 +32,20 @@ export default function Home() {
   };
 
   if (entered) {
-    return <PokerTableSocket userName={userName} onToast={handleToast} />;
+    if (mode === "server") {
+      return <PokerTableSocket userName={userName} onToast={handleToast} />;
+    }
+    return <PokerTable userName={userName} onToast={handleToast} />;
   }
 
   return <LobbyScreen
     userName={userName}
     setUserName={setUserName}
-    onEnter={() => {
+    onEnter={(m: GameMode) => {
       if (!userName.trim()) {
         setUserName("용사");
       }
+      setMode(m);
       setEntered(true);
     }}
   />;
@@ -50,7 +58,7 @@ function LobbyScreen({
 }: {
   userName: string;
   setUserName: (v: string) => void;
-  onEnter: () => void;
+  onEnter: (mode: GameMode) => void;
 }) {
   return (
     <div className="min-h-screen w-full bg-gradient-to-b from-slate-950 via-emerald-950 to-slate-950 relative overflow-hidden">
@@ -135,11 +143,35 @@ function LobbyScreen({
           <Input
             value={userName}
             onChange={(e) => setUserName(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && onEnter()}
             placeholder="용사"
             maxLength={12}
             className="bg-slate-900 border-amber-700 text-amber-100 text-center font-bold text-lg mb-4"
           />
+
+          {/* 모드 선택 */}
+          <div className="grid grid-cols-2 gap-2 mb-4">
+            {/* 싱글 모드 (기본) */}
+            <button
+              onClick={() => onEnter("single")}
+              className="group relative bg-gradient-to-b from-emerald-700 to-emerald-900 hover:from-emerald-600 hover:to-emerald-800 text-emerald-50 font-bold text-sm py-4 px-3 rounded-lg border-2 border-emerald-400 shadow-lg transition-all"
+            >
+              <div className="text-2xl mb-1">🎮</div>
+              <div className="font-black text-base">싱글 플레이</div>
+              <div className="text-[10px] text-emerald-200/80 mt-1">AI 7명과 대전</div>
+              <div className="text-[9px] text-emerald-300/60 mt-0.5">즉시 시작 · 로컬 실행</div>
+            </button>
+
+            {/* 서버 모드 */}
+            <button
+              onClick={() => onEnter("server")}
+              className="group relative bg-gradient-to-b from-blue-700 to-indigo-900 hover:from-blue-600 hover:to-indigo-800 text-blue-50 font-bold text-sm py-4 px-3 rounded-lg border-2 border-blue-400 shadow-lg transition-all"
+            >
+              <div className="text-2xl mb-1">🌐</div>
+              <div className="font-black text-base">서버 접속</div>
+              <div className="text-[10px] text-blue-200/80 mt-1">실시간 멀티플레이</div>
+              <div className="text-[9px] text-blue-300/60 mt-0.5">최대 8인 · 룸 입장</div>
+            </button>
+          </div>
 
           <div className="grid grid-cols-2 gap-2 mb-4 text-[11px]">
             <div className="bg-slate-900/70 rounded p-2 border border-amber-800/40">
@@ -154,26 +186,22 @@ function LobbyScreen({
               <div className="text-amber-400 font-bold mb-1">◆ 봇 AI</div>
               <div className="text-slate-300">
                 9종 RPG 페르소나<br/>
-                VPIP / 어그로 / 블러프<br/>
-                팟 오즈 기반 의사결정
+                5핸드마다 전략 로테이션<br/>
+                GTO Warm-Start
               </div>
             </div>
           </div>
 
-          <Button
-            onClick={onEnter}
-            className="w-full bg-gradient-to-b from-amber-500 to-amber-700 hover:from-amber-400 hover:to-amber-600 text-amber-950 font-black text-lg py-5 border-2 border-amber-300 shadow-lg"
-          >
-            🎲 테이블 착석하기
-          </Button>
-          <div className="text-amber-200/40 text-[10px] text-center mt-2">
-            착석하면 AI가 자리를 비켜줍니다
+          <div className="text-center">
+            <div className="text-amber-200/40 text-[10px]">
+              위 버튼을 선택하면 바로 입장합니다
+            </div>
           </div>
         </div>
 
         {/* 하단 안내 */}
         <div className="text-center mt-6 text-amber-200/60 text-[10px]">
-          프로토타입 비주얼 데모 · Python WebSocket 서버 코드 기반 시뮬레이션
+          프로토타입 비주얼 데모 · 싱글(로컬) / 서버(멀티플레이) 모드 지원
         </div>
       </div>
     </div>
