@@ -177,7 +177,10 @@ export function PokerTableSocket({ userName, onToast }: Props) {
                 </div>
                 <div className="text-amber-950 text-base sm:text-lg font-bold text-center">{winnerInfo.name}</div>
                 <div className="text-amber-900 text-[10px] sm:text-xs font-bold text-center tabular-nums">
-                  +{winnerInfo.amount.toLocaleString()} 칩
+                  {winnerInfo.results.filter(r=>r.award>0).map(r=>(
+                    <div key={r.seatId}>{r.name}: 순수익 {r.netProfit>=0?"+":""}{r.netProfit.toLocaleString()} 칩</div>
+                  ))}
+                  <div className="text-[9px]">레이크 {winnerInfo.rake.toLocaleString()} 칩 (5%)</div>
                   {winnerInfo.hand && <span className="ml-1 sm:ml-2">[{winnerInfo.hand}]</span>}
                 </div>
               </div>

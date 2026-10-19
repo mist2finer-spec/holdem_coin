@@ -1,3 +1,4 @@
+import { contributionLayers } from "../src/lib/poker-rules.ts";
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { HybridHoldemRoom } from '../mini-services/poker-server/index.ts';
@@ -79,7 +80,7 @@ test('invalid user action does not resolve or cancel their pending turn', () => 
 test('folded contributions are split across all main and side-pot layers', () => {
   const room=roomWith([5000,20000,20000,20000]);
   room.state.seats[3].folded=true;room.state.seats[3].inHand=false;
-  const pots=room.calculateSidePots(room.state.seats.filter((s:any)=>s.inHand));
+  const pots=contributionLayers(room.state.seats);
   assert.deepEqual(pots.map((p:any)=>p.amount),[20000,45000]);
   assert.deepEqual(pots[1].eligibleSeatIds,[1,2]);
 });
@@ -87,8 +88,8 @@ test('folded contributions are split across all main and side-pot layers', () =>
 test('multiple all-in levels conserve chips including a folded intermediate bet', () => {
   const room=roomWith([5000,10000,15000,12000]);
   room.state.seats[3].folded=true;room.state.seats[3].inHand=false;
-  const pots=room.calculateSidePots(room.state.seats.filter((s:any)=>s.inHand));
-  assert.deepEqual(pots.map((p:any)=>p.amount),[20000,15000,7000]);
+  const pots=contributionLayers(room.state.seats);
+  assert.deepEqual(pots.map((p:any)=>p.amount),[20000,15000,4000,3000]);
   assert.equal(pots.reduce((s:number,p:any)=>s+p.amount,0),42000);
 });
 
@@ -102,10 +103,10 @@ test('actual finishHand distributes each pot correctly and clears commitments', 
   room.state.seats[3].folded=true;room.state.seats[3].inHand=false;
   room.state.board=['2','3','4','8','9'].map((rank,i)=>({rank,suit:i%2?'♣':'♦'}));
   await room.finishHand(true);
-  assert.equal(room.state.seats[0].stack,35000);
-  assert.equal(room.state.seats[1].stack,45000);
+  assert.equal(room.state.seats[0].stack,34000);
+  assert.equal(room.state.seats[1].stack,42750);
   assert.equal(room.state.seats[2].stack,0);
-  assert.equal(room.state.seats.reduce((n:number,s:any)=>n+s.stack,0),160000);
+  assert.equal(room.state.seats.reduce((n:number,s:any)=>n+s.stack,0),156750);
   assert.ok(room.state.seats.every((s:any)=>s.totalBet===0 && s.currentBet===0));
 });
 

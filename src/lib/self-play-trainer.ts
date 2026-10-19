@@ -1,3 +1,5 @@
+import { settleHand, bettingLocked, dealNextStreet, hasBettingOpponent } from "./poker-rules";
+import { estimateEquity, afterRakeOdds, calledActionEV, DecisionContext } from "./poker-ai";
 // ============================================================
 // 자가대국(Self-Play) 학습 트레이너
 // - 백그라운드에서 8인 테이블 시뮬레이션 반복
@@ -71,8 +73,8 @@ export class SelfPlayTrainer {
 
   // localStorage 저장용
   // ★ 버전업: AIR 버그 수정 이전의 오염된 가중치 강제 초기화
-  private static STORAGE_KEY = "rpg_poker_policy_v3";
-  private static STATS_KEY = "rpg_poker_stats_v3";
+  private static STORAGE_KEY = "rpg_poker_policy_v4_rake05";
+  private static STATS_KEY = "rpg_poker_stats_v4_rake05";
 
   constructor() {
     // 저장된 가중치 로드 시도
@@ -242,8 +244,10 @@ export class SelfPlayTrainer {
     const bbSeat = (btnSeat + 2) % NUM_SEATS;
     players[sbSeat].currentBet = Math.min(SB, players[sbSeat].stack);
     players[sbSeat].stack -= players[sbSeat].currentBet;
+    players[sbSeat].totalBet=players[sbSeat].currentBet;
     players[bbSeat].currentBet = Math.min(BB, players[bbSeat].stack);
     players[bbSeat].stack -= players[bbSeat].currentBet;
+    players[bbSeat].totalBet=players[bbSeat].currentBet;
 
     // 홀카드
     for (const p of players) {
@@ -253,7 +257,7 @@ export class SelfPlayTrainer {
     }
 
     const trajectories: TrajectoryStep[][] = Array.from({ length: NUM_SEATS }, () => []);
-    let pot = SB + BB;
+    let pot = 0; // blinds are still in currentBet until collected
     let totalFoldCount = 0;
     let totalAllInCount = 0;
     let totalActions = 0;
@@ -268,9 +272,9 @@ export class SelfPlayTrainer {
 
     let phaseIdx = 0;
     for (const phase of phases) {
-      while (board.length < phase.boardCount) {
-        deck.pop(); // burn
-        board.push(deck.pop()!);
+      if (board.length < phase.boardCount) {
+        const next=dealNextStreet(board,deck);
+        board.splice(0,board.length,...next.board);
       }
 
       const result = this._runBettingRound(
@@ -291,25 +295,8 @@ export class SelfPlayTrainer {
 
     if (conclusionPhase === 0) conclusionPhase = 4; // 쇼다운까지 감
 
-    // 승자 결정 - 정확한 7카드 평가기 사용
-    const alive = players.filter(p => p.inHand && !p.folded);
-    let winnerIdx = -1;
-    if (alive.length === 1) {
-      winnerIdx = alive[0].seatIndex;
-    } else {
-      // 쇼다운: 정확한 핸드 평가로 승자 결정
-      const winnerIndices = determineWinners(
-        alive.map(p => ({ holeCards: p.holeCards })),
-        board
-      );
-      if (winnerIndices.length > 0) {
-        winnerIdx = alive[winnerIndices[0]].seatIndex;
-      }
-    }
-
-    if (winnerIdx >= 0) {
-      players[winnerIdx].stack += pot;
-    }
+    const settlement=settleHand(players.map(p=>({...p,seatId:p.seatIndex,name:`CPU${p.seatIndex}`})),board,btnSeat);
+    for(const result of settlement.results)players[result.seatId].stack+=result.payout;
 
     // 정책신경망 가중치 업데이트 (REINFORCE + EV-shaping)
     let batchLoss = 0;
@@ -366,7 +353,7 @@ export class SelfPlayTrainer {
     let lastActorIdx = -1;
     while (safety++ < MAX_BETTING_ACTIONS) {
       const alive = players.filter(p => p.inHand && !p.folded);
-      if (alive.length <= 1) break;
+      if (alive.length <= 1 || bettingLocked(players.map(p=>({...p,seatId:p.seatIndex})))) break;
 
       const notAllIn = alive.filter(p => !p.allIn);
       if (notAllIn.length === 0) break;
@@ -396,7 +383,9 @@ export class SelfPlayTrainer {
       const callAmt = Math.max(0, maxBet - actor.currentBet);
       const activeOpp = alive.length - 1;
       const minRaise = maxBet === 0 ? BB : maxBet + BB;
-      const maxRaise = actor.stack + actor.currentBet;
+      const publicSeats=players.map(p=>({...p,seatId:p.seatIndex}));
+      const maxRaise = hasBettingOpponent(publicSeats,actorIdx) ? actor.stack + actor.currentBet : maxBet;
+      const livePot=pot+players.reduce((sum,p)=>sum+p.currentBet,0);
 
       // 에퀴티 계산
       const eq = board.length === 0
@@ -404,7 +393,7 @@ export class SelfPlayTrainer {
         : evalPostflopRealEquity(actor.holeCards, board);
 
       const stateVec = extractStateVector(
-        eq, callAmt, pot, actor.stack, activeOpp,
+        eq, callAmt, livePot, actor.stack, activeOpp,
         board.length, actorIdx, NUM_SEATS, raiseLevel
       );
 
@@ -425,7 +414,7 @@ export class SelfPlayTrainer {
 
       // EV veto (하이브리드 모드): 학습 초기에는 명백한 -EV 콜 금지
       const multiwayEq = multiwayEquity(eq, activeOpp);
-      const potOdds = callAmt > 0 ? callAmt / (pot + callAmt) : 0;
+      const potOdds = afterRakeOdds(livePot,Math.min(callAmt,actor.stack));
       const stackCommitment = callAmt / (actor.stack + callAmt);
       let evPenalty = 0;
       if (callAmt > 0 && multiwayEq < potOdds) {
@@ -460,6 +449,7 @@ export class SelfPlayTrainer {
         baseline: this.baselineEMA,
       });
 
+      const beforeStack=actor.stack;
       // 액션 적용
       if (action === 0) {
         actor.folded = true;
@@ -476,7 +466,7 @@ export class SelfPlayTrainer {
         }
       } else if (action === 2) {
         // half-pot raise
-        const target = Math.max(minRaise, maxBet + Math.floor(pot * 0.5));
+        const target = Math.max(minRaise, maxBet + Math.floor(livePot * 0.5));
         const finalTarget = Math.min(target, maxRaise);
         const cost = finalTarget - actor.currentBet;
         actor.stack -= cost;
@@ -488,7 +478,7 @@ export class SelfPlayTrainer {
         }
       } else {
         // pot raise
-        const target = Math.max(minRaise, maxBet + pot);
+        const target = Math.max(minRaise, maxBet + livePot);
         const finalTarget = Math.min(target, maxRaise);
         const cost = finalTarget - actor.currentBet;
         actor.stack -= cost;
@@ -499,6 +489,7 @@ export class SelfPlayTrainer {
           allInCount++;
         }
       }
+      actor.totalBet+=beforeStack-actor.stack;
       actor.hasActed = true;
       // 레이즈 시 다른 생존 플레이어 모두 다시 행동해야 함 (올바른 포커 룰)
       if (action === 2 || action === 3) {
@@ -547,12 +538,13 @@ export class SelfPlayTrainer {
     numSeats: number,
     raiseLevel: number,
     buttonSeat: number,
-    persona: { vpip: number; aggression: number; bluffFreq: number }
+    persona: { vpip: number; aggression: number; bluffFreq: number },
+    context?: DecisionContext
   ): { action: number; amount: number; isBluff?: boolean; tier?: number } {
     // 1) 새로운 정밀 핸드 티어 분류 (AIR 버그 수정 적용)
-    const { tier, rawEquity } = classifyHandTier(hole, board);
-    const multiEq = multiwayEquity(rawEquity, activeOpponents);
-    const potOdds = callAmount > 0 ? callAmount / (pot + callAmount) : 0;
+    const { tier } = classifyHandTier(hole, board);
+    const multiEq = estimateEquity(hole,board,activeOpponents);
+    const potOdds = afterRakeOdds(pot,Math.min(callAmount,myStack));
 
     // 2) 베팅 압박 수위 (0~3)
     let pressure: number;
@@ -572,11 +564,39 @@ export class SelfPlayTrainer {
     const anchor = this._getWarmStartAnchor(pressure, tier, persona);
     const logits = [...anchor];
 
+    // ★ 트랩 플레이: 강한 핸드(TOP_PAIR 이상)를 가진 타이트 캐릭터가
+    // 10% 확률로 레이즈 대신 체크/콜로 트랩 (체크-레이즈 유도)
+    // 주로 tightness가 높은 캐릭터에게 발동
+    const tightness = 1 - persona.vpip; // vpip가 낮을수록 타이트
+    const isStrongHand = tier >= HandTier.TOP_PAIR;
+    const canTrap = isStrongHand && tightness > 0.5 && Math.random() < 0.10;
+    if (canTrap) {
+      // 레이즈 액션(2,3,4)의 가중치를 낮추고 콜/체크(1)로 유도
+      logits[2] -= 3.0;
+      logits[3] -= 3.0;
+      logits[4] -= 4.0;
+      logits[1] += 2.0; // 콜/체크 부스트
+    }
+
     // 4) 팟 오즈 실시간 대조: 승률이 팟 오즈보다 낮으면 Fold 가중치 대폭 상승
     if (callAmount > 0 && multiEq < potOdds) {
       const gap = (potOdds - multiEq) * 6.5;
       logits[0] += gap;     // FOLD 상승
       logits[1] -= gap;     // CALL 하락
+    }
+
+    // Evaluate called downside after rake before sampling larger bets/all-ins.
+    // The anchor still supplies mixed bluffing; this is not a solver.
+    if(context) {
+      const targets=[0,Math.min(callAmount,myStack),
+        Math.min(maxRaise,Math.max(minRaise,Math.floor(callAmount>0?(myCurrentBet+callAmount)*2.2:minRaise+pot*0.6))),
+        Math.min(maxRaise,Math.max(minRaise,Math.floor(minRaise+pot))),maxRaise];
+      for(let i=1;i<5;i++) {
+        const cost=i===1?targets[i]:Math.max(0,targets[i]-myCurrentBet);
+        const ev=calledActionEV(hole,board,context,Math.min(cost,myStack));
+        logits[i]+=Math.max(-3,Math.min(1,ev/Math.max(pot,cost,1)*3));
+        if(i===4 && cost>pot && ev<0)logits[i]-=3;
+      }
     }
 
     // 5) 하드 룰 마스킹 (콜 고착화 원천 차단!)

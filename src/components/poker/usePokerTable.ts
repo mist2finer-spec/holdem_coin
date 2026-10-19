@@ -1,4 +1,6 @@
 "use client";
+/* eslint-disable react-hooks/immutability -- The imperative game loop and trainer expose mutable objects; callbacks run after render. */
+import { settleHand, bettingLocked, hasBettingOpponent, dealNextStreet, WinnerInfo } from "@/lib/poker-rules";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   makeDeck,
@@ -7,7 +9,6 @@ import {
   Phase,
   ActionType,
   evaluateBestHand,
-  determineWinners,
   scoreToCategoryName,
 } from "@/lib/poker-engine";
 import { RPG_BOT_POOL, BotPersona, getStrategyForHand, applyStrategyToPersona, STRATEGY_PROFILES, StrategyType, getExitMessage } from "@/lib/personas";
@@ -44,7 +45,7 @@ interface GameState {
   lastActions: Record<number, string>;
   showdownReveal: boolean;
   showdownHands: ShowdownHandInfo[];
-  winnerInfo: { seatId: number; name: string; amount: number; hand: string } | null;
+  winnerInfo: WinnerInfo | null;
   isDealing: boolean;
   awaitingUser: boolean;
   playerBusted: boolean; // ★ 플레이어 파산 시 퇴장 모달
@@ -63,12 +64,7 @@ interface UseTableOpts {
 }
 
 export function usePokerTable({ userName, onToast }: UseTableOpts) {
-  // 싱글톤 트레이너 (외부에서 주입)
-  const trainerRef = useRef<SelfPlayTrainer | null>(null);
-  if (!trainerRef.current) {
-    trainerRef.current = getGlobalTrainer();
-  }
-  const trainer = trainerRef.current;
+  const trainer = getGlobalTrainer();
 
   const [trainingStats, setTrainingStats] = useState<TrainingStats>(trainer.stats);
 
@@ -83,7 +79,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     };
   }, [trainer]);
 
-  const stateRef = useRef<GameState>({
+  const [renderState, setRenderState] = useState<GameState>(() => ({
     seats: initSeats(userName),
     board: [],
     pot: 0,
@@ -105,10 +101,13 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     lastRaiseSize: BIG_BLIND, // ★ 초기값은 BB 크기
     userTimer: 0,
     showdownHands: [],
-  });
-
-  const [, forceTick] = useState(0);
-  const tick = useCallback(() => forceTick((n) => n + 1), []);
+  }));
+  const stateRef = useRef(renderState);
+  // Publish a snapshot; rendering never reads a mutable ref directly.
+  const tick = useCallback(() => {
+    const st=stateRef.current;
+    setRenderState({...st, seats:st.seats.map(seat=>({...seat})), board:[...st.board], lastActions:{...st.lastActions}});
+  }, []);
 
   // ★ 사전 액션 큐 (Pre-action queue)
   // - 내 차례가 오기 전에 폴드/콜을 미리 선택 가능
@@ -177,8 +176,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
         setPreAction(null);
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stateRef.current.awaitingUser, stateRef.current.activeSeatId, preAction]);
+  }, [renderState.awaitingUser, renderState.activeSeatId, preAction]);
 
   const [log, setLog] = useState<LogEntry[]>([]);
   const logIdRef = useRef(0);
@@ -190,7 +188,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
 
   const pendingUserAction = useRef<((d: { action: ActionType; amount: number }) => void) | null>(null);
 
-  const userSeatId = stateRef.current.seats.find((s) => s.isUser)?.seatId ?? 0;
+  const userSeatId = renderState.seats.find((s) => s.isUser)?.seatId ?? 0;
 
   // =====================
   // 핸드 시작
@@ -328,7 +326,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     while (safetyCounter < 100) {
       safetyCounter++;
       const aliveInHand = st.seats.filter(s => s.inHand && !s.folded);
-      if (aliveInHand.length <= 1) break;
+      if (aliveInHand.length <= 1 || bettingLocked(st.seats)) break;
 
       const notAllIn = aliveInHand.filter(s => !s.allIn);
       if (notAllIn.length === 0) break;
@@ -366,7 +364,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
       const minR = maxBet === 0
         ? BIG_BLIND
         : maxBet + st.lastRaiseSize;
-      const maxR = actor.stack + actor.currentBet;
+      const maxR = hasBettingOpponent(st.seats, actor.seatId) ? actor.stack + actor.currentBet : maxBet;
       st.minRaise = minR;
       st.maxRaise = maxR;
       tick();
@@ -404,13 +402,18 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
           NUM_SEATS,
           st.raiseLevel,
           btnSeat, // 딜러 버튼 좌석 (포지션 계산용)
-          { vpip: persona.vpip, aggression: persona.aggression, bluffFreq: persona.bluffFreq }
+          { vpip: persona.vpip, aggression: persona.aggression, bluffFreq: persona.bluffFreq },
+          { actorId: actor.seatId, seats: st.seats.map(({seatId,stack,currentBet,totalBet,inHand,folded,allIn})=>({seatId,stack,currentBet,totalBet,inHand,folded,allIn})) }
         );
-        decision = mapNNActionToEngine(nnDecision, callAmt, actor.stack);
+        decision = mapNNActionToEngine(nnDecision, callAmt, actor.stack, actor.currentBet);
       }
 
+      if (!hasBettingOpponent(st.seats, actor.seatId) && (decision.action === "raise" || decision.action === "allin")) {
+        const cost=Math.min(callAmt,actor.stack);
+        decision={action:cost===actor.stack?"allin":cost>0?"call":"check",amount:cost};
+      }
       // raiseLevel 추적 + 다른 플레이어 hasActed 리셋 (올바른 포커 룰)
-      if (decision.action === "raise" || decision.action === "allin") {
+      if (decision.action === "raise" || (decision.action === "allin" && actor.currentBet + actor.stack > maxBet)) {
         st.raiseLevel += 1;
         // ★ lastRaiseSize 업데이트 (표준 NLHE min-raise 계산용)
         // 레이즈 크기 = 새 베팅 총액 - 이전 최대 베팅
@@ -473,41 +476,43 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
 
     if (alive.length <= 1) {
       // 한 명 남아서 승리
-      await finishHand([alive[0].seatId], false);
+      await finishHand(false);
       return;
     }
 
-    // ★ 모든 생존자가 올인이면 베팅 없이 보드를 끝까지 펼치고 쇼다운
-    const allIn = alive.every(s => s.allIn);
-    if (allIn) {
+    if (bettingLocked(st.seats)) {
+      st.activeSeatId = -1; st.awaitingUser = false; st.userTimer = 0;
+      st.callAmount = st.minRaise = st.maxRaise = 0;
       while (st.board.length < 5) {
-        const card = st.deck.pop()!;
-        st.board = [...st.board, card];
-        pushLog(`◆ ${st.board.length === 3 ? "FLOP" : st.board.length === 4 ? "TURN" : "RIVER"}: ${cardLabel(card)}`, "system");
-        tick();
-        await sleep(800);
+        const next = dealNextStreet(st.board, st.deck);
+        st.board = next.board; st.phase = next.phase;
+        pushLog(`◆ ${next.phase}: ${st.board.map(cardLabel).join(" ")}`, "system");
+        tick(); await sleep(800);
       }
       await doShowdown(btnSeat);
       return;
     }
 
     if (st.phase === "PREFLOP") {
-      const flop = [st.deck.pop()!, st.deck.pop()!, st.deck.pop()!];
-      st.board = [...st.board, ...flop];
+      const next = dealNextStreet(st.board, st.deck);
+      const flop = next.board;
+      st.board = next.board;
       pushLog(`◆ FLOP: ${flop.map(cardLabel).join("  ")}`, "system");
       tick();
       await runBettingRound("FLOP", btnSeat, 1);
       await advancePhase(btnSeat);
     } else if (st.phase === "FLOP") {
-      const turn = st.deck.pop()!;
-      st.board = [...st.board, turn];
+      const next = dealNextStreet(st.board, st.deck);
+      const turn = next.board[3];
+      st.board = next.board;
       pushLog(`◆ TURN: ${cardLabel(turn)}`, "system");
       tick();
       await runBettingRound("TURN", btnSeat, 1);
       await advancePhase(btnSeat);
     } else if (st.phase === "TURN") {
-      const river = st.deck.pop()!;
-      st.board = [...st.board, river];
+      const next = dealNextStreet(st.board, st.deck);
+      const river = next.board[4];
+      st.board = next.board;
       pushLog(`◆ RIVER: ${cardLabel(river)}`, "system");
       tick();
       await runBettingRound("RIVER", btnSeat, 1);
@@ -529,11 +534,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
 
     // 정확한 7카드 평가기로 승자 결정
     const contenders = st.seats.filter(s => s.inHand && !s.folded);
-    const winnerIndices = determineWinners(
-      contenders.map(c => ({ holeCards: c.holeCards })),
-      st.board
-    );
-    const winners = winnerIndices.map(i => contenders[i]);
+    const winningSeatIds = new Set(settleHand(st.seats, st.board, st.buttonSeat).pots.flatMap(p=>p.winnerSeatIds));
 
     // 각 콘텐더의 족보 카테고리 추출 (UI 표시용)
     st.showdownHands = contenders.map((c, i) => {
@@ -542,63 +543,33 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
         seatId: c.seatId,
         name: c.name,
         handCategory: scoreToCategoryName(score),
-        isWinner: winnerIndices.includes(i),
+        isWinner: winningSeatIds.has(c.seatId),
         isUser: c.isUser,
       };
     });
     tick();
     await sleep(500); // 족보 표시 후 잠시 대기
 
-    await finishHand(winners.map(w => w.seatId), true);
+    await finishHand(true);
   }, [tick]);
 
-  const finishHand = useCallback(async (winnerSeatIds: number[], isShowdown: boolean) => {
+  const finishHand = useCallback(async (isShowdown: boolean) => {
     const st = stateRef.current;
-    const currentPot = st.pot;
-    const winners = st.seats.filter(s => winnerSeatIds.includes(s.seatId));
-    const share = Math.floor(currentPot / winners.length);
-    const remainder = currentPot - share * winners.length;
+    const settlement = settleHand(st.seats, st.board, st.buttonSeat);
+    const winners = settlement.results.filter(r=>r.award>0);
+    st.seats = st.seats.map(seat=>({...seat, stack:seat.stack+settlement.results.find(r=>r.seatId===seat.seatId)!.payout}));
+    const hand = isShowdown && winners[0]
+      ? scoreToCategoryName(evaluateBestHand(st.seats[winners[0].seatId].holeCards,st.board))
+      : "기본 승 (모두 폴드)";
+    st.winnerInfo = { name:winners.map(r=>r.name).join(", "), amount:settlement.totalAward, hand,
+      rake:settlement.totalRake, results:settlement.results };
+    for(const result of winners) pushLog(`★ ${result.name}: 순수익 ${result.netProfit>=0?"+":""}${result.netProfit.toLocaleString()} 칩`,"win");
+    pushLog(`◆ 레이크 ${settlement.totalRake.toLocaleString()} 칩 (5%)`,"system");
+    const mine=settlement.results.find(r=>r.seatId===userSeatId);
+    if(mine && mine.award>0) onToast?.(`순수익 ${mine.netProfit>=0?"+":""}${mine.netProfit.toLocaleString()} 칩`,mine.netProfit>0?"win":"info");
+    st.pot=0;
+    st.seats=st.seats.map(seat=>({...seat,currentBet:0,totalBet:0}));
 
-    const winnerNames = winners.map(w => w.name).join(", ");
-    // 정확한 7카드 평가기로 핸드 카테고리 이름 추출
-    let handName = "";
-    if (isShowdown && winners[0] && winners[0].holeCards.length === 2) {
-      const score = evaluateBestHand(winners[0].holeCards, st.board);
-      handName = scoreToCategoryName(score);
-    } else if (winners.length === 1 && !isShowdown) {
-      handName = "기본 승 (모두 폴드)";
-    }
-
-    pushLog(`★ ${winnerNames} 님이 ${currentPot.toLocaleString()} 칩 획득!${handName ? `  [${handName}]` : ""}`, "win");
-
-    st.seats = st.seats.map((s, i) => {
-      const idx = winnerSeatIds.indexOf(s.seatId);
-      if (idx >= 0) {
-        const bonus = idx === 0 ? remainder : 0;
-        return { ...s, stack: s.stack + share + bonus };
-      }
-      return s;
-    });
-    st.pot = 0;
-
-    // 승자 배너 설정 (챱인 경우 첫 번째 승자 기준)
-    if (winners.length >= 1) {
-      const w = winners[0];
-      const displayHand = winners.length > 1 ? `Split Pot (${handName})` : handName;
-      st.winnerInfo = { seatId: w.seatId, name: winnerNames, amount: currentPot, hand: displayHand };
-    }
-
-    if (winners.length > 1) {
-      // 챱(Split Pot)인 경우
-      onToast?.(`🤝 Split Pot! ${winnerNames} 님이 ${share.toLocaleString()} 칩씩 분할`, "info");
-    } else if (winners.length === 1) {
-      const w = winners[0];
-      if (w.isUser) {
-        onToast?.(`🎉 승리! +${currentPot.toLocaleString()} 칩 [${handName}]`, "win");
-      } else if (w.persona) {
-        onToast?.(`${w.persona.emoji} ${w.name}: "${w.persona.catchphrase}"`, "info");
-      }
-    }
     tick();
 
     // 결과를 5초간 유지 (유저가 충분히 볼 수 있게)
@@ -675,10 +646,9 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
       startHand();
     }, 1000);
     return () => clearTimeout(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const st = stateRef.current;
+  const st = renderState;
   return {
     seats: st.seats,
     board: st.board,
@@ -750,7 +720,8 @@ function getGlobalTrainer(): SelfPlayTrainer {
 function mapNNActionToEngine(
   nn: { action: number; amount: number; isBluff?: boolean; tier?: number },
   callAmt: number,
-  myStack: number
+  myStack: number,
+  myCurrentBet = 0
 ): { action: ActionType; amount: number; isBluff?: boolean } {
   switch (nn.action) {
     case 0: // FOLD
@@ -762,7 +733,7 @@ function mapNNActionToEngine(
     case 2: // RAISE_STD
     case 3: // RERAISE_POT
       // 스택보다 큰 금액은 올인으로 처리
-      if (nn.amount >= myStack + (callAmt > 0 ? callAmt : 0)) {
+      if (nn.amount >= myStack + myCurrentBet) {
         return { action: "allin", amount: myStack, isBluff: nn.isBluff };
       }
       return { action: "raise", amount: nn.amount, isBluff: nn.isBluff };

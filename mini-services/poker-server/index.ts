@@ -1,3 +1,4 @@
+import { settleHand, bettingLocked, hasBettingOpponent, dealNextStreet, WinnerInfo } from "../../src/lib/poker-rules.ts";
 // ============================================================
 // poker-server/index.ts - 8인 하이브리드 홀덤 소켓 서버
 // ============================================================
@@ -17,7 +18,6 @@ import {
   Card,
   ActionType,
   evaluateBestHand,
-  determineWinners,
   scoreToCategoryName,
 } from "../../src/lib/poker-engine.ts";
 import {
@@ -64,7 +64,7 @@ interface ServerGameState {
   lastActions: Record<number, string>;
   showdownReveal: boolean;
   showdownHands: any[];
-  winnerInfo: { name: string; amount: number; hand: string } | null;
+  winnerInfo: WinnerInfo | null;
   callAmount: number;
   minRaise: number;
   maxRaise: number;
@@ -178,13 +178,28 @@ export class HybridHoldemRoom {
     };
     this.users.set(socket.id, user);
 
+    // ★ 8명 플레이어 초과 시 입장 거부
+    const seatedHumans = Array.from(this.users.values()).filter(u => u.seatId !== null).length;
+    const totalPotential = seatedHumans + this.pendingJoinQueue.length;
+    if (totalPotential >= NUM_SEATS) {
+      console.log(`[User] ${user.name} 입장 거부 (테이블 가득참: ${totalPotential}/${NUM_SEATS})`);
+      socket.emit("SYSTEM_NOTICE", {
+        messages: [
+          `⚠️ 테이블이 가득 찼습니다. (8/8)`,
+          `다음에 다시 오세요!`,
+        ],
+      });
+      // 관전만 허용 (착석 불가)
+      socket.emit("TABLE_STATE", this.createSafeSnapshot(socket.id));
+      return;
+    }
+
     // ★ 핸드 진행 중인지 확인
     const handInProgress = this.state.phase !== "SHOWDOWN"
       && this.state.phase !== "HAND_END"
       && this.state.activeSeatId >= 0;
 
     // ★ 핵심 수정: 핸드 진행 중에는 절대 seats 배열을 건드리지 않음!
-    // 오직 pendingJoinQueue에 넣고 관전 상태로 둠
     if (handInProgress) {
       this.pendingJoinQueue.push(user);
       console.log(`[User] ${user.name} 접속 → 대기열 (handInProgress, queue: ${this.pendingJoinQueue.length})`);
@@ -195,7 +210,6 @@ export class HybridHoldemRoom {
         ],
       });
     } else {
-      // 핸드 사이: 즉시 좌석 할당
       this.pendingJoinQueue.push(user);
       console.log(`[User] ${user.name} 접속 → 대기열 (핸드 사이, 즉시 할당 예정)`);
       socket.emit("SYSTEM_NOTICE", {
@@ -469,7 +483,7 @@ export class HybridHoldemRoom {
       safety++;
 
       const alive = st.seats.filter(s => s.inHand && !s.folded);
-      if (alive.length <= 1) break;
+      if (alive.length <= 1 || bettingLocked(st.seats)) break;
 
       const notAllIn = alive.filter(s => !s.allIn);
       // ★ 모든 생존자가 올인이면 베팅 라운드 종료 (자동 다음 스트릿/쇼다운)
@@ -505,7 +519,7 @@ export class HybridHoldemRoom {
       const minR = maxBet === 0
         ? BIG_BLIND
         : maxBet + st.lastRaiseSize;
-      const maxR = actor.stack + actor.currentBet;
+      const maxR = hasBettingOpponent(st.seats, actor.seatId) ? actor.stack + actor.currentBet : maxBet;
       st.minRaise = minR;
       st.maxRaise = maxR;
 
@@ -576,7 +590,7 @@ export class HybridHoldemRoom {
 
     const remaining = st.seats.filter(s => s.inHand && !s.folded);
     const highBet = Math.max(0, ...remaining.map(s => s.currentBet));
-    if (remaining.length > 1 && remaining.some(s => !s.allIn && (!s.hasActed || s.currentBet < highBet))) {
+    if (remaining.length > 1 && !bettingLocked(st.seats) && remaining.some(s => !s.allIn && (!s.hasActed || s.currentBet < highBet))) {
       throw new Error("Betting action limit exceeded before round completion");
     }
     st.activeSeatId = -1;
@@ -614,7 +628,8 @@ export class HybridHoldemRoom {
         actor.holeCards, this.state.board, callAmt, minR, maxR, livePot,
         actor.stack, actor.currentBet, opponents, actor.seatId, NUM_SEATS,
         this.state.raiseLevel, this.state.buttonSeat,
-        { vpip: persona.vpip, aggression: persona.aggression, bluffFreq: persona.bluffFreq }
+        { vpip: persona.vpip, aggression: persona.aggression, bluffFreq: persona.bluffFreq },
+        { actorId: actor.seatId, seats: this.state.seats.map(({seatId,stack,currentBet,totalBet,inHand,folded,allIn})=>({seatId,stack,currentBet,totalBet,inHand,folded,allIn})) }
       );
       const decision = this.mapNNAction(nn, callAmt, actor.stack);
       // Optional blind defence only overrides a fold, never a strong-hand raise.
@@ -665,8 +680,11 @@ export class HybridHoldemRoom {
       case "fold": return { action, amount: 0 };
       case "check": return call === 0 ? { action, amount: 0 } : null;
       case "call": return call > 0 ? { action: call >= actor.stack ? "allin" : "call", amount: Math.min(call, actor.stack) } : { action: "check", amount: 0 };
-      case "allin": return { action, amount: actor.stack };
+      case "allin":
+        if (!hasBettingOpponent(this.state.seats, actor.seatId)) return { action: call >= actor.stack ? "allin" : call > 0 ? "call" : "check", amount: Math.min(call, actor.stack) };
+        return { action, amount: actor.stack };
       case "raise":
+        if (!hasBettingOpponent(this.state.seats, actor.seatId)) return null;
         if (!Number.isSafeInteger(amount) || amount! <= maxBet || amount! > maxRaise) return null;
         if (amount !== maxRaise && amount! < (maxBet === 0 ? BIG_BLIND : maxBet + this.state.lastRaiseSize)) return null;
         return amount === maxRaise ? { action: "allin", amount: actor.stack } : { action: "raise", amount: amount! };
@@ -752,13 +770,12 @@ export class HybridHoldemRoom {
       return;
     }
 
-    // ★ 모든 생존자가 올인이면 베팅 없이 보드를 끝까지 펼치고 쇼다운
-    const allIn = alive.every(s => s.allIn);
-    if (allIn) {
-      // 남은 보드 카드를 모두 펼침
+    if (bettingLocked(st.seats)) {
+      st.activeSeatId = -1;
+      st.callAmount = st.minRaise = st.maxRaise = 0;
       while (st.board.length < 5) {
-        deck.pop(); // burn
-        st.board = [...st.board, deck.pop()!];
+        const next = dealNextStreet(st.board, deck);
+        st.board = next.board; st.phase = next.phase;
         this.broadcastTableState();
         await this.sleep(800);
       }
@@ -804,10 +821,7 @@ export class HybridHoldemRoom {
     await this.sleep(1500);
 
     const contenders = st.seats.filter(s => s.inHand && !s.folded);
-    const winnerIndices = determineWinners(
-      contenders.map(c => ({ holeCards: c.holeCards })),
-      st.board
-    );
+    const winningSeatIds = new Set(settleHand(st.seats, st.board, st.buttonSeat).pots.flatMap(p=>p.winnerSeatIds));
 
     st.showdownHands = contenders.map((c, i) => {
       const score = evaluateBestHand(c.holeCards, st.board);
@@ -815,7 +829,7 @@ export class HybridHoldemRoom {
         seatId: c.seatId,
         name: c.name,
         handCategory: scoreToCategoryName(score),
-        isWinner: winnerIndices.includes(i),
+        isWinner: winningSeatIds.has(c.seatId),
         isUser: !c.isBot,
       };
     });
@@ -830,66 +844,14 @@ export class HybridHoldemRoom {
     const st = this.state;
     const alive = st.seats.filter(s => s.inHand && !s.folded);
 
-    // ★ 사이드팟 계산
-    // 각 플레이어의 totalBet (이번 핸드에 베팅한 총액)를 기준으로
-    // 메인팟과 사이드팟을 분리
-    const pots = this.calculateSidePots(alive);
-
-    console.log(`[Finish] pots: ${pots.length}개`);
-    for (const pot of pots) {
-      console.log(`[Finish] pot amount=${pot.amount}, eligible=${pot.eligibleSeatIds.map(s => s + 1).join(",")}`);
-    }
-
-    // 각 팟별로 승자 결정 및 분배
-    const allWinners: { seatId: number; amount: number; handName: string }[] = [];
-    let totalWinnerAmount = 0;
-    let bestHandName = "";
-
-    for (const pot of pots) {
-      if (pot.eligibleSeats.length === 0) continue;
-      if (pot.amount === 0) continue;
-
-      let potWinners: number[];
-      if (pot.eligibleSeats.length === 1) {
-        // 한 명만 남은 팟 (다른 사람이 폴드)
-        potWinners = [0];
-      } else {
-        potWinners = determineWinners(
-          pot.eligibleSeats.map(s => ({ holeCards: s.holeCards })),
-          st.board
-        );
-      }
-
-      const potWinningSeats = potWinners.map(i => pot.eligibleSeats[i]);
-      const share = Math.floor(pot.amount / potWinningSeats.length);
-      const remainder = pot.amount - share * potWinningSeats.length;
-
-      // 스택에 추가
-      st.seats = st.seats.map(s => {
-        const idx = potWinningSeats.findIndex(ws => ws.seatId === s.seatId);
-        if (idx >= 0) {
-          const bonus = idx === 0 ? remainder : 0;
-          return { ...s, stack: s.stack + share + bonus };
-        }
-        return s;
-      });
-
-      // 승자 정보 기록
-      for (let i = 0; i < potWinningSeats.length; i++) {
-        const ws = potWinningSeats[i];
-        const handName = isShowdown
-          ? scoreToCategoryName(evaluateBestHand(ws.holeCards, st.board))
-          : "기본 승";
-        allWinners.push({ seatId: ws.seatId, amount: share + (i === 0 ? remainder : 0), handName });
-        totalWinnerAmount += share + (i === 0 ? remainder : 0);
-        if (!bestHandName && isShowdown) bestHandName = handName;
-      }
-    }
-
-    // 승자 정보 표시 (총 획득액 기준)
-    const winnerNames = [...new Set(allWinners.map(w => st.seats[w.seatId].name))].join(", ");
-    const displayHand = isShowdown ? bestHandName : (alive.length === 1 ? "기본 승 (모두 폴드)" : "");
-    st.winnerInfo = { name: winnerNames, amount: totalWinnerAmount, hand: displayHand };
+    const settlement = settleHand(st.seats, st.board, st.buttonSeat);
+    st.seats = st.seats.map(seat => ({ ...seat, stack: seat.stack + settlement.results.find(r=>r.seatId===seat.seatId)!.payout }));
+    const winners = settlement.results.filter(r=>r.award>0);
+    const hand = isShowdown && winners[0]
+      ? scoreToCategoryName(evaluateBestHand(st.seats[winners[0].seatId].holeCards, st.board))
+      : "기본 승 (모두 폴드)";
+    st.winnerInfo = { name: winners.map(r=>r.name).join(", "), amount: settlement.totalAward, hand,
+      rake: settlement.totalRake, results: settlement.results };
 
     st.pot = 0;
     st.seats = st.seats.map(seat => ({ ...seat, currentBet: 0, totalBet: 0 }));
@@ -916,29 +878,6 @@ export class HybridHoldemRoom {
   // → 사이드팟1: (20000-15000) × 2 = 10000 (B, C만 참여)
   // A가 이기면 메인팟 45000만 가져감, 사이드팟은 B vs C
   // ============================================================
-
-  private calculateSidePots(alive: ServerSeat[]): {
-    amount: number;
-    eligibleSeats: ServerSeat[];
-    eligibleSeatIds: number[];
-  }[] {
-    const contributors = this.state.seats.filter(seat => seat.totalBet > 0);
-    const levels = [...new Set(contributors.map(seat => seat.totalBet))].sort((a, b) => a - b);
-    const pots: { amount: number; eligibleSeats: ServerSeat[]; eligibleSeatIds: number[] }[] = [];
-    let previous = 0;
-    for (const level of levels) {
-      const layer = contributors.filter(seat => seat.totalBet >= level);
-      const eligibleSeats = alive.filter(seat => seat.totalBet >= level);
-      if (eligibleSeats.length === 0) throw new Error("Pot layer has no eligible player");
-      const amount = (level - previous) * layer.length;
-      const eligibleSeatIds = eligibleSeats.map(seat => seat.seatId);
-      const last = pots[pots.length - 1];
-      if (last && last.eligibleSeatIds.join(",") === eligibleSeatIds.join(",")) last.amount += amount;
-      else pots.push({ amount, eligibleSeats, eligibleSeatIds });
-      previous = level;
-    }
-    return pots;
-  }
 
   // ============================================================
   // 상태 마스킹 & 브로드캐스트 (순수 DTO만 전송)
@@ -998,6 +937,8 @@ export class HybridHoldemRoom {
           name: String(st.winnerInfo.name || ""),
           amount: Number(st.winnerInfo.amount || 0),
           hand: String(st.winnerInfo.hand || ""),
+          rake: st.winnerInfo.rake,
+          results: st.winnerInfo.results.map(r=>({...r})),
         }
       : null;
 
@@ -1092,6 +1033,15 @@ if (process.env.POKER_TEST_MODE !== "1") {
   httpServer.listen(PORT, "0.0.0.0", () => {
     console.log(`🎰 8-Player Hybrid Holdem Server running on port ${PORT}`);
     console.log(`   Caddy 라우팅: ?XTransformPort=${PORT}`);
+
+    // ★ 1시간마다 서버 자동 재시작
+    const RESTART_INTERVAL = 60 * 60 * 1000; // 1시간
+    setTimeout(() => {
+      console.log("[Server] 1시간 경과, 자동 재시작 중...");
+      io.emit("SYSTEM_NOTICE", { messages: ["🔄 서버가 1시간마다 자동 재시작됩니다. 잠시 후 다시 접속해주세요."] });
+      setTimeout(() => process.exit(0), 2000); // 2초 대기 후 종료 (host가 재시작)
+    }, RESTART_INTERVAL);
+    console.log(`   자동 재시작: ${RESTART_INTERVAL / 60000}분 후`);
   });
 
   // Unexpected failures exit nonzero so the host can restart cleanly.

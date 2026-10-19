@@ -1,4 +1,5 @@
 "use client";
+import type { WinnerInfo } from "@/lib/poker-rules";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { io, Socket } from "socket.io-client";
 import { Card } from "@/lib/poker-engine";
@@ -45,7 +46,7 @@ export interface SocketTableState {
   isUserTurn: boolean;
   handInProgress: boolean;
   showdownHands: any[];
-  winnerInfo: { name: string; amount: number; hand: string } | null;
+  winnerInfo: WinnerInfo | null;
   seats: SocketSeat[];
   preAction: { type: "fold" | "call" | "check"; amount: number } | null;
 }

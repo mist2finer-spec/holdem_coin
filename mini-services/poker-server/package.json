@@ -1,14 +1,14 @@
 {
   "name": "poker-server",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "type": "commonjs",
   "scripts": {
     "dev": "bash ./start.sh",
     "start": "bash ./start.sh",
     "dev:raw": "bun --hot index.ts",
     "start:raw": "bun index.ts",
-    "test": "POKER_TEST_MODE=1 node --import tsx --test ../../scripts/test-server-regressions.ts",
-    "typecheck": "tsc --noEmit --target es2022 --module esnext --moduleResolution bundler --allowImportingTsExtensions --skipLibCheck --types node index.ts ../../scripts/test-server-regressions.ts"
+    "test": "POKER_TEST_MODE=1 node --import tsx --test ../../scripts/test-server-regressions.ts ../../scripts/test-rake-allin.ts",
+    "typecheck": "tsc --noEmit --target es2022 --module esnext --moduleResolution bundler --allowImportingTsExtensions --skipLibCheck --types node index.ts ../../scripts/test-server-regressions.ts ../../scripts/test-rake-allin.ts"
   },
   "dependencies": {
     "socket.io": "^4.7.2",
