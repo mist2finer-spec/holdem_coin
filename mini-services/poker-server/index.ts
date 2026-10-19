@@ -95,8 +95,10 @@ class HybridHoldemRoom {
   private isRunning = false;
 
   constructor() {
+    // ★ trainer 학습 루프 비활성화 (crash 방지)
+    // 서버에서는 학습하지 않고 게임만 진행
     this.trainer = new SelfPlayTrainer();
-    this.trainer.start();
+    // this.trainer.start(); // ← 주석 처리
     this.state = this.createInitialState();
     this.startGameLoop();
   }
@@ -193,6 +195,25 @@ class HybridHoldemRoom {
         targetSeatId = utgSeat;
       } else {
         targetSeatId = botSeats[0].seatId;
+      }
+
+      // ★ 현재 턴인 좌석(activeSeatId)은 변경 금지 - race condition 방지
+      if (targetSeatId === this.state.activeSeatId) {
+        // 현재 턴인 좌석이면 다른 봇 자리 찾기
+        const safeBotSeats = botSeats.filter(s => s.seatId !== this.state.activeSeatId);
+        if (safeBotSeats.length === 0) {
+          // 안전한 자리가 없으면 관전 모드
+          this.joinQueue.push(user);
+          socket.emit("SYSTEM_NOTICE", {
+            messages: [
+              `👀 [${user.name}]님이 관전 모드로 입장했습니다.`,
+              `⏳ 다음 핸드에 착석됩니다.`,
+            ],
+          });
+          socket.emit("TABLE_STATE", this.getMaskedState(socket.id));
+          return;
+        }
+        targetSeatId = safeBotSeats[0].seatId;
       }
 
       if (handInProgress) {
@@ -563,18 +584,25 @@ class HybridHoldemRoom {
       this.applyAction(actorIdx, decision);
       console.log(`[Bet] applyAction 후: ${actor.name}`);
       const actionLabel = this.labelAction(decision.action, decision.amount, callAmt);
+      console.log(`[Bet] actionLabel: ${actionLabel}`);
       st.lastActions = { ...st.lastActions, [actorIdx]: actionLabel };
+      console.log(`[Bet] PLAYER_ACTION 브로드캐스트 전`);
       this.broadcast("PLAYER_ACTION", {
         seatId: actorIdx,
         name: actor.name,
         action: actionLabel,
         amount: decision.amount,
       });
+      console.log(`[Bet] PLAYER_ACTION 브로드캐스트 후`);
+      console.log(`[Bet] broadcastTableState 전`);
       this.broadcastTableState();
+      console.log(`[Bet] broadcastTableState 후, sleep 800ms`);
       await this.sleep(800);
+      console.log(`[Bet] sleep 후, stillAlive 체크`);
 
       const stillAlive = st.seats.filter(s => s.inHand && !s.folded);
-      if (stillAlive.length <= 1) break;
+      console.log(`[Bet] stillAlive: ${stillAlive.length}`);
+      if (stillAlive.length <= 1) { console.log(`[Bet] stillAlive<=1, break`); break; }
     }
 
     st.activeSeatId = -1;
@@ -607,37 +635,88 @@ class HybridHoldemRoom {
     } else {
       // 봇 결정
       console.log(`[Decision] 봇 결정 시작: ${actor.name}`);
-      await this.sleep(600 + Math.random() * 600);
+      await this.sleep(400 + Math.random() * 400);
       try {
+        // ★ 임시 간단 결정 로직 (trainer crash 방지)
+        // trainer.decideActionForLive가 특정 상황에서 crash하는 문제 회피
         const basePersona = actor.persona || RPG_BOT_POOL[0];
-        // ★ AI 전략 로테이션: 5핸드마다 AGGRESSIVE/TIGHT/LOOSE 순환
         const currentStrategy = getStrategyForHand(this.state.handNumber);
         const persona = applyStrategyToPersona(basePersona, currentStrategy);
         const livePot = this.state.pot + this.state.seats.reduce((a, s) => a + s.currentBet, 0);
         const activeOpp = this.state.seats.filter(s => s.inHand && !s.folded).length - 1;
-        console.log(`[Decision] trainer.decideActionForLive 호출 전`);
-        const nnDecision = this.trainer.decideActionForLive(
-          actor.holeCards,
-          this.state.board,
-          callAmt,
-          minR,
-          maxR,
-          livePot,
-          actor.stack,
-          actor.currentBet,
-          activeOpp,
-          actor.seatId,
-          NUM_SEATS,
-          this.state.raiseLevel,
-          this.state.buttonSeat,
-          { vpip: persona.vpip, aggression: persona.aggression, bluffFreq: persona.bluffFreq }
-        );
-        console.log(`[Decision] 봇 결정 완료: ${actor.name} → action=${nnDecision.action} amount=${nnDecision.amount}`);
-        return this.mapNNAction(nnDecision, callAmt, actor.stack);
+
+        // 간단한 핸드 평가
+        const hole = actor.holeCards;
+        const board = this.state.board;
+        let handStrength = 0.3; // 기본값
+
+        if (hole.length >= 2) {
+          const r1 = "23456789TJQKA".indexOf(hole[0].rank);
+          const r2 = "23456789TJQKA".indexOf(hole[1].rank);
+          const high = Math.max(r1, r2);
+          const low = Math.min(r1, r2);
+
+          if (board.length === 0) {
+            // 프리플랩
+            if (r1 === r2) {
+              handStrength = 0.55 + (high / 12.0) * 0.40; // 포켓 페어
+            } else {
+              handStrength = (high * 0.04) + (low * 0.015);
+              if (hole[0].suit === hole[1].suit) handStrength += 0.06;
+            }
+          } else {
+            // 포스트플랩: 간단 페어 체크
+            const allRanks = [...hole, ...board].map(c => "23456789TJQKA".indexOf(c.rank));
+            const rankCounts: Record<number, number> = {};
+            for (const r of allRanks) rankCounts[r] = (rankCounts[r] || 0) + 1;
+
+            const hasPair = Object.values(rankCounts).some(c => c >= 2);
+            const hasTrips = Object.values(rankCounts).some(c => c >= 3);
+
+            if (hasTrips) handStrength = 0.85;
+            else if (hasPair) {
+              const pairedRank = Number(Object.keys(rankCounts).find(k => rankCounts[Number(k)] >= 2));
+              if (pairedRank >= high) handStrength = 0.65;
+              else handStrength = 0.40;
+            } else {
+              handStrength = 0.15 + (high / 12.0) * 0.10;
+            }
+          }
+        }
+
+        // 다자간 감쇠
+        const multiStrength = Math.pow(handStrength, 1.0 + (activeOpp - 1) * 0.3);
+        const potOdds = callAmt > 0 ? callAmt / (livePot + callAmt) : 0;
+
+        // 결정
+        let action: ActionType = "fold";
+        let amount = 0;
+
+        if (callAmt === 0) {
+          // 체크 가능
+          if (multiStrength > 0.6 && Math.random() < persona.aggression) {
+            action = "raise";
+            amount = Math.max(minR, Math.min(Math.floor(livePot * 0.5), maxR));
+          } else {
+            action = "check";
+          }
+        } else {
+          // 콜 비용 있음
+          if (multiStrength < potOdds) {
+            action = "fold";
+          } else if (multiStrength > 0.75 && Math.random() < persona.aggression * 0.7) {
+            action = "raise";
+            amount = Math.max(minR, Math.min(Math.floor(minR + livePot * 0.6), maxR));
+          } else {
+            action = "call";
+            amount = Math.min(callAmt, actor.stack);
+          }
+        }
+
+        console.log(`[Decision] 봇 결정 완료(간단): ${actor.name} → ${action} ${amount} (strength:${multiStrength.toFixed(2)})`);
+        return { action, amount };
       } catch (e: any) {
         console.error(`[Decision] 봇 결정 에러: ${actor.name}:`, e?.message || e);
-        console.error(e?.stack);
-        // 폴백: 폴드
         return { action: "fold", amount: 0 };
       }
     }
@@ -988,8 +1067,29 @@ httpServer.listen(PORT, () => {
 process.on("uncaughtException", (err) => {
   console.error("[UNCAUGHT] 예외 발생:", err.message);
   console.error(err.stack);
+  // 프로세스 종료 방지 - 계속 실행
 });
 
 process.on("unhandledRejection", (reason) => {
   console.error("[UNHANDLED] Promise 거부:", reason);
+  // 프로세스 종료 방지 - 계속 실행
+});
+
+// ★ SIGTERM/SIGINT 시 정상 종료
+process.on("SIGTERM", () => {
+  console.log("[Server] SIGTERM 수신, 종료 중...");
+  process.exit(0);
+});
+
+process.on("SIGINT", () => {
+  console.log("[Server] SIGINT 수신, 종료 중...");
+  process.exit(0);
+});
+
+// ★ 헬스체크 엔드포인트 (서버 살아있는지 확인용)
+httpServer.on("request", (req, res) => {
+  if (req.url === "/health") {
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ status: "ok", users: room.users.size, hand: room.state.handNumber }));
+  }
 });
