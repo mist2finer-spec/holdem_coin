@@ -12,7 +12,7 @@ import {
   multiwayEquity,
   extractStateVector,
 } from "./equity-engine";
-import { makeDeck, Card } from "./poker-engine";
+import { makeDeck, Card, determineWinners } from "./poker-engine";
 
 const NUM_SEATS = 8;
 const SB = 100;
@@ -287,20 +287,19 @@ export class SelfPlayTrainer {
 
     if (conclusionPhase === 0) conclusionPhase = 4; // 쇼다운까지 감
 
-    // 승자 결정
+    // 승자 결정 - 정확한 7카드 평가기 사용
     const alive = players.filter(p => p.inHand && !p.folded);
     let winnerIdx = -1;
     if (alive.length === 1) {
       winnerIdx = alive[0].seatIndex;
     } else {
-      // 쇼다운: 에퀴티로 승자 결정
-      let bestEq = -1;
-      for (const p of alive) {
-        const eq = evalPostflopRealEquity(p.holeCards, board);
-        if (eq > bestEq) {
-          bestEq = eq;
-          winnerIdx = p.seatIndex;
-        }
+      // 쇼다운: 정확한 핸드 평가로 승자 결정
+      const winnerIndices = determineWinners(
+        alive.map(p => ({ holeCards: p.holeCards })),
+        board
+      );
+      if (winnerIndices.length > 0) {
+        winnerIdx = alive[winnerIndices[0]].seatIndex;
       }
     }
 

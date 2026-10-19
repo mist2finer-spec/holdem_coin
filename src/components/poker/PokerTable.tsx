@@ -12,6 +12,11 @@ interface Props {
   onToast?: (msg: string, tone?: "info" | "win" | "lose") => void;
 }
 
+// 레이즈 금액을 min/max 범위로 클램프
+function clampRaise(min: number, max: number, value: number): number {
+  return Math.max(min, Math.min(value, max));
+}
+
 // 8좌석 테이블 상대 위치 (% 단위)
 // 0번 = 하단 중앙 (유저 자리), 시계 방향으로 배치
 const SEAT_POSITIONS = [
@@ -254,6 +259,87 @@ export function PokerTable({ userName, onToast }: Props) {
                 >
                   ALL-IN
                 </Button>
+              </div>
+
+              {/* 퀵 베팅 버튼 행 (1/3, 1/2, 3/4, 1:1 pot, Min) */}
+              <div className="flex items-center gap-1.5 mt-2">
+                <span className="text-amber-300 text-[9px] font-bold mr-1">QUICK:</span>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="h-6 px-2 text-[10px] border-amber-700/50 text-amber-200 hover:bg-amber-900/40"
+                  onClick={() => {
+                    const target = clampRaise(minRaise, maxRaise, callAmount + Math.floor(livePot * 1 / 3));
+                    setRaiseAmount(target);
+                  }}
+                  disabled={maxRaise <= minRaise}
+                  title={`팟의 1/3 = ${Math.floor(livePot * 1 / 3).toLocaleString()}`}
+                >
+                  1/3 pot
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="h-6 px-2 text-[10px] border-amber-700/50 text-amber-200 hover:bg-amber-900/40"
+                  onClick={() => {
+                    const target = clampRaise(minRaise, maxRaise, callAmount + Math.floor(livePot * 1 / 2));
+                    setRaiseAmount(target);
+                  }}
+                  disabled={maxRaise <= minRaise}
+                  title={`팟의 1/2 = ${Math.floor(livePot * 1 / 2).toLocaleString()}`}
+                >
+                  1/2 pot
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="h-6 px-2 text-[10px] border-amber-700/50 text-amber-200 hover:bg-amber-900/40"
+                  onClick={() => {
+                    const target = clampRaise(minRaise, maxRaise, callAmount + Math.floor(livePot * 3 / 4));
+                    setRaiseAmount(target);
+                  }}
+                  disabled={maxRaise <= minRaise}
+                  title={`팟의 3/4 = ${Math.floor(livePot * 3 / 4).toLocaleString()}`}
+                >
+                  3/4 pot
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="h-6 px-2 text-[10px] border-amber-700/50 text-amber-200 hover:bg-amber-900/40"
+                  onClick={() => {
+                    const target = clampRaise(minRaise, maxRaise, callAmount + livePot);
+                    setRaiseAmount(target);
+                  }}
+                  disabled={maxRaise <= minRaise}
+                  title={`팟의 1:1 = ${livePot.toLocaleString()}`}
+                >
+                  1:1 pot
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="h-6 px-2 text-[10px] border-amber-700/50 text-amber-200 hover:bg-amber-900/40"
+                  onClick={() => setRaiseAmount(minRaise)}
+                  disabled={maxRaise <= minRaise}
+                  title={`최소 레이즈 = ${minRaise.toLocaleString()}`}
+                >
+                  Min
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="h-6 px-2 text-[10px] border-amber-700/50 text-amber-200 hover:bg-amber-900/40"
+                  onClick={() => setRaiseAmount(maxRaise)}
+                  disabled={maxRaise <= minRaise}
+                  title={`올인 = ${maxRaise.toLocaleString()}`}
+                >
+                  Max
+                </Button>
+                <div className="ml-auto text-amber-200/60 text-[10px]">
+                  팟: <span className="text-amber-200 font-bold tabular-nums">{livePot.toLocaleString()}</span>
+                  {" · "}레이즈 범위: <span className="text-amber-200 font-bold tabular-nums">{minRaise.toLocaleString()}~{maxRaise.toLocaleString()}</span>
+                </div>
               </div>
             </div>
           ) : (

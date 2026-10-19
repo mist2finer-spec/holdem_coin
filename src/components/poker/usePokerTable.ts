@@ -6,8 +6,9 @@ import {
   SeatState,
   Phase,
   ActionType,
-  handRankName,
-  estimateStrength,
+  evaluateBestHand,
+  determineWinners,
+  scoreToCategoryName,
 } from "@/lib/poker-engine";
 import { RPG_BOT_POOL, BotPersona } from "@/lib/personas";
 import { SelfPlayTrainer, TrainingStats } from "@/lib/self-play-trainer";
@@ -384,18 +385,13 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     tick();
     await sleep(1200);
 
+    // 정확한 7카드 평가기로 승자 결정
     const contenders = st.seats.filter(s => s.inHand && !s.folded);
-    let bestStrength = -1;
-    let winners: SeatState[] = [];
-    for (const c of contenders) {
-      const strength = estimateStrength(c.holeCards, st.board);
-      if (strength > bestStrength + 0.001) {
-        bestStrength = strength;
-        winners = [c];
-      } else if (Math.abs(strength - bestStrength) < 0.001) {
-        winners.push(c);
-      }
-    }
+    const winnerIndices = determineWinners(
+      contenders.map(c => ({ holeCards: c.holeCards })),
+      st.board
+    );
+    const winners = winnerIndices.map(i => contenders[i]);
 
     await finishHand(winners.map(w => w.seatId), true);
   }, [tick]);
@@ -408,9 +404,14 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     const remainder = currentPot - share * winners.length;
 
     const winnerNames = winners.map(w => w.name).join(", ");
-    const handName = isShowdown && winners[0] && winners[0].holeCards.length === 2
-      ? handRankName(winners[0].holeCards, st.board)
-      : (winners.length === 1 && !isShowdown ? "기본 승 (모두 폴드)" : "");
+    // 정확한 7카드 평가기로 핸드 카테고리 이름 추출
+    let handName = "";
+    if (isShowdown && winners[0] && winners[0].holeCards.length === 2) {
+      const score = evaluateBestHand(winners[0].holeCards, st.board);
+      handName = scoreToCategoryName(score);
+    } else if (winners.length === 1 && !isShowdown) {
+      handName = "기본 승 (모두 폴드)";
+    }
 
     pushLog(`★ ${winnerNames} 님이 ${currentPot.toLocaleString()} 칩 획득!${handName ? `  [${handName}]` : ""}`, "win");
 

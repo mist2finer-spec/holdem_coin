@@ -223,3 +223,145 @@ export function handRankName(hole: Card[], board: Card[]): string {
   if (counts[0] === 2) return "원페어";
   return "하이카드";
 }
+
+// ==========================================
+// 진짜 텍사스 홀덤 7카드 평가기 (정확한 승패 판정용)
+// - 21개의 5카드 조합을 모두 평가하여 최적을 찾음
+// - 비교 가능한 단일 점수 반환 (높을수록 강한 핸드)
+// - 점수 인코딩: category * 16^5 + (최대 5개의 랭크 티브레이커)
+// ==========================================
+
+const HAND_CATEGORIES = {
+  HIGH_CARD: 0,
+  ONE_PAIR: 1,
+  TWO_PAIR: 2,
+  THREE_OF_A_KIND: 3,
+  STRAIGHT: 4,
+  FLUSH: 5,
+  FULL_HOUSE: 6,
+  FOUR_OF_A_KIND: 7,
+  STRAIGHT_FLUSH: 8,
+};
+
+function encodeScore(category: number, ranks: number[]): number {
+  // 항상 5개 랭크 (부족하면 0으로 패드)
+  const padded = [...ranks];
+  while (padded.length < 5) padded.push(0);
+  let score = category;
+  for (let i = 0; i < 5; i++) {
+    score = score * 16 + padded[i];
+  }
+  return score;
+}
+
+// 5장의 카드 평가 → 비교 가능한 점수
+function evaluate5(cards: Card[]): number {
+  const ranks = cards.map(c => RANK_VAL[c.rank]).sort((a, b) => b - a); // 내림차순
+  const suits = cards.map(c => c.suit);
+
+  const isFlush = suits.every(s => s === suits[0]);
+
+  // 스트레이트 검사
+  let isStraight = false;
+  let straightHigh = 0;
+  const uniqueRanks = [...new Set(ranks)].sort((a, b) => b - a);
+  if (uniqueRanks.length === 5 && uniqueRanks[0] - uniqueRanks[4] === 4) {
+    isStraight = true;
+    straightHigh = uniqueRanks[0];
+  }
+  // A-2-3-4-5 (wheel)
+  if (uniqueRanks.length === 5
+      && uniqueRanks[0] === 14 && uniqueRanks[1] === 5
+      && uniqueRanks[2] === 4 && uniqueRanks[3] === 3 && uniqueRanks[4] === 2) {
+    isStraight = true;
+    straightHigh = 5;
+  }
+
+  // 랭크 카운트 (내림차순 정렬)
+  const rankCounts: Record<number, number> = {};
+  for (const r of ranks) rankCounts[r] = (rankCounts[r] || 0) + 1;
+  const groups = Object.entries(rankCounts)
+    .map(([r, c]) => ({ rank: Number(r), count: c }))
+    .sort((a, b) => b.count - a.count || b.rank - a.rank);
+
+  if (isStraight && isFlush) {
+    return encodeScore(HAND_CATEGORIES.STRAIGHT_FLUSH, [straightHigh]);
+  }
+  if (groups[0].count === 4) {
+    return encodeScore(HAND_CATEGORIES.FOUR_OF_A_KIND, [groups[0].rank, groups[1].rank]);
+  }
+  if (groups[0].count === 3 && groups[1] && groups[1].count >= 2) {
+    return encodeScore(HAND_CATEGORIES.FULL_HOUSE, [groups[0].rank, groups[1].rank]);
+  }
+  if (isFlush) {
+    return encodeScore(HAND_CATEGORIES.FLUSH, ranks);
+  }
+  if (isStraight) {
+    return encodeScore(HAND_CATEGORIES.STRAIGHT, [straightHigh]);
+  }
+  if (groups[0].count === 3) {
+    const kickers = groups.slice(1).map(g => g.rank).slice(0, 2);
+    return encodeScore(HAND_CATEGORIES.THREE_OF_A_KIND, [groups[0].rank, ...kickers]);
+  }
+  if (groups[0].count === 2 && groups[1] && groups[1].count === 2) {
+    const highPair = Math.max(groups[0].rank, groups[1].rank);
+    const lowPair = Math.min(groups[0].rank, groups[1].rank);
+    const kicker = groups[2] ? groups[2].rank : 0;
+    return encodeScore(HAND_CATEGORIES.TWO_PAIR, [highPair, lowPair, kicker]);
+  }
+  if (groups[0].count === 2) {
+    const kickers = groups.slice(1).map(g => g.rank).slice(0, 3);
+    return encodeScore(HAND_CATEGORIES.ONE_PAIR, [groups[0].rank, ...kickers]);
+  }
+  // 하이카드
+  return encodeScore(HAND_CATEGORIES.HIGH_CARD, ranks);
+}
+
+// 7장의 카드에서 최적 5장 조합의 점수 반환
+export function evaluateBestHand(hole: Card[], board: Card[]): number {
+  if (hole.length < 2 || board.length < 3) return 0;
+  const allCards = [...hole, ...board];
+  if (allCards.length < 5) return 0;
+
+  let bestScore = -1;
+  // C(7,5) = 21개 조합 생성
+  const n = allCards.length;
+  for (let a = 0; a < n - 4; a++) {
+    for (let b = a + 1; b < n - 3; b++) {
+      for (let c = b + 1; c < n - 2; c++) {
+        for (let d = c + 1; d < n - 1; d++) {
+          for (let e = d + 1; e < n; e++) {
+            const score = evaluate5([allCards[a], allCards[b], allCards[c], allCards[d], allCards[e]]);
+            if (score > bestScore) bestScore = score;
+          }
+        }
+      }
+    }
+  }
+  return bestScore;
+}
+
+// 쇼다운에서 승자 결정 (정확한 룰 기반)
+export function determineWinners(
+  players: { holeCards: Card[] }[],
+  board: Card[]
+): number[] {
+  if (players.length === 0) return [];
+  const scores = players.map(p => evaluateBestHand(p.holeCards, board));
+  const maxScore = Math.max(...scores);
+  const winners: number[] = [];
+  for (let i = 0; i < scores.length; i++) {
+    if (scores[i] === maxScore) winners.push(i);
+  }
+  return winners;
+}
+
+// 점수로부터 핸드 카테고리 이름 반환
+export function scoreToCategoryName(score: number): string {
+  const category = Math.floor(score / Math.pow(16, 5));
+  const names = [
+    "하이카드", "원페어", "투페어", "트리플",
+    "스트레이트", "플러시", "풀하우스", "포카드", "스트레이트 플러시"
+  ];
+  return names[category] || "하이카드";
+}
