@@ -148,7 +148,7 @@ export const RPG_BOT_POOL: BotPersona[] = [
 export const USER_PERSONA = {
   id: "hero",
   name: "용사",
-  title: "미래의 전설",
+  title: "미래의 전략가",
   emoji: "⚔️",
   color: "from-blue-700 to-indigo-900",
   accent: "text-blue-200",
@@ -159,3 +159,85 @@ export const USER_PERSONA = {
   catchphrase: "승리는 내 것이다!",
   taunt: "",
 };
+
+// ============================================================
+// AI 전략 로테이션 시스템
+// ============================================================
+// 9 NPC가 3가지 전략(어그레시브/타이트/루즈)을 5핸드마다 돌아가면서 사용
+// 각 전략은 vpip/aggression/bluffFreq 값을 override
+
+export type StrategyType = "AGGRESSIVE" | "TIGHT" | "LOOSE";
+
+export interface StrategyProfile {
+  type: StrategyType;
+  name: string;
+  description: string;
+  vpip: number;        // 프리플랍 참여율
+  aggression: number;  // 어그레시브 정도
+  bluffFreq: number;   // 블러프 빈도
+  color: string;       // UI 색상
+  emoji: string;
+}
+
+export const STRATEGY_PROFILES: Record<StrategyType, StrategyProfile> = {
+  AGGRESSIVE: {
+    type: "AGGRESSIVE",
+    name: "어그레시브",
+    description: "강하게 레이즈, 잦은 블러프",
+    vpip: 0.45,
+    aggression: 0.85,
+    bluffFreq: 0.25,
+    color: "from-red-600 to-rose-900",
+    emoji: "🔥",
+  },
+  TIGHT: {
+    type: "TIGHT",
+    name: "타이트",
+    description: "강한 핸드만 플레이, 폴드 위주",
+    vpip: 0.18,
+    aggression: 0.35,
+    bluffFreq: 0.05,
+    color: "from-blue-600 to-indigo-900",
+    emoji: "🛡️",
+  },
+  LOOSE: {
+    type: "LOOSE",
+    name: "루즈",
+    description: "다양한 핸드 참여, 콜 위주",
+    vpip: 0.55,
+    aggression: 0.45,
+    bluffFreq: 0.15,
+    color: "from-amber-500 to-orange-800",
+    emoji: "🎲",
+  },
+};
+
+export const STRATEGY_CYCLE: StrategyType[] = ["AGGRESSIVE", "TIGHT", "LOOSE"];
+export const HANDS_PER_STRATEGY = 5; // 5핸드마다 전략 로테이션
+
+/**
+ * 현재 핸드 번호에 따른 전략 결정
+ * - 5핸드마다 AGGRESSIVE → TIGHT → LOOSE → AGGRESSIVE ... 순환
+ * - 모든 NPC가 동일한 전략을 사용 (한 테이블이 한 전략)
+ */
+export function getStrategyForHand(handNumber: number): StrategyType {
+  const cycleIndex = Math.floor((handNumber - 1) / HANDS_PER_STRATEGY) % STRATEGY_CYCLE.length;
+  return STRATEGY_CYCLE[cycleIndex];
+}
+
+/**
+ * 핸드 번호와 전략에 따라 persona의 성향을 override
+ */
+export function applyStrategyToPersona(
+  persona: BotPersona,
+  strategy: StrategyType
+): BotPersona {
+  const profile = STRATEGY_PROFILES[strategy];
+  return {
+    ...persona,
+    vpip: profile.vpip,
+    aggression: profile.aggression,
+    bluffFreq: profile.bluffFreq,
+    style: `${persona.style} [${profile.name}]`,
+  };
+}

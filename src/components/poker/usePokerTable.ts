@@ -10,7 +10,7 @@ import {
   determineWinners,
   scoreToCategoryName,
 } from "@/lib/poker-engine";
-import { RPG_BOT_POOL, BotPersona } from "@/lib/personas";
+import { RPG_BOT_POOL, BotPersona, getStrategyForHand, applyStrategyToPersona, STRATEGY_PROFILES, StrategyType } from "@/lib/personas";
 import { SelfPlayTrainer, TrainingStats } from "@/lib/self-play-trainer";
 
 const NUM_SEATS = 8;
@@ -52,6 +52,7 @@ interface GameState {
   maxRaise: number;
   deck: Card[];
   raiseLevel: number; // 현재 라운드 레이즈 횟수 (3-bet, 4-bet 추적)
+  lastRaiseSize: number; // ★ 마지막 레이즈 크기 (표준 NLHE min-raise 계산용)
   userTimer: number; // 유저 결정 타이머 (남은 초, 0=시간 없음)
 }
 
@@ -99,6 +100,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     maxRaise: 0,
     deck: [],
     raiseLevel: 0,
+    lastRaiseSize: BIG_BLIND, // ★ 초기값은 BB 크기
     userTimer: 0,
     showdownHands: [],
   });
@@ -291,6 +293,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     const st = stateRef.current;
     st.phase = currentPhase;
     st.raiseLevel = 0; // 라운드 시작마다 리셋
+    st.lastRaiseSize = BIG_BLIND; // ★ 라운드 시작마다 BB로 리셋 (표준 NLHE)
     // hasActed 리셋
     st.seats = st.seats.map(s => ({ ...s, hasActed: false }));
     st.lastActions = {};
@@ -333,7 +336,13 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
       st.activeSeatId = actorIdx;
       const callAmt = Math.max(0, maxBet - actor.currentBet);
       st.callAmount = callAmt;
-      const minR = maxBet === 0 ? BIG_BLIND : maxBet + BIG_BLIND;
+      // ★ 표준 NLHE min-raise 규칙:
+      // - 아무도 베팅 안 했으면 minRaise = BB (최소 오프닝 베팅)
+      // - 누군가 베팅/레이즈 했으면 minRaise = 현재 베팅 + 마지막 레이즈 크기
+      //   예: BB=200, A 레이즈 to 600 (레이즈 크기 400) → B의 minRaise = 600 + 400 = 1000
+      const minR = maxBet === 0
+        ? BIG_BLIND
+        : maxBet + st.lastRaiseSize;
       const maxR = actor.stack + actor.currentBet;
       st.minRaise = minR;
       st.maxRaise = maxR;
@@ -353,7 +362,10 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
         await sleep(700 + Math.random() * 900);
         // 신경망 기반 의사결정 (트레이너 사용)
         const activeOpp = aliveInHand.length - 1;
-        const persona = actor.persona || RPG_BOT_POOL[0];
+        const basePersona = actor.persona || RPG_BOT_POOL[0];
+        // ★ AI 전략 로테이션: 5핸드마다 AGGRESSIVE/TIGHT/LOOSE 순환
+        const currentStrategy = getStrategyForHand(st.handNumber);
+        const persona = applyStrategyToPersona(basePersona, currentStrategy);
         const livePot = st.pot + st.seats.reduce((a, s) => a + s.currentBet, 0);
         const nnDecision = trainer.decideActionForLive(
           st.seats[actorIdx].holeCards,
@@ -377,6 +389,16 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
       // raiseLevel 추적 + 다른 플레이어 hasActed 리셋 (올바른 포커 룰)
       if (decision.action === "raise" || decision.action === "allin") {
         st.raiseLevel += 1;
+        // ★ lastRaiseSize 업데이트 (표준 NLHE min-raise 계산용)
+        // 레이즈 크기 = 새 베팅 총액 - 이전 최대 베팅
+        const oldMaxBet = maxBet;
+        const newBetTotal = decision.action === "allin"
+          ? actor.currentBet + actor.stack  // 올인이면 현재 베팅 + 스택
+          : decision.amount;                // 레이즈면 목표 금액
+        const raiseSize = newBetTotal - oldMaxBet;
+        if (raiseSize > st.lastRaiseSize) {
+          st.lastRaiseSize = raiseSize; // 더 큰 레이즈가 오면 업데이트 (작은 레이즈는 무시)
+        }
         // 레이즈가 발생하면 다른 모든 생존 플레이어가 다시 행동해야 함
         // (단, 레이즈한 본인은 hasActed=true 유지)
         for (let i = 0; i < st.seats.length; i++) {
@@ -643,6 +665,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     userTimer: st.userTimer,
     preAction,
     setPreActionQ,
+    currentStrategy: getStrategyForHand(st.handNumber),
     trainingStats,
     setTrainingMode: (mode: "HEURISTIC" | "NEURAL" | "HYBRID") => trainer.setMode(mode),
     resetTraining: () => trainer.resetTraining(),

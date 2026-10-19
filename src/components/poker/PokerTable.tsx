@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { TrainingPanel } from "./TrainingPanel";
 import { evaluateBestHand, scoreToCategoryName } from "@/lib/poker-engine";
+import { STRATEGY_PROFILES, StrategyType } from "@/lib/personas";
 
 interface Props {
   userName: string;
@@ -56,6 +57,7 @@ export function PokerTable({ userName, onToast }: Props) {
     userTimer,
     preAction,
     setPreActionQ,
+    currentStrategy,
     trainingStats,
     setTrainingMode,
     resetTraining,
@@ -118,6 +120,16 @@ export function PokerTable({ userName, onToast }: Props) {
         <div className="bg-rose-950/90 border border-rose-500 rounded-full px-2 py-0.5 backdrop-blur-sm shadow-lg">
           <span className="text-rose-200 text-[9px] font-bold">POT</span>
           <span className="text-amber-200 text-[11px] font-bold ml-1 tabular-nums">{livePot.toLocaleString()}</span>
+        </div>
+        {/* ★ AI 전략 표시 (5핸드마다 로테이션) */}
+        <div
+          className={`bg-gradient-to-r ${STRATEGY_PROFILES[currentStrategy as StrategyType].color} border border-amber-300 rounded-full px-2 py-0.5 backdrop-blur-sm shadow-lg`}
+          title={`AI 전략: ${STRATEGY_PROFILES[currentStrategy as StrategyType].name} - ${STRATEGY_PROFILES[currentStrategy as StrategyType].description}`}
+        >
+          <span className="text-[10px]">{STRATEGY_PROFILES[currentStrategy as StrategyType].emoji}</span>
+          <span className="text-amber-50 text-[10px] font-bold ml-1">
+            {STRATEGY_PROFILES[currentStrategy as StrategyType].name}
+          </span>
         </div>
       </div>
 

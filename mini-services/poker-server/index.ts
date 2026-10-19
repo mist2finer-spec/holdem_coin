@@ -11,7 +11,7 @@
 import { createServer } from "http";
 import { Server, Socket } from "socket.io";
 import { SelfPlayTrainer } from "../../src/lib/self-play-trainer.ts";
-import { RPG_BOT_POOL, BotPersona } from "../../src/lib/personas.ts";
+import { RPG_BOT_POOL, BotPersona, getStrategyForHand, applyStrategyToPersona } from "../../src/lib/personas.ts";
 import {
   makeDeck,
   Card,
@@ -69,6 +69,7 @@ interface ServerGameState {
   minRaise: number;
   maxRaise: number;
   raiseLevel: number;
+  lastRaiseSize: number; // ★ 마지막 레이즈 크기 (표준 NLHE min-raise)
 }
 
 interface ConnectedUser {
@@ -134,6 +135,7 @@ class HybridHoldemRoom {
       minRaise: BIG_BLIND,
       maxRaise: 0,
       raiseLevel: 0,
+      lastRaiseSize: BIG_BLIND, // ★ 초기값 BB
     };
   }
 
@@ -350,6 +352,7 @@ class HybridHoldemRoom {
   private async runBettingRound(btnSeat: number, startOffset: number, deck: Card[]) {
     const st = this.state;
     st.raiseLevel = 0;
+    st.lastRaiseSize = BIG_BLIND; // ★ 라운드 시작마다 BB로 리셋
     st.seats = st.seats.map(s => ({ ...s, hasActed: false }));
     st.lastActions = {};
     this.broadcast("TABLE_STATE", this.getMaskedState(null));
@@ -389,7 +392,10 @@ class HybridHoldemRoom {
       st.activeSeatId = actorIdx;
       const callAmt = Math.max(0, maxBet - actor.currentBet);
       st.callAmount = callAmt;
-      const minR = maxBet === 0 ? BIG_BLIND : maxBet + BIG_BLIND;
+      // ★ 표준 NLHE min-raise 규칙
+      const minR = maxBet === 0
+        ? BIG_BLIND
+        : maxBet + st.lastRaiseSize;
       const maxR = actor.stack + actor.currentBet;
       st.minRaise = minR;
       st.maxRaise = maxR;
@@ -422,6 +428,15 @@ class HybridHoldemRoom {
       // 레이즈 시 다른 유저의 콜/체크 사전 액션 취소
       if (decision.action === "raise" || decision.action === "allin") {
         st.raiseLevel += 1;
+        // ★ lastRaiseSize 업데이트 (표준 NLHE min-raise)
+        const oldMaxBet = maxBet;
+        const newBetTotal = decision.action === "allin"
+          ? actor.currentBet + actor.stack
+          : decision.amount;
+        const raiseSize = newBetTotal - oldMaxBet;
+        if (raiseSize > st.lastRaiseSize) {
+          st.lastRaiseSize = raiseSize;
+        }
         for (const u of this.users.values()) {
           if (u.preAction && (u.preAction.type === "call" || u.preAction.type === "check")) {
             u.preAction = null;
@@ -475,7 +490,10 @@ class HybridHoldemRoom {
     } else {
       // 봇 결정
       await this.sleep(600 + Math.random() * 600);
-      const persona = actor.persona || RPG_BOT_POOL[0];
+      const basePersona = actor.persona || RPG_BOT_POOL[0];
+      // ★ AI 전략 로테이션: 5핸드마다 AGGRESSIVE/TIGHT/LOOSE 순환
+      const currentStrategy = getStrategyForHand(this.state.handNumber);
+      const persona = applyStrategyToPersona(basePersona, currentStrategy);
       const livePot = this.state.pot + this.state.seats.reduce((a, s) => a + s.currentBet, 0);
       const activeOpp = this.state.seats.filter(s => s.inHand && !s.folded).length - 1;
       const nnDecision = this.trainer.decideActionForLive(
