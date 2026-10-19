@@ -44,6 +44,7 @@ export function PokerTable({ userName, onToast }: Props) {
     activeSeatId,
     lastActions,
     showdownReveal,
+    bluffReveal,
     showdownHands,
     winnerInfo,
     log,
@@ -234,7 +235,7 @@ export function PokerTable({ userName, onToast }: Props) {
               isDealer={buttonSeat === seat.seatId}
               isSmallBlind={(buttonSeat + 1) % 8 === seat.seatId}
               isBigBlind={(buttonSeat + 2) % 8 === seat.seatId}
-              showCards={showdownReveal}
+              showCards={showdownReveal || bluffReveal === seat.seatId}
               position={SEAT_POSITIONS[seat.seatId]}
               lastActionText={lastActions[seat.seatId]}
             />

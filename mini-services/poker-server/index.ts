@@ -1,3 +1,4 @@
+import { BluffAggression, successfulBluff, bluffTaunt } from "../../src/lib/poker-bluff.ts";
 import { settleHand, bettingLocked, hasBettingOpponent, dealNextStreet, WinnerInfo } from "../../src/lib/poker-rules.ts";
 // ============================================================
 // poker-server/index.ts - 8인 하이브리드 홀덤 소켓 서버
@@ -63,6 +64,8 @@ interface ServerGameState {
   activeSeatId: number;
   lastActions: Record<number, string>;
   showdownReveal: boolean;
+  lastAggression: BluffAggression | null;
+  bluffReveal: number | null;
   showdownHands: any[];
   winnerInfo: WinnerInfo | null;
   callAmount: number;
@@ -132,6 +135,8 @@ export class HybridHoldemRoom {
       activeSeatId: -1,
       lastActions: {},
       showdownReveal: false,
+      lastAggression: null,
+      bluffReveal: null,
       showdownHands: [],
       winnerInfo: null,
       callAmount: 0,
@@ -390,6 +395,8 @@ export class HybridHoldemRoom {
       st.phase = "PREFLOP";
       st.lastActions = {};
       st.showdownReveal = false;
+      st.lastAggression = null;
+      st.bluffReveal = null;
       st.showdownHands = [];
       st.winnerInfo = null;
       st.raiseLevel = 0;
@@ -549,6 +556,7 @@ export class HybridHoldemRoom {
       }
 
       // Validate bot decisions too. A stale/invalid decision falls back safely.
+      const intendedBluff = actor.isBot && decision.isBluff === true;
       decision = this.mapUserAction(decision) ?? { action: callAmt === 0 ? "check" : "fold", amount: 0 };
       const raisesBet = decision.action === "raise" ||
         (decision.action === "allin" && actor.currentBet + actor.stack > maxBet);
@@ -574,6 +582,9 @@ export class HybridHoldemRoom {
 
       // 액션 적용
       this.applyAction(actorIdx, decision);
+      if (st.seats[actorIdx].currentBet > maxBet && raisesBet) {
+        st.lastAggression = { seatId: actor.seatId, isBluff: intendedBluff };
+      }
       const actionLabel = this.labelAction(decision.action, decision.amount, callAmt);
       st.lastActions = { ...st.lastActions, [actorIdx]: actionLabel };
       this.broadcast("PLAYER_ACTION", {
@@ -842,7 +853,10 @@ export class HybridHoldemRoom {
 
   private async finishHand(isShowdown: boolean) {
     const st = this.state;
-    const alive = st.seats.filter(s => s.inHand && !s.folded);
+    st.bluffReveal = successfulBluff(st.seats, st.lastAggression, isShowdown);
+    if (st.bluffReveal !== null) {
+      this.broadcast("SYSTEM_NOTICE", { messages: [bluffTaunt(st.seats[st.bluffReveal].name)] });
+    }
 
     const settlement = settleHand(st.seats, st.board, st.buttonSeat);
     st.seats = st.seats.map(seat => ({ ...seat, stack: seat.stack + settlement.results.find(r=>r.seatId===seat.seatId)!.payout }));
@@ -862,6 +876,8 @@ export class HybridHoldemRoom {
     await this.sleep(5000);
     st.winnerInfo = null;
     st.showdownReveal = false;
+    st.lastAggression = null;
+    st.bluffReveal = null;
     st.showdownHands = [];
     this.broadcastTableState();
   }
@@ -904,7 +920,7 @@ export class HybridHoldemRoom {
     // seats를 순수 DTO로 매핑
     const seats = st.seats.map(s => {
       const isMe = s.seatId === mySeatId;
-      const reveal = isMe || (isShowdown && !s.folded);
+      const reveal = isMe || (isShowdown && !s.folded) || st.bluffReveal === s.seatId;
       const rawHole = s.holeCards.map(c => String(c.rank) + String(c.suit));
       return {
         seatId: Number(s.seatId),
@@ -959,6 +975,7 @@ export class HybridHoldemRoom {
       isUserTurn: Boolean(st.activeSeatId === mySeatId && mySeatId >= 0 && st.seats[mySeatId]?.inHand),
       handInProgress: Boolean(handInProgress),
       showdownHands,
+      bluffReveal: st.bluffReveal === null ? null : Number(st.bluffReveal),
       winnerInfo,
       seats,
       preAction: user?.preAction ? { type: user.preAction.type, amount: user.preAction.amount } : null,

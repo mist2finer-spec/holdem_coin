@@ -1,5 +1,6 @@
 "use client";
 /* eslint-disable react-hooks/immutability -- The imperative game loop and trainer expose mutable objects; callbacks run after render. */
+import { BluffAggression, successfulBluff, bluffTaunt } from "@/lib/poker-bluff";
 import { settleHand, bettingLocked, hasBettingOpponent, dealNextStreet, WinnerInfo } from "@/lib/poker-rules";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
@@ -44,6 +45,8 @@ interface GameState {
   activeSeatId: number;
   lastActions: Record<number, string>;
   showdownReveal: boolean;
+  lastAggression: BluffAggression | null;
+  bluffReveal: number | null;
   showdownHands: ShowdownHandInfo[];
   winnerInfo: WinnerInfo | null;
   isDealing: boolean;
@@ -89,6 +92,8 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     activeSeatId: -1,
     lastActions: {},
     showdownReveal: false,
+    lastAggression: null,
+    bluffReveal: null,
     winnerInfo: null,
     isDealing: false,
     awaitingUser: false,
@@ -197,6 +202,8 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     const st = stateRef.current;
     st.isDealing = true;
     st.showdownReveal = false;
+    st.lastAggression = null;
+    st.bluffReveal = null;
     st.winnerInfo = null;
     st.board = [];
     st.pot = 0;
@@ -438,13 +445,13 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
 
       // 액션 적용 (직접 ref 수정)
       applyActionToState(st, actorIdx, decision);
+      if (st.seats[actorIdx].currentBet > maxBet && (decision.action === "raise" || decision.action === "allin")) {
+        st.lastAggression = { seatId: actor.seatId, isBluff: !actor.isUser && decision.isBluff === true };
+      }
       const actionLabel = labelAction(decision.action, decision.amount, callAmt);
       st.lastActions = { ...st.lastActions, [actorIdx]: actionLabel };
-      pushLog(`${actor.name}: ${actionLabel}${decision.isBluff ? "  ◆블러프!" : ""}`, "action");
+      pushLog(`${actor.name}: ${actionLabel}`, "action");
 
-      if (decision.isBluff && actor.persona) {
-        onToast?.(`${actor.persona.emoji} ${actor.name}: "${actor.persona.taunt}"`, "info");
-      }
       tick();
       await sleep(800);
 
@@ -555,6 +562,12 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
 
   const finishHand = useCallback(async (isShowdown: boolean) => {
     const st = stateRef.current;
+    st.bluffReveal = successfulBluff(st.seats, st.lastAggression, isShowdown);
+    if (st.bluffReveal !== null) {
+      const message = bluffTaunt(st.seats[st.bluffReveal].name);
+      pushLog(message, "taunt");
+      onToast?.(message, "info");
+    }
     const settlement = settleHand(st.seats, st.board, st.buttonSeat);
     const winners = settlement.results.filter(r=>r.award>0);
     st.seats = st.seats.map(seat=>({...seat, stack:seat.stack+settlement.results.find(r=>r.seatId===seat.seatId)!.payout}));
@@ -576,6 +589,8 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     await sleep(5000);
     st.winnerInfo = null;
     st.showdownReveal = false;
+    st.lastAggression = null;
+    st.bluffReveal = null;
     st.showdownHands = [];
     tick();
   }, [pushLog, tick, onToast]);
@@ -659,6 +674,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     activeSeatId: st.activeSeatId,
     lastActions: st.lastActions,
     showdownReveal: st.showdownReveal,
+    bluffReveal: st.bluffReveal,
     showdownHands: st.showdownHands,
     winnerInfo: st.winnerInfo,
     log,

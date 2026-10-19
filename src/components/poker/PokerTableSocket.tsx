@@ -58,6 +58,7 @@ export function PokerTableSocket({ userName, onToast }: Props) {
     showdownHands,
     winnerInfo,
     showdownReveal,
+    bluffReveal,
     mySeatId,
     myPlayerId,
     myName,
@@ -228,7 +229,7 @@ export function PokerTableSocket({ userName, onToast }: Props) {
               isDealer={rotatedButtonSeat === i}
               isSmallBlind={(rotatedButtonSeat + 1) % 8 === i}
               isBigBlind={(rotatedButtonSeat + 2) % 8 === i}
-              showCards={showdownReveal}
+              showCards={showdownReveal || bluffReveal === seat.seatId}
               position={seat.position}
             />
           ))}

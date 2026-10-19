@@ -1,3 +1,4 @@
+import { bluffFrequency } from "./poker-bluff";
 import { settleHand, bettingLocked, dealNextStreet, hasBettingOpponent } from "./poker-rules";
 import { estimateEquity, afterRakeOdds, calledActionEV, DecisionContext } from "./poker-ai";
 // ============================================================
@@ -610,6 +611,18 @@ export class SelfPlayTrainer {
       mask[1] = false;
     }
 
+    // Aggressive personas mix weak-hand raises explicitly. Large-pressure spots
+    // and dry side pots are excluded; normal value decisions retain their EV policy.
+    const weakHand = tier <= HandTier.OVERCARDS;
+    const hasOpponent = !context || hasBettingOpponent(context.seats, context.actorId);
+    const bluffEligible = persona.aggression > 0.7 && weakHand && canRaise && pressure < 3 && hasOpponent;
+    const attemptBluff = bluffEligible && Math.random() < bluffFrequency(persona);
+    if (bluffEligible) {
+      mask[2] = false;
+      mask[3] = false;
+      mask[4] = false;
+    }
+
     // 6) Softmax 확률 추출
     const expVals = logits.map((v, i) => {
       if (!mask[i] || v < -50) return 0;
@@ -629,6 +642,8 @@ export class SelfPlayTrainer {
         if (r <= 0) { actIdx = i; break; }
       }
     }
+
+    if (attemptBluff) actIdx = 2; // Prefer a standard sized raise for the explicit bluff mix.
 
     // 7) 금액 계산
     let amount = 0;

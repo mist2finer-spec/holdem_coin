@@ -31,7 +31,12 @@ const clients=[];
     const r=stats[i];r.states++;r.hands.add(st.handNumber);
     if(st.mySeatId>=0){r.seated=true;r.ownSeats.add(st.mySeatId);}
     if(st.phase!=='SHOWDOWN') {
-     for(const seat of st.seats) if(!seat.isMe && seat.holeCards.some(c=>c!=='??')) r.errors.push('opponent cards leaked');
+     for(const seat of st.seats) {
+      const successfulReveal=st.phase==='HAND_END' && st.winnerInfo &&
+       st.bluffReveal===seat.seatId && seat.isBot && !seat.folded &&
+       st.seats.filter(s=>s.inHand && !s.folded).length===1;
+      if(!seat.isMe && !successfulReveal && seat.holeCards.some(c=>c!=='??')) r.errors.push('opponent cards leaked');
+     }
     }
     if(st.isUserTurn){const key=st.handNumber+':'+st.phase+':'+st.totalPot+':'+st.callAmount;
      if(!sent.has(key)){sent.add(key);r.actions++;client.emit('PLAYER_ACTION',{action:st.callAmount?'call':'check',amount:st.callAmount});}}

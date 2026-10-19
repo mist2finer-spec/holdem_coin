@@ -47,6 +47,7 @@ export interface SocketTableState {
   handInProgress: boolean;
   showdownHands: any[];
   winnerInfo: WinnerInfo | null;
+  bluffReveal: number | null;
   seats: SocketSeat[];
   preAction: { type: "fold" | "call" | "check"; amount: number } | null;
 }
@@ -229,6 +230,7 @@ export function usePokerSocket({ userName, onToast }: UsePokerSocketOpts) {
     showdownHands: state?.showdownHands ?? [],
     winnerInfo: state?.winnerInfo ?? null,
     showdownReveal: state?.phase === "SHOWDOWN",
+    bluffReveal: state?.bluffReveal ?? null,
     mySeatId: state?.mySeatId ?? -1,
     myPlayerId: state?.myPlayerId ?? null,  // ★ 고유 플레이어 ID
     myName: state?.myName ?? null,          // ★ 서버 부여 고유 이름

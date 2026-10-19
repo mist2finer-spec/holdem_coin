@@ -1,3 +1,5 @@
+import { bluffFrequency, successfulBluff } from "../src/lib/poker-bluff.ts";
+import { SelfPlayTrainer } from "../src/lib/self-play-trainer.ts";
 import { contributionLayers } from "../src/lib/poker-rules.ts";
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -124,4 +126,70 @@ test('blind defence covers a 2BB open at 50% override probability', async () => 
     Math.random=()=>0.25;
     assert.equal((await room.getDecision(room.state.seats[2],200,600,20200,false)).action,'fold');
   } finally {Math.random=random;}
+});
+
+
+test('aggressive weak-hand decisions bluff 20% with legal standard raises', () => {
+  assert.equal(bluffFrequency({aggression:0.8,bluffFreq:0.05}),0.20);
+  assert.equal(bluffFrequency({aggression:0.8,bluffFreq:0.35}),0.35);
+  assert.equal(bluffFrequency({aggression:0.3,bluffFreq:0.05}),0.05);
+  const trainer = new SelfPlayTrainer();
+  const random = Math.random;
+  let bluffs=0;
+  try {
+    for(let i=0;i<100;i++) {
+      Math.random=()=>(i+0.5)/100;
+      const d=trainer.decideActionForLive(
+        [{rank:'7',suit:'♠'},{rank:'2',suit:'♥'}],[],0,200,20000,300,20000,0,1,0,8,0,0,
+        {vpip:0.5,aggression:0.8,bluffFreq:0.05});
+      if(d.isBluff) {bluffs++;assert.equal(d.action,2);assert.ok(d.amount>=200 && d.amount<20000);}
+    }
+    assert.equal(bluffs,20);
+  } finally {Math.random=random;}
+});
+
+test('bluff success excludes showdowns, called hands, stale value raises and folded bluffers', () => {
+  const survivor=[{seatId:0,inHand:true,folded:false},{seatId:1,inHand:false,folded:true}];
+  assert.equal(successfulBluff(survivor,{seatId:0,isBluff:true},false),0);
+  assert.equal(successfulBluff(survivor,{seatId:0,isBluff:true},true),null);
+  assert.equal(successfulBluff(survivor,{seatId:0,isBluff:false},false),null);
+  assert.equal(successfulBluff(survivor,{seatId:1,isBluff:true},false),null);
+  assert.equal(successfulBluff(survivor,null,false),null);
+  assert.equal(successfulBluff(survivor.map(s=>({...s,inHand:true,folded:false})),{seatId:0,isBluff:true},false),null);
+});
+
+test('real server tracks normalized bluff raise and reveals only winner until result expires', async () => {
+  const room=roomWith([0,0]);
+  const notices:any[]=[];
+  room.broadcast=(event:string,data:any)=>{if(event==='SYSTEM_NOTICE')notices.push(data);};
+  room.getDecision=async (actor:any)=>actor.seatId===0
+    ? {action:'raise',amount:400,isBluff:true} : {action:'fold',amount:0};
+  await room.runBettingRound(0,0,[]);
+  assert.deepEqual(room.state.lastAggression,{seatId:0,isBluff:true});
+  assert.deepEqual(room.createSafeSnapshot(null).seats[0].holeCards,['??','??']);
+  let captured:any;
+  room.sleep=async (ms:number)=>{if(ms===5000)captured=room.createSafeSnapshot(null);};
+  await room.finishHand(false);
+  assert.equal(captured.bluffReveal,0);
+  assert.deepEqual(captured.seats[0].holeCards,['J♠','9♠']);
+  assert.deepEqual(captured.seats[1].holeCards,['??','??']);
+  assert.equal(notices.length,1);
+  assert.ok(notices[0].messages[0].includes('배짱'));
+  assert.equal(room.state.bluffReveal,null);
+  assert.equal(room.state.lastAggression,null);
+  assert.deepEqual(room.createSafeSnapshot(null).seats[0].holeCards,['??','??']);
+});
+
+test('real server replaces old bluff marker when another player makes a value raise', async () => {
+  const room=roomWith([0,0]);
+  room.state.lastAggression={seatId:1,isBluff:true};
+  room.getDecision=async (actor:any)=>actor.seatId===0
+    ? {action:'raise',amount:400,isBluff:false} : {action:'fold',amount:0};
+  await room.runBettingRound(0,0,[]);
+  assert.deepEqual(room.state.lastAggression,{seatId:0,isBluff:false});
+  let captured:any;
+  room.sleep=async ()=>{captured=room.createSafeSnapshot(null);};
+  await room.finishHand(false);
+  assert.equal(captured.bluffReveal,null);
+  assert.deepEqual(captured.seats[0].holeCards,['??','??']);
 });
