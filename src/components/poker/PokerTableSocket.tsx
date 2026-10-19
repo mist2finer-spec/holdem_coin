@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { LIVE_RULES } from "@/lib/poker-live";
 import { usePokerSocket } from "./usePokerSocket";
+import { CLIENT_REVISION, useReleaseUpdate } from "./useReleaseUpdate";
 import { PlayerSeat } from "./PlayerSeat";
 import { TableBet } from "./TableBet";
 import { PlayingCard } from "./PlayingCard";
@@ -71,6 +72,7 @@ export function PokerTableSocket({ userName, onToast }: Props) {
     myPlayerId,
     myName,
   } = usePokerSocket({ userName, onToast });
+  const updateAvailable = useReleaseUpdate(connected);
 
   const logScrollRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -110,6 +112,15 @@ export function PokerTableSocket({ userName, onToast }: Props) {
 
   return (
     <div className="w-full h-screen relative overflow-hidden bg-gradient-to-b from-slate-950 via-emerald-950 to-slate-950">
+      {updateAvailable && (
+        <div role="status" className="absolute top-10 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 rounded-lg border border-amber-500 bg-slate-950 px-4 py-2 text-sm text-amber-100 shadow-lg">
+          <span>새 버전이 배포되었습니다. 진행 중인 핸드를 마친 뒤 화면을 업데이트하세요.</span>
+          <Button size="sm" onClick={() => window.location.reload()}>화면 업데이트</Button>
+        </div>
+      )}
+      <span className="absolute bottom-1 right-2 z-30 text-[9px] text-slate-400" title="현재 화면 버전">
+        서버 · {CLIENT_REVISION.slice(0, 7)}
+      </span>
       {/* 배경 장식 */}
       <div className="absolute inset-0 opacity-30 pointer-events-none"
         style={{
