@@ -3,6 +3,7 @@ import { useState, useMemo } from "react";
 import { LIVE_RULES } from "@/lib/poker-live";
 import { usePokerTable } from "./usePokerTable";
 import { PlayerSeat } from "./PlayerSeat";
+import { TableBet } from "./TableBet";
 import { PlayingCard } from "./PlayingCard";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
@@ -228,6 +229,10 @@ export function PokerTable({ userName, onToast }: Props) {
               </div>
             </div>
           )}
+
+          {seats.map(seat => (
+            <TableBet key={`bet-${seat.seatId}`} amount={seat.currentBet} name={seat.name} position={SEAT_POSITIONS[seat.seatId]} />
+          ))}
 
           {/* 8개 좌석 */}
           {seats.map((seat) => (

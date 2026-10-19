@@ -1,8 +1,9 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { LIVE_RULES } from "@/lib/poker-live";
 import { usePokerSocket } from "./usePokerSocket";
 import { PlayerSeat } from "./PlayerSeat";
+import { TableBet } from "./TableBet";
 import { PlayingCard } from "./PlayingCard";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
@@ -70,6 +71,12 @@ export function PokerTableSocket({ userName, onToast }: Props) {
     myPlayerId,
     myName,
   } = usePokerSocket({ userName, onToast });
+
+  const logScrollRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const panel = logScrollRef.current;
+    if (panel) panel.scrollTop = panel.scrollHeight;
+  }, [log]);
 
   const [raiseAmount, setRaiseAmount] = useState(0);
   const [trainingStats, setTrainingStats] = useState<TrainingStats>(getGlobalTrainer().stats);
@@ -226,6 +233,10 @@ export function PokerTableSocket({ userName, onToast }: Props) {
               </div>
             </div>
           )}
+
+          {rotatedSeats.map(seat => (
+            <TableBet key={`bet-${seat.seatId}`} amount={seat.currentBet} name={seat.name} position={seat.position} />
+          ))}
 
           {/* 8개 좌석 (시점 회전 적용) */}
           {rotatedSeats.map((seat, i) => (
@@ -468,9 +479,9 @@ export function PokerTableSocket({ userName, onToast }: Props) {
             <span>◆ BATTLE LOG</span>
             <span className="text-amber-700/60 text-[8px]">{log.length}</span>
           </div>
-          <div className="overflow-y-auto max-h-[24vh] custom-scroll text-[10px] font-mono leading-relaxed space-y-0.5">
+          <div ref={logScrollRef} className="overflow-y-auto max-h-[24vh] custom-scroll text-[10px] font-mono leading-relaxed space-y-0.5">
             {log.length === 0 && <div className="text-slate-500 italic">대기 중...</div>}
-            {log.slice(-12).reverse().map((entry) => (
+            {log.slice(-12).map((entry) => (
               <div
                 key={entry.id}
                 className={
@@ -633,14 +644,6 @@ function SocketPlayerSeat({
               {seat.stack > 9999 ? `${(seat.stack/1000).toFixed(0)}k` : seat.stack.toLocaleString()}
             </span>
           </div>
-          {seat.currentBet > 0 && (
-            <div className="flex items-center gap-0.5 sm:gap-1 bg-rose-950/80 rounded-full px-1.5 py-0.5 sm:px-2 border border-rose-700/50">
-              <span className="text-[8px] sm:text-[9px] text-rose-300">bet</span>
-              <span className="text-[9px] sm:text-[10px] font-bold text-rose-100 tabular-nums">
-                {seat.currentBet > 9999 ? `${(seat.currentBet/1000).toFixed(0)}k` : seat.currentBet.toLocaleString()}
-              </span>
-            </div>
-          )}
         </div>
       </div>
     </div>

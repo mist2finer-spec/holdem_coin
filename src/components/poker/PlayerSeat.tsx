@@ -135,14 +135,6 @@ export function PlayerSeat({
           {seat.stack > 9999 ? `${(seat.stack/1000).toFixed(0)}k` : seat.stack.toLocaleString()}
         </span>
       </div>
-      {seat.currentBet > 0 && (
-        <div className="flex items-center gap-0.5 sm:gap-1 bg-rose-950/80 rounded-full px-1.5 py-0.5 sm:px-2 border border-rose-700/50">
-          <span className="text-[8px] sm:text-[9px] text-rose-300">bet</span>
-          <span className="text-[9px] sm:text-[10px] font-bold text-rose-100 tabular-nums">
-            {seat.currentBet > 9999 ? `${(seat.currentBet/1000).toFixed(0)}k` : seat.currentBet.toLocaleString()}
-          </span>
-        </div>
-      )}
       {seat.allIn && (
         <div className="flex items-center gap-0.5 bg-rose-700/90 rounded-full px-1.5 py-0.5 border border-rose-400">
           <span className="text-[8px] sm:text-[9px] text-amber-200 font-bold">ALL-IN</span>
