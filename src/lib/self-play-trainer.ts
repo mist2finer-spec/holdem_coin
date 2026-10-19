@@ -11,6 +11,9 @@ import {
   evalPostflopRealEquity,
   multiwayEquity,
   extractStateVector,
+  classifyHandTier,
+  HandTier,
+  HandTierNames,
 } from "./equity-engine";
 import { makeDeck, Card, determineWinners } from "./poker-engine";
 
@@ -519,12 +522,15 @@ export class SelfPlayTrainer {
 
   /**
    * 라이브 게임용 의사결정 (UI 훅에서 호출)
-   * GTO 스타일 핸드 강도 분류 + 포지션 기반 전략 + 신경망 보정
-   * - Premium hands (top 5%): 레이즈/3-bet
-   * - Strong hands (15%): 콜 위주, 가끔 레이즈
-   * - Medium hands (30-50%): 콜 (팟 오즈 충족 시)
-   * - Weak hands: 폴드 (가끔 블러프)
-   * - 포지션별 오프닝 레인지: UTG 타이트, BTN 루즈
+   * 5가지 액션 인덱스 (Python AdaptiveCPUBrain과 매칭):
+   *   0: FOLD
+   *   1: CHECK_OR_CALL
+   *   2: RAISE_STD (2.2x 스탠다드 리레이즈)
+   *   3: RERAISE_POT (팟 리레이즈 / 3-Bet)
+   *   4: ALL_IN
+   *
+   * Warm-Start: 처음부터 포커 정석 셋업된 로짓 앵커 사용
+   * 핵심: 노히트(AIR)는 상대 베팅/레이즈에 절대 콜(CALL) 하지 않음!
    */
   decideActionForLive(
     hole: Card[],
@@ -541,139 +547,179 @@ export class SelfPlayTrainer {
     raiseLevel: number,
     buttonSeat: number,
     persona: { vpip: number; aggression: number; bluffFreq: number }
-  ): { action: number; amount: number; isBluff?: boolean } {
-    const eq = board.length === 0
-      ? evalPreflop169(hole)
-      : evalPostflopRealEquity(hole, board);
-
-    const multiEq = multiwayEquity(eq, activeOpponents);
+  ): { action: number; amount: number; isBluff?: boolean; tier?: number } {
+    // 1) 새로운 정밀 핸드 티어 분류 (AIR 버그 수정 적용)
+    const { tier, rawEquity } = classifyHandTier(hole, board);
+    const multiEq = multiwayEquity(rawEquity, activeOpponents);
     const potOdds = callAmount > 0 ? callAmount / (pot + callAmount) : 0;
-    const evMargin = multiEq - potOdds;
-    const stackCommitment = callAmount > 0 ? callAmount / (myStack + callAmount) : 0;
 
-    // 포지션 계산 (UTG/MP/CO/BTN/SB/BB)
-    const position = this._getPosition(seatIndex, buttonSeat, numSeats);
-    const positionAdvantage = this._getPositionAdvantage(position);
-
-    // GTO 핸드 강도 분류 (포지션 보정 적용)
-    // 늦은 포지션(BTN/CO)일수록 같은 핸드라도 더 강하게 평가
-    const adjustedEq = eq + positionAdvantage * 0.05;
-    const handTier = this._classifyHandTier(adjustedEq, multiEq, board.length);
-
-    // ========================================
-    // GTO 결정 트리 (포지션 반영)
-    // ========================================
-
-    // === 1) 체크 가능한 상황 (callAmount === 0) ===
+    // 2) 베팅 압박 수위 (0~3)
+    let pressure: number;
     if (callAmount === 0) {
-      // Premium (AA, KK, QQ, AK, 넛): 밸류 베팅
-      if (handTier === "premium" && raiseLevel < 2 && Math.random() < persona.aggression * 0.8) {
-        const target = Math.max(minRaise, Math.floor(pot * (0.5 + persona.aggression * 0.3)));
-        return { action: 2, amount: Math.min(target, maxRaise) };
-      }
-      // Strong (탑페어 좋은 킥커, 투페어): 가끔 베팅
-      if (handTier === "strong" && raiseLevel === 0 && Math.random() < persona.aggression * 0.5) {
-        const target = Math.max(minRaise, Math.floor(pot * 0.5));
-        return { action: 2, amount: Math.min(target, maxRaise) };
-      }
-      // Bluff: 늦은 포지션에서 더 자주
-      const bluffChance = persona.bluffFreq * 0.3 * (1 + positionAdvantage);
-      if (handTier === "air" && activeOpponents <= 2 && raiseLevel === 0
-          && Math.random() < bluffChance) {
-        const target = Math.max(minRaise, Math.floor(pot * 0.5));
-        return { action: 2, amount: Math.min(target, maxRaise), isBluff: true };
-      }
-      // 기본: 체크
-      return { action: 1, amount: 0 };
+      pressure = 0;
+    } else if (raiseLevel >= 2
+               || (callAmount / (myStack + callAmount)) >= 0.28
+               || (callAmount / pot) >= 0.80) {
+      pressure = 3;
+    } else if (raiseLevel === 1 || (callAmount / pot) >= 0.30) {
+      pressure = 2;
+    } else {
+      pressure = 1;
     }
 
-    // === 2) 콜 비용이 있는 상황 ===
+    // 3) Warm-Start 앵커 로짓 (5개 액션)
+    const anchor = this._getWarmStartAnchor(pressure, tier, persona);
+    const logits = [...anchor];
 
-    // (a) 명백한 -EV: 폴드 (포지션이 좋으면 조금 더 버팀)
-    const foldThreshold = -0.08 + positionAdvantage * 0.03;
-    if (evMargin < foldThreshold) {
-      return { action: 0, amount: 0 };
+    // 4) 팟 오즈 실시간 대조: 승률이 팟 오즈보다 낮으면 Fold 가중치 대폭 상승
+    if (callAmount > 0 && multiEq < potOdds) {
+      const gap = (potOdds - multiEq) * 6.5;
+      logits[0] += gap;     // FOLD 상승
+      logits[1] -= gap;     // CALL 하락
     }
 
-    // (b) Premium (넛, 셋, 풀하우스): 레이즈/리레이즈
-    if (handTier === "premium" && raiseLevel < 3 && maxRaise > minRaise
-        && Math.random() < persona.aggression * 0.85) {
-      // 이미 3-bet 이상이면 콜 (캡 방지)
-      if (raiseLevel >= 2 && stackCommitment < 0.4) {
-        return { action: 1, amount: Math.min(callAmount, myStack) };
-      }
-      const target = Math.max(minRaise, maxRaise >= minRaise + pot
-        ? Math.floor(minRaise + pot * 0.6)
-        : minRaise);
-      return { action: 2, amount: Math.min(target, maxRaise) };
+    // 5) 하드 룰 마스킹 (콜 고착화 원천 차단!)
+    const canRaise = maxRaise > minRaise && raiseLevel < 4;
+    const mask = [true, true, canRaise, canRaise, canRaise];
+    if (callAmount === 0) {
+      mask[0] = false; // 체크 가능하면 폴드 금지
+    }
+    // ★ 핵심: 베팅/레이즈 직면 시 노히트(AIR) 또는 레이즈 직면 노페어(OVERCARDS)는 단순 콜(1) 원천 금지!
+    if (callAmount > 0 && (tier === HandTier.AIR || (tier === HandTier.OVERCARDS && pressure >= 2))) {
+      mask[1] = false;
     }
 
-    // (c) Strong: 보통 콜, 가끔 레이즈 (밸류)
-    // 늦은 포지션에서 더 공격적
-    if (handTier === "strong") {
-      const raiseChance = persona.aggression * 0.3 * (1 + positionAdvantage * 0.5);
-      if (raiseLevel === 0 && Math.random() < raiseChance && maxRaise > minRaise) {
-        const target = Math.max(minRaise, Math.floor(minRaise + pot * 0.5));
-        return { action: 2, amount: Math.min(target, maxRaise) };
+    // 6) Softmax 확률 추출
+    const expVals = logits.map((v, i) => {
+      if (!mask[i] || v < -50) return 0;
+      return Math.exp(Math.max(-6, Math.min(6, v)));
+    });
+    const tot = expVals.reduce((s, v) => s + v, 0);
+
+    let actIdx: number;
+    if (tot <= 0) {
+      actIdx = (callAmount > 0) ? 0 : 1;
+    } else {
+      // 가중치 기반 샘플링
+      let r = Math.random() * tot;
+      actIdx = 0;
+      for (let i = 0; i < 5; i++) {
+        r -= expVals[i];
+        if (r <= 0) { actIdx = i; break; }
       }
-      // 리레이즈가 있으면 콜 (조심)
-      if (raiseLevel >= 2 && stackCommitment > 0.3) {
-        // 큰 베팅에는 콜로 방어
-        if (evMargin > 0.05) {
-          return { action: 1, amount: Math.min(callAmount, myStack) };
-        }
-        return { action: 0, amount: 0 };
-      }
-      return { action: 1, amount: Math.min(callAmount, myStack) };
     }
 
-    // (d) Medium: 팟 오즈 충족하면 콜
-    // 포지션이 좋으면 더 넓게 콜
-    if (handTier === "medium") {
-      // 리레이즈(3-bet+) 상황이면 폴드 (포지션이 좋으면 조금 더 버팀)
-      const threeBetFoldThreshold = 0.25 - positionAdvantage * 0.05;
-      if (raiseLevel >= 2 && stackCommitment > threeBetFoldThreshold) {
-        return { action: 0, amount: 0 };
+    // 7) 금액 계산
+    let amount = 0;
+    let isBluff = false;
+    switch (actIdx) {
+      case 0: // FOLD
+        amount = 0;
+        break;
+      case 1: // CHECK_OR_CALL
+        amount = Math.min(callAmount, myStack);
+        break;
+      case 2: { // RAISE_STD (2.2x)
+        const baseTo = callAmount > 0
+          ? (myCurrentBet + callAmount) * 2.2
+          : (minRaise + pot * 0.6);
+        amount = Math.max(minRaise, Math.min(Math.floor(baseTo), maxRaise));
+        if (tier <= HandTier.OVERCARDS) isBluff = true;
+        break;
       }
-      // +EV 콜
-      const callThreshold = 0.02 - positionAdvantage * 0.03;
-      if (evMargin > callThreshold) {
-        return { action: 1, amount: Math.min(callAmount, myStack) };
+      case 3: { // RERAISE_POT (3-Bet)
+        const target = minRaise + pot * 1.0;
+        amount = Math.max(minRaise, Math.min(Math.floor(target), maxRaise));
+        if (tier <= HandTier.DRAW) isBluff = true;
+        break;
       }
-      // 애매하면 작은 베팅만 콜 (포지션이 좋으면 더 콜)
-      const smallBetThreshold = 0.15 + positionAdvantage * 0.05;
-      if (stackCommitment < smallBetThreshold) {
-        return { action: 1, amount: Math.min(callAmount, myStack) };
-      }
-      return { action: 0, amount: 0 };
+      case 4: // ALL_IN
+        amount = maxRaise;
+        if (tier < HandTier.TOP_PAIR) isBluff = true;
+        break;
     }
 
-    // (e) Weak (원페어 낮은 킥커, 바텀페어): 작은 베팅만 콜
-    // 포지션이 좋으면 더 넓게 콜
-    if (handTier === "weak") {
-      const weakCallRaiseLevel = 1; // 포지션 좋으면 1레이즈까지 콜
-      if (raiseLevel >= weakCallRaiseLevel && positionAdvantage < 0.5) return { action: 0, amount: 0 };
-      if (raiseLevel >= weakCallRaiseLevel + 1) return { action: 0, amount: 0 };
-      const weakStackThreshold = 0.10 + positionAdvantage * 0.05;
-      if (stackCommitment < weakStackThreshold && evMargin > -0.05) {
-        return { action: 1, amount: Math.min(callAmount, myStack) };
+    return { action: actIdx, amount, isBluff, tier };
+  }
+
+  /**
+   * Warm-Start 앵커 로짓 (Python _get_warm_start_anchor와 동일)
+   * 5개 액션: [Fold, Call, Raise_Std, Reraise_Pot, All_In]
+   * pressure: 0=체크가능, 1=블라인드/소액벳, 2=레이즈직면, 3=리레이즈(3Bet+)/큰압박 직면
+   */
+  private _getWarmStartAnchor(
+    pressure: number,
+    tier: number,
+    persona: { vpip: number; aggression: number; bluffFreq: number }
+  ): number[] {
+    const t = persona.tightness ?? (1 - persona.vpip); // tightness = 1 - vpip
+    const a = persona.aggression;
+    const b = persona.bluffFreq;
+
+    // 1) 체크 가능한 무료 상황 (pressure === 0)
+    if (pressure === 0) {
+      if (tier === HandTier.AIR) {
+        return [-99, 2.2, -0.4 + b * 2.0, -2.0 + b * 1.2, -99];
       }
-      return { action: 0, amount: 0 };
+      if (tier === HandTier.OVERCARDS || tier === HandTier.WEAK_PAIR) {
+        return [-99, 2.0, 0.4 + a * 0.8, -1.5, -99];
+      }
+      if (tier === HandTier.DRAW) {
+        return [-99, 1.1, 1.6 + a * 1.2, 0.5 + a * 1.0, -99];
+      }
+      if (tier === HandTier.TOP_PAIR) {
+        return [-99, 0.5, 2.5 + a * 1.0, 1.1 + a * 0.8, -2.5];
+      }
+      // TWO_PAIR_PLUS, MONSTER
+      return [-99, 0.2, 2.2 + a, 2.8 + a * 1.5, 0.8 + a];
     }
 
-    // (f) Air (하이카드): 거의 폴드, 가끔 블러프 콜
-    // 늦은 포지션에서 가끔 스틸 시도
-    if (handTier === "air") {
-      const bluffCallChance = persona.bluffFreq * 0.2 * (1 + positionAdvantage);
-      if (raiseLevel === 0 && stackCommitment < 0.05
-          && Math.random() < bluffCallChance) {
-        return { action: 1, amount: Math.min(callAmount, myStack), isBluff: true };
-      }
-      return { action: 0, amount: 0 };
+    // 2) 상대 베팅/레이즈에 직면한 상황 (pressure 1, 2, 3)
+    if (tier === HandTier.AIR) {
+      // ★ 핵심: 노히트(AIR)는 상대 베팅/레이즈에 절대 CALL(-99) 하지 않음!
+      const bluffQ = (b * 2.2) - (pressure * 1.1) - (t * 0.9);
+      return [3.2 + t * 2.0, -99, bluffQ, -99, -99];
     }
-
-    // 기본: 콜 (이 경우는 거의 안 옴)
-    return { action: 1, amount: Math.min(callAmount, myStack) };
+    if (tier === HandTier.OVERCARDS) {
+      if (pressure === 1) {
+        return [1.3 + t, 0.9 - t * 0.5, -0.6 + b, -99, -99];
+      }
+      // 레이즈(P2, P3) 직면 시 노페어 오버카드는 콜 금지 → 칼폴드!
+      return [3.4 + t, -99, -1.0 + b, -99, -99];
+    }
+    if (tier === HandTier.WEAK_PAIR) {
+      if (pressure === 1) {
+        return [0.4 + t * 0.8, 1.7, -0.8, -99, -99];
+      }
+      if (pressure === 2) {
+        // 상대 레이즈(P2)에 바텀/미들페어는 대부분 폴드!
+        return [2.2 + t * 1.4, 0.1 - t * 0.6, -1.8, -99, -99];
+      }
+      return [3.8, -99, -99, -99, -99];
+    }
+    if (tier === HandTier.DRAW) {
+      // 플러시/스트레이트 드로우: 콜 또는 공격적인 세미블러프 리레이즈!
+      if (pressure <= 2) {
+        return [0.3 + t * 0.5, 1.5, 1.4 + a * 1.4, 0.4 + a * 1.0, -2.0];
+      }
+      return [1.8 + t, 0.5, -0.4 + a * 0.5, -2.0, -2.0];
+    }
+    if (tier === HandTier.TOP_PAIR) {
+      // 탑페어: 레이즈에 콜 또는 리레이즈(2, 3번 액션)로 맞불!
+      if (pressure <= 2) {
+        return [-0.4 + t * 0.5, 1.8, 1.5 + a * 1.2, 0.4 + a * 0.8, -1.8];
+      }
+      return [1.3 + t * 0.9, 0.9, -0.1 + a * 0.6, -1.0, -1.5];
+    }
+    if (tier === HandTier.TWO_PAIR_PLUS) {
+      // 투페어 / 오버페어(JJ~AA): 적극적 리레이즈 주력!
+      if (pressure <= 2) {
+        return [-99, 1.0, 2.5 + a * 1.2, 1.9 + a * 1.2, -0.2 + a];
+      }
+      return [0.1 + t * 0.4, 1.3, 1.6 + a, 1.3 + a, 0.5 + a];
+    }
+    // MONSTER (셋, 스트레이트, 플러시 이상): 강력한 리레이즈 & 올인!
+    return [-99, 0.7, 2.2 + a, 2.9 + a * 1.5, 2.0 + a * 1.5];
   }
 
   /**
@@ -683,7 +729,6 @@ export class SelfPlayTrainer {
    */
   private _getPosition(seatIndex: number, buttonSeat: number, numSeats: number): string {
     const offset = (seatIndex - buttonSeat + numSeats) % numSeats;
-    // 8인 테이블: BTN=0, SB=1, BB=2, UTG=3, UTG+1=4, MP1=5, MP2=6, CO=7
     if (offset === 0) return "BTN";
     if (offset === 1) return "SB";
     if (offset === 2) return "BB";
@@ -694,7 +739,6 @@ export class SelfPlayTrainer {
       if (offset === 6) return "MP2";
       if (offset === 7) return "CO";
     } else {
-      // 6인 테이블 등
       if (offset === 3) return "UTG";
       if (offset === 4) return "MP";
       if (offset === 5) return "CO";
@@ -705,51 +749,22 @@ export class SelfPlayTrainer {
   /**
    * 포지션 이점 점수 (0.0 ~ 1.0)
    * BTN이 가장 유리(1.0), UTG가 가장 불리(0.0)
-   * 빠른 포지션일수록 더 많은 상대가 뒤에 있어서 정보가 적음
    */
   private _getPositionAdvantage(position: string): number {
     switch (position) {
-      case "BTN": return 1.0;  // 가장 유리
+      case "BTN": return 1.0;
       case "CO":  return 0.8;
       case "MP2": return 0.6;
       case "MP1": return 0.5;
       case "MP":  return 0.4;
       case "UTG1": return 0.3;
-      case "UTG": return 0.2;  // 가장 불리
-      case "BB":  return 0.5;  // 이미 블라인드 걸었음
-      case "SB":  return 0.3;  // 가장 불리한 위치
+      case "UTG": return 0.2;
+      case "BB":  return 0.5;
+      case "SB":  return 0.3;
       default:    return 0.4;
     }
   }
 
-  /**
-   * GTO 핸드 강도 티어 분류
-   * - premium: AA, KK, QQ, AKs / 넛, 셋, 풀하우스, 플러시, 스트레이트 (postflop)
-   * - strong: 탑페어 좋은 킥커, 투페어, 오버페어 (postflop)
-   * - medium: 미들페어, 좋은 드로우
-   * - weak: 바텀페어, 약한 원페어
-   * - air: 하이카드
-   */
-  private _classifyHandTier(
-    rawEq: number,
-    multiEq: number,
-    boardLen: number
-  ): "premium" | "strong" | "medium" | "weak" | "air" {
-    if (boardLen === 0) {
-      // 프리플랍: 첸 점수 기준
-      if (rawEq >= 0.90) return "premium";   // AA, KK, QQ, AKs
-      if (rawEq >= 0.78) return "strong";    // JJ, TT, AQ, KQs
-      if (rawEq >= 0.55) return "medium";    // 99-22, AJ, AT, KJ
-      if (rawEq >= 0.35) return "weak";      // 스펙
-      return "air";                          // 쓰레기
-    }
-    // 포스트플랍: multiway 보정 승률 기준
-    if (multiEq >= 0.85) return "premium";   // 넛, 셋, 풀하우스
-    if (multiEq >= 0.65) return "strong";    // 탑페어 좋은 킥커, 투페어
-    if (multiEq >= 0.45) return "medium";    // 미들페어, 드로우
-    if (multiEq >= 0.25) return "weak";      // 바텀페어
-    return "air";                            // 하이카드
-  }
-
-  // _heuristicDecide는 제거됨 - GTO 결정 트리가 decideActionForLive에서 직접 처리
+  // _heuristicDecide, _classifyHandTier(구버전) 제거됨
+  // 새로운 classifyHandTier (equity-engine.ts) 사용
 }

@@ -255,33 +255,79 @@ export function PokerTable({ userName, onToast }: Props) {
                 </div>
               </div>
 
+              {/* 5개 메인 액션 버튼 (Python 5-action 시스템과 매칭) */}
               <div className="flex items-center gap-1 sm:gap-2">
+                {/* 0: FOLD */}
                 <Button
                   variant="destructive"
-                  className="bg-rose-800 hover:bg-rose-700 text-rose-50 border border-rose-500 font-bold h-8 sm:h-10 px-2 sm:px-4 text-[10px] sm:text-sm"
+                  className="bg-rose-800 hover:bg-rose-700 text-rose-50 border border-rose-500 font-bold h-8 sm:h-10 px-2 sm:px-3 text-[10px] sm:text-sm flex-1"
                   onClick={() => submitUserAction("fold", 0)}
                 >
                   FOLD
                 </Button>
 
+                {/* 1: CHECK_OR_CALL */}
                 {callAmount === 0 ? (
                   <Button
-                    className="bg-emerald-700 hover:bg-emerald-600 text-emerald-50 border border-emerald-400 font-bold h-8 sm:h-10 px-2 sm:px-4 text-[10px] sm:text-sm"
+                    className="bg-emerald-700 hover:bg-emerald-600 text-emerald-50 border border-emerald-400 font-bold h-8 sm:h-10 px-2 sm:px-3 text-[10px] sm:text-sm flex-1"
                     onClick={() => submitUserAction("check", 0)}
                   >
                     CHECK
                   </Button>
                 ) : (
                   <Button
-                    className="bg-emerald-700 hover:bg-emerald-600 text-emerald-50 border border-emerald-400 font-bold h-8 sm:h-10 px-2 sm:px-4 text-[10px] sm:text-sm"
+                    className="bg-emerald-700 hover:bg-emerald-600 text-emerald-50 border border-emerald-400 font-bold h-8 sm:h-10 px-2 sm:px-3 text-[10px] sm:text-sm flex-1"
                     onClick={() => submitUserAction("call", Math.min(callAmount, userSeat?.stack ?? 0))}
                   >
                     CALL {Math.min(callAmount, userSeat?.stack ?? 0).toLocaleString()}
                   </Button>
                 )}
 
-                <div className="flex-1 flex items-center gap-1 sm:gap-2 px-2 sm:px-3 bg-slate-950/70 rounded-md border border-amber-700/50 h-8 sm:h-10">
-                  <span className="text-amber-300 text-[9px] sm:text-[10px] font-bold">R</span>
+                {/* 2: RAISE_STD (2.2x) */}
+                <Button
+                  className="bg-amber-600 hover:bg-amber-500 text-amber-950 border border-amber-300 font-bold h-8 sm:h-10 px-2 sm:px-3 text-[10px] sm:text-sm flex-1"
+                  onClick={() => {
+                    // 2.2x 스탠다드 리레이즈
+                    const baseTo = callAmount > 0
+                      ? ((userSeat?.currentBet ?? 0) + callAmount) * 2.2
+                      : (minRaise + livePot * 0.6);
+                    const target = clampRaise(minRaise, maxRaise, Math.floor(baseTo));
+                    submitUserAction("raise", target);
+                  }}
+                  disabled={maxRaise <= minRaise}
+                  title={`스탠다드 리레이즈 (2.2x)`}
+                >
+                  RAISE
+                </Button>
+
+                {/* 3: RERAISE_POT (3-Bet) */}
+                <Button
+                  className="bg-orange-600 hover:bg-orange-500 text-orange-50 border border-orange-300 font-bold h-8 sm:h-10 px-2 sm:px-3 text-[10px] sm:text-sm flex-1"
+                  onClick={() => {
+                    // 팟 리레이즈 (3-Bet)
+                    const target = clampRaise(minRaise, maxRaise, Math.floor(minRaise + livePot));
+                    submitUserAction("raise", target);
+                  }}
+                  disabled={maxRaise <= minRaise}
+                  title={`팟 리레이즈 (3-Bet)`}
+                >
+                  3-BET
+                </Button>
+
+                {/* 4: ALL_IN */}
+                <Button
+                  variant="default"
+                  className="bg-rose-600 hover:bg-rose-500 text-amber-100 border border-rose-300 font-bold h-8 sm:h-10 px-2 sm:px-3 text-[10px] sm:text-sm flex-1"
+                  onClick={() => submitUserAction("allin", userSeat?.stack ?? 0)}
+                >
+                  ALL-IN
+                </Button>
+              </div>
+
+              {/* 커스텀 레이즈 슬라이더 행 */}
+              <div className="flex items-center gap-1 sm:gap-2 mt-1.5">
+                <span className="text-amber-300 text-[8px] sm:text-[9px] font-bold">CUSTOM:</span>
+                <div className="flex-1 flex items-center gap-1 sm:gap-2 px-2 sm:px-3 bg-slate-950/70 rounded-md border border-amber-700/50 h-7 sm:h-9">
                   <Slider
                     value={[effectiveRaise]}
                     min={minRaise}
@@ -294,21 +340,12 @@ export function PokerTable({ userName, onToast }: Props) {
                     {effectiveRaise.toLocaleString()}
                   </span>
                 </div>
-
                 <Button
-                  className="bg-amber-600 hover:bg-amber-500 text-amber-950 border border-amber-300 font-bold h-8 sm:h-10 px-2 sm:px-4 text-[10px] sm:text-sm"
+                  className="bg-amber-700 hover:bg-amber-600 text-amber-50 border border-amber-400 font-bold h-7 sm:h-9 px-2 sm:px-3 text-[10px] sm:text-xs"
                   onClick={() => submitUserAction("raise", effectiveRaise)}
                   disabled={maxRaise <= minRaise}
                 >
-                  RAISE
-                </Button>
-
-                <Button
-                  variant="default"
-                  className="bg-rose-600 hover:bg-rose-500 text-amber-100 border border-rose-300 font-bold h-8 sm:h-10 px-2 sm:px-4 text-[10px] sm:text-sm"
-                  onClick={() => submitUserAction("allin", userSeat?.stack ?? 0)}
-                >
-                  ALL-IN
+                  입력
                 </Button>
               </div>
 

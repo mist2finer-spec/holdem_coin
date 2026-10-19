@@ -591,28 +591,34 @@ function getGlobalTrainer(): SelfPlayTrainer {
 }
 
 /**
- * 신경망 액션(0-3)을 엔진 액션(fold/check/call/raise/allin)으로 변환
+ * 신경망 액션(0-4)을 엔진 액션(fold/check/call/raise/allin)으로 변환
+ * 0: FOLD
+ * 1: CHECK_OR_CALL
+ * 2: RAISE_STD (2.2x)
+ * 3: RERAISE_POT (3-Bet)
+ * 4: ALL_IN
  */
 function mapNNActionToEngine(
-  nn: { action: number; amount: number; isBluff?: boolean },
+  nn: { action: number; amount: number; isBluff?: boolean; tier?: number },
   callAmt: number,
   myStack: number
 ): { action: ActionType; amount: number; isBluff?: boolean } {
   switch (nn.action) {
-    case 0:
+    case 0: // FOLD
       return { action: "fold", amount: 0, isBluff: nn.isBluff };
-    case 1:
-      // check or call
+    case 1: // CHECK_OR_CALL
       if (callAmt === 0) return { action: "check", amount: 0 };
       if (nn.amount >= myStack) return { action: "allin", amount: myStack };
       return { action: "call", amount: nn.amount };
-    case 2:
-    case 3:
-      // raise or allin
+    case 2: // RAISE_STD
+    case 3: // RERAISE_POT
+      // 스택보다 큰 금액은 올인으로 처리
       if (nn.amount >= myStack + (callAmt > 0 ? callAmt : 0)) {
         return { action: "allin", amount: myStack, isBluff: nn.isBluff };
       }
       return { action: "raise", amount: nn.amount, isBluff: nn.isBluff };
+    case 4: // ALL_IN
+      return { action: "allin", amount: myStack, isBluff: nn.isBluff };
     default:
       return { action: "fold", amount: 0 };
   }
