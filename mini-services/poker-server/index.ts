@@ -151,14 +151,78 @@ class HybridHoldemRoom {
       preAction: null,
     };
     this.users.set(socket.id, user);
-    this.joinQueue.push(user);
 
-    // 접속 즉시 현재 테이블 상태 전송
+    // ★ 핸드 진행 중인지 확인
+    const handInProgress = this.state.phase !== "SHOWDOWN"
+      && this.state.phase !== "HAND_END"
+      && this.state.activeSeatId >= 0;
+
+    // 빈 자리 찾기 (BB+2 = UTG 자리 우선, 없으면 아무 빈 AI 자리)
+    const botSeats = this.state.seats.filter(s => s.isBot);
+    const hasEmptySeat = botSeats.length > 0;
+
+    if (hasEmptySeat) {
+      // ★ BB+2 자리 (UTG) 찾기
+      const bbSeat = (this.state.buttonSeat + 2) % NUM_SEATS;
+      const utgSeat = (this.state.buttonSeat + 3) % NUM_SEATS;
+      // UTG 자리가 비어있으면(봇이면) 거기로, 아니면 첫 번째 봇 자리로
+      let targetSeatId: number;
+      if (this.state.seats[utgSeat]?.isBot) {
+        targetSeatId = utgSeat;
+      } else {
+        targetSeatId = botSeats[0].seatId;
+      }
+
+      if (handInProgress) {
+        // ★ 핸드 진행 중: 자리는 차지하지만 이번 핸드는 관전
+        const seat = this.state.seats[targetSeatId];
+        seat.isBot = false;
+        seat.name = user.name;
+        seat.socketId = user.socketId;
+        seat.persona = undefined;
+        seat.folded = true; // 이번 핸드는 폴드 처리
+        seat.inHand = false;
+        user.seatId = targetSeatId;
+
+        // 이 플레이어에게만 "핸드 진행 중" 메시지 전송
+        socket.emit("SYSTEM_NOTICE", {
+          messages: [
+            `👀 [${user.name}]님이 #${targetSeatId + 1}번 좌석에 착석했습니다.`,
+            `⏳ 현재 핸드 #${this.state.handNumber}이(가) 진행 중입니다. 다음 핸드부터 참여할 수 있습니다.`,
+          ],
+        });
+        // 다른 플레이어들에게는 일반 입장 메시지
+        this.broadcastExcept("SYSTEM_NOTICE", {
+          messages: [`👀 [${user.name}]님이 #${targetSeatId + 1}번 좌석에 착석했습니다. (다음 핸드부터 참여)`],
+        }, socket.id);
+      } else {
+        // 핸드 사이: 즉시 참여 가능
+        const seat = this.state.seats[targetSeatId];
+        seat.isBot = false;
+        seat.name = user.name;
+        seat.socketId = user.socketId;
+        seat.persona = undefined;
+        seat.stack = DEFAULT_BUYIN;
+        user.seatId = targetSeatId;
+
+        this.broadcast("SYSTEM_NOTICE", {
+          messages: [`🔄 [${user.name}]님이 #${targetSeatId + 1}번 좌석에 착석했습니다!`],
+        });
+      }
+    } else {
+      // 빈 자리 없음: 관전 모드
+      this.joinQueue.push(user);
+      socket.emit("SYSTEM_NOTICE", {
+        messages: [
+          `👀 [${user.name}]님이 관전 모드로 입장했습니다.`,
+          `⏳ 테이블이 가득 찼습니다. 빈자리가 생기면 자동 착석됩니다.`,
+        ],
+      });
+    }
+
+    // 접속 즉시 현재 테이블 상태 전송 (시점 회전 적용)
     socket.emit("TABLE_STATE", this.getMaskedState(socket.id));
-    this.broadcast("SYSTEM_NOTICE", {
-      messages: [`👀 [${user.name}]님이 입장했습니다. 다음 핸드에 AI와 교대하여 착석합니다.`],
-    });
-    console.log(`[User] ${user.name} 접속 (대기열: ${this.joinQueue.length}명)`);
+    console.log(`[User] ${user.name} 접속 (seatId: ${user.seatId}, handInProgress: ${handInProgress})`);
   }
 
   onUserDisconnect(socketId: string) {
@@ -229,7 +293,9 @@ class HybridHoldemRoom {
     }
     this.leaveSeats.clear();
 
-    // 2) 대기열 유저를 AI 자리에 교체 투입
+    // 2) 관전 대기열 유저를 빈 AI 자리에 투입 (핸드 사이에만)
+    // ★ 입장 시 즉시 자리 배정은 onUserConnect에서 처리하므로
+    //    여기서는 관전 모드였던 유저만 처리
     while (this.joinQueue.length > 0) {
       const botSeats = this.state.seats.filter(s => s.isBot);
       if (botSeats.length === 0) break;
@@ -245,7 +311,7 @@ class HybridHoldemRoom {
       user.seatId = targetSeat.seatId;
 
       this.broadcast("SYSTEM_NOTICE", {
-        messages: [`🔄 AI가 자리를 비켜주고 [${user.name}]님이 #${targetSeat.seatId + 1}번 좌석에 착석했습니다!`],
+        messages: [`🔄 [${user.name}]님이 #${targetSeat.seatId + 1}번 좌석에 착석했습니다!`],
       });
       console.log(`[Swap] ${user.name} → 좌석 ${targetSeat.seatId + 1}`);
     }
@@ -746,6 +812,11 @@ class HybridHoldemRoom {
     const user = socketId ? this.users.get(socketId) : null;
     const mySeatId = user?.seatId ?? -1;
     const isShowdown = st.phase === "SHOWDOWN";
+    const handInProgress = st.phase !== "SHOWDOWN"
+      && st.phase !== "HAND_END"
+      && st.activeSeatId >= 0
+      && mySeatId >= 0
+      && !st.seats[mySeatId]?.inHand; // 내가 이번 핸드에 참여 안 함
 
     return {
       type: "TABLE_STATE",
@@ -759,7 +830,8 @@ class HybridHoldemRoom {
       minRaise: st.minRaise,
       maxRaise: st.maxRaise,
       mySeatId,
-      isUserTurn: st.activeSeatId === mySeatId && mySeatId >= 0,
+      isUserTurn: st.activeSeatId === mySeatId && mySeatId >= 0 && st.seats[mySeatId]?.inHand,
+      handInProgress, // ★ 핸드 진행 중 입장 여부
       showdownHands: st.showdownHands,
       winnerInfo: st.winnerInfo,
       seats: st.seats.map(s => {
@@ -770,6 +842,7 @@ class HybridHoldemRoom {
           seatId: s.seatId,
           name: s.name,
           isBot: s.isBot,
+          isMe, // ★ 자신 좌석 표시
           stack: s.stack,
           currentBet: s.currentBet,
           inHand: s.inHand,
@@ -784,6 +857,15 @@ class HybridHoldemRoom {
 
   private broadcast(event: string, data: any) {
     io.emit(event, data);
+  }
+
+  // ★ 특정 소켓 제외하고 브로드캐스트
+  private broadcastExcept(event: string, data: any, exceptSocketId: string) {
+    for (const [socketId] of this.users) {
+      if (socketId !== exceptSocketId) {
+        io.to(socketId).emit(event, data);
+      }
+    }
   }
 
   private sleep(ms: number) {
@@ -827,4 +909,14 @@ io.on("connection", (socket: Socket) => {
 httpServer.listen(PORT, () => {
   console.log(`🎰 8-Player Hybrid Holdem Server running on port ${PORT}`);
   console.log(`   Caddy 라우팅: ?XTransformPort=${PORT}`);
+});
+
+// ★ 프로세스 안정성: 예외로 인한 종료 방지
+process.on("uncaughtException", (err) => {
+  console.error("[UNCAUGHT] 예외 발생:", err.message);
+  console.error(err.stack);
+});
+
+process.on("unhandledRejection", (reason) => {
+  console.error("[UNHANDLED] Promise 거부:", reason);
 });

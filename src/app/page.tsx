@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { PokerTable } from "@/components/poker/PokerTable";
+import { PokerTableSocket } from "@/components/poker/PokerTableSocket";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { RPG_BOT_POOL } from "@/lib/personas";
@@ -28,7 +28,7 @@ export default function Home() {
   };
 
   if (entered) {
-    return <PokerTable userName={userName} onToast={handleToast} />;
+    return <PokerTableSocket userName={userName} onToast={handleToast} />;
   }
 
   return <LobbyScreen
