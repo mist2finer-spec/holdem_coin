@@ -1051,14 +1051,16 @@ if (process.env.POKER_TEST_MODE !== "1") {
     console.log(`🎰 8-Player Hybrid Holdem Server running on port ${PORT}`);
     console.log(`   Caddy 라우팅: ?XTransformPort=${PORT}`);
 
-    // ★ 1시간마다 서버 자동 재시작
-    const RESTART_INTERVAL = 60 * 60 * 1000; // 1시간
-    setTimeout(() => {
-      console.log("[Server] 1시간 경과, 자동 재시작 중...");
-      io.emit("SYSTEM_NOTICE", { messages: ["🔄 서버가 1시간마다 자동 재시작됩니다. 잠시 후 다시 접속해주세요."] });
-      setTimeout(() => process.exit(0), 2000); // 2초 대기 후 종료 (host가 재시작)
-    }, RESTART_INTERVAL);
-    console.log(`   자동 재시작: ${RESTART_INTERVAL / 60000}분 후`);
+    // Existing Z.ai deployments retain their interval; managed hosts may disable it.
+    const restartInterval = Number(process.env.POKER_RESTART_INTERVAL_MS ?? 3600000);
+    if (Number.isFinite(restartInterval) && restartInterval > 0) {
+      setTimeout(() => {
+        io.emit("SYSTEM_NOTICE", { messages: ["🔄 서버가 재시작됩니다. 잠시 후 다시 접속해주세요."] });
+        setTimeout(() => process.exit(0), 2000);
+      }, restartInterval);
+      console.log(`   자동 재시작: ${restartInterval / 60000}분 후`);
+    }
+
   });
 
   // Unexpected failures exit nonzero so the host can restart cleanly.

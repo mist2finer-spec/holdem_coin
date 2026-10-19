@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: holdem-coin-tavern
+    runtime: node
+    plan: free
+    numInstances: 1
+    buildCommand: npm install --legacy-peer-deps --no-audit --no-fund && npm ci --prefix mini-services/poker-server --include=dev && npm run build
+    startCommand: node scripts/start-hosted.mjs
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_VERSION
+        value: 22.18.0
+      - key: NODE_ENV
+        value: production
+      - key: NPM_CONFIG_PRODUCTION
+        value: "false"
+      - key: NEXT_TELEMETRY_DISABLED
+        value: "1"

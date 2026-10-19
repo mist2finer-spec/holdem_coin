@@ -9,7 +9,14 @@ const service = path.resolve(__dirname,'../mini-services/poker-server');
 const {io} = createRequire(path.join(service,'package.json'))('socket.io-client');
 const port = 13003;
 const origin = `http://127.0.0.1:${port}`;
-const server = spawn('bash',['./start.sh'],{cwd:service,env:{...process.env,POKER_PORT:String(port),POKER_TEST_MODE:'0'},stdio:['ignore','pipe','pipe']});
+const hosted = process.env.POKER_SMOKE_HOSTED === '1';
+const server = hosted
+ ? spawn(process.execPath,['scripts/start-hosted.mjs'],{
+   cwd:path.resolve(service,'../..'),
+   env:{...process.env,PORT:String(port),HOLDEM_WEB_PORT:'13000',POKER_PORT:'13004'},
+   stdio:['ignore','pipe','pipe'],
+ })
+ : spawn('bash',['./start.sh'],{cwd:service,env:{...process.env,POKER_PORT:String(port),POKER_TEST_MODE:'0'},stdio:['ignore','pipe','pipe']});
 let logs=''; server.stdout.on('data',s=>logs+=s);server.stderr.on('data',s=>logs+=s);
 const delay = ms => new Promise(r=>setTimeout(r,ms));
 const clients=[];
@@ -17,10 +24,17 @@ const clients=[];
  try {
   let health;
   for(let i=0;i<50;i++) {
-   try {health=await fetch(origin+'/health?XTransformPort='+port,{signal:AbortSignal.timeout(500)});if(health.ok)break;}catch{}
+   try {health=await fetch(origin+(hosted?'/healthz':'/health?XTransformPort='+port),{signal:AbortSignal.timeout(500)});if(health.ok)break;}catch{}
    await delay(100);
   }
-  assert.ok(health?.ok,'query-string health must succeed');
+  assert.ok(health?.ok,'health must succeed');
+  if(hosted) {
+   const html=await (await fetch(origin)).text();
+   assert.match(html,/RPG/,'web page must be served on the same origin');
+   const asset=html.match(/src="([^"]+\.js[^"]*)"/);
+   assert.ok(asset,'compiled JavaScript asset must exist');
+   assert.equal((await fetch(new URL(asset[1],origin))).status,200);
+  }
   const stats=[0,1].map(()=>({states:0,hands:new Set(),ownSeats:new Set(),actions:0,errors:[],seated:false}));
   for(let i=0;i<2;i++) {
    const client=io(origin,{transports:['polling'],reconnection:false,timeout:3000});clients.push(client);
