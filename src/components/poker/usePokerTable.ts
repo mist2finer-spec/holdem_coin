@@ -25,6 +25,14 @@ export interface LogEntry {
 }
 
 // 내부 전체 게임 상태 (ref로 관리, 동기적 접근)
+interface ShowdownHandInfo {
+  seatId: number;
+  name: string;
+  handCategory: string;
+  isWinner: boolean;
+  isUser: boolean;
+}
+
 interface GameState {
   seats: SeatState[];
   board: Card[];
@@ -35,6 +43,7 @@ interface GameState {
   activeSeatId: number;
   lastActions: Record<number, string>;
   showdownReveal: boolean;
+  showdownHands: ShowdownHandInfo[]; // 쇼다운 시 각 콘텐더의 족보 정보
   winnerInfo: { seatId: number; name: string; amount: number; hand: string } | null;
   isDealing: boolean;
   awaitingUser: boolean;
@@ -91,6 +100,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     deck: [],
     raiseLevel: 0,
     userTimer: 0,
+    showdownHands: [],
   });
 
   const [, forceTick] = useState(0);
@@ -384,7 +394,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     st.showdownReveal = true;
     st.phase = "SHOWDOWN";
     tick();
-    await sleep(1200);
+    await sleep(1500); // 카드 공개 후 1.5초 대기 (유저가 카드 보게)
 
     // 정확한 7카드 평가기로 승자 결정
     const contenders = st.seats.filter(s => s.inHand && !s.folded);
@@ -393,6 +403,20 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
       st.board
     );
     const winners = winnerIndices.map(i => contenders[i]);
+
+    // 각 콘텐더의 족보 카테고리 추출 (UI 표시용)
+    st.showdownHands = contenders.map((c, i) => {
+      const score = evaluateBestHand(c.holeCards, st.board);
+      return {
+        seatId: c.seatId,
+        name: c.name,
+        handCategory: scoreToCategoryName(score),
+        isWinner: winnerIndices.includes(i),
+        isUser: c.isUser,
+      };
+    });
+    tick();
+    await sleep(500); // 족보 표시 후 잠시 대기
 
     await finishHand(winners.map(w => w.seatId), true);
   }, [tick]);
@@ -426,20 +450,31 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     });
     st.pot = 0;
 
-    if (winners.length === 1) {
+    // 승자 배너 설정 (챱인 경우 첫 번째 승자 기준)
+    if (winners.length >= 1) {
       const w = winners[0];
-      st.winnerInfo = { seatId: w.seatId, name: w.name, amount: currentPot, hand: handName };
+      const displayHand = winners.length > 1 ? `Split Pot (${handName})` : handName;
+      st.winnerInfo = { seatId: w.seatId, name: winnerNames, amount: currentPot, hand: displayHand };
+    }
+
+    if (winners.length > 1) {
+      // 챱(Split Pot)인 경우
+      onToast?.(`🤝 Split Pot! ${winnerNames} 님이 ${share.toLocaleString()} 칩씩 분할`, "info");
+    } else if (winners.length === 1) {
+      const w = winners[0];
       if (w.isUser) {
-        onToast?.(`🎉 승리! +${currentPot.toLocaleString()} 칩`, "win");
+        onToast?.(`🎉 승리! +${currentPot.toLocaleString()} 칩 [${handName}]`, "win");
       } else if (w.persona) {
         onToast?.(`${w.persona.emoji} ${w.name}: "${w.persona.catchphrase}"`, "info");
       }
     }
     tick();
 
-    await sleep(4000);
+    // 결과를 5초간 유지 (유저가 충분히 볼 수 있게)
+    await sleep(5000);
     st.winnerInfo = null;
     st.showdownReveal = false;
+    st.showdownHands = [];
     tick();
   }, [pushLog, tick, onToast]);
 
@@ -523,6 +558,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     activeSeatId: st.activeSeatId,
     lastActions: st.lastActions,
     showdownReveal: st.showdownReveal,
+    showdownHands: st.showdownHands,
     winnerInfo: st.winnerInfo,
     log,
     isDealing: st.isDealing,

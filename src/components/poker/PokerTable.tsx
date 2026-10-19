@@ -1,11 +1,12 @@
 "use client";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { usePokerTable } from "./usePokerTable";
 import { PlayerSeat } from "./PlayerSeat";
 import { PlayingCard } from "./PlayingCard";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { TrainingPanel } from "./TrainingPanel";
+import { evaluateBestHand, scoreToCategoryName } from "@/lib/poker-engine";
 
 interface Props {
   userName: string;
@@ -42,6 +43,7 @@ export function PokerTable({ userName, onToast }: Props) {
     activeSeatId,
     lastActions,
     showdownReveal,
+    showdownHands,
     winnerInfo,
     log,
     isDealing,
@@ -68,6 +70,14 @@ export function PokerTable({ userName, onToast }: Props) {
 
   // 현재 팟 = 정산된 팟 + 진행 중인 베팅 합계
   const livePot = pot + seats.reduce((sum, s) => sum + s.currentBet, 0);
+
+  // 유저의 현재 핸드 족보 (보드가 있을 때만)
+  const userHandCategory = useMemo(() => {
+    if (!userSeat || userSeat.holeCards.length < 2) return null;
+    if (board.length < 3) return null; // 프리플랩은 족보 없음
+    const score = evaluateBestHand(userSeat.holeCards, board);
+    return scoreToCategoryName(score);
+  }, [userSeat, board]);
 
   const phaseLabel: Record<string, string> = {
     "PREFLOP": "PRE-FLOP",
@@ -150,13 +160,47 @@ export function PokerTable({ userName, onToast }: Props) {
 
           {/* 승자 표시 */}
           {winnerInfo && (
-            <div className="absolute top-[25%] left-1/2 -translate-x-1/2 z-30 animate-[fadeIn_0.3s_ease-out]">
+            <div className="absolute top-[22%] left-1/2 -translate-x-1/2 z-30 animate-[fadeIn_0.3s_ease-out]">
               <div className="bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 px-4 py-1.5 sm:px-6 sm:py-2 rounded-lg border-2 border-amber-200 shadow-2xl">
-                <div className="text-amber-950 text-[9px] sm:text-[10px] font-bold tracking-widest text-center">★ WINNER ★</div>
+                <div className="text-amber-950 text-[9px] sm:text-[10px] font-bold tracking-widest text-center">
+                  {winnerInfo.hand && winnerInfo.hand.startsWith("Split") ? "🤝 SPLIT POT 🤝" : "★ WINNER ★"}
+                </div>
                 <div className="text-amber-950 text-base sm:text-lg font-bold text-center">{winnerInfo.name}</div>
                 <div className="text-amber-900 text-[10px] sm:text-xs font-bold text-center tabular-nums">
                   +{winnerInfo.amount.toLocaleString()} 칩
                   {winnerInfo.hand && <span className="ml-1 sm:ml-2">[{winnerInfo.hand}]</span>}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 쇼다운 핸드 카테고리 패널 (각 콘텐더의 족보 표시) */}
+          {showdownReveal && showdownHands.length > 0 && (
+            <div className="absolute top-[8%] left-1/2 -translate-x-1/2 z-20 animate-[fadeIn_0.3s_ease-out]">
+              <div className="bg-slate-950/95 border-2 border-amber-600/70 rounded-lg p-1.5 sm:p-2 shadow-2xl backdrop-blur-md max-w-[90vw]">
+                <div className="text-amber-300 text-[9px] sm:text-[10px] font-bold tracking-wider mb-1 text-center">
+                  ◆ SHOWDOWN — 핸드 족보 ◆
+                </div>
+                <div className="space-y-0.5">
+                  {showdownHands.map((h) => (
+                    <div
+                      key={h.seatId}
+                      className={`flex items-center gap-1.5 sm:gap-2 px-1.5 sm:px-2 py-0.5 rounded text-[10px] sm:text-xs ${
+                        h.isWinner
+                          ? "bg-amber-900/50 border border-amber-400"
+                          : "bg-slate-900/50 border border-slate-700/40"
+                      }`}
+                    >
+                      <span className="text-xs sm:text-sm">{h.isUser ? "⚔️" : "🎭"}</span>
+                      <span className={`font-bold truncate min-w-[50px] sm:min-w-[70px] ${h.isUser ? "text-blue-300" : "text-amber-200"}`}>
+                        {h.name}
+                      </span>
+                      <span className={`font-bold ml-auto ${h.isWinner ? "text-amber-300" : "text-slate-400"}`}>
+                        {h.handCategory}
+                      </span>
+                      {h.isWinner && <span className="text-amber-400 text-[10px]">★</span>}
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
@@ -197,6 +241,12 @@ export function PokerTable({ userName, onToast }: Props) {
                   }`}>
                     {userTimer}
                   </span>
+                  {/* 유저 현재 핸드 족보 표시 */}
+                  {userHandCategory && (
+                    <span className="ml-1 px-1.5 py-0.5 rounded bg-emerald-900/70 border border-emerald-500/60 text-emerald-200 text-[9px] sm:text-[10px] font-bold">
+                      내 핸드: {userHandCategory}
+                    </span>
+                  )}
                 </div>
                 <div className="text-amber-300 text-[10px] sm:text-xs">
                   콜: <span className="font-bold tabular-nums">{callAmount.toLocaleString()}</span>
@@ -344,17 +394,24 @@ export function PokerTable({ userName, onToast }: Props) {
               </div>
             </div>
           ) : (
-            <div className="bg-slate-900/80 border border-amber-800/40 rounded-xl px-4 py-2 backdrop-blur-sm">
-              <div className="text-amber-200/70 text-xs text-center">
-                {isDealing
-                  ? "◆ 카드를 딜링하는 중..."
-                  : winnerInfo
-                  ? `★ ${winnerInfo.name} 님의 승리!`
-                  : showdownReveal
-                  ? "◆ 쇼다운 — 승자 판정 중..."
-                  : activeSeatId >= 0
-                  ? `${seats[activeSeatId]?.name} 님이 고민하는 중...`
-                  : "◆ 다음 핸드 준비 중..."}
+            <div className="bg-slate-900/80 border border-amber-800/40 rounded-xl px-3 py-2 backdrop-blur-sm">
+              <div className="text-amber-200/70 text-[10px] sm:text-xs text-center flex items-center justify-center gap-2 flex-wrap">
+                <span>
+                  {isDealing
+                    ? "◆ 카드를 딜링하는 중..."
+                    : winnerInfo
+                    ? `★ ${winnerInfo.name} 님의 승리!`
+                    : showdownReveal
+                    ? "◆ 쇼다운 — 승자 판정 중..."
+                    : activeSeatId >= 0
+                    ? `${seats[activeSeatId]?.name} 님이 고민하는 중...`
+                    : "◆ 다음 핸드 준비 중..."}
+                </span>
+                {userHandCategory && !winnerInfo && (
+                  <span className="px-1.5 py-0.5 rounded bg-emerald-900/70 border border-emerald-500/60 text-emerald-200 text-[9px] sm:text-[10px] font-bold">
+                    내 핸드: {userHandCategory}
+                  </span>
+                )}
               </div>
             </div>
           )}
