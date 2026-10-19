@@ -5,6 +5,7 @@ import { Card } from "@/lib/poker-engine";
 import { evaluateBestHand, scoreToCategoryName } from "@/lib/poker-engine";
 import { STRATEGY_PROFILES, StrategyType, getStrategyForHand } from "@/lib/personas";
 import { ActionType } from "@/lib/poker-engine";
+import { rotateSeatView } from "@/lib/poker-seat-view";
 
 // ============================================================
 // 소켓 기반 홀덤 클라이언트 훅
@@ -60,18 +61,6 @@ interface UsePokerSocketOpts {
   onToast?: (msg: string, tone?: "info" | "win" | "lose") => void;
 }
 
-// 8좌석 테이블 상대 위치 (% 단위) - 0번이 하단 중앙
-const SEAT_POSITIONS = [
-  { top: "90%", left: "50%" },  // 0: 하단 중앙 (나)
-  { top: "78%", left: "88%" },  // 1: 우하단
-  { top: "45%", left: "93%" },  // 2: 우측
-  { top: "14%", left: "82%" },  // 3: 우상단
-  { top: "7%",  left: "50%" },  // 4: 상단 중앙
-  { top: "14%", left: "18%" },  // 5: 좌상단
-  { top: "45%", left: "7%"  },  // 6: 좌측
-  { top: "78%", left: "12%" },  // 7: 좌하단
-];
-
 export function usePokerSocket({ userName, onToast }: UsePokerSocketOpts) {
   const socketRef = useRef<Socket | null>(null);
   const [state, setState] = useState<SocketTableState | null>(null);
@@ -124,6 +113,7 @@ export function usePokerSocket({ userName, onToast }: UsePokerSocketOpts) {
     });
 
     socket.on("connect_error", (err: any) => {
+      setConnected(false);
       console.error("[Socket] 연결 에러:", err.message);
     });
 
@@ -131,6 +121,8 @@ export function usePokerSocket({ userName, onToast }: UsePokerSocketOpts) {
       setConnected(false);
       console.log("[Socket] 연결 끊김");
     });
+
+    socket.on("ACTION_REJECTED", (data: { message: string }) => onToast?.(data.message, "info"));
 
     socket.on("TABLE_STATE", (data: SocketTableState) => {
       console.log("[Socket] TABLE_STATE 수신:", data.phase, "mySeat:", data.mySeatId);
@@ -160,7 +152,6 @@ export function usePokerSocket({ userName, onToast }: UsePokerSocketOpts) {
     return () => {
       socket.disconnect();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userName]);
 
   // 액션 전송
@@ -182,28 +173,13 @@ export function usePokerSocket({ userName, onToast }: UsePokerSocketOpts) {
 
   // ★ 시점 회전: 내 좌석을 0번(하단 중앙)으로 오도록 좌석 배열 회전
   const getRotatedSeats = useCallback(() => {
-    if (!state || state.mySeatId < 0) return state?.seats ?? [];
-    const offset = state.mySeatId; // 내 좌석이 0번이 되도록
-    const rotated = [];
-    for (let i = 0; i < 8; i++) {
-      const origIdx = (i + offset) % 8;
-      const seat = state.seats[origIdx];
-      if (seat) {
-        rotated.push({
-          ...seat,
-          seatId: i, // 회전된 인덱스
-          isMe: i === 0, // 0번이 나
-          position: SEAT_POSITIONS[i],
-        });
-      }
-    }
-    return rotated;
+    return state ? rotateSeatView(state.seats, state.mySeatId) : [];
   }, [state]);
 
   // 회전된 활성 좌석 ID
   const getRotatedActiveSeatId = useCallback(() => {
-    if (!state || state.activeSeatId < 0 || state.mySeatId < 0) return -1;
-    return (state.activeSeatId - state.mySeatId + 8) % 8;
+    if (!state || state.activeSeatId < 0) return -1;
+    return (state.activeSeatId - Math.max(0, state.mySeatId) + 8) % 8;
   }, [state]);
 
   // 회전된 버튼 좌석 ID

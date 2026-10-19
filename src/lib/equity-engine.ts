@@ -82,7 +82,7 @@ export function classifyHandTier(hole: Card[], board: Card[]): { tier: number; r
 
   // 1) 플러시 및 플러시 드로우
   const suitCnt: Record<string, number> = {};
-  const holeSuits = new Set(h.map(x => x.suit));
+  const holeSuits = new Set<string>(h.map(x => x.suit));
   for (const x of [...h, ...b]) {
     suitCnt[x.suit] = (suitCnt[x.suit] || 0) + 1;
   }
@@ -204,7 +204,7 @@ export function evalPostflopRealEquity(hole: Card[], board: Card[]): number {
   // 수트 카운트 (플러시 드로우/메이드 플러시)
   const suitCounts: Record<string, number> = {};
   for (const c of allCards) suitCounts[c.suit] = (suitCounts[c.suit] || 0) + 1;
-  const holeSuits = new Set(hole.map(c => c.suit));
+  const holeSuits = new Set<string>(hole.map(c => c.suit));
   const hasFlushDraw = Object.entries(suitCounts).some(
     ([s, cnt]) => cnt === 4 && holeSuits.has(s)
   );
@@ -406,7 +406,7 @@ export function heuristicDecide(
     if ((multiEq > 0.62 || isBluffing) && maxRaise > minRaise && Math.random() < aggression) {
       const betSize = Math.floor(pot * (0.45 + 0.3 * aggression));
       const clamped = Math.max(minRaise, Math.min(betSize, maxRaise));
-      return { action: 2, amount: clamped, isBluff };
+      return { action: 2, amount: clamped, isBluff: isBluffing };
     }
     return { action: 1, amount: 0 }; // check
   }

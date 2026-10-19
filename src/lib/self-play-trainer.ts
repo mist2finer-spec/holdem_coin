@@ -653,7 +653,7 @@ export class SelfPlayTrainer {
     tier: number,
     persona: { vpip: number; aggression: number; bluffFreq: number }
   ): number[] {
-    const t = persona.tightness ?? (1 - persona.vpip); // tightness = 1 - vpip
+    const t = (1 - persona.vpip); // tightness = 1 - vpip
     const a = persona.aggression;
     const b = persona.bluffFreq;
 

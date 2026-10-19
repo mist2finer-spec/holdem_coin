@@ -1,4 +1,13 @@
 :81 {
+    handle /socket.io/* {
+        reverse_proxy 127.0.0.1:3003
+    }
+
+    @poker_health path /health
+    handle @poker_health {
+        reverse_proxy 127.0.0.1:3003
+    }
+
 	@transform_port_query {
 		query XTransformPort=*
 	}

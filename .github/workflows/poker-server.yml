@@ -1,0 +1,19 @@
+name: Poker server regressions
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  server:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: mini-services/poker-server/package-lock.json
+      - run: npm ci --prefix mini-services/poker-server
+      - run: npm run typecheck --prefix mini-services/poker-server
+      - run: npm test --prefix mini-services/poker-server
+      - run: node scripts/test-server-smoke.mjs

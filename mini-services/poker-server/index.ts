@@ -26,7 +26,7 @@ import {
   HandTierNames,
 } from "../../src/lib/equity-engine.ts";
 
-const PORT = 3003;
+const PORT = Number(process.env.POKER_PORT || 3003);
 const NUM_SEATS = 8;
 const SMALL_BLIND = 100;
 const BIG_BLIND = 200;
@@ -85,7 +85,7 @@ interface ConnectedUser {
 // 하이브리드 홀덤 룸
 // ============================================================
 
-class HybridHoldemRoom {
+export class HybridHoldemRoom {
   public state: ServerGameState;
   public trainer: SelfPlayTrainer;
   private users: Map<string, ConnectedUser> = new Map();
@@ -94,11 +94,13 @@ class HybridHoldemRoom {
   private pendingActionResolve: ((action: { action: string; amount: number }) => void) | null = null;
   private isRunning = false;
 
-  constructor() {
+  constructor(autoStart = true) {
     this.trainer = new SelfPlayTrainer();
     this.state = this.createInitialState();
-    this.startGameLoop();
+    if (autoStart) void this.startGameLoop();
   }
+
+  get userCount() { return this.users.size; }
 
   private createInitialState(): ServerGameState {
     const personas: BotPersona[] = [...RPG_BOT_POOL].sort(() => Math.random() - 0.5).slice(0, NUM_SEATS);
@@ -145,13 +147,19 @@ class HybridHoldemRoom {
   // ============================================================
 
   onUserConnect(socket: Socket, name: string) {
+    // JOIN_ROOM is idempotent, including duplicate events during reconnect.
+    if (this.users.has(socket.id)) {
+      socket.emit("TABLE_STATE", this.createSafeSnapshot(socket.id));
+      return;
+    }
+    if (typeof name !== "string") name = "용사";
     // ★ 고유 플레이어 ID 생성
     const playerId = `P${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`.toUpperCase();
     const baseName = (name || "용사").trim().slice(0, 8);
 
     // 중복 이름 방지
     const existingNames = new Set(
-      Array.from(this.users.values()).map(u => u.baseName)
+      Array.from(this.users.values()).map(u => u.name)
     );
     let uniqueName = baseName;
     if (existingNames.has(baseName)) {
@@ -201,7 +209,6 @@ class HybridHoldemRoom {
 
   onUserDisconnect(socketId: string) {
     const user = this.users.get(socketId);
-    // console.log(`[Disconnect] socketId:${socketId.slice(0,8)}, user:${user?.name ?? "없음"}, seat:${user?.seatId ?? "없음"}`);
     if (!user) return;
 
     // ★ 대기열에서 제거
@@ -235,8 +242,12 @@ class HybridHoldemRoom {
     if (this.state.activeSeatId !== user.seatId) return; // 내 턴이 아니면 무시
     if (!this.pendingActionResolve) return;
 
-    // console.log(`[Action] ${user.name}: ${action.action} ${action.amount}`);
-    this.pendingActionResolve(action);
+    const mapped = this.mapUserAction(action);
+    if (!mapped) {
+      io.to(socketId).emit("ACTION_REJECTED", { message: "유효하지 않은 액션입니다." });
+      return;
+    }
+    this.pendingActionResolve(mapped);
     this.pendingActionResolve = null;
   }
 
@@ -244,8 +255,8 @@ class HybridHoldemRoom {
   onUserPreAction(socketId: string, preAction: { type: "fold" | "call" | "check"; amount: number } | null) {
     const user = this.users.get(socketId);
     if (!user) return;
-    user.preAction = preAction;
-    // console.log(`[PreAction] ${user.name}: ${preAction ? preAction.type : "취소"}`);
+    if (preAction !== null && (!preAction || !["fold", "call", "check"].includes(preAction.type))) return;
+    user.preAction = preAction ? { type: preAction.type, amount: Number.isFinite(preAction.amount) ? Math.max(0, preAction.amount) : 0 } : null;
   }
 
   // ============================================================
@@ -276,6 +287,7 @@ class HybridHoldemRoom {
       if (botSeats.length === 0) break;
 
       const user = this.pendingJoinQueue.shift()!;
+      if (this.users.get(user.socketId) !== user || user.seatId !== null) continue;
       const targetSeat = botSeats[Math.floor(Math.random() * botSeats.length)];
 
       targetSeat.isBot = false;
@@ -311,6 +323,14 @@ class HybridHoldemRoom {
       } catch (e: any) {
         console.error("[GL ERR] 핸드 처리 에러:", e?.message || e);
         console.error(e?.stack);
+        // An incomplete hand must not silently destroy already committed chips.
+        this.state.seats = this.state.seats.map(seat => ({
+          ...seat, stack: seat.stack + seat.totalBet, totalBet: 0, currentBet: 0,
+        }));
+        this.state.pot = 0;
+        this.state.phase = "HAND_END";
+        this.state.activeSeatId = -1;
+        this.broadcast("SYSTEM_NOTICE", { messages: ["핸드 오류로 베팅을 반환하고 새 핸드를 시작합니다."] });
         await this.sleep(2000);
       }
     }
@@ -319,12 +339,10 @@ class HybridHoldemRoom {
 
   private async playOneHand() {
     const st = this.state;
-    // console.log("[Hand] playOneHand 시작");
 
     try {
       // 핸드 시작 전 Hot-Swap
       this.processSeatSwaps();
-      // console.log("[Hand] Hot-Swap 완료");
 
       // 상태 리셋
       st.handNumber++;
@@ -338,7 +356,6 @@ class HybridHoldemRoom {
       st.raiseLevel = 0;
       st.lastRaiseSize = BIG_BLIND;
       st.buttonSeat = (st.buttonSeat + 1) % NUM_SEATS;
-      // console.log(`[Hand] 상태 리셋 완료 (hand #${st.handNumber})`);
 
       // 좌석 리셋 (파산 봇 리필)
       const usedNames = new Set<string>();
@@ -371,11 +388,9 @@ class HybridHoldemRoom {
           hasActed: false,
         };
       });
-      // console.log("[Hand] 좌석 리셋 완료");
 
       // 덱 생성
       const deck = makeDeck();
-      // console.log("[Hand] 덱 생성 완료");
 
       // 블라인드
       const sbSeat = (st.buttonSeat + 1) % NUM_SEATS;
@@ -387,7 +402,6 @@ class HybridHoldemRoom {
       st.seats[bbSeat].currentBet = Math.min(BIG_BLIND, st.seats[bbSeat].stack);
       st.seats[bbSeat].stack -= st.seats[bbSeat].currentBet;
       st.seats[bbSeat].totalBet += st.seats[bbSeat].currentBet;
-      // console.log("[Hand] 블라인드 완료");
 
       // 홀카드 딜
       for (const seat of st.seats) {
@@ -395,22 +409,17 @@ class HybridHoldemRoom {
           seat.holeCards = [deck.pop()!, deck.pop()!];
         }
       }
-      // console.log("[Hand] 홀카드 딜 완료");
 
       this.broadcastTableState();
       this.broadcast("SYSTEM_NOTICE", { messages: [`◆ 핸드 #${st.handNumber} 시작`] });
       await this.sleep(800);
-      // console.log("[Hand] 베팅 라운드 시작");
 
       // 프리플랍 베팅 (UTG부터)
       await this.runBettingRound(st.buttonSeat, 3, deck);
-      // console.log("[Hand] 프리플랍 베팅 완료");
 
       // 다음 페이즈들
       await this.advancePhase(deck);
-      // console.log("[Hand] 핸드 완료");
     } catch (e: any) {
-      // console.error("[Hand] 에러:", e?.message || e);
       console.error(e?.stack);
       throw e;
     }
@@ -426,8 +435,8 @@ class HybridHoldemRoom {
     await this.sleep(300);
 
     let lastActorIdx = -1;
-    // ★ MAX 32 (8인 × 4 = 32 액션 상한선)
-    const MAX_ACTIONS = 32;
+    // Emergency action ceiling; exceeding it refunds the incomplete hand.
+    const MAX_ACTIONS = 256;
     let safety = 0;
 
     while (safety < MAX_ACTIONS) {
@@ -458,7 +467,7 @@ class HybridHoldemRoom {
           break;
         }
       }
-      // if (actorIdx === -1) { console.log(`[Bet] safety=${safety} no actor, break`); break; }
+      if (actorIdx === -1) throw new Error("Pending actions exist without an actor");
 
       lastActorIdx = actorIdx;
       const actor = st.seats[actorIdx];
@@ -472,13 +481,12 @@ class HybridHoldemRoom {
       const maxR = actor.stack + actor.currentBet;
       st.minRaise = minR;
       st.maxRaise = maxR;
-      // console.log(`[Bet] safety=${safety} actor=${actor.name}(${actorIdx}) call=${callAmt} minR=${minR} maxR=${maxR}`);
 
       this.broadcastTableState();
 
       // 사전 액션 체크 (유저인 경우)
       let decision: { action: ActionType; amount: number; isBluff?: boolean };
-      const isUser = !actor.isBot && actor.socketId;
+      const isUser = Boolean(!actor.isBot && actor.socketId);
       const userObj = isUser ? this.users.get(actor.socketId!) : null;
 
       // 사전 액션 자동 실행
@@ -499,8 +507,12 @@ class HybridHoldemRoom {
         decision = await this.getDecision(actor, callAmt, minR, maxR, isUser || false);
       }
 
-      // 레이즈 시 다른 유저의 콜/체크 사전 액션 취소
-      if (decision.action === "raise" || decision.action === "allin") {
+      // Validate bot decisions too. A stale/invalid decision falls back safely.
+      decision = this.mapUserAction(decision) ?? { action: callAmt === 0 ? "check" : "fold", amount: 0 };
+      const raisesBet = decision.action === "raise" ||
+        (decision.action === "allin" && actor.currentBet + actor.stack > maxBet);
+      // An all-in call is not a raise.
+      if (raisesBet) {
         st.raiseLevel += 1;
         // ★ lastRaiseSize 업데이트 (표준 NLHE min-raise)
         const oldMaxBet = maxBet;
@@ -520,31 +532,26 @@ class HybridHoldemRoom {
       }
 
       // 액션 적용
-      // console.log(`[Bet] applyAction 전: ${actor.name} ${decision.action} ${decision.amount}`);
       this.applyAction(actorIdx, decision);
-      // console.log(`[Bet] applyAction 후: ${actor.name}`);
       const actionLabel = this.labelAction(decision.action, decision.amount, callAmt);
-      // console.log(`[Bet] actionLabel: ${actionLabel}`);
       st.lastActions = { ...st.lastActions, [actorIdx]: actionLabel };
-      // console.log(`[Bet] PLAYER_ACTION 브로드캐스트 전`);
       this.broadcast("PLAYER_ACTION", {
         seatId: actorIdx,
         name: actor.name,
         action: actionLabel,
         amount: decision.amount,
       });
-      // console.log(`[Bet] PLAYER_ACTION 브로드캐스트 후`);
-      // console.log(`[Bet] broadcastTableState 전`);
       this.broadcastTableState();
-      // console.log(`[Bet] broadcastTableState 후, sleep 800ms`);
       await this.sleep(800);
-      // console.log(`[Bet] sleep 후, stillAlive 체크`);
 
       const stillAlive = st.seats.filter(s => s.inHand && !s.folded);
-      // console.log(`[Bet] stillAlive: ${stillAlive.length}`);
-      // if (stillAlive.length <= 1) { console.log(`[Bet] stillAlive<=1, break`); break; }
     }
 
+    const remaining = st.seats.filter(s => s.inHand && !s.folded);
+    const highBet = Math.max(0, ...remaining.map(s => s.currentBet));
+    if (remaining.length > 1 && remaining.some(s => !s.allIn && (!s.hasActed || s.currentBet < highBet))) {
+      throw new Error("Betting action limit exceeded before round completion");
+    }
     st.activeSeatId = -1;
     st.lastActions = {};
 
@@ -568,111 +575,36 @@ class HybridHoldemRoom {
   ): Promise<{ action: ActionType; amount: number; isBluff?: boolean }> {
     if (isUser) {
       // 유저 액션 대기 (15초 타임아웃)
-      // console.log(`[Decision] 유저 대기: ${actor.name}`);
+      if (!this.users.has(actor.socketId!)) return { action: "fold", amount: 0 };
       const action = await this.waitForUserAction(actor.socketId!);
-      // console.log(`[Decision] 유저 액션: ${actor.name} → ${action.action} ${action.amount}`);
       return action;
     } else {
-      // 봇 결정
-      // console.log(`[Decision] 봇 결정 시작: ${actor.name}`);
       await this.sleep(400 + Math.random() * 400);
-      try {
-        // ★ 임시 간단 결정 로직 (trainer crash 방지)
-        // trainer.decideActionForLive가 특정 상황에서 crash하는 문제 회피
-        const basePersona = actor.persona || RPG_BOT_POOL[0];
-        const currentStrategy = getStrategyForHand(this.state.handNumber);
-        const persona = applyStrategyToPersona(basePersona, currentStrategy);
-        const livePot = this.state.pot + this.state.seats.reduce((a, s) => a + s.currentBet, 0);
-        const activeOpp = this.state.seats.filter(s => s.inHand && !s.folded).length - 1;
-
-        // 간단한 핸드 평가
-        const hole = actor.holeCards;
-        const board = this.state.board;
-        let handStrength = 0.3; // 기본값
-
-        if (hole.length >= 2) {
-          const r1 = "23456789TJQKA".indexOf(hole[0].rank);
-          const r2 = "23456789TJQKA".indexOf(hole[1].rank);
-          const high = Math.max(r1, r2);
-          const low = Math.min(r1, r2);
-
-          if (board.length === 0) {
-            // 프리플랩
-            if (r1 === r2) {
-              handStrength = 0.55 + (high / 12.0) * 0.40; // 포켓 페어
-            } else {
-              handStrength = (high * 0.04) + (low * 0.015);
-              if (hole[0].suit === hole[1].suit) handStrength += 0.06;
-            }
-          } else {
-            // 포스트플랩: 간단 페어 체크
-            const allRanks = [...hole, ...board].map(c => "23456789TJQKA".indexOf(c.rank));
-            const rankCounts: Record<number, number> = {};
-            for (const r of allRanks) rankCounts[r] = (rankCounts[r] || 0) + 1;
-
-            const hasPair = Object.values(rankCounts).some(c => c >= 2);
-            const hasTrips = Object.values(rankCounts).some(c => c >= 3);
-
-            if (hasTrips) handStrength = 0.85;
-            else if (hasPair) {
-              const pairedRank = Number(Object.keys(rankCounts).find(k => rankCounts[Number(k)] >= 2));
-              if (pairedRank >= high) handStrength = 0.65;
-              else handStrength = 0.40;
-            } else {
-              handStrength = 0.15 + (high / 12.0) * 0.10;
-            }
-          }
-        }
-
-        // 다자간 감쇠
-        const multiStrength = Math.pow(handStrength, 1.0 + (activeOpp - 1) * 0.3);
-        const potOdds = callAmt > 0 ? callAmt / (livePot + callAmt) : 0;
-
-        // 결정
-        let action: ActionType = "fold";
-        let amount = 0;
-
-        if (callAmt === 0) {
-          // 체크 가능
-          if (multiStrength > 0.6 && Math.random() < persona.aggression) {
-            action = "raise";
-            amount = Math.max(minR, Math.min(Math.floor(livePot * 0.5), maxR));
-          } else {
-            action = "check";
-          }
-        } else {
-          // 콜 비용 있음
-          // ★ SB/BB 방어 로직: 림프(콜만 하는 행위)된 팟에서 SB/BB는
-          // 팟오즈가 불리해도 50% 확률로 콜하여 방어
-          const sbSeat = (this.state.buttonSeat + 1) % NUM_SEATS;
-          const bbSeat = (this.state.buttonSeat + 2) % NUM_SEATS;
-          const isBlind = (actor.seatId === sbSeat || actor.seatId === bbSeat);
-          // 림프 감지: 레이즈 없이 콜만 있는 상황 (raiseLevel === 0)
-          const isLimpedPot = this.state.raiseLevel === 0 && callAmt <= BIG_BLIND;
-
-          if (multiStrength < potOdds) {
-            // ★ 블라인드 방어: 림프된 팟에서 SB/BB는 50% 확률로 콜
-            if (isBlind && isLimpedPot && board.length === 0 && Math.random() < 0.5) {
-              action = "call";
-              amount = Math.min(callAmt, actor.stack);
-            } else {
-              action = "fold";
-            }
-          } else if (multiStrength > 0.75 && Math.random() < persona.aggression * 0.7) {
-            action = "raise";
-            amount = Math.max(minR, Math.min(Math.floor(minR + livePot * 0.6), maxR));
-          } else {
-            action = "call";
-            amount = Math.min(callAmt, actor.stack);
-          }
-        }
-
-        // console.log(`[Decision] 봇 결정 완료(간단): ${actor.name} → ${action} ${amount} (strength:${multiStrength.toFixed(2)})`);
-        return { action, amount };
-      } catch (e: any) {
-        // console.error(`[Decision] 봇 결정 에러: ${actor.name}:`, e?.message || e);
-        return { action: "fold", amount: 0 };
+      const persona = applyStrategyToPersona(actor.persona || RPG_BOT_POOL[0], getStrategyForHand(this.state.handNumber));
+      const livePot = this.state.pot + this.state.seats.reduce((sum, seat) => sum + seat.currentBet, 0);
+      const opponents = this.state.seats.filter(seat => seat.inHand && !seat.folded).length - 1;
+      const nn = this.trainer.decideActionForLive(
+        actor.holeCards, this.state.board, callAmt, minR, maxR, livePot,
+        actor.stack, actor.currentBet, opponents, actor.seatId, NUM_SEATS,
+        this.state.raiseLevel, this.state.buttonSeat,
+        { vpip: persona.vpip, aggression: persona.aggression, bluffFreq: persona.bluffFreq }
+      );
+      const decision = this.mapNNAction(nn, callAmt, actor.stack);
+      // Optional blind defence only overrides a fold, never a strong-hand raise.
+      const isBlind = actor.seatId === (this.state.buttonSeat + 1) % NUM_SEATS ||
+        actor.seatId === (this.state.buttonSeat + 2) % NUM_SEATS;
+      const highestBet = actor.currentBet + callAmt;
+      const limped = this.state.raiseLevel === 0 && highestBet <= BIG_BLIND;
+      const smallOpen = this.state.raiseLevel === 1 && highestBet >= 2 * BIG_BLIND && highestBet <= 3 * BIG_BLIND;
+      const { rawEquity } = classifyHandTier(actor.holeCards, []);
+      const odds = callAmt / Math.max(1, livePot + callAmt);
+      // Modest extra calls; exclude large pressure and very large equity deficits.
+      if (decision.action === "fold" && this.state.board.length === 0 && isBlind &&
+          callAmt > 0 && callAmt < actor.stack && callAmt <= actor.stack * 0.1 &&
+          (limped || smallOpen) && rawEquity >= odds - 0.1 && Math.random() < 0.5) {
+        return { action: "call", amount: callAmt };
       }
+      return decision;
     }
   }
 
@@ -690,24 +622,28 @@ class HybridHoldemRoom {
 
       this.pendingActionResolve = (act) => {
         clearTimeout(timer);
-        const mapped = this.mapUserAction(act);
-        resolve(mapped);
+        resolve(act as { action: ActionType; amount: number });
       };
     });
   }
 
-  private mapUserAction(act: { action: string; amount: number }): { action: ActionType; amount: number } {
-    switch (act.action) {
-      case "fold": return { action: "fold", amount: 0 };
-      case "check": return { action: "check", amount: 0 };
-      case "call": return { action: "call", amount: Math.min(act.amount, this.state.seats[this.state.activeSeatId]?.stack ?? 0) };
+  private mapUserAction(act: unknown): { action: ActionType; amount: number } | null {
+    const actor = this.state.seats[this.state.activeSeatId];
+    if (!actor || !actor.inHand || actor.folded || actor.allIn || !act || typeof act !== "object") return null;
+    const { action, amount } = act as { action?: string; amount?: number };
+    const maxBet = Math.max(0, ...this.state.seats.filter(s => s.inHand && !s.folded).map(s => s.currentBet));
+    const call = Math.max(0, maxBet - actor.currentBet);
+    const maxRaise = actor.currentBet + actor.stack;
+    switch (action) {
+      case "fold": return { action, amount: 0 };
+      case "check": return call === 0 ? { action, amount: 0 } : null;
+      case "call": return call > 0 ? { action: call >= actor.stack ? "allin" : "call", amount: Math.min(call, actor.stack) } : { action: "check", amount: 0 };
+      case "allin": return { action, amount: actor.stack };
       case "raise":
-        if (act.amount >= (this.state.seats[this.state.activeSeatId]?.stack ?? 0)) {
-          return { action: "allin", amount: this.state.seats[this.state.activeSeatId]?.stack ?? 0 };
-        }
-        return { action: "raise", amount: act.amount };
-      case "allin": return { action: "allin", amount: this.state.seats[this.state.activeSeatId]?.stack ?? 0 };
-      default: return { action: "fold", amount: 0 };
+        if (!Number.isSafeInteger(amount) || amount! <= maxBet || amount! > maxRaise) return null;
+        if (amount !== maxRaise && amount! < (maxBet === 0 ? BIG_BLIND : maxBet + this.state.lastRaiseSize)) return null;
+        return amount === maxRaise ? { action: "allin", amount: actor.stack } : { action: "raise", amount: amount! };
+      default: return null;
     }
   }
 
@@ -724,7 +660,7 @@ class HybridHoldemRoom {
         return { action: "call", amount: nn.amount };
       case 2:
       case 3:
-        if (nn.amount >= myStack + (callAmt > 0 ? callAmt : 0)) {
+        if (nn.amount >= this.state.seats[this.state.activeSeatId].currentBet + myStack) {
           return { action: "allin", amount: myStack, isBluff: nn.isBluff };
         }
         return { action: "raise", amount: nn.amount, isBluff: nn.isBluff };
@@ -736,6 +672,7 @@ class HybridHoldemRoom {
   private applyAction(seatId: number, decision: { action: ActionType; amount: number }) {
     const s = this.state.seats[seatId];
     if (!s) return;
+    if (!Number.isSafeInteger(decision.amount) || decision.amount < 0) throw new Error("Invalid chip amount");
     let { stack, currentBet, totalBet, folded, allIn, inHand, hasActed } = s;
 
     switch (decision.action) {
@@ -750,7 +687,8 @@ class HybridHoldemRoom {
       }
       case "raise": {
         const target = decision.amount;
-        const cost = Math.min(target - currentBet, stack);
+        if (target <= currentBet || target > currentBet + stack) throw new Error("Invalid raise target");
+        const cost = target - currentBet;
         stack -= cost; currentBet += cost; totalBet += cost;
         if (stack === 0) allIn = true;
         break;
@@ -913,6 +851,8 @@ class HybridHoldemRoom {
     st.winnerInfo = { name: winnerNames, amount: totalWinnerAmount, hand: displayHand };
 
     st.pot = 0;
+    st.seats = st.seats.map(seat => ({ ...seat, currentBet: 0, totalBet: 0 }));
+    st.phase = isShowdown ? "SHOWDOWN" : "HAND_END";
     this.broadcastTableState();
 
     // 결과 표시 5초 유지
@@ -941,64 +881,21 @@ class HybridHoldemRoom {
     eligibleSeats: ServerSeat[];
     eligibleSeatIds: number[];
   }[] {
-    // 1. 각 플레이어의 totalBet 수집 (올인 포함)
-    const contributions = alive.map(s => ({
-      seatId: s.seatId,
-      totalBet: s.totalBet,
-      seat: s,
-    }));
-
-    // 2. totalBet 기준 오름차순 정렬
-    contributions.sort((a, b) => a.totalBet - b.totalBet);
-
-    // 3. 고유한 totalBet 레벨 추출 (올인 금액별)
-    const betLevels = [...new Set(contributions.map(c => c.totalBet))].sort((a, b) => a - b);
-
+    const contributors = this.state.seats.filter(seat => seat.totalBet > 0);
+    const levels = [...new Set(contributors.map(seat => seat.totalBet))].sort((a, b) => a - b);
     const pots: { amount: number; eligibleSeats: ServerSeat[]; eligibleSeatIds: number[] }[] = [];
-    let prevLevel = 0;
-
-    for (const level of betLevels) {
-      if (level <= prevLevel) continue;
-
-      // 이 레벨의 팟 금액 = (level - prevLevel) × 이 레벨 이상 베팅한 플레이어 수
-      const eligibleSeats = contributions
-        .filter(c => c.totalBet >= level)
-        .map(c => c.seat);
-
-      const layerAmount = (level - prevLevel) * eligibleSeats.length;
-
-      if (layerAmount > 0) {
-        pots.push({
-          amount: layerAmount,
-          eligibleSeats,
-          eligibleSeatIds: eligibleSeats.map(s => s.seatId),
-        });
-      }
-
-      prevLevel = level;
+    let previous = 0;
+    for (const level of levels) {
+      const layer = contributors.filter(seat => seat.totalBet >= level);
+      const eligibleSeats = alive.filter(seat => seat.totalBet >= level);
+      if (eligibleSeats.length === 0) throw new Error("Pot layer has no eligible player");
+      const amount = (level - previous) * layer.length;
+      const eligibleSeatIds = eligibleSeats.map(seat => seat.seatId);
+      const last = pots[pots.length - 1];
+      if (last && last.eligibleSeatIds.join(",") === eligibleSeatIds.join(",")) last.amount += amount;
+      else pots.push({ amount, eligibleSeats, eligibleSeatIds });
+      previous = level;
     }
-
-    // 4. 폴드한 플레이어의 베팅도 팟에 추가 (포기된 칩)
-    // 폴드한 플레이어의 totalBet는 메인팟(가장 낮은 레벨)에 합산
-    const allSeats = this.state.seats;
-    const foldedSeats = allSeats.filter(s => s.folded && s.totalBet > 0);
-    if (foldedSeats.length > 0 && pots.length > 0) {
-      const foldedChips = foldedSeats.reduce((a, s) => a + s.totalBet, 0);
-      pots[0].amount += foldedChips;
-    }
-
-    // 5. 팟이 없으면 (모두 체크만 한 경우) 단일 팟 생성
-    if (pots.length === 0) {
-      const totalChips = contributions.reduce((a, c) => a + c.totalBet, 0);
-      if (totalChips > 0) {
-        pots.push({
-          amount: totalChips,
-          eligibleSeats: alive,
-          eligibleSeatIds: alive.map(s => s.seatId),
-        });
-      }
-    }
-
     return pots;
   }
 
@@ -1015,8 +912,8 @@ class HybridHoldemRoom {
     const handInProgress = st.phase !== "SHOWDOWN"
       && st.phase !== "HAND_END"
       && st.activeSeatId >= 0
-      && mySeatId >= 0
-      && !st.seats[mySeatId]?.inHand;
+      && Boolean(user)
+      && (mySeatId < 0 || !st.seats[mySeatId]?.inHand);
 
     // ★ 모든 값을 원시 타입으로 매핑 (Number, String, Boolean, Array)
     const totalPot = Number(st.pot || 0) + st.seats.reduce((a, s) => a + Number(s.currentBet || 0), 0);
@@ -1082,7 +979,7 @@ class HybridHoldemRoom {
       showdownHands,
       winnerInfo,
       seats,
-      preAction: user?.preAction ?? null,
+      preAction: user?.preAction ? { type: user.preAction.type, amount: user.preAction.amount } : null,
     };
   }
 
@@ -1124,63 +1021,72 @@ const io = new Server(httpServer, {
   pingInterval: 25000,
 });
 
-const room = new HybridHoldemRoom();
+if (process.env.POKER_TEST_MODE !== "1") {
+  const room = new HybridHoldemRoom();
 
-io.on("connection", (socket: Socket) => {
-  console.log(`[Socket] 연결: ${socket.id}`);
+  io.on("connection", (socket: Socket) => {
+    console.log(`[Socket] 연결: ${socket.id}`);
 
-  socket.on("JOIN_ROOM", (data: { name: string }) => {
-    room.onUserConnect(socket, data?.name || "용사");
+    socket.on("JOIN_ROOM", (data: { name: string }) => {
+      room.onUserConnect(socket, data?.name || "용사");
+    });
+
+    socket.on("PLAYER_ACTION", (data: { action: string; amount: number }) => {
+      room.onUserAction(socket.id, data);
+    });
+
+    socket.on("PRE_ACTION", (data: { type: "fold" | "call" | "check"; amount: number } | null) => {
+      room.onUserPreAction(socket.id, data);
+    });
+
+    socket.on("disconnect", () => {
+      room.onUserDisconnect(socket.id);
+    });
   });
 
-  socket.on("PLAYER_ACTION", (data: { action: string; amount: number }) => {
-    room.onUserAction(socket.id, data);
+  httpServer.on("error", error => {
+    console.error("[Server] Listen failed:", error);
+    process.exit(1);
+  });
+  httpServer.listen(PORT, "0.0.0.0", () => {
+    console.log(`🎰 8-Player Hybrid Holdem Server running on port ${PORT}`);
+    console.log(`   Caddy 라우팅: ?XTransformPort=${PORT}`);
   });
 
-  socket.on("PRE_ACTION", (data: { type: "fold" | "call" | "check"; amount: number } | null) => {
-    room.onUserPreAction(socket.id, data);
+  // Unexpected failures exit nonzero so the host can restart cleanly.
+  process.on("uncaughtException", (err) => {
+    console.error("[UNCAUGHT] 예외 발생:", err.message);
+    console.error(err.stack);
+    process.exit(1);
   });
 
-  socket.on("disconnect", () => {
-    room.onUserDisconnect(socket.id);
+  process.on("unhandledRejection", (reason) => {
+    console.error("[UNHANDLED] Promise 거부:", reason);
+    process.exit(1);
   });
-});
 
-httpServer.listen(PORT, () => {
-  console.log(`🎰 8-Player Hybrid Holdem Server running on port ${PORT}`);
-  console.log(`   Caddy 라우팅: ?XTransformPort=${PORT}`);
-});
+  // ★ SIGPIPE 무시 (백그라운드 파이프 끊김 방지)
+  process.on("SIGPIPE", () => {
+    console.warn("[SIGPIPE] 파이프 끊김 (무시됨)");
+  });
 
-// ★ 프로세스 안정성: 예외로 인한 종료 방지
-process.on("uncaughtException", (err) => {
-  console.error("[UNCAUGHT] 예외 발생:", err.message);
-  console.error(err.stack);
-});
+  // ★ SIGTERM/SIGINT 시 정상 종료
+  process.on("SIGTERM", () => {
+    console.log("[Server] SIGTERM 수신, 종료 중...");
+    process.exit(0);
+  });
 
-process.on("unhandledRejection", (reason) => {
-  console.error("[UNHANDLED] Promise 거부:", reason);
-});
+  process.on("SIGINT", () => {
+    console.log("[Server] SIGINT 수신, 종료 중...");
+    process.exit(0);
+  });
 
-// ★ SIGPIPE 무시 (백그라운드 파이프 끊김 방지)
-process.on("SIGPIPE", () => {
-  console.warn("[SIGPIPE] 파이프 끊김 (무시됨)");
-});
+  // ★ 헬스체크 엔드포인트 (서버 살아있는지 확인용)
+  httpServer.on("request", (req, res) => {
+    if (new URL(req.url || "/", "http://localhost").pathname === "/health") {
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ status: "ok", users: room.userCount, hand: room.state.handNumber }));
+    }
+  });
 
-// ★ SIGTERM/SIGINT 시 정상 종료
-process.on("SIGTERM", () => {
-  console.log("[Server] SIGTERM 수신, 종료 중...");
-  process.exit(0);
-});
-
-process.on("SIGINT", () => {
-  console.log("[Server] SIGINT 수신, 종료 중...");
-  process.exit(0);
-});
-
-// ★ 헬스체크 엔드포인트 (서버 살아있는지 확인용)
-httpServer.on("request", (req, res) => {
-  if (req.url === "/health") {
-    res.writeHead(200, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ status: "ok", users: room.users.size, hand: room.state.handNumber }));
-  }
-});
+}
