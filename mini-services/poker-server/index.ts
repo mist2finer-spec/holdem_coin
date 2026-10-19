@@ -227,6 +227,7 @@ class HybridHoldemRoom {
 
   onUserDisconnect(socketId: string) {
     const user = this.users.get(socketId);
+    console.log(`[Disconnect] socketId:${socketId.slice(0,8)}, user:${user?.name ?? "없음"}, seat:${user?.seatId ?? "없음"}`);
     if (!user) return;
 
     this.joinQueue = this.joinQueue.filter(u => u.socketId !== socketId);
@@ -246,7 +247,7 @@ class HybridHoldemRoom {
     this.broadcast("SYSTEM_NOTICE", {
       messages: [`👋 [${user.name}]님이 퇴장했습니다. AI가 자리를 대체합니다.`],
     });
-    console.log(`[User] ${user.name} 퇴장`);
+    console.log(`[User] ${user.name} 퇴장 (남은 유저: ${this.users.size})`);
   }
 
   // ============================================================
@@ -404,7 +405,7 @@ class HybridHoldemRoom {
       }
     }
 
-    this.broadcast("TABLE_STATE", this.getMaskedState(null));
+    this.broadcastTableState();
     this.broadcast("SYSTEM_NOTICE", { messages: [`◆ 핸드 #${st.handNumber} 시작`] });
     await this.sleep(800);
 
@@ -421,7 +422,7 @@ class HybridHoldemRoom {
     st.lastRaiseSize = BIG_BLIND; // ★ 라운드 시작마다 BB로 리셋
     st.seats = st.seats.map(s => ({ ...s, hasActed: false }));
     st.lastActions = {};
-    this.broadcast("TABLE_STATE", this.getMaskedState(null));
+    this.broadcastTableState();
     await this.sleep(300);
 
     let lastActorIdx = -1;
@@ -466,7 +467,7 @@ class HybridHoldemRoom {
       st.minRaise = minR;
       st.maxRaise = maxR;
 
-      this.broadcast("TABLE_STATE", this.getMaskedState(null));
+      this.broadcastTableState();
 
       // 사전 액션 체크 (유저인 경우)
       let decision: { action: ActionType; amount: number; isBluff?: boolean };
@@ -506,7 +507,7 @@ class HybridHoldemRoom {
         for (const u of this.users.values()) {
           if (u.preAction && (u.preAction.type === "call" || u.preAction.type === "check")) {
             u.preAction = null;
-            this.broadcast("TABLE_STATE", this.getMaskedState(null));
+            this.broadcastTableState();
           }
         }
       }
@@ -521,7 +522,7 @@ class HybridHoldemRoom {
         action: actionLabel,
         amount: decision.amount,
       });
-      this.broadcast("TABLE_STATE", this.getMaskedState(null));
+      this.broadcastTableState();
       await this.sleep(800);
 
       const stillAlive = st.seats.filter(s => s.inHand && !s.folded);
@@ -538,7 +539,7 @@ class HybridHoldemRoom {
       return { ...s, currentBet: 0, hasActed: false };
     });
     st.pot += potAdd;
-    this.broadcast("TABLE_STATE", this.getMaskedState(null));
+    this.broadcastTableState();
     await this.sleep(400);
   }
 
@@ -699,7 +700,7 @@ class HybridHoldemRoom {
       const flop = [deck.pop()!, deck.pop()!, deck.pop()!];
       st.board = [...st.board, ...flop];
       st.phase = "FLOP";
-      this.broadcast("TABLE_STATE", this.getMaskedState(null));
+      this.broadcastTableState();
       await this.runBettingRound(st.buttonSeat, 1, deck);
       await this.advancePhase(deck);
     } else if (st.phase === "FLOP") {
@@ -707,7 +708,7 @@ class HybridHoldemRoom {
       const turn = deck.pop()!;
       st.board = [...st.board, turn];
       st.phase = "TURN";
-      this.broadcast("TABLE_STATE", this.getMaskedState(null));
+      this.broadcastTableState();
       await this.runBettingRound(st.buttonSeat, 1, deck);
       await this.advancePhase(deck);
     } else if (st.phase === "TURN") {
@@ -715,7 +716,7 @@ class HybridHoldemRoom {
       const river = deck.pop()!;
       st.board = [...st.board, river];
       st.phase = "RIVER";
-      this.broadcast("TABLE_STATE", this.getMaskedState(null));
+      this.broadcastTableState();
       await this.runBettingRound(st.buttonSeat, 1, deck);
       await this.advancePhase(deck);
     } else if (st.phase === "RIVER") {
@@ -727,7 +728,7 @@ class HybridHoldemRoom {
     const st = this.state;
     st.showdownReveal = true;
     st.phase = "SHOWDOWN";
-    this.broadcast("TABLE_STATE", this.getMaskedState(null));
+    this.broadcastTableState();
     await this.sleep(1500);
 
     const contenders = st.seats.filter(s => s.inHand && !s.folded);
@@ -747,7 +748,7 @@ class HybridHoldemRoom {
       };
     });
 
-    this.broadcast("TABLE_STATE", this.getMaskedState(null));
+    this.broadcastTableState();
     await this.sleep(500);
 
     await this.finishHand(true);
@@ -793,14 +794,14 @@ class HybridHoldemRoom {
     });
     st.pot = 0;
 
-    this.broadcast("TABLE_STATE", this.getMaskedState(null));
+    this.broadcastTableState();
 
     // 결과 표시 5초 유지
     await this.sleep(5000);
     st.winnerInfo = null;
     st.showdownReveal = false;
     st.showdownHands = [];
-    this.broadcast("TABLE_STATE", this.getMaskedState(null));
+    this.broadcastTableState();
   }
 
   // ============================================================
@@ -857,6 +858,16 @@ class HybridHoldemRoom {
 
   private broadcast(event: string, data: any) {
     io.emit(event, data);
+  }
+
+  // ★ 테이블 상태를 각 클라이언트마다 개별 마스킹하여 전송
+  // (각 플레이어가 자신의 mySeatId, 자신의 카드만 보게 함)
+  private broadcastTableState() {
+    if (this.users.size === 0) return; // 유저 없으면 전송 안 함
+    for (const [socketId, user] of this.users) {
+      const masked = this.getMaskedState(socketId);
+      io.to(socketId).emit("TABLE_STATE", masked);
+    }
   }
 
   // ★ 특정 소켓 제외하고 브로드캐스트
