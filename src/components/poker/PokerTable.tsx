@@ -5,6 +5,7 @@ import { PlayerSeat } from "./PlayerSeat";
 import { PlayingCard } from "./PlayingCard";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
+import { TrainingPanel } from "./TrainingPanel";
 
 interface Props {
   userName: string;
@@ -44,6 +45,10 @@ export function PokerTable({ userName, onToast }: Props) {
     maxRaise,
     userSeatId,
     submitUserAction,
+    trainingStats,
+    setTrainingMode,
+    resetTraining,
+    toggleTraining,
   } = usePokerTable({ userName, onToast });
 
   const [raiseAmount, setRaiseAmount] = useState(0);
@@ -82,19 +87,18 @@ export function PokerTable({ userName, onToast }: Props) {
         }}
       />
 
-      {/* 상단 HUD */}
-      <div className="absolute top-2 left-1/2 -translate-x-1/2 z-30 flex items-center gap-3">
-        <div className="bg-amber-950/90 border-2 border-amber-600 rounded-full px-4 py-1 backdrop-blur-sm shadow-lg">
-          <span className="text-amber-300 text-[10px] font-bold tracking-wider">◆ HAND</span>
-          <span className="text-amber-100 text-sm font-bold ml-2 tabular-nums">#{handNumber}</span>
+      {/* 상단 HUD - 우측 상단 (training panel이 상단 중앙) */}
+      <div className="absolute top-1 right-2 z-30 flex items-center gap-1.5">
+        <div className="bg-amber-950/90 border border-amber-600 rounded-full px-2 py-0.5 backdrop-blur-sm shadow-lg">
+          <span className="text-amber-300 text-[9px] font-bold">H#</span>
+          <span className="text-amber-100 text-[11px] font-bold ml-1 tabular-nums">{handNumber}</span>
         </div>
-        <div className="bg-amber-950/90 border-2 border-amber-600 rounded-full px-4 py-1 backdrop-blur-sm shadow-lg">
-          <span className="text-amber-300 text-[10px] font-bold tracking-wider">◆ PHASE</span>
-          <span className="text-amber-100 text-sm font-bold ml-2">{phaseLabel[phase]}</span>
+        <div className="bg-amber-950/90 border border-amber-600 rounded-full px-2 py-0.5 backdrop-blur-sm shadow-lg">
+          <span className="text-amber-100 text-[11px] font-bold">{phaseLabel[phase]}</span>
         </div>
-        <div className="bg-rose-950/90 border-2 border-rose-500 rounded-full px-4 py-1 backdrop-blur-sm shadow-lg">
-          <span className="text-rose-200 text-[10px] font-bold tracking-wider">◆ POT</span>
-          <span className="text-amber-200 text-sm font-bold ml-2 tabular-nums">{livePot.toLocaleString()}</span>
+        <div className="bg-rose-950/90 border border-rose-500 rounded-full px-2 py-0.5 backdrop-blur-sm shadow-lg">
+          <span className="text-rose-200 text-[9px] font-bold">POT</span>
+          <span className="text-amber-200 text-[11px] font-bold ml-1 tabular-nums">{livePot.toLocaleString()}</span>
         </div>
       </div>
 
@@ -259,8 +263,16 @@ export function PokerTable({ userName, onToast }: Props) {
         </div>
       </div>
 
-      {/* 좌측 로그 패널 - 상단 좌측 모서리 */}
-      <div className="absolute top-12 left-2 w-56 max-h-[28vh] z-20 hidden md:block">
+      {/* AI 학습 패널 */}
+      <TrainingPanel
+        stats={trainingStats}
+        onSetMode={setTrainingMode}
+        onToggle={toggleTraining}
+        onReset={resetTraining}
+      />
+
+      {/* 좌측 로그 패널 - 상단 좌측 모서리 (HUD 아래) */}
+      <div className="absolute top-28 left-2 w-56 max-h-[28vh] z-20 hidden md:block">
         <div className="bg-slate-950/90 border border-amber-800/60 rounded-lg p-2 backdrop-blur-sm">
           <div className="text-amber-400 text-[9px] font-bold tracking-wider mb-1 px-1 flex items-center justify-between">
             <span>◆ BATTLE LOG</span>
@@ -287,8 +299,8 @@ export function PokerTable({ userName, onToast }: Props) {
         </div>
       </div>
 
-      {/* 우측 페르소나 패널 - 상단 우측 모서리 */}
-      <div className="absolute top-12 right-2 w-52 z-20 hidden lg:block">
+      {/* 우측 페르소나 패널 - 상단 우측 모서리 (Training panel 아래) */}
+      <div className="absolute top-28 right-2 w-52 z-20 hidden lg:block">
         <div className="bg-slate-950/90 border border-amber-800/60 rounded-lg p-2 backdrop-blur-sm">
           <div className="text-amber-400 text-[9px] font-bold tracking-wider mb-1 px-1">◆ PLAYERS</div>
           <div className="space-y-0.5 max-h-[24vh] overflow-y-auto custom-scroll">

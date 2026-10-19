@@ -5,12 +5,12 @@ import {
   Card,
   SeatState,
   Phase,
-  botDecide,
   ActionType,
   handRankName,
   estimateStrength,
 } from "@/lib/poker-engine";
 import { RPG_BOT_POOL, BotPersona } from "@/lib/personas";
+import { SelfPlayTrainer, TrainingStats } from "@/lib/self-play-trainer";
 
 const NUM_SEATS = 8;
 const SMALL_BLIND = 100;
@@ -41,6 +41,7 @@ interface GameState {
   minRaise: number;
   maxRaise: number;
   deck: Card[];
+  raiseLevel: number; // 현재 라운드 레이즈 횟수 (3-bet, 4-bet 추적)
 }
 
 interface UseTableOpts {
@@ -49,6 +50,26 @@ interface UseTableOpts {
 }
 
 export function usePokerTable({ userName, onToast }: UseTableOpts) {
+  // 싱글톤 트레이너 (외부에서 주입)
+  const trainerRef = useRef<SelfPlayTrainer | null>(null);
+  if (!trainerRef.current) {
+    trainerRef.current = getGlobalTrainer();
+  }
+  const trainer = trainerRef.current;
+
+  const [trainingStats, setTrainingStats] = useState<TrainingStats>(trainer.stats);
+
+  useEffect(() => {
+    trainer.onStatsUpdate = (s) => {
+      setTrainingStats({ ...s });
+    };
+    // 마운트 시 학습 자동 시작
+    trainer.start();
+    return () => {
+      trainer.onStatsUpdate = undefined;
+    };
+  }, [trainer]);
+
   const stateRef = useRef<GameState>({
     seats: initSeats(userName),
     board: [],
@@ -66,6 +87,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     minRaise: BIG_BLIND,
     maxRaise: 0,
     deck: [],
+    raiseLevel: 0,
   });
 
   const [, forceTick] = useState(0);
@@ -185,6 +207,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
   const runBettingRound = useCallback(async (currentPhase: Phase, btnSeat: number, startOffset: number) => {
     const st = stateRef.current;
     st.phase = currentPhase;
+    st.raiseLevel = 0; // 라운드 시작마다 리셋
     // hasActed 리셋
     st.seats = st.seats.map(s => ({ ...s, hasActed: false }));
     st.lastActions = {};
@@ -235,8 +258,31 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
         st.awaitingUser = false;
       } else {
         await sleep(700 + Math.random() * 900);
-        // live snapshot
-        decision = botDecide(st.seats[actorIdx], callAmt, minR, maxR, st.pot + st.seats.reduce((a, s) => a + s.currentBet, 0), st.board);
+        // 신경망 기반 의사결정 (트레이너 사용)
+        const activeOpp = aliveInHand.length - 1;
+        const persona = actor.persona || RPG_BOT_POOL[0];
+        const livePot = st.pot + st.seats.reduce((a, s) => a + s.currentBet, 0);
+        const nnDecision = trainer.decideActionForLive(
+          st.seats[actorIdx].holeCards,
+          st.board,
+          callAmt,
+          minR,
+          maxR,
+          livePot,
+          actor.stack,
+          actor.currentBet,
+          activeOpp,
+          actorIdx,
+          NUM_SEATS,
+          st.raiseLevel,
+          { vpip: persona.vpip, aggression: persona.aggression, bluffFreq: persona.bluffFreq }
+        );
+        decision = mapNNActionToEngine(nnDecision, callAmt, actor.stack);
+      }
+
+      // raiseLevel 추적
+      if (decision.action === "raise" || decision.action === "allin") {
+        st.raiseLevel += 1;
       }
 
       // 액션 적용 (직접 ref 수정)
@@ -268,7 +314,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     st.pot += potAdd;
     tick();
     await sleep(400);
-  }, [pushLog, tick, onToast]);
+  }, [pushLog, tick, onToast, trainer]);
 
   // =====================
   // 페이즈 진행
@@ -421,7 +467,53 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     maxRaise: st.maxRaise,
     userSeatId,
     submitUserAction,
+    trainingStats,
+    setTrainingMode: (mode: "HEURISTIC" | "NEURAL" | "HYBRID") => trainer.setMode(mode),
+    resetTraining: () => trainer.resetTraining(),
+    toggleTraining: () => {
+      if (trainer.stats.isRunning) trainer.stop();
+      else trainer.start();
+    },
   };
+}
+
+// =====================
+// 싱글톤 트레이너 (모든 훅 인스턴스가 공유)
+// =====================
+let _globalTrainer: SelfPlayTrainer | null = null;
+function getGlobalTrainer(): SelfPlayTrainer {
+  if (!_globalTrainer) {
+    _globalTrainer = new SelfPlayTrainer();
+  }
+  return _globalTrainer;
+}
+
+/**
+ * 신경망 액션(0-3)을 엔진 액션(fold/check/call/raise/allin)으로 변환
+ */
+function mapNNActionToEngine(
+  nn: { action: number; amount: number; isBluff?: boolean },
+  callAmt: number,
+  myStack: number
+): { action: ActionType; amount: number; isBluff?: boolean } {
+  switch (nn.action) {
+    case 0:
+      return { action: "fold", amount: 0, isBluff: nn.isBluff };
+    case 1:
+      // check or call
+      if (callAmt === 0) return { action: "check", amount: 0 };
+      if (nn.amount >= myStack) return { action: "allin", amount: myStack };
+      return { action: "call", amount: nn.amount };
+    case 2:
+    case 3:
+      // raise or allin
+      if (nn.amount >= myStack + (callAmt > 0 ? callAmt : 0)) {
+        return { action: "allin", amount: myStack, isBluff: nn.isBluff };
+      }
+      return { action: "raise", amount: nn.amount, isBluff: nn.isBluff };
+    default:
+      return { action: "fold", amount: 0 };
+  }
 }
 
 // =====================
