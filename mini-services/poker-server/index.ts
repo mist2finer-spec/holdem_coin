@@ -11,7 +11,7 @@
 import { createServer } from "http";
 import { Server, Socket } from "socket.io";
 import { SelfPlayTrainer } from "../../src/lib/self-play-trainer.ts";
-import { RPG_BOT_POOL, BotPersona, getStrategyForHand, applyStrategyToPersona } from "../../src/lib/personas.ts";
+import { RPG_BOT_POOL, BotPersona, getStrategyForHand, applyStrategyToPersona, getExitMessage } from "../../src/lib/personas.ts";
 import {
   makeDeck,
   Card,
@@ -264,6 +264,31 @@ export class HybridHoldemRoom {
   // ============================================================
 
   private processSeatSwaps() {
+    // 0) ★ AI 100k 달성 시 퇴장 + 새 AI 입장
+    // ★ AI 파산 시 퇴장 + 새 AI 입장
+    for (const seat of this.state.seats) {
+      if (!seat.isBot) continue;
+      const shouldReplace = seat.stack >= 100000 || seat.stack < BIG_BLIND * 2;
+      if (!shouldReplace) continue;
+
+      const isCashOut = seat.stack >= 100000;
+      const persona = seat.persona || RPG_BOT_POOL[0];
+      const exitMsg = getExitMessage(persona, isCashOut);
+      this.broadcast("SYSTEM_NOTICE", { messages: [exitMsg] });
+
+      const usedNames = new Set(this.state.seats.filter(s => s.seatId !== seat.seatId).map(s => s.name));
+      const avail = RPG_BOT_POOL.filter(p => !usedNames.has(p.name));
+      const newP = avail.length > 0
+        ? avail[Math.floor(Math.random() * avail.length)]
+        : RPG_BOT_POOL[Math.floor(Math.random() * RPG_BOT_POOL.length)];
+      seat.name = newP.name;
+      seat.persona = newP;
+      seat.stack = DEFAULT_BUYIN;
+      this.broadcast("SYSTEM_NOTICE", {
+        messages: [`🔄 [${newP.name}]님이 새로 입장했습니다! (20k 칩)`],
+      });
+    }
+
     // 1) 나간 유저 자리를 AI로 복구
     for (const seatId of this.leaveSeats) {
       const seat = this.state.seats[seatId];

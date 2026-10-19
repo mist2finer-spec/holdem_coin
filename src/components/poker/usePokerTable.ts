@@ -10,7 +10,7 @@ import {
   determineWinners,
   scoreToCategoryName,
 } from "@/lib/poker-engine";
-import { RPG_BOT_POOL, BotPersona, getStrategyForHand, applyStrategyToPersona, STRATEGY_PROFILES, StrategyType } from "@/lib/personas";
+import { RPG_BOT_POOL, BotPersona, getStrategyForHand, applyStrategyToPersona, STRATEGY_PROFILES, StrategyType, getExitMessage } from "@/lib/personas";
 import { SelfPlayTrainer, TrainingStats } from "@/lib/self-play-trainer";
 
 const NUM_SEATS = 8;
@@ -43,10 +43,11 @@ interface GameState {
   activeSeatId: number;
   lastActions: Record<number, string>;
   showdownReveal: boolean;
-  showdownHands: ShowdownHandInfo[]; // 쇼다운 시 각 콘텐더의 족보 정보
+  showdownHands: ShowdownHandInfo[];
   winnerInfo: { seatId: number; name: string; amount: number; hand: string } | null;
   isDealing: boolean;
   awaitingUser: boolean;
+  playerBusted: boolean; // ★ 플레이어 파산 시 퇴장 모달
   callAmount: number;
   minRaise: number;
   maxRaise: number;
@@ -95,6 +96,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     winnerInfo: null,
     isDealing: false,
     awaitingUser: false,
+    playerBusted: false,
     callAmount: 0,
     minRaise: BIG_BLIND,
     maxRaise: 0,
@@ -207,7 +209,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     st.handNumber = st.handNumber; // 핸드 번호는 아래에서 증가
     tick();
 
-    // 좌석 리셋 (파산 봇 리필, 홀카드 비움)
+    // 좌석 리셋 (파산 봇 리필, 100k 달성 봇 퇴장, 홀카드 비움)
     const usedNames = new Set<string>();
     st.seats.forEach((s) => {
       if (!s.isUser) usedNames.add(s.name);
@@ -215,15 +217,36 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     st.seats = st.seats.map((s) => {
       let persona = s.persona;
       let name = s.name;
-      if (s.isBot && s.stack < BIG_BLIND * 2) {
+      // ★ AI가 100k 달성 시 퇴장 + 새 AI 입장
+      if (s.isBot && s.stack >= 100000) {
+        const exitMsg = getExitMessage(s.persona!, true);
+        pushLog(exitMsg, "system");
+        onToast?.(exitMsg, "info");
         usedNames.delete(name);
         const avail = RPG_BOT_POOL.filter(p => !usedNames.has(p.name));
         const newP = avail.length > 0 ? avail[Math.floor(Math.random() * avail.length)] : RPG_BOT_POOL[Math.floor(Math.random() * RPG_BOT_POOL.length)];
         persona = newP;
         name = newP.name;
         usedNames.add(name);
+        pushLog(`🔄 [${newP.name}]님이 새로 입장했습니다! (20k 칩)`, "system");
       }
-      const newStack = s.stack < BIG_BLIND * 2 ? DEFAULT_BUYIN : s.stack;
+      // ★ AI 파산 시 새 AI 입장 (기존 로직)
+      else if (s.isBot && s.stack < BIG_BLIND * 2) {
+        const exitMsg = getExitMessage(s.persona!, false);
+        pushLog(exitMsg, "system");
+        usedNames.delete(name);
+        const avail = RPG_BOT_POOL.filter(p => !usedNames.has(p.name));
+        const newP = avail.length > 0 ? avail[Math.floor(Math.random() * avail.length)] : RPG_BOT_POOL[Math.floor(Math.random() * RPG_BOT_POOL.length)];
+        persona = newP;
+        name = newP.name;
+        usedNames.add(name);
+        pushLog(`🔄 [${newP.name}]님이 새로 입장했습니다! (20k 칩)`, "system");
+      }
+      const newStack = (s.isBot && (s.stack < BIG_BLIND * 2 || s.stack >= 100000)) ? DEFAULT_BUYIN : s.stack;
+      // ★ 플레이어 파산 체크
+      if (s.isUser && s.stack < BIG_BLIND) {
+        st.playerBusted = true;
+      }
       return {
         ...s,
         persona,
@@ -677,6 +700,21 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     userSeatId,
     submitUserAction,
     userTimer: st.userTimer,
+    playerBusted: st.playerBusted,
+    dismissBust: () => {
+      // ★ 파산 모달 닫기 + 리바인 (20k)
+      const st = stateRef.current;
+      st.playerBusted = false;
+      const userSeat = st.seats.find(s => s.isUser);
+      if (userSeat) {
+        userSeat.stack = DEFAULT_BUYIN;
+        userSeat.inHand = true;
+        userSeat.folded = false;
+        userSeat.allIn = false;
+      }
+      pushLog(`💰 리바인 완료! ${DEFAULT_BUYIN.toLocaleString()} 칩 충전`, "system");
+      tick();
+    },
     preAction,
     setPreActionQ,
     currentStrategy: getStrategyForHand(st.handNumber),

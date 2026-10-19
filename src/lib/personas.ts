@@ -142,9 +142,115 @@ export const RPG_BOT_POOL: BotPersona[] = [
     catchphrase: "황금비율은 내 손에.",
     taunt: "비율이 틀렸소.",
   },
+  // ★ 새 캐릭터 추가 (15종 → 더 다양한 게임)
+  {
+    id: "necromancer",
+    name: "사령술사",
+    title: "죽음의 인도자",
+    vpip: 0.30,
+    aggression: 0.60,
+    bluffFreq: 0.18,
+    style: "공격적 정석",
+    color: "from-violet-800 to-violet-950",
+    accent: "text-violet-300",
+    emoji: "💀",
+    catchphrase: "너의 패도 내 것이 될 것이다.",
+    taunt: "죽은 패는 돌아오지 않지.",
+  },
+  {
+    id: "pirate_captain",
+    name: "해적 선장",
+    title: "침몰선의 왕",
+    vpip: 0.48,
+    aggression: 0.72,
+    bluffFreq: 0.22,
+    style: "루즈-어그레시브",
+    color: "from-slate-600 to-slate-900",
+    accent: "text-slate-300",
+    emoji: "🏴‍☠️",
+    catchphrase: "보물은 전부 내 것이다!",
+    taunt: "바다에 수장되어라!",
+  },
+  {
+    id: "ninja_shadow",
+    name: "그림자 닌자",
+    title: "암살자",
+    vpip: 0.25,
+    aggression: 0.55,
+    bluffFreq: 0.28,
+    style: "타이트-어그레시브",
+    color: "from-gray-700 to-gray-950",
+    accent: "text-gray-300",
+    emoji: "🥷",
+    catchphrase: "그림자 속에서 승리를.",
+    taunt: "보이지 않는 칼날.",
+  },
+  {
+    id: "barbarian_chief",
+    name: "야만족 족장",
+    title: "피의 지배자",
+    vpip: 0.58,
+    aggression: 0.82,
+    bluffFreq: 0.15,
+    style: "루즈-어그레시브",
+    color: "from-orange-800 to-red-950",
+    accent: "text-orange-300",
+    emoji: "🪓",
+    catchphrase: "약자는 살아남지 못한다!",
+    taunt: "부수어주마!",
+  },
+  {
+    id: "ice_queen",
+    name: "얼음 여왕",
+    title: "영겨의 지배자",
+    vpip: 0.20,
+    aggression: 0.40,
+    bluffFreq: 0.08,
+    style: "타이트-패시브",
+    color: "from-cyan-600 to-cyan-900",
+    accent: "text-cyan-300",
+    emoji: "❄️",
+    catchphrase: "모든 것을 얼려버리겠어.",
+    taunt: "얼어붙은 패로는 못 이기지.",
+  },
+  {
+    id: "fire_mage",
+    name: "화염술사",
+    title: "불꽃의 지배자",
+    vpip: 0.42,
+    aggression: 0.78,
+    bluffFreq: 0.20,
+    style: "루즈-어그레시브",
+    color: "from-red-600 to-orange-900",
+    accent: "text-red-300",
+    emoji: "🔥",
+    catchphrase: "불꽃 속에서 타올라라!",
+    taunt: "재로 변해버려!",
+  },
 ];
 
-// 실제 유저(용사) 페르소나
+// 캐릭터 퇴장 멘트 (100k 달성 시 또는 파산 시)
+export function getExitMessage(persona: BotPersona, isCashOut: boolean): string {
+  if (isCashOut) {
+    // 100k 달성 - 잘 놀고 떠남
+    const cashOutMessages = [
+      `${persona.emoji} ${persona.name}: "잘 놀았네! 100k 달성이야."`,
+      `${persona.emoji} ${persona.name}: "오늘 운이 좋구만. 이만 가보겠어."`,
+      `${persona.emoji} ${persona.name}: "${persona.catchphrase}"`,
+      `${persona.emoji} ${persona.name}: "충분히 벌었어. 다음에 보자고."`,
+    ];
+    return cashOutMessages[Math.floor(Math.random() * cashOutMessages.length)];
+  } else {
+    // 파산 - 도발하며 떠남
+    const bustMessages = [
+      `${persona.emoji} ${persona.name}: "${persona.taunt}"`,
+      `${persona.emoji} ${persona.name}: "오늘은 날이 아니군..."`,
+      `${persona.emoji} ${persona.name}: "다음엔 꼭 복수하겠어!"`,
+      `${persona.emoji} ${persona.name}: "운이 따르지 않는군."`,
+    ];
+    return bustMessages[Math.floor(Math.random() * bustMessages.length)];
+  }
+}
 export const USER_PERSONA = {
   id: "hero",
   name: "용사",

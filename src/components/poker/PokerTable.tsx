@@ -62,6 +62,8 @@ export function PokerTable({ userName, onToast }: Props) {
     setTrainingMode,
     resetTraining,
     toggleTraining,
+    playerBusted,
+    dismissBust,
   } = usePokerTable({ userName, onToast });
 
   const [raiseAmount, setRaiseAmount] = useState(0);
@@ -546,13 +548,15 @@ export function PokerTable({ userName, onToast }: Props) {
         </div>
       </div>
 
-      {/* AI 학습 패널 */}
-      <TrainingPanel
-        stats={trainingStats}
-        onSetMode={setTrainingMode}
-        onToggle={toggleTraining}
-        onReset={resetTraining}
-      />
+      {/* AI 학습 패널 - 숨김 (필요시 hidden 제거) */}
+      <div className="hidden">
+        <TrainingPanel
+          stats={trainingStats}
+          onSetMode={setTrainingMode}
+          onToggle={toggleTraining}
+          onReset={resetTraining}
+        />
+      </div>
 
       {/* 좌측 로그 패널 - 상단 좌측 모서리 (HUD 아래) */}
       <div className="absolute top-28 left-2 w-56 max-h-[28vh] z-20 hidden md:block">
@@ -608,6 +612,26 @@ export function PokerTable({ userName, onToast }: Props) {
           </div>
         </div>
       </div>
+
+      {/* ★ 플레이어 파산 모달 */}
+      {playerBusted && (
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm">
+          <div className="bg-slate-900/95 border-2 border-amber-600 rounded-2xl p-8 shadow-2xl text-center max-w-sm mx-4">
+            <div className="text-5xl mb-4">💔</div>
+            <div className="text-amber-300 text-xl font-black mb-2">칩을 모두 잃었습니다</div>
+            <div className="text-amber-200/70 text-sm mb-6">
+              다음에 또 오세요!<br/>
+              재접속 시 자동으로 20,000칩이 충전됩니다.
+            </div>
+            <Button
+              onClick={dismissBust}
+              className="bg-gradient-to-b from-amber-500 to-amber-700 hover:from-amber-400 hover:to-amber-600 text-amber-950 font-black text-base py-3 px-8 border-2 border-amber-300 shadow-lg rounded-xl"
+            >
+              💰 리바인하기 (20,000칩)
+            </Button>
+          </div>
+        </div>
+      )}
 
       <style jsx>{`
         @keyframes fadeIn {
