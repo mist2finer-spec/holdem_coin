@@ -517,9 +517,13 @@ function SocketPlayerSeat({
     .filter(s => s !== "??")
     .map(s => ({ rank: s[0], suit: s[1] }));
 
-  // isMe이면 실제 카드, 아니면 마스킹
-  const displayCards = seat.isMe ? holeCards : (seat.holeCards[0] === "??" ? [] : holeCards);
-  const isHidden = !seat.isMe && !showCards && seat.holeCards.length > 0 && seat.holeCards[0] === "??";
+  // ★ 카드 표시 로직:
+  // - 본인(isMe): 폴드해도 카드 계속 보임 + 폴드 오버레이
+  // - 다른 플레이어: 폴드 시 카드 숨김, 쇼다운 시 공개
+  const showMyCards = seat.isMe;
+  const showOpponentCards = showCards && !seat.folded;
+  const shouldShowCards = holeCards.length === 2 && (showMyCards || showOpponentCards);
+  const shouldShowHidden = seat.holeCards.length > 0 && !shouldShowCards && !seat.folded;
 
   return (
     <div
@@ -527,20 +531,28 @@ function SocketPlayerSeat({
       style={{ top: position.top, left: position.left }}
     >
       <div className="flex flex-col items-center gap-1">
-        {/* 홀카드 */}
-        <div className="flex gap-0.5 h-8 sm:h-12 items-center">
-          {displayCards.length === 2 && !seat.folded ? (
+        {/* 홀카드 + FOLD 오버레이 */}
+        <div className="relative flex gap-0.5 h-8 sm:h-12 items-center">
+          {shouldShowCards ? (
             <>
-              <PlayingCard card={displayCards[0]} size="sm" />
-              <PlayingCard card={displayCards[1]} size="sm" />
+              <PlayingCard card={holeCards[0]} size="sm" />
+              <PlayingCard card={holeCards[1]} size="sm" />
             </>
-          ) : (isHidden || (seat.holeCards.length > 0 && !seat.folded && !seat.isMe && !showCards)) ? (
+          ) : shouldShowHidden ? (
             <>
               <PlayingCard hidden size="sm" />
               <PlayingCard hidden size="sm" />
             </>
           ) : (
             <div className="w-12 sm:w-16 h-8 sm:h-12" />
+          )}
+          {/* ★ FOLD 오버레이 */}
+          {seat.folded && seat.holeCards.length > 0 && (
+            <div className="absolute inset-0 flex items-center justify-center bg-rose-950/60 rounded-md border border-rose-500/50">
+              <span className="text-rose-400 text-[10px] sm:text-xs font-black tracking-wider drop-shadow-lg">
+                FOLD
+              </span>
+            </div>
           )}
         </div>
 
@@ -550,7 +562,7 @@ function SocketPlayerSeat({
             seat.isMe
               ? "bg-gradient-to-br from-blue-700 to-indigo-900"
               : "bg-gradient-to-br from-slate-700 to-slate-900"
-          } ${isActive ? "ring-2 ring-amber-300 ring-offset-2 ring-offset-emerald-950 animate-pulse" : ""} ${seat.folded ? "opacity-30 grayscale" : ""}`}
+          } ${isActive ? "ring-2 ring-amber-300 ring-offset-2 ring-offset-emerald-950 animate-pulse" : ""} ${seat.folded ? "opacity-40 grayscale" : ""}`}
         >
           <div className="bg-slate-950/60 rounded-md p-0.5 sm:p-1 flex items-center justify-center">
             <div className={`w-9 h-9 sm:w-12 sm:h-12 rounded-md flex items-center justify-center text-lg sm:text-2xl ${seat.isMe ? "bg-blue-900/50" : "bg-slate-800/50"}`}>

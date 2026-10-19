@@ -447,8 +447,10 @@ export class HybridHoldemRoom {
       if (alive.length <= 1) break;
 
       const notAllIn = alive.filter(s => !s.allIn);
+      // ★ 모든 생존자가 올인이면 베팅 라운드 종료 (자동 다음 스트릿/쇼다운)
       if (notAllIn.length === 0) break;
 
+      // ★ 생존자 중 올인이 아닌 사람이 1명이고 그 사람이 이미 콜한 상태면 종료
       const maxBet = Math.max(...alive.map(s => s.currentBet));
       const needsAction = notAllIn.filter(s => !s.hasActed || s.currentBet < maxBet);
       if (needsAction.length === 0) break;
@@ -722,6 +724,20 @@ export class HybridHoldemRoom {
 
     if (alive.length <= 1) {
       await this.finishHand(false);
+      return;
+    }
+
+    // ★ 모든 생존자가 올인이면 베팅 없이 보드를 끝까지 펼치고 쇼다운
+    const allIn = alive.every(s => s.allIn);
+    if (allIn) {
+      // 남은 보드 카드를 모두 펼침
+      while (st.board.length < 5) {
+        deck.pop(); // burn
+        st.board = [...st.board, deck.pop()!];
+        this.broadcastTableState();
+        await this.sleep(800);
+      }
+      await this.doShowdown();
       return;
     }
 

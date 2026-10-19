@@ -454,6 +454,20 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
       return;
     }
 
+    // ★ 모든 생존자가 올인이면 베팅 없이 보드를 끝까지 펼치고 쇼다운
+    const allIn = alive.every(s => s.allIn);
+    if (allIn) {
+      while (st.board.length < 5) {
+        const card = st.deck.pop()!;
+        st.board = [...st.board, card];
+        pushLog(`◆ ${st.board.length === 3 ? "FLOP" : st.board.length === 4 ? "TURN" : "RIVER"}: ${cardLabel(card)}`, "system");
+        tick();
+        await sleep(800);
+      }
+      await doShowdown(btnSeat);
+      return;
+    }
+
     if (st.phase === "PREFLOP") {
       const flop = [st.deck.pop()!, st.deck.pop()!, st.deck.pop()!];
       st.board = [...st.board, ...flop];

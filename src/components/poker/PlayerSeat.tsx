@@ -34,24 +34,38 @@ export function PlayerSeat({
   const topNum = parseFloat(position.top);
   const cardsBelow = topNum < 50;
 
+  // ★ 카드 표시 로직:
+  // - 본인(isUser): 폴드해도 카드 계속 보임 + 폴드 오버레이
+  // - 다른 플레이어: 폴드 시 카드 숨김, 쇼다운 시 공개
+  // - 올인 + 쇼다운: 카드 공개
+  const showMyCards = seat.isUser; // 본인은 항상 자기 카드 보임
+  const showOpponentCards = showCards && !seat.folded; // 쇼다운 + 폴드 안 한 사람만
+  const shouldShowCards = seat.holeCards.length > 0 && (showMyCards || showOpponentCards);
+  const shouldShowHidden = seat.holeCards.length > 0 && !shouldShowCards && !seat.folded;
+
   const cardsElement = (
-    <div className="flex gap-0.5 h-8 sm:h-12 items-center">
-      {/* ★ 쇼다운에서만 카드 공개 (올인이어도 쇼다운 전에는 카드 백)
-          - 본인 카드는 항상 보임
-          - 다른 플레이어는 showCards(=쇼다운)일 때만 공개
-          - 폴드한 플레이어는 쇼다운이어도 카드 숨김 */}
-      {seat.holeCards.length > 0 && !seat.folded && (seat.isUser || showCards) ? (
+    <div className="relative flex gap-0.5 h-8 sm:h-12 items-center">
+      {shouldShowCards ? (
         <>
           <PlayingCard card={seat.holeCards[0]} size="sm" />
           <PlayingCard card={seat.holeCards[1]} size="sm" />
         </>
-      ) : seat.holeCards.length > 0 && !seat.folded ? (
+      ) : shouldShowHidden ? (
         <>
           <PlayingCard hidden size="sm" />
           <PlayingCard hidden size="sm" />
         </>
       ) : (
         <div className="w-12 sm:w-16 h-8 sm:h-12" />
+      )}
+
+      {/* ★ FOLD 오버레이: 카드 위에 반투명 빨간 박스 + FOLD 텍스트 */}
+      {seat.folded && seat.holeCards.length > 0 && (
+        <div className="absolute inset-0 flex items-center justify-center bg-rose-950/60 rounded-md border border-rose-500/50">
+          <span className="text-rose-400 text-[10px] sm:text-xs font-black tracking-wider drop-shadow-lg">
+            FOLD
+          </span>
+        </div>
       )}
     </div>
   );
@@ -60,7 +74,7 @@ export function PlayerSeat({
     <div
       className={`relative rounded-lg bg-gradient-to-br ${colorClass} p-[2px] shadow-xl ${
         isActive ? "ring-2 ring-amber-300 ring-offset-2 ring-offset-emerald-950 animate-pulse" : ""
-      } ${seat.folded ? "opacity-30 grayscale" : ""}`}
+      } ${seat.folded ? "opacity-40 grayscale" : ""}`}
     >
       <div className="bg-slate-950/60 rounded-md p-0.5 sm:p-1 flex items-center justify-center">
         <PixelAvatar persona={persona} isUser={seat.isUser} size={36} isActive={isActive} />
@@ -84,13 +98,11 @@ export function PlayerSeat({
       )}
 
       {/* 액션 말풍선 */}
-      {lastActionText && (
+      {lastActionText && !seat.folded && (
         <div className="absolute -top-6 sm:-top-7 left-1/2 -translate-x-1/2 whitespace-nowrap z-20">
           <div
             className={`px-1.5 sm:px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold border shadow-lg ${
-              lastActionText === "FOLD"
-                ? "bg-slate-800 text-slate-300 border-slate-500"
-                : lastActionText === "CHECK" || lastActionText === "CALL"
+              lastActionText === "CHECK" || lastActionText === "CALL"
                 ? "bg-emerald-800 text-emerald-100 border-emerald-400"
                 : lastActionText === "ALL-IN"
                 ? "bg-rose-700 text-amber-200 border-rose-400 animate-pulse"
@@ -129,6 +141,11 @@ export function PlayerSeat({
           <span className="text-[9px] sm:text-[10px] font-bold text-rose-100 tabular-nums">
             {seat.currentBet > 9999 ? `${(seat.currentBet/1000).toFixed(0)}k` : seat.currentBet.toLocaleString()}
           </span>
+        </div>
+      )}
+      {seat.allIn && (
+        <div className="flex items-center gap-0.5 bg-rose-700/90 rounded-full px-1.5 py-0.5 border border-rose-400">
+          <span className="text-[8px] sm:text-[9px] text-amber-200 font-bold">ALL-IN</span>
         </div>
       )}
     </div>

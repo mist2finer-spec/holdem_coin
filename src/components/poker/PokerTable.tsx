@@ -242,10 +242,23 @@ export function PokerTable({ userName, onToast }: Props) {
         <div className="max-w-3xl mx-auto">
           {isUserTurn ? (
             <div className="bg-slate-900/95 border-2 border-amber-600 rounded-xl p-2 sm:p-3 shadow-2xl backdrop-blur-md">
+              {/* ★ 타이머 애니메이션 바 */}
+              <div className="mb-1.5 h-2 bg-slate-800 rounded-full overflow-hidden">
+                <div
+                  className={`h-full rounded-full transition-all duration-1000 ease-linear ${
+                    userTimer <= 3
+                      ? "bg-gradient-to-r from-rose-600 to-rose-400"
+                      : userTimer <= 6
+                      ? "bg-gradient-to-r from-amber-600 to-amber-400"
+                      : "bg-gradient-to-r from-emerald-700 to-emerald-400"
+                  }`}
+                  style={{ width: `${(userTimer / 10) * 100}%` }}
+                />
+              </div>
               <div className="flex items-center justify-between mb-1.5 sm:mb-2">
                 <div className="text-amber-200 text-[10px] sm:text-xs font-bold flex items-center gap-1.5 sm:gap-2">
                   ⚔️ 차례
-                  {/* 10초 타이머 */}
+                  {/* 10초 타이머 숫자 */}
                   <span className={`inline-flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 rounded-full font-bold text-xs sm:text-sm tabular-nums border-2 ${
                     userTimer <= 3
                       ? "bg-rose-700 text-amber-100 border-rose-300 animate-pulse"
@@ -552,7 +565,7 @@ export function PokerTable({ userName, onToast }: Props) {
             {log.length === 0 && (
               <div className="text-slate-500 italic">대기 중...</div>
             )}
-            {log.slice(-12).reverse().map((entry) => (
+            {log.slice(-12).map((entry) => (
               <div
                 key={entry.id}
                 className={
