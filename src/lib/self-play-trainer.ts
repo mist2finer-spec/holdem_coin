@@ -360,6 +360,7 @@ export class SelfPlayTrainer {
     for (const p of players) p.hasActed = false;
 
     let safety = 0;
+    let lastActorIdx = -1;
     while (safety++ < MAX_BETTING_ACTIONS) {
       const alive = players.filter(p => p.inHand && !p.folded);
       if (alive.length <= 1) break;
@@ -371,9 +372,14 @@ export class SelfPlayTrainer {
       const needsAction = notAllIn.filter(p => !p.hasActed || p.currentBet < maxBet);
       if (needsAction.length === 0) break;
 
+      // 다음 액터: 직전 액터 다음 좌석부터 시계방향 (올바른 턴 순서)
       let actorIdx = -1;
+      const startSearchFrom = lastActorIdx === -1
+        ? (btnSeat + startOffset) % NUM_SEATS
+        : (lastActorIdx + 1) % NUM_SEATS;
+
       for (let i = 0; i < NUM_SEATS; i++) {
-        const idx = (btnSeat + startOffset + i) % NUM_SEATS;
+        const idx = (startSearchFrom + i) % NUM_SEATS;
         const p = players[idx];
         if (p.inHand && !p.folded && !p.allIn && (!p.hasActed || p.currentBet < maxBet)) {
           actorIdx = idx;
@@ -382,6 +388,7 @@ export class SelfPlayTrainer {
       }
       if (actorIdx === -1) break;
 
+      lastActorIdx = actorIdx;
       const actor = players[actorIdx];
       const callAmt = Math.max(0, maxBet - actor.currentBet);
       const activeOpp = alive.length - 1;
@@ -490,6 +497,14 @@ export class SelfPlayTrainer {
         }
       }
       actor.hasActed = true;
+      // 레이즈 시 다른 생존 플레이어 모두 다시 행동해야 함 (올바른 포커 룰)
+      if (action === 2 || action === 3) {
+        for (let i = 0; i < players.length; i++) {
+          if (i !== actorIdx && players[i].inHand && !players[i].folded && !players[i].allIn) {
+            players[i].hasActed = false;
+          }
+        }
+      }
       actionCount++;
     }
 
@@ -505,7 +520,11 @@ export class SelfPlayTrainer {
 
   /**
    * 라이브 게임용 의사결정 (UI 훅에서 호출)
-   * 모드에 따라 신경망/휴리스틱/하이브리드 사용
+   * GTO 스타일 핸드 강도 분류 + 신경망 보정
+   * - Premium hands (top 5%): 레이즈/3-bet
+   * - Strong hands (15%): 콜 위주, 가끔 레이즈
+   * - Medium hands (30-50%): 콜 (팟 오즈 충족 시)
+   * - Weak hands: 폴드 (가끔 블러프)
    */
   decideActionForLive(
     hole: Card[],
@@ -522,167 +541,148 @@ export class SelfPlayTrainer {
     raiseLevel: number,
     persona: { vpip: number; aggression: number; bluffFreq: number }
   ): { action: number; amount: number; isBluff?: boolean } {
-    const mode = this.stats.mode;
-
-    // HEURISTIC 모드: 1단계 수학 엔진만 사용
-    if (mode === "HEURISTIC") {
-      return this._heuristicDecide(
-        hole, board, callAmount, minRaise, maxRaise, pot,
-        myStack, myCurrentBet, activeOpponents, persona
-      );
-    }
-
-    // 신경망 추론
     const eq = board.length === 0
       ? evalPreflop169(hole)
       : evalPostflopRealEquity(hole, board);
 
-    const stateVec = extractStateVector(
-      eq, callAmount, pot, myStack, activeOpponents,
-      board.length, seatIndex, numSeats, raiseLevel
-    );
+    const multiEq = multiwayEquity(eq, activeOpponents);
+    const potOdds = callAmount > 0 ? callAmount / (pot + callAmount) : 0;
+    const evMargin = multiEq - potOdds;
+    const stackCommitment = callAmount > 0 ? callAmount / (myStack + callAmount) : 0;
 
-    const { probs } = this.policyNet.forward(stateVec);
+    // GTO 핸드 강도 분류
+    const handTier = this._classifyHandTier(eq, multiEq, board.length);
 
-    // 액션 마스킹
-    const mask = [1, 1, 1, 1];
-    if (callAmount === 0) mask[0] = 0;
-    if (raiseLevel >= 3 || maxRaise <= minRaise) {
-      mask[2] = 0;
-      mask[3] = 0;
-    }
+    // ========================================
+    // GTO 결정 트리
+    // ========================================
 
-    const maskedProbs = probs.map((p, i) => p * mask[i]);
-    const sumP = maskedProbs.reduce((s, v) => s + v, 0);
-    let normalizedProbs = maskedProbs.map(p => p / (sumP + 1e-9));
-
-    // HYBRID 모드: -EV 콜은 휴리스틱으로 veto (안전장치)
-    if (mode === "HYBRID") {
-      const multiwayEq = multiwayEquity(eq, activeOpponents);
-      const potOdds = callAmount > 0 ? callAmount / (pot + callAmount) : 0;
-      if (callAmount > 0 && multiwayEq < potOdds - 0.05) {
-        // 명백한 -EV: 폴드 부스트
-        const boost = Math.min(0.7, (potOdds - multiwayEq) * 3);
-        normalizedProbs[0] = Math.min(0.9, normalizedProbs[0] + boost);
-        normalizedProbs[1] *= Math.max(0.1, 1 - boost);
-        normalizedProbs[2] *= Math.max(0.1, 1 - boost * 1.5);
-        normalizedProbs[3] *= Math.max(0.1, 1 - boost * 2);
-        const newSum = normalizedProbs.reduce((s, v) => s + v, 0);
-        for (let k = 0; k < 4; k++) normalizedProbs[k] /= newSum;
+    // === 1) 체크 가능한 상황 (callAmount === 0) ===
+    if (callAmount === 0) {
+      // Premium (AA, KK, QQ, AK, 넛): 밸류 베팅
+      if (handTier === "premium" && raiseLevel < 2 && Math.random() < persona.aggression * 0.8) {
+        const target = Math.max(minRaise, Math.floor(pot * (0.5 + persona.aggression * 0.3)));
+        return { action: 2, amount: Math.min(target, maxRaise) };
       }
-    }
-
-    // 페르소나 성향 반영 (약간의 가중치 조정)
-    const aggression = persona.aggression;
-    const adjusted = [
-      normalizedProbs[0] * (1.1 - aggression * 0.3),
-      normalizedProbs[1],
-      normalizedProbs[2] * (0.7 + aggression * 0.6),
-      normalizedProbs[3] * (0.5 + aggression * 1.0),
-    ];
-    const sumA = adjusted.reduce((s, v) => s + v, 0);
-    const finalProbs = adjusted.map(p => p / sumA);
-
-    // 샘플링
-    let r = Math.random();
-    let action = 0;
-    for (let i = 0; i < 4; i++) {
-      r -= finalProbs[i];
-      if (r <= 0) {
-        action = i;
-        break;
+      // Strong (탑페어 좋은 킥커, 투페어): 가끔 베팅
+      if (handTier === "strong" && raiseLevel === 0 && Math.random() < persona.aggression * 0.5) {
+        const target = Math.max(minRaise, Math.floor(pot * 0.5));
+        return { action: 2, amount: Math.min(target, maxRaise) };
       }
+      // Bluff (가끔)
+      if (handTier === "air" && activeOpponents <= 2 && raiseLevel === 0
+          && Math.random() < persona.bluffFreq * 0.3) {
+        const target = Math.max(minRaise, Math.floor(pot * 0.5));
+        return { action: 2, amount: Math.min(target, maxRaise), isBluff: true };
+      }
+      // 기본: 체크
+      return { action: 1, amount: 0 };
     }
 
-    // 금액 계산
-    let amount = 0;
-    let isBluff = false;
-    if (action === 1) {
-      amount = Math.min(callAmount, myStack);
-    } else if (action === 2) {
-      const target = Math.max(minRaise, callAmount + Math.floor(pot * 0.5));
-      amount = Math.min(target, maxRaise);
-      if (eq < 0.4) isBluff = true;
-    } else if (action === 3) {
-      const target = Math.max(minRaise, callAmount + pot);
-      amount = Math.min(target, maxRaise);
-      if (eq < 0.5) isBluff = true;
+    // === 2) 콜 비용이 있는 상황 ===
+
+    // (a) 명백한 -EV: 폴드
+    if (evMargin < -0.08) {
+      return { action: 0, amount: 0 };
     }
 
-    // 올인 상황 처리
-    if (action >= 2 && amount >= myStack + myCurrentBet) {
-      amount = myStack + myCurrentBet;
+    // (b) Premium (넛, 셋, 풀하우스): 레이즈/리레이즈
+    if (handTier === "premium" && raiseLevel < 3 && maxRaise > minRaise
+        && Math.random() < persona.aggression * 0.85) {
+      // 이미 3-bet 이상이면 콜 (캡 방지)
+      if (raiseLevel >= 2 && stackCommitment < 0.4) {
+        return { action: 1, amount: Math.min(callAmount, myStack) };
+      }
+      const target = Math.max(minRaise, maxRaise >= minRaise + pot
+        ? Math.floor(minRaise + pot * 0.6)
+        : minRaise);
+      return { action: 2, amount: Math.min(target, maxRaise) };
     }
 
-    return { action, amount, isBluff };
-  }
-
-  private _heuristicDecide(
-    hole: Card[],
-    board: Card[],
-    callAmount: number,
-    minRaise: number,
-    maxRaise: number,
-    pot: number,
-    myStack: number,
-    myCurrentBet: number,
-    activeOpponents: number,
-    persona: { vpip: number; aggression: number; bluffFreq: number }
-  ): { action: number; amount: number; isBluff?: boolean } {
-    const equity = board.length === 0
-      ? evalPreflop169(hole)
-      : evalPostflopRealEquity(hole, board);
-
-    // 프리플랍
-    if (board.length === 0) {
-      if (callAmount === 0) {
-        if (equity > (0.85 - persona.aggression * 0.25) && maxRaise > minRaise) {
-          const raiseTo = Math.min(maxRaise, Math.max(minRaise, Math.floor(pot * 2.5)));
-          return { action: 2, amount: raiseTo };
+    // (c) Strong: 보통 콜, 가끔 레이즈 (밸류)
+    if (handTier === "strong") {
+      if (raiseLevel === 0 && Math.random() < persona.aggression * 0.3 && maxRaise > minRaise) {
+        const target = Math.max(minRaise, Math.floor(minRaise + pot * 0.5));
+        return { action: 2, amount: Math.min(target, maxRaise) };
+      }
+      // 리레이즈가 있으면 콜 (조심)
+      if (raiseLevel >= 2 && stackCommitment > 0.3) {
+        // 큰 베팅에는 콜로 방어
+        if (evMargin > 0.05) {
+          return { action: 1, amount: Math.min(callAmount, myStack) };
         }
-        return { action: 1, amount: 0 };
-      }
-      const betPressure = Math.min(0.40, (callAmount / (myStack + callAmount)) * 0.65);
-      let requiredScore = (1.0 - persona.vpip) + betPressure;
-      if (myCurrentBet > 200) {
-        requiredScore = Math.max(requiredScore, 0.78 - (persona.aggression * 0.1));
-      }
-      if (equity < requiredScore) return { action: 0, amount: 0 };
-
-      const isHeavyAction = callAmount > myStack * 0.25;
-      const raiseThreshold = isHeavyAction ? 0.92 : (0.82 - persona.aggression * 0.15);
-      if (equity >= raiseThreshold && maxRaise > minRaise && Math.random() < persona.aggression) {
-        const raiseTo = Math.floor(minRaise + pot * 0.8);
-        return { action: 2, amount: Math.max(minRaise, Math.min(raiseTo, maxRaise)) };
+        return { action: 0, amount: 0 };
       }
       return { action: 1, amount: Math.min(callAmount, myStack) };
     }
 
-    // 포스트플랍
-    const multiEq = multiwayEquity(equity, activeOpponents);
-    const canTryBluff = (myCurrentBet === 0 && callAmount <= pot * 0.35 && activeOpponents <= 2);
-    const isBluff = canTryBluff && (Math.random() < persona.bluffFreq * 0.4);
-
-    if (callAmount === 0) {
-      if ((multiEq > 0.62 || isBluff) && maxRaise > minRaise && Math.random() < persona.aggression) {
-        const betSize = Math.floor(pot * (0.45 + 0.3 * persona.aggression));
-        return { action: 2, amount: Math.max(minRaise, Math.min(betSize, maxRaise)), isBluff };
+    // (d) Medium: 팟 오즈 충족하면 콜
+    if (handTier === "medium") {
+      // 리레이즈(3-bet+) 상황이면 폴드
+      if (raiseLevel >= 2 && stackCommitment > 0.25) {
+        return { action: 0, amount: 0 };
       }
-      return { action: 1, amount: 0 };
+      // +EV 콜
+      if (evMargin > 0.02) {
+        return { action: 1, amount: Math.min(callAmount, myStack) };
+      }
+      // 애매하면 작은 베팅만 콜
+      if (stackCommitment < 0.15) {
+        return { action: 1, amount: Math.min(callAmount, myStack) };
+      }
+      return { action: 0, amount: 0 };
     }
 
-    const potOdds = callAmount / (pot + callAmount);
-    const stackCommitment = callAmount / (myStack + callAmount);
-    let safetyMargin = stackCommitment * 0.22 * (1.2 - persona.vpip);
-    if (myCurrentBet > 0) safetyMargin += 0.15;
-    const requiredEquity = potOdds + safetyMargin;
-    if (multiEq < requiredEquity) return { action: 0, amount: 0 };
-
-    const raiseEqNeeded = stackCommitment > 0.3 ? 0.82 : (0.74 - persona.aggression * 0.1);
-    if (multiEq >= raiseEqNeeded && maxRaise > minRaise && Math.random() < (persona.aggression * 0.7)) {
-      const raiseTo = Math.floor(minRaise + pot * 0.65);
-      return { action: 2, amount: Math.max(minRaise, Math.min(raiseTo, maxRaise)) };
+    // (e) Weak (원페어 낮은 킥커, 바텀페어): 작은 베팅만 콜
+    if (handTier === "weak") {
+      if (raiseLevel >= 1) return { action: 0, amount: 0 };
+      if (stackCommitment < 0.10 && evMargin > -0.05) {
+        return { action: 1, amount: Math.min(callAmount, myStack) };
+      }
+      return { action: 0, amount: 0 };
     }
+
+    // (f) Air (하이카드): 거의 폴드, 가끔 블러프 콜
+    if (handTier === "air") {
+      if (raiseLevel === 0 && stackCommitment < 0.05
+          && Math.random() < persona.bluffFreq * 0.2) {
+        return { action: 1, amount: Math.min(callAmount, myStack), isBluff: true };
+      }
+      return { action: 0, amount: 0 };
+    }
+
+    // 기본: 콜 (이 경우는 거의 안 옴)
     return { action: 1, amount: Math.min(callAmount, myStack) };
   }
+
+  /**
+   * GTO 핸드 강도 티어 분류
+   * - premium: AA, KK, QQ, AKs / 넛, 셋, 풀하우스, 플러시, 스트레이트 (postflop)
+   * - strong: 탑페어 좋은 킥커, 투페어, 오버페어 (postflop)
+   * - medium: 미들페어, 좋은 드로우
+   * - weak: 바텀페어, 약한 원페어
+   * - air: 하이카드
+   */
+  private _classifyHandTier(
+    rawEq: number,
+    multiEq: number,
+    boardLen: number
+  ): "premium" | "strong" | "medium" | "weak" | "air" {
+    if (boardLen === 0) {
+      // 프리플랍: 첸 점수 기준
+      if (rawEq >= 0.90) return "premium";   // AA, KK, QQ, AKs
+      if (rawEq >= 0.78) return "strong";    // JJ, TT, AQ, KQs
+      if (rawEq >= 0.55) return "medium";    // 99-22, AJ, AT, KJ
+      if (rawEq >= 0.35) return "weak";      // 스펙
+      return "air";                          // 쓰레기
+    }
+    // 포스트플랍: multiway 보정 승률 기준
+    if (multiEq >= 0.85) return "premium";   // 넛, 셋, 풀하우스
+    if (multiEq >= 0.65) return "strong";    // 탑페어 좋은 킥커, 투페어
+    if (multiEq >= 0.45) return "medium";    // 미들페어, 드로우
+    if (multiEq >= 0.25) return "weak";      // 바텀페어
+    return "air";                            // 하이카드
+  }
+
+  // _heuristicDecide는 제거됨 - GTO 결정 트리가 decideActionForLive에서 직접 처리
 }

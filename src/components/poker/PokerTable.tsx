@@ -45,6 +45,7 @@ export function PokerTable({ userName, onToast }: Props) {
     maxRaise,
     userSeatId,
     submitUserAction,
+    userTimer,
     trainingStats,
     setTrainingMode,
     resetTraining,
@@ -178,8 +179,18 @@ export function PokerTable({ userName, onToast }: Props) {
           {isUserTurn ? (
             <div className="bg-slate-900/95 border-2 border-amber-600 rounded-xl p-3 shadow-2xl backdrop-blur-md">
               <div className="flex items-center justify-between mb-2">
-                <div className="text-amber-200 text-xs font-bold">
+                <div className="text-amber-200 text-xs font-bold flex items-center gap-2">
                   ⚔️ 당신의 차례입니다 — 행동을 선택하세요
+                  {/* 10초 타이머 */}
+                  <span className={`inline-flex items-center justify-center w-7 h-7 rounded-full font-bold text-sm tabular-nums border-2 ${
+                    userTimer <= 3
+                      ? "bg-rose-700 text-amber-100 border-rose-300 animate-pulse"
+                      : userTimer <= 6
+                      ? "bg-amber-700 text-amber-50 border-amber-300"
+                      : "bg-emerald-800 text-emerald-50 border-emerald-400"
+                  }`}>
+                    {userTimer}
+                  </span>
                 </div>
                 <div className="text-amber-300 text-xs">
                   콜 필요: <span className="font-bold tabular-nums">{callAmount.toLocaleString()}</span>

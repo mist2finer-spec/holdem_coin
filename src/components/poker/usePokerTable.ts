@@ -42,6 +42,7 @@ interface GameState {
   maxRaise: number;
   deck: Card[];
   raiseLevel: number; // 현재 라운드 레이즈 횟수 (3-bet, 4-bet 추적)
+  userTimer: number; // 유저 결정 타이머 (남은 초, 0=시간 없음)
 }
 
 interface UseTableOpts {
@@ -88,6 +89,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     maxRaise: 0,
     deck: [],
     raiseLevel: 0,
+    userTimer: 0,
   });
 
   const [, forceTick] = useState(0);
@@ -215,6 +217,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     await sleep(300);
 
     let safetyCounter = 0;
+    let lastActorIdx = -1; // 직전 액터 (턴 순서 추적용)
     while (safetyCounter < 100) {
       safetyCounter++;
       const aliveInHand = st.seats.filter(s => s.inHand && !s.folded);
@@ -227,10 +230,15 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
       const needsAction = notAllIn.filter(s => !s.hasActed || s.currentBet < maxBet);
       if (needsAction.length === 0) break;
 
-      // 다음 액터 (startOffset 부터)
+      // 다음 액터: 직전 액터의 다음 좌석부터 시계방향으로 검색
+      // (레이즈 시 테이블을 한 바퀴 돌도록 보장)
       let actorIdx = -1;
+      const startSearchFrom = lastActorIdx === -1
+        ? (btnSeat + startOffset) % NUM_SEATS
+        : (lastActorIdx + 1) % NUM_SEATS;
+
       for (let i = 0; i < NUM_SEATS; i++) {
-        const idx = (btnSeat + startOffset + i) % NUM_SEATS;
+        const idx = (startSearchFrom + i) % NUM_SEATS;
         const s = st.seats[idx];
         if (s && s.inHand && !s.folded && !s.allIn && (!s.hasActed || s.currentBet < maxBet)) {
           actorIdx = idx;
@@ -239,6 +247,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
       }
       if (actorIdx === -1) break;
 
+      lastActorIdx = actorIdx;
       const actor = st.seats[actorIdx];
       st.activeSeatId = actorIdx;
       const callAmt = Math.max(0, maxBet - actor.currentBet);
@@ -253,9 +262,12 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
 
       if (actor.isUser) {
         st.awaitingUser = true;
+        st.userTimer = 10; // 10초 타이머
         tick();
-        decision = await waitForUserAction();
+        decision = await waitForUserActionWithTimer(st, tick);
         st.awaitingUser = false;
+        st.userTimer = 0;
+        tick();
       } else {
         await sleep(700 + Math.random() * 900);
         // 신경망 기반 의사결정 (트레이너 사용)
@@ -280,9 +292,16 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
         decision = mapNNActionToEngine(nnDecision, callAmt, actor.stack);
       }
 
-      // raiseLevel 추적
+      // raiseLevel 추적 + 다른 플레이어 hasActed 리셋 (올바른 포커 룰)
       if (decision.action === "raise" || decision.action === "allin") {
         st.raiseLevel += 1;
+        // 레이즈가 발생하면 다른 모든 생존 플레이어가 다시 행동해야 함
+        // (단, 레이즈한 본인은 hasActed=true 유지)
+        for (let i = 0; i < st.seats.length; i++) {
+          if (i !== actorIdx && st.seats[i].inHand && !st.seats[i].folded && !st.seats[i].allIn) {
+            st.seats[i].hasActed = false;
+          }
+        }
       }
 
       // 액션 적용 (직접 ref 수정)
@@ -431,6 +450,50 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     });
   }
 
+  // 10초 타이머付き 유저 액션 대기
+  // 시간 초과 시: 체크 가능하면 체크, 아니면 폴드
+  function waitForUserActionWithTimer(
+    st: GameState,
+    tickFn: () => void
+  ): Promise<{ action: ActionType; amount: number }> {
+    return new Promise((resolve) => {
+      let intervalId: ReturnType<typeof setInterval> | null = null;
+
+      const cleanup = () => {
+        if (intervalId !== null) {
+          clearInterval(intervalId);
+          intervalId = null;
+        }
+      };
+
+      // 사용자가 직접 액션을 제출했을 때 호출될 래퍼
+      const wrappedResolve = (action: { action: ActionType; amount: number }) => {
+        cleanup();
+        resolve(action);
+      };
+      pendingUserAction.current = wrappedResolve;
+
+      // 1초마다 타이머 감소
+      intervalId = setInterval(() => {
+        st.userTimer = Math.max(0, st.userTimer - 1);
+        tickFn();
+        if (st.userTimer <= 0) {
+          cleanup();
+          // 타임아웃: 자동 액션
+          if (pendingUserAction.current) {
+            const callAmt = st.callAmount;
+            const autoAction = callAmt === 0
+              ? { action: "check" as ActionType, amount: 0 }
+              : { action: "fold" as ActionType, amount: 0 };
+            pushLog(`⏱ 시간 초과! 자동 ${autoAction.action.toUpperCase()}`, "system");
+            pendingUserAction.current = null;
+            resolve(autoAction);
+          }
+        }
+      }, 1000);
+    });
+  }
+
   const submitUserAction = useCallback((action: ActionType, amount: number) => {
     if (pendingUserAction.current) {
       pendingUserAction.current({ action, amount });
@@ -467,6 +530,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     maxRaise: st.maxRaise,
     userSeatId,
     submitUserAction,
+    userTimer: st.userTimer,
     trainingStats,
     setTrainingMode: (mode: "HEURISTIC" | "NEURAL" | "HYBRID") => trainer.setMode(mode),
     resetTraining: () => trainer.resetTraining(),
