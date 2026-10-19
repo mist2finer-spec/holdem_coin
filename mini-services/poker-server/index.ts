@@ -73,8 +73,10 @@ interface ServerGameState {
 }
 
 interface ConnectedUser {
+  playerId: string;   // ★ 고유 플레이어 ID (서버 생성)
   socketId: string;
-  name: string;
+  name: string;       // 표시용 이름 (유저 입력 + 고유 번호)
+  baseName: string;   // 유저가 입력한 원본 이름
   seatId: number | null; // null = 관전 중
   preAction: { type: "fold" | "call" | "check"; amount: number } | null;
 }
@@ -144,9 +146,29 @@ class HybridHoldemRoom {
   // ============================================================
 
   onUserConnect(socket: Socket, name: string) {
+    // ★ 고유 플레이어 ID 생성 (서버 사이드)
+    const playerId = `P${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`.toUpperCase();
+    const baseName = (name || "용사").trim().slice(0, 8);
+
+    // ★ 중복 이름 방지: 이미 같은 baseName을 쓰는 유저가 있으면 번호 추가
+    const existingNames = new Set(
+      Array.from(this.users.values()).map(u => u.baseName)
+    );
+    let uniqueName = baseName;
+    if (existingNames.has(baseName)) {
+      // 같은 이름이 있으면 #2, #3... 번호 추가
+      let suffix = 2;
+      while (existingNames.has(`${baseName}#${suffix}`)) {
+        suffix++;
+      }
+      uniqueName = `${baseName}#${suffix}`;
+    }
+
     const user: ConnectedUser = {
+      playerId,
       socketId: socket.id,
-      name: name || `Player_${socket.id.slice(0, 4)}`,
+      name: uniqueName,
+      baseName,
       seatId: null,
       preAction: null,
     };
@@ -177,7 +199,7 @@ class HybridHoldemRoom {
         // ★ 핸드 진행 중: 자리는 차지하지만 이번 핸드는 관전
         const seat = this.state.seats[targetSeatId];
         seat.isBot = false;
-        seat.name = user.name;
+        seat.name = user.name;  // ★ 고유 이름 사용
         seat.socketId = user.socketId;
         seat.persona = undefined;
         seat.folded = true; // 이번 핸드는 폴드 처리
@@ -869,6 +891,8 @@ class HybridHoldemRoom {
       minRaise: st.minRaise,
       maxRaise: st.maxRaise,
       mySeatId,
+      myPlayerId: user?.playerId ?? null,  // ★ 고유 플레이어 ID
+      myName: user?.name ?? null,          // ★ 서버가 부여한 고유 이름
       isUserTurn: st.activeSeatId === mySeatId && mySeatId >= 0 && st.seats[mySeatId]?.inHand,
       handInProgress, // ★ 핸드 진행 중 입장 여부
       showdownHands: st.showdownHands,

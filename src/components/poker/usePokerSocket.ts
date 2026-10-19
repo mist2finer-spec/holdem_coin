@@ -39,6 +39,8 @@ export interface SocketTableState {
   minRaise: number;
   maxRaise: number;
   mySeatId: number;
+  myPlayerId: string | null;  // ★ 서버가 부여한 고유 ID
+  myName: string | null;      // ★ 서버가 부여한 고유 이름
   isUserTurn: boolean;
   handInProgress: boolean;
   showdownHands: any[];
@@ -251,5 +253,7 @@ export function usePokerSocket({ userName, onToast }: UsePokerSocketOpts) {
     winnerInfo: state?.winnerInfo ?? null,
     showdownReveal: state?.phase === "SHOWDOWN",
     mySeatId: state?.mySeatId ?? -1,
+    myPlayerId: state?.myPlayerId ?? null,  // ★ 고유 플레이어 ID
+    myName: state?.myName ?? null,          // ★ 서버 부여 고유 이름
   };
 }

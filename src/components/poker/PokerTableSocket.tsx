@@ -59,6 +59,8 @@ export function PokerTableSocket({ userName, onToast }: Props) {
     winnerInfo,
     showdownReveal,
     mySeatId,
+    myPlayerId,
+    myName,
   } = usePokerSocket({ userName, onToast });
 
   const [raiseAmount, setRaiseAmount] = useState(0);
@@ -101,6 +103,17 @@ export function PokerTableSocket({ userName, onToast }: Props) {
                             radial-gradient(circle at 50% 95%, rgba(60,40,20,0.5) 0%, transparent 30%)`
         }}
       />
+
+      {/* ★ 좌측 상단: 내 고유 ID/이름 표시 */}
+      {myName && (
+        <div className="absolute top-1 left-2 z-30 bg-blue-950/90 border border-blue-500 rounded-full px-3 py-0.5 backdrop-blur-sm shadow-lg">
+          <span className="text-blue-300 text-[9px] font-bold">👤</span>
+          <span className="text-blue-100 text-[10px] font-bold ml-1">{myName}</span>
+          {myPlayerId && (
+            <span className="text-blue-400/60 text-[8px] ml-1">({myPlayerId})</span>
+          )}
+        </div>
+      )}
 
       {/* 상단 HUD */}
       <div className="absolute top-1 right-2 z-30 flex items-center gap-1.5">
