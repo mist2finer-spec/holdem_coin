@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { LIVE_RULES } from "@/lib/poker-live";
 import { usePokerSocket } from "./usePokerSocket";
 import { PlayerSeat } from "./PlayerSeat";
 import { PlayingCard } from "./PlayingCard";
@@ -37,6 +38,12 @@ const phaseLabel: Record<string, string> = {
 export function PokerTableSocket({ userName, onToast }: Props) {
   const {
     connected,
+    playerBusted,
+    rebuyPending,
+    requestRebuy,
+    userTimer,
+    rotatedSmallBlindSeat,
+    rotatedBigBlindSeat,
     log,
     preAction,
     setPreActionQ,
@@ -227,8 +234,8 @@ export function PokerTableSocket({ userName, onToast }: Props) {
               seat={seat}
               isActive={rotatedActiveSeatId === i}
               isDealer={rotatedButtonSeat === i}
-              isSmallBlind={(rotatedButtonSeat + 1) % 8 === i}
-              isBigBlind={(rotatedButtonSeat + 2) % 8 === i}
+              isSmallBlind={rotatedSmallBlindSeat === i}
+              isBigBlind={rotatedBigBlindSeat === i}
               showCards={showdownReveal || bluffReveal === seat.seatId}
               position={seat.position}
             />
@@ -252,6 +259,11 @@ export function PokerTableSocket({ userName, onToast }: Props) {
         <div className="max-w-3xl mx-auto">
           {isUserTurn ? (
             <div className="bg-slate-900/95 border-2 border-amber-600 rounded-xl p-2 sm:p-3 shadow-2xl backdrop-blur-md">
+              <div className="h-1 rounded bg-slate-800 mb-2 overflow-hidden">
+                <div className={userTimer <= 3 ? "h-full bg-red-500" : "h-full bg-amber-400"}
+                  style={{ width: `${userTimer / LIVE_RULES.userSeconds * 100}%` }} />
+              </div>
+              <div className="text-amber-200 text-xs mb-1">결정 시간: {userTimer}초</div>
               <div className="flex items-center justify-between mb-1.5 sm:mb-2">
                 <div className="text-amber-200 text-[10px] sm:text-xs font-bold flex items-center gap-1.5 sm:gap-2">
                   ⚔️ 내 차례
@@ -472,6 +484,19 @@ export function PokerTableSocket({ userName, onToast }: Props) {
           </div>
         </div>
       </div>
+
+      {playerBusted && (
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm">
+          <div className="bg-slate-900 border-2 border-amber-600 rounded-2xl p-8 text-center max-w-sm mx-4">
+            <div className="text-4xl mb-4">💔</div>
+            <div className="text-amber-300 text-xl font-black mb-3">참여할 칩이 부족합니다</div>
+            <p className="text-amber-200/70 text-sm mb-5">리바인하면 다음 핸드에 20,000칩으로 참여합니다.</p>
+            <Button onClick={requestRebuy} disabled={rebuyPending}>
+              {rebuyPending ? "다음 핸드 착석 대기 중…" : "💰 리바인하기 (20,000칩)"}
+            </Button>
+          </div>
+        </div>
+      )}
 
       <style jsx>{`
         .custom-scroll::-webkit-scrollbar { width: 4px; }

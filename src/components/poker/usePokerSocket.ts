@@ -1,4 +1,5 @@
 "use client";
+import { LIVE_RULES } from "@/lib/poker-live";
 import type { WinnerInfo } from "@/lib/poker-rules";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { io, Socket } from "socket.io-client";
@@ -34,6 +35,11 @@ export interface SocketTableState {
   handNumber: number;
   phase: string;
   buttonSeat: number;
+  smallBlindSeat: number;
+  bigBlindSeat: number;
+  actionDeadline: number;
+  playerBusted: boolean;
+  rebuyPending: boolean;
   activeSeatId: number;
   totalPot: number;
   boardCards: string[];
@@ -67,6 +73,7 @@ export function usePokerSocket({ userName, onToast }: UsePokerSocketOpts) {
   const socketRef = useRef<Socket | null>(null);
   const [state, setState] = useState<SocketTableState | null>(null);
   const [connected, setConnected] = useState(false);
+  const [clock, setClock] = useState(Date.now);
   const [log, setLog] = useState<LogEntry[]>([]);
   const [preAction, setPreAction] = useState<{
     type: "fold" | "call" | "check";
@@ -129,6 +136,7 @@ export function usePokerSocket({ userName, onToast }: UsePokerSocketOpts) {
     socket.on("TABLE_STATE", (data: SocketTableState) => {
       console.log("[Socket] TABLE_STATE 수신:", data.phase, "mySeat:", data.mySeatId);
       setState(data);
+      setClock(Date.now());
       setPreAction(data.preAction);
     });
 
@@ -173,6 +181,14 @@ export function usePokerSocket({ userName, onToast }: UsePokerSocketOpts) {
     }
   }, []);
 
+  useEffect(() => {
+    if (!state?.isUserTurn) return;
+    const interval = setInterval(() => setClock(Date.now()), 200);
+    return () => clearInterval(interval);
+  }, [state?.isUserTurn, state?.actionDeadline]);
+
+  const requestRebuy = useCallback(() => socketRef.current?.emit("REBUY"), []);
+
   // ★ 시점 회전: 내 좌석을 0번(하단 중앙)으로 오도록 좌석 배열 회전
   const getRotatedSeats = useCallback(() => {
     return state ? rotateSeatView(state.seats, state.mySeatId) : [];
@@ -208,6 +224,12 @@ export function usePokerSocket({ userName, onToast }: UsePokerSocketOpts) {
 
   return {
     connected,
+    requestRebuy,
+    playerBusted: state?.playerBusted ?? false,
+    rebuyPending: state?.rebuyPending ?? false,
+    userTimer: state?.isUserTurn ? Math.min(LIVE_RULES.userSeconds, Math.max(0, Math.ceil(((state.actionDeadline || 0) - clock) / 1000))) : 0,
+    rotatedSmallBlindSeat: state ? (state.smallBlindSeat - Math.max(0, state.mySeatId) + 8) % 8 : -1,
+    rotatedBigBlindSeat: state ? (state.bigBlindSeat - Math.max(0, state.mySeatId) + 8) % 8 : -1,
     state,
     log,
     preAction,

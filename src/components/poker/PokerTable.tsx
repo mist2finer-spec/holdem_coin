@@ -1,5 +1,6 @@
 "use client";
 import { useState, useMemo } from "react";
+import { LIVE_RULES } from "@/lib/poker-live";
 import { usePokerTable } from "./usePokerTable";
 import { PlayerSeat } from "./PlayerSeat";
 import { PlayingCard } from "./PlayingCard";
@@ -56,6 +57,8 @@ export function PokerTable({ userName, onToast }: Props) {
     userSeatId,
     submitUserAction,
     userTimer,
+    smallBlindSeat,
+    bigBlindSeat,
     preAction,
     setPreActionQ,
     currentStrategy,
@@ -233,8 +236,8 @@ export function PokerTable({ userName, onToast }: Props) {
               seat={seat}
               isActive={activeSeatId === seat.seatId}
               isDealer={buttonSeat === seat.seatId}
-              isSmallBlind={(buttonSeat + 1) % 8 === seat.seatId}
-              isBigBlind={(buttonSeat + 2) % 8 === seat.seatId}
+              isSmallBlind={smallBlindSeat === seat.seatId}
+              isBigBlind={bigBlindSeat === seat.seatId}
               showCards={showdownReveal || bluffReveal === seat.seatId}
               position={SEAT_POSITIONS[seat.seatId]}
               lastActionText={lastActions[seat.seatId]}
@@ -258,7 +261,7 @@ export function PokerTable({ userName, onToast }: Props) {
                       ? "bg-gradient-to-r from-amber-600 to-amber-400"
                       : "bg-gradient-to-r from-emerald-700 to-emerald-400"
                   }`}
-                  style={{ width: `${(userTimer / 10) * 100}%` }}
+                  style={{ width: `${(userTimer / LIVE_RULES.userSeconds) * 100}%` }}
                 />
               </div>
               <div className="flex items-center justify-between mb-1.5 sm:mb-2">
@@ -622,10 +625,10 @@ export function PokerTable({ userName, onToast }: Props) {
         <div className="absolute inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm">
           <div className="bg-slate-900/95 border-2 border-amber-600 rounded-2xl p-8 shadow-2xl text-center max-w-sm mx-4">
             <div className="text-5xl mb-4">💔</div>
-            <div className="text-amber-300 text-xl font-black mb-2">칩을 모두 잃었습니다</div>
+            <div className="text-amber-300 text-xl font-black mb-2">참여할 칩이 부족합니다</div>
             <div className="text-amber-200/70 text-sm mb-6">
               다음에 또 오세요!<br/>
-              재접속 시 자동으로 20,000칩이 충전됩니다.
+              리바인하면 다음 핸드에 20,000칩으로 참여합니다.
             </div>
             <Button
               onClick={dismissBust}

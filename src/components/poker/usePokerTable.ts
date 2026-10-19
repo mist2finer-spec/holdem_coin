@@ -1,5 +1,6 @@
 "use client";
 /* eslint-disable react-hooks/immutability -- The imperative game loop and trainer expose mutable objects; callbacks run after render. */
+import { LIVE_RULES, handPositions, postBlind, normalizeLiveAction, applyLiveAction, decideLiveBot } from "@/lib/poker-live";
 import { BluffAggression, successfulBluff, bluffTaunt } from "@/lib/poker-bluff";
 import { settleHand, bettingLocked, hasBettingOpponent, dealNextStreet, WinnerInfo } from "@/lib/poker-rules";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -15,10 +16,10 @@ import {
 import { RPG_BOT_POOL, BotPersona, getStrategyForHand, applyStrategyToPersona, STRATEGY_PROFILES, StrategyType, getExitMessage } from "@/lib/personas";
 import { SelfPlayTrainer, TrainingStats } from "@/lib/self-play-trainer";
 
-const NUM_SEATS = 8;
-const SMALL_BLIND = 100;
-const BIG_BLIND = 200;
-const DEFAULT_BUYIN = 20000;
+const NUM_SEATS = LIVE_RULES.seats;
+const SMALL_BLIND = LIVE_RULES.smallBlind;
+const BIG_BLIND = LIVE_RULES.bigBlind;
+const DEFAULT_BUYIN = LIVE_RULES.buyIn;
 
 export interface LogEntry {
   id: number;
@@ -42,6 +43,11 @@ interface GameState {
   phase: Phase;
   handNumber: number;
   buttonSeat: number;
+  smallBlindSeat: number;
+  bigBlindSeat: number;
+  preflopStart: number;
+  postflopStart: number;
+  rebuyPending: boolean;
   activeSeatId: number;
   lastActions: Record<number, string>;
   showdownReveal: boolean;
@@ -51,6 +57,7 @@ interface GameState {
   winnerInfo: WinnerInfo | null;
   isDealing: boolean;
   awaitingUser: boolean;
+  handAborted: boolean;
   playerBusted: boolean; // ★ 플레이어 파산 시 퇴장 모달
   callAmount: number;
   minRaise: number;
@@ -89,6 +96,11 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     phase: "PREFLOP",
     handNumber: 1,
     buttonSeat: 0,
+    smallBlindSeat: 1,
+    bigBlindSeat: 2,
+    preflopStart: 3,
+    postflopStart: 1,
+    rebuyPending: false,
     activeSeatId: -1,
     lastActions: {},
     showdownReveal: false,
@@ -97,6 +109,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     winnerInfo: null,
     isDealing: false,
     awaitingUser: false,
+    handAborted: false,
     playerBusted: false,
     callAmount: 0,
     minRaise: BIG_BLIND,
@@ -201,6 +214,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
   const startHand = useCallback(async () => {
     const st = stateRef.current;
     st.isDealing = true;
+    st.handAborted = false;
     st.showdownReveal = false;
     st.lastAggression = null;
     st.bluffReveal = null;
@@ -210,7 +224,12 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     st.phase = "PREFLOP";
     st.lastActions = {};
     st.deck = makeDeck();
-    st.buttonSeat = (st.buttonSeat + 1) % NUM_SEATS;
+    if (st.rebuyPending) {
+      const mine = st.seats.find(s => s.isUser)!;
+      mine.stack = DEFAULT_BUYIN;
+      st.rebuyPending = false;
+      st.playerBusted = false;
+    }
     st.handNumber = st.handNumber; // 핸드 번호는 아래에서 증가
     tick();
 
@@ -223,7 +242,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
       let persona = s.persona;
       let name = s.name;
       // ★ AI가 100k 달성 시 퇴장 + 새 AI 입장
-      if (s.isBot && s.stack >= 100000) {
+      if (s.isBot && s.stack >= LIVE_RULES.botCashOut) {
         const exitMsg = getExitMessage(s.persona!, true);
         pushLog(exitMsg, "system");
         onToast?.(exitMsg, "info");
@@ -247,7 +266,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
         usedNames.add(name);
         pushLog(`🔄 [${newP.name}]님이 새로 입장했습니다! (20k 칩)`, "system");
       }
-      const newStack = (s.isBot && (s.stack < BIG_BLIND * 2 || s.stack >= 100000)) ? DEFAULT_BUYIN : s.stack;
+      const newStack = (s.isBot && (s.stack < BIG_BLIND * 2 || s.stack >= LIVE_RULES.botCashOut)) ? DEFAULT_BUYIN : s.stack;
       // ★ 플레이어 파산 체크
       if (s.isUser && s.stack < BIG_BLIND) {
         st.playerBusted = true;
@@ -268,21 +287,18 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
       };
     });
 
+    const positions = handPositions(st.seats, st.buttonSeat);
+    st.buttonSeat = positions.button;
+    st.smallBlindSeat = positions.smallBlind;
+    st.bigBlindSeat = positions.bigBlind;
+    st.preflopStart = positions.preflopStart;
+    st.postflopStart = positions.postflopStart;
     const btnSeat = st.buttonSeat;
-    const sbSeat = (btnSeat + 1) % NUM_SEATS;
-    const bbSeat = (btnSeat + 2) % NUM_SEATS;
-
     pushLog(`─── 핸드 #${st.handNumber} 시작 (BTN: ${st.seats[btnSeat]?.name}) ───`, "system");
-
-    // 블라인드
-    st.seats[sbSeat].currentBet = SMALL_BLIND;
-    st.seats[sbSeat].totalBet = SMALL_BLIND;
-    st.seats[sbSeat].stack -= SMALL_BLIND;
-    st.seats[bbSeat].currentBet = BIG_BLIND;
-    st.seats[bbSeat].totalBet = BIG_BLIND;
-    st.seats[bbSeat].stack -= BIG_BLIND;
-    pushLog(`${st.seats[sbSeat].name}: SB ${SMALL_BLIND}`, "system");
-    pushLog(`${st.seats[bbSeat].name}: BB ${BIG_BLIND}`, "system");
+    st.seats[positions.smallBlind] = postBlind(st.seats[positions.smallBlind], SMALL_BLIND);
+    st.seats[positions.bigBlind] = postBlind(st.seats[positions.bigBlind], BIG_BLIND);
+    pushLog(`${st.seats[positions.smallBlind].name}: SB ${SMALL_BLIND}`, "system");
+    pushLog(`${st.seats[positions.bigBlind].name}: BB ${BIG_BLIND}`, "system");
     tick();
 
     await sleep(500);
@@ -301,7 +317,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     tick();
 
     // 프리플랍 베팅 (UTG부터)
-    await runBettingRound("PREFLOP", btnSeat, 3);
+    await runBettingRound("PREFLOP", btnSeat, (st.preflopStart - btnSeat + NUM_SEATS) % NUM_SEATS);
 
     // 다음 페이즈
     await advancePhase(btnSeat);
@@ -330,7 +346,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
 
     let safetyCounter = 0;
     let lastActorIdx = -1; // 직전 액터 (턴 순서 추적용)
-    while (safetyCounter < 100) {
+    while (safetyCounter < LIVE_RULES.maxActions) {
       safetyCounter++;
       const aliveInHand = st.seats.filter(s => s.inHand && !s.folded);
       if (aliveInHand.length <= 1 || bettingLocked(st.seats)) break;
@@ -380,45 +396,25 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
 
       if (actor.isUser) {
         st.awaitingUser = true;
-        st.userTimer = 10; // 10초 타이머
+        st.userTimer = LIVE_RULES.userSeconds; // 10초 타이머
         tick();
         decision = await waitForUserActionWithTimer(st, tick);
         st.awaitingUser = false;
         st.userTimer = 0;
         tick();
       } else {
-        await sleep(700 + Math.random() * 900);
-        // 신경망 기반 의사결정 (트레이너 사용)
-        const activeOpp = aliveInHand.length - 1;
-        const basePersona = actor.persona || RPG_BOT_POOL[0];
-        // ★ AI 전략 로테이션: 5핸드마다 AGGRESSIVE/TIGHT/LOOSE 순환
-        const currentStrategy = getStrategyForHand(st.handNumber);
-        const persona = applyStrategyToPersona(basePersona, currentStrategy);
-        const livePot = st.pot + st.seats.reduce((a, s) => a + s.currentBet, 0);
-        const nnDecision = trainer.decideActionForLive(
-          st.seats[actorIdx].holeCards,
-          st.board,
-          callAmt,
-          minR,
-          maxR,
-          livePot,
-          actor.stack,
-          actor.currentBet,
-          activeOpp,
-          actorIdx,
-          NUM_SEATS,
-          st.raiseLevel,
-          btnSeat, // 딜러 버튼 좌석 (포지션 계산용)
-          { vpip: persona.vpip, aggression: persona.aggression, bluffFreq: persona.bluffFreq },
-          { actorId: actor.seatId, seats: st.seats.map(({seatId,stack,currentBet,totalBet,inHand,folded,allIn})=>({seatId,stack,currentBet,totalBet,inHand,folded,allIn})) }
-        );
-        decision = mapNNActionToEngine(nnDecision, callAmt, actor.stack, actor.currentBet);
+        await sleep(LIVE_RULES.botThinkMin + Math.random() * LIVE_RULES.botThinkJitter);
+        decision = decideLiveBot(trainer, {
+          actor, seats: st.seats, board: st.board, pot: st.pot,
+          minRaise: minR, maxRaise: maxR, button: st.buttonSeat,
+          smallBlind: st.smallBlindSeat, bigBlind: st.bigBlindSeat,
+          hand: st.handNumber, raiseLevel: st.raiseLevel,
+        });
       }
+      const intendedBluff = !actor.isUser && decision.isBluff === true;
+      decision = normalizeLiveAction(st.seats, actor.seatId, decision, st.lastRaiseSize)
+        ?? { action: callAmt === 0 ? "check" : "fold", amount: 0 };
 
-      if (!hasBettingOpponent(st.seats, actor.seatId) && (decision.action === "raise" || decision.action === "allin")) {
-        const cost=Math.min(callAmt,actor.stack);
-        decision={action:cost===actor.stack?"allin":cost>0?"call":"check",amount:cost};
-      }
       // raiseLevel 추적 + 다른 플레이어 hasActed 리셋 (올바른 포커 룰)
       if (decision.action === "raise" || (decision.action === "allin" && actor.currentBet + actor.stack > maxBet)) {
         st.raiseLevel += 1;
@@ -446,7 +442,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
       // 액션 적용 (직접 ref 수정)
       applyActionToState(st, actorIdx, decision);
       if (st.seats[actorIdx].currentBet > maxBet && (decision.action === "raise" || decision.action === "allin")) {
-        st.lastAggression = { seatId: actor.seatId, isBluff: !actor.isUser && decision.isBluff === true };
+        st.lastAggression = { seatId: actor.seatId, isBluff: intendedBluff };
       }
       const actionLabel = labelAction(decision.action, decision.amount, callAmt);
       st.lastActions = { ...st.lastActions, [actorIdx]: actionLabel };
@@ -457,6 +453,16 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
 
       const stillAlive = st.seats.filter(s => s.inHand && !s.folded);
       if (stillAlive.length <= 1) break;
+    }
+
+    const remaining = st.seats.filter(seat => seat.inHand && !seat.folded);
+    const highBet = Math.max(0, ...remaining.map(seat => seat.currentBet));
+    if (remaining.length > 1 && !bettingLocked(st.seats) && remaining.some(seat => !seat.allIn && (!seat.hasActed || seat.currentBet < highBet))) {
+      st.seats = st.seats.map(seat => ({ ...seat, stack: seat.stack + seat.totalBet, totalBet: 0, currentBet: 0 }));
+      st.pot = 0; st.handAborted = true; st.activeSeatId = -1;
+      st.lastAggression = null; st.bluffReveal = null;
+      pushLog("핸드 오류로 베팅을 반환하고 새 핸드를 시작합니다.", "system");
+      tick(); return;
     }
 
     st.activeSeatId = -1;
@@ -479,6 +485,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
   // =====================
   const advancePhase = useCallback(async (btnSeat: number) => {
     const st = stateRef.current;
+    if (st.handAborted) return;
     const alive = st.seats.filter(s => s.inHand && !s.folded);
 
     if (alive.length <= 1) {
@@ -506,7 +513,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
       st.board = next.board;
       pushLog(`◆ FLOP: ${flop.map(cardLabel).join("  ")}`, "system");
       tick();
-      await runBettingRound("FLOP", btnSeat, 1);
+      await runBettingRound("FLOP", btnSeat, (st.postflopStart - btnSeat + NUM_SEATS) % NUM_SEATS);
       await advancePhase(btnSeat);
     } else if (st.phase === "FLOP") {
       const next = dealNextStreet(st.board, st.deck);
@@ -514,7 +521,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
       st.board = next.board;
       pushLog(`◆ TURN: ${cardLabel(turn)}`, "system");
       tick();
-      await runBettingRound("TURN", btnSeat, 1);
+      await runBettingRound("TURN", btnSeat, (st.postflopStart - btnSeat + NUM_SEATS) % NUM_SEATS);
       await advancePhase(btnSeat);
     } else if (st.phase === "TURN") {
       const next = dealNextStreet(st.board, st.deck);
@@ -522,7 +529,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
       st.board = next.board;
       pushLog(`◆ RIVER: ${cardLabel(river)}`, "system");
       tick();
-      await runBettingRound("RIVER", btnSeat, 1);
+      await runBettingRound("RIVER", btnSeat, (st.postflopStart - btnSeat + NUM_SEATS) % NUM_SEATS);
       await advancePhase(btnSeat);
     } else if (st.phase === "RIVER") {
       await doShowdown(btnSeat);
@@ -586,7 +593,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     tick();
 
     // 결과를 5초간 유지 (유저가 충분히 볼 수 있게)
-    await sleep(5000);
+    await sleep(LIVE_RULES.resultPause);
     st.winnerInfo = null;
     st.showdownReveal = false;
     st.lastAggression = null;
@@ -673,6 +680,8 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     buttonSeat: st.buttonSeat,
     activeSeatId: st.activeSeatId,
     lastActions: st.lastActions,
+    smallBlindSeat: st.smallBlindSeat,
+    bigBlindSeat: st.bigBlindSeat,
     showdownReveal: st.showdownReveal,
     bluffReveal: st.bluffReveal,
     showdownHands: st.showdownHands,
@@ -688,17 +697,10 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     userTimer: st.userTimer,
     playerBusted: st.playerBusted,
     dismissBust: () => {
-      // ★ 파산 모달 닫기 + 리바인 (20k)
       const st = stateRef.current;
       st.playerBusted = false;
-      const userSeat = st.seats.find(s => s.isUser);
-      if (userSeat) {
-        userSeat.stack = DEFAULT_BUYIN;
-        userSeat.inHand = true;
-        userSeat.folded = false;
-        userSeat.allIn = false;
-      }
-      pushLog(`💰 리바인 완료! ${DEFAULT_BUYIN.toLocaleString()} 칩 충전`, "system");
+      st.rebuyPending = true;
+      pushLog(`💰 다음 핸드에 ${DEFAULT_BUYIN.toLocaleString()} 칩으로 리바인합니다.`, "system");
       tick();
     },
     preAction,
@@ -723,41 +725,6 @@ function getGlobalTrainer(): SelfPlayTrainer {
     _globalTrainer = new SelfPlayTrainer();
   }
   return _globalTrainer;
-}
-
-/**
- * 신경망 액션(0-4)을 엔진 액션(fold/check/call/raise/allin)으로 변환
- * 0: FOLD
- * 1: CHECK_OR_CALL
- * 2: RAISE_STD (2.2x)
- * 3: RERAISE_POT (3-Bet)
- * 4: ALL_IN
- */
-function mapNNActionToEngine(
-  nn: { action: number; amount: number; isBluff?: boolean; tier?: number },
-  callAmt: number,
-  myStack: number,
-  myCurrentBet = 0
-): { action: ActionType; amount: number; isBluff?: boolean } {
-  switch (nn.action) {
-    case 0: // FOLD
-      return { action: "fold", amount: 0, isBluff: nn.isBluff };
-    case 1: // CHECK_OR_CALL
-      if (callAmt === 0) return { action: "check", amount: 0 };
-      if (nn.amount >= myStack) return { action: "allin", amount: myStack };
-      return { action: "call", amount: nn.amount };
-    case 2: // RAISE_STD
-    case 3: // RERAISE_POT
-      // 스택보다 큰 금액은 올인으로 처리
-      if (nn.amount >= myStack + myCurrentBet) {
-        return { action: "allin", amount: myStack, isBluff: nn.isBluff };
-      }
-      return { action: "raise", amount: nn.amount, isBluff: nn.isBluff };
-    case 4: // ALL_IN
-      return { action: "allin", amount: myStack, isBluff: nn.isBluff };
-    default:
-      return { action: "fold", amount: 0 };
-  }
 }
 
 // =====================
@@ -807,51 +774,7 @@ function initSeats(userName: string): SeatState[] {
 }
 
 function applyActionToState(st: GameState, seatId: number, decision: { action: ActionType; amount: number }) {
-  const s = st.seats[seatId];
-  if (!s) return;
-  let stack = s.stack;
-  let currentBet = s.currentBet;
-  let totalBet = s.totalBet;
-  let folded = s.folded;
-  let allIn = s.allIn;
-  let inHand = s.inHand;
-
-  if (decision.action === "fold") {
-    folded = true;
-    inHand = false;
-  } else if (decision.action === "check") {
-    // no-op
-  } else if (decision.action === "call") {
-    const cost = Math.min(decision.amount, stack);
-    stack -= cost;
-    currentBet += cost;
-    totalBet += cost;
-    if (stack === 0) allIn = true;
-  } else if (decision.action === "raise") {
-    const target = decision.amount;
-    const cost = Math.min(target - currentBet, stack);
-    stack -= cost;
-    currentBet += cost;
-    totalBet += cost;
-    if (stack === 0) allIn = true;
-  } else if (decision.action === "allin") {
-    const cost = stack;
-    stack = 0;
-    currentBet += cost;
-    totalBet += cost;
-    allIn = true;
-  }
-
-  st.seats[seatId] = {
-    ...s,
-    stack,
-    currentBet,
-    totalBet,
-    folded,
-    allIn,
-    inHand,
-    hasActed: true,
-  };
+  st.seats[seatId] = applyLiveAction(st.seats[seatId], decision);
 }
 
 function labelAction(action: ActionType, amount: number, callAmt: number): string {
