@@ -448,7 +448,8 @@ export function PokerTableSocket({ userName, onToast }: Props) {
         </div>
       </div>
 
-      {/* AI 학습 패널 */}
+      {/* AI 학습 패널 - 싱글 모드와 동일하게 숨김 */}
+      <div className="hidden">
       <TrainingPanel
         stats={trainingStats}
         onSetMode={(m) => getGlobalTrainer().setMode(m)}
@@ -458,6 +459,7 @@ export function PokerTableSocket({ userName, onToast }: Props) {
         }}
         onReset={() => getGlobalTrainer().resetTraining()}
       />
+      </div>
 
       {/* 좌측 로그 패널 */}
       <div className="absolute top-28 left-2 w-56 max-h-[28vh] z-20 hidden md:block">
