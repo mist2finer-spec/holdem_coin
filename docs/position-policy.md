@@ -339,3 +339,19 @@ history. The existing protected admin export still contains completed private
 hands. A private audit route `human-equity-call-defense` identifies accepted
 fallbacks. Both single and server modes use this shared policy. The cache has
 at most 128 entries and is in memory only; no training or storage growth occurs.
+
+## Shared compact betting controls (1.12.1)
+
+Single and server modes use the same four-column action grid on mobile and PC:
+Fold/Check-or-Call, adjustable Raise, 1/4-and-1/2 Pot, 3/4 Pot-and-All-in.
+The multiplier defaults to 2X with a 2X floor. Left arrows adjust by 1X,
+right arrows by 0.2X; arrows never submit a wager. The central button commits.
+
+Pot buttons submit immediately and show the actual street-total target.
+On an unbet street, target = floor(livePot * fraction). Facing a wager,
+target = highestStreetBet + floor((livePot + callCost) * fraction): first call,
+then raise by the chosen fraction of the pot after calling. Targets are clamped
+to the existing house minimum and available total chips; a capped target is
+submitted as all-in using the remaining stack. Fractions are therefore adjusted
+when below the legal minimum or above the stack, and rake never enters sizing.
+The custom slider remains available below the shared grid.

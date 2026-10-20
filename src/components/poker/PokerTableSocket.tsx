@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import {RaiseMultiplierButton} from "./RaiseMultiplierButton";
+import {PokerActionButtons} from "./PokerActionButtons";
 import {clampRaiseTo} from "@/lib/poker-sizing";
 import { LIVE_RULES } from "@/lib/poker-live";
 import { usePokerSocket } from "./usePokerSocket";
@@ -19,9 +19,6 @@ interface Props {
   onToast?: (msg: string, tone?: "info" | "win" | "lose") => void;
 }
 
-function clampRaise(min: number, max: number, value: number): number {
-  return clampRaiseTo(min,max,value);
-}
 
 // 글로벌 트레이너 (학습 통계 표시용)
 let _globalTrainer: SelfPlayTrainer | null = null;
@@ -301,55 +298,9 @@ export function PokerTableSocket({ userName, onToast }: Props) {
                 </div>
               </div>
 
-              {/* 5개 메인 액션 버튼 */}
-              <div className="flex items-center gap-1 sm:gap-2 mt-6 mb-7">
-                <Button
-                  variant="destructive"
-                  className="bg-rose-800 hover:bg-rose-700 text-rose-50 border border-rose-500 font-bold h-8 sm:h-10 px-2 sm:px-3 text-[10px] sm:text-sm flex-1"
-                  onClick={() => submitUserAction("fold", 0)}
-                >
-                  FOLD
-                </Button>
-
-                {callAmount === 0 ? (
-                  <Button
-                    className="bg-emerald-700 hover:bg-emerald-600 text-emerald-50 border border-emerald-400 font-bold h-8 sm:h-10 px-2 sm:px-3 text-[10px] sm:text-sm flex-1"
-                    onClick={() => submitUserAction("check", 0)}
-                  >
-                    CHECK
-                  </Button>
-                ) : (
-                  <Button
-                    className="bg-emerald-700 hover:bg-emerald-600 text-emerald-50 border border-emerald-400 font-bold h-8 sm:h-10 px-2 sm:px-3 text-[10px] sm:text-sm flex-1"
-                    onClick={() => submitUserAction("call", Math.min(callAmount, userSeat?.stack ?? 0))}
-                  >
-                    CALL {Math.min(callAmount, userSeat?.stack ?? 0).toLocaleString()}
-                  </Button>
-                )}
-
-                <Button
-                  className="bg-amber-600 hover:bg-amber-500 text-amber-950 border border-amber-300 font-bold h-8 sm:h-10 px-2 sm:px-3 text-[10px] sm:text-sm flex-1"
-                  onClick={() => {
-                    const highest=(userSeat?.currentBet ?? 0)+callAmount;
-                    submitUserAction("raise",clampRaise(minRaise,maxRaise,highest>0?highest*2:LIVE_RULES.bigBlind));
-                  }}
-                  disabled={maxRaise <= (userSeat?.currentBet ?? 0)+callAmount || (userSeat?.stack ?? 0)<=callAmount}
-                  title="최고 베팅의 2배로 레이즈"
-                >
-                  RAISE
-                </Button>
-
-                <RaiseMultiplierButton currentBet={userSeat?.currentBet ?? 0} call={callAmount}
-                  stack={userSeat?.stack ?? 0} minRaise={minRaise} maxRaise={maxRaise} onSubmit={submitUserAction} />
-
-                <Button
-                  variant="default"
-                  className="bg-rose-600 hover:bg-rose-500 text-amber-100 border border-rose-300 font-bold h-8 sm:h-10 px-2 sm:px-3 text-[10px] sm:text-sm flex-1"
-                  onClick={() => submitUserAction("allin", userSeat?.stack ?? 0)}
-                >
-                  ALL-IN
-                </Button>
-              </div>
+              <PokerActionButtons currentBet={userSeat?.currentBet ?? 0} call={callAmount}
+                stack={userSeat?.stack ?? 0} minRaise={minRaise} maxRaise={maxRaise}
+                pot={livePot} onSubmit={submitUserAction} />
 
               {/* 커스텀 레이즈 슬라이더 */}
               <div className="flex items-center gap-1 sm:gap-2 mt-1.5">

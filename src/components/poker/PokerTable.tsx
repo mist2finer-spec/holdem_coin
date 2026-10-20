@@ -1,6 +1,6 @@
 "use client";
 import { useState, useMemo } from "react";
-import {RaiseMultiplierButton} from "./RaiseMultiplierButton";
+import {PokerActionButtons} from "./PokerActionButtons";
 import {clampRaiseTo} from "@/lib/poker-sizing";
 import { LIVE_RULES } from "@/lib/poker-live";
 import { usePokerTable } from "./usePokerTable";
@@ -18,9 +18,6 @@ interface Props {
 }
 
 // 레이즈 금액을 min/max 범위로 클램프
-function clampRaise(min: number, max: number, value: number): number {
-  return clampRaiseTo(min,max,value);
-}
 
 // 8좌석 테이블 상대 위치 (% 단위)
 // 0번 = 하단 중앙 (유저 자리), 시계 방향으로 배치
@@ -287,60 +284,9 @@ export function PokerTable({ userName, onToast }: Props) {
                 </div>
               </div>
 
-              {/* 5개 메인 액션 버튼 (Python 5-action 시스템과 매칭) */}
-              <div className="flex items-center gap-1 sm:gap-2 mt-6 mb-7">
-                {/* 0: FOLD */}
-                <Button
-                  variant="destructive"
-                  className="bg-rose-800 hover:bg-rose-700 text-rose-50 border border-rose-500 font-bold h-8 sm:h-10 px-2 sm:px-3 text-[10px] sm:text-sm flex-1"
-                  onClick={() => submitUserAction("fold", 0)}
-                >
-                  FOLD
-                </Button>
-
-                {/* 1: CHECK_OR_CALL */}
-                {callAmount === 0 ? (
-                  <Button
-                    className="bg-emerald-700 hover:bg-emerald-600 text-emerald-50 border border-emerald-400 font-bold h-8 sm:h-10 px-2 sm:px-3 text-[10px] sm:text-sm flex-1"
-                    onClick={() => submitUserAction("check", 0)}
-                  >
-                    CHECK
-                  </Button>
-                ) : (
-                  <Button
-                    className="bg-emerald-700 hover:bg-emerald-600 text-emerald-50 border border-emerald-400 font-bold h-8 sm:h-10 px-2 sm:px-3 text-[10px] sm:text-sm flex-1"
-                    onClick={() => submitUserAction("call", Math.min(callAmount, userSeat?.stack ?? 0))}
-                  >
-                    CALL {Math.min(callAmount, userSeat?.stack ?? 0).toLocaleString()}
-                  </Button>
-                )}
-
-                {/* 2: RAISE_STD (2x) */}
-                <Button
-                  className="bg-amber-600 hover:bg-amber-500 text-amber-950 border border-amber-300 font-bold h-8 sm:h-10 px-2 sm:px-3 text-[10px] sm:text-sm flex-1"
-                  onClick={() => {
-                    const highest=(userSeat?.currentBet ?? 0)+callAmount;
-                    submitUserAction("raise",clampRaise(minRaise,maxRaise,highest>0?highest*2:LIVE_RULES.bigBlind));
-                  }}
-                  disabled={maxRaise <= (userSeat?.currentBet ?? 0)+callAmount || (userSeat?.stack ?? 0)<=callAmount}
-                  title={`최고 베팅의 2배로 레이즈`}
-                >
-                  RAISE
-                </Button>
-
-                {/* 3: RERAISE_POT (3-Bet) */}
-                <RaiseMultiplierButton currentBet={userSeat?.currentBet ?? 0} call={callAmount}
-                  stack={userSeat?.stack ?? 0} minRaise={minRaise} maxRaise={maxRaise} onSubmit={submitUserAction} />
-
-                {/* 4: ALL_IN */}
-                <Button
-                  variant="default"
-                  className="bg-rose-600 hover:bg-rose-500 text-amber-100 border border-rose-300 font-bold h-8 sm:h-10 px-2 sm:px-3 text-[10px] sm:text-sm flex-1"
-                  onClick={() => submitUserAction("allin", userSeat?.stack ?? 0)}
-                >
-                  ALL-IN
-                </Button>
-              </div>
+              <PokerActionButtons currentBet={userSeat?.currentBet ?? 0} call={callAmount}
+                stack={userSeat?.stack ?? 0} minRaise={minRaise} maxRaise={maxRaise}
+                pot={livePot} onSubmit={submitUserAction} />
 
               {/* 커스텀 레이즈 슬라이더 행 */}
               <div className="flex items-center gap-1 sm:gap-2 mt-1.5">
@@ -367,86 +313,7 @@ export function PokerTable({ userName, onToast }: Props) {
                 </Button>
               </div>
 
-              {/* 퀵 베팅 버튼 행 (1/3, 1/2, 3/4, 1:1 pot, Min) */}
-              <div className="flex items-center gap-1 sm:gap-1.5 mt-1.5 sm:mt-2 flex-wrap">
-                <span className="text-amber-300 text-[8px] sm:text-[9px] font-bold mr-0.5 sm:mr-1">QUICK:</span>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="h-5 sm:h-6 px-1.5 sm:px-2 text-[9px] sm:text-[10px] border-amber-700/50 text-amber-200 hover:bg-amber-900/40"
-                  onClick={() => {
-                    const target = clampRaise(minRaise, maxRaise, callAmount + Math.floor(livePot * 1 / 3));
-                    setRaiseAmount(target);
-                  }}
-                  disabled={maxRaise <= (userSeat?.currentBet ?? 0)+callAmount || (userSeat?.stack ?? 0)<=callAmount}
-                  title={`팟의 1/3 = ${Math.floor(livePot * 1 / 3).toLocaleString()}`}
-                >
-                  1/3
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="h-5 sm:h-6 px-1.5 sm:px-2 text-[9px] sm:text-[10px] border-amber-700/50 text-amber-200 hover:bg-amber-900/40"
-                  onClick={() => {
-                    const target = clampRaise(minRaise, maxRaise, callAmount + Math.floor(livePot * 1 / 2));
-                    setRaiseAmount(target);
-                  }}
-                  disabled={maxRaise <= (userSeat?.currentBet ?? 0)+callAmount || (userSeat?.stack ?? 0)<=callAmount}
-                  title={`팟의 1/2 = ${Math.floor(livePot * 1 / 2).toLocaleString()}`}
-                >
-                  1/2
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="h-5 sm:h-6 px-1.5 sm:px-2 text-[9px] sm:text-[10px] border-amber-700/50 text-amber-200 hover:bg-amber-900/40"
-                  onClick={() => {
-                    const target = clampRaise(minRaise, maxRaise, callAmount + Math.floor(livePot * 3 / 4));
-                    setRaiseAmount(target);
-                  }}
-                  disabled={maxRaise <= (userSeat?.currentBet ?? 0)+callAmount || (userSeat?.stack ?? 0)<=callAmount}
-                  title={`팟의 3/4 = ${Math.floor(livePot * 3 / 4).toLocaleString()}`}
-                >
-                  3/4
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="h-5 sm:h-6 px-1.5 sm:px-2 text-[9px] sm:text-[10px] border-amber-700/50 text-amber-200 hover:bg-amber-900/40"
-                  onClick={() => {
-                    const target = clampRaise(minRaise, maxRaise, callAmount + livePot);
-                    setRaiseAmount(target);
-                  }}
-                  disabled={maxRaise <= (userSeat?.currentBet ?? 0)+callAmount || (userSeat?.stack ?? 0)<=callAmount}
-                  title={`팟의 1:1 = ${livePot.toLocaleString()}`}
-                >
-                  1:1
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="h-5 sm:h-6 px-1.5 sm:px-2 text-[9px] sm:text-[10px] border-amber-700/50 text-amber-200 hover:bg-amber-900/40"
-                  onClick={() => setRaiseAmount(minRaise)}
-                  disabled={maxRaise <= (userSeat?.currentBet ?? 0)+callAmount || (userSeat?.stack ?? 0)<=callAmount}
-                  title={`최소 레이즈 = ${minRaise.toLocaleString()}`}
-                >
-                  Min
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="h-5 sm:h-6 px-1.5 sm:px-2 text-[9px] sm:text-[10px] border-amber-700/50 text-amber-200 hover:bg-amber-900/40"
-                  onClick={() => setRaiseAmount(maxRaise)}
-                  disabled={maxRaise <= (userSeat?.currentBet ?? 0)+callAmount || (userSeat?.stack ?? 0)<=callAmount}
-                  title={`올인 = ${maxRaise.toLocaleString()}`}
-                >
-                  Max
-                </Button>
-                <div className="ml-auto text-amber-200/60 text-[9px] sm:text-[10px] hidden sm:block">
-                  팟: <span className="text-amber-200 font-bold tabular-nums">{livePot.toLocaleString()}</span>
-                  {" · "}레이즈: <span className="text-amber-200 font-bold tabular-nums">{minRaise.toLocaleString()}~{maxRaise.toLocaleString()}</span>
-                </div>
-              </div>
+
             </div>
           ) : (
             <div className="bg-slate-900/80 border border-amber-800/40 rounded-xl px-3 py-2 backdrop-blur-sm">

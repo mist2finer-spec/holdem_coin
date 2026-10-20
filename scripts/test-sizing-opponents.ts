@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {raiseSizing,minimumRaiseTo,clampRaiseTo} from '../src/lib/poker-sizing.ts';
+import {raiseSizing,minimumRaiseTo,clampRaiseTo,potFractionSizing} from '../src/lib/poker-sizing.ts';
 import {OpponentModel} from '../src/lib/poker-opponent-model.ts';
 import {normalizeLiveAction} from '../src/lib/poker-live.ts';
 import {shortStackOptions,decideShortStack} from '../src/lib/poker-shortstack.ts';
@@ -12,13 +12,14 @@ test('2x raise totals and integer-tenth multipliers do not contain rake or float
   assert.equal(minimumRaiseTo(200),400);assert.equal(minimumRaiseTo(600),1200);
   assert.equal(minimumRaiseTo(0),200);
   const first=raiseSizing(100,100,4900,400,5000);
-  assert.equal(first.target,600);assert.equal(first.label,'3X');
+  assert.equal(first.target,400);assert.equal(first.label,'2X');
   for(const tenths of [31,32,33,40,100]) {
     const result=raiseSizing(100,100,4900,400,5000,tenths);
     assert.equal(result.target,tenths*20);assert.match(result.label,/^\d+(\.\d)?X$/);
   }
   assert.equal(raiseSizing(0,600,6000,1200,6000,30).target,1800);
-  assert.equal(raiseSizing(0,0,5000,200,5000,30).target,600);
+  assert.equal(raiseSizing(0,0,5000,200,5000).target,400);
+  assert.equal(raiseSizing(100,100,4900,400,5000,0).selected,20);
 });
 
 test('short-stack multiplier clamps to the full available total and permits exactly-minimum all-ins',()=>{
@@ -31,6 +32,19 @@ test('short-stack multiplier clamps to the full available total and permits exac
   assert.equal(noRaise.canRaise,false);
   const max=raiseSizing(100,100,4873,400,4973,9999);
   assert.equal(max.target,4973);assert.equal(max.allIn,true);
+});
+
+test('pot shortcuts use post-call pot and street totals, enforcing minimums and stack caps without rake',()=>{
+  for(const [fraction,expected] of [[.25,400],[.5,800],[.75,1200]])
+    assert.equal(potFractionSizing(0,0,5000,200,5000,1600,fraction).target,expected);
+  assert.equal(potFractionSizing(200,400,4800,1200,5000,1800,.25).target,1200);
+  assert.equal(potFractionSizing(200,400,4800,1200,5000,1800,.5).target,1700);
+  assert.equal(potFractionSizing(200,400,4800,1200,5000,1800,.75).target,2250);
+  const capped=potFractionSizing(100,100,500,400,600,10000,.25);
+  assert.deepEqual(capped,{target:600,canRaise:true,allIn:true});
+  const short=potFractionSizing(100,100,250,400,350,300,.25);
+  assert.deepEqual(short,{target:350,canRaise:true,allIn:true});
+  assert.equal(potFractionSizing(0,600,500,1200,500,2000,.75).canRaise,false);
 });
 
 test('server enforces a double street total, preserving short all-in exception and chip conservation',()=>{
