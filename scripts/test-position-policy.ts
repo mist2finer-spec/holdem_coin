@@ -8,6 +8,8 @@ import type { Card } from '../src/lib/poker-engine.ts';
 import { individualLivePersona, applyStrategyToPersona, RPG_BOT_POOL } from '../src/lib/personas.ts';
 import { oopCheckMix } from '../src/lib/poker-position.ts';
 import { applyStackTraits, stackBand, stackContext } from '../src/lib/poker-stack.ts';
+import { shortStackOptions } from '../src/lib/poker-shortstack.ts';
+import { estimateEquity } from '../src/lib/poker-ai.ts';
 
 const card = (rank: Card['rank'], suit: Card['suit']): Card => ({rank, suit});
 const hole = [card('A', '♠'), card('A', '♥')];
@@ -112,7 +114,7 @@ test('tight short stacks surge more often than deep stacks and aggressive charac
     const d = individualLivePersona(calm, hand, 1, 10001);
     short += Number(s.surge); deep += Number(d.surge);
     aggressive += Number(individualLivePersona(bold, hand, 1, 10000).surge);
-    if (s.surge) assert.ok(s.vpip >= 0.45 && s.aggression >= 0.78 && s.aggression <= 0.95);
+    if (s.surge) assert.ok(s.vpip >= 0.4099 && s.aggression >= 0.78 && s.aggression <= 0.95);
     if (d.surge) assert.equal(s.surge, true);
   }
   assert.ok(short > 650 && short < 950, `${short}`);
@@ -145,7 +147,7 @@ test('OOP mixtures depend on character aggression and wet board texture', () => 
   assert.ok(oopCheckMix(calm, 4, 3, dry) > oopCheckMix(calm, 4, 1, dry));
 });
 
-test('five stack bands include boundaries and get progressively tighter', () => {
+test('five stack bands narrow entry as chips decrease without reducing value aggression', () => {
   const amounts = [2500, 5000, 10000, 15000, 35000];
   const profiles = amounts.map(chips => applyStackTraits({vpip:0.4,aggression:0.6,bluffFreq:0.2}, chips));
   amounts.forEach((chips,i) => assert.equal(stackBand(chips).limit, chips));
@@ -155,10 +157,72 @@ test('five stack bands include boundaries and get progressively tighter', () => 
   assert.equal(stackBand(15001).limit, 35000);
   assert.equal(stackBand(50000).limit, 35000);
   for (let i=1;i<profiles.length;i++) {
-    assert.ok(profiles[i].vpip < profiles[i-1].vpip);
-    assert.ok(profiles[i].aggression < profiles[i-1].aggression);
-    assert.ok(profiles[i].bluffFreq < profiles[i-1].bluffFreq);
+    assert.ok(profiles[i].vpip > profiles[i-1].vpip);
+    assert.equal(profiles[i].aggression, profiles[i-1].aggression);
+    assert.ok(profiles[i].bluffFreq > profiles[i-1].bluffFreq);
+    assert.ok(stackBand(amounts[i]).equity < stackBand(amounts[i-1]).equity);
   }
+});
+
+test('short 66/77 mix strong raises and positive-EV jams against a 2.5BB open', () => {
+  for(const rank of ['6','7'] as Card['rank'][]) {
+    const table=seats();
+    Object.assign(table[0],{stack:2300,currentBet:200,totalBet:200});
+    Object.assign(table[1],{stack:4500,currentBet:500,totalBet:500});
+    const context={actorId:0,seats:table,stack:stackContext(table,0),position:positionContext(table,0,1)};
+    const cards=[card(rank,'♠'),card(rank,'♥')];
+    const p={vpip:0.16,aggression:0.45,bluffFreq:0.05};
+    const options=shortStackOptions({hole:cards,board:[],call:300,minRaise:800,maxRaise:2500,
+      pot:800,stack:2300,currentBet:200,raiseLevel:1,persona:p,context})!;
+    const counts=[0,0,0,0,0];
+    withSeed(()=>{for(let i=0;i<300;i++){
+      const d=trainer.decideActionForLive(cards,[],300,800,2500,800,2300,200,1,0,2,1,1,p,context);
+      counts[d.action]++;
+      const mapped=d.action===4?{action:'allin',amount:2300}:d.action===2?{action:'raise',amount:d.amount}:d.action===1?{action:'call',amount:300}:{action:'fold',amount:0};
+      assert.ok(normalizeLiveAction(table,0,mapped,300));
+    }});
+    assert.ok(counts[2]+counts[4]>180,JSON.stringify({rank,counts,options}));
+    assert.ok(counts[1]<counts[2]+counts[4]);
+    if(counts[4])assert.ok(options.jamEV>0);
+    if(counts[2])assert.ok(options.strongRaiseEV>0);
+  }
+});
+
+test('tight short stacks fold KQo/QJo to a small open and never fold a free BB check', () => {
+  const table=seats();Object.assign(table[0],{stack:2300,currentBet:200,totalBet:200});
+  Object.assign(table[1],{stack:4500,currentBet:500,totalBet:500});
+  const context={actorId:0,seats:table,stack:stackContext(table,0),position:positionContext(table,0,1)};
+  for(const [a,b] of [['K','Q'],['Q','J']] as [Card['rank'],Card['rank']][]) {
+    const d=trainer.decideActionForLive([card(a,'♠'),card(b,'♥')],[],300,800,2500,800,2300,200,1,0,2,1,1,
+      {vpip:0.12,aggression:0.3,bluffFreq:0.01},context);
+    assert.equal(d.action,0);
+  }
+  const options=shortStackOptions({hole,board:[],call:0,minRaise:200,maxRaise:2500,pot:400,
+    stack:2300,currentBet:200,raiseLevel:0,persona:{vpip:0.12,aggression:0.3,bluffFreq:0.01},context});
+  assert.equal(options,null);
+  const common={hole:[card('K','♠'),card('Q','♥')],board:[],call:300,minRaise:800,maxRaise:2500,
+    pot:800,stack:2300,currentBet:200,raiseLevel:1,context};
+  assert.equal(shortStackOptions({...common,persona:{vpip:0.12,aggression:0.3,bluffFreq:0.01}})!.playable,false);
+  assert.equal(shortStackOptions({...common,persona:{vpip:0.4,aggression:0.85,bluffFreq:0.2}})!.playable,true);
+});
+
+test('jam-call range reduces medium-pair equity relative to random callers', () => {
+  const cards=[card('6','♠'),card('6','♥')];
+  const random=estimateEquity(cards,[],1,192);
+  const called=estimateEquity(cards,[],1,192,'jam-call');
+  assert.ok(called<random);
+  assert.equal(called,estimateEquity(cards,[],1,192,'jam-call'));
+});
+
+test('short blind defense cannot turn a policy fold back into a speculative call', () => {
+  const table=seats();Object.assign(table[0],{stack:2300,currentBet:200,totalBet:200});
+  Object.assign(table[1],{stack:4500,currentBet:500,totalBet:500});
+  const folding={decideActionForLive:()=>({action:0,amount:0})} as unknown as SelfPlayTrainer;
+  withSeed(()=>{
+    const d=decideLiveBot(folding,{actor:{...table[0],holeCards:[card('K','♠'),card('Q','♥')]},seats:table,
+      board:[],pot:300,minRaise:800,maxRaise:2500,button:1,smallBlind:0,bigBlind:1,hand:1,raiseLevel:1});
+    assert.equal(d.action,'fold');
+  });
 });
 
 test('effective stack distinguishes deep-v-short and deep-v-deep without changing during bets', () => {

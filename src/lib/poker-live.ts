@@ -8,7 +8,7 @@ import { positionContext } from './poker-position';
 import { stackContext } from './poker-stack';
 
 export const LIVE_RULES = Object.freeze({
-  version: "1.5.0",
+  version: "1.6.0",
   seats: 8, smallBlind: 100, bigBlind: 200, buyIn: 5000,
   botCashOut: 100000, userSeconds: 10, maxActions: 256,
   botThinkMin: 700, botThinkJitter: 900, actionPause: 800, resultPause: 5000,
@@ -101,6 +101,7 @@ export function decideLiveBot(trainer: SelfPlayTrainer, ctx: {
   const { rawEquity } = classifyHandTier(actor.holeCards, []);
   const odds = call / Math.max(1, livePot + call);
   if (decision.action === 'fold' && board.length === 0 &&
+    actor.stack + actor.totalBet > 5000 &&
     [ctx.smallBlind, ctx.bigBlind].includes(actor.seatId) && call > 0 && call < actor.stack &&
     call <= actor.stack * 0.1 && (limped || smallOpen) && rawEquity >= odds - 0.1 && Math.random() < 0.5) {
     return { action: 'call', amount: call };

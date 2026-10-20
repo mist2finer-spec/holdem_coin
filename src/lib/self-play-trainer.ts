@@ -1,5 +1,6 @@
 import { bluffFrequency } from "./poker-bluff";
 import { oopCheckMix } from "./poker-position";
+import { decideShortStack } from "./poker-shortstack";
 import { settleHand, bettingLocked, dealNextStreet, hasBettingOpponent } from "./poker-rules";
 import { estimateEquity, afterRakeOdds, calledActionEV, DecisionContext } from "./poker-ai";
 // ============================================================
@@ -551,6 +552,12 @@ export class SelfPlayTrainer {
     const stackCost = (context?.stack?.equityPremium || 0) * (board.length === 0 ? 1 : 0.5);
     const potOdds = Math.min(1, afterRakeOdds(pot,Math.min(callAmount,myStack)) + positionCost + stackCost);
 
+    if(context) {
+      const shortDecision=decideShortStack({hole,board,call:callAmount,minRaise,maxRaise,pot,
+        stack:myStack,currentBet:myCurrentBet,raiseLevel,persona,context});
+      if(shortDecision)return {...shortDecision,tier};
+    }
+
     // 2) 베팅 압박 수위 (0~3)
     let pressure: number;
     if (callAmount === 0) {
@@ -633,6 +640,10 @@ export class SelfPlayTrainer {
         const ev=calledActionEV(hole,board,context,Math.min(cost,myStack));
         logits[i]+=Math.max(-3,Math.min(1,ev/Math.max(pot,cost,1)*3));
         if(i===4 && cost>pot && ev<0)logits[i]-=3;
+        if(i===4 && (context.stack?.ownStack ?? Infinity)<=5000 && tier>=HandTier.TOP_PAIR && ev>0) {
+          logits[4]+=1.2;
+          logits[1]-=0.5;
+        }
       }
     }
 
@@ -652,7 +663,8 @@ export class SelfPlayTrainer {
     const weakHand = tier <= HandTier.OVERCARDS;
     const hasOpponent = !context || hasBettingOpponent(context.seats, context.actorId);
     const bluffEligible = persona.aggression > 0.7 && weakHand && canRaise && pressure < 3 && hasOpponent;
-    const attemptBluff = bluffEligible && Math.random() < bluffFrequency(persona) * (position?.isOOP ? 0.4 + persona.aggression * 0.3 : 1);
+    const bluffRate=(context?.stack?.ownStack ?? Infinity)<=5000 ? persona.bluffFreq : bluffFrequency(persona);
+    const attemptBluff = bluffEligible && Math.random() < bluffRate * (position?.isOOP ? 0.4 + persona.aggression * 0.3 : 1);
     if (bluffEligible) {
       mask[2] = false;
       mask[3] = false;

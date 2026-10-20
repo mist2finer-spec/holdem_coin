@@ -1,4 +1,4 @@
-# Live bot position policy (rules 1.5.0)
+# Live bot position policy (rules 1.6.0)
 
 Single-player and multiplayer both call `decideLiveBot`. Position is computed
 from public seat status, clockwise after the button, skipping folded, inactive
@@ -78,11 +78,11 @@ per-hand mood, then starting-stack adjustment, with bounded trait values.
 
 | Starting chips | VPIP adjustment | Aggression adjustment | Bluff adjustment | Required equity premium |
 | --- | --- | --- | --- | --- |
-| <= 2,500 | +.08 | +.08 | +.02 | .00 |
-| 2,501–5,000 | +.04 | +.04 | +.01 | .01 |
-| 5,001–10,000 | .00 | .00 | .00 | .02 |
-| 10,001–15,000 | -.04 | -.03 | -.01 | .03 |
-| 15,001–35,000 (and above) | -.08 | -.06 | -.02 | .05 |
+| <= 2,500 | -.12 | .00 | -.04 | .08 |
+| 2,501–5,000 | -.08 | .00 | -.03 | .06 |
+| 5,001–10,000 | -.04 | .00 | -.02 | .04 |
+| 10,001–15,000 | -.02 | .00 | -.01 | .02 |
+| 15,001–35,000 (and above) | .00 | .00 | .00 | .00 |
 
 The equity premium applies in full preflop and at half strength postflop.
 Against at least one opponent with effective starting chips above 15,000,
@@ -90,3 +90,33 @@ add .015 to the premium and reduce pot-raise/all-in logits by .35/.55. A deep
 player facing only a short stack does not receive this additional deep-v-deep
 penalty. Existing contribution-level EV still evaluates side pots separately.
 These are chip-based game heuristics, not a solver-derived range chart.
+
+Shorter stacks now enter fewer pots and bluff less. This does not reduce value
+aggression: the selected good hands can prefer re-raising or shoving instead of
+calling. The older 50% speculative blind-defense override is disabled at starting
+stacks <= 5,000 so it cannot undo a short-stack policy fold.
+
+## Short-stack re-shove policy
+
+Facing one 2–3BB open preflop with starting chips <= 5,000, compare fold (zero
+incremental EV), a realized call, a strong 3x re-raise, and a shove. Calling
+opponents use modeled opening and tighter jam-calling ranges, sampled before
+unknown board runouts. The EV calculation retains contribution layers, rake,
+refunds, and side-pot eligibility. Aggression EV mixes called EV with a bounded
+estimated all-fold probability (zero if a live opponent is already all-in).
+OOP calling realizes less of its showdown equity than IP calling in this model.
+
+The entry gate allows 66+ and AQ+, with additional suited/broadway hands for
+looser/aggressive characters. Tight KQo/QJo can fold even at attractive-looking
+raw pot odds. Only positive modeled-EV aggressive options enter the short-stack
+mix. At <= 2,500 prefer a positive-EV shove when close to the best re-raise;
+otherwise choose the best modeled aggressive option most of the time, retaining
+some calls and folds. Do not make a nominal raise committing >=70% of the
+remaining stack. Premium JJ+/AK are not randomly folded when a positive-EV
+aggressive option exists. Other contexts retain the main policy, with a small
+positive-EV value-shove boost for short stacks. Action normalization remains
+the final authority in both modes.
+
+The opening/calling ranges, fold probabilities and realization factors are
+explicit heuristic assumptions, not inferred opponent hole cards or a solved
+equilibrium. Range sampling and caches are bounded.

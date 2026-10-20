@@ -1,11 +1,11 @@
 import type { BettingSeat } from './poker-rules';
 
 export const STACK_BANDS = [
-  { limit: 2500, vpip: 0.08, aggression: 0.08, bluff: 0.02, equity: 0 },
-  { limit: 5000, vpip: 0.04, aggression: 0.04, bluff: 0.01, equity: 0.01 },
-  { limit: 10000, vpip: 0, aggression: 0, bluff: 0, equity: 0.02 },
-  { limit: 15000, vpip: -0.04, aggression: -0.03, bluff: -0.01, equity: 0.03 },
-  { limit: 35000, vpip: -0.08, aggression: -0.06, bluff: -0.02, equity: 0.05 },
+  { limit: 2500, vpip: -0.12, aggression: 0, bluff: -0.04, equity: 0.08 },
+  { limit: 5000, vpip: -0.08, aggression: 0, bluff: -0.03, equity: 0.06 },
+  { limit: 10000, vpip: -0.04, aggression: 0, bluff: -0.02, equity: 0.04 },
+  { limit: 15000, vpip: -0.02, aggression: 0, bluff: -0.01, equity: 0.02 },
+  { limit: 35000, vpip: 0, aggression: 0, bluff: 0, equity: 0 },
 ] as const;
 
 export function stackBand(startingChips: number) {
