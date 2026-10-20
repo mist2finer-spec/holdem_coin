@@ -1,4 +1,4 @@
-# Live bot position policy (rules 1.7.0)
+# Live bot position policy (rules 1.8.0)
 
 Single-player and multiplayer both call `decideLiveBot`. Position is computed
 from public seat status, clockwise after the button, skipping folded, inactive
@@ -174,3 +174,43 @@ Turn air barrels are capped by final aggression (high .35, medium .15, low .02),
 and eligible high-VPIP checkers can defend small bets when their equity supports
 it. River initiative holders with trap-like traits mix more strong-hand checks.
 These weights are heuristics, not promised exact betting frequencies.
+
+## Original opener facing a three-bet (1.8)
+
+Each preflop round records who actually made the first raise. Only that opener
+receives the new short-stack three-bet defense (`raiseLevel === 2`, starting
+chips <=5,000). Cold calls and four-bets retain their own policy. The marker
+clears each street/hand, and it is not included in client DTOs. The entry planner
+defers to the defense policy before its ordinary connector price cutoff, while
+the separate rare 23/34/24/35 gate still forbids these hands from this route.
+
+Sizing is not capped at a total of 4BB or 6BB: a 3BB open facing a 9BB re-raise
+is evaluated, as are larger bets and all-in three-bets. Candidate EVs compare
+fold, call, a legal non-committing four-bet and an all-in. A three-bet-specific
+modeled opponent range is used for calls; a tighter jam-calling range is used
+for re-shoves. Each range rollout uses 768 deterministic samples in this route,
+with the same bounded cache and public-information-only inputs.
+
+Call equity realization improves as remaining stack/pot shrinks and reaches 1
+when the call itself is all-in. The stack premium is scaled by .25 and positional
+premium by .30 for this defense; both remain part of an explicit EV margin.
+Estimated all-fold probability is capped at .20 per opponent (.10 if an opponent
+already committed >=40% of its starting chips), and is zero if a live opponent
+is already all-in. Only aggressions with EV above `max(.03*pot,.04*newCost)`
+enter the mix, preventing a near-zero noisy estimate from justifying a large jam.
+
+88+ and AQ+ are standard candidates. Additional 66/77, cheaper small pairs,
+suited aces/broadways and qualified connectors depend on final personality,
+price and stack. Eligibility is not an instruction to shove: if no permitted
+candidate has adequate positive EV the player folds. Otherwise near-equivalent
+EV options use call/raise/jam weights from personality; marginal continues retain
+some folds. Premium JJ+/AK do not randomly fold when a valid positive-EV option
+exists. Very large three-bets can still fold hands that defend smaller sizing.
+When all live opponents are all-in, only call/fold candidates are permitted.
+
+Larger stacks can use the existing priced flat-call mix beyond 4BB when they
+are the recorded opener and the call remains affordable. This patch does not
+substitute an unopened-pot push chart for a three-bet defense range or claim a
+Nash solution. Existing preflop tiers classify 88–TT as TWO_PAIR_PLUS, 55–77 as
+TOP_PAIR, and 22–44 as WEAK_PAIR; the policy does not assume all medium pairs
+share a hard fold mask. Actual fold rates depend on the full scenario.

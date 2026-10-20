@@ -6,10 +6,13 @@ import type { stackContext } from './poker-stack';
 // Bounded deterministic rollouts using only the acting player's cards and public board.
 // This is an equity estimator, not a GTO solver or knowledge of opponents' cards.
 const cache=new Map<string,number>();
-export type OpponentRange = 'open' | 'jam-call';
+export type OpponentRange = 'open' | 'jam-call' | 'three-bet';
 function inRange(hole: Card[], range: OpponentRange) {
   const ranks=hole.map(c=>'23456789TJQKA'.indexOf(c.rank)).sort((a,b)=>b-a);
   const [high,low]=ranks, suited=hole[0].suit===hole[1].suit;
+  if(range==='three-bet')return high===low ? low>=5
+    : (high===12&&low>=10)||(suited&&high===12&&(low>=8||low===3))
+      ||(suited&&high===11&&low>=9)||(suited&&high===10&&low===9);
   return high===low ? low >= (range==='jam-call'?4:3)
     : range==='jam-call' ? (high===12 && low>=10) || (suited && high===12 && low>=9) || (suited && high===11 && low===10)
     : (high===12 && low>=8) || (high===11 && low>=9) || (suited && high>=9 && low>=7)
@@ -58,14 +61,14 @@ export function estimateEquity(hole: Card[], board: Card[], opponents: number, s
   cache.set(key,result);return result;
 }
 
-export interface DecisionContext { seats: BettingSeat[]; actorId: number; position?: PositionContext; stack?: ReturnType<typeof stackContext>; forbidLimp?:boolean; limpedPreflop?:boolean; initiative?:boolean }
+export interface DecisionContext { seats: BettingSeat[]; actorId: number; position?: PositionContext; stack?: ReturnType<typeof stackContext>; forbidLimp?:boolean; limpedPreflop?:boolean; initiative?:boolean; openedPreflop?:boolean }
 export function afterRakeOdds(pot: number, cost: number, rate=RAKE_RATE) {
   return cost>0?cost/Math.max(1,(pot+cost)*(1-rate)):0;
 }
 
 // Conservative called EV: all eligible live opponents call up to their own stacks.
 // Side-pot eligibility and uncalled refunds are accounted for at contribution level.
-export function calledActionEV(hole: Card[], board: Card[], context: DecisionContext, cost: number, rate=RAKE_RATE, range?: OpponentRange) {
+export function calledActionEV(hole: Card[], board: Card[], context: DecisionContext, cost: number, rate=RAKE_RATE, range?: OpponentRange, samples=range?192:48) {
   const actor=context.seats.find(s=>s.seatId===context.actorId)!;
   const target=actor.currentBet+cost;
   const projected=context.seats.map(seat=>{
@@ -76,7 +79,7 @@ export function calledActionEV(hole: Card[], board: Card[], context: DecisionCon
   for(const layer of contributionLayers(projected)) {
     if(layer.refundSeatId!==undefined){if(layer.refundSeatId===actor.seatId)expected+=layer.amount;continue;}
     if(!layer.eligibleSeatIds.includes(actor.seatId))continue;
-    const q=estimateEquity(hole,board,layer.eligibleSeatIds.length-1,range?192:48,range);
+    const q=estimateEquity(hole,board,layer.eligibleSeatIds.length-1,samples,range);
     expected+=q*(layer.amount-Math.floor(layer.amount*rate));
   }
   return expected-cost; // previously committed chips are sunk at this decision

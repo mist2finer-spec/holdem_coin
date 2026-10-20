@@ -520,6 +520,7 @@ export class HybridHoldemRoom {
     let safety = 0;
     const checkedThisStreet = new Set<number>();
     const limpedPreflop = new Set<number>();
+    const openedPreflop = new Set<number>();
     const previousStreetAggressor = st.lastStreetAggressor;
     let currentStreetAggressor: number | null = null;
 
@@ -587,10 +588,10 @@ export class HybridHoldemRoom {
         if (validAction) {
           decision = validAction;
         } else {
-          decision = await this.getDecision(actor, callAmt, minR, maxR, isUser || false, checkedThisStreet.has(actor.seatId),limpedPreflop.has(actor.seatId),previousStreetAggressor);
+          decision = await this.getDecision(actor, callAmt, minR, maxR, isUser || false, checkedThisStreet.has(actor.seatId),limpedPreflop.has(actor.seatId),previousStreetAggressor,openedPreflop.has(actor.seatId));
         }
       } else {
-        decision = await this.getDecision(actor, callAmt, minR, maxR, isUser || false, checkedThisStreet.has(actor.seatId),limpedPreflop.has(actor.seatId),previousStreetAggressor);
+        decision = await this.getDecision(actor, callAmt, minR, maxR, isUser || false, checkedThisStreet.has(actor.seatId),limpedPreflop.has(actor.seatId),previousStreetAggressor,openedPreflop.has(actor.seatId));
       }
 
       // Validate bot decisions too. A stale/invalid decision falls back safely.
@@ -629,6 +630,7 @@ export class HybridHoldemRoom {
       if (st.seats[actorIdx].currentBet > maxBet && raisesBet) {
         st.lastAggression = { seatId: actor.seatId, isBluff: intendedBluff };
         currentStreetAggressor = actor.seatId;
+        if(st.board.length===0&&st.raiseLevel===1)openedPreflop.add(actor.seatId);
       }
       const actionLabel = this.labelAction(decision.action, decision.amount, callAmt);
       st.lastActions = { ...st.lastActions, [actorIdx]: actionLabel };
@@ -673,7 +675,8 @@ export class HybridHoldemRoom {
     isUser: boolean,
     checkedThisStreet = false,
     limpedPreflop = false,
-    previousStreetAggressor:number|null = null
+    previousStreetAggressor:number|null = null,
+    openedPreflop = false
   ): Promise<{ action: ActionType; amount: number; isBluff?: boolean }> {
     if (isUser) {
       // Same decision window as single player.
@@ -688,7 +691,7 @@ export class HybridHoldemRoom {
         smallBlind: this.state.smallBlindSeat, bigBlind: this.state.bigBlindSeat,
         hand: this.state.handNumber, raiseLevel: this.state.raiseLevel,
         checkedThisStreet,
-        limpedPreflop, previousStreetAggressor,
+        limpedPreflop, previousStreetAggressor, openedPreflop,
       });
     }
   }

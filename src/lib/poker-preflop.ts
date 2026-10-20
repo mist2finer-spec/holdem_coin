@@ -44,7 +44,7 @@ export function planPreflop(spot:PreflopSpot):{decision:Decision|null;forbidLimp
   const result=(decision:Decision|null)=>({decision,forbidLimp:unopened&&call>0});
   const foldOrCheck=():Decision=>({action:call>0?'fold':'check',amount:0});
   const callDecision=():Decision=>({action:call>=stack?'allin':'call',amount:Math.min(call,stack)});
-  const equity=()=>estimateEquity(hole,[],Math.max(1,opponents.length),192,raiseLevel>=2?'jam-call':'open');
+  const equity=()=>estimateEquity(hole,[],Math.max(1,opponents.length),192,raiseLevel>=2?'three-bet':'open');
   const odds=afterRakeOdds(spot.pot,call);
 
   if(h.rareLow) {
@@ -53,6 +53,10 @@ export function planPreflop(spot:PreflopSpot):{decision:Decision|null;forbidLimp
       &&highest<=800&&currentBet<=200&&opponents.length<=3&&!opponents.some(s=>s.allIn);
     return result(eligible&&equity()+0.08>=odds&&Math.random()<0.07 ? callDecision() : foldOrCheck());
   }
+  // The original short-stack opener gets a dedicated priced call/reshove EV
+  // decision. Do not kill its opened connector through the cold-entry gate.
+  const defendingOpen=context.openedPreflop===true&&raiseLevel===2;
+  if(defendingOpen&&own<=5000)return result(null);
 
   if(context.limpedPreflop&&call>0&&raiseLevel>0&&!(persona.bluffFreq>=0.20&&persona.aggression>=0.55)) {
     return result(affordable&&equity()>=odds-0.03 ? callDecision() : foldOrCheck());
@@ -77,7 +81,7 @@ export function planPreflop(spot:PreflopSpot):{decision:Decision|null;forbidLimp
   if(connector) {
     if(!call)return result({action:'check',amount:0});
     const open=raiseLevel===1||(raiseLevel===2&&currentBet>=400);
-    if(!allowed||!affordable||highest>800||!open||opponents.some(s=>s.allIn))return result(foldOrCheck());
+    if(!allowed||!affordable||(highest>800&&!defendingOpen)||!open||opponents.some(s=>s.allIn))return result(foldOrCheck());
     const threshold=odds+(context.position?.isOOP?0.015:0)-persona.vpip*0.08;
     if(equity()<threshold)return result(foldOrCheck());
     const rate=flatCallFrequency(persona,context.position?.isOOP??true);
@@ -85,7 +89,7 @@ export function planPreflop(spot:PreflopSpot):{decision:Decision|null;forbidLimp
   }
 
   const open=raiseLevel===1||(raiseLevel===2&&currentBet>=400);
-  if(affordable&&open&&highest>=600&&highest<=800) {
+  if(affordable&&open&&((highest>=600&&highest<=800)||defendingOpen)) {
     const premium=(h.pair&&h.low>=11)||(h.high===14&&h.low===13);
     const required=odds+Math.max(0,(0.35-persona.vpip)*0.10);
     if(equity()>=required&&Math.random()<flatCallFrequency(persona,context.position?.isOOP??true,premium))return result(callDecision());

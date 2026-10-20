@@ -1,6 +1,7 @@
 import type { Card } from './poker-engine';
 import { calledActionEV, type DecisionContext } from './poker-ai';
 import { hasBettingOpponent, RAKE_RATE } from './poker-rules';
+import { connectorAllowed } from './poker-preflop';
 
 interface ShortSpot {
   hole: Card[]; board: Card[]; call: number; minRaise: number; maxRaise: number;
@@ -12,33 +13,55 @@ export function shortStackOptions(spot: ShortSpot) {
   const {hole,board,call,minRaise,maxRaise,pot,stack,currentBet,raiseLevel,persona,context}=spot;
   const starting=context.stack?.ownStack ?? stack + context.seats.find(s=>s.seatId===context.actorId)!.totalBet;
   const highest=currentBet+call;
-  if(board.length || starting>5000 || call<=0 || call>=stack || raiseLevel!==1
-      || highest<400 || highest>600 || !hasBettingOpponent(context.seats,context.actorId))return null;
+  const threeBet=raiseLevel===2&&context.openedPreflop===true;
+  const canRaise=hasBettingOpponent(context.seats,context.actorId)&&maxRaise>highest&&stack>call;
+  if(board.length || starting>5000 || call<=0 || (!threeBet && (call>=stack || raiseLevel!==1
+      || highest<400 || highest>600 || !canRaise)))return null;
   const opponents=context.seats.filter(s=>s.seatId!==context.actorId&&s.inHand&&!s.folded);
   const canMakeFold=!opponents.some(s=>s.allIn);
   // Fold equity is a bounded model assumption, not knowledge of a CPU's hand.
   const raiseEV=(target:number)=>{
+    if(!canRaise)return Number.NEGATIVE_INFINITY;
     const cost=Math.min(stack,target-currentBet);
-    const called=calledActionEV(hole,board,context,cost,RAKE_RATE,'jam-call');
-    const foldProbability=canMakeFold ? Math.pow(Math.min(0.45,0.25+(target-highest)/Math.max(1,highest)*0.05),opponents.length) : 0;
+    const called=calledActionEV(hole,board,context,cost,RAKE_RATE,'jam-call',threeBet?768:192);
+    const perOpponent=threeBet ? Math.min(0.20,0.08+(target-highest)/Math.max(1,highest)*0.04)
+      : Math.min(0.45,0.25+(target-highest)/Math.max(1,highest)*0.05);
+    const committed=opponents.some(s=>s.currentBet/Math.max(1,s.stack+s.totalBet)>=0.40);
+    const foldProbability=canMakeFold ? Math.pow(threeBet&&committed?Math.min(0.10,perOpponent):perOpponent,opponents.length) : 0;
     return foldProbability*pot*(1-RAKE_RATE)+(1-foldProbability)*called;
   };
   const callCost=Math.min(call,stack);
-  const called=calledActionEV(hole,board,context,callCost,RAKE_RATE,'open');
-  const realization=context.position?.isOOP ? 0.70 : 0.85;
-  const callEV=(called+callCost)*realization-callCost;
-  const raiseTo=Math.min(maxRaise,Math.max(minRaise,highest*3));
+  const called=calledActionEV(hole,board,context,callCost,RAKE_RATE,threeBet?(opponents.some(s=>s.allIn)?'jam-call':'three-bet'):'open',threeBet?768:192);
+  const spr=Math.max(0,stack-callCost)/Math.max(1,pot+callCost);
+  const realization=callCost===stack?1:threeBet
+    ? (context.position?.isOOP ? (spr<=1?0.96:0.86) : (spr<=1?0.99:0.94))
+    : context.position?.isOOP ? 0.70 : 0.85;
+  const riskPremium=threeBet ? ((context.stack?.equityPremium||0)*0.25
+    +(context.position?.preflopEquityPremium||0)*0.30)*(pot+callCost)*(1-RAKE_RATE) : 0;
+  const callEV=(called+callCost)*realization-callCost-riskPremium;
+  const raiseTo=Math.min(maxRaise,Math.max(minRaise,Math.floor(highest*(threeBet?2.2:3))));
   const raiseCost=raiseTo-currentBet;
   const jamEV=raiseEV(maxRaise);
   const strongRaiseEV=raiseEV(raiseTo);
   const ranks=hole.map(c=>'23456789TJQKA'.indexOf(c.rank)).sort((a,b)=>b-a);
   const [high,low]=ranks, pair=high===low, suited=hole[0].suit===hole[1].suit;
-  const playable=(pair&&low>=4) || (high===12&&low>=10)
+  let playable=(pair&&low>=4) || (high===12&&low>=10)
     || (suited&&high===12&&low>=9&&persona.vpip>=0.25)
     || (suited&&high===11&&low===10&&persona.aggression>=0.5)
     || (high===11&&low===10&&persona.vpip>=0.30&&persona.aggression>=0.70)
     || (suited&&high===10&&low===9&&persona.vpip>=0.40&&persona.aggression>=0.75);
-  return {callEV,jamEV,strongRaiseEV,raiseTo,raiseCost,playable,starting};
+  if(threeBet) {
+    const affordable=callCost<=starting*0.20;
+    playable=(pair&&low>=6)||(high===12&&low>=10)
+      ||(pair&&low>=4&&(persona.vpip>=0.30||starting<=2500))
+      ||(pair&&persona.vpip>=0.48&&callCost<=starting*0.12)
+      ||(suited&&high===12&&low>=7&&persona.vpip>=0.28)
+      ||(suited&&high===12&&low===3&&persona.aggression>=0.75&&persona.bluffFreq>=0.20&&affordable)
+      ||(suited&&high>=10&&low>=9&&persona.vpip>=0.28)
+      ||(high===11&&low===10&&persona.vpip>=0.38&&persona.aggression>=0.50&&affordable)
+      ||(starting>2500&&affordable&&connectorAllowed(hole,persona));
+  }
+  return {callEV,jamEV,strongRaiseEV,raiseTo,raiseCost,playable,starting,threeBet,canRaise,spr};
 }
 
 export function decideShortStack(spot: ShortSpot): {action:number;amount:number;isBluff?:boolean} | null {
@@ -47,6 +70,28 @@ export function decideShortStack(spot: ShortSpot): {action:number;amount:number;
   // Narrow entry range first; aggression is conditional on having a suitable
   // hand. A short stack is not permission to shove arbitrary weak broadways.
   if(!options.playable)return {action:0,amount:0};
+  if(options.threeBet) {
+    const candidates:{action:number;amount:number;ev:number}[]=[];
+    if(options.callEV>0)candidates.push({action:1,amount:Math.min(spot.call,spot.stack),ev:options.callEV});
+    const raiseMargin=(cost:number)=>Math.max(spot.pot*0.03,cost*0.04);
+    if(options.jamEV>raiseMargin(spot.stack)&&options.canRaise)candidates.push({action:4,amount:spot.maxRaise,ev:options.jamEV});
+    if(options.canRaise&&options.raiseTo<spot.maxRaise&&options.raiseCost<spot.stack*0.70&&options.strongRaiseEV>raiseMargin(options.raiseCost))
+      candidates.push({action:2,amount:options.raiseTo,ev:options.strongRaiseEV});
+    candidates.sort((a,b)=>b.ev-a.ev);
+    const best=candidates[0];
+    if(!best)return {action:0,amount:0};
+    const ranks=spot.hole.map(c=>'23456789TJQKA'.indexOf(c.rank)).sort((a,b)=>b-a);
+    const premium=(ranks[0]===ranks[1]&&ranks[0]>=9)||(ranks[0]===12&&ranks[1]===11);
+    const continueRate=premium?1:Math.max(0.65,Math.min(0.97,0.65+best.ev/Math.max(1,spot.pot)*1.5
+      +spot.persona.vpip*0.15-spot.persona.aggression*0.06+(spot.context.position?.isOOP?0:0.08)));
+    if(Math.random()>=continueRate)return {action:0,amount:0};
+    const near=candidates.filter(c=>c.ev>=best.ev-spot.pot*0.08);
+    const weight=(action:number)=>action===1?1.5-spot.persona.aggression+spot.persona.vpip*0.6
+      :action===4?0.5+spot.persona.aggression*1.5+(options.starting<=2500?0.7:0):0.5+spot.persona.aggression;
+    let roll=Math.random()*near.reduce((sum,c)=>sum+weight(c.action),0);
+    for(const c of near){roll-=weight(c.action);if(roll<=0)return {action:c.action,amount:c.amount,isBluff:false};}
+    return {action:best.action,amount:best.amount,isBluff:false};
+  }
   const choices:{action:number;amount:number;ev:number}[]=[];
   if(options.jamEV>0)choices.push({action:4,amount:spot.maxRaise,ev:options.jamEV});
   // Avoid committing most of the stack with a nominal non-all-in raise.

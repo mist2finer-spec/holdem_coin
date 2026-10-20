@@ -9,7 +9,7 @@ import { stackContext } from './poker-stack';
 import { planPreflop } from './poker-preflop';
 
 export const LIVE_RULES = Object.freeze({
-  version: "1.7.0",
+  version: "1.8.0",
   seats: 8, smallBlind: 100, bigBlind: 200, buyIn: 5000,
   botCashOut: 100000, userSeconds: 10, maxActions: 256,
   botThinkMin: 700, botThinkJitter: 900, actionPause: 800, resultPause: 5000,
@@ -85,7 +85,7 @@ export function decideLiveBot(trainer: SelfPlayTrainer, ctx: {
   seats: BettingSeat[]; board: Card[]; pot: number; minRaise: number; maxRaise: number;
   button: number; smallBlind: number; bigBlind: number; hand: number; raiseLevel: number;
   checkedThisStreet?: boolean;
-  limpedPreflop?:boolean; previousStreetAggressor?:number|null;
+  limpedPreflop?:boolean; previousStreetAggressor?:number|null; openedPreflop?:boolean;
 }): LiveAction {
   const { actor, seats, board } = ctx;
   const persona = individualLivePersona(actor.persona || RPG_BOT_POOL[0], ctx.hand, actor.seatId, actor.stack + actor.totalBet);
@@ -93,7 +93,7 @@ export function decideLiveBot(trainer: SelfPlayTrainer, ctx: {
   const livePot = ctx.pot + seats.reduce((sum, s) => sum + s.currentBet, 0);
   const context={actorId:actor.seatId,stack:stackContext(seats,actor.seatId),
     position:positionContext(seats,actor.seatId,ctx.button,ctx.checkedThisStreet),
-    limpedPreflop:ctx.limpedPreflop,initiative:ctx.previousStreetAggressor===actor.seatId,
+    limpedPreflop:ctx.limpedPreflop,openedPreflop:ctx.openedPreflop,initiative:ctx.previousStreetAggressor===actor.seatId,
     seats:seats.map(({seatId,stack,currentBet,totalBet,inHand,folded,allIn})=>({seatId,stack,currentBet,totalBet,inHand,folded,allIn}))};
   const plan=planPreflop({hole:actor.holeCards,board,call,pot:livePot,stack:actor.stack,currentBet:actor.currentBet,
     minRaise:ctx.minRaise,maxRaise:ctx.maxRaise,raiseLevel:ctx.raiseLevel,smallBlind:ctx.smallBlind,persona,context});

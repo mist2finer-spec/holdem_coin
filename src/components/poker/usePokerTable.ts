@@ -349,6 +349,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     let safetyCounter = 0;
     const checkedThisStreet = new Set<number>();
     const limpedPreflop = new Set<number>();
+    const openedPreflop = new Set<number>();
     const previousStreetAggressor = st.lastStreetAggressor;
     let currentStreetAggressor: number | null = null;
     let lastActorIdx = -1; // 직전 액터 (턴 순서 추적용)
@@ -417,6 +418,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
           hand: st.handNumber, raiseLevel: st.raiseLevel,
           checkedThisStreet: checkedThisStreet.has(actor.seatId),
           limpedPreflop: limpedPreflop.has(actor.seatId), previousStreetAggressor,
+          openedPreflop: openedPreflop.has(actor.seatId),
         });
       }
       const intendedBluff = !actor.isUser && decision.isBluff === true;
@@ -455,6 +457,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
       if (st.seats[actorIdx].currentBet > maxBet && (decision.action === "raise" || decision.action === "allin")) {
         st.lastAggression = { seatId: actor.seatId, isBluff: intendedBluff };
         currentStreetAggressor = actor.seatId;
+        if(st.board.length===0&&st.raiseLevel===1)openedPreflop.add(actor.seatId);
       }
       const actionLabel = labelAction(decision.action, decision.amount, callAmt);
       st.lastActions = { ...st.lastActions, [actorIdx]: actionLabel };

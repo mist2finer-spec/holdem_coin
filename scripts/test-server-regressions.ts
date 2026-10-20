@@ -20,6 +20,20 @@ function roomWith(bets: number[] = [200, 400]) {
   return room;
 }
 
+test('server identifies the original opener when a three-bet returns and clears it next street',async()=>{
+  const room=roomWith([100,200]);const history:any[]=[];
+  const actions=[{action:'raise',amount:600},{action:'raise',amount:1800},{action:'call',amount:1200},
+    {action:'check',amount:0},{action:'check',amount:0}];
+  room.getDecision=async(actor:any,_call:number,_min:number,_max:number,_user:boolean,_check:boolean,_limp:boolean,_previous:number|null,opened:boolean)=>{
+    history.push({seat:actor.seatId,opened});assert.ok(actions.length);return actions.shift();
+  };
+  await room.runBettingRound(0,0,[]);
+  assert.deepEqual(history,[{seat:0,opened:false},{seat:1,opened:false},{seat:0,opened:true}]);
+  room.state.board=[{rank:'A',suit:'♠'},{rank:'8',suit:'♥'},{rank:'2',suit:'♦'}];
+  await room.runBettingRound(0,0,[]);
+  assert.equal(history[3].opened,false);assert.equal(history[4].opened,false);
+});
+
 test('server tracks limpers and real previous-street aggression, clearing checked-through streets',async()=>{
   const room=roomWith([0,200]);
   const history:any[]=[];
