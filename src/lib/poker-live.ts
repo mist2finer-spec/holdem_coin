@@ -1,3 +1,4 @@
+import {riverCatchDecision} from './poker-river-defense';
 import {minimumRaiseTo} from "./poker-sizing";
 import type { ActionType, Card } from './poker-engine';
 import type { BettingSeat } from './poker-rules';
@@ -10,7 +11,7 @@ import { stackContext } from './poker-stack';
 import { planPreflop } from './poker-preflop';
 
 export const LIVE_RULES = Object.freeze({
-  version: "1.12.3",
+  version: "1.13.0",
   seats: 8, smallBlind: 100, bigBlind: 200, buyIn: 5000,
   botCashOut: 100000, userSeconds: 10, maxActions: 256,
   botThinkMin: 700, botThinkJitter: 900, actionPause: 800, resultPause: 5000,
@@ -110,7 +111,14 @@ export function decideLiveBot(trainer: SelfPlayTrainer, ctx: {
       decisionPath='human-equity-call-defense';
       action={action:call>=actor.stack?'allin':'call',amount:Math.min(call,actor.stack)};
     }
-    ctx.onAudit?.({decisionPath,threeBetRead:ctx.threeBetRead,lastRaiserSeat:ctx.lastRaiserSeat,personaId:actor.persona?.id,vpip:persona.vpip,aggression:persona.aggression,
+    const riverCatch=action.action==='fold' && board.length===5
+      ? riverCatchDecision({hole:actor.holeCards,board,seats:context.seats,actorId:actor.seatId,
+          base:actor.persona||RPG_BOT_POOL[0],persona}) : null;
+    if(riverCatch?.accepted) {
+      decisionPath='river-bluff-catch';
+      action={action:riverCatch.cost>=actor.stack?'allin':'call',amount:riverCatch.cost};
+    }
+    ctx.onAudit?.({riverCatch,decisionPath,threeBetRead:ctx.threeBetRead,lastRaiserSeat:ctx.lastRaiserSeat,personaId:actor.persona?.id,vpip:persona.vpip,aggression:persona.aggression,
       bluffFreq:persona.bluffFreq,isOOP:context.position.isOOP,effectiveStack:context.stack.effectiveStack,
       stackEquityPremium:context.stack.equityPremium,openedPreflop:!!ctx.openedPreflop,
       limpedPreflop:!!ctx.limpedPreflop,checkedThisStreet:!!ctx.checkedThisStreet,

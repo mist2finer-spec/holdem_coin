@@ -385,3 +385,38 @@ The supplied red, blue and purple PNGs are shared by both action panels. Red
 marks fold/all-in, blue marks check/call, and purple marks raises/pot fractions.
 Hover only changes brightness; there is no scale or press movement. Existing
 action handlers, 2X default, sizing rules and disabled states are preserved.
+
+## 1.13.0 — river-only bluff catching
+
+Shared `decideLiveBot` final fold fallback for single and server play. Applies only
+on a complete river board, facing a bet, with exactly two live players. Existing
+calls/raises, preflop, flop, turn and multiway decisions are unchanged. The private
+preflop human-card referee is never called by this policy.
+
+`poker-river-defense.ts` enumerates the 990 legal opponent hole combinations after
+excluding only the CPU's own two cards and the five public cards. It models a
+polarized betting range: 65% weight on the strongest 35% of combinations, 35% on
+the weakest 35%. This bluff share is an explicit tuning assumption, NOT a measured
+human bluff rate or exact win probability. Ties count as half. Opponent cards,
+folded cards, deck state and future information are not inputs.
+
+Positive call EV after 5% rake is required. Contribution layers exclude inaccessible
+excess bets and account for refunds; calls cap at the actor's stack. Then a 5–40%
+probability converts fold to call (or a stack-sized all-in CALL, never a raise).
+Frequency interpolates tightness from base VPIP .18–.65 and aggression .20–.82,
+weighted 80% base identity and 20% current hand persona. Thus tight characters
+catch more frequently *conditional on reaching an eligible river*, not more often
+preflop. Range estimates use a 128-entry bounded memory cache.
+
+Private audit adds `riverCatch`: frequency, equity, callEV, cost, eligible, accepted;
+actual overrides have `decisionPath: river-bluff-catch`. No new public strategy UI.
+
+Analysis of uploaded 1.12.3 archive: 304 hands / 2800 actions / 77 all-in actions /
+3 side-pot hands: replayed chip, legal call, board, rake and settlement checks had
+no errors. Observed dealt-hand VPIP: paladin 13/154 (8.4%), alchemist 14/151 (9.3%),
+ice queen 26/190 (13.7%), goblin 73/295 (24.7%), pirate 58/235 (24.7%), barbarian
+49/159 (30.8%). These are observed rates, not persona parameters or causal estimates.
+Hand 105 is CPU-only and ends preflop; it is not the reported human wheel hand.
+Only five CPU river folds occur in this archive. Replaying the *original* states
+makes 99 and 240 eligible (14.2% and 25.4% catch chance respectively); the other
+three remain negative EV. This is eligibility replay, not predicted game outcomes.
