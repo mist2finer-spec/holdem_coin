@@ -1,6 +1,7 @@
 import { bluffFrequency } from "./poker-bluff";
 import { oopCheckMix } from "./poker-position";
 import { decideShortStack } from "./poker-shortstack";
+import { continuationBetFrequency, checkCallEquityRequired } from "./poker-postflop";
 import { settleHand, bettingLocked, dealNextStreet, hasBettingOpponent } from "./poker-rules";
 import { estimateEquity, afterRakeOdds, calledActionEV, DecisionContext } from "./poker-ai";
 // ============================================================
@@ -585,8 +586,10 @@ export class SelfPlayTrainer {
     // Protect the OOP checking range: strong hands must not always lead.
     // Draws/air also check, so checking does not disclose a trap. This mixture
     // only takes a FREE check; facing a bet still goes through equity/masks.
-    if (board.length > 0 && callAmount === 0 && position?.isOOP) {
-      if (Math.random() < oopCheckMix(persona, tier, position.opponents, board)) {
+    if (board.length > 0 && callAmount === 0 && (position?.isOOP||context?.initiative)) {
+      let checkMix=position?.isOOP?oopCheckMix(persona,tier,position.opponents,board):0;
+      if(context?.initiative)checkMix=Math.max(checkMix,1-continuationBetFrequency(persona,board,tier,activeOpponents));
+      if (Math.random() < checkMix) {
         return { action: 1, amount: 0, isBluff: false, tier };
       }
     }
@@ -657,13 +660,23 @@ export class SelfPlayTrainer {
     if (callAmount > 0 && (tier === HandTier.AIR || (tier === HandTier.OVERCARDS && pressure >= 2))) {
       mask[1] = false;
     }
+    if(context?.forbidLimp&&board.length===0&&callAmount>0)mask[1]=false;
+    if(board.length>0&&context?.position?.checkedThisStreet&&callAmount>0) {
+      const defend=multiEq>=checkCallEquityRequired(persona,potOdds);
+      if(defend&&callAmount<=pot*0.30&&persona.vpip>=0.45) {
+        mask[1]=true;
+        logits[1]=Math.max(logits[1],0.8+(persona.vpip-0.45)*2);
+      } else if(!defend) {logits[0]+=0.5;logits[1]-=0.5;}
+    }
 
     // Aggressive personas mix weak-hand raises explicitly. Large-pressure spots
     // and dry side pots are excluded; normal value decisions retain their EV policy.
     const weakHand = tier <= HandTier.OVERCARDS;
     const hasOpponent = !context || hasBettingOpponent(context.seats, context.actorId);
-    const bluffEligible = persona.aggression > 0.7 && weakHand && canRaise && pressure < 3 && hasOpponent;
-    const bluffRate=(context?.stack?.ownStack ?? Infinity)<=5000 ? persona.bluffFreq : bluffFrequency(persona);
+    const barrel=board.length===4&&context?.initiative===true;
+    const bluffEligible = (persona.aggression > 0.7||barrel) && weakHand && canRaise && pressure < 3 && hasOpponent;
+    let bluffRate=(context?.stack?.ownStack ?? Infinity)<=5000 ? persona.bluffFreq : bluffFrequency(persona);
+    if(barrel)bluffRate=Math.min(bluffRate,persona.aggression>=0.70?0.35:persona.aggression>=0.40?0.15:0.02);
     const attemptBluff = bluffEligible && Math.random() < bluffRate * (position?.isOOP ? 0.4 + persona.aggression * 0.3 : 1);
     if (bluffEligible) {
       mask[2] = false;

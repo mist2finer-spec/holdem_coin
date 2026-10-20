@@ -12,7 +12,8 @@ function inRange(hole: Card[], range: OpponentRange) {
   const [high,low]=ranks, suited=hole[0].suit===hole[1].suit;
   return high===low ? low >= (range==='jam-call'?4:3)
     : range==='jam-call' ? (high===12 && low>=10) || (suited && high===12 && low>=9) || (suited && high===11 && low===10)
-    : (high===12 && low>=8) || (high===11 && low>=9) || (suited && high>=9 && low>=7);
+    : (high===12 && low>=8) || (high===11 && low>=9) || (suited && high>=9 && low>=7)
+      || (suited&&low>=3&&high-low<=2);
 }
 export function estimateEquity(hole: Card[], board: Card[], opponents: number, samples=48, range?: OpponentRange): number {
   if(opponents<=0)return 1;
@@ -57,7 +58,7 @@ export function estimateEquity(hole: Card[], board: Card[], opponents: number, s
   cache.set(key,result);return result;
 }
 
-export interface DecisionContext { seats: BettingSeat[]; actorId: number; position?: PositionContext; stack?: ReturnType<typeof stackContext> }
+export interface DecisionContext { seats: BettingSeat[]; actorId: number; position?: PositionContext; stack?: ReturnType<typeof stackContext>; forbidLimp?:boolean; limpedPreflop?:boolean; initiative?:boolean }
 export function afterRakeOdds(pot: number, cost: number, rate=RAKE_RATE) {
   return cost>0?cost/Math.max(1,(pot+cost)*(1-rate)):0;
 }

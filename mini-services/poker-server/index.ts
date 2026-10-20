@@ -70,6 +70,7 @@ interface ServerGameState {
   lastActions: Record<number, string>;
   showdownReveal: boolean;
   lastAggression: BluffAggression | null;
+  lastStreetAggressor: number | null;
   bluffReveal: number | null;
   showdownHands: any[];
   winnerInfo: WinnerInfo | null;
@@ -148,6 +149,7 @@ export class HybridHoldemRoom {
       lastActions: {},
       showdownReveal: false,
       lastAggression: null,
+      lastStreetAggressor: null,
       bluffReveal: null,
       showdownHands: [],
       winnerInfo: null,
@@ -422,7 +424,7 @@ export class HybridHoldemRoom {
       st.phase = "PREFLOP";
       st.lastActions = {};
       st.showdownReveal = false;
-      st.lastAggression = null;
+      st.lastAggression = null; st.lastStreetAggressor = null;
       st.bluffReveal = null;
       st.showdownHands = [];
       st.winnerInfo = null;
@@ -517,6 +519,9 @@ export class HybridHoldemRoom {
     const MAX_ACTIONS = LIVE_RULES.maxActions;
     let safety = 0;
     const checkedThisStreet = new Set<number>();
+    const limpedPreflop = new Set<number>();
+    const previousStreetAggressor = st.lastStreetAggressor;
+    let currentStreetAggressor: number | null = null;
 
     while (safety < MAX_ACTIONS) {
       // ★ safety를 최상단에서 증가 - 어떤 continue/break 시에도 무한루프 방지
@@ -582,10 +587,10 @@ export class HybridHoldemRoom {
         if (validAction) {
           decision = validAction;
         } else {
-          decision = await this.getDecision(actor, callAmt, minR, maxR, isUser || false, checkedThisStreet.has(actor.seatId));
+          decision = await this.getDecision(actor, callAmt, minR, maxR, isUser || false, checkedThisStreet.has(actor.seatId),limpedPreflop.has(actor.seatId),previousStreetAggressor);
         }
       } else {
-        decision = await this.getDecision(actor, callAmt, minR, maxR, isUser || false, checkedThisStreet.has(actor.seatId));
+        decision = await this.getDecision(actor, callAmt, minR, maxR, isUser || false, checkedThisStreet.has(actor.seatId),limpedPreflop.has(actor.seatId),previousStreetAggressor);
       }
 
       // Validate bot decisions too. A stale/invalid decision falls back safely.
@@ -618,10 +623,12 @@ export class HybridHoldemRoom {
 
       // 액션 적용
       this.applyAction(actorIdx, decision);
+      if(st.board.length===0&&decision.action==="call"&&maxBet<=BIG_BLIND&&st.raiseLevel===0)limpedPreflop.add(actor.seatId);
       if (decision.action === "check") checkedThisStreet.add(actor.seatId);
       else checkedThisStreet.delete(actor.seatId);
       if (st.seats[actorIdx].currentBet > maxBet && raisesBet) {
         st.lastAggression = { seatId: actor.seatId, isBluff: intendedBluff };
+        currentStreetAggressor = actor.seatId;
       }
       const actionLabel = this.labelAction(decision.action, decision.amount, callAmt);
       st.lastActions = { ...st.lastActions, [actorIdx]: actionLabel };
@@ -645,6 +652,8 @@ export class HybridHoldemRoom {
     st.activeSeatId = -1;
     st.lastActions = {};
 
+    st.lastStreetAggressor = currentStreetAggressor;
+
     // 베팅 팟으로 합산
     let potAdd = 0;
     st.seats = st.seats.map(s => {
@@ -662,7 +671,9 @@ export class HybridHoldemRoom {
     minR: number,
     maxR: number,
     isUser: boolean,
-    checkedThisStreet = false
+    checkedThisStreet = false,
+    limpedPreflop = false,
+    previousStreetAggressor:number|null = null
   ): Promise<{ action: ActionType; amount: number; isBluff?: boolean }> {
     if (isUser) {
       // Same decision window as single player.
@@ -677,6 +688,7 @@ export class HybridHoldemRoom {
         smallBlind: this.state.smallBlindSeat, bigBlind: this.state.bigBlindSeat,
         hand: this.state.handNumber, raiseLevel: this.state.raiseLevel,
         checkedThisStreet,
+        limpedPreflop, previousStreetAggressor,
       });
     }
   }
@@ -831,7 +843,7 @@ export class HybridHoldemRoom {
     await this.sleep(LIVE_RULES.resultPause);
     st.winnerInfo = null;
     st.showdownReveal = false;
-    st.lastAggression = null;
+    st.lastAggression = null; st.lastStreetAggressor = null;
     st.bluffReveal = null;
     st.showdownHands = [];
     this.broadcastTableState();
@@ -881,7 +893,6 @@ export class HybridHoldemRoom {
       return {
         seatId: Number(s.seatId),
         name: String(s.name || ""),
-        botStyle: s.isBot ? String(s.persona?.style || "정석") : "",
         isBot: Boolean(s.isBot),
         isMe: Boolean(isMe),
         stack: Number(s.stack || 0),

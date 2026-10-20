@@ -1,4 +1,4 @@
-# Live bot position policy (rules 1.6.0)
+# Live bot position policy (rules 1.7.0)
 
 Single-player and multiplayer both call `decideLiveBot`. Position is computed
 from public seat status, clockwise after the button, skipping folded, inactive
@@ -67,8 +67,10 @@ A surge raises participation and aggression for the hand, with VPIP at least
 .45 and aggression at least .78. It does not force any action: legal-action
 validation, position, board strength, equity, rake and side-pot rules still
 govern decisions. These are configured mood frequencies, not measured VPIP or
-raise percentages. The UI shows each character's base style; the global badge
-has no global strategy badge: the five-hand correction stays internal.
+raise percentages. Bot styles and numeric personality traits are not displayed.
+Server seat DTOs omit personality/style fields; the five-hand correction stays
+internal. Single-player still executes its AI locally, so this is not source-code
+secrecy against developer tools.
 
 ## Stack adjustment
 
@@ -120,3 +122,55 @@ the final authority in both modes.
 The opening/calling ranges, fold probabilities and realization factors are
 explicit heuristic assumptions, not inferred opponent hole cards or a solved
 equilibrium. Range sampling and caches are bounded.
+
+## Range and action mixtures (1.7)
+
+Before table/mood/stack adjustments, participation uses `.30 + (baseVPIP-.18)*.80`
+and aggression `.35 + (baseAggression-.20)*.85`. This lifts the quieter end of
+the pool while retaining differences instead of flattening several bots to
+identical floors. Stack tightening, short-stack EV re-shoves and OOP remain.
+
+The shared preflop entry planner evaluates the final effective traits:
+
+| Numeric connector/one-gap family | Entry gate |
+| --- | --- |
+| Suited connectors, lower card >= 5 | VPIP >= .30 |
+| Suited one-gappers, lower card >= 5 | VPIP >= .35, aggression >= .50 |
+| Offsuit connectors containing 7 | VPIP >= .42, aggression >= .58 |
+| Offsuit one-gappers containing 7 | VPIP >= .48, aggression >= .65 |
+
+Ordinary connector calls also need affordable 2–4BB pricing and modeled equity
+near after-rake odds. Without a qualifying call, these hands fold rather than
+falling through to unrelated bluff/automatic blind-defense branches. Qualified
+unopened connectors can open to 3BB, with final-trait sampling. Opponent opening
+range rollouts also include suited middle connectors; jam-calling ranges stay tight.
+
+23/34/24/35 suited or offsuit use a separate 7% call gate, never an automatic
+raise. Requirements: final aggression >= .70, VPIP >= .35, starting chips >=
+5,000, effective chips >= 4,000, at most three opponents, a single open <=4BB,
+no live all-in, call cost <=15% of starting chips, and approximate equity within
+.08 of after-rake odds. Rejection returns fold/check directly; no later policy
+can retry the gate. This is a per-eligible-decision probability, not a quota
+over arbitrary short runs or 7% of all hands.
+
+Limping is limited to late seats/SB with 22–77 or qualified suited connectors,
+starting chips >2,500 and no raise. Its single gate is `.12*(1-.5*aggression)`
+(minimum .04): below .15, and lower for aggressive characters. Failed rolls
+disable the generic check/call action while facing a blind, preventing leakage.
+Limp history persists through preflop re-raises. Only bluff >=.20/aggression >=.55
+can retain limp/re-raise options; others call affordably with sufficient equity
+or fold. Free BB checks remain legal.
+
+Against 3–4BB opens, or a re-raise to that amount after the actor opened, the
+flat-call gate uses `.30 + (VPIP-.35)*.60 - (aggression-.55)*.45`, plus .10 IP
+or -.08 OOP, bounded .03–.75. Premium JJ+/AK use a .20 multiplier. Pricing,
+equity and stack gates apply before sampling; exact short-stack cases continue
+through their EV policy when the planner does not choose a flat call.
+
+Each real betting round tracks its own last aggressor independently from the
+bluff-reveal marker. A checked-through street clears continuation initiative.
+CB/check mixtures use aggression, board texture, hand tier and opponent count.
+Turn air barrels are capped by final aggression (high .35, medium .15, low .02),
+and eligible high-VPIP checkers can defend small bets when their equity supports
+it. River initiative holders with trap-like traits mix more strong-hand checks.
+These weights are heuristics, not promised exact betting frequencies.

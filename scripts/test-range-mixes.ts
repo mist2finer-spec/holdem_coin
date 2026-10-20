@@ -1,0 +1,98 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import type {Card} from '../src/lib/poker-engine.ts';
+import {planPreflop,connectorAllowed,connectorInfo,flatCallFrequency,limpFrequency} from '../src/lib/poker-preflop.ts';
+import {stackContext} from '../src/lib/poker-stack.ts';
+import {positionContext} from '../src/lib/poker-position.ts';
+import {decideLiveBot} from '../src/lib/poker-live.ts';
+import {SelfPlayTrainer} from '../src/lib/self-play-trainer.ts';
+import {RPG_BOT_POOL} from '../src/lib/personas.ts';
+import {continuationBetFrequency,checkCallEquityRequired} from '../src/lib/poker-postflop.ts';
+
+const cards=(a:Card['rank'],b:Card['rank'],suited=false):Card[]=>[{rank:a,suit:'♠'},{rank:b,suit:suited?'♠':'♥'}];
+function seeded<T>(fn:()=>T) {
+  const old=Math.random;let seed=4567;
+  Math.random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};
+  try{return fn();}finally{Math.random=old;}
+}
+function spot(hole=cards('2','3')):Parameters<typeof planPreflop>[0] {
+  const seats=[
+    {seatId:0,stack:9800,currentBet:200,totalBet:200,inHand:true,folded:false,allIn:false},
+    {seatId:1,stack:9600,currentBet:400,totalBet:400,inHand:true,folded:false,allIn:false},
+  ];
+  return {hole,board:[],call:200,pot:700,stack:9800,currentBet:200,minRaise:600,maxRaise:10000,
+    raiseLevel:1,smallBlind:1,persona:{vpip:0.60,aggression:0.85,bluffFreq:0.25},
+    context:{actorId:0,seats,stack:stackContext(seats,0),position:positionContext(seats,0,1)}};
+}
+
+test('7 connectors and one-gappers use final trait gates, including offsuit',()=>{
+  assert.equal(connectorInfo(cards('7','5')).gap,1);
+  assert.equal(connectorAllowed(cards('7','6',true),{vpip:.35,aggression:.5}),true);
+  assert.equal(connectorAllowed(cards('7','5',true),{vpip:.40,aggression:.60}),true);
+  assert.equal(connectorAllowed(cards('7','6'),{vpip:.50,aggression:.70}),true);
+  assert.equal(connectorAllowed(cards('9','7'),{vpip:.55,aggression:.75}),true);
+  assert.equal(connectorAllowed(cards('7','6'),{vpip:.25,aggression:.35}),false);
+  assert.equal(connectorAllowed(cards('2','3'),{vpip:.9,aggression:.9}),false,'low cards use their own cap');
+});
+
+test('rare 23o calls stay under ten percent and rejection cannot reach another AI branch',()=>{
+  const s=spot();let calls=0;
+  const forbidden={decideActionForLive:()=>{throw new Error('Rare gate fell through');}} as unknown as SelfPlayTrainer;
+  const orc=RPG_BOT_POOL.find(p=>p.id==='orc_berserker')!;
+  seeded(()=>{for(let i=0;i<4000;i++){
+    const d=decideLiveBot(forbidden,{actor:{...s.context.seats[0],holeCards:s.hole,persona:orc},seats:s.context.seats,
+      board:[],pot:100,minRaise:600,maxRaise:10000,button:1,smallBlind:1,bigBlind:0,hand:1,raiseLevel:1});
+    assert.ok(d.action==='call'||d.action==='fold');
+    if(d.action==='call')calls++;
+  }});
+  assert.ok(calls>180&&calls<360,`${calls}/4000`);
+});
+
+test('rare connector calls exclude short stacks, all-ins and re-raises',()=>{
+  const s=spot();
+  assert.equal(planPreflop({...s,raiseLevel:2}).decision?.action,'fold');
+  assert.equal(planPreflop({...s,context:{...s.context,stack:{...s.context.stack!,ownStack:2500}}}).decision?.action,'fold');
+  const table=s.context.seats.map((p,i)=>({...p,allIn:i===1}));
+  assert.equal(planPreflop({...s,context:{...s.context,seats:table}}).decision?.action,'fold');
+  assert.equal(planPreflop({...s,persona:{vpip:.25,aggression:.35,bluffFreq:.05}}).decision?.action,'fold');
+});
+
+test('actual shared AI limp frequency stays below fifteen percent without fallback leakage',()=>{
+  const s=spot(cards('6','6'));s.context.seats[0].stack=9900;s.context.seats[0].currentBet=100;s.context.seats[0].totalBet=100;
+  s.context.seats[1].stack=9800;s.context.seats[1].currentBet=200;s.context.seats[1].totalBet=200;
+  const trainer=new SelfPlayTrainer();let calls=0;
+  const bard=RPG_BOT_POOL.find(p=>p.id==='wandering_bard')!;
+  seeded(()=>{for(let i=0;i<2000;i++){
+    const d=decideLiveBot(trainer,{actor:{...s.context.seats[0],holeCards:s.hole,persona:bard},seats:s.context.seats,
+      board:[],pot:0,minRaise:400,maxRaise:10000,button:1,smallBlind:0,bigBlind:1,hand:1,raiseLevel:0});
+    if(d.action==='call')calls++;
+  }});
+  assert.ok(calls>50&&calls<270,`${calls}/2000`);
+  assert.ok(limpFrequency(.85)<limpFrequency(.35));
+});
+
+test('flat-call mix favors calling personalities, IP and non-premium hands',()=>{
+  const calm={vpip:.55,aggression:.35},bold={vpip:.55,aggression:.85};
+  assert.ok(flatCallFrequency(calm,false)>flatCallFrequency(bold,false));
+  assert.ok(flatCallFrequency(calm,false)>flatCallFrequency(calm,true));
+  assert.ok(flatCallFrequency(calm,false,true)<flatCallFrequency(calm,false));
+  const s=spot(cards('A','Q'));s.call=600;s.pot=1200;s.currentBet=0;s.context.seats[0].currentBet=0;s.context.seats[1].currentBet=600;
+  let flats=0;seeded(()=>{for(let i=0;i<1000;i++)if(planPreflop({...s,persona:{...calm,bluffFreq:.1}}).decision?.action==='call')flats++;});
+  assert.ok(flats>200,`${flats}`);
+});
+
+test('non-trap limpers cannot re-raise through fallback',()=>{
+  const s=spot(cards('7','7'));s.context.limpedPreflop=true;
+  const d=planPreflop({...s,persona:{vpip:.45,aggression:.4,bluffFreq:.1}}).decision;
+  assert.ok(d?.action==='call'||d?.action==='fold');
+});
+
+test('postflop continuation depends on traits, board, opponents and street',()=>{
+  const dry=[...cards('A','8'),{rank:'2',suit:'♦'}] as Card[];
+  const wet=[{rank:'8',suit:'♠'},{rank:'9',suit:'♠'},{rank:'T',suit:'♠'}] as Card[];
+  const calm={aggression:.35,bluffFreq:.05},bold={aggression:.85,bluffFreq:.25};
+  assert.ok(continuationBetFrequency(bold,dry,4,1)>continuationBetFrequency(calm,dry,4,1));
+  assert.ok(continuationBetFrequency(bold,dry,4,1)>continuationBetFrequency(bold,wet,4,1));
+  assert.ok(continuationBetFrequency(bold,dry,4,1)>continuationBetFrequency(bold,dry,4,3));
+  assert.ok(checkCallEquityRequired({vpip:.55},.25)<checkCallEquityRequired({vpip:.25},.25));
+});

@@ -20,6 +20,32 @@ function roomWith(bets: number[] = [200, 400]) {
   return room;
 }
 
+test('server tracks limpers and real previous-street aggression, clearing checked-through streets',async()=>{
+  const room=roomWith([0,200]);
+  const history:any[]=[];
+  const actions=[{action:'call',amount:200},{action:'raise',amount:600},{action:'call',amount:400},
+    {action:'check',amount:0},{action:'check',amount:0},{action:'check',amount:0},{action:'check',amount:0}];
+  room.getDecision=async(actor:any,_call:number,_min:number,_max:number,_user:boolean,_checked:boolean,limped:boolean,previous:number|null)=>{
+    history.push({seat:actor.seatId,limped,previous});assert.ok(actions.length);return actions.shift();
+  };
+  await room.runBettingRound(0,0,[]);
+  assert.equal(history[2].limped,true);assert.equal(room.state.lastStreetAggressor,1);
+  room.state.board=[{rank:'A',suit:'♠'},{rank:'8',suit:'♥'},{rank:'2',suit:'♦'}];
+  await room.runBettingRound(0,0,[]);
+  assert.equal(history[3].previous,1);assert.equal(history[3].limped,false);
+  assert.equal(room.state.lastStreetAggressor,null);
+  room.state.board.push({rank:'4',suit:'♣'});
+  await room.runBettingRound(0,0,[]);
+  assert.equal(history[5].previous,null);
+});
+
+test('server snapshots contain no bot personality attributes or style labels',()=>{
+  const room=roomWith();
+  for(const seat of room.createSafeSnapshot(null).seats) {
+    for(const key of ['persona','botStyle','style','vpip','aggression','bluffFreq'])assert.equal(key in seat,false);
+  }
+});
+
 test('real server retains check history through a raise and clears it on the next street', async () => {
   const room = roomWith([0, 0]);
   const checked: boolean[] = [];

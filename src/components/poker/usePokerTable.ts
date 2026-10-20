@@ -52,6 +52,7 @@ interface GameState {
   lastActions: Record<number, string>;
   showdownReveal: boolean;
   lastAggression: BluffAggression | null;
+  lastStreetAggressor: number | null;
   bluffReveal: number | null;
   showdownHands: ShowdownHandInfo[];
   winnerInfo: WinnerInfo | null;
@@ -105,6 +106,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     lastActions: {},
     showdownReveal: false,
     lastAggression: null,
+    lastStreetAggressor: null,
     bluffReveal: null,
     winnerInfo: null,
     isDealing: false,
@@ -216,7 +218,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     st.isDealing = true;
     st.handAborted = false;
     st.showdownReveal = false;
-    st.lastAggression = null;
+    st.lastAggression = null; st.lastStreetAggressor = null;
     st.bluffReveal = null;
     st.winnerInfo = null;
     st.board = [];
@@ -346,6 +348,9 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
 
     let safetyCounter = 0;
     const checkedThisStreet = new Set<number>();
+    const limpedPreflop = new Set<number>();
+    const previousStreetAggressor = st.lastStreetAggressor;
+    let currentStreetAggressor: number | null = null;
     let lastActorIdx = -1; // 직전 액터 (턴 순서 추적용)
     while (safetyCounter < LIVE_RULES.maxActions) {
       safetyCounter++;
@@ -411,6 +416,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
           smallBlind: st.smallBlindSeat, bigBlind: st.bigBlindSeat,
           hand: st.handNumber, raiseLevel: st.raiseLevel,
           checkedThisStreet: checkedThisStreet.has(actor.seatId),
+          limpedPreflop: limpedPreflop.has(actor.seatId), previousStreetAggressor,
         });
       }
       const intendedBluff = !actor.isUser && decision.isBluff === true;
@@ -443,10 +449,12 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
 
       // 액션 적용 (직접 ref 수정)
       applyActionToState(st, actorIdx, decision);
+      if(st.board.length===0&&decision.action==="call"&&maxBet<=BIG_BLIND&&st.raiseLevel===0)limpedPreflop.add(actor.seatId);
       if (decision.action === "check") checkedThisStreet.add(actor.seatId);
       else checkedThisStreet.delete(actor.seatId);
       if (st.seats[actorIdx].currentBet > maxBet && (decision.action === "raise" || decision.action === "allin")) {
         st.lastAggression = { seatId: actor.seatId, isBluff: intendedBluff };
+        currentStreetAggressor = actor.seatId;
       }
       const actionLabel = labelAction(decision.action, decision.amount, callAmt);
       st.lastActions = { ...st.lastActions, [actorIdx]: actionLabel };
@@ -464,7 +472,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     if (remaining.length > 1 && !bettingLocked(st.seats) && remaining.some(seat => !seat.allIn && (!seat.hasActed || seat.currentBet < highBet))) {
       st.seats = st.seats.map(seat => ({ ...seat, stack: seat.stack + seat.totalBet, totalBet: 0, currentBet: 0 }));
       st.pot = 0; st.handAborted = true; st.activeSeatId = -1;
-      st.lastAggression = null; st.bluffReveal = null;
+      st.lastAggression = null; st.lastStreetAggressor = null; st.bluffReveal = null;
       pushLog("핸드 오류로 베팅을 반환하고 새 핸드를 시작합니다.", "system");
       tick(); return;
     }
@@ -472,6 +480,8 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     st.activeSeatId = -1;
     st.lastActions = {};
     tick();
+
+    st.lastStreetAggressor = currentStreetAggressor;
 
     // 베팅 팟으로 합산
     let potAdd = 0;
@@ -600,7 +610,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     await sleep(LIVE_RULES.resultPause);
     st.winnerInfo = null;
     st.showdownReveal = false;
-    st.lastAggression = null;
+    st.lastAggression = null; st.lastStreetAggressor = null;
     st.bluffReveal = null;
     st.showdownHands = [];
     tick();

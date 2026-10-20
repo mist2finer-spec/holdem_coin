@@ -528,7 +528,6 @@ interface SocketPlayerSeatProps {
     seatId: number;
     name: string;
     isBot: boolean;
-    botStyle?: string;
     isMe: boolean;
     stack: number;
     currentBet: number;
@@ -635,7 +634,6 @@ function SocketPlayerSeat({
           <div className={`text-[9px] sm:text-[11px] font-bold leading-tight truncate max-w-[80px] sm:max-w-[100px] ${seat.isMe ? "text-blue-300" : "text-amber-200"}`}>
             {seat.name}
           </div>
-          {seat.isBot && seat.botStyle && <div title={`기본 성향: ${seat.botStyle}`} className="text-[8px] text-amber-200/60 truncate max-w-[80px] sm:max-w-[100px]">{seat.botStyle}</div>}
         </div>
 
         {/* 스택 */}

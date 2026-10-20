@@ -6,9 +6,10 @@ import { classifyHandTier } from './equity-engine';
 import type { SelfPlayTrainer } from './self-play-trainer';
 import { positionContext } from './poker-position';
 import { stackContext } from './poker-stack';
+import { planPreflop } from './poker-preflop';
 
 export const LIVE_RULES = Object.freeze({
-  version: "1.6.0",
+  version: "1.7.0",
   seats: 8, smallBlind: 100, bigBlind: 200, buyIn: 5000,
   botCashOut: 100000, userSeconds: 10, maxActions: 256,
   botThinkMin: 700, botThinkJitter: 900, actionPause: 800, resultPause: 5000,
@@ -84,16 +85,23 @@ export function decideLiveBot(trainer: SelfPlayTrainer, ctx: {
   seats: BettingSeat[]; board: Card[]; pot: number; minRaise: number; maxRaise: number;
   button: number; smallBlind: number; bigBlind: number; hand: number; raiseLevel: number;
   checkedThisStreet?: boolean;
+  limpedPreflop?:boolean; previousStreetAggressor?:number|null;
 }): LiveAction {
   const { actor, seats, board } = ctx;
   const persona = individualLivePersona(actor.persona || RPG_BOT_POOL[0], ctx.hand, actor.seatId, actor.stack + actor.totalBet);
   const call = Math.max(0, ...seats.filter(s => s.inHand && !s.folded).map(s => s.currentBet)) - actor.currentBet;
   const livePot = ctx.pot + seats.reduce((sum, s) => sum + s.currentBet, 0);
+  const context={actorId:actor.seatId,stack:stackContext(seats,actor.seatId),
+    position:positionContext(seats,actor.seatId,ctx.button,ctx.checkedThisStreet),
+    limpedPreflop:ctx.limpedPreflop,initiative:ctx.previousStreetAggressor===actor.seatId,
+    seats:seats.map(({seatId,stack,currentBet,totalBet,inHand,folded,allIn})=>({seatId,stack,currentBet,totalBet,inHand,folded,allIn}))};
+  const plan=planPreflop({hole:actor.holeCards,board,call,pot:livePot,stack:actor.stack,currentBet:actor.currentBet,
+    minRaise:ctx.minRaise,maxRaise:ctx.maxRaise,raiseLevel:ctx.raiseLevel,smallBlind:ctx.smallBlind,persona,context});
+  if(plan.decision)return plan.decision;
   const nn = trainer.decideActionForLive(actor.holeCards, board, call, ctx.minRaise, ctx.maxRaise,
     livePot, actor.stack, actor.currentBet, seats.filter(s => s.inHand && !s.folded).length - 1,
     actor.seatId, seats.length, ctx.raiseLevel, ctx.button, persona,
-    { actorId: actor.seatId, stack: stackContext(seats, actor.seatId), position: positionContext(seats, actor.seatId, ctx.button, ctx.checkedThisStreet),
-      seats: seats.map(({seatId,stack,currentBet,totalBet,inHand,folded,allIn}) => ({seatId,stack,currentBet,totalBet,inHand,folded,allIn})) });
+    {...context,forbidLimp:plan.forbidLimp});
   const decision = mapLiveDecision(nn, call, actor.stack, actor.currentBet);
   const highest = actor.currentBet + call;
   const limped = ctx.raiseLevel === 0 && highest <= LIVE_RULES.bigBlind;
@@ -101,6 +109,7 @@ export function decideLiveBot(trainer: SelfPlayTrainer, ctx: {
   const { rawEquity } = classifyHandTier(actor.holeCards, []);
   const odds = call / Math.max(1, livePot + call);
   if (decision.action === 'fold' && board.length === 0 &&
+    !plan.forbidLimp &&
     actor.stack + actor.totalBet > 5000 &&
     [ctx.smallBlind, ctx.bigBlind].includes(actor.seatId) && call > 0 && call < actor.stack &&
     call <= actor.stack * 0.1 && (limped || smallOpen) && rawEquity >= odds - 0.1 && Math.random() < 0.5) {

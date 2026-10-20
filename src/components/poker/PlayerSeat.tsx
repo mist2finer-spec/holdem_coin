@@ -121,9 +121,6 @@ export function PlayerSeat({
       <div className={`text-[9px] sm:text-[11px] font-bold ${accentClass} leading-tight truncate max-w-[80px] sm:max-w-[100px]`}>
         {seat.name}
       </div>
-      <div title={seat.isUser ? "용사님" : `기본 성향: ${persona?.style}`} className="text-[8px] sm:text-[9px] text-amber-200/60 leading-tight truncate max-w-[80px] sm:max-w-[100px]">
-        {seat.isUser ? "용사님" : persona?.style}
-      </div>
     </div>
   );
 

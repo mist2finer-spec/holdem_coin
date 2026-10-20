@@ -342,8 +342,8 @@ export function applyStrategyToPersona(
   const profile = STRATEGY_PROFILES[strategy];
   return {
     ...persona,
-    vpip: Math.max(0.05, Math.min(0.90, persona.vpip + (profile.vpip - 0.35) * 0.25)),
-    aggression: Math.max(0.05, Math.min(0.95, persona.aggression + (profile.aggression - 0.55) * 0.25)),
+    vpip: Math.max(0.05, Math.min(0.90, 0.30 + (persona.vpip - 0.18) * 0.80 + (profile.vpip - 0.35) * 0.25)),
+    aggression: Math.max(0.05, Math.min(0.95, 0.35 + (persona.aggression - 0.20) * 0.85 + (profile.aggression - 0.55) * 0.25)),
     bluffFreq: Math.max(0.005, Math.min(0.55, persona.bluffFreq + (profile.bluffFreq - 0.15) * 0.20)),
     style: `${persona.style} [${profile.name}]`,
   };

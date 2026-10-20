@@ -50,7 +50,7 @@ test("테이블 전략은 개별 성향을 보존하고 소폭 보정", () => {
     const b = applyStrategyToPersona(bold, strategy);
     if (a.vpip >= b.vpip || a.aggression >= b.aggression || a.bluffFreq >= b.bluffFreq)
       throw new Error("Individual personality lost");
-    if (Math.abs(a.aggression - calm.aggression) > 0.08) throw new Error("Table adjustment too large");
+    if (a.vpip < 0.25 || a.aggression < 0.29) throw new Error("Baseline uplift missing");
   }
   assertEqual(calm.aggression, 0.20, "원본 불변");
 });
