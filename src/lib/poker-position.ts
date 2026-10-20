@@ -1,4 +1,18 @@
 import type { BettingSeat } from './poker-rules';
+import type { Card } from './poker-engine';
+import { HandTier } from './equity-engine';
+
+export function oopCheckMix(persona: {aggression: number; vpip: number}, tier: number, opponents: number, board: Card[]) {
+  const strong = tier >= HandTier.TOP_PAIR;
+  const base = strong ? (tier === HandTier.TOP_PAIR ? 0.45 : 0.40)
+    : tier === HandTier.DRAW ? 0.35 : 0.65;
+  const suits = board.map(c => c.suit);
+  const ranks = [...new Set(board.map(c => '23456789TJQKA'.indexOf(c.rank)))].sort((a,b) => a-b);
+  const wet = suits.some(suit => suits.filter(s => s === suit).length >= 3)
+    || ranks.some((rank, i) => i >= 2 && rank - ranks[i-2] <= 4);
+  return Math.max(0.15, Math.min(0.85, base + (0.5 - persona.aggression) * 0.20
+    + (opponents > 1 ? 0.10 : 0) - (strong && wet ? 0.08 : 0)));
+}
 
 export interface PositionContext {
   isOOP: boolean;

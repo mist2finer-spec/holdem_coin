@@ -269,8 +269,8 @@ export const USER_PERSONA = {
 // ============================================================
 // AI 전략 로테이션 시스템
 // ============================================================
-// 9 NPC가 3가지 전략(어그레시브/타이트/루즈)을 5핸드마다 돌아가면서 사용
-// 각 전략은 vpip/aggression/bluffFreq 값을 override
+// 테이블 분위기(어그레시브/타이트/루즈)를 5핸드마다 소폭 보정
+// 테이블 전략은 개별 성향에 작은 보정만 적용한다.
 
 export type StrategyType = "AGGRESSIVE" | "TIGHT" | "LOOSE";
 
@@ -324,15 +324,15 @@ export const HANDS_PER_STRATEGY = 5; // 5핸드마다 전략 로테이션
 /**
  * 현재 핸드 번호에 따른 전략 결정
  * - 5핸드마다 AGGRESSIVE → TIGHT → LOOSE → AGGRESSIVE ... 순환
- * - 모든 NPC가 동일한 전략을 사용 (한 테이블이 한 전략)
+ * - 같은 테이블 보정이 적용되어도 각 NPC의 고유 성향은 유지
  */
 export function getStrategyForHand(handNumber: number): StrategyType {
-  const cycleIndex = Math.floor((handNumber - 1) / HANDS_PER_STRATEGY) % STRATEGY_CYCLE.length;
+  const cycleIndex = Math.floor((Math.max(1, handNumber) - 1) / HANDS_PER_STRATEGY) % STRATEGY_CYCLE.length;
   return STRATEGY_CYCLE[cycleIndex];
 }
 
 /**
- * 핸드 번호와 전략에 따라 persona의 성향을 override
+ * 개별 성향을 유지하면서 테이블 분위기만 가산
  */
 export function applyStrategyToPersona(
   persona: BotPersona,
@@ -341,9 +341,39 @@ export function applyStrategyToPersona(
   const profile = STRATEGY_PROFILES[strategy];
   return {
     ...persona,
-    vpip: profile.vpip,
-    aggression: profile.aggression,
-    bluffFreq: profile.bluffFreq,
+    vpip: Math.max(0.05, Math.min(0.90, persona.vpip + (profile.vpip - 0.35) * 0.25)),
+    aggression: Math.max(0.05, Math.min(0.95, persona.aggression + (profile.aggression - 0.55) * 0.25)),
+    bluffFreq: Math.max(0.005, Math.min(0.55, persona.bluffFreq + (profile.bluffFreq - 0.15) * 0.20)),
     style: `${persona.style} [${profile.name}]`,
+  };
+}
+
+// Stable pseudo-random mood for one character/seat/hand. Do not re-roll after
+// every bet or use remaining stack: stack + totalBet reconstructs starting chips.
+function moodRoll(key: string): number {
+  let hash = 2166136261;
+  for (const char of key) hash = Math.imul(hash ^ char.charCodeAt(0), 16777619) >>> 0;
+  hash ^= hash >>> 16;
+  hash = Math.imul(hash, 0x7feb352d) >>> 0;
+  hash ^= hash >>> 15;
+  return (hash >>> 0) / 4294967296;
+}
+
+export function individualLivePersona(base: BotPersona, hand: number, seat: number, startingStack: number) {
+  const normal = applyStrategyToPersona(base, getStrategyForHand(Math.max(1, hand)));
+  const tight = base.vpip <= 0.30 && base.aggression <= 0.55;
+  const aggressive = base.aggression > 0.70;
+  const short = startingStack > 0 && startingStack <= 10000;
+  const frequency = tight ? (short ? 0.40 : 0.12) : aggressive ? (short ? 0.08 : 0.03) : (short ? 0.18 : 0.07);
+  const key = `${base.id}:${seat}:${hand}`;
+  const surge = hand > 0 && moodRoll(key) < frequency;
+  if (!surge) return { ...normal, surge: false };
+  const intensity = moodRoll(`${key}:intensity`);
+  return {
+    ...normal, surge: true,
+    vpip: Math.min(0.85, Math.max(0.45, normal.vpip + 0.22 + intensity * 0.13)),
+    aggression: Math.min(0.95, Math.max(0.78, normal.aggression + 0.28 + intensity * 0.12)),
+    bluffFreq: Math.min(0.40, Math.max(normal.bluffFreq, 0.12 + intensity * 0.08)),
+    style: `${normal.style} · 변속`,
   };
 }

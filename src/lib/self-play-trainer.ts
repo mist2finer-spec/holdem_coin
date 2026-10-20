@@ -1,4 +1,5 @@
 import { bluffFrequency } from "./poker-bluff";
+import { oopCheckMix } from "./poker-position";
 import { settleHand, bettingLocked, dealNextStreet, hasBettingOpponent } from "./poker-rules";
 import { estimateEquity, afterRakeOdds, calledActionEV, DecisionContext } from "./poker-ai";
 // ============================================================
@@ -546,7 +547,7 @@ export class SelfPlayTrainer {
     const { tier } = classifyHandTier(hole, board);
     const multiEq = estimateEquity(hole,board,activeOpponents);
     const position = context?.position;
-    const positionCost = board.length === 0 ? (position?.preflopEquityPremium || 0) : 0;
+    const positionCost = board.length === 0 ? (position?.preflopEquityPremium || 0) * (1.2 - persona.aggression * 0.6) : 0;
     const potOdds = Math.min(1, afterRakeOdds(pot,Math.min(callAmount,myStack)) + positionCost);
 
     // 2) 베팅 압박 수위 (0~3)
@@ -571,25 +572,22 @@ export class SelfPlayTrainer {
     // Draws/air also check, so checking does not disclose a trap. This mixture
     // only takes a FREE check; facing a bet still goes through equity/masks.
     if (board.length > 0 && callAmount === 0 && position?.isOOP) {
-      const strong = tier >= HandTier.TOP_PAIR;
-      const checkMix = strong ? (tier === HandTier.TOP_PAIR ? 0.45 : 0.40)
-        : tier === HandTier.DRAW ? 0.35 : 0.65;
-      const multiway = position.opponents > 1 ? 0.10 : 0;
-      if (Math.random() < checkMix + multiway) {
+      if (Math.random() < oopCheckMix(persona, tier, position.opponents, board)) {
         return { action: 1, amount: 0, isBluff: false, tier };
       }
     }
 
     if (position?.isOOP) {
       const disadvantage = 1 - position.relativePosition;
-      logits[0] += 0.45 * disadvantage;
-      logits[2] -= 0.30 * disadvantage;
-      logits[3] -= 0.45 * disadvantage;
+      const caution = 1.2 - persona.aggression * 0.6;
+      logits[0] += 0.45 * disadvantage * caution;
+      logits[2] -= 0.30 * disadvantage * caution;
+      logits[3] -= 0.45 * disadvantage * caution;
       // Check-raise with value, retaining check-call and fold alternatives.
       // Top pair remains cautious, especially multiway or against large bets.
       if (board.length > 0 && position.checkedThisStreet && callAmount > 0
           && pressure <= 2 && callAmount <= pot * 0.75 && tier >= HandTier.TOP_PAIR) {
-        const boost = tier >= HandTier.TWO_PAIR_PLUS ? 1.35
+        const boost = tier >= HandTier.TWO_PAIR_PLUS ? 0.9 + persona.aggression * 0.7 + (1 - persona.vpip) * 0.3
           : position.opponents === 1 ? 0.35 : 0;
         logits[2] += boost;
         logits[3] += boost * 0.65;
@@ -647,7 +645,7 @@ export class SelfPlayTrainer {
     const weakHand = tier <= HandTier.OVERCARDS;
     const hasOpponent = !context || hasBettingOpponent(context.seats, context.actorId);
     const bluffEligible = persona.aggression > 0.7 && weakHand && canRaise && pressure < 3 && hasOpponent;
-    const attemptBluff = bluffEligible && Math.random() < bluffFrequency(persona) * (position?.isOOP ? 0.55 : 1);
+    const attemptBluff = bluffEligible && Math.random() < bluffFrequency(persona) * (position?.isOOP ? 0.4 + persona.aggression * 0.3 : 1);
     if (bluffEligible) {
       mask[2] = false;
       mask[3] = false;

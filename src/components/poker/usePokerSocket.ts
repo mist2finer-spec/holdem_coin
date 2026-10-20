@@ -21,6 +21,7 @@ export interface SocketSeat {
   seatId: number;
   name: string;
   isBot: boolean;
+  botStyle?: string;
   isMe: boolean;
   stack: number;
   currentBet: number;

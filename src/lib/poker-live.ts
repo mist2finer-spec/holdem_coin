@@ -1,13 +1,13 @@
 import type { ActionType, Card } from './poker-engine';
 import type { BettingSeat } from './poker-rules';
 import { hasBettingOpponent } from './poker-rules';
-import { RPG_BOT_POOL, applyStrategyToPersona, getStrategyForHand, type BotPersona } from './personas';
+import { RPG_BOT_POOL, individualLivePersona, type BotPersona } from './personas';
 import { classifyHandTier } from './equity-engine';
 import type { SelfPlayTrainer } from './self-play-trainer';
 import { positionContext } from './poker-position';
 
 export const LIVE_RULES = Object.freeze({
-  version: "1.3.0",
+  version: "1.4.0",
   seats: 8, smallBlind: 100, bigBlind: 200, buyIn: 20000,
   botCashOut: 100000, userSeconds: 10, maxActions: 256,
   botThinkMin: 700, botThinkJitter: 900, actionPause: 800, resultPause: 5000,
@@ -85,7 +85,7 @@ export function decideLiveBot(trainer: SelfPlayTrainer, ctx: {
   checkedThisStreet?: boolean;
 }): LiveAction {
   const { actor, seats, board } = ctx;
-  const persona = applyStrategyToPersona(actor.persona || RPG_BOT_POOL[0], getStrategyForHand(ctx.hand));
+  const persona = individualLivePersona(actor.persona || RPG_BOT_POOL[0], ctx.hand, actor.seatId, actor.stack + actor.totalBet);
   const call = Math.max(0, ...seats.filter(s => s.inHand && !s.folded).map(s => s.currentBet)) - actor.currentBet;
   const livePot = ctx.pot + seats.reduce((sum, s) => sum + s.currentBet, 0);
   const nn = trainer.decideActionForLive(actor.holeCards, board, call, ctx.minRaise, ctx.maxRaise,

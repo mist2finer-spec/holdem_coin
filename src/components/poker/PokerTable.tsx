@@ -131,11 +131,11 @@ export function PokerTable({ userName, onToast }: Props) {
         {/* ★ AI 전략 표시 (5핸드마다 로테이션) */}
         <div
           className={`bg-gradient-to-r ${STRATEGY_PROFILES[currentStrategy as StrategyType].color} border border-amber-300 rounded-full px-2 py-0.5 backdrop-blur-sm shadow-lg`}
-          title={`AI 전략: ${STRATEGY_PROFILES[currentStrategy as StrategyType].name} - ${STRATEGY_PROFILES[currentStrategy as StrategyType].description}`}
+          title="테이블 분위기는 각 캐릭터의 고유 성향에 소폭 보정됩니다."
         >
           <span className="text-[10px]">{STRATEGY_PROFILES[currentStrategy as StrategyType].emoji}</span>
           <span className="text-amber-50 text-[10px] font-bold ml-1">
-            {STRATEGY_PROFILES[currentStrategy as StrategyType].name}
+            테이블: {STRATEGY_PROFILES[currentStrategy as StrategyType].name}
           </span>
         </div>
       </div>

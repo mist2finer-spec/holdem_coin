@@ -157,11 +157,11 @@ export function PokerTableSocket({ userName, onToast }: Props) {
         {/* AI 전략 표시 */}
         <div
           className={`bg-gradient-to-r ${STRATEGY_PROFILES[currentStrategy as StrategyType].color} border border-amber-300 rounded-full px-2 py-0.5 backdrop-blur-sm shadow-lg`}
-          title={`AI 전략: ${STRATEGY_PROFILES[currentStrategy as StrategyType].name}`}
+          title="테이블 분위기는 각 캐릭터의 고유 성향에 소폭 보정됩니다."
         >
           <span className="text-[10px]">{STRATEGY_PROFILES[currentStrategy as StrategyType].emoji}</span>
           <span className="text-amber-50 text-[10px] font-bold ml-1">
-            {STRATEGY_PROFILES[currentStrategy as StrategyType].name}
+            테이블: {STRATEGY_PROFILES[currentStrategy as StrategyType].name}
           </span>
         </div>
       </div>
@@ -539,6 +539,7 @@ interface SocketPlayerSeatProps {
     seatId: number;
     name: string;
     isBot: boolean;
+    botStyle?: string;
     isMe: boolean;
     stack: number;
     currentBet: number;
@@ -645,6 +646,7 @@ function SocketPlayerSeat({
           <div className={`text-[9px] sm:text-[11px] font-bold leading-tight truncate max-w-[80px] sm:max-w-[100px] ${seat.isMe ? "text-blue-300" : "text-amber-200"}`}>
             {seat.name}
           </div>
+          {seat.isBot && seat.botStyle && <div title={`기본 성향: ${seat.botStyle}`} className="text-[8px] text-amber-200/60 truncate max-w-[80px] sm:max-w-[100px]">{seat.botStyle}</div>}
         </div>
 
         {/* 스택 */}

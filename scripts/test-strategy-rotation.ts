@@ -42,28 +42,17 @@ test("5핸드마다 전략 로테이션: AGGRESSIVE → TIGHT → LOOSE → AGGR
   console.log(`  핸드 16-20: AGGRESSIVE (사이클 반복)`);
 });
 
-// 전략 적용 시 persona 값이 변경되는지 확인
-test("전략 적용: persona의 vpip/aggression/bluffFreq가 전략에 맞게 override", () => {
-  const basePersona = RPG_BOT_POOL[0]; // 엘프 궁수
-  console.log(`  원본: vpip=${basePersona.vpip}, aggression=${basePersona.aggression}, bluffFreq=${basePersona.bluffFreq}`);
-
-  const aggressive = applyStrategyToPersona(basePersona, "AGGRESSIVE");
-  assertEqual(aggressive.vpip, STRATEGY_PROFILES.AGGRESSIVE.vpip, "AGGRESSIVE vpip");
-  assertEqual(aggressive.aggression, STRATEGY_PROFILES.AGGRESSIVE.aggression, "AGGRESSIVE aggression");
-  assertEqual(aggressive.bluffFreq, STRATEGY_PROFILES.AGGRESSIVE.bluffFreq, "AGGRESSIVE bluffFreq");
-  console.log(`  AGGRESSIVE: vpip=${aggressive.vpip}, aggression=${aggressive.aggression}, bluffFreq=${aggressive.bluffFreq}`);
-
-  const tight = applyStrategyToPersona(basePersona, "TIGHT");
-  assertEqual(tight.vpip, STRATEGY_PROFILES.TIGHT.vpip, "TIGHT vpip");
-  assertEqual(tight.aggression, STRATEGY_PROFILES.TIGHT.aggression, "TIGHT aggression");
-  assertEqual(tight.bluffFreq, STRATEGY_PROFILES.TIGHT.bluffFreq, "TIGHT bluffFreq");
-  console.log(`  TIGHT: vpip=${tight.vpip}, aggression=${tight.aggression}, bluffFreq=${tight.bluffFreq}`);
-
-  const loose = applyStrategyToPersona(basePersona, "LOOSE");
-  assertEqual(loose.vpip, STRATEGY_PROFILES.LOOSE.vpip, "LOOSE vpip");
-  assertEqual(loose.aggression, STRATEGY_PROFILES.LOOSE.aggression, "LOOSE aggression");
-  assertEqual(loose.bluffFreq, STRATEGY_PROFILES.LOOSE.bluffFreq, "LOOSE bluffFreq");
-  console.log(`  LOOSE: vpip=${loose.vpip}, aggression=${loose.aggression}, bluffFreq=${loose.bluffFreq}`);
+test("테이블 전략은 개별 성향을 보존하고 소폭 보정", () => {
+  const calm = RPG_BOT_POOL.find(p => p.id === "paladin_commander")!;
+  const bold = RPG_BOT_POOL.find(p => p.id === "orc_berserker")!;
+  for (const strategy of ["AGGRESSIVE", "TIGHT", "LOOSE"] as StrategyType[]) {
+    const a = applyStrategyToPersona(calm, strategy);
+    const b = applyStrategyToPersona(bold, strategy);
+    if (a.vpip >= b.vpip || a.aggression >= b.aggression || a.bluffFreq >= b.bluffFreq)
+      throw new Error("Individual personality lost");
+    if (Math.abs(a.aggression - calm.aggression) > 0.08) throw new Error("Table adjustment too large");
+  }
+  assertEqual(calm.aggression, 0.20, "원본 불변");
 });
 
 // 3가지 전략이 서로 다른 값을 가지는지 확인
@@ -84,9 +73,10 @@ test("3가지 전략이 서로 다른 특성 가짐", () => {
   console.log(`  LOOSE vpip (${STRATEGY_PROFILES.LOOSE.vpip}) > TIGHT vpip (${STRATEGY_PROFILES.TIGHT.vpip}) ✓`);
 });
 
-// 9 NPC가 모두 존재하는지 확인
-test("9 NPC가 모두 존재", () => {
-  assertEqual(RPG_BOT_POOL.length, 9, "NPC는 9명이어야 함");
+// 테이블을 채울 수 있고 캐릭터 ID가 중복되지 않는지 확인
+test("캐릭터 풀은 8인 테이블을 채우고 고유 ID를 가짐", () => {
+  if (RPG_BOT_POOL.length < 8) throw new Error("캐릭터 풀이 부족함");
+  assertEqual(new Set(RPG_BOT_POOL.map(p => p.id)).size, RPG_BOT_POOL.length, "ID는 고유해야 함");
   console.log(`  NPC 수: ${RPG_BOT_POOL.length}`);
   RPG_BOT_POOL.forEach((p, i) => {
     console.log(`  ${i + 1}. ${p.name} (${p.title})`);

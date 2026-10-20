@@ -881,6 +881,7 @@ export class HybridHoldemRoom {
       return {
         seatId: Number(s.seatId),
         name: String(s.name || ""),
+        botStyle: s.isBot ? String(s.persona?.style || "정석") : "",
         isBot: Boolean(s.isBot),
         isMe: Boolean(isMe),
         stack: Number(s.stack || 0),
