@@ -1,3 +1,4 @@
+import {minimumRaiseTo} from "./poker-sizing";
 import { bluffFrequency } from "./poker-bluff";
 import { oopCheckMix } from "./poker-position";
 import { decideShortStack } from "./poker-shortstack";
@@ -386,7 +387,7 @@ export class SelfPlayTrainer {
       const actor = players[actorIdx];
       const callAmt = Math.max(0, maxBet - actor.currentBet);
       const activeOpp = alive.length - 1;
-      const minRaise = maxBet === 0 ? BB : maxBet + BB;
+      const minRaise = minimumRaiseTo(maxBet,BB);
       const publicSeats=players.map(p=>({...p,seatId:p.seatIndex}));
       const maxRaise = hasBettingOpponent(publicSeats,actorIdx) ? actor.stack + actor.currentBet : maxBet;
       const livePot=pot+players.reduce((sum,p)=>sum+p.currentBet,0);
@@ -521,7 +522,7 @@ export class SelfPlayTrainer {
    * 5가지 액션 인덱스 (Python AdaptiveCPUBrain과 매칭):
    *   0: FOLD
    *   1: CHECK_OR_CALL
-   *   2: RAISE_STD (2.2x 스탠다드 리레이즈)
+   *   2: RAISE_STD (2x 스탠다드 리레이즈)
    *   3: RERAISE_POT (팟 리레이즈 / 3-Bet)
    *   4: ALL_IN
    *
@@ -636,7 +637,7 @@ export class SelfPlayTrainer {
     // The anchor still supplies mixed bluffing; this is not a solver.
     if(context) {
       const targets=[0,Math.min(callAmount,myStack),
-        Math.min(maxRaise,Math.max(minRaise,Math.floor(callAmount>0?(myCurrentBet+callAmount)*2.2:minRaise+pot*0.6))),
+        Math.min(maxRaise,Math.max(minRaise,Math.floor(callAmount>0?(myCurrentBet+callAmount)*2:minRaise+pot*0.6))),
         Math.min(maxRaise,Math.max(minRaise,Math.floor(minRaise+pot))),maxRaise];
       for(let i=1;i<5;i++) {
         const cost=i===1?targets[i]:Math.max(0,targets[i]-myCurrentBet);
@@ -651,7 +652,7 @@ export class SelfPlayTrainer {
     }
 
     // 5) 하드 룰 마스킹 (콜 고착화 원천 차단!)
-    const canRaise = maxRaise > minRaise && raiseLevel < 4;
+    const canRaise = maxRaise > myCurrentBet+callAmount && myStack>callAmount && raiseLevel < 4;
     const mask = [true, true, canRaise, canRaise, canRaise];
     if (callAmount === 0) {
       mask[0] = false; // 체크 가능하면 폴드 금지
@@ -716,17 +717,17 @@ export class SelfPlayTrainer {
       case 1: // CHECK_OR_CALL
         amount = Math.min(callAmount, myStack);
         break;
-      case 2: { // RAISE_STD (2.2x)
+      case 2: { // RAISE_STD (2x)
         const baseTo = callAmount > 0
-          ? (myCurrentBet + callAmount) * 2.2
+          ? (myCurrentBet + callAmount) * 2
           : (minRaise + pot * 0.6);
-        amount = Math.max(minRaise, Math.min(Math.floor(baseTo), maxRaise));
+        amount = Math.min(maxRaise, Math.max(minRaise, Math.floor(baseTo)));
         if (tier <= HandTier.OVERCARDS) isBluff = true;
         break;
       }
       case 3: { // RERAISE_POT (3-Bet)
         const target = minRaise + pot * 1.0;
-        amount = Math.max(minRaise, Math.min(Math.floor(target), maxRaise));
+        amount = Math.min(maxRaise, Math.max(minRaise, Math.floor(target)));
         if (tier <= HandTier.DRAW) isBluff = true;
         break;
       }
@@ -774,7 +775,7 @@ export class SelfPlayTrainer {
     // 2) 상대 베팅/레이즈에 직면한 상황 (pressure 1, 2, 3)
     if (tier === HandTier.AIR) {
       // ★ 핵심: 노히트(AIR)는 상대 베팅/레이즈에 절대 CALL(-99) 하지 않음!
-      const bluffQ = (b * 2.2) - (pressure * 1.1) - (t * 0.9);
+      const bluffQ = (b * 2) - (pressure * 1.1) - (t * 0.9);
       return [3.2 + t * 2.0, -99, bluffQ, -99, -99];
     }
     if (tier === HandTier.OVERCARDS) {

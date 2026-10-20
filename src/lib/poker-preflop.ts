@@ -56,7 +56,7 @@ export function planPreflop(spot:PreflopSpot):{decision:Decision|null;forbidLimp
   // The original short-stack opener gets a dedicated priced call/reshove EV
   // decision. Do not kill its opened connector through the cold-entry gate.
   const defendingOpen=context.openedPreflop===true&&raiseLevel===2;
-  if(defendingOpen&&own<=10000)return result(null);
+  if(defendingOpen)return result(null);
 
   if(context.limpedPreflop&&call>0&&raiseLevel>0&&!(persona.bluffFreq>=0.20&&persona.aggression>=0.55)) {
     return result(affordable&&equity()>=odds-0.03 ? callDecision() : foldOrCheck(),false);

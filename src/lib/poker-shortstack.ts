@@ -1,5 +1,5 @@
 import type { Card } from './poker-engine';
-import { calledActionEV, type DecisionContext } from './poker-ai';
+import { calledActionEV, type OpponentRange, type DecisionContext } from './poker-ai';
 import { hasBettingOpponent, RAKE_RATE } from './poker-rules';
 import { connectorAllowed } from './poker-preflop';
 
@@ -15,7 +15,7 @@ export function shortStackOptions(spot: ShortSpot) {
   const highest=currentBet+call;
   const threeBet=raiseLevel===2&&context.openedPreflop===true;
   const canRaise=hasBettingOpponent(context.seats,context.actorId)&&maxRaise>highest&&stack>call;
-  if(board.length || starting>(threeBet?10000:5000) || call<=0 || (!threeBet && (call>=stack || raiseLevel!==1
+  if(board.length || (!threeBet&&starting>5000) || call<=0 || (!threeBet && (call>=stack || raiseLevel!==1
       || highest<400 || highest>600 || !canRaise)))return null;
   const ranks=hole.map(c=>'23456789TJQKA'.indexOf(c.rank)).sort((a,b)=>b-a);
   const [high,low]=ranks, pair=high===low, suited=hole[0].suit===hole[1].suit;
@@ -33,7 +33,19 @@ export function shortStackOptions(spot: ShortSpot) {
     return foldProbability*pot*(1-RAKE_RATE)+(1-foldProbability)*called;
   };
   const callCost=Math.min(call,stack);
-  const called=calledActionEV(hole,board,context,callCost,RAKE_RATE,threeBet?(opponents.some(s=>s.allIn)?'jam-call':'three-bet'):'open',threeBet?768:192);
+  const allInOpponent=opponents.some(s=>s.allIn);
+  const baseRange:OpponentRange=threeBet?(allInOpponent?'jam-call':'three-bet'):'open';
+  const hasRaiser=threeBet&&context.lastRaiserSeat!==undefined;
+  const callRanges:Record<number,OpponentRange>|undefined=hasRaiser ? Object.fromEntries(opponents.map(s=>[s.seatId,
+    s.seatId===context.lastRaiserSeat?baseRange:'open'])) : undefined;
+  let called=calledActionEV(hole,board,context,callCost,RAKE_RATE,baseRange,threeBet?768:192,callRanges);
+  // Adapt to a persistent public three-bet frequency, never to private cards.
+  const looseness=threeBet&&!allInOpponent ? context.threeBetRead?.looseness||0 : 0;
+  if(looseness>0&&hasRaiser) {
+    const wide={...callRanges,[context.lastRaiserSeat!]:'wide-three-bet' as const};
+    const wideEV=calledActionEV(hole,board,context,callCost,RAKE_RATE,baseRange,768,wide);
+    called=called*(1-looseness)+wideEV*looseness;
+  }
   const spr=Math.max(0,stack-callCost)/Math.max(1,pot+callCost);
   const realization=callCost===stack?1:threeBet
     ? (context.position?.isOOP ? (spr<=1?0.96:0.86) : (spr<=1?0.99:0.94))
@@ -64,9 +76,11 @@ export function shortStackOptions(spot: ShortSpot) {
       ||(suited&&high===12&&low===3&&persona.aggression>=0.75&&persona.bluffFreq>=0.20&&affordable)
       ||(suited&&high>=10&&low>=9&&persona.vpip>=0.28)
       ||(high===11&&low===10&&persona.vpip>=0.38&&persona.aggression>=0.50&&affordable)
-      ||(starting>2500&&affordable&&connectorAllowed(hole,persona));
+      ||(starting>2500&&affordable&&connectorAllowed(hole,persona))
+      ||(looseness>=0.20&&affordable&&((pair&&low>=3)
+        ||(high>=10&&low>=8)||(suited&&high===12&&low>=6)));
   }
-  return {callEV,jamEV,strongRaiseEV,raiseTo,raiseCost,playable,starting,threeBet,canRaise,spr,blindPairDefense};
+  return {callEV,jamEV,strongRaiseEV,raiseTo,raiseCost,playable,starting,threeBet,canRaise,spr,blindPairDefense,looseness};
 }
 
 export function decideShortStack(spot: ShortSpot): {action:number;amount:number;isBluff?:boolean} | null {

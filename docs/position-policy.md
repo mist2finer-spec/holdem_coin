@@ -1,4 +1,4 @@
-# Live bot position policy (rules 1.9.0)
+# Live bot position policy (rules 1.11.0)
 
 Single-player and multiplayer both call `decideLiveBot`. Position is computed
 from public seat status, clockwise after the button, skipping folded, inactive
@@ -268,3 +268,43 @@ explicit range/price/equity/all-in rejections, failed rare-low gates, and non-tr
 limper rejections remain protected. The blanket 50% override remains disabled
 for <=5,000: these stacks use their explicit EV policy instead. This preserves
 the rare 7% call and <15% limp limits rather than overriding all folds.
+
+## Sizing and public opponent reads (1.11.0)
+
+This table now intentionally uses a house minimum: an unbet street opens at
+least 1BB, every full raise targets at least 2x the highest current street total.
+A shorter all-in remains allowed. Standard NLHE instead tracks the previous
+increment, so e.g. 200 -> 600 -> 1,000 can be legal there; here the third full
+wager must reach 1,200. Both live engines and action validation use the shared
+helper. Rake is applied at settlement, never added to a raise amount.
+
+The default standard raise is 2x rather than 2.2x. The former 3-BET UI shortcut
+was pot-based and was not a 3x multiplier. It is now a shared 3X control: arrows
+change an integer-tenth multiplier, minimum 3.0, up to the available stack. Only
+the main button commits chips. Its target is a street total including the
+actor's existing contribution; when capped it submits only the remaining stack
+as all-in. Exact-minimum all-ins and a max below min remain valid.
+
+The original-opener priced three-bet policy now covers deep stacks as well. The
+40-opportunity public opponent model records only a player's actions when
+facing a single open. It counts each hand at most once; open raises, cold
+four-bets, hole cards, and personality parameters do not count as evidence of
+wide three-betting. The neutral prior is 1.5/12; fewer than six opportunities
+produce no adaptation. Later frequency determines a bounded blend between
+the ordinary three-bet range and a wider modeled range. This applies to humans
+and bots alike. 128 identities are retained; old action opportunities expire.
+Seat/persona replacement creates a fresh identity; server restart resets reads.
+
+A known raiser is modeled separately from flat callers in each contribution
+layer: the raiser uses its three-bet range, other live callers use the open
+range. This avoids assuming every caller has the same tight range as the
+three-bettor. The deterministic equity cache includes the range vector. A loose
+read may enable priced 55+/broadways/suited aces, but positive realized EV and
+the existing cost gate are still required. All-in situations do not use the
+loose-read override; rare low connectors retain their own gate. Nothing alters
+actual cards or settlement to force a target win rate. Ranges, realization and
+frequency weights remain heuristic estimates.
+
+Private hand audits include the public three-bet read and last-raiser seat.
+These are stripped from regular player histories with the other CPU audit
+fields. No uploaded raw history or private player identifier is committed.

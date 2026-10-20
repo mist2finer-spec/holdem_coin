@@ -1,3 +1,4 @@
+import {minimumRaiseTo} from "./poker-sizing";
 import type { ActionType, Card } from './poker-engine';
 import type { BettingSeat } from './poker-rules';
 import { hasBettingOpponent } from './poker-rules';
@@ -9,7 +10,7 @@ import { stackContext } from './poker-stack';
 import { planPreflop } from './poker-preflop';
 
 export const LIVE_RULES = Object.freeze({
-  version: "1.10.0",
+  version: "1.11.0",
   seats: 8, smallBlind: 100, bigBlind: 200, buyIn: 5000,
   botCashOut: 100000, userSeconds: 10, maxActions: 256,
   botThinkMin: 700, botThinkJitter: 900, actionPause: 800, resultPause: 5000,
@@ -39,7 +40,7 @@ export function postBlind<T extends LiveSeat>(seat: T, blind: number): T {
     totalBet: seat.totalBet + cost, allIn: seat.stack === cost };
 }
 
-export function normalizeLiveAction(seats: BettingSeat[], actorId: number, input: unknown, lastRaiseSize: number): LiveAction | null {
+export function normalizeLiveAction(seats: BettingSeat[], actorId: number, input: unknown, _lastRaiseSize: number): LiveAction | null {
   const actor = seats.find(s => s.seatId === actorId);
   if (!actor || !actor.inHand || actor.folded || actor.allIn || !input || typeof input !== 'object') return null;
   const { action, amount } = input as { action?: string; amount?: number };
@@ -54,7 +55,7 @@ export function normalizeLiveAction(seats: BettingSeat[], actorId: number, input
     case 'allin': return hasBettingOpponent(seats, actorId) ? { action, amount: actor.stack } : callAction();
     case 'raise':
       if (!hasBettingOpponent(seats, actorId) || !Number.isSafeInteger(amount) || amount! <= maxBet || amount! > maxRaise) return null;
-      if (amount !== maxRaise && amount! < (maxBet === 0 ? LIVE_RULES.bigBlind : maxBet + lastRaiseSize)) return null;
+      if (amount !== maxRaise && amount! < minimumRaiseTo(maxBet,LIVE_RULES.bigBlind)) return null;
       return { action: amount === maxRaise ? 'allin' : 'raise', amount: amount === maxRaise ? actor.stack : amount! };
     default: return null;
   }
@@ -84,6 +85,7 @@ export function decideLiveBot(trainer: SelfPlayTrainer, ctx: {
   actor: BettingSeat & { holeCards: Card[]; persona?: BotPersona };
   seats: BettingSeat[]; board: Card[]; pot: number; minRaise: number; maxRaise: number;
   button: number; smallBlind: number; bigBlind: number; hand: number; raiseLevel: number;
+  threeBetRead?: {opportunities:number;rate:number;looseness:number}; lastRaiserSeat?:number;
   checkedThisStreet?: boolean;
   onAudit?: (audit: Record<string, unknown>) => void;
   limpedPreflop?:boolean; previousStreetAggressor?:number|null; openedPreflop?:boolean;
@@ -92,7 +94,7 @@ export function decideLiveBot(trainer: SelfPlayTrainer, ctx: {
   const persona = individualLivePersona(actor.persona || RPG_BOT_POOL[0], ctx.hand, actor.seatId, actor.stack + actor.totalBet);
   const call = Math.max(0, ...seats.filter(s => s.inHand && !s.folded).map(s => s.currentBet)) - actor.currentBet;
   const livePot = ctx.pot + seats.reduce((sum, s) => sum + s.currentBet, 0);
-  const context={actorId:actor.seatId,isBlind:[ctx.smallBlind,ctx.bigBlind].includes(actor.seatId),stack:stackContext(seats,actor.seatId),
+  const context={actorId:actor.seatId,threeBetRead:ctx.threeBetRead,lastRaiserSeat:ctx.lastRaiserSeat,isBlind:[ctx.smallBlind,ctx.bigBlind].includes(actor.seatId),stack:stackContext(seats,actor.seatId),
     position:positionContext(seats,actor.seatId,ctx.button,ctx.checkedThisStreet),
     limpedPreflop:ctx.limpedPreflop,openedPreflop:ctx.openedPreflop,initiative:ctx.previousStreetAggressor===actor.seatId,
     seats:seats.map(({seatId,stack,currentBet,totalBet,inHand,folded,allIn})=>({seatId,stack,currentBet,totalBet,inHand,folded,allIn}))};
@@ -101,7 +103,7 @@ export function decideLiveBot(trainer: SelfPlayTrainer, ctx: {
   let decision=plan.decision;
   let decisionPath=decision ? "preflop-plan" : "trainer";
   const finish=(action:LiveAction)=>{
-    ctx.onAudit?.({decisionPath,personaId:actor.persona?.id,vpip:persona.vpip,aggression:persona.aggression,
+    ctx.onAudit?.({decisionPath,threeBetRead:ctx.threeBetRead,lastRaiserSeat:ctx.lastRaiserSeat,personaId:actor.persona?.id,vpip:persona.vpip,aggression:persona.aggression,
       bluffFreq:persona.bluffFreq,isOOP:context.position.isOOP,effectiveStack:context.stack.effectiveStack,
       stackEquityPremium:context.stack.equityPremium,openedPreflop:!!ctx.openedPreflop,
       limpedPreflop:!!ctx.limpedPreflop,checkedThisStreet:!!ctx.checkedThisStreet,

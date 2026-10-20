@@ -1,3 +1,5 @@
+import {OpponentModel} from "../../src/lib/poker-opponent-model.ts";
+import {minimumRaiseTo} from "../../src/lib/poker-sizing.ts";
 import {HandHistoryStore,authorizedHistory} from './hand-history-store.ts';
 import {publicHandHistory,type HandHistory,type HandAction} from '../../src/lib/poker-hand-history.ts';
 import path from 'node:path';
@@ -105,6 +107,11 @@ export class HybridHoldemRoom {
   private leaveSeats: Set<number> = new Set();
   private pendingActionResolve: ((action: { action: string; amount: number }) => void) | null = null;
   private isRunning = false;
+  private opponentModel=new OpponentModel();
+  private opponentKey(seatId:number) {
+    const s=this.state.seats[seatId];
+    return s.isBot?`cpu:${seatId}:${s.persona?.id||s.name}`:`human:${this.users.get(s.socketId||'')?.playerId||s.name}`;
+  }
   readonly history = new HandHistoryStore(process.env.POKER_TEST_MODE === "1" ? undefined
     : path.resolve(process.env.HAND_HISTORY_DIR || 'data/hand-history','hands.json'));
   private currentHistory:HandHistory|null=null;
@@ -609,10 +616,8 @@ export class HybridHoldemRoom {
       st.activeSeatId = actorIdx;
       const callAmt = Math.max(0, maxBet - actor.currentBet);
       st.callAmount = callAmt;
-      // ★ 표준 NLHE min-raise 규칙
-      const minR = maxBet === 0
-        ? BIG_BLIND
-        : maxBet + st.lastRaiseSize;
+      // Shared table house rule: full raises double the highest street total.
+      const minR = minimumRaiseTo(maxBet,BIG_BLIND);
       const maxR = hasBettingOpponent(st.seats, actor.seatId) ? actor.stack + actor.currentBet : maxBet;
       st.minRaise = minR;
       st.maxRaise = maxR;
@@ -681,6 +686,7 @@ export class HybridHoldemRoom {
 
       // 액션 적용
       this.applyAction(actorIdx, decision);
+      if(st.board.length===0)this.opponentModel.observe(this.opponentKey(actorIdx),st.handNumber,raiseLevelBefore,callAmt,raisesBet);
       const after=st.seats[actorIdx];
       this.currentHistory?.actions.push({sequence:this.currentHistory.actions.length+1,at:new Date().toISOString(),
         street:st.phase,board:st.board.map(c=>c.rank+c.suit),seatId:before.seatId,name:before.name,isBot:before.isBot,
@@ -757,6 +763,8 @@ export class HybridHoldemRoom {
         smallBlind: this.state.smallBlindSeat, bigBlind: this.state.bigBlindSeat,
         hand: this.state.handNumber, raiseLevel: this.state.raiseLevel,
         checkedThisStreet,
+        lastRaiserSeat:this.state.lastAggression?.seatId,
+        threeBetRead:this.state.lastAggression ? this.opponentModel.read(this.opponentKey(this.state.lastAggression.seatId)) : undefined,
         onAudit:audit=>{this.pendingAudit=audit;},
         limpedPreflop, previousStreetAggressor, openedPreflop,
       });

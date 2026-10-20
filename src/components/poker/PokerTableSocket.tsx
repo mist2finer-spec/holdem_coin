@@ -1,5 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import {RaiseMultiplierButton} from "./RaiseMultiplierButton";
+import {clampRaiseTo} from "@/lib/poker-sizing";
 import { LIVE_RULES } from "@/lib/poker-live";
 import { usePokerSocket } from "./usePokerSocket";
 import { CLIENT_REVISION, useReleaseUpdate } from "./useReleaseUpdate";
@@ -18,7 +20,7 @@ interface Props {
 }
 
 function clampRaise(min: number, max: number, value: number): number {
-  return Math.max(min, Math.min(value, max));
+  return clampRaiseTo(min,max,value);
 }
 
 // 글로벌 트레이너 (학습 통계 표시용)
@@ -89,7 +91,7 @@ export function PokerTableSocket({ userName, onToast }: Props) {
     trainer.start();
   });
 
-  const effectiveRaise = Math.max(minRaise, Math.min(raiseAmount || minRaise, maxRaise));
+  const effectiveRaise = clampRaiseTo(minRaise,maxRaise,raiseAmount || minRaise);
 
   // 보드 카드 문자열 → Card 변환
   const board: Card[] = boardCards.map(s => ({ rank: s[0], suit: s[1] }));
@@ -300,7 +302,7 @@ export function PokerTableSocket({ userName, onToast }: Props) {
               </div>
 
               {/* 5개 메인 액션 버튼 */}
-              <div className="flex items-center gap-1 sm:gap-2">
+              <div className="flex items-center gap-1 sm:gap-2 mt-6 mb-7">
                 <Button
                   variant="destructive"
                   className="bg-rose-800 hover:bg-rose-700 text-rose-50 border border-rose-500 font-bold h-8 sm:h-10 px-2 sm:px-3 text-[10px] sm:text-sm flex-1"
@@ -328,29 +330,17 @@ export function PokerTableSocket({ userName, onToast }: Props) {
                 <Button
                   className="bg-amber-600 hover:bg-amber-500 text-amber-950 border border-amber-300 font-bold h-8 sm:h-10 px-2 sm:px-3 text-[10px] sm:text-sm flex-1"
                   onClick={() => {
-                    const baseTo = callAmount > 0
-                      ? ((userSeat?.currentBet ?? 0) + callAmount) * 2.2
-                      : (minRaise + livePot * 0.6);
-                    const target = clampRaise(minRaise, maxRaise, Math.floor(baseTo));
-                    submitUserAction("raise", target);
+                    const highest=(userSeat?.currentBet ?? 0)+callAmount;
+                    submitUserAction("raise",clampRaise(minRaise,maxRaise,highest>0?highest*2:LIVE_RULES.bigBlind));
                   }}
-                  disabled={maxRaise <= minRaise}
-                  title="스탠다드 리레이즈 (2.2x)"
+                  disabled={maxRaise <= (userSeat?.currentBet ?? 0)+callAmount || (userSeat?.stack ?? 0)<=callAmount}
+                  title="최고 베팅의 2배로 레이즈"
                 >
                   RAISE
                 </Button>
 
-                <Button
-                  className="bg-orange-600 hover:bg-orange-500 text-orange-50 border border-orange-300 font-bold h-8 sm:h-10 px-2 sm:px-3 text-[10px] sm:text-sm flex-1"
-                  onClick={() => {
-                    const target = clampRaise(minRaise, maxRaise, Math.floor(minRaise + livePot));
-                    submitUserAction("raise", target);
-                  }}
-                  disabled={maxRaise <= minRaise}
-                  title="팟 리레이즈 (3-Bet)"
-                >
-                  3-BET
-                </Button>
+                <RaiseMultiplierButton currentBet={userSeat?.currentBet ?? 0} call={callAmount}
+                  stack={userSeat?.stack ?? 0} minRaise={minRaise} maxRaise={maxRaise} onSubmit={submitUserAction} />
 
                 <Button
                   variant="default"
@@ -367,7 +357,7 @@ export function PokerTableSocket({ userName, onToast }: Props) {
                 <div className="flex-1 flex items-center gap-1 sm:gap-2 px-2 sm:px-3 bg-slate-950/70 rounded-md border border-amber-700/50 h-7 sm:h-9">
                   <Slider
                     value={[effectiveRaise]}
-                    min={minRaise}
+                    min={Math.min(minRaise,maxRaise)}
                     max={maxRaise}
                     step={50}
                     onValueChange={(v) => setRaiseAmount(v[0])}
@@ -380,7 +370,7 @@ export function PokerTableSocket({ userName, onToast }: Props) {
                 <Button
                   className="bg-amber-700 hover:bg-amber-600 text-amber-50 border border-amber-400 font-bold h-7 sm:h-9 px-2 sm:px-3 text-[10px] sm:text-xs"
                   onClick={() => submitUserAction("raise", effectiveRaise)}
-                  disabled={maxRaise <= minRaise}
+                  disabled={maxRaise <= (userSeat?.currentBet ?? 0)+callAmount || (userSeat?.stack ?? 0)<=callAmount}
                 >
                   입력
                 </Button>

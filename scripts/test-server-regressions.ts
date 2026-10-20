@@ -111,9 +111,9 @@ test('server computes calls and rejects illegal checks and raises', () => {
   const room=roomWith();
   assert.deepEqual(room.mapUserAction({action:'call',amount:-999}),{action:'call',amount:200});
   assert.equal(room.mapUserAction({action:'check',amount:0}),null);
-  for(const amount of [0,-1,NaN,Infinity,500,30000,600.5])
+  for(const amount of [0,-1,NaN,Infinity,500,600,799,30000,800.5])
     assert.equal(room.mapUserAction({action:'raise',amount}),null);
-  assert.deepEqual(room.mapUserAction({action:'raise',amount:600}),{action:'raise',amount:600});
+  assert.deepEqual(room.mapUserAction({action:'raise',amount:800}),{action:'raise',amount:800});
   assert.throws(()=>room.applyAction(0,{action:'raise',amount:0}));
   assert.equal(room.state.seats[0].stack,20000);
 });

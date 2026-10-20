@@ -1,5 +1,7 @@
 "use client";
 import { useState, useMemo } from "react";
+import {RaiseMultiplierButton} from "./RaiseMultiplierButton";
+import {clampRaiseTo} from "@/lib/poker-sizing";
 import { LIVE_RULES } from "@/lib/poker-live";
 import { usePokerTable } from "./usePokerTable";
 import { PlayerSeat } from "./PlayerSeat";
@@ -17,7 +19,7 @@ interface Props {
 
 // 레이즈 금액을 min/max 범위로 클램프
 function clampRaise(min: number, max: number, value: number): number {
-  return Math.max(min, Math.min(value, max));
+  return clampRaiseTo(min,max,value);
 }
 
 // 8좌석 테이블 상대 위치 (% 단위)
@@ -75,7 +77,7 @@ export function PokerTable({ userName, onToast }: Props) {
   const isUserTurn = awaitingUser && activeSeatId === userSeatId;
 
   // 유저가 raise slider 조정 시 초기값
-  const effectiveRaise = Math.max(minRaise, Math.min(raiseAmount || minRaise, maxRaise));
+  const effectiveRaise = clampRaiseTo(minRaise,maxRaise,raiseAmount || minRaise);
 
   // 현재 팟 = 정산된 팟 + 진행 중인 베팅 합계
   const livePot = pot + seats.reduce((sum, s) => sum + s.currentBet, 0);
@@ -286,7 +288,7 @@ export function PokerTable({ userName, onToast }: Props) {
               </div>
 
               {/* 5개 메인 액션 버튼 (Python 5-action 시스템과 매칭) */}
-              <div className="flex items-center gap-1 sm:gap-2">
+              <div className="flex items-center gap-1 sm:gap-2 mt-6 mb-7">
                 {/* 0: FOLD */}
                 <Button
                   variant="destructive"
@@ -313,36 +315,22 @@ export function PokerTable({ userName, onToast }: Props) {
                   </Button>
                 )}
 
-                {/* 2: RAISE_STD (2.2x) */}
+                {/* 2: RAISE_STD (2x) */}
                 <Button
                   className="bg-amber-600 hover:bg-amber-500 text-amber-950 border border-amber-300 font-bold h-8 sm:h-10 px-2 sm:px-3 text-[10px] sm:text-sm flex-1"
                   onClick={() => {
-                    // 2.2x 스탠다드 리레이즈
-                    const baseTo = callAmount > 0
-                      ? ((userSeat?.currentBet ?? 0) + callAmount) * 2.2
-                      : (minRaise + livePot * 0.6);
-                    const target = clampRaise(minRaise, maxRaise, Math.floor(baseTo));
-                    submitUserAction("raise", target);
+                    const highest=(userSeat?.currentBet ?? 0)+callAmount;
+                    submitUserAction("raise",clampRaise(minRaise,maxRaise,highest>0?highest*2:LIVE_RULES.bigBlind));
                   }}
-                  disabled={maxRaise <= minRaise}
-                  title={`스탠다드 리레이즈 (2.2x)`}
+                  disabled={maxRaise <= (userSeat?.currentBet ?? 0)+callAmount || (userSeat?.stack ?? 0)<=callAmount}
+                  title={`최고 베팅의 2배로 레이즈`}
                 >
                   RAISE
                 </Button>
 
                 {/* 3: RERAISE_POT (3-Bet) */}
-                <Button
-                  className="bg-orange-600 hover:bg-orange-500 text-orange-50 border border-orange-300 font-bold h-8 sm:h-10 px-2 sm:px-3 text-[10px] sm:text-sm flex-1"
-                  onClick={() => {
-                    // 팟 리레이즈 (3-Bet)
-                    const target = clampRaise(minRaise, maxRaise, Math.floor(minRaise + livePot));
-                    submitUserAction("raise", target);
-                  }}
-                  disabled={maxRaise <= minRaise}
-                  title={`팟 리레이즈 (3-Bet)`}
-                >
-                  3-BET
-                </Button>
+                <RaiseMultiplierButton currentBet={userSeat?.currentBet ?? 0} call={callAmount}
+                  stack={userSeat?.stack ?? 0} minRaise={minRaise} maxRaise={maxRaise} onSubmit={submitUserAction} />
 
                 {/* 4: ALL_IN */}
                 <Button
@@ -360,7 +348,7 @@ export function PokerTable({ userName, onToast }: Props) {
                 <div className="flex-1 flex items-center gap-1 sm:gap-2 px-2 sm:px-3 bg-slate-950/70 rounded-md border border-amber-700/50 h-7 sm:h-9">
                   <Slider
                     value={[effectiveRaise]}
-                    min={minRaise}
+                    min={Math.min(minRaise,maxRaise)}
                     max={maxRaise}
                     step={50}
                     onValueChange={(v) => setRaiseAmount(v[0])}
@@ -373,7 +361,7 @@ export function PokerTable({ userName, onToast }: Props) {
                 <Button
                   className="bg-amber-700 hover:bg-amber-600 text-amber-50 border border-amber-400 font-bold h-7 sm:h-9 px-2 sm:px-3 text-[10px] sm:text-xs"
                   onClick={() => submitUserAction("raise", effectiveRaise)}
-                  disabled={maxRaise <= minRaise}
+                  disabled={maxRaise <= (userSeat?.currentBet ?? 0)+callAmount || (userSeat?.stack ?? 0)<=callAmount}
                 >
                   입력
                 </Button>
@@ -390,7 +378,7 @@ export function PokerTable({ userName, onToast }: Props) {
                     const target = clampRaise(minRaise, maxRaise, callAmount + Math.floor(livePot * 1 / 3));
                     setRaiseAmount(target);
                   }}
-                  disabled={maxRaise <= minRaise}
+                  disabled={maxRaise <= (userSeat?.currentBet ?? 0)+callAmount || (userSeat?.stack ?? 0)<=callAmount}
                   title={`팟의 1/3 = ${Math.floor(livePot * 1 / 3).toLocaleString()}`}
                 >
                   1/3
@@ -403,7 +391,7 @@ export function PokerTable({ userName, onToast }: Props) {
                     const target = clampRaise(minRaise, maxRaise, callAmount + Math.floor(livePot * 1 / 2));
                     setRaiseAmount(target);
                   }}
-                  disabled={maxRaise <= minRaise}
+                  disabled={maxRaise <= (userSeat?.currentBet ?? 0)+callAmount || (userSeat?.stack ?? 0)<=callAmount}
                   title={`팟의 1/2 = ${Math.floor(livePot * 1 / 2).toLocaleString()}`}
                 >
                   1/2
@@ -416,7 +404,7 @@ export function PokerTable({ userName, onToast }: Props) {
                     const target = clampRaise(minRaise, maxRaise, callAmount + Math.floor(livePot * 3 / 4));
                     setRaiseAmount(target);
                   }}
-                  disabled={maxRaise <= minRaise}
+                  disabled={maxRaise <= (userSeat?.currentBet ?? 0)+callAmount || (userSeat?.stack ?? 0)<=callAmount}
                   title={`팟의 3/4 = ${Math.floor(livePot * 3 / 4).toLocaleString()}`}
                 >
                   3/4
@@ -429,7 +417,7 @@ export function PokerTable({ userName, onToast }: Props) {
                     const target = clampRaise(minRaise, maxRaise, callAmount + livePot);
                     setRaiseAmount(target);
                   }}
-                  disabled={maxRaise <= minRaise}
+                  disabled={maxRaise <= (userSeat?.currentBet ?? 0)+callAmount || (userSeat?.stack ?? 0)<=callAmount}
                   title={`팟의 1:1 = ${livePot.toLocaleString()}`}
                 >
                   1:1
@@ -439,7 +427,7 @@ export function PokerTable({ userName, onToast }: Props) {
                   variant="outline"
                   className="h-5 sm:h-6 px-1.5 sm:px-2 text-[9px] sm:text-[10px] border-amber-700/50 text-amber-200 hover:bg-amber-900/40"
                   onClick={() => setRaiseAmount(minRaise)}
-                  disabled={maxRaise <= minRaise}
+                  disabled={maxRaise <= (userSeat?.currentBet ?? 0)+callAmount || (userSeat?.stack ?? 0)<=callAmount}
                   title={`최소 레이즈 = ${minRaise.toLocaleString()}`}
                 >
                   Min
@@ -449,7 +437,7 @@ export function PokerTable({ userName, onToast }: Props) {
                   variant="outline"
                   className="h-5 sm:h-6 px-1.5 sm:px-2 text-[9px] sm:text-[10px] border-amber-700/50 text-amber-200 hover:bg-amber-900/40"
                   onClick={() => setRaiseAmount(maxRaise)}
-                  disabled={maxRaise <= minRaise}
+                  disabled={maxRaise <= (userSeat?.currentBet ?? 0)+callAmount || (userSeat?.stack ?? 0)<=callAmount}
                   title={`올인 = ${maxRaise.toLocaleString()}`}
                 >
                   Max

@@ -72,8 +72,8 @@ test('opened suited connectors reach the EV policy rather than a hard price cuto
   assert.ok(shortStackOptions(s));
 });
 
-test('5,001–10,000 chip original openers get priced defense with actual flat calls',()=>{
-  for(const chips of [5001,6000,10000]) {
+test('medium and deep original openers get priced defense with actual flat calls',()=>{
+  for(const chips of [5001,6000,10000,25000]) {
     const s=spot();
     for(const seat of s.context.seats)seat.stack+=chips-5000;
     s.stack+=chips-5000;s.maxRaise=chips;s.context.stack=stackContext(s.context.seats,0);
@@ -84,7 +84,7 @@ test('5,001–10,000 chip original openers get priced defense with actual flat c
     assert.ok(counts[1]>counts[4],JSON.stringify({chips,counts}));
   }
   const s=spot();s.context.stack.ownStack=10001;
-  assert.equal(shortStackOptions(s),null);
+  assert.equal(shortStackOptions(s)!.threeBet,true,'deep openers also use the priced defense');
   assert.equal(shortStackOptions({...s,raiseLevel:1,context:{...s.context,openedPreflop:false,stack:{...s.context.stack,ownStack:6000}}}),null,
     'initial-open short-stack policy does not widen automatically');
 });

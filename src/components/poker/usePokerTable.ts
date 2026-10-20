@@ -1,4 +1,6 @@
 "use client";
+import {OpponentModel} from "@/lib/poker-opponent-model";
+import {minimumRaiseTo} from "@/lib/poker-sizing";
 /* eslint-disable react-hooks/immutability -- The imperative game loop and trainer expose mutable objects; callbacks run after render. */
 import { LIVE_RULES, handPositions, postBlind, normalizeLiveAction, applyLiveAction, decideLiveBot } from "@/lib/poker-live";
 import { BluffAggression, successfulBluff, bluffTaunt } from "@/lib/poker-bluff";
@@ -76,6 +78,8 @@ interface UseTableOpts {
 
 export function usePokerTable({ userName, onToast }: UseTableOpts) {
   const trainer = getGlobalTrainer();
+  const opponentModel=useRef(new OpponentModel());
+  const opponentKey=(s:SeatState)=>s.isUser?'human:user':`cpu:${s.seatId}:${s.persona?.id||s.name}`;
 
   const [trainingStats, setTrainingStats] = useState<TrainingStats>(trainer.stats);
 
@@ -387,13 +391,8 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
       st.activeSeatId = actorIdx;
       const callAmt = Math.max(0, maxBet - actor.currentBet);
       st.callAmount = callAmt;
-      // ★ 표준 NLHE min-raise 규칙:
-      // - 아무도 베팅 안 했으면 minRaise = BB (최소 오프닝 베팅)
-      // - 누군가 베팅/레이즈 했으면 minRaise = 현재 베팅 + 마지막 레이즈 크기
-      //   예: BB=200, A 레이즈 to 600 (레이즈 크기 400) → B의 minRaise = 600 + 400 = 1000
-      const minR = maxBet === 0
-        ? BIG_BLIND
-        : maxBet + st.lastRaiseSize;
+      // Table house rule: every full raise is at least 2x the highest street total.
+      const minR = minimumRaiseTo(maxBet,BIG_BLIND);
       const maxR = hasBettingOpponent(st.seats, actor.seatId) ? actor.stack + actor.currentBet : maxBet;
       st.minRaise = minR;
       st.maxRaise = maxR;
@@ -417,16 +416,20 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
           smallBlind: st.smallBlindSeat, bigBlind: st.bigBlindSeat,
           hand: st.handNumber, raiseLevel: st.raiseLevel,
           checkedThisStreet: checkedThisStreet.has(actor.seatId),
+          lastRaiserSeat:st.lastAggression?.seatId,
+          threeBetRead:st.lastAggression ? opponentModel.current.read(opponentKey(st.seats[st.lastAggression.seatId])) : undefined,
           limpedPreflop: limpedPreflop.has(actor.seatId), previousStreetAggressor,
           openedPreflop: openedPreflop.has(actor.seatId),
         });
       }
+      const raiseLevelBefore=st.raiseLevel;
       const intendedBluff = !actor.isUser && decision.isBluff === true;
       decision = normalizeLiveAction(st.seats, actor.seatId, decision, st.lastRaiseSize)
         ?? { action: callAmt === 0 ? "check" : "fold", amount: 0 };
 
       // raiseLevel 추적 + 다른 플레이어 hasActed 리셋 (올바른 포커 룰)
-      if (decision.action === "raise" || (decision.action === "allin" && actor.currentBet + actor.stack > maxBet)) {
+      const raisesBet=decision.action === "raise" || (decision.action === "allin" && actor.currentBet + actor.stack > maxBet);
+      if (raisesBet) {
         st.raiseLevel += 1;
         // ★ lastRaiseSize 업데이트 (표준 NLHE min-raise 계산용)
         // 레이즈 크기 = 새 베팅 총액 - 이전 최대 베팅
@@ -451,6 +454,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
 
       // 액션 적용 (직접 ref 수정)
       applyActionToState(st, actorIdx, decision);
+      if(st.board.length===0)opponentModel.current.observe(opponentKey(actor),st.handNumber,raiseLevelBefore,callAmt,raisesBet);
       if(st.board.length===0&&decision.action==="call"&&maxBet<=BIG_BLIND&&st.raiseLevel===0)limpedPreflop.add(actor.seatId);
       if (decision.action === "check") checkedThisStreet.add(actor.seatId);
       else checkedThisStreet.delete(actor.seatId);
