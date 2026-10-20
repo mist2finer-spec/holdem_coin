@@ -12,11 +12,11 @@ export function TableBet({ amount, name, position }: Props) {
   if (amount <= 0) return null;
   const seatTop = parseFloat(position.top);
   const top = 50 + (seatTop - 50) * 0.55;
-  const mobileTop = seatTop > 35 && seatTop < 60 ? "calc(42% + 48px)" : `${top}%`;
+  const mobileTop = seatTop >= 85 ? "68%" : seatTop <= 7 ? "30%" : seatTop > 35 && seatTop < 60 ? "calc(42% + 48px)" : `${top}%`;
   const left = 50 + (parseFloat(position.left) - 50) * 0.62;
   return (
     <div
-      className="absolute top-[var(--bet-mobile-top)] sm:top-[var(--bet-top)] z-20 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+      className="poker-bet absolute top-[var(--bet-mobile-top)] sm:top-[var(--bet-top)] z-20 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
       style={{ "--bet-top": `${top}%`, "--bet-mobile-top": mobileTop, left: `${left}%` } as CSSProperties}
       aria-label={`${name} 베팅 ${amount.toLocaleString()} 칩`}
     >

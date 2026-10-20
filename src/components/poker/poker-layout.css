@@ -13,3 +13,15 @@
     grid-template-rows: minmax(0, 1fr) calc(312px + env(safe-area-inset-bottom, 0px));
   }
 }
+
+/* Compact mobile pieces, not the action controls. Keep dimensions independent
+   of turn/state; short browser viewports scroll rather than crush the arena. */
+@media (max-width: 639px) {
+  .poker-table-layout { min-height: 660px; }
+  .poker-arena { padding-top: 94px; padding-bottom: 44px; }
+  .poker-seat { scale: .72; }
+  .poker-board { scale: .72; }
+  .poker-pot { scale: .8; }
+  .poker-bet { scale: .8; }
+  .poker-identity { max-width: 112px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+}

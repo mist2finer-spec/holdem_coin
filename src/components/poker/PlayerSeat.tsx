@@ -44,7 +44,7 @@ export function PlayerSeat({
   const shouldShowHidden = seat.holeCards.length > 0 && !shouldShowCards && !seat.folded;
 
   const cardsElement = (
-    <div className="relative flex gap-0.5 h-8 sm:h-12 items-center">
+    <div className="relative flex gap-0.5 h-12 items-center">
       {shouldShowCards ? (
         <>
           <PlayingCard card={seat.holeCards[0]} size="sm" />
@@ -142,7 +142,7 @@ export function PlayerSeat({
 
   return (
     <div
-      className="absolute -translate-x-1/2 -translate-y-1/2 transition-all duration-300"
+      className="poker-seat absolute -translate-x-1/2 -translate-y-1/2"
       style={{ top: position.top, left: position.left }}
     >
       <div className="flex flex-col items-center gap-1">

@@ -130,7 +130,7 @@ export function PokerTable({ userName, onToast }: Props) {
       </div>
 
       {/* 테이블 (타원형) */}
-      <div className="relative min-h-0 flex items-center justify-center pt-20 pb-20 sm:pt-24 sm:pb-24">
+      <div className="poker-arena relative min-h-0 flex items-center justify-center pt-20 pb-20 sm:pt-24 sm:pb-24">
         <div className="relative w-[min(98vw,1100px)] h-full max-h-[640px]">
           {/* 테이블 외곽 (나무 테두리) */}
           <div className="absolute inset-0 rounded-[50%] bg-gradient-to-br from-amber-950 via-amber-900 to-amber-950 shadow-[0_0_60px_rgba(0,0,0,0.8),inset_0_0_30px_rgba(0,0,0,0.6)]" />
@@ -143,11 +143,11 @@ export function PokerTable({ userName, onToast }: Props) {
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none hidden sm:block">
             <div className="absolute top-[35%] text-rose-800/10 text-[60px] sm:text-[100px] -translate-x-32">♥</div>
             <div className="absolute top-[35%] text-rose-800/10 text-[60px] sm:text-[100px] translate-x-32">♦</div>
-            <div className="absolute top-[60%] text-amber-700/10 text-[60px] sm:text-[100px]">♣</div>
+            <div className="poker-pot absolute top-[60%] text-amber-700/10 text-[60px] sm:text-[100px]">♣</div>
           </div>
 
           {/* 보드 카드 (중앙) */}
-          <div className="absolute top-[42%] left-1/2 -translate-x-1/2 -translate-y-1/2 flex gap-1 sm:gap-2 z-10">
+          <div className="poker-board absolute top-[42%] left-1/2 -translate-x-1/2 -translate-y-1/2 flex gap-1 sm:gap-2 z-10">
             {board.length === 0 && (
               <div className="text-amber-700/30 text-[10px] sm:text-xs italic">카드 대기중...</div>
             )}
@@ -160,7 +160,7 @@ export function PokerTable({ userName, onToast }: Props) {
 
           {/* 팟 표시 (중앙 하단) */}
           {livePot > 0 && (
-            <div className="absolute top-[60%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
+            <div className="poker-pot absolute top-[60%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
               <div className="bg-slate-950/85 border-2 border-amber-500/70 rounded-full px-3 py-1 sm:px-5 sm:py-1.5 backdrop-blur-sm shadow-lg">
                 <span className="text-amber-400 text-[9px] sm:text-[10px] font-bold tracking-wider">◈ POT</span>
                 <span className="text-amber-100 text-sm sm:text-base font-bold ml-1 sm:ml-2 tabular-nums">{livePot.toLocaleString()}</span>

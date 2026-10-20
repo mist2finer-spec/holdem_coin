@@ -420,3 +420,14 @@ Hand 105 is CPU-only and ends preflop; it is not the reported human wheel hand.
 Only five CPU river folds occur in this archive. Replaying the *original* states
 makes 99 and 240 eligible (14.2% and 25.4% catch chance respectively); the other
 three remain negative EV. This is eligibility replay, not predicted game outcomes.
+
+## 1.13.1 — compact mobile table
+
+Below 640px, seats and community cards use a fixed 72% scale; pot/chip badges use
+80%. Action controls retain touch size. Hole-card wrappers reserve the actual
+48px card height, preventing cards from overlapping their avatar. Mobile arena
+padding separates the upper seats from history controls; a 660px minimum page
+height prevents short in-app browsers from collapsing the table. Long identity
+IDs are hidden on mobile. Seat transitions are removed so state changes cannot
+animate the layout. Bottom/top central bets move away from the hero/upper seat.
+Both single and socket tables use the same classes; desktop sizing is preserved.

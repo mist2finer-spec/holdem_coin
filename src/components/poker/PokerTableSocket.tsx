@@ -131,11 +131,11 @@ export function PokerTableSocket({ userName, onToast }: Props) {
 
       {/* ★ 좌측 상단: 내 고유 ID/이름 표시 */}
       {myName && (
-        <div className="absolute top-1 left-2 z-30 bg-blue-950/90 border border-blue-500 rounded-full px-3 py-0.5 backdrop-blur-sm shadow-lg">
+        <div className="poker-identity absolute top-1 left-2 z-30 bg-blue-950/90 border border-blue-500 rounded-full px-3 py-0.5 backdrop-blur-sm shadow-lg">
           <span className="text-blue-300 text-[9px] font-bold">👤</span>
           <span className="text-blue-100 text-[10px] font-bold ml-1">{myName}</span>
           {myPlayerId && (
-            <span className="text-blue-400/60 text-[8px] ml-1">({myPlayerId})</span>
+            <span className="hidden sm:inline text-blue-400/60 text-[8px] ml-1">({myPlayerId})</span>
           )}
         </div>
       )}
@@ -164,13 +164,13 @@ export function PokerTableSocket({ userName, onToast }: Props) {
       </div>
 
       {/* 테이블 */}
-      <div className="relative min-h-0 flex items-center justify-center pt-20 pb-20 sm:pt-24 sm:pb-24">
+      <div className="poker-arena relative min-h-0 flex items-center justify-center pt-20 pb-20 sm:pt-24 sm:pb-24">
         <div className="relative w-[min(98vw,1100px)] h-full max-h-[640px]">
           <div className="absolute inset-0 rounded-[50%] bg-gradient-to-br from-amber-950 via-amber-900 to-amber-950 shadow-[0_0_60px_rgba(0,0,0,0.8),inset_0_0_30px_rgba(0,0,0,0.6)]" />
           <div className="absolute inset-2 sm:inset-3 rounded-[50%] bg-gradient-to-br from-emerald-900 via-emerald-950 to-emerald-900 shadow-[inset_0_0_50px_rgba(0,0,0,0.7)] border-2 border-amber-700/40" />
 
           {/* 보드 카드 */}
-          <div className="absolute top-[42%] left-1/2 -translate-x-1/2 -translate-y-1/2 flex gap-1 sm:gap-2 z-10">
+          <div className="poker-board absolute top-[42%] left-1/2 -translate-x-1/2 -translate-y-1/2 flex gap-1 sm:gap-2 z-10">
             {board.length === 0 && (
               <div className="text-amber-700/30 text-[10px] sm:text-xs italic">카드 대기중...</div>
             )}
@@ -183,7 +183,7 @@ export function PokerTableSocket({ userName, onToast }: Props) {
 
           {/* 팟 표시 */}
           {livePot > 0 && (
-            <div className="absolute top-[60%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
+            <div className="poker-pot absolute top-[60%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
               <div className="bg-slate-950/85 border-2 border-amber-500/70 rounded-full px-3 py-1 sm:px-5 sm:py-1.5 backdrop-blur-sm shadow-lg">
                 <span className="text-amber-400 text-[9px] sm:text-[10px] font-bold tracking-wider">◈ POT</span>
                 <span className="text-amber-100 text-sm sm:text-base font-bold ml-1 sm:ml-2 tabular-nums">{livePot.toLocaleString()}</span>
@@ -519,12 +519,12 @@ function SocketPlayerSeat({
 
   return (
     <div
-      className="absolute -translate-x-1/2 -translate-y-1/2 transition-all duration-300"
+      className="poker-seat absolute -translate-x-1/2 -translate-y-1/2"
       style={{ top: position.top, left: position.left }}
     >
       <div className="flex flex-col items-center gap-1">
         {/* 홀카드 + FOLD 오버레이 */}
-        <div className="relative flex gap-0.5 h-8 sm:h-12 items-center">
+        <div className="relative flex gap-0.5 h-12 items-center">
           {shouldShowCards ? (
             <>
               <PlayingCard card={holeCards[0]} size="sm" />
