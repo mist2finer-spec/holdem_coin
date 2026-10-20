@@ -1,3 +1,6 @@
+import {HandHistoryStore,authorizedHistory} from './hand-history-store.ts';
+import {publicHandHistory,type HandHistory,type HandAction} from '../../src/lib/poker-hand-history.ts';
+import path from 'node:path';
 import { LIVE_RULES, handPositions, postBlind, normalizeLiveAction, applyLiveAction, mapLiveDecision, decideLiveBot } from "../../src/lib/poker-live.ts";
 import { BluffAggression, successfulBluff, bluffTaunt } from "../../src/lib/poker-bluff.ts";
 import { settleHand, bettingLocked, hasBettingOpponent, dealNextStreet, WinnerInfo } from "../../src/lib/poker-rules.ts";
@@ -102,6 +105,48 @@ export class HybridHoldemRoom {
   private leaveSeats: Set<number> = new Set();
   private pendingActionResolve: ((action: { action: string; amount: number }) => void) | null = null;
   private isRunning = false;
+  readonly history = new HandHistoryStore(process.env.POKER_TEST_MODE === "1" ? undefined
+    : path.resolve(process.env.HAND_HISTORY_DIR || 'data/hand-history','hands.json'));
+  private currentHistory:HandHistory|null=null;
+  private pendingAudit:Record<string,unknown>|undefined;
+  private actionSource:HandAction['source']='cpu';
+
+  private beginHistory() {
+    const st=this.state;
+    const players=st.seats.filter(s=>s.inHand).map(s=>({seatId:s.seatId,name:s.name,isBot:s.isBot,
+      startingStack:s.stack+s.totalBet,holeCards:s.holeCards.map(c=>c.rank+c.suit),revealed:false,
+      privatePlayerId:s.socketId ? this.users.get(s.socketId)?.playerId : undefined,
+      position:(s.seatId===st.buttonSeat ? (s.seatId===st.smallBlindSeat?'BTN/SB':'BTN')
+        :s.seatId===st.smallBlindSeat?'SB':s.seatId===st.bigBlindSeat?'BB':'OTHER') as HandHistory['players'][number]['position']}));
+    this.currentHistory={schemaVersion:1,id:`${this.history.sessionId}:${st.handNumber}`,sessionId:this.history.sessionId,
+      handNumber:st.handNumber,rulesVersion:LIVE_RULES.version,revision:process.env.RENDER_GIT_COMMIT||'local',
+      startedAt:new Date().toISOString(),endedAt:'',status:'completed',humans:players.filter(p=>!p.isBot).length,
+      cpus:players.filter(p=>p.isBot).length,smallBlind:SMALL_BLIND,bigBlind:BIG_BLIND,
+      buttonSeat:st.buttonSeat,smallBlindSeat:st.smallBlindSeat,bigBlindSeat:st.bigBlindSeat,
+      players,actions:[],board:[],streets:[{street:'PREFLOP',board:[],at:new Date().toISOString()}],results:[],pots:[],rake:0,
+      forcedBets:[{seatId:st.smallBlindSeat,blind:'SB',paid:st.seats[st.smallBlindSeat].currentBet},
+        {seatId:st.bigBlindSeat,blind:'BB',paid:st.seats[st.bigBlindSeat].currentBet}]};
+  }
+
+  private endHistory(settlement?:ReturnType<typeof settleHand>,isShowdown=false) {
+    const h=this.currentHistory;if(!h)return;
+    h.endedAt=new Date().toISOString();h.board=this.state.board.map(c=>c.rank+c.suit);
+    h.players.forEach(p=>{p.revealed=!!settlement&&((isShowdown&&!this.state.seats[p.seatId].folded)||this.state.bluffReveal===p.seatId);});
+    if(settlement){h.results=settlement.results;h.pots=settlement.pots;h.rake=settlement.totalRake;}
+    else {
+      h.status='aborted';h.error='Hand aborted; contributions returned';
+      h.results=this.state.seats.map(s=>({seatId:s.seatId,name:s.name,contribution:s.totalBet,
+        payout:s.totalBet,award:0,refund:s.totalBet,netProfit:0}));
+    }
+    this.history.add(h);this.currentHistory=null;
+    for(const [socketId,user] of this.users)io.to(socketId).emit('HAND_HISTORY',publicHandHistory(h,user.playerId));
+  }
+
+  getPublicHistory(socketId:string) {
+    const user=this.users.get(socketId);
+    return user ? this.history.all().map(h=>publicHandHistory(h,user.playerId)) : null;
+  }
+
 
   constructor(autoStart = true) {
     this.trainer = new SelfPlayTrainer();
@@ -252,6 +297,7 @@ export class HybridHoldemRoom {
       this.leaveSeats.add(user.seatId);
       // 유저가 턴 중에 나갔다면 즉시 폴드 처리
       if (this.state.activeSeatId === user.seatId && this.pendingActionResolve) {
+        this.actionSource="disconnect";
         this.pendingActionResolve({ action: "fold", amount: 0 });
         this.pendingActionResolve = null;
       }
@@ -396,6 +442,7 @@ export class HybridHoldemRoom {
       } catch (e: any) {
         console.error("[GL ERR] 핸드 처리 에러:", e?.message || e);
         console.error(e?.stack);
+        this.endHistory();
         // An incomplete hand must not silently destroy already committed chips.
         this.state.seats = this.state.seats.map(seat => ({
           ...seat, stack: seat.stack + seat.totalBet, totalBet: 0, currentBet: 0,
@@ -491,6 +538,7 @@ export class HybridHoldemRoom {
       }
 
       this.broadcastTableState();
+      this.beginHistory();
       this.broadcast("SYSTEM_NOTICE", { messages: [`◆ 핸드 #${st.handNumber} 시작`] });
       await this.sleep(800);
 
@@ -575,6 +623,12 @@ export class HybridHoldemRoom {
       let decision: { action: ActionType; amount: number; isBluff?: boolean };
       const isUser = Boolean(!actor.isBot && actor.socketId);
       const userObj = isUser ? this.users.get(actor.socketId!) : null;
+      const actionStart=Date.now(),raiseLevelBefore=st.raiseLevel;
+      const potBefore=st.pot+st.seats.reduce((sum,s)=>sum+s.currentBet,0);
+      const before={...actor};
+      const activePlayersBefore=st.seats.filter(s=>s.inHand&&!s.folded).length;
+      const allInPlayersBefore=st.seats.filter(s=>s.inHand&&!s.folded&&s.allIn).length;
+      this.pendingAudit=undefined;this.actionSource=isUser?'human':'cpu';
 
       // 사전 액션 자동 실행
       if (isUser && userObj && userObj.preAction) {
@@ -586,6 +640,7 @@ export class HybridHoldemRoom {
         else if (pa.type === "check" && callAmt === 0) validAction = { action: "check", amount: 0 };
 
         if (validAction) {
+          this.actionSource="pre-action";
           decision = validAction;
         } else {
           decision = await this.getDecision(actor, callAmt, minR, maxR, isUser || false, checkedThisStreet.has(actor.seatId),limpedPreflop.has(actor.seatId),previousStreetAggressor,openedPreflop.has(actor.seatId));
@@ -596,7 +651,9 @@ export class HybridHoldemRoom {
 
       // Validate bot decisions too. A stale/invalid decision falls back safely.
       const intendedBluff = actor.isBot && decision.isBluff === true;
-      decision = this.mapUserAction(decision) ?? { action: callAmt === 0 ? "check" : "fold", amount: 0 };
+      const proposedAction={...decision};
+      const normalized=this.mapUserAction(decision);
+      decision = normalized ?? { action: callAmt === 0 ? "check" : "fold", amount: 0 };
       const raisesBet = decision.action === "raise" ||
         (decision.action === "allin" && actor.currentBet + actor.stack > maxBet);
       // An all-in call is not a raise.
@@ -624,6 +681,15 @@ export class HybridHoldemRoom {
 
       // 액션 적용
       this.applyAction(actorIdx, decision);
+      const after=st.seats[actorIdx];
+      this.currentHistory?.actions.push({sequence:this.currentHistory.actions.length+1,at:new Date().toISOString(),
+        street:st.phase,board:st.board.map(c=>c.rank+c.suit),seatId:before.seatId,name:before.name,isBot:before.isBot,
+        source:this.actionSource,action:decision.action,amount:decision.amount,paid:before.stack-after.stack,
+        callBefore:callAmt,potBefore,potAfter:st.pot+st.seats.reduce((sum,s)=>sum+s.currentBet,0),
+        stackBefore:before.stack,stackAfter:after.stack,betBefore:before.currentBet,betAfter:after.currentBet,
+        raiseLevelBefore,activePlayersBefore,allInPlayersBefore,activePlayers:st.seats.filter(s=>s.inHand&&!s.folded).length,
+        allInPlayers:st.seats.filter(s=>s.inHand&&!s.folded&&s.allIn).length,decisionMs:Date.now()-actionStart,
+        privateAudit:before.isBot?{...this.pendingAudit,proposedAction,validationFallback:!normalized}:undefined});
       if(st.board.length===0&&decision.action==="call"&&maxBet<=BIG_BLIND&&st.raiseLevel===0)limpedPreflop.add(actor.seatId);
       if (decision.action === "check") checkedThisStreet.add(actor.seatId);
       else checkedThisStreet.delete(actor.seatId);
@@ -680,7 +746,7 @@ export class HybridHoldemRoom {
   ): Promise<{ action: ActionType; amount: number; isBluff?: boolean }> {
     if (isUser) {
       // Same decision window as single player.
-      if (!this.users.has(actor.socketId!)) return { action: "fold", amount: 0 };
+      if (!this.users.has(actor.socketId!)) {this.actionSource="disconnect";return { action: "fold", amount: 0 };}
       const action = await this.waitForUserAction(actor.socketId!);
       return action;
     } else {
@@ -691,6 +757,7 @@ export class HybridHoldemRoom {
         smallBlind: this.state.smallBlindSeat, bigBlind: this.state.bigBlindSeat,
         hand: this.state.handNumber, raiseLevel: this.state.raiseLevel,
         checkedThisStreet,
+        onAudit:audit=>{this.pendingAudit=audit;},
         limpedPreflop, previousStreetAggressor, openedPreflop,
       });
     }
@@ -706,6 +773,7 @@ export class HybridHoldemRoom {
         const autoAction = callAmt === 0
           ? { action: "check" as ActionType, amount: 0 }
           : { action: "fold" as ActionType, amount: 0 };
+        this.actionSource="timeout";
         this.broadcast("SYSTEM_NOTICE", { messages: ["⏱ 시간 초과! 자동 액션"] });
         resolve(autoAction);
       }, USER_TIMEOUT_MS);
@@ -825,6 +893,7 @@ export class HybridHoldemRoom {
     }
 
     const settlement = settleHand(st.seats, st.board, st.buttonSeat);
+    this.endHistory(settlement,isShowdown);
     st.seats = st.seats.map(seat => ({ ...seat, stack: seat.stack + settlement.results.find(r=>r.seatId===seat.seatId)!.payout }));
     const winners = settlement.results.filter(r=>r.award>0);
     const hand = isShowdown && winners[0]
@@ -964,6 +1033,10 @@ export class HybridHoldemRoom {
 
   // ★ 각 클라이언트마다 순수 DTO 스냅샷 전송
   private broadcastTableState() {
+    const h=this.currentHistory;
+    if(h&&h.streets.at(-1)?.street!==this.state.phase) {
+      h.streets.push({street:this.state.phase,board:this.state.board.map(c=>c.rank+c.suit),at:new Date().toISOString()});
+    }
     if (this.users.size === 0) return;
     for (const [socketId] of this.users) {
       const snapshot = this.createSafeSnapshot(socketId);
@@ -1015,6 +1088,14 @@ if (process.env.POKER_TEST_MODE !== "1") {
     });
 
     socket.on("REBUY", () => room.onUserRebuy(socket.id));
+    let lastHistoryRequest=0;
+    socket.on("GET_HAND_HISTORY", (reply:unknown) => {
+      if(typeof reply!=="function")return;
+      if(Date.now()-lastHistoryRequest<5000){reply({error:"5초 후 다시 다운로드해 주세요."});return;}
+      lastHistoryRequest=Date.now();
+      const hands=room.getPublicHistory(socket.id);
+      reply(hands ? {hands,limit:1000,writeError:room.history.writeError} : {error:'Join the room first'});
+    });
 
     socket.on("disconnect", () => {
       room.onUserDisconnect(socket.id);
@@ -1041,6 +1122,16 @@ if (process.env.POKER_TEST_MODE !== "1") {
 
   });
 
+  httpServer.on('request',(req,res)=>{
+    if(new URL(req.url||'/','http://localhost').pathname!=='/api/hand-history/admin')return;
+    res.setHeader('Cache-Control','no-store');
+    if(req.method!=='GET'||!authorizedHistory(req.headers.authorization)) {
+      res.writeHead(401,{'Content-Type':'application/json'});res.end('{"error":"Admin token required"}');return;
+    }
+    res.writeHead(200,{'Content-Type':'application/json','Content-Disposition':'attachment; filename="holdem-analysis.json"'});
+    res.end(JSON.stringify({schemaVersion:1,scope:'admin',hands:room.history.all(),limit:1000,writeError:room.history.writeError}));
+  });
+
   // Unexpected failures exit nonzero so the host can restart cleanly.
   process.on("uncaughtException", (err) => {
     console.error("[UNCAUGHT] 예외 발생:", err.message);
@@ -1061,19 +1152,19 @@ if (process.env.POKER_TEST_MODE !== "1") {
   // ★ SIGTERM/SIGINT 시 정상 종료
   process.on("SIGTERM", () => {
     console.log("[Server] SIGTERM 수신, 종료 중...");
-    process.exit(0);
+    void room.history.flush().finally(()=>process.exit(0));
   });
 
   process.on("SIGINT", () => {
     console.log("[Server] SIGINT 수신, 종료 중...");
-    process.exit(0);
+    void room.history.flush().finally(()=>process.exit(0));
   });
 
   // ★ 헬스체크 엔드포인트 (서버 살아있는지 확인용)
   httpServer.on("request", (req, res) => {
     if (new URL(req.url || "/", "http://localhost").pathname === "/health") {
       res.writeHead(200, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ status: "ok", users: room.userCount, hand: room.state.handNumber, rulesVersion: LIVE_RULES.version }));
+      res.end(JSON.stringify({ status: "ok", users: room.userCount, hand: room.state.handNumber, rulesVersion: LIVE_RULES.version, historyHands: room.history.count, historyWriteOk: !room.history.writeError }));
     }
   });
 

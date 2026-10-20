@@ -57,3 +57,6 @@ server.log
 !public/*.png
 !src/**/*.png
 
+
+# Private hand analysis archives
+mini-services/poker-server/data/

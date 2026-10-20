@@ -35,7 +35,7 @@ const proxy = http.createServer(async (req, res) => {
     }
     return;
   }
-  const targetPort = pathname.startsWith('/socket.io/') || pathname === '/health' ? pokerPort : webPort;
+  const targetPort = pathname.startsWith('/socket.io/') || pathname === '/health' || pathname === '/api/hand-history/admin' ? pokerPort : webPort;
   const upstream = http.request({
     hostname: '127.0.0.1', port: targetPort, path: req.url,
     method: req.method, headers: req.headers,

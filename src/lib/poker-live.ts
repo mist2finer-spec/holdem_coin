@@ -9,7 +9,7 @@ import { stackContext } from './poker-stack';
 import { planPreflop } from './poker-preflop';
 
 export const LIVE_RULES = Object.freeze({
-  version: "1.9.0",
+  version: "1.10.0",
   seats: 8, smallBlind: 100, bigBlind: 200, buyIn: 5000,
   botCashOut: 100000, userSeconds: 10, maxActions: 256,
   botThinkMin: 700, botThinkJitter: 900, actionPause: 800, resultPause: 5000,
@@ -85,6 +85,7 @@ export function decideLiveBot(trainer: SelfPlayTrainer, ctx: {
   seats: BettingSeat[]; board: Card[]; pot: number; minRaise: number; maxRaise: number;
   button: number; smallBlind: number; bigBlind: number; hand: number; raiseLevel: number;
   checkedThisStreet?: boolean;
+  onAudit?: (audit: Record<string, unknown>) => void;
   limpedPreflop?:boolean; previousStreetAggressor?:number|null; openedPreflop?:boolean;
 }): LiveAction {
   const { actor, seats, board } = ctx;
@@ -98,11 +99,21 @@ export function decideLiveBot(trainer: SelfPlayTrainer, ctx: {
   const plan=planPreflop({hole:actor.holeCards,board,call,pot:livePot,stack:actor.stack,currentBet:actor.currentBet,
     minRaise:ctx.minRaise,maxRaise:ctx.maxRaise,raiseLevel:ctx.raiseLevel,smallBlind:ctx.smallBlind,persona,context});
   let decision=plan.decision;
+  let decisionPath=decision ? "preflop-plan" : "trainer";
+  const finish=(action:LiveAction)=>{
+    ctx.onAudit?.({decisionPath,personaId:actor.persona?.id,vpip:persona.vpip,aggression:persona.aggression,
+      bluffFreq:persona.bluffFreq,isOOP:context.position.isOOP,effectiveStack:context.stack.effectiveStack,
+      stackEquityPremium:context.stack.equityPremium,openedPreflop:!!ctx.openedPreflop,
+      limpedPreflop:!!ctx.limpedPreflop,checkedThisStreet:!!ctx.checkedThisStreet,
+      isBluff:!!action.isBluff,call,livePot,minRaise:ctx.minRaise,maxRaise:ctx.maxRaise});
+    return action;
+  };
   if(!decision) {
     const nn = trainer.decideActionForLive(actor.holeCards, board, call, ctx.minRaise, ctx.maxRaise,
       livePot, actor.stack, actor.currentBet, seats.filter(s => s.inHand && !s.folded).length - 1,
       actor.seatId, seats.length, ctx.raiseLevel, ctx.button, persona,
       {...context,forbidLimp:plan.forbidLimp});
+    decisionPath=nn.decisionPath || "trainer";
     decision = mapLiveDecision(nn, call, actor.stack, actor.currentBet);
   }
   const highest = actor.currentBet + call;
@@ -115,7 +126,8 @@ export function decideLiveBot(trainer: SelfPlayTrainer, ctx: {
     actor.stack + actor.totalBet > 5000 &&
     [ctx.smallBlind, ctx.bigBlind].includes(actor.seatId) && call > 0 && call < actor.stack &&
     call <= actor.stack * 0.1 && (limped || smallOpen) && rawEquity >= odds - 0.1 && Math.random() < 0.5) {
-    return { action: 'call', amount: call };
+    decisionPath="blind-defense";
+    return finish({ action: 'call', amount: call });
   }
-  return decision;
+  return finish(decision);
 }

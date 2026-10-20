@@ -39,6 +39,7 @@ const phaseLabel: Record<string, string> = {
 export function PokerTableSocket({ userName, onToast }: Props) {
   const {
     connected,
+    historyCount,historyBusy,exportHistory,
     playerBusted,
     rebuyPending,
     requestRebuy,
@@ -153,6 +154,13 @@ export function PokerTableSocket({ userName, onToast }: Props) {
           <span className="text-amber-200 text-[11px] font-bold ml-1 tabular-nums">{livePot.toLocaleString()}</span>
         </div>
 
+      </div>
+
+      <div className="absolute top-9 right-2 z-30 flex items-center gap-1 rounded bg-slate-950/90 px-1.5 py-1 text-[9px] text-amber-200">
+        <span title="완료된 핸드를 브라우저에 자동 보관합니다. 서버와 브라우저 각각 최대 1,000핸드 / 16MB">기록 {historyCount}</span>
+        <button disabled={historyBusy} onClick={()=>exportHistory('json')} className="px-1 underline disabled:opacity-40">JSON 저장</button>
+        <button disabled={historyBusy} onClick={()=>exportHistory('csv')} className="px-1 underline disabled:opacity-40">CSV</button>
+        <button disabled={historyBusy} onClick={()=>exportHistory('admin')} title="관리자 키 필요 · CPU 비공개 카드와 의사결정 분석 포함" className="px-1 text-slate-400 underline disabled:opacity-40">관리자 분석</button>
       </div>
 
       {/* 테이블 */}

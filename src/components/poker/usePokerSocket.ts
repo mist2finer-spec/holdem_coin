@@ -1,4 +1,6 @@
 "use client";
+import {handHistoryCSV,type HandHistory} from '@/lib/poker-hand-history';
+import {browserHistory,mergeHandHistories,downloadHistoryFile} from '@/lib/poker-hand-history-client';
 import { LIVE_RULES } from "@/lib/poker-live";
 import type { WinnerInfo } from "@/lib/poker-rules";
 import { useEffect, useRef, useState, useCallback } from "react";
@@ -80,6 +82,48 @@ export function usePokerSocket({ userName, onToast }: UsePokerSocketOpts) {
     amount: number;
   } | null>(null);
   const logIdRef = useRef(0);
+  const historyRef=useRef<HandHistory[]>([]);
+  const [historyCount,setHistoryCount]=useState(0);
+  const [historyBusy,setHistoryBusy]=useState(false);
+  const historyWrites=useRef(Promise.resolve());
+  const keepHistory=useCallback((hands:HandHistory[])=>{
+    const merged=mergeHandHistories(historyRef.current,hands);
+    historyRef.current=merged;setHistoryCount(merged.length);
+    historyWrites.current=historyWrites.current.then(()=>browserHistory(userName,merged)).then(()=>{})
+      .catch(()=>onToast?.('브라우저 자동 저장에 실패했습니다. JSON으로 다운로드해 주세요.','info'));
+    return merged;
+  },[userName,onToast]);
+  useEffect(()=>{
+    let active=true;
+    historyRef.current=[];
+    browserHistory(userName).then(hands=>{if(active)keepHistory(mergeHandHistories(hands,historyRef.current));})
+      .catch(()=>onToast?.('브라우저 기록을 불러오지 못했습니다. 서버 로그 다운로드는 사용할 수 있습니다.','info'));
+    return ()=>{active=false;};
+  },[userName]);
+  const historyHandler=useRef(keepHistory);
+  useEffect(()=>{historyHandler.current=keepHistory;},[keepHistory]);
+  const exportHistory=useCallback(async(format:'json'|'csv'|'admin')=>{
+    if(historyBusy)return;setHistoryBusy(true);
+    try {
+      if(format==='admin') {
+        const token=window.prompt('Render 환경변수 HAND_HISTORY_ADMIN_TOKEN을 입력하세요. 저장하지 않습니다.');
+        if(!token)return;
+        const response=await fetch('/api/hand-history/admin',{headers:{Authorization:'Bearer '+token},cache:'no-store'});
+        if(!response.ok)throw new Error('관리자 키를 확인해 주세요.');
+        downloadHistoryFile(await response.text(),'json');return;
+      }
+      let hands=historyRef.current;
+      if(socketRef.current?.connected) {
+        const result=await socketRef.current.timeout(20000).emitWithAck('GET_HAND_HISTORY') as {hands?:HandHistory[];error?:string;writeError?:string};
+        if(result.error&&!hands.length)throw new Error(result.error);
+        if(result.hands)hands=historyHandler.current(result.hands);
+        if(result.writeError)onToast?.('서버 파일 저장에 오류가 있습니다. 지금 다운로드한 기록을 보관해 주세요.','info');
+      }
+      if(!hands.length)throw new Error('완료된 핸드가 아직 없습니다.');
+      downloadHistoryFile(format==='csv'?handHistoryCSV(hands):JSON.stringify({schemaVersion:1,scope:'player',exportedAt:new Date().toISOString(),hands},null,2),format);
+    }catch(error){onToast?.(error instanceof Error?error.message:'로그 다운로드 실패','info');}
+    finally {setHistoryBusy(false);}
+  },[historyBusy,onToast]);
 
   const pushLog = useCallback((text: string, tone: LogEntry["tone"] = "system") => {
     logIdRef.current += 1;
@@ -119,6 +163,9 @@ export function usePokerSocket({ userName, onToast }: UsePokerSocketOpts) {
       console.log("[Socket] 연결됨:", socket.id, "(transport:", socket.io.engine.transport.name, ")");
       // 입장
       socket.emit("JOIN_ROOM", { name: userName });
+      socket.timeout(20000).emitWithAck('GET_HAND_HISTORY')
+        .then((result:{hands?:HandHistory[]})=>{if(result.hands)historyHandler.current(result.hands);})
+        .catch(()=>{});
     });
 
     socket.on("connect_error", (err: any) => {
@@ -139,6 +186,8 @@ export function usePokerSocket({ userName, onToast }: UsePokerSocketOpts) {
       setClock(Date.now());
       setPreAction(data.preAction);
     });
+
+    socket.on('HAND_HISTORY',(hand:HandHistory)=>historyHandler.current([hand]));
 
     socket.on("PLAYER_ACTION", (data: { seatId: number; name: string; action: string; amount: number }) => {
       pushLog(`${data.name}: ${data.action}`, "action");
@@ -224,6 +273,7 @@ export function usePokerSocket({ userName, onToast }: UsePokerSocketOpts) {
 
   return {
     connected,
+    historyCount,historyBusy,exportHistory,
     requestRebuy,
     playerBusted: state?.playerBusted ?? false,
     rebuyPending: state?.rebuyPending ?? false,

@@ -1,5 +1,8 @@
 // Real startup script + HTTP health + Socket.IO clients. No mocked game loop.
 import assert from 'node:assert/strict';
+import {randomBytes} from 'node:crypto';
+import {mkdtempSync,rmSync} from 'node:fs';
+import {tmpdir} from 'node:os';
 import {spawn} from 'node:child_process';
 import path from 'node:path';
 import {createRequire} from 'node:module';
@@ -10,13 +13,16 @@ const {io} = createRequire(path.join(service,'package.json'))('socket.io-client'
 const port = 13003;
 const origin = `http://127.0.0.1:${port}`;
 const hosted = process.env.POKER_SMOKE_HOSTED === '1';
+const historyToken=randomBytes(32).toString('hex');
+const historyDir=mkdtempSync(path.join(tmpdir(),'holdem-smoke-history-'));
+const historyEnv={HAND_HISTORY_ADMIN_TOKEN:historyToken,HAND_HISTORY_DIR:historyDir};
 const server = hosted
  ? spawn(process.execPath,['scripts/start-hosted.mjs'],{
    cwd:path.resolve(service,'../..'),
-   env:{...process.env,PORT:String(port),HOLDEM_WEB_PORT:'13000',POKER_PORT:'13004'},
+   env:{...process.env,...historyEnv,PORT:String(port),HOLDEM_WEB_PORT:'13000',POKER_PORT:'13004'},
    stdio:['ignore','pipe','pipe'],
  })
- : spawn('bash',['./start.sh'],{cwd:service,env:{...process.env,POKER_PORT:String(port),POKER_TEST_MODE:'0'},stdio:['ignore','pipe','pipe']});
+ : spawn('bash',['./start.sh'],{cwd:service,env:{...process.env,...historyEnv,POKER_PORT:String(port),POKER_TEST_MODE:'0'},stdio:['ignore','pipe','pipe']});
 let logs=''; server.stdout.on('data',s=>logs+=s);server.stderr.on('data',s=>logs+=s);
 const delay = ms => new Promise(r=>setTimeout(r,ms));
 const clients=[];
@@ -64,6 +70,16 @@ const clients=[];
   for(const s of stats){assert.ok(s.seated);assert.ok(s.actions>0);assert.ok(s.hands.size>=3);assert.equal(s.ownSeats.size,1);assert.deepEqual(s.errors,[]);}
   const finalHealth=await (await fetch(origin+'/health?XTransformPort='+port)).json();
   assert.equal(finalHealth.users,2);
-  console.log(JSON.stringify({health:finalHealth,clients:stats.map(s=>({...s,hands:[...s.hands],ownSeats:[...s.ownSeats]}))}));
- } finally {clients.forEach(c=>c.disconnect());server.kill('SIGTERM');}
+  const exportResult=await clients[0].timeout(5000).emitWithAck('GET_HAND_HISTORY');
+  assert.ok(exportResult.hands.length>0,'public archive exists');
+  assert.ok(!JSON.stringify(exportResult).includes('privateAudit'));
+  assert.ok(!JSON.stringify(exportResult).includes('privatePlayerId'));
+  assert.equal((await fetch(origin+'/api/hand-history/admin')).status,401);
+  const analysis=await fetch(origin+'/api/hand-history/admin',{headers:{Authorization:'Bearer '+historyToken}});
+  assert.equal(analysis.status,200);const full=await analysis.json();
+  assert.ok(full.hands.some(h=>h.humans===2&&h.cpus===6),'actual mixed participants counted');
+  assert.ok(full.hands.some(h=>h.actions.some(a=>a.isBot&&a.privateAudit?.decisionPath)),'CPU decision audit exists');
+  assert.ok(full.hands.every(h=>h.actions.every(a=>a.paid===a.stackBefore-a.stackAfter)));
+  console.log(JSON.stringify({historyHands:full.hands.length,health:finalHealth,clients:stats.map(s=>({...s,hands:[...s.hands],ownSeats:[...s.ownSeats]}))}));
+ } finally {clients.forEach(c=>c.disconnect());server.kill('SIGTERM');await new Promise(resolve=>server.once('exit',resolve));rmSync(historyDir,{recursive:true,force:true});}
 })().catch(e=>{console.error(e,logs);process.exitCode=1;});

@@ -544,7 +544,7 @@ export class SelfPlayTrainer {
     buttonSeat: number,
     persona: { vpip: number; aggression: number; bluffFreq: number },
     context?: DecisionContext
-  ): { action: number; amount: number; isBluff?: boolean; tier?: number } {
+  ): { action: number; amount: number; isBluff?: boolean; tier?: number; decisionPath?: string } {
     // 1) 새로운 정밀 핸드 티어 분류 (AIR 버그 수정 적용)
     const { tier } = classifyHandTier(hole, board);
     const multiEq = estimateEquity(hole,board,activeOpponents);
@@ -556,7 +556,7 @@ export class SelfPlayTrainer {
     if(context) {
       const shortDecision=decideShortStack({hole,board,call:callAmount,minRaise,maxRaise,pot,
         stack:myStack,currentBet:myCurrentBet,raiseLevel,persona,context});
-      if(shortDecision)return {...shortDecision,tier};
+      if(shortDecision)return {...shortDecision,tier,decisionPath:raiseLevel===2&&context.openedPreflop ? "three-bet-ev" : "small-open-ev"};
     }
 
     // 2) 베팅 압박 수위 (0~3)
