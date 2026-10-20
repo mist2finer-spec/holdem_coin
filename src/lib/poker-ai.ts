@@ -6,10 +6,13 @@ import type { stackContext } from './poker-stack';
 // Bounded deterministic rollouts using only the acting player's cards and public board.
 // This is an equity estimator, not a GTO solver or knowledge of opponents' cards.
 const cache=new Map<string,number>();
-export type OpponentRange = 'open' | 'jam-call' | 'three-bet';
+export type OpponentRange = 'open' | 'jam-call' | 'three-bet' | 'four-bet-call';
 function inRange(hole: Card[], range: OpponentRange) {
   const ranks=hole.map(c=>'23456789TJQKA'.indexOf(c.rank)).sort((a,b)=>b-a);
   const [high,low]=ranks, suited=hole[0].suit===hole[1].suit;
+  // Deeper three-bettors continue against a four-bet with a tighter range.
+  if(range==='four-bet-call')return high===low ? low>=8
+    : high===12&&(low===11||(suited&&low===10)); // TT+, AK, AQs
   if(range==='three-bet')return high===low ? low>=5
     : (high===12&&low>=10)||(suited&&high===12&&(low>=8||low===3))
       ||(suited&&high===11&&low>=9)||(suited&&high===10&&low===9);
@@ -61,7 +64,7 @@ export function estimateEquity(hole: Card[], board: Card[], opponents: number, s
   cache.set(key,result);return result;
 }
 
-export interface DecisionContext { seats: BettingSeat[]; actorId: number; position?: PositionContext; stack?: ReturnType<typeof stackContext>; forbidLimp?:boolean; limpedPreflop?:boolean; initiative?:boolean; openedPreflop?:boolean }
+export interface DecisionContext { seats: BettingSeat[]; actorId: number; position?: PositionContext; stack?: ReturnType<typeof stackContext>; forbidLimp?:boolean; limpedPreflop?:boolean; initiative?:boolean; openedPreflop?:boolean; isBlind?:boolean }
 export function afterRakeOdds(pot: number, cost: number, rate=RAKE_RATE) {
   return cost>0?cost/Math.max(1,(pot+cost)*(1-rate)):0;
 }

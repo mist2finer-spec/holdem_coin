@@ -33,7 +33,7 @@ type Decision={action:ActionType;amount:number;isBluff?:boolean};
 
 // One entry gate per decision. In particular, rejected low connectors must not
 // fall through to bluff/automatic blind-defense branches and inflate the 7% mix.
-export function planPreflop(spot:PreflopSpot):{decision:Decision|null;forbidLimp:boolean} {
+export function planPreflop(spot:PreflopSpot):{decision:Decision|null;forbidLimp:boolean;allowBlindDefense?:boolean} {
   if(spot.board.length)return {decision:null,forbidLimp:false};
   const {hole,call,stack,currentBet,raiseLevel,persona,context}=spot;
   const h=connectorInfo(hole), highest=currentBet+call;
@@ -41,7 +41,7 @@ export function planPreflop(spot:PreflopSpot):{decision:Decision|null;forbidLimp
   const opponents=context.seats.filter(s=>s.seatId!==context.actorId&&s.inHand&&!s.folded);
   const affordable=own>2500&&call>0&&call<stack&&call<=own*0.15;
   const unopened=raiseLevel===0&&highest<=200;
-  const result=(decision:Decision|null)=>({decision,forbidLimp:unopened&&call>0});
+  const result=(decision:Decision|null,allowBlindDefense=true)=>({decision,forbidLimp:unopened&&call>0,allowBlindDefense});
   const foldOrCheck=():Decision=>({action:call>0?'fold':'check',amount:0});
   const callDecision=():Decision=>({action:call>=stack?'allin':'call',amount:Math.min(call,stack)});
   const equity=()=>estimateEquity(hole,[],Math.max(1,opponents.length),192,raiseLevel>=2?'three-bet':'open');
@@ -51,15 +51,15 @@ export function planPreflop(spot:PreflopSpot):{decision:Decision|null;forbidLimp
     const eligible=persona.aggression>=0.70&&persona.vpip>=0.35&&own>=5000
       &&(context.stack?.effectiveStack??own)>=4000&&affordable&&raiseLevel===1
       &&highest<=800&&currentBet<=200&&opponents.length<=3&&!opponents.some(s=>s.allIn);
-    return result(eligible&&equity()+0.08>=odds&&Math.random()<0.07 ? callDecision() : foldOrCheck());
+    return result(eligible&&equity()+0.08>=odds&&Math.random()<0.07 ? callDecision() : foldOrCheck(),false);
   }
   // The original short-stack opener gets a dedicated priced call/reshove EV
   // decision. Do not kill its opened connector through the cold-entry gate.
   const defendingOpen=context.openedPreflop===true&&raiseLevel===2;
-  if(defendingOpen&&own<=5000)return result(null);
+  if(defendingOpen&&own<=10000)return result(null);
 
   if(context.limpedPreflop&&call>0&&raiseLevel>0&&!(persona.bluffFreq>=0.20&&persona.aggression>=0.55)) {
-    return result(affordable&&equity()>=odds-0.03 ? callDecision() : foldOrCheck());
+    return result(affordable&&equity()>=odds-0.03 ? callDecision() : foldOrCheck(),false);
   }
 
   const connector=h.connector;
@@ -73,7 +73,7 @@ export function planPreflop(spot:PreflopSpot):{decision:Decision|null;forbidLimp
         const target=Math.min(spot.maxRaise,Math.max(spot.minRaise,600));
         if(target>highest&&target<spot.maxRaise)return result({action:'raise',amount:target,isBluff:true});
       }
-      return result(foldOrCheck());
+      return result(foldOrCheck(),false);
     }
     return result(null);
   }
@@ -81,9 +81,9 @@ export function planPreflop(spot:PreflopSpot):{decision:Decision|null;forbidLimp
   if(connector) {
     if(!call)return result({action:'check',amount:0});
     const open=raiseLevel===1||(raiseLevel===2&&currentBet>=400);
-    if(!allowed||!affordable||(highest>800&&!defendingOpen)||!open||opponents.some(s=>s.allIn))return result(foldOrCheck());
+    if(!allowed||!affordable||(highest>800&&!defendingOpen)||!open||opponents.some(s=>s.allIn))return result(foldOrCheck(),false);
     const threshold=odds+(context.position?.isOOP?0.015:0)-persona.vpip*0.08;
-    if(equity()<threshold)return result(foldOrCheck());
+    if(equity()<threshold)return result(foldOrCheck(),false);
     const rate=flatCallFrequency(persona,context.position?.isOOP??true);
     return result(Math.random()<Math.max(0.20,rate)?callDecision():foldOrCheck());
   }

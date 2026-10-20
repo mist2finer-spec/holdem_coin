@@ -96,3 +96,19 @@ test('postflop continuation depends on traits, board, opponents and street',()=>
   assert.ok(continuationBetFrequency(bold,dry,4,1)>continuationBetFrequency(bold,dry,4,3));
   assert.ok(checkCallEquityRequired({vpip:.55},.25)<checkCallEquityRequired({vpip:.25},.25));
 });
+
+test('qualified connector planner folds can reach blind defense, hard gate folds cannot',()=>{
+  const s=spot(cards('7','6',true));
+  const forbidden={decideActionForLive:()=>{throw new Error('Planner fold should not call trainer');}} as unknown as SelfPlayTrainer;
+  const orc=RPG_BOT_POOL.find(p=>p.id==='orc_berserker')!;
+  const ctx={actor:{...s.context.seats[0],holeCards:s.hole,persona:orc},seats:s.context.seats,
+    board:[],pot:100,minRaise:600,maxRaise:10000,button:1,smallBlind:1,bigBlind:0,hand:1,raiseLevel:1};
+  const old=Math.random;
+  try {
+    Math.random=()=>.4;
+    assert.equal(decideLiveBot(forbidden,ctx).action,'call');
+    assert.equal(decideLiveBot(forbidden,{...ctx,actor:{...ctx.actor,holeCards:cards('2','3')}}).action,'fold');
+    assert.equal(decideLiveBot(forbidden,{...ctx,raiseLevel:3}).action,'fold');
+    assert.equal(decideLiveBot(forbidden,{...ctx,actor:{...ctx.actor,holeCards:cards('4','6')}}).action,'fold');
+  }finally {Math.random=old;}
+});

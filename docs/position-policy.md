@@ -1,4 +1,4 @@
-# Live bot position policy (rules 1.8.1)
+# Live bot position policy (rules 1.9.0)
 
 Single-player and multiplayer both call `decideLiveBot`. Position is computed
 from public seat status, clockwise after the button, skipping folded, inactive
@@ -234,3 +234,37 @@ all-in. At exactly 25,000 the additive aggression boost starts; existing .95
 clamping and character differences remain. It does not automatically increase
 VPIP or bluff frequency. Shared live decisions apply this in both modes. Existing
 <=5,000 reshove eligibility and effective-stack/deep-vs-deep EV protection remain.
+
+## Priced defense refinements (1.9.0)
+
+The original-opener three-bet EV policy now covers starting stacks <=10,000;
+ordinary small-open reshoves remain limited to <=5,000. The incremental cost
+gate for speculative three-bet candidates rises from 20% to 30% of starting
+chips. Passing it only enables EV evaluation, not a forced call. The rare low
+connector gate still runs first and forbids re-raise defense for those hands.
+
+For stacks >5,000, aggressive EV uses a tighter four-bet calling model (TT+, AK,
+AQs), preventing the old 55+ jam-calling model from overvaluing medium-hand
+four-bets. Calls still use the separate three-bet range. These ranges and equity
+realization factors are explicit heuristic assumptions, not exact GTO values.
+
+Only positive-EV choices qualify; raises retain their uncertainty margin. Among
+choices within 8% of pot EV of the best, call weight is
+`1.5 - .5*aggression + .6*vpip`, jam weight `.4 + aggression` (+.7 at <=2,000),
+and raise weight `.4 + .8*aggression`. Better-EV jams can still win outside the
+near-EV mix. Non-premium continuation caps at .99 for marginal spots, but has
+no random fold when best EV >=25% of pot. Premium treatment is unchanged.
+
+A shared isBlind marker uses the actual SB/BB seat IDs, not a postflop position
+index. Affordable 22–55 can enter the <=5,000 small-open blind call policy:
+incremental cost <=20% of starting chips and positive rake-adjusted realized
+call EV are required. Their OOP/IP realization is .85/.92; call frequency is
+`min(.85,.45+.60*vpip)`. Additional small-pair entries cannot shove through this
+branch. They do not change ordinary non-blind ranges.
+
+All planner decisions now pass through the common final defense stage. Qualified
+connector mix folds can reach the existing deeper-stack small-open blind override;
+explicit range/price/equity/all-in rejections, failed rare-low gates, and non-trap
+limper rejections remain protected. The blanket 50% override remains disabled
+for <=5,000: these stacks use their explicit EV policy instead. This preserves
+the rare 7% call and <15% limp limits rather than overriding all folds.

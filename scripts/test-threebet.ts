@@ -71,3 +71,70 @@ test('opened suited connectors reach the EV policy rather than a hard price cuto
   assert.equal(planPreflop(s).decision,null);
   assert.ok(shortStackOptions(s));
 });
+
+test('5,001–10,000 chip original openers get priced defense with actual flat calls',()=>{
+  for(const chips of [5001,6000,10000]) {
+    const s=spot();
+    for(const seat of s.context.seats)seat.stack+=chips-5000;
+    s.stack+=chips-5000;s.maxRaise=chips;s.context.stack=stackContext(s.context.seats,0);
+    assert.equal(planPreflop(s).decision,null);
+    assert.equal(shortStackOptions(s)!.threeBet,true);
+    const counts=sample(s);
+    assert.ok(counts[1]>250,JSON.stringify({chips,counts}));
+    assert.ok(counts[1]>counts[4],JSON.stringify({chips,counts}));
+  }
+  const s=spot();s.context.stack.ownStack=10001;
+  assert.equal(shortStackOptions(s),null);
+  assert.equal(shortStackOptions({...s,raiseLevel:1,context:{...s.context,openedPreflop:false,stack:{...s.context.stack,ownStack:6000}}}),null,
+    'initial-open short-stack policy does not widen automatically');
+});
+
+test('affordable opened connectors can be evaluated at 9BB but not forced into a negative-EV call',()=>{
+  const s=spot('7','6');
+  assert.equal(shortStackOptions(s)!.playable,true,'24% incremental cost is within new 30% gate');
+  assert.ok(shortStackOptions(s)!.callEV<0);
+  assert.equal(sample(s,100)[0],100);
+  const expensive=spot('7','6',2200);
+  assert.equal(shortStackOptions(expensive)!.playable,false);
+});
+
+test('near-EV 3-bet defense mixes prefer calls over jams without eliminating aggression',()=>{
+  for(const aggression of [.60,.78]) {
+    const s=spot();s.persona.aggression=aggression;
+    const counts=sample(s,2000);
+    assert.ok(counts[1]>counts[4],JSON.stringify({aggression,counts}));
+    assert.ok(counts[4]>100,JSON.stringify({aggression,counts}));
+  }
+});
+
+test('clearly profitable non-premium defense has no unconditional random-fold floor',()=>{
+  const s=spot('T','T');
+  const old=Math.random;Math.random=()=>0.999999;
+  try {assert.notEqual(decideShortStack(s)!.action,0);}
+  finally {Math.random=old;}
+});
+
+test('small blind pairs enter only a priced positive-EV call policy; non-blinds remain restricted',()=>{
+  for(const rank of ['2','3','4','5'] as Card['rank'][]) {
+    const s=spot(rank,rank,600);
+    Object.assign(s.context.seats[0],{stack:4800,currentBet:200,totalBet:200});
+    Object.assign(s.context.seats[2],{stack:4800,currentBet:200,totalBet:200});
+    for(let seatId=3;seatId<8;seatId++)s.context.seats.push({seatId,stack:4800,currentBet:200,totalBet:200,inHand:false,folded:true,allIn:false});
+    Object.assign(s,{call:400,currentBet:200,stack:4800,pot:2000,raiseLevel:1,minRaise:1000});
+    s.context={...s.context,openedPreflop:false,stack:stackContext(s.context.seats,0),isBlind:true} as typeof s.context;
+    const options=shortStackOptions(s)!;
+    assert.equal(options.playable,true);assert.ok(options.callEV>0,JSON.stringify({rank,options}));
+    const counts=sample(s);
+    assert.ok(counts[1]>250,JSON.stringify({rank,counts}));
+    assert.equal(counts[2]+counts[4],0,'extra small-pair entry does not grant a shove');
+    assert.equal(shortStackOptions({...s,context:{...s.context,isBlind:false}})!.playable,false);
+  }
+  const s=spot('2','2',600);
+  Object.assign(s.context.seats[0],{stack:4800,currentBet:200,totalBet:200});
+  Object.assign(s,{call:400,currentBet:200,stack:4800,pot:1100,raiseLevel:1,minRaise:1000});
+  Object.assign(s.context.seats[2],{stack:5000,currentBet:0,totalBet:0});
+  s.pot=800;
+  const priced={...s,context:{...s.context,openedPreflop:false,isBlind:true,stack:stackContext(s.context.seats,0)}};
+  assert.ok(shortStackOptions(priced)!.callEV<0);
+  assert.equal(sample(priced,100)[0],100);
+});
