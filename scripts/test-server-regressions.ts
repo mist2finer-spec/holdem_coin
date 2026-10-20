@@ -253,11 +253,17 @@ test('server human bust uses manual next-hand rebuy instead of automatic free ch
   assert.equal(room.state.seats[0].stack,100,'rebuy cannot modify a running hand');
   assert.equal(room.createSafeSnapshot('busted').rebuyPending,true);
   await room.playOneHand();
-  assert.equal(room.state.seats[0].stack,20000);
+  assert.equal(room.state.seats[0].stack,LIVE_RULES.buyIn);
   assert.equal(room.state.seats[0].inHand,true);
   assert.equal(room.createSafeSnapshot('busted').rebuyPending,false);
   room.onUserRebuy('busted');
   assert.equal(room.pendingRebuys.size,0,'a solvent player cannot add chips');
+});
+
+test('new server seats start with the shared 5000-chip buy-in', () => {
+  const room:any = new HybridHoldemRoom(false);
+  assert.equal(LIVE_RULES.buyIn,5000);
+  assert.ok(room.state.seats.every((seat:any)=>seat.stack===5000));
 });
 
 test('all-in humans cannot rebuy before settlement', () => {

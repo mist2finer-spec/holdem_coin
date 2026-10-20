@@ -548,7 +548,8 @@ export class SelfPlayTrainer {
     const multiEq = estimateEquity(hole,board,activeOpponents);
     const position = context?.position;
     const positionCost = board.length === 0 ? (position?.preflopEquityPremium || 0) * (1.2 - persona.aggression * 0.6) : 0;
-    const potOdds = Math.min(1, afterRakeOdds(pot,Math.min(callAmount,myStack)) + positionCost);
+    const stackCost = (context?.stack?.equityPremium || 0) * (board.length === 0 ? 1 : 0.5);
+    const potOdds = Math.min(1, afterRakeOdds(pot,Math.min(callAmount,myStack)) + positionCost + stackCost);
 
     // 2) 베팅 압박 수위 (0~3)
     let pressure: number;
@@ -567,6 +568,12 @@ export class SelfPlayTrainer {
     // 3) Warm-Start 앵커 로짓 (5개 액션)
     const anchor = this._getWarmStartAnchor(pressure, tier, persona);
     const logits = [...anchor];
+    if (context?.stack?.deepVsDeep) {
+      // More chips can be contested against a deep opponent: prefer smaller
+      // commitments while retaining strong value raises and check-raises.
+      logits[3] -= 0.35;
+      logits[4] -= 0.55;
+    }
 
     // Protect the OOP checking range: strong hands must not always lead.
     // Draws/air also check, so checking does not disclose a trap. This mixture

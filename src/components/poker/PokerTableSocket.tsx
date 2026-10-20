@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { TrainingPanel } from "./TrainingPanel";
 import { Card } from "@/lib/poker-engine";
-import { STRATEGY_PROFILES, StrategyType } from "@/lib/personas";
 import { SelfPlayTrainer, TrainingStats } from "@/lib/self-play-trainer";
 
 interface Props {
@@ -54,7 +53,6 @@ export function PokerTableSocket({ userName, onToast }: Props) {
     rotatedActiveSeatId,
     rotatedButtonSeat,
     userHandCategory,
-    currentStrategy,
     livePot,
     callAmount,
     minRaise,
@@ -154,16 +152,7 @@ export function PokerTableSocket({ userName, onToast }: Props) {
           <span className="text-rose-200 text-[9px] font-bold">POT</span>
           <span className="text-amber-200 text-[11px] font-bold ml-1 tabular-nums">{livePot.toLocaleString()}</span>
         </div>
-        {/* AI 전략 표시 */}
-        <div
-          className={`bg-gradient-to-r ${STRATEGY_PROFILES[currentStrategy as StrategyType].color} border border-amber-300 rounded-full px-2 py-0.5 backdrop-blur-sm shadow-lg`}
-          title="테이블 분위기는 각 캐릭터의 고유 성향에 소폭 보정됩니다."
-        >
-          <span className="text-[10px]">{STRATEGY_PROFILES[currentStrategy as StrategyType].emoji}</span>
-          <span className="text-amber-50 text-[10px] font-bold ml-1">
-            테이블: {STRATEGY_PROFILES[currentStrategy as StrategyType].name}
-          </span>
-        </div>
+
       </div>
 
       {/* 테이블 */}
@@ -514,9 +503,9 @@ export function PokerTableSocket({ userName, onToast }: Props) {
           <div className="bg-slate-900 border-2 border-amber-600 rounded-2xl p-8 text-center max-w-sm mx-4">
             <div className="text-4xl mb-4">💔</div>
             <div className="text-amber-300 text-xl font-black mb-3">참여할 칩이 부족합니다</div>
-            <p className="text-amber-200/70 text-sm mb-5">리바인하면 다음 핸드에 20,000칩으로 참여합니다.</p>
+            <p className="text-amber-200/70 text-sm mb-5">리바인하면 다음 핸드에 5,000칩으로 참여합니다.</p>
             <Button onClick={requestRebuy} disabled={rebuyPending}>
-              {rebuyPending ? "다음 핸드 착석 대기 중…" : "💰 리바인하기 (20,000칩)"}
+              {rebuyPending ? "다음 핸드 착석 대기 중…" : "💰 리바인하기 (5,000칩)"}
             </Button>
           </div>
         </div>

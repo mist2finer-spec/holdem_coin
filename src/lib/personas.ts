@@ -1,3 +1,4 @@
+import { applyStackTraits } from './poker-stack';
 // RPG AI 페르소나 정의 (Python 코드의 BotPersona와 매칭)
 
 export interface BotPersona {
@@ -367,13 +368,13 @@ export function individualLivePersona(base: BotPersona, hand: number, seat: numb
   const frequency = tight ? (short ? 0.40 : 0.12) : aggressive ? (short ? 0.08 : 0.03) : (short ? 0.18 : 0.07);
   const key = `${base.id}:${seat}:${hand}`;
   const surge = hand > 0 && moodRoll(key) < frequency;
-  if (!surge) return { ...normal, surge: false };
+  if (!surge) return applyStackTraits({ ...normal, surge: false }, startingStack);
   const intensity = moodRoll(`${key}:intensity`);
-  return {
+  return applyStackTraits({
     ...normal, surge: true,
     vpip: Math.min(0.85, Math.max(0.45, normal.vpip + 0.22 + intensity * 0.13)),
     aggression: Math.min(0.95, Math.max(0.78, normal.aggression + 0.28 + intensity * 0.12)),
     bluffFreq: Math.min(0.40, Math.max(normal.bluffFreq, 0.12 + intensity * 0.08)),
     style: `${normal.style} · 변속`,
-  };
+  }, startingStack);
 }

@@ -252,7 +252,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
         persona = newP;
         name = newP.name;
         usedNames.add(name);
-        pushLog(`🔄 [${newP.name}]님이 새로 입장했습니다! (20k 칩)`, "system");
+        pushLog(`🔄 [${newP.name}]님이 새로 입장했습니다! (${DEFAULT_BUYIN.toLocaleString()} 칩)`, "system");
       }
       // ★ AI 파산 시 새 AI 입장 (기존 로직)
       else if (s.isBot && s.stack < BIG_BLIND * 2) {
@@ -264,7 +264,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
         persona = newP;
         name = newP.name;
         usedNames.add(name);
-        pushLog(`🔄 [${newP.name}]님이 새로 입장했습니다! (20k 칩)`, "system");
+        pushLog(`🔄 [${newP.name}]님이 새로 입장했습니다! (${DEFAULT_BUYIN.toLocaleString()} 칩)`, "system");
       }
       const newStack = (s.isBot && (s.stack < BIG_BLIND * 2 || s.stack >= LIVE_RULES.botCashOut)) ? DEFAULT_BUYIN : s.stack;
       // ★ 플레이어 파산 체크

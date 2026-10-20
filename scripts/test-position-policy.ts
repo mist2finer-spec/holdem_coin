@@ -7,6 +7,7 @@ import type { BettingSeat } from '../src/lib/poker-rules.ts';
 import type { Card } from '../src/lib/poker-engine.ts';
 import { individualLivePersona, applyStrategyToPersona, RPG_BOT_POOL } from '../src/lib/personas.ts';
 import { oopCheckMix } from '../src/lib/poker-position.ts';
+import { applyStackTraits, stackBand, stackContext } from '../src/lib/poker-stack.ts';
 
 const card = (rank: Card['rank'], suit: Card['suit']): Card => ({rank, suit});
 const hole = [card('A', '♠'), card('A', '♥')];
@@ -142,4 +143,33 @@ test('OOP mixtures depend on character aggression and wet board texture', () => 
   assert.ok(oopCheckMix(calm, 4, 1, dry) > oopCheckMix(bold, 4, 1, dry));
   assert.ok(oopCheckMix(calm, 4, 1, wet) < oopCheckMix(calm, 4, 1, dry));
   assert.ok(oopCheckMix(calm, 4, 3, dry) > oopCheckMix(calm, 4, 1, dry));
+});
+
+test('five stack bands include boundaries and get progressively tighter', () => {
+  const amounts = [2500, 5000, 10000, 15000, 35000];
+  const profiles = amounts.map(chips => applyStackTraits({vpip:0.4,aggression:0.6,bluffFreq:0.2}, chips));
+  amounts.forEach((chips,i) => assert.equal(stackBand(chips).limit, chips));
+  assert.equal(stackBand(2501).limit, 5000);
+  assert.equal(stackBand(5001).limit, 10000);
+  assert.equal(stackBand(10001).limit, 15000);
+  assert.equal(stackBand(15001).limit, 35000);
+  assert.equal(stackBand(50000).limit, 35000);
+  for (let i=1;i<profiles.length;i++) {
+    assert.ok(profiles[i].vpip < profiles[i-1].vpip);
+    assert.ok(profiles[i].aggression < profiles[i-1].aggression);
+    assert.ok(profiles[i].bluffFreq < profiles[i-1].bluffFreq);
+  }
+});
+
+test('effective stack distinguishes deep-v-short and deep-v-deep without changing during bets', () => {
+  const table=seats(); table[0].stack=30000; table[0].totalBet=0;
+  table[1].stack=2500; table[1].totalBet=0;
+  const short=stackContext(table,0);
+  assert.equal(short.effectiveStack,2500); assert.equal(short.deepVsDeep,false);
+  table[1].stack=25000;
+  const deep=stackContext(table,0);
+  assert.equal(deep.deepVsDeep,true); assert.ok(deep.equityPremium>short.equityPremium);
+  table[0].stack-=5000; table[0].totalBet+=5000;
+  table[1].stack-=5000; table[1].totalBet+=5000;
+  assert.deepEqual(stackContext(table,0),deep);
 });

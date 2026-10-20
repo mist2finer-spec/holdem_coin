@@ -1,4 +1,4 @@
-# Live bot position policy (rules 1.4.0)
+# Live bot position policy (rules 1.5.0)
 
 Single-player and multiplayer both call `decideLiveBot`. Position is computed
 from public seat status, clockwise after the button, skipping folded, inactive
@@ -68,4 +68,25 @@ A surge raises participation and aggression for the hand, with VPIP at least
 validation, position, board strength, equity, rake and side-pot rules still
 govern decisions. These are configured mood frequencies, not measured VPIP or
 raise percentages. The UI shows each character's base style; the global badge
-is labeled as table atmosphere rather than every character's identity.
+has no global strategy badge: the five-hand correction stays internal.
+
+## Stack adjustment
+
+Starting buy-in and manual rebuy are 5,000 chips in both modes. SB/BB stay
+100/200. Final traits combine base character, five-hand table correction,
+per-hand mood, then starting-stack adjustment, with bounded trait values.
+
+| Starting chips | VPIP adjustment | Aggression adjustment | Bluff adjustment | Required equity premium |
+| --- | --- | --- | --- | --- |
+| <= 2,500 | +.08 | +.08 | +.02 | .00 |
+| 2,501–5,000 | +.04 | +.04 | +.01 | .01 |
+| 5,001–10,000 | .00 | .00 | .00 | .02 |
+| 10,001–15,000 | -.04 | -.03 | -.01 | .03 |
+| 15,001–35,000 (and above) | -.08 | -.06 | -.02 | .05 |
+
+The equity premium applies in full preflop and at half strength postflop.
+Against at least one opponent with effective starting chips above 15,000,
+add .015 to the premium and reduce pot-raise/all-in logits by .35/.55. A deep
+player facing only a short stack does not receive this additional deep-v-deep
+penalty. Existing contribution-level EV still evaluates side pots separately.
+These are chip-based game heuristics, not a solver-derived range chart.

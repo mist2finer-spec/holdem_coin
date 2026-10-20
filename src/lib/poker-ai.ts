@@ -1,6 +1,7 @@
 import { Card, evaluateBestHand } from './poker-engine';
 import { BettingSeat, contributionLayers, RAKE_RATE } from './poker-rules';
 import type { PositionContext } from './poker-position';
+import type { stackContext } from './poker-stack';
 
 // Bounded deterministic rollouts using only the acting player's cards and public board.
 // This is an equity estimator, not a GTO solver or knowledge of opponents' cards.
@@ -34,7 +35,7 @@ export function estimateEquity(hole: Card[], board: Card[], opponents: number, s
   cache.set(key,result);return result;
 }
 
-export interface DecisionContext { seats: BettingSeat[]; actorId: number; position?: PositionContext }
+export interface DecisionContext { seats: BettingSeat[]; actorId: number; position?: PositionContext; stack?: ReturnType<typeof stackContext> }
 export function afterRakeOdds(pot: number, cost: number, rate=RAKE_RATE) {
   return cost>0?cost/Math.max(1,(pot+cost)*(1-rate)):0;
 }

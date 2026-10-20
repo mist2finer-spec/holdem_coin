@@ -331,7 +331,7 @@ export class HybridHoldemRoom {
       seat.persona = newP;
       seat.stack = DEFAULT_BUYIN;
       this.broadcast("SYSTEM_NOTICE", {
-        messages: [`🔄 [${newP.name}]님이 새로 입장했습니다! (20k 칩)`],
+        messages: [`🔄 [${newP.name}]님이 새로 입장했습니다! (${DEFAULT_BUYIN.toLocaleString()} 칩)`],
       });
     }
 

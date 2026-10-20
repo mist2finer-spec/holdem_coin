@@ -179,7 +179,7 @@ function LobbyScreen({
               <div className="text-slate-300">
                 8인 NL 텍사스 홀덤<br/>
                 SB 100 / BB 200<br/>
-                시작 스택: 20,000
+                시작 스택: 5,000
               </div>
             </div>
             <div className="bg-slate-900/70 rounded p-2 border border-amber-800/40">

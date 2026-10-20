@@ -5,10 +5,11 @@ import { RPG_BOT_POOL, individualLivePersona, type BotPersona } from './personas
 import { classifyHandTier } from './equity-engine';
 import type { SelfPlayTrainer } from './self-play-trainer';
 import { positionContext } from './poker-position';
+import { stackContext } from './poker-stack';
 
 export const LIVE_RULES = Object.freeze({
-  version: "1.4.0",
-  seats: 8, smallBlind: 100, bigBlind: 200, buyIn: 20000,
+  version: "1.5.0",
+  seats: 8, smallBlind: 100, bigBlind: 200, buyIn: 5000,
   botCashOut: 100000, userSeconds: 10, maxActions: 256,
   botThinkMin: 700, botThinkJitter: 900, actionPause: 800, resultPause: 5000,
 });
@@ -91,7 +92,7 @@ export function decideLiveBot(trainer: SelfPlayTrainer, ctx: {
   const nn = trainer.decideActionForLive(actor.holeCards, board, call, ctx.minRaise, ctx.maxRaise,
     livePot, actor.stack, actor.currentBet, seats.filter(s => s.inHand && !s.folded).length - 1,
     actor.seatId, seats.length, ctx.raiseLevel, ctx.button, persona,
-    { actorId: actor.seatId, position: positionContext(seats, actor.seatId, ctx.button, ctx.checkedThisStreet),
+    { actorId: actor.seatId, stack: stackContext(seats, actor.seatId), position: positionContext(seats, actor.seatId, ctx.button, ctx.checkedThisStreet),
       seats: seats.map(({seatId,stack,currentBet,totalBet,inHand,folded,allIn}) => ({seatId,stack,currentBet,totalBet,inHand,folded,allIn})) });
   const decision = mapLiveDecision(nn, call, actor.stack, actor.currentBet);
   const highest = actor.currentBet + call;

@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { TrainingPanel } from "./TrainingPanel";
 import { evaluateBestHand, scoreToCategoryName } from "@/lib/poker-engine";
-import { STRATEGY_PROFILES, StrategyType } from "@/lib/personas";
 
 interface Props {
   userName: string;
@@ -62,7 +61,6 @@ export function PokerTable({ userName, onToast }: Props) {
     bigBlindSeat,
     preAction,
     setPreActionQ,
-    currentStrategy,
     trainingStats,
     setTrainingMode,
     resetTraining,
@@ -128,16 +126,7 @@ export function PokerTable({ userName, onToast }: Props) {
           <span className="text-rose-200 text-[9px] font-bold">POT</span>
           <span className="text-amber-200 text-[11px] font-bold ml-1 tabular-nums">{livePot.toLocaleString()}</span>
         </div>
-        {/* ★ AI 전략 표시 (5핸드마다 로테이션) */}
-        <div
-          className={`bg-gradient-to-r ${STRATEGY_PROFILES[currentStrategy as StrategyType].color} border border-amber-300 rounded-full px-2 py-0.5 backdrop-blur-sm shadow-lg`}
-          title="테이블 분위기는 각 캐릭터의 고유 성향에 소폭 보정됩니다."
-        >
-          <span className="text-[10px]">{STRATEGY_PROFILES[currentStrategy as StrategyType].emoji}</span>
-          <span className="text-amber-50 text-[10px] font-bold ml-1">
-            테이블: {STRATEGY_PROFILES[currentStrategy as StrategyType].name}
-          </span>
-        </div>
+
       </div>
 
       {/* 테이블 (타원형) */}
@@ -633,13 +622,13 @@ export function PokerTable({ userName, onToast }: Props) {
             <div className="text-amber-300 text-xl font-black mb-2">참여할 칩이 부족합니다</div>
             <div className="text-amber-200/70 text-sm mb-6">
               다음에 또 오세요!<br/>
-              리바인하면 다음 핸드에 20,000칩으로 참여합니다.
+              리바인하면 다음 핸드에 5,000칩으로 참여합니다.
             </div>
             <Button
               onClick={dismissBust}
               className="bg-gradient-to-b from-amber-500 to-amber-700 hover:from-amber-400 hover:to-amber-600 text-amber-950 font-black text-base py-3 px-8 border-2 border-amber-300 shadow-lg rounded-xl"
             >
-              💰 리바인하기 (20,000칩)
+              💰 리바인하기 (5,000칩)
             </Button>
           </div>
         </div>
