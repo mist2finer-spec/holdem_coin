@@ -308,3 +308,34 @@ frequency weights remain heuristic estimates.
 Private hand audits include the public three-bet read and last-raiser seat.
 These are stripped from regular player histories with the other CPU audit
 fields. No uploaded raw history or private player identifier is committed.
+
+## Human-specific private call referee (1.12.0)
+
+At the owner's request, an additional balancing rule deliberately uses the
+human aggressor's PRIVATE hole cards. This is privileged-information assistance,
+not ordinary range-based poker AI: even a boolean derived from private cards
+contains hidden information. Existing range estimates remain in place.
+
+After all normal preflop entry, short-stack and trainer gates, a proposed FOLD
+may become a CALL when the last raiser is human, the CPU's estimated heads-up
+equity against that human is at least 46%, and its projected call EV after 5%
+rake is positive. It covers opens, three-bets and subsequent raises, including
+OOP human aggressors, at every stack depth. It never changes existing calls or
+raises, generates a new raise, targets a CPU raiser, or runs postflop.
+A stack-sized call is represented as all-in without increasing the wager.
+
+The referee uses 1,024 bounded deterministic simulated runouts, counts ties as
+half a heads-up win, and never reads the real deck or future board. Thus 46%
+is a threshold on a sampled estimate, not exact enumerated equity. Other live
+opponents' actual cards are ignored: they receive modeled open-range hands,
+and conservative projected calls are evaluated separately for each eligible
+contribution layer. Uncallable excess and other players' side pots cannot inflate
+the CPU's expected award. A favorable heads-up comparison can still fail the
+multiway/price check; no postflop winnings are guaranteed by this preflop EV.
+
+Only the referee's boolean is passed to the decision wrapper, not the human
+cards or equity. Neither is newly sent to the model, public state, or public
+history. The existing protected admin export still contains completed private
+hands. A private audit route `human-equity-call-defense` identifies accepted
+fallbacks. Both single and server modes use this shared policy. The cache has
+at most 128 entries and is in memory only; no training or storage growth occurs.

@@ -7,7 +7,7 @@ import type { stackContext } from './poker-stack';
 // This is an equity estimator, not a GTO solver or knowledge of opponents' cards.
 const cache=new Map<string,number>();
 export type OpponentRange = 'open' | 'jam-call' | 'three-bet' | 'four-bet-call' | 'wide-three-bet';
-function inRange(hole: Card[], range: OpponentRange) {
+export function matchesOpponentRange(hole: Card[], range: OpponentRange) {
   const ranks=hole.map(c=>'23456789TJQKA'.indexOf(c.rank)).sort((a,b)=>b-a);
   const [high,low]=ranks, suited=hole[0].suit===hole[1].suit;
   // Deeper three-bettors continue against a four-bet with a tighter range.
@@ -47,7 +47,7 @@ export function estimateEquity(hole: Card[], board: Card[], opponents: number, s
       // depleted deck has no matching pair. Never inspect actual opponent cards.
       for(let attempt=0;attempt<64;attempt++) {
         a=Math.floor(random()*cards.length);b=Math.floor(random()*(cards.length-1));if(b>=a)b++;
-        if(inRange([cards[a],cards[b]],opponentRange))break;
+        if(matchesOpponentRange([cards[a],cards[b]],opponentRange))break;
       }
       const result=[cards[a],cards[b]];
       cards.splice(Math.max(a,b),1);cards.splice(Math.min(a,b),1);return result;

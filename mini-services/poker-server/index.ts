@@ -4,6 +4,7 @@ import {HandHistoryStore,authorizedHistory} from './hand-history-store.ts';
 import {publicHandHistory,type HandHistory,type HandAction} from '../../src/lib/poker-hand-history.ts';
 import path from 'node:path';
 import { LIVE_RULES, handPositions, postBlind, normalizeLiveAction, applyLiveAction, mapLiveDecision, decideLiveBot } from "../../src/lib/poker-live.ts";
+import {allowHumanDefense} from '../../src/lib/poker-human-defense.ts';
 import { BluffAggression, successfulBluff, bluffTaunt } from "../../src/lib/poker-bluff.ts";
 import { settleHand, bettingLocked, hasBettingOpponent, dealNextStreet, WinnerInfo } from "../../src/lib/poker-rules.ts";
 // ============================================================
@@ -763,6 +764,8 @@ export class HybridHoldemRoom {
         smallBlind: this.state.smallBlindSeat, bigBlind: this.state.bigBlindSeat,
         hand: this.state.handNumber, raiseLevel: this.state.raiseLevel,
         checkedThisStreet,
+        allowHumanCall:()=>allowHumanDefense({seats:this.state.seats,actorId:actor.seatId,
+          humanId:this.state.lastAggression?.seatId,board:this.state.board,raiseLevel:this.state.raiseLevel}),
         lastRaiserSeat:this.state.lastAggression?.seatId,
         threeBetRead:this.state.lastAggression ? this.opponentModel.read(this.opponentKey(this.state.lastAggression.seatId)) : undefined,
         onAudit:audit=>{this.pendingAudit=audit;},

@@ -3,6 +3,7 @@ import {OpponentModel} from "@/lib/poker-opponent-model";
 import {minimumRaiseTo} from "@/lib/poker-sizing";
 /* eslint-disable react-hooks/immutability -- The imperative game loop and trainer expose mutable objects; callbacks run after render. */
 import { LIVE_RULES, handPositions, postBlind, normalizeLiveAction, applyLiveAction, decideLiveBot } from "@/lib/poker-live";
+import {allowHumanDefense} from '@/lib/poker-human-defense';
 import { BluffAggression, successfulBluff, bluffTaunt } from "@/lib/poker-bluff";
 import { settleHand, bettingLocked, hasBettingOpponent, dealNextStreet, WinnerInfo } from "@/lib/poker-rules";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -416,6 +417,8 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
           smallBlind: st.smallBlindSeat, bigBlind: st.bigBlindSeat,
           hand: st.handNumber, raiseLevel: st.raiseLevel,
           checkedThisStreet: checkedThisStreet.has(actor.seatId),
+          allowHumanCall:()=>allowHumanDefense({seats:st.seats,actorId:actor.seatId,
+            humanId:st.lastAggression?.seatId,board:st.board,raiseLevel:st.raiseLevel}),
           lastRaiserSeat:st.lastAggression?.seatId,
           threeBetRead:st.lastAggression ? opponentModel.current.read(opponentKey(st.seats[st.lastAggression.seatId])) : undefined,
           limpedPreflop: limpedPreflop.has(actor.seatId), previousStreetAggressor,

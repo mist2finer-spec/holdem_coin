@@ -10,7 +10,7 @@ import { stackContext } from './poker-stack';
 import { planPreflop } from './poker-preflop';
 
 export const LIVE_RULES = Object.freeze({
-  version: "1.11.0",
+  version: "1.12.0",
   seats: 8, smallBlind: 100, bigBlind: 200, buyIn: 5000,
   botCashOut: 100000, userSeconds: 10, maxActions: 256,
   botThinkMin: 700, botThinkJitter: 900, actionPause: 800, resultPause: 5000,
@@ -87,6 +87,7 @@ export function decideLiveBot(trainer: SelfPlayTrainer, ctx: {
   button: number; smallBlind: number; bigBlind: number; hand: number; raiseLevel: number;
   threeBetRead?: {opportunities:number;rate:number;looseness:number}; lastRaiserSeat?:number;
   checkedThisStreet?: boolean;
+  allowHumanCall?: () => boolean;
   onAudit?: (audit: Record<string, unknown>) => void;
   limpedPreflop?:boolean; previousStreetAggressor?:number|null; openedPreflop?:boolean;
 }): LiveAction {
@@ -103,6 +104,12 @@ export function decideLiveBot(trainer: SelfPlayTrainer, ctx: {
   let decision=plan.decision;
   let decisionPath=decision ? "preflop-plan" : "trainer";
   const finish=(action:LiveAction)=>{
+    // Final fallback covers every preflop fold path, including hard entry gates.
+    // The private referee supplies a boolean only; never cards or future boards.
+    if(action.action==='fold' && board.length===0 && ctx.raiseLevel>=1 && call>0 && ctx.allowHumanCall?.()) {
+      decisionPath='human-equity-call-defense';
+      action={action:call>=actor.stack?'allin':'call',amount:Math.min(call,actor.stack)};
+    }
     ctx.onAudit?.({decisionPath,threeBetRead:ctx.threeBetRead,lastRaiserSeat:ctx.lastRaiserSeat,personaId:actor.persona?.id,vpip:persona.vpip,aggression:persona.aggression,
       bluffFreq:persona.bluffFreq,isOOP:context.position.isOOP,effectiveStack:context.stack.effectiveStack,
       stackEquityPremium:context.stack.equityPremium,openedPreflop:!!ctx.openedPreflop,
