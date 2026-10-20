@@ -96,7 +96,7 @@ export function PokerTable({ userName, onToast }: Props) {
   };
 
   return (
-    <div className="w-full h-screen relative overflow-hidden bg-gradient-to-b from-slate-950 via-emerald-950 to-slate-950">
+    <div className="w-full h-dvh min-h-[480px] relative grid grid-rows-[minmax(0,1fr)_auto] overflow-hidden bg-gradient-to-b from-slate-950 via-emerald-950 to-slate-950">
       {/* 배경 장식: 돌벽 + 횃불 */}
       <div className="absolute inset-0 opacity-30 pointer-events-none"
         style={{
@@ -129,8 +129,8 @@ export function PokerTable({ userName, onToast }: Props) {
       </div>
 
       {/* 테이블 (타원형) */}
-      <div className="absolute inset-0 flex items-center justify-center pt-12 pb-32 sm:pb-28">
-        <div className="relative w-[min(98vw,1100px)] h-[min(72vh,640px)] sm:h-[min(85vh,640px)]">
+      <div className="relative min-h-0 flex items-center justify-center pt-20 pb-20 sm:pt-24 sm:pb-24">
+        <div className="relative w-[min(98vw,1100px)] h-full max-h-[640px]">
           {/* 테이블 외곽 (나무 테두리) */}
           <div className="absolute inset-0 rounded-[50%] bg-gradient-to-br from-amber-950 via-amber-900 to-amber-950 shadow-[0_0_60px_rgba(0,0,0,0.8),inset_0_0_30px_rgba(0,0,0,0.6)]" />
           <div className="absolute inset-2 sm:inset-3 rounded-[50%] bg-gradient-to-br from-emerald-900 via-emerald-950 to-emerald-900 shadow-[inset_0_0_50px_rgba(0,0,0,0.7)] border-2 border-amber-700/40" />
@@ -240,7 +240,7 @@ export function PokerTable({ userName, onToast }: Props) {
       </div>
 
       {/* 하단 액션 패널 (유저 전용) */}
-      <div className="absolute bottom-0 left-0 right-0 z-20 p-1.5 sm:p-3 bg-gradient-to-t from-slate-950 via-slate-950/95 to-transparent">
+      <div className="relative z-20 p-1.5 sm:p-3 pb-[max(0.375rem,env(safe-area-inset-bottom))] bg-gradient-to-t from-slate-950 via-slate-950/95 to-transparent">
         <div className="max-w-3xl mx-auto">
           {isUserTurn ? (
             <div className="bg-slate-900/95 border-2 border-amber-600 rounded-xl p-2 sm:p-3 shadow-2xl backdrop-blur-md">

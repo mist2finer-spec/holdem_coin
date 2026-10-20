@@ -12,10 +12,11 @@ export function PokerActionButtons({currentBet,call,stack,minRaise,maxRaise,pot,
     const size=potFractionSizing(currentBet,call,stack,minRaise,maxRaise,pot,fraction);
     return <button type="button" disabled={!size.canRaise}
       onClick={()=>onSubmit(size.allIn?'allin':'raise',size.allIn?stack:size.target)}
-      title={`${label} · 총 ${size.target.toLocaleString()}칩${size.allIn?' · ALL-IN':''} (최소 레이즈·잔고 제한 적용)`}
+      title={`${label} · 총 ${size.target.toLocaleString()}칩${size.allIn?' · ALL-IN':''} (현재 팟 기준 · 최소 ${minRaise.toLocaleString()}칩)`}
       className={`${button} bg-sky-800 hover:bg-sky-700 border-sky-500 text-sky-50`}>
       <span className="block">{label}</span>
-      <span className="block text-[9px] sm:text-xs opacity-90">{size.allIn?'ALL-IN · ':''}{size.target.toLocaleString()}</span>
+      <span className="block text-[9px] sm:text-xs opacity-90">{size.allIn?'ALL-IN · ':'총 '}{size.target.toLocaleString()}</span>
+      {size.belowMinimum&&<span className="block text-[8px] sm:text-[10px]">최소 {minRaise.toLocaleString()}</span>}
     </button>;
   };
   return <div className="grid grid-cols-4 grid-rows-2 gap-1.5 sm:gap-2 my-2" aria-label="배팅 액션">

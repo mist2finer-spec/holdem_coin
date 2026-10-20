@@ -34,16 +34,22 @@ test('short-stack multiplier clamps to the full available total and permits exac
   assert.equal(max.target,4973);assert.equal(max.allIn,true);
 });
 
-test('pot shortcuts use post-call pot and street totals, enforcing minimums and stack caps without rake',()=>{
+test('pot shortcuts use only the displayed pot, disabling undersized raises without silently inflating amounts',()=>{
   for(const [fraction,expected] of [[.25,400],[.5,800],[.75,1200]])
     assert.equal(potFractionSizing(0,0,5000,200,5000,1600,fraction).target,expected);
-  assert.equal(potFractionSizing(200,400,4800,1200,5000,1800,.25).target,1200);
-  assert.equal(potFractionSizing(200,400,4800,1200,5000,1800,.5).target,1700);
-  assert.equal(potFractionSizing(200,400,4800,1200,5000,1800,.75).target,2250);
+  for(const [fraction,expected] of [[.25,500],[.5,1000],[.75,1500]])
+    assert.equal(potFractionSizing(0,0,5000,200,5000,2000,fraction).target,expected);
+  const quarter=potFractionSizing(200,400,4800,1200,5000,1800,.25);
+  const half=potFractionSizing(200,400,4800,1200,5000,1800,.5);
+  const threeQuarter=potFractionSizing(200,400,4800,1200,5000,1800,.75);
+  assert.equal(quarter.target,450);assert.equal(quarter.canRaise,false);assert.equal(quarter.belowMinimum,true);
+  assert.equal(half.target,900);assert.equal(half.canRaise,false);
+  assert.equal(threeQuarter.target,1350);assert.equal(threeQuarter.canRaise,true);
   const capped=potFractionSizing(100,100,500,400,600,10000,.25);
-  assert.deepEqual(capped,{target:600,canRaise:true,allIn:true});
-  const short=potFractionSizing(100,100,250,400,350,300,.25);
-  assert.deepEqual(short,{target:350,canRaise:true,allIn:true});
+  assert.equal(capped.target,600);assert.equal(capped.canRaise,true);assert.equal(capped.allIn,true);
+  const short=potFractionSizing(100,100,250,400,350,2000,.25);
+  assert.equal(short.target,350);assert.equal(short.canRaise,true);assert.equal(short.allIn,true);
+  assert.equal(potFractionSizing(100,100,5000,400,600,10000,.25).allIn,false);
   assert.equal(potFractionSizing(0,600,500,1200,500,2000,.75).canRaise,false);
 });
 

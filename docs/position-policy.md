@@ -355,3 +355,19 @@ to the existing house minimum and available total chips; a capped target is
 submitted as all-in using the remaining stack. Fractions are therefore adjusted
 when below the legal minimum or above the stack, and rake never enters sizing.
 The custom slider remains available below the shared grid.
+
+## Layout and displayed-pot correction (1.12.2)
+
+This supersedes the post-call formula above. Pot shortcuts now use exactly
+floor(displayedLivePot * fraction) as the street-total target, without adding
+the call or previous wager. A target below the house minimum is disabled and
+shows the minimum instead of silently becoming a larger bet. Available-stack
+capping remains allowed and is explicitly labeled ALL-IN when it consumes the
+actual remaining stack. For a displayed pot of 2,000, the requested totals are
+500, 1,000 and 1,500; chips already committed on this street are not charged twice.
+
+Both table modes now use a dynamic-viewport two-row grid. The action panel
+occupies its own normal-flow row; the table shrinks into the remaining space,
+with vertical seat clearance. This replaces overlapping absolute positioning.
+Short viewports can scroll the 480px minimum-height page; mobile bottom safe-area
+padding prevents the home indicator covering the action panel.
