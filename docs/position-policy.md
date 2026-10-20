@@ -1,4 +1,4 @@
-# Live bot position policy (rules 1.8.0)
+# Live bot position policy (rules 1.8.1)
 
 Single-player and multiplayer both call `decideLiveBot`. Position is computed
 from public seat status, clockwise after the button, skipping folded, inactive
@@ -214,3 +214,23 @@ substitute an unopened-pot push chart for a three-bet defense range or claim a
 Nash solution. Existing preflop tiers classify 88–TT as TWO_PAIR_PLUS, 55–77 as
 TOP_PAIR, and 22–44 as WEAK_PAIR; the policy does not assume all medium pairs
 share a hard fold mask. Actual fold rates depend on the full scenario.
+
+## Stack bands (1.8.1)
+
+Starting chips (remaining stack + hand contribution) select a stable band:
+
+| Chips | VPIP delta | Aggression delta | Bluff delta | Equity premium |
+| --- | --- | --- | --- | --- |
+| <=1,000 (5BB) | -.16 | 0 | -.05 | .10 |
+| 1,001–2,000 | -.12 | 0 | -.04 | .08 |
+| 2,001–5,000 | -.08 | 0 | -.03 | .06 |
+| 5,001–10,000 | -.04 | 0 | -.02 | .04 |
+| 10,001–15,000 | -.02 | 0 | -.01 | .02 |
+| >15,000 and <25,000 | 0 | 0 | 0 | 0 |
+| >=25,000 | 0 | +.08 | 0 | 0 |
+
+Below 5BB stays in the most restrictive band, without a chip top-up or forced
+all-in. At exactly 25,000 the additive aggression boost starts; existing .95
+clamping and character differences remain. It does not automatically increase
+VPIP or bluff frequency. Shared live decisions apply this in both modes. Existing
+<=5,000 reshove eligibility and effective-stack/deep-vs-deep EV protection remain.

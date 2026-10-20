@@ -147,21 +147,26 @@ test('OOP mixtures depend on character aggression and wet board texture', () => 
   assert.ok(oopCheckMix(calm, 4, 3, dry) > oopCheckMix(calm, 4, 1, dry));
 });
 
-test('five stack bands narrow entry as chips decrease without reducing value aggression', () => {
-  const amounts = [2500, 5000, 10000, 15000, 35000];
-  const profiles = amounts.map(chips => applyStackTraits({vpip:0.4,aggression:0.6,bluffFreq:0.2}, chips));
-  amounts.forEach((chips,i) => assert.equal(stackBand(chips).limit, chips));
-  assert.equal(stackBand(2501).limit, 5000);
-  assert.equal(stackBand(5001).limit, 10000);
-  assert.equal(stackBand(10001).limit, 15000);
-  assert.equal(stackBand(15001).limit, 35000);
-  assert.equal(stackBand(50000).limit, 35000);
+test('stack bands tighten low-chip entry and boost aggression starting at exactly 25k', () => {
+  const amounts = [1000, 2000, 5000, 10000, 15000, 24999];
+  const persona = {vpip:0.4,aggression:0.6,bluffFreq:0.2};
+  const profiles = amounts.map(chips => applyStackTraits(persona, chips));
+  const boundaries = [[0,1000],[1000,1000],[1001,2000],[2000,2000],[2001,5000],
+    [5000,5000],[5001,10000],[10000,10000],[10001,15000],[15000,15000],
+    [15001,25000],[24999,25000],[25000,Infinity],[25001,Infinity],[50000,Infinity]];
+  for (const [chips,limit] of boundaries) assert.equal(stackBand(chips).limit, limit);
   for (let i=1;i<profiles.length;i++) {
     assert.ok(profiles[i].vpip > profiles[i-1].vpip);
     assert.equal(profiles[i].aggression, profiles[i-1].aggression);
     assert.ok(profiles[i].bluffFreq > profiles[i-1].bluffFreq);
     assert.ok(stackBand(amounts[i]).equity < stackBand(amounts[i-1]).equity);
   }
+  const deep = applyStackTraits(persona,25000);
+  assert.ok(Math.abs(deep.aggression - 0.68) < 1e-10);
+  assert.equal(deep.vpip,profiles.at(-1)!.vpip);
+  assert.equal(deep.bluffFreq,profiles.at(-1)!.bluffFreq);
+  assert.equal(applyStackTraits({...persona,aggression:0.93},25000).aggression,0.95);
+  assert.equal(applyStackTraits(persona,1000).aggression,persona.aggression);
 });
 
 test('short 66/77 mix strong raises and positive-EV jams against a 2.5BB open', () => {
