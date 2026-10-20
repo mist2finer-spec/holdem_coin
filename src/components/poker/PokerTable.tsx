@@ -1,4 +1,5 @@
 "use client";
+import "./poker-layout.css";
 import { useState, useMemo } from "react";
 import {PokerActionButtons} from "./PokerActionButtons";
 import {clampRaiseTo} from "@/lib/poker-sizing";
@@ -96,7 +97,7 @@ export function PokerTable({ userName, onToast }: Props) {
   };
 
   return (
-    <div className="w-full h-dvh min-h-[480px] relative grid grid-rows-[minmax(0,1fr)_auto] overflow-hidden bg-gradient-to-b from-slate-950 via-emerald-950 to-slate-950">
+    <div className="poker-table-layout w-full relative overflow-hidden bg-gradient-to-b from-slate-950 via-emerald-950 to-slate-950">
       {/* 배경 장식: 돌벽 + 횃불 */}
       <div className="absolute inset-0 opacity-30 pointer-events-none"
         style={{

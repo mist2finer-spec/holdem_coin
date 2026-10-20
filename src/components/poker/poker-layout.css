@@ -1,0 +1,15 @@
+/* Always reserve the expanded controls space, including while waiting.
+   svh also prevents mobile address-bar changes from resizing the table. */
+.poker-table-layout {
+  display: grid;
+  height: 100svh;
+  min-height: 540px;
+  grid-template-rows: minmax(0, 1fr) calc(252px + env(safe-area-inset-bottom, 0px));
+}
+
+@media (min-width: 640px) {
+  .poker-table-layout {
+    min-height: 640px;
+    grid-template-rows: minmax(0, 1fr) calc(312px + env(safe-area-inset-bottom, 0px));
+  }
+}

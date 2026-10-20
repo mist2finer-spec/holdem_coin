@@ -55,6 +55,7 @@ server.log
 # 테스트 스크린샷
 *.png
 !public/*.png
+!public/ui-buttons/*.png
 !src/**/*.png
 
 

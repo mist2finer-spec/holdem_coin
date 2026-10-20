@@ -371,3 +371,17 @@ occupies its own normal-flow row; the table shrinks into the remaining space,
 with vertical seat clearance. This replaces overlapping absolute positioning.
 Short viewports can scroll the 480px minimum-height page; mobile bottom safe-area
 padding prevents the home indicator covering the action panel.
+
+## Stable table and uploaded button skins (1.12.3)
+
+Both modes reserve the same controls row on every turn: 252px on mobile and
+312px on wider screens, plus bottom safe-area clearance. Waiting, pre-actions,
+showdown and the full betting panel no longer change the table's dimensions.
+The root uses the small viewport height (svh) so mobile address-bar expansion
+does not repeatedly grow and shrink the playing area. Short screens retain a
+scrollable minimum page height to keep seats and controls readable.
+
+The supplied red, blue and purple PNGs are shared by both action panels. Red
+marks fold/all-in, blue marks check/call, and purple marks raises/pot fractions.
+Hover only changes brightness; there is no scale or press movement. Existing
+action handlers, 2X default, sizing rules and disabled states are preserved.

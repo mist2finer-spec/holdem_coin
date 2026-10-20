@@ -1,4 +1,5 @@
 "use client";
+import "./poker-layout.css";
 import { useEffect, useRef, useState } from "react";
 import {PokerActionButtons} from "./PokerActionButtons";
 import {clampRaiseTo} from "@/lib/poker-sizing";
@@ -109,7 +110,7 @@ export function PokerTableSocket({ userName, onToast }: Props) {
   }
 
   return (
-    <div className="w-full h-dvh min-h-[480px] relative grid grid-rows-[minmax(0,1fr)_auto] overflow-hidden bg-gradient-to-b from-slate-950 via-emerald-950 to-slate-950">
+    <div className="poker-table-layout w-full relative overflow-hidden bg-gradient-to-b from-slate-950 via-emerald-950 to-slate-950">
       {updateAvailable && (
         <div role="status" className="absolute top-10 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 rounded-lg border border-amber-500 bg-slate-950 px-4 py-2 text-sm text-amber-100 shadow-lg">
           <span>새 버전이 배포되었습니다. 진행 중인 핸드를 마친 뒤 화면을 업데이트하세요.</span>
