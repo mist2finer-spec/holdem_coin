@@ -65,3 +65,31 @@ Stage Summary:
 - 한영 병기: "Player · 플레이어", "LEADERBOARD · 리더보드", "더 보기 · Show more", "접기 · Collapse"
 - 골드 카지노 톤: linear-gradient(#ffe27a → #d4a017 → #8b6914) gold text, 검정/갈색 그라데이션 배경, Leaderboard_1_x4.png를 border-image로 사용
 - 완전 분리: Leaderboard 컴포넌트는 Chip 컴포넌트를 import하지 않음 (사용자 선택에 따라 독립 사용 가능)
+
+---
+Task ID: git-push-attempt
+Agent: main (GLM)
+Task: 새로 생성된 UI 파일(Leaderboard.tsx + 칩 10장 등)을 GitHub 저장소의 feature/new-ui-assets 브랜치로 push
+
+Work Log:
+- git status 진단: working tree clean → 이전 자동 커밋(2ee5d26, UUID 메시지)에 이미 모든 UI 파일이 main 브랜치로 들어가 있었음
+- git remote -v 진단: 빈 출력 → origin remote 설정 자체가 없음
+- Step 1: git checkout -b feature/new-ui-assets → 성공 (브랜치 생성됨)
+- Step 2: git add src/ui/ → 성공하지만 변경사항 없음 (이미 main에 커밋됨)
+- Step 3 (첫 시도): git commit → "nothing to commit, working tree clean" 에러
+- 해결: git reset --soft HEAD~1 로 자동 커밋을 staging area로 되돌린 후, 사용자 지정 메시지로 재커밋
+- Step 3 (재시도): git commit -m "feat(ui): 리더보드 UI 컴포넌트 추가 및 칩 스프라이트 이미지 분할 적용" → 성공 (commit 8f2ab30, 34 files, 2092 insertions)
+- Step 4: git push origin feature/new-ui-assets → 실패
+  - 에러: "fatal: 'origin' does not appear to be a git repository"
+  - 원인 진단:
+    * git remote -v → 완전히 빈 출력 (origin remote가 전혀 설정되지 않음)
+    * ~/.ssh/ → id_rsa / id_ed25519 키 없음
+    * gh CLI → 설치되지 않음
+    * credential.helper → 설정되지 않음
+    * 환경변수 GITHUB_TOKEN / GH_TOKEN → 없음
+    * .env 파일 → DATABASE_URL만 있고 GitHub 관련 설정 없음
+
+Stage Summary:
+- 로컬 커밋은 성공 (commit 8f2ab30, branch=feature/new-ui-assets)
+- GitHub push 불가 — remote origin 자체가 설정되어 있지 않고, 인증 수단(SSH키/GH 토큰/gh CLI)이 모두 없음
+- 사용자 액션 필요: (1) GitHub에 빈 저장소 생성 후 git remote add origin <URL>, (2) Personal Access Token 발급 후 https 인증, 또는 (3) gh CLI 설치 후 gh auth login
