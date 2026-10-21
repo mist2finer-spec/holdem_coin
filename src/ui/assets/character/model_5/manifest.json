@@ -1,0 +1,72 @@
+{
+  "model_id": "model_5",
+  "display_name": "Green Slime",
+  "display_name_ko": "초록 슬라임",
+  "source": "/home/z/my-project/upload/model_5.jpg",
+  "source_size": [
+    2752,
+    1536
+  ],
+  "frame_size": [
+    688,
+    768
+  ],
+  "directions": [
+    "right",
+    "left"
+  ],
+  "animations": [
+    {
+      "name": "jump",
+      "direction": "right",
+      "frames": [
+        "frame_right_jump_01.png",
+        "frame_right_jump_02.png",
+        "frame_right_jump_03.png",
+        "frame_right_jump_04.png",
+        "frame_right_jump_05.png"
+      ],
+      "fps": 8,
+      "loop": true
+    },
+    {
+      "name": "jump",
+      "direction": "left",
+      "frames": [
+        "frame_left_jump_01.png",
+        "frame_left_jump_02.png",
+        "frame_left_jump_03.png",
+        "frame_left_jump_04.png",
+        "frame_left_jump_05.png"
+      ],
+      "fps": 8,
+      "loop": true
+    },
+    {
+      "name": "attack",
+      "direction": "right",
+      "frames": [
+        "frame_right_attack_01.png",
+        "frame_right_attack_02.png",
+        "frame_right_attack_03.png",
+        "frame_right_attack_04.png"
+      ],
+      "fps": 10,
+      "loop": false
+    },
+    {
+      "name": "attack",
+      "direction": "left",
+      "frames": [
+        "frame_left_attack_01.png",
+        "frame_left_attack_02.png",
+        "frame_left_attack_03.png",
+        "frame_left_attack_04.png"
+      ],
+      "fps": 10,
+      "loop": false
+    }
+  ],
+  "sprite_sheet": "sprite_sheet.png",
+  "sprite_sheet_layout": "4 rows × 5 cols (alternating right/left per animation)"
+}

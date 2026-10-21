@@ -1,0 +1,74 @@
+{
+  "model_id": "model_3",
+  "display_name": "Valkyrie",
+  "display_name_ko": "발키리",
+  "source": "/home/z/my-project/upload/model_3.jpg",
+  "source_size": [
+    3584,
+    1184
+  ],
+  "frame_size": [
+    716,
+    592
+  ],
+  "directions": [
+    "right",
+    "left"
+  ],
+  "animations": [
+    {
+      "name": "run",
+      "direction": "right",
+      "frames": [
+        "frame_right_run_01.png",
+        "frame_right_run_02.png",
+        "frame_right_run_03.png",
+        "frame_right_run_04.png",
+        "frame_right_run_05.png"
+      ],
+      "fps": 14,
+      "loop": true
+    },
+    {
+      "name": "run",
+      "direction": "left",
+      "frames": [
+        "frame_left_run_01.png",
+        "frame_left_run_02.png",
+        "frame_left_run_03.png",
+        "frame_left_run_04.png",
+        "frame_left_run_05.png"
+      ],
+      "fps": 14,
+      "loop": true
+    },
+    {
+      "name": "run_b",
+      "direction": "right",
+      "frames": [
+        "frame_right_run_b_01.png",
+        "frame_right_run_b_02.png",
+        "frame_right_run_b_03.png",
+        "frame_right_run_b_04.png",
+        "frame_right_run_b_05.png"
+      ],
+      "fps": 14,
+      "loop": true
+    },
+    {
+      "name": "run_b",
+      "direction": "left",
+      "frames": [
+        "frame_left_run_b_01.png",
+        "frame_left_run_b_02.png",
+        "frame_left_run_b_03.png",
+        "frame_left_run_b_04.png",
+        "frame_left_run_b_05.png"
+      ],
+      "fps": 14,
+      "loop": true
+    }
+  ],
+  "sprite_sheet": "sprite_sheet.png",
+  "sprite_sheet_layout": "4 rows × 5 cols (alternating right/left per animation)"
+}

@@ -179,3 +179,59 @@ Stage Summary:
 - 배경 투명화: chroma key + alpha edge feathering (1.5px Gaussian blur)
 - Canvas API 사용 (DOM 조작 아님)으로 60fps 부드러운 애니메이션
 - 키보드 + 버튼 양쪽 제어 지원
+
+---
+Task ID: model-2-3-4-5-animations
+Agent: main (GLM)
+Task: 업로드된 4개 캐릭터 스프라이트 시트(model_2 해골, model_3 발키리, model_4 중갑 기사, model_5 슬라임)를 처리하여 애니메이션 에셋 + 좌측 방향 반전 + 각 모델별 데모 HTML 생성
+
+Work Log:
+- 업로드 자산 분석:
+  - model_2.jpg: 2752x1536 (해골 전사, walk + walk 변형, 5x2 = 10프레임)
+  - model_3.jpg: 3584x1184 (발키리, run + run 변형, 5x2 = 10프레임)
+  - model_4.jpg: 2912x1440 (중갑 기사, walk + attack, 5x2 = 10프레임)
+  - model_5.jpg: 2752x1536 (슬라임, jump 5프레임 + attack 4프레임 = 9프레임, 비정형 그리드)
+- VLM 분석으로 각 행의 동작 정확히 식별 (model_4만 1행 walk / 2행 attack으로 다른 동작, 나머지는 같은 동작의 변형)
+- gen_character_sprites_v2.py 작성 (model_1 스크립트의 일반화 버전):
+  - ModelSpec dataclass로 per-model 설정 (grid, source_size, animations, bg_threshold, row_cell_sizes)
+  - 비정형 그리드 지원 (model_5: row0=550x768 5프레임, row1=688x768 4프레임)
+  - 배경 제거: 어두운 배경(luminance < 140) → alpha=0, 가장자리 1.0px Gaussian blur feathering
+  - 좌우 반전: PIL FLIP_LEFT_RIGHT
+  - 통합 sprite_sheet.png (rows = animations × directions)
+- 4개 모델 처리 결과:
+  - model_2: 20 frames (10 walk + 10 walk_b, 2 anims × 2 dir), sprite_sheet 2750x3072 (812 KB)
+  - model_3: 20 frames (10 run + 10 run_b), sprite_sheet 3580x2360 (2.1 MB)
+  - model_4: 20 frames (10 walk + 10 attack), sprite_sheet 2910x2880 (884 KB)
+  - model_5: 18 frames (10 jump + 8 attack), sprite_sheet 3440x3072 (2.6 MB)
+- VLM 검증 (all_models_overview.png): 4개 캐릭터 모두 명확히 식별, 아래 행이 위 행의 정확한 좌우 반전임 확인
+- gen_model_demos.py 작성 (재작성 — Python str.format() escape 문제로 __PLACEHOLDER__ 토큰 방식으로 변경):
+  - 각 모델별 데모 HTML 템플릿 (Playground + All Animations 2패널)
+  - 키보드 제어 (A/D 좌우, Space 다음 동작, ←/→ 방향 전환)
+  - 한영 병기 라벨, 골드 카지노 톤
+  - ANIM_FPS / ANIM_LOOP per-anim 메타데이터
+- 4개 데모 HTML 생성: src/ui/demo/model_{2,3,4,5}_animation.html
+- character_index.html 작성: 5개 모델(model_1 포함) 카드 그리드로 한 곳에서 접근
+- 4개 standalone HTML 생성 (base64 인라인):
+  - download/character_model_2_standalone.html (3.4 MB, 42 frames)
+  - download/character_model_3_standalone.html (2.6 MB, 38 frames)
+  - download/character_model_4_standalone.html (1.7 MB, 42 frames)
+  - download/character_model_5_standalone.html (3.6 MB, 42 frames)
+- Playwright 스크린샷 5종 (각 모델 + index 페이지) — 모두 JS 에러 없이 정상 렌더링
+- VLM 검증 (각 데모): 캐릭터가 명확히 보이고, 좌/우 방향 모두 표시됨
+  - model_2: 스켈레톤 워리어 (방패+단검) ✓
+  - model_3: 발키리 (분홍 머리 + 창) ✓
+  - model_4: 중갑 기사 (전투 도끼) ✓
+  - model_5: 초록 슬라임 ✓
+
+Stage Summary:
+- 산출물 5개 카테고리:
+  1. 캐릭터 프레임 PNG: 총 78장 (model_2: 20, model_3: 20, model_4: 20, model_5: 18) + 4개 sprite_sheet.png + 4개 manifest.json
+  2. 데모 HTML: src/ui/demo/{model_2,model_3,model_4,model_5}_animation.html + character_index.html (총 5개)
+  3. standalone HTML: download/character_model_{2,3,4,5}_standalone.html (총 4개, base64 인라인)
+  4. 스크린샷: download/character_{model_2,model_3,model_4,model_5,index}_screenshot.png (총 5개)
+  5. 처리 스크립트: scripts/gen_character_sprites_v2.py, scripts/gen_model_demos.py, scripts/build_standalone_model_demos.py, scripts/screenshot_model_demos.py
+- 비정형 그리드(model_5) 지원: row_cell_sizes 옵션으로 행마다 다른 셀 크기 지정
+- 좌우 반전: PIL FLIP_LEFT_RIGHT로 정확 반전, VLM 검증 완료
+- 골드 카지노 톤 일관성: 모든 데모가 동일한 디자인 시스템 사용 (Cinzel 폰트, gold gradient text, amber 색상 팔레트)
+- 키보드 + 버튼 양쪽 제어 지원, 0.5×/1×/1.5×/2× 속도 조절, Pause/Play 토글
+- 한영 병기: 모든 라벨, 버튼, 설명에 한국어 + 영문 동시 표기

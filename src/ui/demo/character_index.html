@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HOLDEM COIN · Character Animations Index</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: radial-gradient(ellipse at top, #2b1a0d 0%, #0a0604 100%);
+    color: #fef3c7;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+  }
+  .container { max-width: 1100px; margin: 0 auto; }
+  header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  header h1 {
+    font-family: 'Cinzel', 'Georgia', serif;
+    font-size: 2.25rem;
+    background: linear-gradient(180deg, #ffe27a 0%, #d4a017 50%, #8b6914 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    letter-spacing: 0.15em;
+  }
+  header p {
+    color: rgba(252, 211, 77, 0.6);
+    font-size: 0.9rem;
+    letter-spacing: 0.3em;
+    margin-top: 0.5rem;
+  }
+  .model-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.25rem;
+  }
+  .model-card {
+    background: linear-gradient(180deg, #1a0e08 0%, #0a0604 100%);
+    border: 1px solid rgba(218, 165, 32, 0.3);
+    border-radius: 12px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.2s;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+  .model-card:hover {
+    border-color: rgba(218, 165, 32, 0.7);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(218, 165, 32, 0.2);
+  }
+  .card-preview {
+    background: linear-gradient(180deg, #2d2418 0%, #1a1208 100%);
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid rgba(218, 165, 32, 0.2);
+  }
+  .card-preview img {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+    image-rendering: pixelated;
+  }
+  .card-body {
+    padding: 1rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .card-title {
+    font-family: 'Cinzel', serif;
+    font-size: 1.1rem;
+    color: #ffe27a;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.1rem;
+  }
+  .card-title-ko {
+    font-size: 0.85rem;
+    color: rgba(252, 211, 77, 0.7);
+    margin-bottom: 0.5rem;
+  }
+  .card-desc {
+    font-size: 0.8rem;
+    color: rgba(252, 211, 77, 0.6);
+    margin-bottom: 0.75rem;
+    flex: 1;
+  }
+  .card-meta {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    font-size: 0.7rem;
+    color: rgba(252, 211, 77, 0.5);
+  }
+  .card-meta span {
+    background: rgba(218, 165, 32, 0.1);
+    border: 1px solid rgba(218, 165, 32, 0.3);
+    padding: 0.15rem 0.5rem;
+    border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .open-btn {
+    margin-top: 0.75rem;
+    background: linear-gradient(135deg, #b45309 0%, #451a03 100%);
+    border: 1px solid rgba(218, 165, 32, 0.6);
+    color: #fef3c7;
+    text-align: center;
+    padding: 0.5rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    transition: all 0.15s;
+  }
+  .model-card:hover .open-btn {
+    background: linear-gradient(135deg, #d97706 0%, #78350f 100%);
+  }
+  footer {
+    text-align: center;
+    color: rgba(252, 211, 77, 0.4);
+    font-size: 0.75rem;
+    margin-top: 3rem;
+    letter-spacing: 0.1em;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>CHARACTER ANIMATIONS</h1>
+      <p>5 캐릭터 · 5 ANIMATED MODELS · 클릭하여 데모 보기</p>
+    </header>
+
+    <div class="model-grid">
+      <!-- Model 1: Orc Warrior (original) -->
+      <a class="model-card" href="character_animation.html">
+        <div class="card-preview">
+          <img src="../assets/character/frame_right_attack_03.png" alt="Orc Warrior preview">
+        </div>
+        <div class="card-body">
+          <div class="card-title">Orc Warrior</div>
+          <div class="card-title-ko">오크 전사 · model_1</div>
+          <div class="card-desc">도끼를 휘두르는 녹색 오크 전사. 걷기 + 공격 2개 동작.</div>
+          <div class="card-meta">
+            <span>10 frames</span>
+            <span>2 anims</span>
+            <span>633×672</span>
+          </div>
+          <div class="open-btn">▶ Open Demo</div>
+        </div>
+      </a>
+
+      <!-- Model 2: Skeleton Warrior -->
+      <a class="model-card" href="model_2_animation.html">
+        <div class="card-preview">
+          <img src="../assets/character/model_2/frame_right_walk_03.png" alt="Skeleton Warrior preview">
+        </div>
+        <div class="card-body">
+          <div class="card-title">Skeleton Warrior</div>
+          <div class="card-title-ko">해골 전사 · model_2</div>
+          <div class="card-desc">방패와 단검을 든 해골 병사. 2가지 걷기 변형.</div>
+          <div class="card-meta">
+            <span>10 frames</span>
+            <span>2 anims</span>
+            <span>550×768</span>
+          </div>
+          <div class="open-btn">▶ Open Demo</div>
+        </div>
+      </a>
+
+      <!-- Model 3: Valkyrie -->
+      <a class="model-card" href="model_3_animation.html">
+        <div class="card-preview">
+          <img src="../assets/character/model_3/frame_right_run_03.png" alt="Valkyrie preview">
+        </div>
+        <div class="card-body">
+          <div class="card-title">Valkyrie</div>
+          <div class="card-title-ko">발키리 · model_3</div>
+          <div class="card-desc">분홍 머리 여전사가 창을 들고 달리는 애니메이션.</div>
+          <div class="card-meta">
+            <span>10 frames</span>
+            <span>2 anims</span>
+            <span>716×592</span>
+          </div>
+          <div class="open-btn">▶ Open Demo</div>
+        </div>
+      </a>
+
+      <!-- Model 4: Heavy Knight -->
+      <a class="model-card" href="model_4_animation.html">
+        <div class="card-preview">
+          <img src="../assets/character/model_4/frame_right_attack_03.png" alt="Heavy Knight preview">
+        </div>
+        <div class="card-body">
+          <div class="card-title">Heavy Knight</div>
+          <div class="card-title-ko">중갑 기사 · model_4</div>
+          <div class="card-desc">전투 도끼를 든 중갑 기사. 걷기 + 공격 동작.</div>
+          <div class="card-meta">
+            <span>10 frames</span>
+            <span>2 anims</span>
+            <span>582×720</span>
+          </div>
+          <div class="open-btn">▶ Open Demo</div>
+        </div>
+      </a>
+
+      <!-- Model 5: Green Slime -->
+      <a class="model-card" href="model_5_animation.html">
+        <div class="card-preview">
+          <img src="../assets/character/model_5/frame_right_attack_02.png" alt="Green Slime preview">
+        </div>
+        <div class="card-body">
+          <div class="card-title">Green Slime</div>
+          <div class="card-title-ko">초록 슬라임 · model_5</div>
+          <div class="card-desc">통통 튀는 슬라임. 점프 + 분출 공격 (비정형 9프레임).</div>
+          <div class="card-meta">
+            <span>9 frames</span>
+            <span>2 anims</span>
+            <span>688×768</span>
+          </div>
+          <div class="open-btn">▶ Open Demo</div>
+        </div>
+      </a>
+    </div>
+
+    <footer>
+      Generated by holdem_coin UI pipeline · 각 데모는 standalone HTML로도 제공됨
+    </footer>
+  </div>
+</body>
+</html>

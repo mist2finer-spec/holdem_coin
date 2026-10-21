@@ -1,0 +1,74 @@
+{
+  "model_id": "model_2",
+  "display_name": "Skeleton Warrior",
+  "display_name_ko": "해골 전사",
+  "source": "/home/z/my-project/upload/model_2.jpg",
+  "source_size": [
+    2752,
+    1536
+  ],
+  "frame_size": [
+    550,
+    768
+  ],
+  "directions": [
+    "right",
+    "left"
+  ],
+  "animations": [
+    {
+      "name": "walk",
+      "direction": "right",
+      "frames": [
+        "frame_right_walk_01.png",
+        "frame_right_walk_02.png",
+        "frame_right_walk_03.png",
+        "frame_right_walk_04.png",
+        "frame_right_walk_05.png"
+      ],
+      "fps": 10,
+      "loop": true
+    },
+    {
+      "name": "walk",
+      "direction": "left",
+      "frames": [
+        "frame_left_walk_01.png",
+        "frame_left_walk_02.png",
+        "frame_left_walk_03.png",
+        "frame_left_walk_04.png",
+        "frame_left_walk_05.png"
+      ],
+      "fps": 10,
+      "loop": true
+    },
+    {
+      "name": "walk_b",
+      "direction": "right",
+      "frames": [
+        "frame_right_walk_b_01.png",
+        "frame_right_walk_b_02.png",
+        "frame_right_walk_b_03.png",
+        "frame_right_walk_b_04.png",
+        "frame_right_walk_b_05.png"
+      ],
+      "fps": 10,
+      "loop": true
+    },
+    {
+      "name": "walk_b",
+      "direction": "left",
+      "frames": [
+        "frame_left_walk_b_01.png",
+        "frame_left_walk_b_02.png",
+        "frame_left_walk_b_03.png",
+        "frame_left_walk_b_04.png",
+        "frame_left_walk_b_05.png"
+      ],
+      "fps": 10,
+      "loop": true
+    }
+  ],
+  "sprite_sheet": "sprite_sheet.png",
+  "sprite_sheet_layout": "4 rows × 5 cols (alternating right/left per animation)"
+}
