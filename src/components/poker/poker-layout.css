@@ -108,3 +108,4 @@
  .poker-board>div>div{width:31px;height:44px}
  .poker-bet{padding:2px 4px;min-width:56px}.poker-bet-owner{font-size:8px}.poker-bet strong{font-size:12px}
 }
+.poker-board{top:40%}.poker-pot{top:50%}
