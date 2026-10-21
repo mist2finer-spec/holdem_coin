@@ -163,12 +163,12 @@ export function PokerTableSocket({ userName, onToast, tableSize=8, onMain }: Pro
 
       {/* 테이블 */}
       <div className="poker-arena relative min-h-0 flex items-center justify-center pt-20 pb-20 sm:pt-24 sm:pb-24">
-        <div className="relative w-[min(98vw,1100px)] h-full max-h-[640px]">
+        <div className="poker-table-surface relative w-[min(98vw,1100px)] h-full max-h-[640px]">
           <div className="absolute inset-0 rounded-[50%] bg-gradient-to-br from-amber-950 via-amber-900 to-amber-950 shadow-[0_0_60px_rgba(0,0,0,0.8),inset_0_0_30px_rgba(0,0,0,0.6)]" />
           <div className="absolute inset-2 sm:inset-3 rounded-[50%] bg-gradient-to-br from-emerald-900 via-emerald-950 to-emerald-900 shadow-[inset_0_0_50px_rgba(0,0,0,0.7)] border-2 border-amber-700/40" />
 
           {/* 보드 카드 */}
-          <div className="poker-board absolute top-[42%] left-1/2 -translate-x-1/2 -translate-y-1/2 flex gap-1 sm:gap-2 z-10">
+          <div className="poker-board absolute top-[40%] left-1/2 -translate-x-1/2 -translate-y-1/2 flex gap-1 sm:gap-2 z-10">
             {board.length === 0 && (
               <div className="text-amber-700/30 text-[10px] sm:text-xs italic">카드 대기중...</div>
             )}
@@ -181,7 +181,7 @@ export function PokerTableSocket({ userName, onToast, tableSize=8, onMain }: Pro
 
           {/* 팟 표시 */}
           {livePot > 0 && (
-            <div className="poker-pot absolute top-[60%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
+            <div className="poker-pot absolute top-[50%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
               <div className="bg-slate-950/85 border-2 border-amber-500/70 rounded-full px-3 py-1 sm:px-5 sm:py-1.5 backdrop-blur-sm shadow-lg">
                 <span className="text-amber-400 text-[9px] sm:text-[10px] font-bold tracking-wider">◈ POT</span>
                 <span className="text-amber-100 text-sm sm:text-base font-bold ml-1 sm:ml-2 tabular-nums">{livePot.toLocaleString()}</span>

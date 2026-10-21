@@ -87,3 +87,24 @@
  .island-seat-self .island-hole-cards>div{width:41px;height:57px}
  .poker-bet{scale:1}
 }
+/* Reference arrangement: self at six o'clock, separate named inward wager lanes. */
+.poker-bet{position:absolute;translate:-50% -50%;z-index:20;pointer-events:none;display:flex;flex-direction:column;align-items:center;min-width:66px;max-width:96px;padding:3px 7px;border:1px solid #eed286;border-radius:9px;background:#071218f5;box-shadow:0 2px 8px #000b;scale:1;line-height:1.15}
+.poker-bet-owner{display:block;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px;color:#edce81;font-weight:700}
+.poker-bet strong{display:flex;align-items:center;gap:4px;font-size:15px;color:#fff;font-variant-numeric:tabular-nums;white-space:nowrap}
+.poker-bet strong>span{color:#f5a5bb;font-size:15px}
+.poker-bet::after{content:'';position:absolute;width:12px;height:2px;background:#e0bb65;top:50%}
+.poker-bet-west::after{right:100%}.poker-bet-east::after{left:100%}
+.poker-bet-self::after,.poker-bet-north::after{width:2px;height:10px;left:50%;top:100%}.poker-bet-north::after{top:auto;bottom:100%}
+.island-seat-self .island-hole-cards{top:-65px}
+@media(max-width:639px){
+ .poker-table-surface{max-width:430px}
+ .poker-board{scale:1;gap:4px}
+ .poker-board>div>div{width:35px;height:50px}
+ .poker-bet{min-width:60px;max-width:84px;padding:3px 5px}
+ .poker-bet-owner{max-width:72px;font-size:9px}.poker-bet strong{font-size:14px}
+ .island-seat-self .island-hole-cards{top:-60px}
+}
+@media(max-width:639px) and (max-height:650px){
+ .poker-board>div>div{width:31px;height:44px}
+ .poker-bet{padding:2px 4px;min-width:56px}.poker-bet-owner{font-size:8px}.poker-bet strong{font-size:12px}
+}
