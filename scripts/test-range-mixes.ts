@@ -1,7 +1,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import type {Card} from '../src/lib/poker-engine.ts';
-import {planPreflop,connectorAllowed,connectorInfo,flatCallFrequency,limpFrequency} from '../src/lib/poker-preflop.ts';
+import {preflopPosition,planPreflop,connectorAllowed,connectorInfo,flatCallFrequency,limpFrequency} from '../src/lib/poker-preflop.ts';
 import {stackContext} from '../src/lib/poker-stack.ts';
 import {positionContext} from '../src/lib/poker-position.ts';
 import {decideLiveBot} from '../src/lib/poker-live.ts';
@@ -111,4 +111,63 @@ test('qualified connector planner folds can reach blind defense, hard gate folds
     assert.equal(decideLiveBot(forbidden,{...ctx,raiseLevel:3}).action,'fold');
     assert.equal(decideLiveBot(forbidden,{...ctx,actor:{...ctx.actor,holeCards:cards('4','6')}}).action,'fold');
   }finally {Math.random=old;}
+});
+
+
+test('premium opening stays 2.5–2.8BB and re-raises do not jump to all-in',()=>{
+ seeded(()=>{for(const rank of ['A','K','Q','J'] as const)for(let i=0;i<50;i++){
+  const s=spot(cards(rank,rank));s.stack=4800;s.maxRaise=5000;s.context.stack={...s.context.stack!,ownStack:5000};
+  const opened=planPreflop({...s,raiseLevel:0,call:0,currentBet:200,minRaise:400}).decision!;
+  assert.equal(opened.action,'raise');assert.ok(opened.amount>=500&&opened.amount<=560);
+  const three=planPreflop({...s,call:400,currentBet:200,minRaise:1200,context:{...s.context,preflopPosition:{early:false,inPositionVsRaiser:true}}}).decision!;
+  assert.equal(three.action,'raise');assert.equal(three.amount,1800);
+  const four=planPreflop({...s,stack:19400,maxRaise:20000,currentBet:600,call:1200,raiseLevel:2,minRaise:3600,
+   context:{...s.context,openedPreflop:true,stack:{...s.context.stack!,ownStack:20000}}}).decision!;
+  assert.equal(four.action,'raise');assert.equal(four.amount,3960);
+  const committed=planPreflop({...s,currentBet:600,call:1200,raiseLevel:2,minRaise:3600}).decision!;
+  assert.equal(committed.action,'call');
+ }});
+});
+
+test('UTG through UTG+2 exclude button/blinds and survive folded seats',()=>{
+ const ids=[0,1,2,3,4,5,6,7]; // BTN 7, SB 0, BB 1
+ for(const id of [2,3,4])assert.equal(preflopPosition(ids,id,7,1,0).early,true);
+ for(const id of [0,1,5,6,7])assert.equal(preflopPosition(ids,id,7,1,0).early,false);
+ assert.equal(preflopPosition(ids,7,7,1,2).inPositionVsRaiser,true);
+ assert.equal(preflopPosition(ids,0,7,1,7).inPositionVsRaiser,false);
+});
+
+test('broadways and JT flat early; IP adds mixed non-shove 3-bets including rare aggressive 87s',()=>{
+ const old=Math.random;
+ try{
+  for(const ranks of [['A','K'],['A','Q'],['K','Q'],['Q','J'],['J','T']] as const)for(const suited of [true,false]){
+   const s=spot(cards(ranks[0],ranks[1],suited));s.call=400;s.currentBet=0;s.minRaise=800;s.pot=1600;
+   s.context.preflopPosition={early:true,inPositionVsRaiser:false};Math.random=()=>0;
+   assert.equal(planPreflop(s).decision?.action,'call');
+   s.context.preflopPosition={early:false,inPositionVsRaiser:true};
+   assert.equal(planPreflop(s).decision?.action,'raise');
+   Math.random=()=>.99;assert.equal(planPreflop(s).decision?.action,'call');
+  }
+  const s=spot(cards('8','7',true));s.call=400;s.currentBet=0;s.minRaise=800;s.pot=3000;
+  s.context.preflopPosition={early:false,inPositionVsRaiser:true};
+  Math.random=()=>.079;assert.equal(planPreflop(s).decision?.action,'raise');
+  Math.random=()=>.08;assert.equal(planPreflop(s).decision?.action,'call');
+  Math.random=()=>0;assert.notEqual(planPreflop({...s,persona:{...s.persona,aggression:.50}}).decision?.action,'raise');
+ }finally{Math.random=old;}
+});
+
+test('shared live premium policy bypasses trainer jams in both modes',()=>{
+ const s=spot(cards('A','A'));s.context.seats[1].currentBet=200;
+ const forbidden={decideActionForLive:()=>{throw new Error('premiums reached shove trainer');}} as unknown as SelfPlayTrainer;
+ const d=decideLiveBot(forbidden,{actor:{...s.context.seats[0],holeCards:s.hole,persona:RPG_BOT_POOL[1]},seats:s.context.seats,
+ board:[],pot:100,minRaise:400,maxRaise:10000,button:1,smallBlind:1,bigBlind:0,hand:1,raiseLevel:0});
+ assert.equal(d.action,'raise');assert.ok(d.amount>=500&&d.amount<=560);
+});
+
+test('premium sizing does not override postflop or <=5BB emergency decisions',()=>{
+ const s=spot(cards('K','K'));
+ assert.equal(planPreflop({...s,board:cards('2','3')}).decision,null);
+ const short={...s,stack:800,maxRaise:1000,call:0,currentBet:200,raiseLevel:0,
+  context:{...s.context,stack:{...s.context.stack!,ownStack:1000}}};
+ assert.equal(planPreflop(short).decision,null);
 });

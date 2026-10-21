@@ -21,6 +21,7 @@ interface Props {
 
 export function PokerTable({ userName, onToast, onMain }: Props) {
   const {
+    leaveTable,
     seats,
     board,
     pot,
@@ -80,6 +81,7 @@ export function PokerTable({ userName, onToast, onMain }: Props) {
 
   return (
     <div className="poker-table-layout w-full relative overflow-hidden bg-gradient-to-b from-slate-950 via-emerald-950 to-slate-950">
+      <button className="poker-room-exit" onClick={()=>{leaveTable();onMain();}}>← 로비로</button>
       {/* 배경 장식: 돌벽 + 횃불 */}
       <div className="absolute inset-0 opacity-30 pointer-events-none"
         style={{

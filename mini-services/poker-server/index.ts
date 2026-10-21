@@ -1127,6 +1127,7 @@ if (process.env.POKER_TEST_MODE !== "1") {
       if(!registered||Date.now()-lastRecharge<1000){reply({error:'잠시 후 다시 시도해 주세요.'});return;}
       lastRecharge=Date.now();reply(lobbyLedger.recharge(socket.id));
     });
+    socket.on('LOBBY_RENAME',(data:{name?:string},reply:unknown)=>{if(typeof reply==='function')reply(lobbyLedger.rename(socket.id,data?.name));});
     socket.on('LOBBY_STATUS',(reply:unknown)=>{if(typeof reply==='function')reply(lobbyLedger.view(socket.id));});
     socket.on('GET_LEADERBOARD',(reply:unknown)=>{if(typeof reply==='function')reply({players:lobbyLedger.leaderboard(),updatedAt:Date.now(),tableSize:6});});
     socket.on("JOIN_ROOM", (data: { name: string; tableSize?: number }) => {

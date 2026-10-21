@@ -10,10 +10,10 @@ import { classifyHandTier } from './equity-engine';
 import type { SelfPlayTrainer } from './self-play-trainer';
 import { positionContext } from './poker-position';
 import { stackContext } from './poker-stack';
-import { planPreflop } from './poker-preflop';
+import { planPreflop, preflopPosition } from './poker-preflop';
 
 export const LIVE_RULES = Object.freeze({
-  version: "1.15.2",
+  version: "1.16.0",
   seats: 8, smallBlind: 100, bigBlind: 200, buyIn: 5000,
   botCashOut: 100000, userSeconds: 10, maxActions: 256,
   botThinkMin: 700, botThinkJitter: 900, actionPause: 800, resultPause: 5000,
@@ -99,7 +99,7 @@ export function decideLiveBot(trainer: SelfPlayTrainer, ctx: {
   const persona = individualLivePersona(actor.persona || RPG_BOT_POOL[0], ctx.hand, actor.seatId, actor.stack + actor.totalBet);
   const call = Math.max(0, ...seats.filter(s => s.inHand && !s.folded).map(s => s.currentBet)) - actor.currentBet;
   const livePot = ctx.pot + seats.reduce((sum, s) => sum + s.currentBet, 0);
-  const context={actorId:actor.seatId,threeBetRead:ctx.threeBetRead,lastRaiserSeat:ctx.lastRaiserSeat,isBlind:[ctx.smallBlind,ctx.bigBlind].includes(actor.seatId),stack:stackContext(seats,actor.seatId),
+  const context={preflopPosition:preflopPosition(seats.map(s=>s.seatId),actor.seatId,ctx.button,ctx.bigBlind,ctx.lastRaiserSeat??seats.find(s=>s.seatId!==actor.seatId&&s.currentBet===actor.currentBet+call)?.seatId),actorId:actor.seatId,threeBetRead:ctx.threeBetRead,lastRaiserSeat:ctx.lastRaiserSeat,isBlind:[ctx.smallBlind,ctx.bigBlind].includes(actor.seatId),stack:stackContext(seats,actor.seatId),
     position:positionContext(seats,actor.seatId,ctx.button,ctx.checkedThisStreet),
     limpedPreflop:ctx.limpedPreflop,openedPreflop:ctx.openedPreflop,initiative:ctx.previousStreetAggressor===actor.seatId,
     seats:seats.map(({seatId,stack,currentBet,totalBet,inHand,folded,allIn})=>({seatId,stack,currentBet,totalBet,inHand,folded,allIn}))};

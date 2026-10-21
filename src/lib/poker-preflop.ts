@@ -24,6 +24,17 @@ export function flatCallFrequency(persona:{vpip:number;aggression:number}, isOOP
   return Math.max(0.03,Math.min(0.75,rate))*(premium?0.20:1);
 }
 
+// Physical preflop seats stay stable after folds; postflop isOOP alone does
+// not identify UTG. The button and blinds are never labelled UTG..UTG+2.
+export function preflopPosition(seatIds:number[],actor:number,button:number,bigBlind:number,raiser?:number) {
+  const ring=Math.max(...seatIds)+1;
+  const after=(seat:number,anchor:number)=>(seat-anchor-1+ring)%ring;
+  const order=[...seatIds].sort((a,b)=>after(a,bigBlind)-after(b,bigBlind));
+  const smallBlind=[...seatIds].sort((a,b)=>after(a,button)-after(b,button))[0];
+  const early=order.filter(id=>id!==button&&id!==smallBlind&&id!==bigBlind).slice(0,3).includes(actor);
+  return {early,inPositionVsRaiser:raiser!==undefined&&raiser!==actor&&after(actor,button)>after(raiser,button)};
+}
+
 interface PreflopSpot {
   hole:Card[];board:Card[];call:number;pot:number;stack:number;currentBet:number;
   minRaise:number;maxRaise:number;raiseLevel:number;smallBlind:number;
@@ -46,6 +57,46 @@ export function planPreflop(spot:PreflopSpot):{decision:Decision|null;forbidLimp
   const callDecision=():Decision=>({action:call>=stack?'allin':'call',amount:Math.min(call,stack)});
   const equity=()=>estimateEquity(hole,[],Math.max(1,opponents.length),192,raiseLevel>=2?'three-bet':'open');
   const odds=afterRakeOdds(spot.pot,call);
+
+  // Sizing policy precedes the trainer/reshove branches in BOTH game modes.
+  // At <=5BB keep the emergency EV policy; never turn an all-in call into a raise.
+  const premium=h.pair&&h.low>=11;
+  const canRaise=hasBettingOpponent(context.seats,context.actorId);
+  const sizedRaise=(target:number,commitment:number):Decision|null=>{
+    target=Math.max(spot.minRaise,Math.round(target/10)*10);
+    return canRaise&&target<spot.maxRaise&&target-currentBet<=stack*commitment
+      ? {action:'raise',amount:target,isBluff:false} : null;
+  };
+  if(premium&&own>1000&&call<stack) {
+    if(unopened) {
+      const opening=sizedRaise(500+Math.floor(Math.random()*7)*10,.85);
+      if(opening)return result(opening);
+    } else if(raiseLevel>=1&&!opponents.some(s=>s.allIn)) {
+      // 3-bet / 4-bet at ordinary depth, flat when another raise would commit
+      // most of the remaining stack. Do not create an automatic 5-bet war.
+      const reraising=raiseLevel<=2
+        ? sizedRaise(highest*(raiseLevel===1?(context.preflopPosition?.inPositionVsRaiser?3:3.5):2.2),.65) : null;
+      return result(reraising??callDecision());
+    }
+  }
+  const broadway=!h.pair&&(h.low>=11||(h.high===11&&h.low===10)); // two face ranks or JT, suited OR offsuit
+  const suited87=h.suited&&h.high===8&&h.low===7&&persona.aggression>=.70;
+  const position=context.preflopPosition;
+  if(raiseLevel===1&&call>0&&call<stack&&(broadway||suited87)&&position
+    &&!opponents.some(s=>s.allIn)&&(position.early||position.inPositionVsRaiser)) {
+    // No forced calls at an arbitrary price. Short/deep stack risk and rake
+    // still matter, but qualified early-position continues can ONLY flat.
+    const priceOK=call<=own*.25&&equity()>=odds+(position.early?.015:0);
+    if(!priceOK)return result(foldOrCheck(),false);
+    if(!position.early&&canRaise) {
+      const frequency=suited87?.08:.18+persona.aggression*.30;
+      if(Math.random()<frequency) {
+        const raised=sizedRaise(highest*3,.45);
+        if(raised)return result({...raised,isBluff:suited87});
+      }
+    }
+    return result(callDecision(),false);
+  }
 
   if(h.rareLow) {
     const eligible=persona.aggression>=0.70&&persona.vpip>=0.35&&own>=5000

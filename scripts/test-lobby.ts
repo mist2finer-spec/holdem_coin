@@ -13,3 +13,15 @@ test('tester names are unique; same identity cannot occupy two seats; balances s
  assert.equal(l.view('a')!.multi,11700);l.disconnect('a');assert.equal(l.reserve('a2'),false);
  l.release('a',11700);assert.ok(l.reserve('a2'));assert.equal(l.start('a2'),11700);assert.equal(l.leaderboard()[0].amount,11700);
 });
+
+test('custom lobby names preserve identity and enforce uniqueness and seated guard',()=>{
+ const l=new LobbyLedger(),a=l.connect('one',undefined)!,b=l.connect('two',undefined)!;
+ assert.equal((l.rename('one','  홍길동  ') as {name?:string})?.name,'홍길동');
+ assert.equal(l.view('one')?.id,a.id);assert.equal(l.view('one')?.multi,5000);
+ assert.ok(l.rename('two','홍길동')?.error);assert.ok(l.rename('two','<script>')?.error);
+ assert.ok(l.rename('two','')?.error);assert.ok(l.rename('two','가'.repeat(13))?.error);
+ l.disconnect('one');assert.equal(l.connect('again',a.token)?.name,'홍길동');
+ l.reserve('again');assert.ok(l.rename('again','새 이름')?.error);
+ l.release('again');assert.equal((l.rename('again','새 이름') as {name?:string})?.name,'새 이름');
+ assert.equal(l.view('two')?.id,b.id);
+});

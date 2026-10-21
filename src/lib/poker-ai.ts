@@ -68,7 +68,7 @@ export function estimateEquity(hole: Card[], board: Card[], opponents: number, s
   cache.set(key,result);return result;
 }
 
-export interface DecisionContext { seats: BettingSeat[]; actorId: number; position?: PositionContext; stack?: ReturnType<typeof stackContext>; forbidLimp?:boolean; limpedPreflop?:boolean; initiative?:boolean; openedPreflop?:boolean; isBlind?:boolean; threeBetRead?: {opportunities:number;rate:number;looseness:number}; lastRaiserSeat?:number }
+export interface DecisionContext { preflopPosition?: {early:boolean;inPositionVsRaiser:boolean}; seats: BettingSeat[]; actorId: number; position?: PositionContext; stack?: ReturnType<typeof stackContext>; forbidLimp?:boolean; limpedPreflop?:boolean; initiative?:boolean; openedPreflop?:boolean; isBlind?:boolean; threeBetRead?: {opportunities:number;rate:number;looseness:number}; lastRaiserSeat?:number }
 export function afterRakeOdds(pot: number, cost: number, rate=RAKE_RATE) {
   return cost>0?cost/Math.max(1,(pot+cost)*(1-rate)):0;
 }

@@ -712,6 +712,13 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
 
   const st = renderState;
   return {
+    leaveTable: () => {
+      const current=stateRef.current;
+      saveSoloBalance(current.seats.find(s=>s.isUser)?.stack??0);
+      mountedRef.current=false;
+      pendingUserAction.current?.({action:'fold',amount:0});
+      pendingUserAction.current=null;
+    },
     seats: st.seats,
     board: st.board,
     pot: st.pot,

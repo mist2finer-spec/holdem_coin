@@ -23,6 +23,7 @@ export function LobbyPanel({onName}:{onName:(name:string)=>void}){
  const [players,setPlayers]=useState<Player[]>([]);
  const [updated,setUpdated]=useState('');
  const [busy,setBusy]=useState(false);
+ const [nameDraft,setNameDraft]=useState('');
  useEffect(()=>{
   const {host,options}=pokerSocketOptions();const s=io(host,options);socket.current=s;
   const update=(a:Account)=>{if(!a||a.error)return;setAccount(a);onName(a.name);localStorage.setItem('holdem-lobby-token',a.token);};
@@ -37,6 +38,13 @@ export function LobbyPanel({onName}:{onName:(name:string)=>void}){
   if(busy||!socket.current?.connected){setMessage('서버 연결 후 다시 시도해 주세요.');return;}
   setBusy(true);try{const a:Account=await socket.current.timeout(12000).emitWithAck('LOBBY_RECHARGE');if(a.error)throw new Error(a.error);setAccount(a);setMessage('멀티플레이 재화 5,000이 충전되었습니다.');}catch{setMessage('충전하지 못했습니다. 잠시 후 다시 시도해 주세요.');}finally{setBusy(false);}
  }
+ async function rename(){
+  if(busy||!socket.current?.connected){setMessage('서버 연결 후 다시 시도해 주세요.');return;}
+  setBusy(true);
+  try{const a:Account=await socket.current.timeout(12000).emitWithAck('LOBBY_RENAME',{name:nameDraft.trim()});
+   if(a.error){setMessage(a.error);return;}setAccount(a);onName(a.name);setNameDraft('');setMessage('플레이어 이름이 변경되었습니다.');
+  }catch{setMessage('이름을 변경하지 못했습니다. 잠시 후 다시 시도해 주세요.');}finally{setBusy(false);}
+ }
  const items:StoreItemData[]=[...catalog].sort((a,b)=>Number(b.category===store)-Number(a.category===store)).flatMap(c=>Array.from({length:9},(_,i)=>({id:`${c.category}-${i}`,name:c.label,category:c.category,imageUrl:`/ui/shop/${c.image}`,price:100})));
  return <>
   <div className="lobby-wallets">
@@ -46,6 +54,10 @@ export function LobbyPanel({onName}:{onName:(name:string)=>void}){
   </div>
   <div className="lobby-shop-buttons">{catalog.map(c=><button key={c.category} onClick={()=>setStore(c.category)}>{c.label}</button>)}</div>
   <button className="lobby-rank-button" onClick={()=>setShowRanks(true)}>리더보드 · 6인 서버</button>
+  <form className="lobby-name-form" onSubmit={e=>{e.preventDefault();void rename();}}>
+   <label htmlFor="lobby-player-name">플레이어 이름 · {account?.name??'연결 중'}</label>
+   <div><input id="lobby-player-name" value={nameDraft} onChange={e=>setNameDraft(e.target.value)} placeholder={account?.name??'새 이름'} maxLength={24} autoComplete="nickname"/><button type="submit" disabled={busy||!account||!nameDraft.trim()}>이름 변경</button></div>
+  </form>
   {store&&<StorePopup key={store} open items={items} onClose={()=>setStore(null)} titleKo="상점"/>}
   {showRanks&&<div className="lobby-overlay" role="dialog" aria-modal="true" aria-label="6인 서버 리더보드"><section><button className="lobby-close" onClick={()=>setShowRanks(false)} aria-label="리더보드 닫기">×</button><Leaderboard players={players.slice(0,7)} maxVisible={7} currency=""/><p>{players.length?'6인 서버 플레이어 TOP 7':'아직 참여한 플레이어가 없습니다.'} · 3분마다 갱신{updated&&` · ${updated}`}</p></section></div>}
   {message&&<div className="island-modal"><section role="alertdialog" aria-modal="true" aria-label="재화 안내"><p>{message}</p><button autoFocus onClick={()=>setMessage('')}>확인</button></section></div>}

@@ -102,6 +102,7 @@ export function PokerTableSocket({ userName, onToast, tableSize=8, onMain }: Pro
         <div className="text-center">
           <div className="text-2xl font-bold mb-2">🎰 Island Hold’em</div>
           <div className="text-sm">서버에 연결 중...</div>
+          <Button className="mt-4" variant="outline" onClick={onMain}>← 로비로</Button>
         </div>
       </div>
     );
@@ -109,6 +110,7 @@ export function PokerTableSocket({ userName, onToast, tableSize=8, onMain }: Pro
 
   return (
     <div className="poker-table-layout w-full relative overflow-hidden bg-gradient-to-b from-slate-950 via-emerald-950 to-slate-950">
+      <button className="poker-room-exit" onClick={onMain}>← 로비로</button>
       {updateAvailable && (
         <div role="status" className="absolute top-10 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 rounded-lg border border-amber-500 bg-slate-950 px-4 py-2 text-sm text-amber-100 shadow-lg">
           <span>새 버전이 배포되었습니다. 진행 중인 핸드를 마친 뒤 화면을 업데이트하세요.</span>
