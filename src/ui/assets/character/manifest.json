@@ -1,0 +1,75 @@
+{
+  "source": "/home/z/my-project/upload/model_1.jpg",
+  "source_size": [
+    3168,
+    1344
+  ],
+  "frame_size": [
+    633,
+    672
+  ],
+  "grid": {
+    "cols": 5,
+    "rows": 2
+  },
+  "directions": [
+    "right",
+    "left"
+  ],
+  "animations": [
+    {
+      "name": "attack",
+      "direction": "right",
+      "frames": [
+        "frame_right_attack_01.png",
+        "frame_right_attack_02.png",
+        "frame_right_attack_03.png",
+        "frame_right_attack_04.png",
+        "frame_right_attack_05.png"
+      ],
+      "fps": 12,
+      "loop": false
+    },
+    {
+      "name": "attack",
+      "direction": "left",
+      "frames": [
+        "frame_left_attack_01.png",
+        "frame_left_attack_02.png",
+        "frame_left_attack_03.png",
+        "frame_left_attack_04.png",
+        "frame_left_attack_05.png"
+      ],
+      "fps": 12,
+      "loop": false
+    },
+    {
+      "name": "walk",
+      "direction": "right",
+      "frames": [
+        "frame_right_walk_01.png",
+        "frame_right_walk_02.png",
+        "frame_right_walk_03.png",
+        "frame_right_walk_04.png",
+        "frame_right_walk_05.png"
+      ],
+      "fps": 10,
+      "loop": true
+    },
+    {
+      "name": "walk",
+      "direction": "left",
+      "frames": [
+        "frame_left_walk_01.png",
+        "frame_left_walk_02.png",
+        "frame_left_walk_03.png",
+        "frame_left_walk_04.png",
+        "frame_left_walk_05.png"
+      ],
+      "fps": 10,
+      "loop": true
+    }
+  ],
+  "sprite_sheet": "sprite_sheet.png",
+  "sprite_sheet_layout": "4 rows × 5 cols (right-attack, right-walk, left-attack, left-walk)"
+}

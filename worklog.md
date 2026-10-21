@@ -135,3 +135,47 @@ Stage Summary:
   - 데이터 2개: chips.ts 업데이트, demoStoreItems.ts 신규
   - preview.html 섹션 3/4 추가
   - standalone preview 5.3MB + 스크린샷 2종
+
+---
+Task ID: character-animation
+Agent: main (GLM)
+Task: 업로드된 캐릭터 스프라이트 시트(model_1.jpg, 10프레임 우측 방향)를 이용해 웹에서 작동하는 애니메이션 에셋 생성. 좌측 방향도 반전시켜 추가 생성. 데모 HTML로 작동 시연.
+
+Work Log:
+- 업로드 자산 확인: model_1.jpg (3168x1344, 2행 5열 = 10프레임, 셀 크기 633x672)
+  - 1행 (frame 1-5): 공격 애니메이션 (도끼 휘두르기)
+  - 2행 (frame 6-10): 걷기 애니메이션 (도끼 들고 이동)
+  - 원본 방향: 우측
+- VLM 분석으로 그리드 구조 및 패딩 검증 (각 셀의 콘텐츠 bbox 확인 — 캐릭터 위치 프레임마다 상이)
+- gen_character_sprites.py 작성:
+  1. 5x2 그리드로 자동 분할 (633x672 셀)
+  2. 밝은 회색 배경 chroma key 제거 (luminance > 175 → alpha=0)
+  3. 가장자리 1.5px Gaussian blur로 부드러운 alpha edge
+  4. 좌측 방향 10프레임: PIL transpose FLIP_LEFT_RIGHT로 정확 반전
+  5. 통합 sprite_sheet.png 생성 (4행 5열 = 3165x2688)
+  6. manifest.json (4개 애니메이션 메타데이터)
+- 산출물 22개 파일: frame_{right,left}_{attack,walk}_{01..05}.png (20장) + sprite_sheet.png + manifest.json
+- VLM 검증 (sprite_sheet): 각 행이 의도한 동작 명확히 보이고, 좌측 행이 우측 행의 정확한 좌우 반전임 확인
+- character_animation.html 작성 (Canvas 기반 애니메이션 데모):
+  - 좌측 패널: Playground (540x360) - 버튼 5개 (Walk Left/Right, Attack Left/Right, Idle) + 캐릭터 이동
+  - 우측 패널: All Animations (540x540) - 4개 애니메이션 동시 재생 (우측 공격/걷기, 좌측 공격/걷기)
+  - 키보드 제어: A/← 좌측 걷기, D/→ 우측 걷기, Space 공격 토글
+  - 상태 표시: 현재 동작/방향/프레임 (1/5) 실시간
+  - 속도 조절: 0.5x / 1x / 1.5x / 2x, Pause/Play 토글
+- Playwright 스크린샷 2종: default (걷기 상태), attack (공격 중 Frame 2/5)
+- VLM 최종 검증: 캐릭터가 캔버스에 명확히 렌더링됨, 좌측/우측 모두 정상 표시, 공격 동작 명확히 인식됨
+- standalone HTML (11.4MB): 모든 20개 프레임을 base64로 인라인, 인터넷 없이도 작동
+
+Stage Summary:
+- 산출물 25개 파일:
+  - 20개 캐릭터 프레임 PNG: src/ui/assets/character/frame_{right,left}_{attack,walk}_{01..05}.png
+  - 1개 통합 sprite sheet: src/ui/assets/character/sprite_sheet.png (3165x2688, 4.7MB)
+  - 1개 매니페스트: src/ui/assets/character/manifest.json
+  - 1개 데모 HTML: src/ui/demo/character_animation.html
+  - 1개 standalone 데모: download/character_animation_standalone.html (11.4MB, 모든 에셋 인라인)
+  - 2개 스크린샷: download/character_animation_default.png, _attack.png
+- 애니메이션 사양: 우측 공격(12fps), 우측 걷기(10fps), 좌측 공격(12fps), 좌측 걷기(10fps)
+- 좌우 반전: PIL FLIP_LEFT_RIGHT로 정확 반전, VLM 검증 완료
+- 배경 투명화: chroma key + alpha edge feathering (1.5px Gaussian blur)
+- Canvas API 사용 (DOM 조작 아님)으로 60fps 부드러운 애니메이션
+- 키보드 + 버튼 양쪽 제어 지원

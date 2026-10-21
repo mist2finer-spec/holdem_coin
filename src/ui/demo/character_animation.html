@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Holdem Coin · Character Animation Demo</title>
+<style>
+  :root {
+    --bg-deep: #0a0604;
+    --bg-mid: #1a0e08;
+    --gold: #d4a017;
+    --gold-bright: #ffe27a;
+    --amber-50: #fef3c7;
+    --amber-300: #fcd34d;
+    --amber-700: #b45309;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background:
+      radial-gradient(ellipse at top, #2b1a0d 0%, var(--bg-deep) 100%);
+    color: var(--amber-50);
+    min-height: 100vh;
+    padding: 2rem 1rem;
+  }
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  header h1 {
+    font-family: 'Cinzel', 'Georgia', serif;
+    font-size: 2rem;
+    background: linear-gradient(180deg, var(--gold-bright) 0%, var(--gold) 50%, #8b6914 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    letter-spacing: 0.15em;
+  }
+  header p {
+    color: rgba(252, 211, 77, 0.6);
+    font-size: 0.85rem;
+    letter-spacing: 0.3em;
+    margin-top: 0.25rem;
+  }
+  .demo-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+  @media (max-width: 768px) {
+    .demo-grid { grid-template-columns: 1fr; }
+  }
+  .panel {
+    background: linear-gradient(180deg, var(--bg-mid) 0%, var(--bg-deep) 100%);
+    border: 1px solid rgba(218, 165, 32, 0.3);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 0 24px rgba(218, 165, 32, 0.15), inset 0 0 16px rgba(0, 0, 0, 0.6);
+  }
+  .panel h2 {
+    font-family: 'Cinzel', serif;
+    color: var(--gold-bright);
+    font-size: 1.1rem;
+    letter-spacing: 0.15em;
+    margin-bottom: 0.25rem;
+  }
+  .panel p.subtitle {
+    color: rgba(252, 211, 77, 0.5);
+    font-size: 0.75rem;
+    margin-bottom: 1rem;
+  }
+  canvas {
+    display: block;
+    background:
+      linear-gradient(180deg, #2d2418 0%, #1a1208 100%);
+    border-radius: 8px;
+    width: 100%;
+    height: auto;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+  }
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    justify-content: center;
+  }
+  .btn {
+    background: linear-gradient(135deg, var(--amber-700) 0%, #451a03 100%);
+    border: 1px solid rgba(218, 165, 32, 0.6);
+    color: var(--amber-50);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    transition: all 0.15s;
+    user-select: none;
+  }
+  .btn:hover {
+    background: linear-gradient(135deg, #d97706 0%, #78350f 100%);
+    transform: translateY(-1px);
+  }
+  .btn:active { transform: translateY(0); }
+  .btn.active {
+    background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+    color: #1a0a02;
+    box-shadow: 0 0 8px rgba(251, 191, 36, 0.4);
+  }
+  .info-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 6px;
+    font-size: 0.8rem;
+    color: var(--amber-300);
+  }
+  .info-bar .label {
+    color: rgba(252, 211, 77, 0.6);
+    margin-right: 0.25rem;
+  }
+  .info-bar code {
+    color: var(--gold-bright);
+    font-family: 'JetBrains Mono', monospace;
+    background: rgba(218, 165, 32, 0.1);
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
+  }
+  footer {
+    text-align: center;
+    color: rgba(252, 211, 77, 0.4);
+    font-size: 0.75rem;
+    margin-top: 2rem;
+    letter-spacing: 0.1em;
+  }
+  .legend {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    color: rgba(252, 211, 77, 0.7);
+  }
+  .legend kbd {
+    background: rgba(218, 165, 32, 0.15);
+    border: 1px solid rgba(218, 165, 32, 0.4);
+    color: var(--gold-bright);
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
+    font-family: monospace;
+    margin-right: 0.4rem;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>HOLDEM COIN · CHARACTER ANIMATION</h1>
+      <p>캐릭터 애니메이션 데모 · 10프레임 → 20프레임 (좌우 반전 포함)</p>
+    </header>
+
+    <div class="demo-grid">
+      <!-- ── Interactive playground ──────────────────────────────────── -->
+      <div class="panel">
+        <h2>1. Playground</h2>
+        <p class="subtitle">방향/동작 전환 + 키보드 이동 (A/D 좌우, Space 공격)</p>
+
+        <canvas id="playground-canvas" width="540" height="360"></canvas>
+
+        <div class="controls">
+          <button class="btn" data-action="walk-left"   title="A 키">◀ Walk Left</button>
+          <button class="btn" data-action="walk-right"  title="D 키">Walk Right ▶</button>
+          <button class="btn" data-action="attack-left"  title="Space + 방향">⚔ Attack ◀</button>
+          <button class="btn" data-action="attack-right" title="Space + 방향">Attack ▶ ⚔</button>
+          <button class="btn" data-action="idle">⏸ Idle</button>
+        </div>
+
+        <div class="info-bar">
+          <span><span class="label">현재 동작:</span> <code id="state-action">walk</code></span>
+          <span><span class="label">방향:</span> <code id="state-direction">right</code></span>
+          <span><span class="label">프레임:</span> <code id="state-frame">1/5</code></span>
+        </div>
+
+        <div class="legend">
+          <div><kbd>A</kbd>왼쪽 걷기</div>
+          <div><kbd>D</kbd>오른쪽 걷기</div>
+          <div><kbd>Space</kbd>공격 토글</div>
+          <div><kbd>←/→</kbd>방향 전환</div>
+        </div>
+      </div>
+
+      <!-- ── All animations preview ──────────────────────────────────── -->
+      <div class="panel">
+        <h2>2. All Animations</h2>
+        <p class="subtitle">4개 애니메이션 동시 재생 (우측 공격 / 우측 걷기 / 좌측 공격 / 좌측 걷기)</p>
+
+        <canvas id="all-canvas" width="540" height="540"></canvas>
+
+        <div class="controls">
+          <button class="btn" id="toggle-play">⏸ Pause</button>
+          <button class="btn" id="toggle-speed">1× Speed</button>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      Source: model_1.jpg (3168×1344, 2×5 grid) · Generated 20 frames (633×672 each) · Holdem Coin UI Pipeline
+    </footer>
+  </div>
+
+<script>
+// ── Sprite frame metadata ─────────────────────────────────────────────────
+const FRAME_W = 633;
+const FRAME_H = 672;
+const ASSET_BASE = '../assets/character';
+
+// Frame filename patterns: frame_{direction}_{action}_{NN}.png
+const FRAMES = {
+  'right-attack': ['frame_right_attack_01.png','frame_right_attack_02.png','frame_right_attack_03.png','frame_right_attack_04.png','frame_right_attack_05.png'],
+  'right-walk':   ['frame_right_walk_01.png','frame_right_walk_02.png','frame_right_walk_03.png','frame_right_walk_04.png','frame_right_walk_05.png'],
+  'left-attack':  ['frame_left_attack_01.png','frame_left_attack_02.png','frame_left_attack_03.png','frame_left_attack_04.png','frame_left_attack_05.png'],
+  'left-walk':    ['frame_left_walk_01.png','frame_left_walk_02.png','frame_left_walk_03.png','frame_left_walk_04.png','frame_left_walk_05.png'],
+};
+
+const ANIM_FPS = { attack: 12, walk: 10 };
+
+// ── Load all images upfront ────────────────────────────────────────────────
+const images = {};
+window.imagesLoaded = 0;
+window.totalImages = 0;
+let imagesLoaded = 0;
+let totalImages = 0;
+function loadImages(onReady) {
+  const allKeys = Object.keys(FRAMES);
+  allKeys.forEach(k => totalImages += FRAMES[k].length);
+  window.totalImages = totalImages;
+  allKeys.forEach(k => {
+    images[k] = [];
+    FRAMES[k].forEach(fn => {
+      const img = new Image();
+      img.onload = () => {
+        imagesLoaded++;
+        window.imagesLoaded = imagesLoaded;
+        if (imagesLoaded === totalImages) onReady();
+      };
+      img.onerror = () => {
+        console.error('failed to load:', fn);
+        imagesLoaded++;
+        window.imagesLoaded = imagesLoaded;
+        if (imagesLoaded === totalImages) onReady();
+      };
+      img.src = `${ASSET_BASE}/${fn}`;
+      images[k].push(img);
+    });
+  });
+}
+
+// ── Animation state ────────────────────────────────────────────────────────
+const state = {
+  action: 'walk',         // 'walk' | 'attack'
+  direction: 'right',     // 'right' | 'left'
+  frame: 0,
+  lastFrameTime: 0,
+  charX: 270,             // character position in playground
+  charY: 220,
+  isAttacking: false,
+  attackReturnToWalk: 0,
+};
+
+// ── Playground canvas ──────────────────────────────────────────────────────
+const pgCanvas = document.getElementById('playground-canvas');
+const pgCtx = pgCanvas.getContext('2d');
+pgCtx.imageSmoothingEnabled = false;
+
+function drawPlayground() {
+  // background gradient
+  pgCtx.fillStyle = '#1a1208';
+  pgCtx.fillRect(0, 0, pgCanvas.width, pgCanvas.height);
+
+  // ground line
+  pgCtx.strokeStyle = 'rgba(218, 165, 32, 0.3)';
+  pgCtx.lineWidth = 2;
+  pgCtx.beginPath();
+  pgCtx.moveTo(0, 290);
+  pgCtx.lineTo(pgCanvas.width, 290);
+  pgCtx.stroke();
+
+  // distance markers
+  pgCtx.fillStyle = 'rgba(252, 211, 77, 0.2)';
+  pgCtx.font = '11px monospace';
+  for (let i = 0; i < 10; i++) {
+    pgCtx.fillText(i * 50, i * 50 + 5, 305);
+  }
+
+  // character
+  const key = `${state.direction}-${state.action}`;
+  const frameList = images[key] || images['right-walk'];
+  const img = frameList[state.frame % frameList.length];
+  if (img && img.complete) {
+    const drawW = 180;
+    const drawH = 190;
+    pgCtx.drawImage(img, state.charX - drawW / 2, state.charY - drawH / 2, drawW, drawH);
+  }
+
+  // shadow
+  pgCtx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+  pgCtx.beginPath();
+  pgCtx.ellipse(state.charX, 290, 60, 8, 0, 0, Math.PI * 2);
+  pgCtx.fill();
+}
+
+function stepPlayground(timestamp) {
+  if (!state.lastFrameTime) state.lastFrameTime = timestamp;
+  const dt = timestamp - state.lastFrameTime;
+  const fps = ANIM_FPS[state.action];
+  const frameDuration = 1000 / fps;
+  if (dt >= frameDuration) {
+    state.frame = (state.frame + 1) % 5;
+    state.lastFrameTime = timestamp;
+
+    // Auto-return to walk after attack completes one full cycle
+    if (state.isAttacking && state.frame === 0) {
+      state.isAttacking = false;
+      state.action = 'walk';
+      updateStateDisplay();
+    }
+
+    // Movement during walk
+    if (state.action === 'walk') {
+      const speed = 2;
+      if (state.direction === 'right' && state.charX < pgCanvas.width - 80) {
+        state.charX += speed;
+      } else if (state.direction === 'left' && state.charX > 80) {
+        state.charX -= speed;
+      }
+    }
+  }
+  drawPlayground();
+  updateStateDisplay();
+  requestAnimationFrame(stepPlayground);
+}
+
+function updateStateDisplay() {
+  document.getElementById('state-action').textContent = state.action;
+  document.getElementById('state-direction').textContent = state.direction;
+  document.getElementById('state-frame').textContent = `${state.frame + 1}/5`;
+}
+
+// ── Control buttons ────────────────────────────────────────────────────────
+document.querySelectorAll('.btn[data-action]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const action = btn.dataset.action;
+    if (action === 'walk-left') {
+      state.action = 'walk'; state.direction = 'left'; state.frame = 0;
+    } else if (action === 'walk-right') {
+      state.action = 'walk'; state.direction = 'right'; state.frame = 0;
+    } else if (action === 'attack-left') {
+      state.action = 'attack'; state.direction = 'left'; state.frame = 0; state.isAttacking = true;
+    } else if (action === 'attack-right') {
+      state.action = 'attack'; state.direction = 'right'; state.frame = 0; state.isAttacking = true;
+    } else if (action === 'idle') {
+      state.action = 'walk'; state.frame = 0; state.isAttacking = false;
+    }
+    // Highlight active button
+    document.querySelectorAll('.btn[data-action]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+
+// ── Keyboard controls ──────────────────────────────────────────────────────
+const keysHeld = {};
+document.addEventListener('keydown', (e) => {
+  const k = e.key.toLowerCase();
+  keysHeld[k] = true;
+  if (k === ' ') {
+    e.preventDefault();
+    state.action = 'attack';
+    state.frame = 0;
+    state.isAttacking = true;
+  } else if (k === 'a' || k === 'arrowleft') {
+    state.direction = 'left';
+    if (state.action !== 'attack') state.action = 'walk';
+  } else if (k === 'd' || k === 'arrowright') {
+    state.direction = 'right';
+    if (state.action !== 'attack') state.action = 'walk';
+  }
+});
+document.addEventListener('keyup', (e) => { keysHeld[e.key.toLowerCase()] = false; });
+
+// ── All-animations canvas (4 mini animations) ───────────────────────────────
+const allCanvas = document.getElementById('all-canvas');
+const allCtx = allCanvas.getContext('2d');
+allCtx.imageSmoothingEnabled = false;
+
+let allPaused = false;
+let allSpeed = 1;
+const allAnimState = [
+  { key: 'right-attack', frame: 0, lastT: 0, x: 30,  y: 20,  label: 'Right · Attack' },
+  { key: 'right-walk',   frame: 0, lastT: 0, x: 30,  y: 140, label: 'Right · Walk' },
+  { key: 'left-attack',  frame: 0, lastT: 0, x: 30,  y: 260, label: 'Left · Attack' },
+  { key: 'left-walk',    frame: 0, lastT: 0, x: 30,  y: 380, label: 'Left · Walk' },
+];
+
+function drawAll(timestamp) {
+  allCtx.fillStyle = '#0a0604';
+  allCtx.fillRect(0, 0, allCanvas.width, allCanvas.height);
+
+  allAnimState.forEach(a => {
+    const action = a.key.split('-')[1];
+    const fps = ANIM_FPS[action] * allSpeed;
+    const frameDur = 1000 / fps;
+    if (!allPaused && timestamp - a.lastT >= frameDur) {
+      a.frame = (a.frame + 1) % 5;
+      a.lastT = timestamp;
+    }
+    // background slot
+    allCtx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+    allCtx.fillRect(a.x - 10, a.y - 5, 130, 110);
+
+    // character (smaller scale to fit 4 rows)
+    const img = images[a.key][a.frame];
+    if (img && img.complete) {
+      allCtx.drawImage(img, a.x, a.y, 110, 100);
+    }
+
+    // label
+    allCtx.fillStyle = 'rgba(252, 211, 77, 0.7)';
+    allCtx.font = '11px monospace';
+    allCtx.fillText(a.label, a.x + 130, a.y + 30);
+    allCtx.fillStyle = 'rgba(252, 211, 77, 0.4)';
+    allCtx.fillText(`frame ${a.frame + 1}/5`, a.x + 130, a.y + 50);
+  });
+
+  requestAnimationFrame(drawAll);
+}
+
+document.getElementById('toggle-play').addEventListener('click', (e) => {
+  allPaused = !allPaused;
+  e.target.textContent = allPaused ? '▶ Play' : '⏸ Pause';
+});
+document.getElementById('toggle-speed').addEventListener('click', (e) => {
+  const speeds = [0.5, 1, 1.5, 2];
+  const idx = speeds.indexOf(allSpeed);
+  allSpeed = speeds[(idx + 1) % speeds.length];
+  e.target.textContent = `${allSpeed}× Speed`;
+});
+
+// ── Boot ───────────────────────────────────────────────────────────────────
+loadImages(() => {
+  console.log(`loaded ${imagesLoaded}/${totalImages} images`);
+  requestAnimationFrame(stepPlayground);
+  requestAnimationFrame(drawAll);
+});
+</script>
+</body>
+</html>
