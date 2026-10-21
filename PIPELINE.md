@@ -6,8 +6,9 @@ Requires Node 22+ and Git. Python/aider are not required. `npm run ai-bootstrap`
 installs locked npm dependencies only if TypeScript/tsx are missing; the agent uses
 Node fetch, TypeScript AST context extraction, and node:test (no extra SDK).
 
-Copy only the missing settings from `.env.example` to your ignored `.env`:
-one API key, `AI_PROVIDER` (openai/anthropic/gemini), and `AI_MODEL` supported by
+Copy only the missing settings from `.env.example` to your ignored `.env.pipeline.local`:
+The repository currently tracks `.env`; do not put secrets there. Use `.env.pipeline.local` instead.
+Set one API key, `AI_PROVIDER` (openai/anthropic/gemini), and `AI_MODEL` supported by
 that account. ChatGPT subscription/authentication is not an API credential.
 Configure Git's credential helper or an ignored `GITHUB_TOKEN` with repository
 write access. Tokens are never printed or committed. No model name is guessed.
@@ -55,7 +56,7 @@ all possible poker states or a security sandbox.
 
 ## Authenticated local web interface
 
-The receiver binds **127.0.0.1:8787** only. `.env` needs a random
+The receiver binds **127.0.0.1:8787** only. `.env.pipeline.local` needs a random
 `AUTO_PIPELINE_WEB_TOKEN` of at least 32 characters. It is separate from game admin
 and LLM tokens. A local token was generated during initial setup without printing it.
 This endpoint executes trusted-owner coding requests; do not expose it publicly.

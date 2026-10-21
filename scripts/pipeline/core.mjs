@@ -3,10 +3,10 @@ import path from 'node:path';
 import {execFileSync} from 'node:child_process';
 import ts from 'typescript';
 export const remote='https://github.com/mist2finer-spec/holdem_coin.git';
-export function loadEnv(root){const p=path.join(root,'.env');if(fs.existsSync(p))process.loadEnvFile(p);}
+export function loadEnv(root){for(const file of ['.env.pipeline.local','.env']){const p=path.join(root,file);if(fs.existsSync(p))process.loadEnvFile(p);}}
 export function git(root,args,env=process.env){return execFileSync('git',args,{cwd:root,env,encoding:'utf8',timeout:60000,stdio:['ignore','pipe','pipe']}).trim();}
 export function credentialEnv(){const env={...process.env};if(env.GITHUB_TOKEN){env.GIT_CONFIG_COUNT='1';env.GIT_CONFIG_KEY_0='http.https://github.com/.extraheader';env.GIT_CONFIG_VALUE_0='Authorization: Basic '+Buffer.from('x-access-token:'+env.GITHUB_TOKEN).toString('base64');}env.GIT_TERMINAL_PROMPT='0';return env;}
-export function provider(){const selected=process.env.AI_PROVIDER;const providers=[['openai','OPENAI_API_KEY'],['anthropic','ANTHROPIC_API_KEY'],['gemini','GEMINI_API_KEY']];const p=providers.find(([n,k])=>(!selected||n===selected)&&process.env[k]);if(!p)throw Error('LLM API key missing; fill .env (see .env.example)');if(!process.env.AI_MODEL)throw Error('AI_MODEL missing');return {name:p[0],key:process.env[p[1]],model:process.env.AI_MODEL};}
+export function provider(){const selected=process.env.AI_PROVIDER;const providers=[['openai','OPENAI_API_KEY'],['anthropic','ANTHROPIC_API_KEY'],['gemini','GEMINI_API_KEY']];const p=providers.find(([n,k])=>(!selected||n===selected)&&process.env[k]);if(!p)throw Error('LLM API key missing; fill .env.pipeline.local (see .env.example)');if(!process.env.AI_MODEL)throw Error('AI_MODEL missing');return {name:p[0],key:process.env[p[1]],model:process.env.AI_MODEL};}
 export function safePath(root,file){if(!/^(src\/|mini-services\/poker-server\/).*\.(tsx?|css)$/.test(file)||file.includes('..')||path.isAbsolute(file))throw Error('Patch path not allowed: '+file);
  const real=fs.realpathSync(path.join(root,file));if(!real.startsWith(fs.realpathSync(root)+path.sep))throw Error('Symlink escapes checkout');return real;}
 export function contextFor(root,targets){let context='';const files=new Set();

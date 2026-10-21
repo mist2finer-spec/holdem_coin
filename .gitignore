@@ -65,3 +65,5 @@ mini-services/poker-server/data/
 !public/island/*.png
 
 !.env.example
+
+.env.pipeline.local

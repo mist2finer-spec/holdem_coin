@@ -2,7 +2,7 @@
 const {spawn}=require('node:child_process');
 const path=require('node:path');
 const root=path.resolve(__dirname,'..');
-const env=Object.fromEntries(Object.entries(process.env).filter(([k])=>!/KEY|TOKEN|SECRET|PASSWORD|GIT_CONFIG/i.test(k)));
+const env=Object.fromEntries(Object.entries(process.env).filter(([k])=>['PATH','HOME','TMPDIR','TEMP','TMP','LANG','SystemRoot'].includes(k)));
 env.POKER_TEST_MODE='1';
 function run(cmd,args,{timeout=90000,simulation=false}={}){
  return new Promise((resolve,reject)=>{
