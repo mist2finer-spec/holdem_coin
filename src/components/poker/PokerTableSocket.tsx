@@ -6,7 +6,7 @@ import {clampRaiseTo} from "@/lib/poker-sizing";
 import { LIVE_RULES } from "@/lib/poker-live";
 import { usePokerSocket } from "./usePokerSocket";
 import { CLIENT_REVISION, useReleaseUpdate } from "./useReleaseUpdate";
-import { PlayerSeat } from "./PlayerSeat";
+import { IslandSeat } from "./IslandSeat";
 import { TableBet } from "./TableBet";
 import { PlayingCard } from "./PlayingCard";
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,7 @@ import { SelfPlayTrainer, TrainingStats } from "@/lib/self-play-trainer";
 
 interface Props {
   userName: string;
+  tableSize?: 6 | 8;
   onToast?: (msg: string, tone?: "info" | "win" | "lose") => void;
 }
 
@@ -36,7 +37,7 @@ const phaseLabel: Record<string, string> = {
   "SHOWDOWN": "SHOWDOWN",
 };
 
-export function PokerTableSocket({ userName, onToast }: Props) {
+export function PokerTableSocket({ userName, onToast, tableSize=8 }: Props) {
   const {
     connected,
     historyCount,historyBusy,exportHistory,
@@ -70,7 +71,7 @@ export function PokerTableSocket({ userName, onToast }: Props) {
     mySeatId,
     myPlayerId,
     myName,
-  } = usePokerSocket({ userName, onToast });
+  } = usePokerSocket({ userName, onToast, tableSize });
   const updateAvailable = useReleaseUpdate(connected);
 
   const logScrollRef = useRef<HTMLDivElement>(null);
@@ -92,7 +93,7 @@ export function PokerTableSocket({ userName, onToast }: Props) {
   const effectiveRaise = clampRaiseTo(minRaise,maxRaise,raiseAmount || minRaise);
 
   // 보드 카드 문자열 → Card 변환
-  const board: Card[] = boardCards.map(s => ({ rank: s[0], suit: s[1] }));
+  const board: Card[] = boardCards.map(s => ({ rank: s[0] as Card["rank"], suit: s[1] as Card["suit"] }));
 
   // 유저 시트 찾기
   const userSeat = rotatedSeats.find(s => s.isMe);
@@ -102,7 +103,7 @@ export function PokerTableSocket({ userName, onToast }: Props) {
     return (
       <div className="w-full h-screen flex items-center justify-center bg-slate-950 text-amber-200">
         <div className="text-center">
-          <div className="text-2xl font-bold mb-2">🎰 RPG 홀덤 여관</div>
+          <div className="text-2xl font-bold mb-2">🎰 Island Hold’em</div>
           <div className="text-sm">서버에 연결 중...</div>
         </div>
       </div>
@@ -255,7 +256,7 @@ export function PokerTableSocket({ userName, onToast }: Props) {
               isDealer={rotatedButtonSeat === i}
               isSmallBlind={rotatedSmallBlindSeat === i}
               isBigBlind={rotatedBigBlindSeat === i}
-              showCards={showdownReveal || bluffReveal === seat.seatId}
+              showCards={showdownReveal || bluffReveal === seat.originalSeatId}
               position={seat.position}
             />
           ))}
@@ -373,7 +374,7 @@ export function PokerTableSocket({ userName, onToast }: Props) {
                       <Button
                         size="sm"
                         variant="outline"
-                        className="h-6 px-2 text-[10px] border-rose-700/50 text-rose-200 hover:bg-rose-900/40"
+                        className="island-preaction h-10 px-3 text-[11px] bg-slate-950 border-rose-700/50 text-rose-200 hover:bg-rose-900/40"
                         onClick={() => setPreActionQ({ type: "fold", amount: 0 })}
                       >
                         폴드 예약
@@ -382,7 +383,7 @@ export function PokerTableSocket({ userName, onToast }: Props) {
                         <Button
                           size="sm"
                           variant="outline"
-                          className="h-6 px-2 text-[10px] border-emerald-700/50 text-emerald-200 hover:bg-emerald-900/40"
+                          className="island-preaction h-10 px-3 text-[11px] bg-slate-950 border-emerald-700/50 text-emerald-200 hover:bg-emerald-900/40"
                           onClick={() => setPreActionQ({
                             type: "call",
                             amount: Math.min(callAmount, userSeat?.stack ?? 0)
@@ -394,7 +395,7 @@ export function PokerTableSocket({ userName, onToast }: Props) {
                         <Button
                           size="sm"
                           variant="outline"
-                          className="h-6 px-2 text-[10px] border-emerald-700/50 text-emerald-200 hover:bg-emerald-900/40"
+                          className="island-preaction h-10 px-3 text-[11px] bg-slate-950 border-emerald-700/50 text-emerald-200 hover:bg-emerald-900/40"
                           onClick={() => setPreActionQ({ type: "check", amount: 0 })}
                         >
                           체크 예약
@@ -475,6 +476,7 @@ export function PokerTableSocket({ userName, onToast }: Props) {
 // ============================================================
 interface SocketPlayerSeatProps {
   seat: {
+    portrait?: number;
     seatId: number;
     name: string;
     isBot: boolean;
@@ -505,97 +507,13 @@ function SocketPlayerSeat({
   position,
 }: SocketPlayerSeatProps) {
   // 문자열 홀카드를 Card 객체로 변환
-  const holeCards: Card[] = seat.holeCards
-    .filter(s => s !== "??")
-    .map(s => ({ rank: s[0], suit: s[1] }));
+  const holeCards: (Card|null)[] = seat.holeCards.map(s => s === "??" ? null : ({rank:s[0] as Card["rank"],suit:s[1] as Card["suit"]}));
 
   // ★ 카드 표시 로직:
   // - 본인(isMe): 폴드해도 카드 계속 보임 + 폴드 오버레이
   // - 다른 플레이어: 폴드 시 카드 숨김, 쇼다운 시 공개
-  const showMyCards = seat.isMe;
-  const showOpponentCards = showCards && !seat.folded;
-  const shouldShowCards = holeCards.length === 2 && (showMyCards || showOpponentCards);
-  const shouldShowHidden = seat.holeCards.length > 0 && !shouldShowCards && !seat.folded;
-
-  return (
-    <div
-      className="poker-seat absolute -translate-x-1/2 -translate-y-1/2"
-      style={{ top: position.top, left: position.left }}
-    >
-      <div className="flex flex-col items-center gap-1">
-        {/* 홀카드 + FOLD 오버레이 */}
-        <div className="relative flex gap-0.5 h-12 items-center">
-          {shouldShowCards ? (
-            <>
-              <PlayingCard card={holeCards[0]} size="sm" />
-              <PlayingCard card={holeCards[1]} size="sm" />
-            </>
-          ) : shouldShowHidden ? (
-            <>
-              <PlayingCard hidden size="sm" />
-              <PlayingCard hidden size="sm" />
-            </>
-          ) : (
-            <div className="w-12 sm:w-16 h-8 sm:h-12" />
-          )}
-          {/* ★ FOLD 오버레이 */}
-          {seat.folded && seat.holeCards.length > 0 && (
-            <div className="absolute inset-0 flex items-center justify-center bg-rose-950/60 rounded-md border border-rose-500/50">
-              <span className="text-rose-400 text-[10px] sm:text-xs font-black tracking-wider drop-shadow-lg">
-                FOLD
-              </span>
-            </div>
-          )}
-        </div>
-
-        {/* 아바타 프레임 */}
-        <div
-          className={`relative rounded-lg p-[2px] shadow-xl ${
-            seat.isMe
-              ? "bg-gradient-to-br from-blue-700 to-indigo-900"
-              : "bg-gradient-to-br from-slate-700 to-slate-900"
-          } ${isActive ? "ring-2 ring-amber-300 ring-offset-2 ring-offset-emerald-950 animate-pulse" : ""} ${seat.folded ? "opacity-40 grayscale" : ""}`}
-        >
-          <div className="bg-slate-950/60 rounded-md p-0.5 sm:p-1 flex items-center justify-center">
-            <div className={`w-9 h-9 sm:w-12 sm:h-12 rounded-md flex items-center justify-center text-lg sm:text-2xl ${seat.isMe ? "bg-blue-900/50" : "bg-slate-800/50"}`}>
-              {seat.isMe ? "⚔️" : seat.isBot ? "🤖" : "🎮"}
-            </div>
-          </div>
-
-          {isDealer && (
-            <div className="absolute -top-1.5 -left-1.5 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-amber-400 text-amber-950 text-[9px] sm:text-[10px] font-bold flex items-center justify-center border-2 border-amber-200 shadow-lg">
-              D
-            </div>
-          )}
-          {isSmallBlind && (
-            <div className="absolute -top-1.5 -right-1.5 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-sky-400 text-sky-950 text-[8px] sm:text-[9px] font-bold flex items-center justify-center border-2 border-sky-200 shadow-lg">
-              SB
-            </div>
-          )}
-          {isBigBlind && (
-            <div className="absolute -top-1.5 -right-1.5 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-rose-400 text-rose-950 text-[8px] sm:text-[9px] font-bold flex items-center justify-center border-2 border-rose-200 shadow-lg">
-              BB
-            </div>
-          )}
-        </div>
-
-        {/* 이름표 */}
-        <div className={`bg-slate-950/90 backdrop-blur-sm rounded-md px-1.5 py-0.5 sm:px-2 border ${seat.isMe ? "border-blue-500/50" : "border-amber-900/50"} min-w-[70px] sm:min-w-[90px] text-center`}>
-          <div className={`text-[9px] sm:text-[11px] font-bold leading-tight truncate max-w-[80px] sm:max-w-[100px] ${seat.isMe ? "text-blue-300" : "text-amber-200"}`}>
-            {seat.name}
-          </div>
-        </div>
-
-        {/* 스택 */}
-        <div className="flex flex-col items-center gap-0.5">
-          <div className="flex items-center gap-0.5 sm:gap-1 bg-amber-950/80 rounded-full px-1.5 py-0.5 sm:px-2 border border-amber-700/50">
-            <span className="text-[9px] sm:text-[10px] text-amber-400">◈</span>
-            <span className="text-[9px] sm:text-[10px] font-bold text-amber-100 tabular-nums">
-              {seat.stack > 9999 ? `${(seat.stack/1000).toFixed(0)}k` : seat.stack.toLocaleString()}
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+  return <IslandSeat name={seat.name} stack={seat.stack} holeCards={holeCards}
+    folded={seat.folded} allIn={seat.allIn} isMe={seat.isMe} portrait={seat.isMe?4:seat.portrait}
+    isActive={isActive} isDealer={isDealer} isSmallBlind={isSmallBlind} isBigBlind={isBigBlind}
+    showCards={showCards} position={position}/>;
 }

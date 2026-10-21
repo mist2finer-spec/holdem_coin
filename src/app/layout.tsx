@@ -14,11 +14,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "RPG 홀덤 여관 · Tavern Poker",
-  description: "9종 RPG 페르소나가 출연하는 8인 텍사스 홀덤 프로토타입",
+  title: "Island Hold’em",
+  description: "Island Hold’em — 싱글 플레이와 6인·8인 멀티플레이",
   keywords: ["poker", "texas holdem", "RPG", "prototype"],
   icons: {
-    icon: "https://z-cdn.chatglm.cn/z-ai/static/logo.svg",
+    icon: "/island/frame.png",
   },
 };
 
@@ -28,7 +28,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="ko" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
       >

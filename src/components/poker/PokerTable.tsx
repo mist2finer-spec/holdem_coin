@@ -369,7 +369,7 @@ export function PokerTable({ userName, onToast }: Props) {
                       <Button
                         size="sm"
                         variant="outline"
-                        className="h-6 px-2 text-[10px] border-rose-700/50 text-rose-200 hover:bg-rose-900/40"
+                        className="island-preaction h-10 px-3 text-[11px] bg-slate-950 border-rose-700/50 text-rose-200 hover:bg-rose-900/40"
                         onClick={() => setPreActionQ({ type: "fold", amount: 0 })}
                       >
                         폴드 예약
@@ -378,7 +378,7 @@ export function PokerTable({ userName, onToast }: Props) {
                         <Button
                           size="sm"
                           variant="outline"
-                          className="h-6 px-2 text-[10px] border-emerald-700/50 text-emerald-200 hover:bg-emerald-900/40"
+                          className="island-preaction h-10 px-3 text-[11px] bg-slate-950 border-emerald-700/50 text-emerald-200 hover:bg-emerald-900/40"
                           onClick={() => setPreActionQ({
                             type: "call",
                             amount: Math.min(callAmount, userSeat?.stack ?? 0)
@@ -390,7 +390,7 @@ export function PokerTable({ userName, onToast }: Props) {
                         <Button
                           size="sm"
                           variant="outline"
-                          className="h-6 px-2 text-[10px] border-emerald-700/50 text-emerald-200 hover:bg-emerald-900/40"
+                          className="island-preaction h-10 px-3 text-[11px] bg-slate-950 border-emerald-700/50 text-emerald-200 hover:bg-emerald-900/40"
                           onClick={() => setPreActionQ({ type: "check", amount: 0 })}
                         >
                           체크 예약

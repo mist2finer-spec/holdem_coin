@@ -113,8 +113,7 @@ export class HybridHoldemRoom {
     const s=this.state.seats[seatId];
     return s.isBot?`cpu:${seatId}:${s.persona?.id||s.name}`:`human:${this.users.get(s.socketId||'')?.playerId||s.name}`;
   }
-  readonly history = new HandHistoryStore(process.env.POKER_TEST_MODE === "1" ? undefined
-    : path.resolve(process.env.HAND_HISTORY_DIR || 'data/hand-history','hands.json'));
+  readonly history: HandHistoryStore;
   private currentHistory:HandHistory|null=null;
   private pendingAudit:Record<string,unknown>|undefined;
   private actionSource:HandAction['source']='cpu';
@@ -156,7 +155,9 @@ export class HybridHoldemRoom {
   }
 
 
-  constructor(autoStart = true) {
+  constructor(autoStart = true, public readonly seatCount: 6 | 8 = 8) {
+    this.history = new HandHistoryStore(process.env.POKER_TEST_MODE === "1" ? undefined
+      : path.resolve(process.env.HAND_HISTORY_DIR || "data/hand-history",seatCount===8?"hands.json":"hands-6.json"));
     this.trainer = new SelfPlayTrainer();
     this.state = this.createInitialState();
     if (autoStart) void this.startGameLoop();
@@ -168,9 +169,9 @@ export class HybridHoldemRoom {
   get userCount() { return this.users.size; }
 
   private createInitialState(): ServerGameState {
-    const personas: BotPersona[] = [...RPG_BOT_POOL].sort(() => Math.random() - 0.5).slice(0, NUM_SEATS);
+    const personas: BotPersona[] = [...RPG_BOT_POOL].sort(() => Math.random() - 0.5).slice(0, this.seatCount);
     const seats: ServerSeat[] = [];
-    for (let i = 0; i < NUM_SEATS; i++) {
+    for (let i = 0; i < this.seatCount; i++) {
       seats.push({
         seatId: i,
         name: personas[i].name,
@@ -253,11 +254,11 @@ export class HybridHoldemRoom {
     // ★ 8명 플레이어 초과 시 입장 거부
     const seatedHumans = Array.from(this.users.values()).filter(u => u.seatId !== null).length;
     const totalPotential = seatedHumans + this.pendingJoinQueue.length;
-    if (totalPotential >= NUM_SEATS) {
-      console.log(`[User] ${user.name} 입장 거부 (테이블 가득참: ${totalPotential}/${NUM_SEATS})`);
+    if (totalPotential >= this.seatCount) {
+      console.log(`[User] ${user.name} 입장 거부 (테이블 가득참: ${totalPotential}/${this.seatCount})`);
       socket.emit("SYSTEM_NOTICE", {
         messages: [
-          `⚠️ 테이블이 가득 찼습니다. (8/8)`,
+          `⚠️ 테이블이 가득 찼습니다. (${this.seatCount}/${this.seatCount})`,
           `다음에 다시 오세요!`,
         ],
       });
@@ -551,7 +552,7 @@ export class HybridHoldemRoom {
       await this.sleep(800);
 
       // 프리플랍 베팅 (UTG부터)
-      await this.runBettingRound(st.buttonSeat, (st.preflopStart - st.buttonSeat + NUM_SEATS) % NUM_SEATS, deck);
+      await this.runBettingRound(st.buttonSeat, (st.preflopStart - st.buttonSeat + this.seatCount) % this.seatCount, deck);
 
       // 다음 페이즈들
       await this.advancePhase(deck);
@@ -599,11 +600,11 @@ export class HybridHoldemRoom {
       // 다음 액터 찾기
       let actorIdx = -1;
       const startSearchFrom = lastActorIdx === -1
-        ? (btnSeat + startOffset) % NUM_SEATS
-        : (lastActorIdx + 1) % NUM_SEATS;
+        ? (btnSeat + startOffset) % this.seatCount
+        : (lastActorIdx + 1) % this.seatCount;
 
-      for (let i = 0; i < NUM_SEATS; i++) {
-        const idx = (startSearchFrom + i) % NUM_SEATS;
+      for (let i = 0; i < this.seatCount; i++) {
+        const idx = (startSearchFrom + i) % this.seatCount;
         const s = st.seats[idx];
         if (s && s.inHand && !s.folded && !s.allIn && (!s.hasActed || s.currentBet < maxBet)) {
           actorIdx = idx;
@@ -850,19 +851,19 @@ export class HybridHoldemRoom {
       const next = dealNextStreet(st.board, deck);
       st.board = next.board; st.phase = next.phase;
       this.broadcastTableState();
-      await this.runBettingRound(st.buttonSeat, (st.postflopStart - st.buttonSeat + NUM_SEATS) % NUM_SEATS, deck);
+      await this.runBettingRound(st.buttonSeat, (st.postflopStart - st.buttonSeat + this.seatCount) % this.seatCount, deck);
       await this.advancePhase(deck);
     } else if (st.phase === "FLOP") {
       const next = dealNextStreet(st.board, deck);
       st.board = next.board; st.phase = next.phase;
       this.broadcastTableState();
-      await this.runBettingRound(st.buttonSeat, (st.postflopStart - st.buttonSeat + NUM_SEATS) % NUM_SEATS, deck);
+      await this.runBettingRound(st.buttonSeat, (st.postflopStart - st.buttonSeat + this.seatCount) % this.seatCount, deck);
       await this.advancePhase(deck);
     } else if (st.phase === "TURN") {
       const next = dealNextStreet(st.board, deck);
       st.board = next.board; st.phase = next.phase;
       this.broadcastTableState();
-      await this.runBettingRound(st.buttonSeat, (st.postflopStart - st.buttonSeat + NUM_SEATS) % NUM_SEATS, deck);
+      await this.runBettingRound(st.buttonSeat, (st.postflopStart - st.buttonSeat + this.seatCount) % this.seatCount, deck);
       await this.advancePhase(deck);
     } else if (st.phase === "RIVER") {
       await this.doShowdown();
@@ -976,6 +977,7 @@ export class HybridHoldemRoom {
       return {
         seatId: Number(s.seatId),
         name: String(s.name || ""),
+        portrait: Number(s.persona?.portrait || 4),
         isBot: Boolean(s.isBot),
         isMe: Boolean(isMe),
         stack: Number(s.stack || 0),
@@ -1039,7 +1041,7 @@ export class HybridHoldemRoom {
   }
 
   private broadcast(event: string, data: any) {
-    io.emit(event, data);
+    for (const socketId of this.users.keys()) io.to(socketId).emit(event, data);
   }
 
   // ★ 각 클라이언트마다 순수 DTO 스냅샷 전송
@@ -1082,34 +1084,38 @@ const io = new Server(httpServer, {
 
 if (process.env.POKER_TEST_MODE !== "1") {
   const room = new HybridHoldemRoom();
+  const room6 = new HybridHoldemRoom(true,6);
 
   io.on("connection", (socket: Socket) => {
+    let selectedRoom: HybridHoldemRoom | undefined;
     console.log(`[Socket] 연결: ${socket.id}`);
 
-    socket.on("JOIN_ROOM", (data: { name: string }) => {
-      room.onUserConnect(socket, data?.name || "용사");
+    socket.on("JOIN_ROOM", (data: { name: string; tableSize?: number }) => {
+      if(selectedRoom)return;
+      selectedRoom=data?.tableSize===6?room6:room;
+      selectedRoom?.onUserConnect(socket, data?.name || "용사");
     });
 
     socket.on("PLAYER_ACTION", (data: { action: string; amount: number }) => {
-      room.onUserAction(socket.id, data);
+      selectedRoom?.onUserAction(socket.id, data);
     });
 
     socket.on("PRE_ACTION", (data: { type: "fold" | "call" | "check"; amount: number } | null) => {
-      room.onUserPreAction(socket.id, data);
+      selectedRoom?.onUserPreAction(socket.id, data);
     });
 
-    socket.on("REBUY", () => room.onUserRebuy(socket.id));
+    socket.on("REBUY", () => selectedRoom?.onUserRebuy(socket.id));
     let lastHistoryRequest=0;
     socket.on("GET_HAND_HISTORY", (reply:unknown) => {
       if(typeof reply!=="function")return;
       if(Date.now()-lastHistoryRequest<5000){reply({error:"5초 후 다시 다운로드해 주세요."});return;}
       lastHistoryRequest=Date.now();
-      const hands=room.getPublicHistory(socket.id);
-      reply(hands ? {hands,limit:1000,writeError:room.history.writeError} : {error:'Join the room first'});
+      const hands=selectedRoom?.getPublicHistory(socket.id);
+      reply(hands ? {hands,limit:1000,writeError:selectedRoom?.history.writeError} : {error:'Join the room first'});
     });
 
     socket.on("disconnect", () => {
-      room.onUserDisconnect(socket.id);
+      selectedRoom?.onUserDisconnect(socket.id);
     });
   });
 
@@ -1140,7 +1146,7 @@ if (process.env.POKER_TEST_MODE !== "1") {
       res.writeHead(401,{'Content-Type':'application/json'});res.end('{"error":"Admin token required"}');return;
     }
     res.writeHead(200,{'Content-Type':'application/json','Content-Disposition':'attachment; filename="holdem-analysis.json"'});
-    res.end(JSON.stringify({schemaVersion:1,scope:'admin',hands:room.history.all(),limit:1000,writeError:room.history.writeError}));
+    res.end(JSON.stringify({schemaVersion:1,scope:'admin',hands:[...room.history.all(),...room6.history.all()],limit:2000,writeError:room.history.writeError||room6.history.writeError}));
   });
 
   // Unexpected failures exit nonzero so the host can restart cleanly.
@@ -1163,19 +1169,19 @@ if (process.env.POKER_TEST_MODE !== "1") {
   // ★ SIGTERM/SIGINT 시 정상 종료
   process.on("SIGTERM", () => {
     console.log("[Server] SIGTERM 수신, 종료 중...");
-    void room.history.flush().finally(()=>process.exit(0));
+    void Promise.all([room.history.flush(),room6.history.flush()]).finally(()=>process.exit(0));
   });
 
   process.on("SIGINT", () => {
     console.log("[Server] SIGINT 수신, 종료 중...");
-    void room.history.flush().finally(()=>process.exit(0));
+    void Promise.all([room.history.flush(),room6.history.flush()]).finally(()=>process.exit(0));
   });
 
   // ★ 헬스체크 엔드포인트 (서버 살아있는지 확인용)
   httpServer.on("request", (req, res) => {
     if (new URL(req.url || "/", "http://localhost").pathname === "/health") {
       res.writeHead(200, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ status: "ok", users: room.userCount, hand: room.state.handNumber, rulesVersion: LIVE_RULES.version, historyHands: room.history.count, historyWriteOk: !room.history.writeError }));
+      res.end(JSON.stringify({ status: "ok", users: room.userCount+room6.userCount, tables: [{seats:8,users:room.userCount,hand:room.state.handNumber},{seats:6,users:room6.userCount,hand:room6.state.handNumber}], hand: room.state.handNumber, rulesVersion: LIVE_RULES.version, historyHands: room.history.count+room6.history.count, historyWriteOk: !room.history.writeError&&!room6.history.writeError }));
     }
   });
 

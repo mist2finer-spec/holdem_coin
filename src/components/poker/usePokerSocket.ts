@@ -20,6 +20,7 @@ import { rotateSeatView } from "@/lib/poker-seat-view";
 // ============================================================
 
 export interface SocketSeat {
+  portrait?: number;
   seatId: number;
   name: string;
   isBot: boolean;
@@ -67,11 +68,12 @@ export interface LogEntry {
 }
 
 interface UsePokerSocketOpts {
+  tableSize?: 6 | 8;
   userName: string;
   onToast?: (msg: string, tone?: "info" | "win" | "lose") => void;
 }
 
-export function usePokerSocket({ userName, onToast }: UsePokerSocketOpts) {
+export function usePokerSocket({ userName, onToast, tableSize=8 }: UsePokerSocketOpts) {
   const socketRef = useRef<Socket | null>(null);
   const [state, setState] = useState<SocketTableState | null>(null);
   const [connected, setConnected] = useState(false);
@@ -162,7 +164,7 @@ export function usePokerSocket({ userName, onToast }: UsePokerSocketOpts) {
       setConnected(true);
       console.log("[Socket] 연결됨:", socket.id, "(transport:", socket.io.engine.transport.name, ")");
       // 입장
-      socket.emit("JOIN_ROOM", { name: userName });
+      socket.emit("JOIN_ROOM", { name: userName, tableSize });
       socket.timeout(20000).emitWithAck('GET_HAND_HISTORY')
         .then((result:{hands?:HandHistory[]})=>{if(result.hands)historyHandler.current(result.hands);})
         .catch(()=>{});
@@ -211,7 +213,7 @@ export function usePokerSocket({ userName, onToast }: UsePokerSocketOpts) {
     return () => {
       socket.disconnect();
     };
-  }, [userName]);
+  }, [userName, tableSize]);
 
   // 액션 전송
   const submitUserAction = useCallback((action: ActionType, amount: number) => {
@@ -246,13 +248,13 @@ export function usePokerSocket({ userName, onToast }: UsePokerSocketOpts) {
   // 회전된 활성 좌석 ID
   const getRotatedActiveSeatId = useCallback(() => {
     if (!state || state.activeSeatId < 0) return -1;
-    return (state.activeSeatId - Math.max(0, state.mySeatId) + 8) % 8;
+    return (state.activeSeatId - Math.max(0, state.mySeatId) + state.seats.length) % state.seats.length;
   }, [state]);
 
   // 회전된 버튼 좌석 ID
   const getRotatedButtonSeat = useCallback(() => {
     if (!state || state.mySeatId < 0) return state?.buttonSeat ?? 0;
-    return (state.buttonSeat - state.mySeatId + 8) % 8;
+    return (state.buttonSeat - state.mySeatId + state.seats.length) % state.seats.length;
   }, [state]);
 
   // 유저의 현재 핸드 족보 (보드가 있을 때만)
@@ -262,8 +264,8 @@ export function usePokerSocket({ userName, onToast }: UsePokerSocketOpts) {
     if (!mySeat || mySeat.holeCards.length < 2 || mySeat.holeCards[0] === "??") return null;
     if (state.boardCards.length < 3) return null;
     // 문자열을 Card로 변환
-    const hole: Card[] = mySeat.holeCards.map(s => ({ rank: s[0], suit: s[1] }));
-    const board: Card[] = state.boardCards.map(s => ({ rank: s[0], suit: s[1] }));
+    const hole: Card[] = mySeat.holeCards.map(s => ({ rank: s[0] as Card["rank"], suit: s[1] as Card["suit"] }));
+    const board: Card[] = state.boardCards.map(s => ({ rank: s[0] as Card["rank"], suit: s[1] as Card["suit"] }));
     const score = evaluateBestHand(hole, board);
     return scoreToCategoryName(score);
   }, [state]);
@@ -278,8 +280,8 @@ export function usePokerSocket({ userName, onToast }: UsePokerSocketOpts) {
     playerBusted: state?.playerBusted ?? false,
     rebuyPending: state?.rebuyPending ?? false,
     userTimer: state?.isUserTurn ? Math.min(LIVE_RULES.userSeconds, Math.max(0, Math.ceil(((state.actionDeadline || 0) - clock) / 1000))) : 0,
-    rotatedSmallBlindSeat: state ? (state.smallBlindSeat - Math.max(0, state.mySeatId) + 8) % 8 : -1,
-    rotatedBigBlindSeat: state ? (state.bigBlindSeat - Math.max(0, state.mySeatId) + 8) % 8 : -1,
+    rotatedSmallBlindSeat: state ? (state.smallBlindSeat - Math.max(0, state.mySeatId) + state.seats.length) % state.seats.length : -1,
+    rotatedBigBlindSeat: state ? (state.bigBlindSeat - Math.max(0, state.mySeatId) + state.seats.length) % state.seats.length : -1,
     state,
     log,
     preAction,

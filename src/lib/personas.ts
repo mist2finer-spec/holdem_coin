@@ -3,6 +3,7 @@ import { applyStackTraits } from './poker-stack';
 
 export interface BotPersona {
   id: string;
+  portrait?: number;
   name: string;
   title: string;          // 칭호
   vpip: number;           // 프리플랍 참여율 (높을수록 루즈)
@@ -231,6 +232,19 @@ export const RPG_BOT_POOL: BotPersona[] = [
 ];
 
 // 캐릭터 퇴장 멘트 (100k 달성 시 또는 파산 시)
+// Visual identities are independent of stable strategy IDs and historical audits.
+const islandIdentities:Record<string,[string,number]>={
+ elf_archer:['서린',9],orc_berserker:['태오',5],dwarf_merchant:['도윤',4],
+ goblin_thief:['유나',6],paladin_commander:['정우',4],paladin:['정우',4],
+ dark_mage:['미라',3],wandering_bard:['준',2],dragon_slayer:['강혁',5],
+ alchemist_guild:['지안',8],necromancer:['레이',7],pirate_captain:['서진',1],
+ ninja_shadow:['시온',7],barbarian_chief:['재혁',5],ice_queen:['백설',3],fire_mage:['하린',6],
+};
+RPG_BOT_POOL.forEach((p,i)=>{const identity=islandIdentities[p.id]||[`민${i+1}`,i%9+1];
+ p.name=identity[0];p.portrait=identity[1];p.title='Island 플레이어';
+ p.catchphrase='좋은 승부였어요.';p.taunt='다음 패도 기대할게요.';
+});
+
 export function getExitMessage(persona: BotPersona, isCashOut: boolean): string {
   if (isCashOut) {
     // 100k 달성 - 잘 놀고 떠남

@@ -36,19 +36,19 @@ const clients=[];
   assert.ok(health?.ok,'health must succeed');
   if(hosted) {
    const html=await (await fetch(origin)).text();
-   assert.match(html,/RPG/,'web page must be served on the same origin');
+   assert.match(html,/Island/,'web page must be served on the same origin');
    const asset=html.match(/src="([^"]+\.js[^"]*)"/);
    assert.ok(asset,'compiled JavaScript asset must exist');
    assert.equal((await fetch(new URL(asset[1],origin))).status,200);
   }
-  const stats=[0,1].map(()=>({states:0,hands:new Set(),ownSeats:new Set(),actions:0,errors:[],seated:false}));
-  for(let i=0;i<2;i++) {
+  const stats=[0,1,2].map(()=>({states:0,hands:new Set(),ownSeats:new Set(),actions:0,errors:[],seated:false}));
+  for(let i=0;i<3;i++) {
    const client=io(origin,{transports:['polling'],reconnection:false,timeout:3000});clients.push(client);
    const sent=new Set();
-   client.on('connect',()=>{client.emit('JOIN_ROOM',{name:'Smoke'});client.emit('JOIN_ROOM',{name:'Smoke'});});
+   client.on('connect',()=>{client.emit('JOIN_ROOM',{name:'Smoke',tableSize:i===2?6:8});client.emit('JOIN_ROOM',{name:'Smoke',tableSize:i===2?6:8});});
    client.on('connect_error',e=>stats[i].errors.push(e.message));
    client.on('TABLE_STATE',st=>{
-    const r=stats[i];r.states++;r.hands.add(st.handNumber);
+    const r=stats[i];if(st.seats.length!==(i===2?6:8))r.errors.push('wrong room size');r.states++;r.hands.add(st.handNumber);
     if(st.mySeatId>=0){r.seated=true;r.ownSeats.add(st.mySeatId);}
     if(st.phase!=='SHOWDOWN') {
      for(const seat of st.seats) {
@@ -69,7 +69,7 @@ const clients=[];
   }
   for(const s of stats){assert.ok(s.seated);assert.ok(s.actions>0);assert.ok(s.hands.size>=3);assert.equal(s.ownSeats.size,1);assert.deepEqual(s.errors,[]);}
   const finalHealth=await (await fetch(origin+'/health?XTransformPort='+port)).json();
-  assert.equal(finalHealth.users,2);
+  assert.equal(finalHealth.users,3);
   const exportResult=await clients[0].timeout(5000).emitWithAck('GET_HAND_HISTORY');
   assert.ok(exportResult.hands.length>0,'public archive exists');
   assert.ok(!JSON.stringify(exportResult).includes('privateAudit'));
@@ -77,6 +77,7 @@ const clients=[];
   assert.equal((await fetch(origin+'/api/hand-history/admin')).status,401);
   const analysis=await fetch(origin+'/api/hand-history/admin',{headers:{Authorization:'Bearer '+historyToken}});
   assert.equal(analysis.status,200);const full=await analysis.json();
+  assert.ok(full.hands.some(h=>h.humans===1&&h.cpus===5),'six-seat mixed participants counted');
   assert.ok(full.hands.some(h=>h.humans===2&&h.cpus===6),'actual mixed participants counted');
   assert.ok(full.hands.some(h=>h.actions.some(a=>a.isBot&&a.privateAudit?.decisionPath)),'CPU decision audit exists');
   assert.ok(full.hands.every(h=>h.actions.every(a=>a.paid===a.stackBefore-a.stackAfter)));

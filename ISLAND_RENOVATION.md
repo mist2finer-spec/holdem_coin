@@ -1,0 +1,11 @@
+# Island Hold’em 1.14.0
+
+- New entrance and Hong lobby based on guid.pptx; uploaded environment art and static assembled character portraits. Parts/animation deferred.
+- Single player, independent six-seat and eight-seat server rooms; tournament shows Under Repair.
+- Shared seat rendering: inward hole cards, larger own cards, lower labels, fixed compact mobile pieces and readable preactions.
+- Modern character names and portraits; stable persona IDs and individual strategy parameters retained.
+- Tight personas (base VPIP <= .30, aggression <= .55) use a bounded recent-100-hand participation window. Below .15, eligible priced hands can open or call a small open. This is a target, not a guaranteed realized VPIP: weak short-stack entries, 3-bet folds, expensive calls and dry-side-pot raises are not overridden. Final preflop calls are counted, including existing defensive fallbacks.
+- Per-room Socket.IO notifications, history archives and user actions; admin export combines both rooms. Existing eight-seat clients remain compatible.
+- Correct original-seat lookup for bluff reveals after rotating the table.
+
+Validation: 106 regression tests; server TypeScript check; production build; actual three-client Socket.IO test spanning three hands in both rooms, with private-card masking and mixed human/CPU archive checks. Root-wide tsc still includes unrelated legacy test/Prisma generation errors; changed UI card types corrected.

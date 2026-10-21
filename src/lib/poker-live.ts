@@ -1,3 +1,4 @@
+import {supportTightParticipation} from './poker-participation';
 import {riverCatchDecision} from './poker-river-defense';
 import {minimumRaiseTo} from "./poker-sizing";
 import type { ActionType, Card } from './poker-engine';
@@ -11,7 +12,7 @@ import { stackContext } from './poker-stack';
 import { planPreflop } from './poker-preflop';
 
 export const LIVE_RULES = Object.freeze({
-  version: "1.13.1",
+  version: "1.14.0",
   seats: 8, smallBlind: 100, bigBlind: 200, buyIn: 5000,
   botCashOut: 100000, userSeconds: 10, maxActions: 256,
   botThinkMin: 700, botThinkJitter: 900, actionPause: 800, resultPause: 5000,
@@ -111,6 +112,11 @@ export function decideLiveBot(trainer: SelfPlayTrainer, ctx: {
       decisionPath='human-equity-call-defense';
       action={action:call>=actor.stack?'allin':'call',amount:Math.min(call,actor.stack)};
     }
+    const entry=supportTightParticipation(trainer,{base:actor.persona||RPG_BOT_POOL[0],hand:ctx.hand,seat:actor.seatId,
+      hole:actor.holeCards,board,call,stack:actor.stack,starting:actor.stack+actor.totalBet,currentBet:actor.currentBet,
+      raiseLevel:ctx.raiseLevel,minRaise:ctx.minRaise,maxRaise:ctx.maxRaise,canRaise:seats.some(s=>s.seatId!==actor.seatId&&s.inHand&&!s.folded&&!s.allIn&&s.stack>0),pot:livePot,
+      opponents:seats.filter(s=>s.inHand&&!s.folded&&s.seatId!==actor.seatId).length},action);
+    action=entry.action;if(entry.participation?.supported)decisionPath='tight-participation-support';
     const riverCatch=action.action==='fold' && board.length===5
       ? riverCatchDecision({hole:actor.holeCards,board,seats:context.seats,actorId:actor.seatId,
           base:actor.persona||RPG_BOT_POOL[0],persona}) : null;
@@ -118,7 +124,7 @@ export function decideLiveBot(trainer: SelfPlayTrainer, ctx: {
       decisionPath='river-bluff-catch';
       action={action:riverCatch.cost>=actor.stack?'allin':'call',amount:riverCatch.cost};
     }
-    ctx.onAudit?.({riverCatch,decisionPath,threeBetRead:ctx.threeBetRead,lastRaiserSeat:ctx.lastRaiserSeat,personaId:actor.persona?.id,vpip:persona.vpip,aggression:persona.aggression,
+    ctx.onAudit?.({participation:entry.participation,riverCatch,decisionPath,threeBetRead:ctx.threeBetRead,lastRaiserSeat:ctx.lastRaiserSeat,personaId:actor.persona?.id,vpip:persona.vpip,aggression:persona.aggression,
       bluffFreq:persona.bluffFreq,isOOP:context.position.isOOP,effectiveStack:context.stack.effectiveStack,
       stackEquityPremium:context.stack.equityPremium,openedPreflop:!!ctx.openedPreflop,
       limpedPreflop:!!ctx.limpedPreflop,checkedThisStreet:!!ctx.checkedThisStreet,
