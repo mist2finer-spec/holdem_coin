@@ -93,3 +93,45 @@ Stage Summary:
 - 로컬 커밋은 성공 (commit 8f2ab30, branch=feature/new-ui-assets)
 - GitHub push 불가 — remote origin 자체가 설정되어 있지 않고, 인증 수단(SSH키/GH 토큰/gh CLI)이 모두 없음
 - 사용자 액션 필요: (1) GitHub에 빈 저장소 생성 후 git remote add origin <URL>, (2) Personal Access Token 발급 후 https 인증, 또는 (3) gh CLI 설치 후 gh auth login
+
+---
+Task ID: currency-store-ui
+Agent: main (GLM)
+Task: Chip_01 색상 변형 2종(파랑/보라) 생성 + 업로드된 7개 에셋(currency_bg/plus_01/store_01/avatar_1/weapone_1/armor_1/acce_1) 정리 + CurrencyDisplay + StorePopup React 컴포넌트 작성 + preview.html에 섹션 3/4 추가. Push는 하지 않고 feature/new-ui-assets 브랜치에서 커밋만 준비.
+
+Work Log:
+- 업로드된 7개 에셋 분석: currency_bg (248x109, 마름모 영역 x=5-79/y=8-99), plus_01 (64x64), store_01 (1024x1024 양피지), acce/weapone/avatar/armor (256x256 또는 2048x2048)
+- 디렉토리 정리: src/ui/assets/{currency,store,shop/{avatars,weapons,armor,accessories}}
+- currency_bg 4배 업스케일 (992x436) 저장 → 마름모 영역 ~300x368px
+- 칩 색상 변형 생성: Pillow로 Chip_01의 HSV hue-shift만 수행 (형태/그림자 100% 보존)
+  - Chip_01_a.png: hue 240° (파랑)
+  - Chip_01_b.png: hue 280° (보라)
+  - VLM 검증: 색상 자연스럽게 변경, 형태/그림자 원본과 동일
+- CurrencyDisplay React 컴포넌트 작성 (src/ui/components/CurrencyDisplay/):
+  - currency_bg_x4.png를 CSS background로 사용
+  - 칩을 마름모 영역 위에 absolute overlay (56px md / 96px lg로 마름모 충분히 덮음)
+  - plus_01.png를 우측 버튼으로, onRechargeClick 콜백 (충전 링크 이동)
+- StoreItem + StorePopup 컴포넌트 작성 (src/ui/components/Store/):
+  - store_01.png 양피지 배경으로 풀스크린 모달
+  - 5개 카테고리 탭 (ALL/AVATAR/WEAPON/ARMOR/ACCESSORY, 한영 병기)
+  - 각 아이템 가격 옆 칩 아이콘, 희귀도별 ring 색상 (common/rare/epic/legendary)
+- chips.ts 매니페스트에 Chip_01_a/b 추가 (총 12개 칩)
+- demoStoreItems.ts: 4종 샘플 상점 아이템 (Knight Badge, Rune Sword, Ring of Embers, Amber Earrings)
+- preview.html에 섹션 3 (Currency Display, 3가지 칩 변형 시연) + 섹션 4 (Store, OPEN STORE 버튼 → 팝업) 추가
+- standalone preview 재빌드: 모든 에셋 base64 인라인 (5.3MB, 칩 12 + currency 3 + store 1 + shop 4 = 20개 data URI)
+- Playwright 스크린샷 2종 생성: default view + store popup open
+- VLM 검증: 리더보드/칩 갤러리/currency 표시/상점 팝업 모두 정상 렌더링, 한영 병기 완벽
+- stash + checkout 과정에서 약간의 커밋 분실 있었으나 reflog로 복구 → 최종 커밋 eb27a8a
+
+Stage Summary:
+- 로컬 커밋 성공: eb27a8a "feat(ui): 칩 색상 변형(a/b) + 재화 표시 + 상점 팝업 추가" (feature/new-ui-assets 브랜치)
+- 55 files changed, 1779 insertions(+), 13 deletions(-)
+- origin/feature/new-ui-assets (8f2ab30) 보다 1 커밋 앞서 있음 (push 대기 중)
+- Push는 사용자 요청에 따라 수행하지 않음
+- 산출물:
+  - 칩 변형 2장: Chip_01_a.png, Chip_01_b.png (Pillow hue-shift)
+  - 에셋 7장: currency_bg.png + 4x, plus_01.png, store_01.png, avatar_1.png, weapone_1.jpg, armor_1.png, acce_1.png
+  - React 컴포넌트 3개: CurrencyDisplay, StoreItem, StorePopup
+  - 데이터 2개: chips.ts 업데이트, demoStoreItems.ts 신규
+  - preview.html 섹션 3/4 추가
+  - standalone preview 5.3MB + 스크린샷 2종
