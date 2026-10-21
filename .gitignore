@@ -7,3 +7,5 @@ node_modules/
 # scripts/ai_ui_pipeline.sh
 # scripts/validate_ui.mjs
 # CONVENTIONS_UI.md
+upload/
+tool-results/

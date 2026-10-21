@@ -91,6 +91,193 @@
     width: 100%; aspect-ratio: 1; object-fit: contain;
     background: rgba(0, 0, 0, 0.6); border-radius: 4px;
   }
+
+  /* ─── Currency display ─────────────────────────────────────────── */
+  .currency-display {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    background-image: url('../assets/currency/currency_bg_x4.png');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    padding: 0 1.5rem;
+    min-width: 260px;
+    height: 64px;
+  }
+  .currency-display .chip-overlay {
+    position: absolute;
+    left: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 56px; height: 56px;
+    z-index: 2;
+  }
+  .currency-display .chip-overlay img {
+    width: 100%; height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));
+  }
+  .currency-display .amount-block {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-left: 3rem;
+    margin-right: 2rem;
+    text-align: center;
+  }
+  .currency-display .amount-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    background: linear-gradient(180deg, #ffe27a 0%, #d4a017 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+  }
+  .currency-display .amount-label {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(252, 211, 77, 0.6);
+  }
+  .currency-display .plus-btn {
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px; height: 40px;
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.2s;
+    z-index: 2;
+  }
+  .currency-display .plus-btn:hover {
+    transform: translateY(-50%) scale(1.1);
+  }
+  .currency-display .plus-btn img {
+    width: 100%; height: 100%;
+    object-fit: contain;
+  }
+
+  /* ─── Store ─────────────────────────────────────────────────────── */
+  .store-trigger {
+    background: linear-gradient(135deg, #b45309 0%, #451a03 100%);
+    border: 1px solid rgba(218, 165, 32, 0.6);
+    color: #fef3c7;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 0.2em;
+    font-size: 14px;
+  }
+  .store-trigger:hover {
+    background: linear-gradient(135deg, #d97706 0%, #78350f 100%);
+    transform: translateY(-1px);
+  }
+  .store-popup-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 50;
+    padding: 1rem;
+  }
+  .store-popup {
+    position: relative;
+    width: 100%; max-width: 48rem;
+    max-height: 90vh;
+    overflow: hidden;
+    border-radius: 0.5rem;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.6);
+    background-image: url('../assets/store/store_01.png');
+    background-size: cover;
+    background-position: center;
+  }
+  .store-popup .item-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    padding: 0 1.5rem 1.5rem;
+    max-height: 55vh;
+    overflow-y: auto;
+  }
+  @media (min-width: 640px) { .store-popup .item-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (min-width: 768px) { .store-popup .item-grid { grid-template-columns: repeat(4, 1fr); } }
+  .store-item-card {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(218, 165, 32, 0.3);
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .store-item-card:hover {
+    border-color: rgba(218, 165, 32, 0.7);
+    transform: translateY(-2px);
+  }
+  .store-item-card .item-img {
+    width: 100%; aspect-ratio: 1;
+    object-fit: contain;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 0.25rem;
+    margin-bottom: 0.5rem;
+  }
+  .store-item-card .item-name {
+    font-family: 'Cinzel', serif;
+    font-size: 0.875rem;
+    color: #fef3c7;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .store-item-card .item-price-row {
+    display: flex; align-items: center; justify-content: flex-end; gap: 0.25rem;
+    margin-top: 0.5rem;
+  }
+  .store-item-card .item-price {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    background: linear-gradient(180deg, #ffe27a 0%, #d4a017 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-size: 0.875rem;
+  }
+  .store-item-card .item-price-chip {
+    width: 20px; height: 20px;
+    object-fit: contain;
+  }
+  .store-item-card .rarity-badge {
+    position: absolute;
+    top: 4px; left: 4px;
+    background: rgba(0,0,0,0.7);
+    color: #fde68a;
+    padding: 1px 6px;
+    border-radius: 2px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+  }
+  .store-close-btn {
+    position: absolute;
+    top: 0.75rem; right: 0.75rem;
+    width: 32px; height: 32px;
+    background: rgba(0,0,0,0.7);
+    color: #fde68a;
+    border: none;
+    border-radius: 50%;
+    font-size: 18px;
+    cursor: pointer;
+    z-index: 10;
+  }
 </style>
 </head>
 <body class="min-h-screen">
@@ -127,11 +314,57 @@
 
       <section>
         <h2 class="font-serif-gold text-xl gold-text mb-3">2. Chip Sprites · 칩 스프라이트</h2>
-        <p class="text-xs text-amber-200/60 mb-4">10개 칩 (Chip_01 ~ Chip_10), AI 재생성된 1024×1024 PNG</p>
+        <p class="text-xs text-amber-200/60 mb-4">10개 칩 (Chip_01 ~ Chip_10) + 2개 색상 변형 (Chip_01_a 파랑 / Chip_01_b 보라), 1024×1024 PNG</p>
 
         <div id="chip-gallery" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3"></div>
       </section>
     </div>
+
+    <!-- ─── Section 3: Currency Display ──────────────────────────── -->
+    <section class="mt-12">
+      <h2 class="font-serif-gold text-xl gold-text mb-3">3. Currency Display · 재화 표시</h2>
+      <p class="text-xs text-amber-200/60 mb-4">currency_bg.png 템플릿 + Chip_01 마름모 덮개 + plus_01.png 충전 링크 (3가지 칩 변형 시연)</p>
+
+      <div class="flex flex-wrap gap-4 items-center justify-center">
+        <div id="currency-display-red" class="currency-display"></div>
+        <div id="currency-display-blue" class="currency-display"></div>
+        <div id="currency-display-purple" class="currency-display"></div>
+      </div>
+
+      <p class="text-[11px] text-amber-300/40 mt-3 text-center">
+        + 버튼 클릭 시 충전 링크로 이동 · Click + to recharge currency
+      </p>
+    </section>
+
+    <!-- ─── Section 4: Store ──────────────────────────────────────── -->
+    <section class="mt-12">
+      <h2 class="font-serif-gold text-xl gold-text mb-3">4. Store · 상점</h2>
+      <p class="text-xs text-amber-200/60 mb-4">store_01.png 양피지 배경 + 아이템 4종 (아바타/무기/방어구/액세서리)</p>
+
+      <div class="text-center mb-4">
+        <button id="open-store-btn" class="store-trigger">
+          OPEN STORE · 상점 열기
+        </button>
+      </div>
+
+      <!-- Store popup (hidden by default) -->
+      <div id="store-popup-container" hidden>
+        <div class="store-popup-backdrop" id="store-backdrop">
+          <div class="store-popup">
+            <button class="store-close-btn" id="store-close-btn" aria-label="Close store">×</button>
+
+            <div style="padding-top: 3rem; padding-bottom: 0.75rem; text-align: center;">
+              <h3 style="font-family: 'Cinzel', serif; font-size: 1.75rem; font-weight: 700; letter-spacing: 0.3em; background: linear-gradient(180deg, #4a2c0e 0%, #1a0a02 100%); -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: 0 1px 0 rgba(255, 220, 130, 0.5);">STORE</h3>
+              <p style="font-size: 0.75rem; letter-spacing: 0.4em; color: rgba(120, 53, 15, 0.7); margin-top: 0.25rem;">상점</p>
+            </div>
+
+            <div id="store-tabs" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; padding: 0 1.5rem 0.75rem;"></div>
+
+            <div class="item-grid" id="store-items"></div>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <footer class="mt-12 text-center text-xs text-amber-300/40">
       Generated by holdem_coin UI pipeline · 골드 카지노 톤 · 한영 병기
@@ -243,7 +476,19 @@
   function renderChips() {
     const gallery = document.getElementById('chip-gallery');
     let html = '';
-    for (let i = 1; i <= 10; i++) {
+    // First row: original Chip_01 + 2 color variants
+    const variants = ['Chip_01', 'Chip_01_a', 'Chip_01_b'];
+    const variantLabels = ['Original (Red)', 'Variant A (Blue)', 'Variant B (Purple)'];
+    variants.forEach((v, i) => {
+      html += `
+        <div class="chip-card">
+          <img src="../assets/chips/${v}.png" alt="${v}" loading="lazy">
+          <div class="mt-2 text-xs gold-text font-mono">${v}</div>
+          <div class="text-[10px] text-amber-300/40">${variantLabels[i]}</div>
+        </div>`;
+    });
+    // Then the rest (Chip_02 ~ Chip_10)
+    for (let i = 2; i <= 10; i++) {
       const num = String(i).padStart(2, '0');
       html += `
         <div class="chip-card">
@@ -255,8 +500,124 @@
     gallery.innerHTML = html;
   }
 
+  // ─── Currency display ───────────────────────────────────────────────
+  let currencyAmount = 1234567;
+
+  function renderCurrencyDisplay(containerId, chipId, amount) {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+    el.innerHTML = `
+      <div class="chip-overlay">
+        <img src="../assets/chips/${chipId}.png" alt="${chipId}">
+      </div>
+      <div class="amount-block">
+        <span class="amount-num text-lg">${amount.toLocaleString('en-US')} K</span>
+        <span class="amount-label">Holdem Coin</span>
+      </div>
+      <button class="plus-btn" data-chip="${chipId}" aria-label="Recharge currency / 재화 충전" title="재화 충전 · Recharge">
+        <img src="../assets/currency/plus_01.png" alt="">
+      </button>`;
+  }
+
+  function renderAllCurrencyDisplays() {
+    renderCurrencyDisplay('currency-display-red',    'Chip_01',   currencyAmount);
+    renderCurrencyDisplay('currency-display-blue',   'Chip_01_a', currencyAmount);
+    renderCurrencyDisplay('currency-display-purple',  'Chip_01_b', currencyAmount);
+    // Wire up recharge links
+    document.querySelectorAll('.plus-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const chip = btn.getAttribute('data-chip');
+        // In real app this would navigate to the recharge page.
+        alert(`[DEMO] ${chip} · 재화 충전 페이지로 이동합니다\n→ /recharge?chip=${chip}`);
+      });
+    });
+  }
+
+  // ─── Store ───────────────────────────────────────────────────────────
+  const STORE_ITEMS = [
+    { id: 'avatar_1',  name: 'Knight Badge',    nameKo: '기사 훈장',  category: 'avatar',    img: '../assets/shop/avatars/avatar_1.png',     price: 250000, chip: 'Chip_04', rarity: 'RARE' },
+    { id: 'weapone_1', name: 'Rune Sword',      nameKo: '룬 검',      category: 'weapon',    img: '../assets/shop/weapons/weapone_1.jpg',    price: 750000, chip: 'Chip_06', rarity: 'EPIC' },
+    { id: 'armor_1',   name: 'Ring of Embers',  nameKo: '잔불의 반지', category: 'armor',     img: '../assets/shop/armor/armor_1.png',         price: 500000, chip: 'Chip_05', rarity: 'EPIC' },
+    { id: 'acce_1',    name: 'Amber Earrings',  nameKo: '호박귀걸이',  category: 'accessory', img: '../assets/shop/accessories/acce_1.png',    price: 120000, chip: 'Chip_03', rarity: 'RARE' },
+  ];
+  const CATEGORIES = [
+    { id: 'all',       label: 'ALL',       labelKo: '전체'      },
+    { id: 'avatar',    label: 'AVATAR',    labelKo: '아바타'    },
+    { id: 'weapon',    label: 'WEAPON',    labelKo: '무기'      },
+    { id: 'armor',     label: 'ARMOR',     labelKo: '방어구'    },
+    { id: 'accessory', label: 'ACCESSORY', labelKo: '액세서리'  },
+  ];
+  let activeCategory = 'all';
+
+  function renderStoreTabs() {
+    const el = document.getElementById('store-tabs');
+    el.innerHTML = CATEGORIES.map(c => {
+      const active = c.id === activeCategory;
+      const cls = active
+        ? 'background: rgba(120, 53, 15, 0.8); color: #fef3c7; box-shadow: 0 0 0 1px rgba(252, 211, 77, 0.5);'
+        : 'background: rgba(254, 243, 199, 0.4); color: rgba(120, 53, 15, 0.7);';
+      return `<button data-cat="${c.id}" style="padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 11px; letter-spacing: 0.1em; cursor: pointer; ${cls}">${c.label} · ${c.labelKo}</button>`;
+    }).join('');
+    el.querySelectorAll('button').forEach(b => {
+      b.addEventListener('click', () => {
+        activeCategory = b.getAttribute('data-cat');
+        renderStoreTabs();
+        renderStoreItems();
+      });
+    });
+  }
+
+  function renderStoreItems() {
+    const el = document.getElementById('store-items');
+    const items = activeCategory === 'all'
+      ? STORE_ITEMS
+      : STORE_ITEMS.filter(i => i.category === activeCategory);
+    el.innerHTML = items.map(item => `
+      <div class="store-item-card" data-item-id="${item.id}" style="position: relative;">
+        <div style="position: relative;">
+          <img class="item-img" src="${item.img}" alt="${item.name}" loading="lazy">
+          <span class="rarity-badge">${item.rarity}</span>
+        </div>
+        <div class="item-name" title="${item.name} · ${item.nameKo}">${item.name}</div>
+        <div class="text-[10px] tracking-wider text-amber-900/60">${item.nameKo} · ${item.rarity}</div>
+        <div class="item-price-row">
+          <span class="item-price">${item.price.toLocaleString('en-US')}</span>
+          <img class="item-price-chip" src="../assets/chips/${item.chip}.png" alt="">
+        </div>
+      </div>`
+    ).join('');
+    el.querySelectorAll('.store-item-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const id = card.getAttribute('data-item-id');
+        const item = STORE_ITEMS.find(i => i.id === id);
+        if (item) {
+          alert(`[DEMO] ${item.name} · ${item.nameKo}\n가격: ${item.price.toLocaleString('en-US')} K\n→ 구매 확인 창이 열립니다`);
+        }
+      });
+    });
+  }
+
+  function openStore() {
+    document.getElementById('store-popup-container').hidden = false;
+    document.body.style.overflow = 'hidden';
+    renderStoreTabs();
+    renderStoreItems();
+  }
+  function closeStore() {
+    document.getElementById('store-popup-container').hidden = true;
+    document.body.style.overflow = '';
+  }
+
+  // Wire store open/close
+  document.getElementById('open-store-btn').addEventListener('click', openStore);
+  document.getElementById('store-close-btn').addEventListener('click', closeStore);
+  document.getElementById('store-backdrop').addEventListener('click', (e) => {
+    if (e.target.id === 'store-backdrop') closeStore();
+  });
+
   render();
   renderChips();
+  renderAllCurrencyDisplays();
 </script>
 </body>
 </html>

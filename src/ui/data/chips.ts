@@ -7,7 +7,8 @@
  */
 
 export type ChipId =
-  | 'Chip_01' | 'Chip_02' | 'Chip_03' | 'Chip_04' | 'Chip_05'
+  | 'Chip_01' | 'Chip_01_a' | 'Chip_01_b'
+  | 'Chip_02' | 'Chip_03' | 'Chip_04' | 'Chip_05'
   | 'Chip_06' | 'Chip_07' | 'Chip_08' | 'Chip_09' | 'Chip_10';
 
 export interface ChipMeta {
@@ -23,16 +24,18 @@ export interface ChipMeta {
 const CHIP_BASE = '/src/ui/assets/chips';
 
 export const CHIPS: readonly ChipMeta[] = [
-  { id: 'Chip_01', index: 1,  url: `${CHIP_BASE}/Chip_01.png`, alt: 'Single red game token',                       tier: 'small' },
-  { id: 'Chip_02', index: 2,  url: `${CHIP_BASE}/Chip_02.png`, alt: 'Stack of two tokens: blue on red',           tier: 'small' },
-  { id: 'Chip_03', index: 3,  url: `${CHIP_BASE}/Chip_03.png`, alt: 'Stack of two tokens: green on red',          tier: 'small' },
-  { id: 'Chip_04', index: 4,  url: `${CHIP_BASE}/Chip_04.png`, alt: 'Stack of five mixed-color tokens',           tier: 'medium' },
-  { id: 'Chip_05', index: 5,  url: `${CHIP_BASE}/Chip_05.png`, alt: 'Stack of six purple and gold tokens',        tier: 'medium' },
-  { id: 'Chip_06', index: 6,  url: `${CHIP_BASE}/Chip_06.png`, alt: 'Tall column of eight red tokens',            tier: 'medium' },
-  { id: 'Chip_07', index: 7,  url: `${CHIP_BASE}/Chip_07.png`, alt: 'Multiple side-by-side multi-color stacks',   tier: 'large' },
-  { id: 'Chip_08', index: 8,  url: `${CHIP_BASE}/Chip_08.png`, alt: 'Multi-height colorful stacks with gold',     tier: 'large' },
-  { id: 'Chip_09', index: 9,  url: `${CHIP_BASE}/Chip_09.png`, alt: 'Rich arrangement of red, green, blue stacks',tier: 'large' },
-  { id: 'Chip_10', index: 10, url: `${CHIP_BASE}/Chip_10.png`, alt: 'Jackpot pile of gold, silver, rainbow tokens',tier: 'jackpot' },
+  { id: 'Chip_01',   index: 1,  url: `${CHIP_BASE}/Chip_01.png`,   alt: 'Single red game token (original)',           tier: 'small' },
+  { id: 'Chip_01_a', index: 1.1, url: `${CHIP_BASE}/Chip_01_a.png`, alt: 'Single blue game token (color variant a)',   tier: 'small' },
+  { id: 'Chip_01_b', index: 1.2, url: `${CHIP_BASE}/Chip_01_b.png`, alt: 'Single purple game token (color variant b)', tier: 'small' },
+  { id: 'Chip_02',   index: 2,  url: `${CHIP_BASE}/Chip_02.png`,   alt: 'Stack of two tokens: blue on red',           tier: 'small' },
+  { id: 'Chip_03',   index: 3,  url: `${CHIP_BASE}/Chip_03.png`,   alt: 'Stack of two tokens: green on red',          tier: 'small' },
+  { id: 'Chip_04',   index: 4,  url: `${CHIP_BASE}/Chip_04.png`,   alt: 'Stack of five mixed-color tokens',           tier: 'medium' },
+  { id: 'Chip_05',   index: 5,  url: `${CHIP_BASE}/Chip_05.png`,   alt: 'Stack of six purple and gold tokens',        tier: 'medium' },
+  { id: 'Chip_06',   index: 6,  url: `${CHIP_BASE}/Chip_06.png`,   alt: 'Tall column of eight red tokens',            tier: 'medium' },
+  { id: 'Chip_07',   index: 7,  url: `${CHIP_BASE}/Chip_07.png`,   alt: 'Multiple side-by-side multi-color stacks',   tier: 'large' },
+  { id: 'Chip_08',   index: 8,  url: `${CHIP_BASE}/Chip_08.png`,   alt: 'Multi-height colorful stacks with gold',     tier: 'large' },
+  { id: 'Chip_09',   index: 9,  url: `${CHIP_BASE}/Chip_09.png`,   alt: 'Rich arrangement of red, green, blue stacks',tier: 'large' },
+  { id: 'Chip_10',   index: 10, url: `${CHIP_BASE}/Chip_10.png`,   alt: 'Jackpot pile of gold, silver, rainbow tokens',tier: 'jackpot' },
 ] as const;
 
 export const CHIP_BY_ID: Record<ChipId, ChipMeta> = Object.fromEntries(
