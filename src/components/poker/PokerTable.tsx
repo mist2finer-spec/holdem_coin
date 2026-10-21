@@ -14,11 +14,12 @@ import { TrainingPanel } from "./TrainingPanel";
 import { evaluateBestHand, scoreToCategoryName } from "@/lib/poker-engine";
 
 interface Props {
+  onMain:()=>void;
   userName: string;
   onToast?: (msg: string, tone?: "info" | "win" | "lose") => void;
 }
 
-export function PokerTable({ userName, onToast }: Props) {
+export function PokerTable({ userName, onToast, onMain }: Props) {
   const {
     seats,
     board,
@@ -414,6 +415,7 @@ export function PokerTable({ userName, onToast }: Props) {
             >
               💰 리바인하기 (5,000칩)
             </Button>
+            <Button variant="outline" className="mt-3 w-full border-amber-700 text-amber-100" onClick={onMain}>메인으로</Button>
           </div>
         </div>
       )}

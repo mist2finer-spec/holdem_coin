@@ -33,3 +33,8 @@ bluff reveal and queued rebuy, and the hosted two-client smoke test.
 
 A production deploy resets the in-memory room and its stacks. `/health` exposes
 `rulesVersion` to identify the deployed common-rule revision.
+
+### 1.15.1 room inactivity and navigation
+- Multiplayer: four cumulative timed-out **folds** in one room entry remove the human user. Free timeout checks, manual folds and queued pre-actions do not count. Rejoining starts a new count. CPU behavior is unchanged. Leaving uses the existing between-hand seat swap and settlement path.
+- Both rebuy dialogs offer **메인으로**, returning to the mode-selection lobby; leaving single player cancels its pending decision timer and game continuation.
+- Mobile lobby balances share the top header row with Back, anchored to the lobby rather than the welcome panel.

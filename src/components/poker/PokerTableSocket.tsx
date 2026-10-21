@@ -15,6 +15,7 @@ import { Card } from "@/lib/poker-engine";
 import { SelfPlayTrainer, TrainingStats } from "@/lib/self-play-trainer";
 
 interface Props {
+  onMain:()=>void;
   userName: string;
   tableSize?: 6 | 8;
   onToast?: (msg: string, tone?: "info" | "win" | "lose") => void;
@@ -36,7 +37,7 @@ const phaseLabel: Record<string, string> = {
   "SHOWDOWN": "SHOWDOWN",
 };
 
-export function PokerTableSocket({ userName, onToast, tableSize=8 }: Props) {
+export function PokerTableSocket({ userName, onToast, tableSize=8, onMain }: Props) {
   const {
     connected,
     historyCount,historyBusy,exportHistory,
@@ -69,7 +70,7 @@ export function PokerTableSocket({ userName, onToast, tableSize=8 }: Props) {
     mySeatId,
     myPlayerId,
     myName,
-  } = usePokerSocket({ userName, onToast, tableSize });
+  } = usePokerSocket({ userName, onToast, tableSize, onExit:onMain });
   const updateAvailable = useReleaseUpdate(connected);
 
   const logScrollRef = useRef<HTMLDivElement>(null);
@@ -406,6 +407,7 @@ export function PokerTableSocket({ userName, onToast, tableSize=8 }: Props) {
             <Button onClick={requestRebuy} disabled={rebuyPending}>
               {rebuyPending ? "다음 핸드 착석 대기 중…" : "💰 리바인하기 (5,000칩)"}
             </Button>
+            <Button variant="outline" className="mt-3 w-full border-amber-700 text-amber-100" onClick={onMain}>메인으로</Button>
           </div>
         </div>
       )}

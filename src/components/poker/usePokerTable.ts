@@ -80,6 +80,7 @@ interface UseTableOpts {
 }
 
 export function usePokerTable({ userName, onToast }: UseTableOpts) {
+  const mountedRef=useRef(true);
   const trainer = getGlobalTrainer();
   const opponentModel=useRef(new OpponentModel());
   const opponentKey=(s:SeatState)=>s.isUser?'human:user':`cpu:${s.seatId}:${s.persona?.id||s.name}`;
@@ -132,6 +133,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
   const stateRef = useRef(renderState);
   // Publish a snapshot; rendering never reads a mutable ref directly.
   const tick = useCallback(() => {
+    if(!mountedRef.current)return;
     const st=stateRef.current;
     setRenderState({...st, seats:st.seats.map(seat=>({...seat})), board:[...st.board], lastActions:{...st.lastActions}});
   }, []);
@@ -221,6 +223,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
   // 핸드 시작
   // =====================
   const startHand = useCallback(async () => {
+    if(!mountedRef.current)return;
     const st = stateRef.current;
     st.isDealing = true;
     st.handAborted = false;
@@ -311,7 +314,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     pushLog(`${st.seats[positions.bigBlind].name}: BB ${BIG_BLIND}`, "system");
     tick();
 
-    await sleep(500);
+    await sleep(500); if(!mountedRef.current)return;
 
     // 홀카드
     st.seats = st.seats.map((s) => {
@@ -321,7 +324,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
       return { ...s, holeCards: [c1, c2] };
     });
     tick();
-    await sleep(400);
+    await sleep(400); if(!mountedRef.current)return;
 
     st.isDealing = false;
     tick();
@@ -336,7 +339,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     tick();
 
     // 다음 핸드
-    await sleep(1500);
+    await sleep(1500); if(!mountedRef.current)return;
     startHand();
   }, [pushLog, tick, onToast]);
 
@@ -352,7 +355,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     st.seats = st.seats.map(s => ({ ...s, hasActed: false }));
     st.lastActions = {};
     tick();
-    await sleep(300);
+    await sleep(300); if(!mountedRef.current)return;
 
     let safetyCounter = 0;
     const checkedThisStreet = new Set<number>();
@@ -361,7 +364,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     const previousStreetAggressor = st.lastStreetAggressor;
     let currentStreetAggressor: number | null = null;
     let lastActorIdx = -1; // 직전 액터 (턴 순서 추적용)
-    while (safetyCounter < LIVE_RULES.maxActions) {
+    while (mountedRef.current&&safetyCounter < LIVE_RULES.maxActions) {
       safetyCounter++;
       const aliveInHand = st.seats.filter(s => s.inHand && !s.folded);
       if (aliveInHand.length <= 1 || bettingLocked(st.seats)) break;
@@ -409,11 +412,12 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
         st.userTimer = LIVE_RULES.userSeconds; // 10초 타이머
         tick();
         decision = await waitForUserActionWithTimer(st, tick);
+        if(!mountedRef.current)return;
         st.awaitingUser = false;
         st.userTimer = 0;
         tick();
       } else {
-        await sleep(LIVE_RULES.botThinkMin + Math.random() * LIVE_RULES.botThinkJitter);
+        await sleep(LIVE_RULES.botThinkMin + Math.random() * LIVE_RULES.botThinkJitter); if(!mountedRef.current)return;
         decision = decideLiveBot(trainer, {
           actor, seats: st.seats, board: st.board, pot: st.pot,
           minRaise: minR, maxRaise: maxR, button: st.buttonSeat,
@@ -475,7 +479,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
       pushLog(`${actor.name}: ${actionLabel}`, "action");
 
       tick();
-      await sleep(800);
+      await sleep(800); if(!mountedRef.current)return;
 
       const stillAlive = st.seats.filter(s => s.inHand && !s.folded);
       if (stillAlive.length <= 1) break;
@@ -505,7 +509,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     });
     st.pot += potAdd;
     tick();
-    await sleep(400);
+    await sleep(400); if(!mountedRef.current)return;
   }, [pushLog, tick, onToast, trainer, cancelCallPreActionOnRaise]);
 
   // =====================
@@ -513,7 +517,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
   // =====================
   const advancePhase = useCallback(async (btnSeat: number) => {
     const st = stateRef.current;
-    if (st.handAborted) return;
+    if (!mountedRef.current||st.handAborted) return;
     const alive = st.seats.filter(s => s.inHand && !s.folded);
 
     if (alive.length <= 1) {
@@ -529,7 +533,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
         const next = dealNextStreet(st.board, st.deck);
         st.board = next.board; st.phase = next.phase;
         pushLog(`◆ ${next.phase}: ${st.board.map(cardLabel).join(" ")}`, "system");
-        tick(); await sleep(800);
+        tick(); await sleep(800); if(!mountedRef.current)return;
       }
       await doShowdown(btnSeat);
       return;
@@ -568,11 +572,12 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
   // 쇼다운
   // =====================
   const doShowdown = useCallback(async (btnSeat: number) => {
+    if(!mountedRef.current)return;
     const st = stateRef.current;
     st.showdownReveal = true;
     st.phase = "SHOWDOWN";
     tick();
-    await sleep(1500); // 카드 공개 후 1.5초 대기 (유저가 카드 보게)
+    await sleep(1500); if(!mountedRef.current)return; // 카드 공개 후 1.5초 대기 (유저가 카드 보게)
 
     // 정확한 7카드 평가기로 승자 결정
     const contenders = st.seats.filter(s => s.inHand && !s.folded);
@@ -590,12 +595,13 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
       };
     });
     tick();
-    await sleep(500); // 족보 표시 후 잠시 대기
+    await sleep(500); if(!mountedRef.current)return; // 족보 표시 후 잠시 대기
 
     await finishHand(true);
   }, [tick]);
 
   const finishHand = useCallback(async (isShowdown: boolean) => {
+    if(!mountedRef.current)return;
     const st = stateRef.current;
     st.bluffReveal = successfulBluff(st.seats, st.lastAggression, isShowdown);
     if (st.bluffReveal !== null) {
@@ -622,7 +628,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     tick();
 
     // 결과를 5초간 유지 (유저가 충분히 볼 수 있게)
-    await sleep(LIVE_RULES.resultPause);
+    await sleep(LIVE_RULES.resultPause); if(!mountedRef.current)return;
     st.winnerInfo = null;
     st.showdownReveal = false;
     st.lastAggression = null; st.lastStreetAggressor = null;
@@ -693,10 +699,15 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
 
   // 시작
   useEffect(() => {
+    mountedRef.current=true;
     const t = setTimeout(() => {
       startHand();
     }, 1000);
-    return () => clearTimeout(t);
+    return () => {
+      mountedRef.current=false;clearTimeout(t);
+      pendingUserAction.current?.({action:'fold',amount:0});
+      pendingUserAction.current=null;
+    };
   }, []);
 
   const st = renderState;

@@ -90,6 +90,7 @@ interface ServerGameState {
 }
 
 interface ConnectedUser {
+  timeoutFolds?: number;
   playerId: string;   // ★ 고유 플레이어 ID (서버 생성)
   socketId: string;
   name: string;       // 표시용 이름 (유저 입력 + 고유 번호)
@@ -786,6 +787,18 @@ export class HybridHoldemRoom {
     }
   }
 
+  private recordTimeoutFold(socketId:string) {
+    const user=this.users.get(socketId);
+    if(!user)return;
+    user.timeoutFolds=(user.timeoutFolds??0)+1;
+    io.to(socketId).emit('SYSTEM_NOTICE',{messages:[`⏱ 자동 폴드 ${user.timeoutFolds}/4회 (이번 입장 기준)`]});
+    if(user.timeoutFolds<4)return;
+    io.to(socketId).emit('ROOM_EXIT',{reason:'timeout-fold-limit',message:'시간 초과 자동 폴드가 4회 누적되어 메인으로 이동했습니다.'});
+    // Reuse normal leave/settlement; never replace a live seat mid-hand.
+    this.onUserDisconnect(socketId);
+    io.sockets.sockets.get(socketId)?.disconnect(true);
+  }
+
   private async waitForUserAction(socketId: string): Promise<{ action: ActionType; amount: number }> {
     this.actionDeadline = Date.now() + USER_TIMEOUT_MS;
     return new Promise((resolve) => {
@@ -799,6 +812,7 @@ export class HybridHoldemRoom {
         this.actionSource="timeout";
         this.broadcast("SYSTEM_NOTICE", { messages: ["⏱ 시간 초과! 자동 액션"] });
         resolve(autoAction);
+        if(autoAction.action==='fold')this.recordTimeoutFold(socketId);
       }, USER_TIMEOUT_MS);
 
       this.pendingActionResolve = (act) => {

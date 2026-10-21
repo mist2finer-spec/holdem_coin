@@ -1,5 +1,5 @@
 "use client";
-import {useState} from 'react';
+import {useState,useCallback} from 'react';
 import {LobbyPanel} from '@/components/poker/LobbyPanel';
 import {PokerTable} from '@/components/poker/PokerTable';
 import {PokerTableSocket} from '@/components/poker/PokerTableSocket';
@@ -10,9 +10,10 @@ export default function Home() {
  const [screen,setScreen]=useState<'start'|'lobby'|'single'|'six'|'eight'>('start');
  const [name,setName]=useState('테스터1');
  const [repair,setRepair]=useState(false);
+ const returnToLobby=useCallback(()=>setScreen('lobby'),[]);
  const notice=(msg:string,tone?:'info'|'win'|'lose')=>tone==='win'?toast.success(msg):tone==='lose'?toast.error(msg):toast(msg);
- if(screen==='single')return <PokerTable userName={name.trim()||'플레이어'} onToast={notice}/>;
- if(screen==='six'||screen==='eight')return <PokerTableSocket tableSize={screen==='six'?6:8} userName={name.trim()||'플레이어'} onToast={notice}/>;
+ if(screen==='single')return <PokerTable userName={name.trim()||'플레이어'} onToast={notice} onMain={returnToLobby}/>;
+ if(screen==='six'||screen==='eight')return <PokerTableSocket tableSize={screen==='six'?6:8} userName={name.trim()||'플레이어'} onToast={notice} onMain={returnToLobby}/>;
  if(screen==='start')return <main className="island-start">
   <div className="island-sign-scene" aria-label="Island Hold’em">
    <div className="island-neon-glow" aria-hidden="true"/>

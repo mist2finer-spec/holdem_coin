@@ -51,3 +51,10 @@
  .lobby-rank-button{font-size:11px;padding:8px;margin-top:8px}
 }
 .island-welcome{display:flex;flex-direction:column}.island-modes{order:2}.island-tournament{order:3}.lobby-rank-button{order:4}
+/* Keep mobile balances beside Back in one compact header row. */
+@media(max-width:639px){
+ .lobby-wallets{left:80px;right:auto;width:calc(100% - 88px);max-width:315px;justify-content:flex-start;top:10px;gap:2px}
+ .lobby-currency{flex:1 1 0;max-width:104px;height:38px}
+ .island-back{top:14px}
+}
+@media(max-width:639px){.island-welcome{position:static}}

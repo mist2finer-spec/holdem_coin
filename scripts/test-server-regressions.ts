@@ -340,3 +340,20 @@ test('shared live AI retains 50% small-open blind defence for both callers', () 
     Math.random=()=>0.75;assert.equal(decideLiveBot(trainer,ctx).action,'fold');
   } finally {Math.random=random;}
 });
+
+test('only timed-out folds count; fourth fold removes user without mutating the live seat',async t=>{
+ t.mock.timers.enable({apis:['setTimeout']});
+ const room=roomWith();room.users.set('afk',{socketId:'afk',seatId:0,name:'AFK',preAction:null});
+ Object.assign(room.state.seats[0],{isBot:false,socketId:'afk'});
+ room.state.callAmount=0;let wait=room.waitForUserAction('afk');t.mock.timers.tick(10000);
+ assert.equal((await wait).action,'check');assert.equal(room.users.get('afk').timeoutFolds,undefined);
+ room.state.callAmount=200;
+ for(let n=1;n<=4;n++){
+  wait=room.waitForUserAction('afk');t.mock.timers.tick(10000);assert.equal((await wait).action,'fold');
+  assert.equal(room.users.has('afk'),n<4);
+  if(n<4)assert.equal(room.users.get('afk').timeoutFolds,n);
+  if(n===2){const manual=room.waitForUserAction('afk');room.onUserAction('afk',{action:'fold',amount:0});await manual;assert.equal(room.users.get('afk').timeoutFolds,2);}
+ }
+ assert.equal(room.state.seats[0].isBot,false);assert.ok(room.leaveSeats.has(0));
+ assert.equal(room.actionSource,'timeout');assert.equal(room.actionDeadline,0);
+});

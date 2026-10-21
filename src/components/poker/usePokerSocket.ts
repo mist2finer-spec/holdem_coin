@@ -69,12 +69,13 @@ export interface LogEntry {
 }
 
 interface UsePokerSocketOpts {
+  onExit?:()=>void;
   tableSize?: 6 | 8;
   userName: string;
   onToast?: (msg: string, tone?: "info" | "win" | "lose") => void;
 }
 
-export function usePokerSocket({ userName, onToast, tableSize=8 }: UsePokerSocketOpts) {
+export function usePokerSocket({ userName, onToast, tableSize=8, onExit }: UsePokerSocketOpts) {
   const socketRef = useRef<Socket | null>(null);
   const [state, setState] = useState<SocketTableState | null>(null);
   const [connected, setConnected] = useState(false);
@@ -184,6 +185,11 @@ export function usePokerSocket({ userName, onToast, tableSize=8 }: UsePokerSocke
       console.log("[Socket] 연결 끊김");
     });
 
+    socket.on('ROOM_EXIT',(data:{message?:string})=>{
+      socket.disconnect();
+      onToast?.(data.message||'방에서 퇴장했습니다.','info');
+      onExit?.();
+    });
     socket.on("ACTION_REJECTED", (data: { message: string }) => onToast?.(data.message, "info"));
 
     socket.on("TABLE_STATE", (data: SocketTableState) => {
@@ -217,7 +223,7 @@ export function usePokerSocket({ userName, onToast, tableSize=8 }: UsePokerSocke
     return () => {
       socket.disconnect();
     };
-  }, [userName, tableSize]);
+  }, [userName, tableSize, onExit]);
 
   // 액션 전송
   const submitUserAction = useCallback((action: ActionType, amount: number) => {
