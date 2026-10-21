@@ -8,6 +8,7 @@ import { CLIENT_REVISION, useReleaseUpdate } from "./useReleaseUpdate";
 import { IslandSeat } from "./IslandSeat";
 import { TableBet } from "./TableBet";
 import { PlayingCard } from "./PlayingCard";
+import {HandAwards} from "./HandAwards";
 import {ShowdownResults} from "./ShowdownResults";
 import { Button } from "@/components/ui/button";
 import { TrainingPanel } from "./TrainingPanel";
@@ -191,24 +192,7 @@ export function PokerTableSocket({ userName, onToast, tableSize=8, onMain }: Pro
             </div>
           )}
 
-          {/* 승자 표시 */}
-          {winnerInfo && !showdownReveal && (
-            <div className="absolute top-[22%] left-1/2 -translate-x-1/2 z-30">
-              <div className="bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 px-4 py-1.5 sm:px-6 sm:py-2 rounded-lg border-2 border-amber-200 shadow-2xl">
-                <div className="text-amber-950 text-[9px] sm:text-[10px] font-bold tracking-widest text-center">
-                  {winnerInfo.hand && winnerInfo.hand.startsWith("Split") ? "🤝 SPLIT POT 🤝" : "★ WINNER ★"}
-                </div>
-                <div className="text-amber-950 text-base sm:text-lg font-bold text-center">{winnerInfo.name}</div>
-                <div className="text-amber-900 text-[10px] sm:text-xs font-bold text-center tabular-nums">
-                  {winnerInfo.results.filter(r=>r.award>0).map(r=>(
-                    <div key={r.seatId}>{r.name}: 순수익 {r.netProfit>=0?"+":""}{r.netProfit.toLocaleString()} 칩</div>
-                  ))}
-                  <div className="text-[9px]">레이크 {winnerInfo.rake.toLocaleString()} 칩 (5%)</div>
-                  {winnerInfo.hand && <span className="ml-1 sm:ml-2">[{winnerInfo.hand}]</span>}
-                </div>
-              </div>
-            </div>
-          )}
+          {winnerInfo&&!showdownReveal&&<section className="poker-fold-result" aria-label="폴드 승리 결과"><HandAwards winnerInfo={winnerInfo}/></section>}
 
           {showdownReveal&&<ShowdownResults board={board} winnerInfo={winnerInfo} players={rotatedSeats.map(s=>({
             seatId:s.originalSeatId,name:s.name,portrait:s.isMe?4:s.portrait,

@@ -18,8 +18,12 @@ export default function Home() {
   <div className="island-sign-scene" aria-label="Island Hold’em">
    <div className="island-neon-glow" aria-hidden="true"/>
    <h1 className="sr-only">Island Hold’em</h1>
-   <ActionSkinButton skin="red" className="island-start-button" onClick={()=>setScreen('lobby')}>S T A R T</ActionSkinButton>
+   <div className="island-entry-buttons">
+    <ActionSkinButton skin="blue" onClick={()=>setRepair(true)}>사냥하기</ActionSkinButton>
+    <ActionSkinButton skin="red" onClick={()=>setScreen('lobby')}>주점 입장</ActionSkinButton>
+   </div>
   </div>
+  {repair&&<div className="island-modal" onClick={()=>setRepair(false)}><section role="dialog" aria-modal="true" aria-labelledby="hunting-title" onClick={e=>e.stopPropagation()}><h2 id="hunting-title">사냥하기 · 준비 중</h2><p>RPG 사냥 콘텐츠를 준비하고 있습니다.</p><button autoFocus onClick={()=>setRepair(false)}>확인</button></section></div>}
  </main>;
  return <main className="island-lobby">
   <button className="island-back" onClick={()=>setScreen('start')}>← 처음으로</button>

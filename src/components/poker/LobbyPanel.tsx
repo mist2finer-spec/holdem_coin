@@ -8,8 +8,8 @@ import {Leaderboard,type Player} from '@/ui/components/Leaderboard/Leaderboard';
 import {lobbyToken,pokerSocketOptions,soloBalance,saveSoloBalance} from '@/lib/lobby-client';
 type Account={id:string;name:string;token:string;multi:number;error?:string};
 const catalog:{category:StoreItemCategory;label:string;image:string}[]=[
- {category:'armor',label:'방어구',image:'armor/armor_1.png'},
  {category:'weapon',label:'무기',image:'weapons/weapone_1.jpg'},
+ {category:'armor',label:'방어구',image:'armor/armor_1.png'},
  {category:'accessory',label:'액세서리',image:'accessories/acce_1.png'},
  {category:'avatar',label:'아바타',image:'avatars/avatar_1.png'},
 ];

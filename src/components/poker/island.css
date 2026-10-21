@@ -60,8 +60,20 @@
 @media(max-width:639px){.island-welcome{position:static}}
 
 /* Room exit stays below the HUD, clear of identity and hand controls. */
-.poker-room-exit{position:absolute;top:34px;left:8px;z-index:40;border:1px solid #9c8551;border-radius:7px;background:#0a2028eb;color:#f9edc9;font-size:12px;padding:7px 12px;min-height:32px}
+.poker-room-exit{position:absolute;top:48px;left:8px;z-index:40;border:1px solid #9c8551;border-radius:7px;background:#0a2028eb;color:#f9edc9;font-size:12px;padding:7px 12px;min-height:32px}
 .lobby-name-form{order:5;margin-top:14px;padding:12px;border:1px solid #8e7849;border-radius:10px;background:#0b2027eb;color:#f8e6ad}
 .lobby-name-form label{display:block;font-size:12px;margin-bottom:7px}
 .lobby-name-form>div{display:flex;gap:8px}.lobby-name-form input{min-width:0;flex:1;border:1px solid #8e7849;border-radius:6px;background:#07141f;padding:9px;color:#fff}
 .lobby-name-form button{border:1px solid #b79b59;border-radius:6px;padding:8px 12px;background:#273c3b;white-space:nowrap}.lobby-name-form button:disabled{opacity:.45}
+
+/* guide_5: split entrance and compact Korean-only store navigation. */
+.island-entry-buttons{position:absolute;bottom:3%;left:12%;width:76%;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.island-entry-buttons>button{height:65px;font-size:19px}
+.store-window{height:min(86svh,760px);display:flex;flex-direction:column}
+.store-heading{flex:0 0 15%;display:grid;place-items:center;padding-top:3%;color:#f6d27a;text-shadow:0 2px 2px #392207}
+.store-heading h2{font-family:Georgia,serif;font-size:clamp(23px,4vw,32px);font-weight:700;letter-spacing:.28em;margin-left:.28em}
+.store-categories{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:0 6% 12px;flex-shrink:0}
+.store-categories button{border:1px solid #836139;background:#ddc9a2;color:#503612;padding:9px 2px;font-size:13px;font-weight:700;border-radius:3px;white-space:nowrap}
+.store-categories button[aria-pressed=true]{background:#79501f;color:#fff1c9;border-color:#edc57d}
+.store-item-scroll{padding:0 6% 6%;min-height:0;overflow:auto;overscroll-behavior:contain;flex:1}
+@media(max-width:639px){.island-entry-buttons{gap:8px;left:8%;width:84%}.island-entry-buttons>button{height:56px;font-size:16px}.store-categories{gap:4px}.store-categories button{font-size:12px}}

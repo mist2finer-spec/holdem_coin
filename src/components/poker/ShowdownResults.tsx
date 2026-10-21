@@ -3,6 +3,7 @@ import type {Card} from '@/lib/poker-engine';
 import type {WinnerInfo} from '@/lib/poker-rules';
 import {topShowdownPlayers,type ShowdownPlayer} from '@/lib/poker-showdown-view';
 import {CharacterPortrait} from './CharacterPortrait';
+import {HandAwards} from './HandAwards';
 import {PlayingCard} from './PlayingCard';
 export function ShowdownResults({players,board,winnerInfo}:{players:ShowdownPlayer[];board:Card[];winnerInfo:WinnerInfo|null}) {
  const rows=topShowdownPlayers(players,board);
@@ -22,9 +23,6 @@ export function ShowdownResults({players,board,winnerInfo}:{players:ShowdownPlay
     </div>
    </div>;
   })}
-  {winnerInfo&&<div className="showdown-awards"><strong>★ WINNER · {winnerInfo.name}</strong>
-   {winnerInfo.results.filter(r=>r.award>0).map(r=><p key={r.seatId}>{r.name} · 순수익 {r.netProfit>=0?'+':''}{r.netProfit.toLocaleString()} 칩</p>)}
-   <small>레이크 {winnerInfo.rake.toLocaleString()} 칩 (5%)</small>
-  </div>}
+  {winnerInfo&&<HandAwards winnerInfo={winnerInfo}/>}
  </section>;
 }

@@ -109,3 +109,6 @@
  .poker-bet{padding:2px 4px;min-width:56px}.poker-bet-owner{font-size:8px}.poker-bet strong{font-size:12px}
 }
 .poker-board{top:40%}.poker-pot{top:50%}
+
+/* Fold wins use the same wide award panel as a showdown, without revealing cards. */
+.poker-fold-result{position:absolute;top:22%;left:50%;translate:-50% 0;z-index:45;width:min(88%,390px);padding:5px;background:#061b19f5;border:1px solid #bd9a47;border-radius:10px;box-shadow:0 8px 25px #0008}
