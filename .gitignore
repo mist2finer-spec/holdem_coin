@@ -63,3 +63,5 @@ server.log
 mini-services/poker-server/data/
 !public/island/*.jpg
 !public/island/*.png
+
+!.env.example

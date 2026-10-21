@@ -698,7 +698,7 @@ export class HybridHoldemRoom {
         stackBefore:before.stack,stackAfter:after.stack,betBefore:before.currentBet,betAfter:after.currentBet,
         raiseLevelBefore,activePlayersBefore,allInPlayersBefore,activePlayers:st.seats.filter(s=>s.inHand&&!s.folded).length,
         allInPlayers:st.seats.filter(s=>s.inHand&&!s.folded&&s.allIn).length,decisionMs:Date.now()-actionStart,
-        privateAudit:before.isBot?{...this.pendingAudit,proposedAction,validationFallback:!normalized}:undefined});
+        privateAudit:before.isBot?{...(this.pendingAudit as Record<string,unknown>|undefined),proposedAction,validationFallback:!normalized}:undefined});
       if(st.board.length===0&&decision.action==="call"&&maxBet<=BIG_BLIND&&st.raiseLevel===0)limpedPreflop.add(actor.seatId);
       if (decision.action === "check") checkedThisStreet.add(actor.seatId);
       else checkedThisStreet.delete(actor.seatId);

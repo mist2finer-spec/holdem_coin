@@ -1,0 +1,1 @@
+{"extends":"../tsconfig.json","compilerOptions":{"target":"ES2022","incremental":false,"allowImportingTsExtensions":true},"include":["../src/app/page.tsx","../src/app/layout.tsx","../mini-services/poker-server/index.ts"],"exclude":["../node_modules","../.next"]}
