@@ -22,7 +22,7 @@ export function IslandSeat({name,stack,holeCards,folded,allIn,isMe,portrait=4,is
    {allIn&&<span className="island-seat-status">ALL-IN</span>}
   </div>
   <div className="island-hole-cards">
-   {holeCards.length>0&&(!folded||isMe)&&holeCards.map((c,i)=><PlayingCard key={i} card={visible&&c?c:undefined} hidden={!visible||!c} size={isMe?'md':'sm'}/>)}
+   {holeCards.length>0&&(!folded||isMe)&&holeCards.map((c,i)=><PlayingCard key={i} card={visible&&c?c:undefined} hidden={!visible||!c} size="xs"/>)}
    {lastActionText&&!folded&&<span className="island-last-action">{lastActionText}</span>}
   </div>
  </div>;

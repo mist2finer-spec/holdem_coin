@@ -2,14 +2,13 @@
 import "./poker-layout.css";
 import { useState, useMemo } from "react";
 import {PokerActionButtons} from "./PokerActionButtons";
-import {clampRaiseTo} from "@/lib/poker-sizing";
 import { LIVE_RULES } from "@/lib/poker-live";
 import { usePokerTable } from "./usePokerTable";
 import { PlayerSeat } from "./PlayerSeat";
 import { TableBet } from "./TableBet";
+import {SEAT_POSITIONS} from "@/lib/poker-seat-view";
 import { PlayingCard } from "./PlayingCard";
 import { Button } from "@/components/ui/button";
-import { Slider } from "@/components/ui/slider";
 import { TrainingPanel } from "./TrainingPanel";
 import { evaluateBestHand, scoreToCategoryName } from "@/lib/poker-engine";
 
@@ -17,22 +16,6 @@ interface Props {
   userName: string;
   onToast?: (msg: string, tone?: "info" | "win" | "lose") => void;
 }
-
-// 레이즈 금액을 min/max 범위로 클램프
-
-// 8좌석 테이블 상대 위치 (% 단위)
-// 0번 = 하단 중앙 (유저 자리), 시계 방향으로 배치
-// 모바일에서도 화면 안에 들어오도록 여백 확보
-const SEAT_POSITIONS = [
-  { top: "90%", left: "50%" },  // 0: 하단 중앙 (유저)
-  { top: "78%", left: "88%" },  // 1: 우하단
-  { top: "45%", left: "93%" },  // 2: 우측
-  { top: "14%", left: "82%" },  // 3: 우상단
-  { top: "7%",  left: "50%" },  // 4: 상단 중앙
-  { top: "14%", left: "18%" },  // 5: 좌상단
-  { top: "45%", left: "7%"  },  // 6: 좌측
-  { top: "78%", left: "12%" },  // 7: 좌하단
-];
 
 export function PokerTable({ userName, onToast }: Props) {
   const {
@@ -69,13 +52,11 @@ export function PokerTable({ userName, onToast }: Props) {
     dismissBust,
   } = usePokerTable({ userName, onToast });
 
-  const [raiseAmount, setRaiseAmount] = useState(0);
 
   const userSeat = seats.find((s) => s.isUser);
   const isUserTurn = awaitingUser && activeSeatId === userSeatId;
 
   // 유저가 raise slider 조정 시 초기값
-  const effectiveRaise = clampRaiseTo(minRaise,maxRaise,raiseAmount || minRaise);
 
   // 현재 팟 = 정산된 팟 + 진행 중인 베팅 합계
   const livePot = pot + seats.reduce((sum, s) => sum + s.currentBet, 0);
@@ -288,31 +269,6 @@ export function PokerTable({ userName, onToast }: Props) {
               <PokerActionButtons currentBet={userSeat?.currentBet ?? 0} call={callAmount}
                 stack={userSeat?.stack ?? 0} minRaise={minRaise} maxRaise={maxRaise}
                 pot={livePot} onSubmit={submitUserAction} />
-
-              {/* 커스텀 레이즈 슬라이더 행 */}
-              <div className="flex items-center gap-1 sm:gap-2 mt-1.5">
-                <span className="text-amber-300 text-[8px] sm:text-[9px] font-bold">CUSTOM:</span>
-                <div className="flex-1 flex items-center gap-1 sm:gap-2 px-2 sm:px-3 bg-slate-950/70 rounded-md border border-amber-700/50 h-7 sm:h-9">
-                  <Slider
-                    value={[effectiveRaise]}
-                    min={Math.min(minRaise,maxRaise)}
-                    max={maxRaise}
-                    step={50}
-                    onValueChange={(v) => setRaiseAmount(v[0])}
-                    className="flex-1"
-                  />
-                  <span className="text-amber-100 text-[10px] sm:text-xs font-bold tabular-nums min-w-[50px] sm:min-w-[60px] text-right">
-                    {effectiveRaise.toLocaleString()}
-                  </span>
-                </div>
-                <Button
-                  className="bg-amber-700 hover:bg-amber-600 text-amber-50 border border-amber-400 font-bold h-7 sm:h-9 px-2 sm:px-3 text-[10px] sm:text-xs"
-                  onClick={() => submitUserAction("raise", effectiveRaise)}
-                  disabled={maxRaise <= (userSeat?.currentBet ?? 0)+callAmount || (userSeat?.stack ?? 0)<=callAmount}
-                >
-                  입력
-                </Button>
-              </div>
 
 
             </div>

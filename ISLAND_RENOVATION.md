@@ -18,3 +18,12 @@ Validation: 106 regression tests; server TypeScript check; production build; act
 - Tight base personas can use private aggregate human hit/miss booleans. No ranks, hole cards, matchup equity or future cards enter this policy. A pair involving a hole card (including pocket pairs), or a made straight/flush+ counts as a hit; draws alone do not. Any active human hit blocks the all-miss branch. Other CPU cards remain unknown.
 - Tight IP flop aggressors may probe after all humans miss (50% mix, uniform 1/3–3/4 pot), preserving existing value actions. Affordable fold-to-call catches additionally require their own made hand/draw, unknown-range equity covering rake-adjusted odds, 40% mix, call <= half pot and <=20% remaining stack, and a missed human bettor. A miss never guarantees a bluff or victory.
 - Shared policy is invoked by both single and server modes; private hints are never emitted in public DTOs/history. Regression coverage includes exact 65% sampling, value preservation, multiple humans, OOP, dry side pots and expensive calls.
+
+## 1.14.2 guid_2 layout patch
+
+- Own seat at lower left, with compact hole cards above the portrait and name/stack below. Shared six/eight-seat view positions replace single-mode local coordinates. Original server seat IDs remain unchanged for action routing and reveals.
+- All seat cards use a compact XS face without overlapping rank corners; community cards keep their existing representation.
+- Four bottom actions in one row: Fold, Call/Check, Raise, Pot Bet or All-In. Raise retains 2X default and +/-1 / +/-0.2 controls.
+- Pot Bet or All-In opens a keyboard-accessible, dismissible Radix popover. Opening only displays choices; selecting 1/4, 1/2, 3/4 pot or All-In submits. Fractions preserve literal pot sizing, minimum-raise restrictions and short-stack caps. Optional exact raise input now lives inside this menu.
+- A fixed 154px mobile / 170px desktop action region keeps the table steady between turns. Small-screen pieces shrink further on short viewports. Wagers have separate inward anchors so they do not cover the moved own seat.
+- Validation: token-free validator (application/server imports, 111 regressions, twenty eight-seat CPU hands), scoped ESLint, production build. No LLM API calls are needed for this patch.

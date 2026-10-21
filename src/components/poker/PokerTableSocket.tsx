@@ -2,7 +2,6 @@
 import "./poker-layout.css";
 import { useEffect, useRef, useState } from "react";
 import {PokerActionButtons} from "./PokerActionButtons";
-import {clampRaiseTo} from "@/lib/poker-sizing";
 import { LIVE_RULES } from "@/lib/poker-live";
 import { usePokerSocket } from "./usePokerSocket";
 import { CLIENT_REVISION, useReleaseUpdate } from "./useReleaseUpdate";
@@ -10,7 +9,6 @@ import { IslandSeat } from "./IslandSeat";
 import { TableBet } from "./TableBet";
 import { PlayingCard } from "./PlayingCard";
 import { Button } from "@/components/ui/button";
-import { Slider } from "@/components/ui/slider";
 import { TrainingPanel } from "./TrainingPanel";
 import { Card } from "@/lib/poker-engine";
 import { SelfPlayTrainer, TrainingStats } from "@/lib/self-play-trainer";
@@ -80,7 +78,6 @@ export function PokerTableSocket({ userName, onToast, tableSize=8 }: Props) {
     if (panel) panel.scrollTop = panel.scrollHeight;
   }, [log]);
 
-  const [raiseAmount, setRaiseAmount] = useState(0);
   const [trainingStats, setTrainingStats] = useState<TrainingStats>(getGlobalTrainer().stats);
 
   // 트레이너 학습 시작 (UI 표시용)
@@ -90,7 +87,6 @@ export function PokerTableSocket({ userName, onToast, tableSize=8 }: Props) {
     trainer.start();
   });
 
-  const effectiveRaise = clampRaiseTo(minRaise,maxRaise,raiseAmount || minRaise);
 
   // 보드 카드 문자열 → Card 변환
   const board: Card[] = boardCards.map(s => ({ rank: s[0] as Card["rank"], suit: s[1] as Card["suit"] }));
@@ -305,29 +301,7 @@ export function PokerTableSocket({ userName, onToast, tableSize=8 }: Props) {
                 pot={livePot} onSubmit={submitUserAction} />
 
               {/* 커스텀 레이즈 슬라이더 */}
-              <div className="flex items-center gap-1 sm:gap-2 mt-1.5">
-                <span className="text-amber-300 text-[8px] sm:text-[9px] font-bold">CUSTOM:</span>
-                <div className="flex-1 flex items-center gap-1 sm:gap-2 px-2 sm:px-3 bg-slate-950/70 rounded-md border border-amber-700/50 h-7 sm:h-9">
-                  <Slider
-                    value={[effectiveRaise]}
-                    min={Math.min(minRaise,maxRaise)}
-                    max={maxRaise}
-                    step={50}
-                    onValueChange={(v) => setRaiseAmount(v[0])}
-                    className="flex-1"
-                  />
-                  <span className="text-amber-100 text-[10px] sm:text-xs font-bold tabular-nums min-w-[50px] sm:min-w-[60px] text-right">
-                    {effectiveRaise.toLocaleString()}
-                  </span>
-                </div>
-                <Button
-                  className="bg-amber-700 hover:bg-amber-600 text-amber-50 border border-amber-400 font-bold h-7 sm:h-9 px-2 sm:px-3 text-[10px] sm:text-xs"
-                  onClick={() => submitUserAction("raise", effectiveRaise)}
-                  disabled={maxRaise <= (userSeat?.currentBet ?? 0)+callAmount || (userSeat?.stack ?? 0)<=callAmount}
-                >
-                  입력
-                </Button>
-              </div>
+
             </div>
           ) : (
             <div className="bg-slate-900/80 border border-amber-800/40 rounded-xl px-3 py-2 backdrop-blur-sm">

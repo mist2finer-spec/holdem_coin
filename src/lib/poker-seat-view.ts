@@ -1,13 +1,13 @@
+// View-only seat order: own seat remains index zero; game/action IDs are unchanged.
 export const SEAT_POSITIONS = [
-  { top: "90%", left: "50%" }, { top: "78%", left: "88%" },
-  { top: "45%", left: "93%" }, { top: "14%", left: "82%" },
-  { top: "7%", left: "50%" }, { top: "14%", left: "18%" },
-  { top: "45%", left: "7%" }, { top: "78%", left: "12%" },
+ {top:'86%',left:'22%'},{top:'83%',left:'80%'},
+ {top:'59%',left:'88%'},{top:'32%',left:'88%'},
+ {top:'9%',left:'68%'},{top:'9%',left:'32%'},
+ {top:'32%',left:'12%'},{top:'59%',left:'12%'},
 ];
-
 export const SIX_SEAT_POSITIONS=[
- {top:'90%',left:'50%'},{top:'67%',left:'88%'},{top:'17%',left:'83%'},
- {top:'7%',left:'50%'},{top:'17%',left:'17%'},{top:'67%',left:'12%'},
+ {top:'86%',left:'22%'},{top:'86%',left:'78%'},{top:'46%',left:'88%'},
+ {top:'10%',left:'68%'},{top:'10%',left:'32%'},{top:'46%',left:'12%'},
 ];
 export function rotateSeatView<T extends { seatId: number }>(seats: T[], mySeatId: number) {
   const offset = Math.max(0, mySeatId);

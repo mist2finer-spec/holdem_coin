@@ -1,80 +1,43 @@
-/* Always reserve the expanded controls space, including while waiting.
-   svh also prevents mobile address-bar changes from resizing the table. */
-.poker-table-layout {
-  display: grid;
-  height: 100svh;
-  min-height: 540px;
-  grid-template-rows: minmax(0, 1fr) calc(252px + env(safe-area-inset-bottom, 0px));
-}
-
-@media (min-width: 640px) {
-  .poker-table-layout {
-    min-height: 640px;
-    grid-template-rows: minmax(0, 1fr) calc(312px + env(safe-area-inset-bottom, 0px));
-  }
-}
-
-/* Compact mobile pieces, not the action controls. Keep dimensions independent
-   of turn/state; short browser viewports scroll rather than crush the arena. */
-@media (max-width: 639px) {
-  .poker-table-layout { min-height: 660px; }
-  .poker-arena { padding-top: 94px; padding-bottom: 44px; }
-  .poker-seat { scale: .72; }
-  .poker-board { scale: .72; }
-  .poker-pot { scale: .8; }
-  .poker-bet { scale: .8; }
-  .poker-identity { max-width: 112px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-}
-
-/* Island's seat layout reserves inward card lanes and a readable nameplate. */
-.poker-table-layout{min-height:800px;background:linear-gradient(#07151deb,#07251cf5),url('/island/main_bg.jpg') center/cover}
-.poker-arena{padding-top:100px;padding-bottom:55px}
+/* Reserve one stable action row so taking a turn never resizes the table. */
+.poker-table-layout{display:grid;height:100svh;min-height:0;grid-template-rows:minmax(0,1fr) calc(170px + env(safe-area-inset-bottom,0px));background:linear-gradient(#07151deb,#07251cf5),url('/island/main_bg.jpg') center/cover}
+.poker-arena{padding-top:90px;padding-bottom:24px}
+.poker-identity{max-width:112px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .island-seat{position:absolute;translate:-50% -50%;z-index:15;width:76px;text-align:center}
-.island-seat-person{display:flex;flex-direction:column;align-items:center;gap:3px}
-.island-avatar{position:relative;width:58px;height:64px;background:#1e292e;border:2px solid #b49b65;border-radius:10px;box-shadow:0 3px 12px #0008}
+.island-seat-person{display:flex;flex-direction:column;align-items:center;gap:2px}
+.island-avatar{position:relative;width:48px;height:54px;background:#1e292e;border:2px solid #b49b65;border-radius:10px;box-shadow:0 3px 12px #0008;z-index:1}
 .island-portrait{width:100%;height:100%;background-repeat:no-repeat;border-radius:8px;image-rendering:pixelated}
 .island-seat-active .island-avatar{border-color:#fbea99;box-shadow:0 0 0 2px #e8c664,0 0 22px #e8c66466}
-.island-seat-folded .island-avatar{filter:grayscale(.7);opacity:.65}
+.island-seat-folded .island-portrait{filter:grayscale(.7);opacity:.65}
 .island-seat-name{font-size:11px;font-weight:800;color:#fff1c5;background:#071315ed;border:1px solid #8d794d88;border-radius:6px;padding:2px 5px;max-width:88px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .island-seat-stack{font-size:11px;font-weight:800;color:#ffe1a0;white-space:nowrap;background:#281e12ed;border-radius:10px;padding:2px 6px;border:1px solid #8d794d66}
-.island-position{position:absolute;top:-8px;left:-10px;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:#eacb5c;color:#1a2119;font-size:10px;font-weight:900;border:1px solid #fff1ac}
+.island-position{position:absolute;top:-6px;left:-9px;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;background:#eacb5c;color:#1a2119;font-size:9px;font-weight:900;border:1px solid #fff1ac;z-index:3}
 .island-position.sb{background:#57c7e6}.island-position.bb{background:#f18caf}
-.island-hole-cards{position:absolute;display:flex;gap:3px;min-width:40px;justify-content:center;align-items:center}
-.island-seat-north .island-hole-cards{top:calc(100% + 8px);left:50%;translate:-50% 0}
-.island-seat-west .island-hole-cards{left:calc(100% + 3px);top:10px}
-.island-seat-east .island-hole-cards{right:calc(100% + 3px);top:10px}
-.island-seat-self .island-hole-cards{bottom:calc(100% + 10px);left:50%;translate:-50% 0}
-.island-seat-self .island-hole-cards>div{width:46px;height:65px}
-.island-fold,.island-seat-status{color:#f9a3ae;font-size:10px;letter-spacing:.08em;font-weight:900;background:#431427e6;border:1px solid #b54664;border-radius:6px;padding:4px 7px}
+/* Small cards beside/above each portrait, rather than separate inward lanes. */
+.island-hole-cards{position:absolute;display:flex;gap:2px;top:-17px;right:-4px;justify-content:center;align-items:center;z-index:2}
+.island-hole-cards>div{width:23px;height:33px;font-size:9px}
+.island-seat-self .island-hole-cards{top:-24px;right:auto;left:50%;translate:-50% 0}
+.island-seat-self .island-hole-cards>div{width:30px;height:42px}
+.island-avatar>.island-fold{position:absolute;inset:0;display:grid;place-items:center;background:#391121c9;border-radius:8px;color:#ffc4ce;font-weight:900;font-size:11px;z-index:2}
+.island-seat-status{color:#f9a3ae;font-size:9px;font-weight:900;background:#431427e6;border:1px solid #b54664;border-radius:6px;padding:2px 5px}
 .island-last-action{position:absolute;bottom:100%;left:50%;translate:-50% -4px;font-size:9px;white-space:nowrap;color:#fff3cb;background:#142a24;padding:2px 6px;border:1px solid #c5a55d;border-radius:10px}
-.poker-board{top:44%}.poker-pot{top:61%}
+.poker-board{top:46%;scale:.8}.poker-pot{top:59%;scale:.85}
+.poker-action-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));align-items:center;gap:8px;min-height:80px}
+.poker-main-action{height:52px}.poker-raise-control{display:grid;grid-template-rows:20px 36px 20px;align-items:center}
+.poker-pot-menu{max-height:calc(100svh - 180px);overflow-y:auto;overscroll-behavior:contain}
 @media(max-width:639px){
- .poker-table-layout{min-height:830px}.poker-arena{padding-top:100px;padding-bottom:68px}
- .island-seat{width:54px}.island-avatar{width:43px;height:49px}.island-seat-name,.island-seat-stack{font-size:10px}
- .island-hole-cards>div{width:25px;height:37px}.island-seat-self .island-hole-cards>div{width:39px;height:57px}
- .island-seat-north .island-hole-cards{top:calc(100% + 5px)}
- .island-seat-west .island-hole-cards{left:calc(100% - 2px)}.island-seat-east .island-hole-cards{right:calc(100% - 2px)}
- .island-seat-self .island-hole-cards{bottom:calc(100% + 9px)}
- .poker-board{scale:.66}.poker-pot{scale:.8;top:59%}
- .island-position{width:18px;height:18px;font-size:8px;left:-6px;top:-6px}
-}
-/* 1.14.1: fit the entire play surface into a stable mobile viewport. */
-.island-avatar>.island-fold{position:absolute;inset:0;display:grid;place-items:center;padding:0;background:#391121ba;border:0;border-radius:8px;color:#ffc4ce;font-size:12px;z-index:2}
-.island-seat-self .island-seat-person{transform:translateY(10px)}
-@media(max-width:639px){
- .poker-table-layout{height:100svh;min-height:0;grid-template-rows:minmax(0,1fr) calc(232px + env(safe-area-inset-bottom,0px))}
- .poker-arena{padding-top:72px;padding-bottom:38px}
- .island-seat{scale:.76;transform-origin:center center}
- .island-seat-self{top:98%!important}
- .island-seat-self .island-seat-person{transform:translateY(12px)}
- .island-seat-self .island-hole-cards{bottom:calc(100% + 1px)}
- .poker-board{top:45%;scale:.55}
- .poker-pot{top:60%;scale:.65}
- .poker-bet{scale:.66}
+ .poker-table-layout{grid-template-rows:minmax(0,1fr) calc(154px + env(safe-area-inset-bottom,0px))}
+ .poker-arena{padding-top:80px;padding-bottom:20px}
+ .island-seat{width:62px}.island-avatar{width:38px;height:43px}
+ .island-seat-name,.island-seat-stack{font-size:9px;padding:2px 4px}
+ .island-position{width:17px;height:17px;font-size:8px;left:-6px}
+ .island-hole-cards{top:-14px;right:0}.island-hole-cards>div{width:18px;height:26px;font-size:8px}
+ .island-seat-self .island-hole-cards{top:-21px}.island-seat-self .island-hole-cards>div{width:25px;height:35px}
+ .poker-board{scale:.55}.poker-pot{scale:.65}.poker-bet{scale:.72}
+ .poker-action-row{gap:4px}.poker-main-action{height:48px}
  .island-preaction{height:34px;font-size:10px;padding-inline:8px}
 }
 @media(max-width:639px) and (max-height:650px){
- .poker-table-layout{grid-template-rows:minmax(0,1fr) calc(232px + env(safe-area-inset-bottom,0px))}
- .poker-arena{padding-top:65px;padding-bottom:30px}
- .island-seat{scale:.62}.poker-board{scale:.45}.poker-pot{scale:.58}.poker-bet{scale:.58}
+ .poker-arena{padding-top:72px;padding-bottom:16px}
+ .island-seat{scale:.8}.poker-board{scale:.48}.poker-pot{scale:.6}.poker-bet{scale:.65}
 }
+@media(prefers-reduced-motion:reduce){.poker-pot-menu{animation:none!important}}
