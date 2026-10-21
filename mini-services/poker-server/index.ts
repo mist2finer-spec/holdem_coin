@@ -1,3 +1,4 @@
+import {humanHitHint} from '../../src/lib/poker-postflop-support';
 import {OpponentModel} from "../../src/lib/poker-opponent-model.ts";
 import {minimumRaiseTo} from "../../src/lib/poker-sizing.ts";
 import {HandHistoryStore,authorizedHistory} from './hand-history-store.ts';
@@ -765,6 +766,7 @@ export class HybridHoldemRoom {
         smallBlind: this.state.smallBlindSeat, bigBlind: this.state.bigBlindSeat,
         hand: this.state.handNumber, raiseLevel: this.state.raiseLevel,
         checkedThisStreet,
+        humanHitHint:()=>humanHitHint(this.state.seats,this.state.board,this.state.lastAggression?.seatId),
         allowHumanCall:()=>allowHumanDefense({seats:this.state.seats,actorId:actor.seatId,
           humanId:this.state.lastAggression?.seatId,board:this.state.board,raiseLevel:this.state.raiseLevel}),
         lastRaiserSeat:this.state.lastAggression?.seatId,
@@ -1083,7 +1085,7 @@ const io = new Server(httpServer, {
 });
 
 if (process.env.POKER_TEST_MODE !== "1") {
-  const room = new HybridHoldemRoom();
+  const room = new HybridHoldemRoom(false); // Eight-seat mode temporarily under repair.
   const room6 = new HybridHoldemRoom(true,6);
 
   io.on("connection", (socket: Socket) => {
@@ -1092,6 +1094,7 @@ if (process.env.POKER_TEST_MODE !== "1") {
 
     socket.on("JOIN_ROOM", (data: { name: string; tableSize?: number }) => {
       if(selectedRoom)return;
+      if(data?.tableSize!==6){socket.emit("SYSTEM_NOTICE",{messages:["8인 서버: Under Repair — 6인 서버를 이용해 주세요."]});return;}
       selectedRoom=data?.tableSize===6?room6:room;
       selectedRoom?.onUserConnect(socket, data?.name || "용사");
     });
@@ -1181,7 +1184,7 @@ if (process.env.POKER_TEST_MODE !== "1") {
   httpServer.on("request", (req, res) => {
     if (new URL(req.url || "/", "http://localhost").pathname === "/health") {
       res.writeHead(200, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ status: "ok", users: room.userCount+room6.userCount, tables: [{seats:8,users:room.userCount,hand:room.state.handNumber},{seats:6,users:room6.userCount,hand:room6.state.handNumber}], hand: room.state.handNumber, rulesVersion: LIVE_RULES.version, historyHands: room.history.count+room6.history.count, historyWriteOk: !room.history.writeError&&!room6.history.writeError }));
+      res.end(JSON.stringify({ status: "ok", users: room.userCount+room6.userCount, tables: [{seats:8,users:room.userCount,hand:room.state.handNumber},{seats:6,users:room6.userCount,hand:room6.state.handNumber}], hand: room6.state.handNumber, rulesVersion: LIVE_RULES.version, historyHands: room.history.count+room6.history.count, historyWriteOk: !room.history.writeError&&!room6.history.writeError }));
     }
   });
 

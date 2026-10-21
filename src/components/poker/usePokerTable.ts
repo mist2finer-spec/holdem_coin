@@ -1,4 +1,5 @@
 "use client";
+import {humanHitHint} from '@/lib/poker-postflop-support';
 import {OpponentModel} from "@/lib/poker-opponent-model";
 import {minimumRaiseTo} from "@/lib/poker-sizing";
 /* eslint-disable react-hooks/immutability -- The imperative game loop and trainer expose mutable objects; callbacks run after render. */
@@ -417,6 +418,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
           smallBlind: st.smallBlindSeat, bigBlind: st.bigBlindSeat,
           hand: st.handNumber, raiseLevel: st.raiseLevel,
           checkedThisStreet: checkedThisStreet.has(actor.seatId),
+        humanHitHint:()=>humanHitHint(st.seats,st.board,st.lastAggression?.seatId),
           allowHumanCall:()=>allowHumanDefense({seats:st.seats,actorId:actor.seatId,
             humanId:st.lastAggression?.seatId,board:st.board,raiseLevel:st.raiseLevel}),
           lastRaiserSeat:st.lastAggression?.seatId,

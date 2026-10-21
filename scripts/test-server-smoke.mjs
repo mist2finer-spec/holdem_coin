@@ -41,14 +41,22 @@ const clients=[];
    assert.ok(asset,'compiled JavaScript asset must exist');
    assert.equal((await fetch(new URL(asset[1],origin))).status,200);
   }
+  const blocked=io(origin,{transports:['polling'],reconnection:false,timeout:3000});clients.push(blocked);
+  let blockedState=false;blocked.on('TABLE_STATE',()=>blockedState=true);
+  const repairNotice=new Promise((resolve,reject)=>{
+   const timer=setTimeout(()=>reject(new Error('8-seat repair notice missing')),5000);
+   blocked.on('SYSTEM_NOTICE',data=>{if(data.messages?.some(m=>m.includes('Under Repair'))){clearTimeout(timer);resolve(data);}});
+   blocked.on('connect',()=>blocked.emit('JOIN_ROOM',{name:'Blocked',tableSize:8}));
+  });
+  await repairNotice;assert.equal(blockedState,false);blocked.disconnect();clients.pop();
   const stats=[0,1,2].map(()=>({states:0,hands:new Set(),ownSeats:new Set(),actions:0,errors:[],seated:false}));
   for(let i=0;i<3;i++) {
    const client=io(origin,{transports:['polling'],reconnection:false,timeout:3000});clients.push(client);
    const sent=new Set();
-   client.on('connect',()=>{client.emit('JOIN_ROOM',{name:'Smoke',tableSize:i===2?6:8});client.emit('JOIN_ROOM',{name:'Smoke',tableSize:i===2?6:8});});
+   client.on('connect',()=>{client.emit('JOIN_ROOM',{name:'Smoke',tableSize:6});client.emit('JOIN_ROOM',{name:'Smoke',tableSize:6});});
    client.on('connect_error',e=>stats[i].errors.push(e.message));
    client.on('TABLE_STATE',st=>{
-    const r=stats[i];if(st.seats.length!==(i===2?6:8))r.errors.push('wrong room size');r.states++;r.hands.add(st.handNumber);
+    const r=stats[i];if(st.seats.length!==6)r.errors.push('wrong room size');r.states++;r.hands.add(st.handNumber);
     if(st.mySeatId>=0){r.seated=true;r.ownSeats.add(st.mySeatId);}
     if(st.phase!=='SHOWDOWN') {
      for(const seat of st.seats) {
@@ -77,8 +85,8 @@ const clients=[];
   assert.equal((await fetch(origin+'/api/hand-history/admin')).status,401);
   const analysis=await fetch(origin+'/api/hand-history/admin',{headers:{Authorization:'Bearer '+historyToken}});
   assert.equal(analysis.status,200);const full=await analysis.json();
-  assert.ok(full.hands.some(h=>h.humans===1&&h.cpus===5),'six-seat mixed participants counted');
-  assert.ok(full.hands.some(h=>h.humans===2&&h.cpus===6),'actual mixed participants counted');
+  assert.ok(full.hands.some(h=>h.humans===3&&h.cpus===3),'six-seat mixed participants counted');
+
   assert.ok(full.hands.some(h=>h.actions.some(a=>a.isBot&&a.privateAudit?.decisionPath)),'CPU decision audit exists');
   assert.ok(full.hands.every(h=>h.actions.every(a=>a.paid===a.stackBefore-a.stackAfter)));
   console.log(JSON.stringify({historyHands:full.hands.length,health:finalHealth,clients:stats.map(s=>({...s,hands:[...s.hands],ownSeats:[...s.ownSeats]}))}));

@@ -14,7 +14,7 @@ export function IslandSeat({name,stack,holeCards,folded,allIn,isMe,portrait=4,is
  return <div className={`island-seat island-seat-${side} ${isActive?'island-seat-active':''} ${folded?'island-seat-folded':''}`}
  style={{top:position.top,left:position.left} as CSSProperties} aria-label={`${name} 잔고 ${stack}`}>
   <div className="island-seat-person">
-   <div className="island-avatar"><CharacterPortrait portrait={portrait} name={name}/>
+   <div className="island-avatar"><CharacterPortrait portrait={portrait} name={name}/>{folded&&<span className="island-fold">FOLD</span>}
     {(isDealer||isSmallBlind||isBigBlind)&&<span className={`island-position ${isBigBlind?'bb':isSmallBlind?'sb':''}`}>{isBigBlind?'BB':isSmallBlind?'SB':'D'}</span>}
    </div>
    <div className="island-seat-name">{name}</div>
@@ -23,7 +23,6 @@ export function IslandSeat({name,stack,holeCards,folded,allIn,isMe,portrait=4,is
   </div>
   <div className="island-hole-cards">
    {holeCards.length>0&&(!folded||isMe)&&holeCards.map((c,i)=><PlayingCard key={i} card={visible&&c?c:undefined} hidden={!visible||!c} size={isMe?'md':'sm'}/>)}
-   {folded&&<span className="island-fold">FOLD</span>}
    {lastActionText&&!folded&&<span className="island-last-action">{lastActionText}</span>}
   </div>
  </div>;

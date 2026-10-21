@@ -30,12 +30,12 @@ export default function Home() {
     <div className="island-modes">
      <button onClick={()=>setScreen('single')}><span>♠</span><strong>싱글 플레이</strong><small>AI 7명과 대전</small><em>SOLO TABLE</em></button>
      <button onClick={()=>setScreen('six')}><span>♣</span><strong>6인 서버</strong><small>실시간 멀티플레이</small><em>6 SEATS</em></button>
-     <button onClick={()=>setScreen('eight')}><span>♦</span><strong>8인 서버</strong><small>실시간 멀티플레이</small><em>8 SEATS</em></button>
+     <button aria-disabled="true" onClick={()=>setRepair(true)}><span>♦</span><strong>8인 서버</strong><small>Under Repair</small><em>이용 불가</em></button>
     </div>
     <button className="island-tournament" onClick={()=>setRepair(true)}><strong>6인 토너먼트</strong><span>50 BB 시작 · 준비 중</span></button>
     <p className="island-lobby-foot">BLINDS 100 / 200 · STARTING CHIPS 5,000</p>
    </section>
   </div>
-  {repair&&<div className="island-modal" onClick={()=>setRepair(false)}><section role="dialog" aria-modal="true" aria-labelledby="repair-title" onClick={e=>e.stopPropagation()}><h2 id="repair-title">Under Repair</h2><p>토너먼트는 준비 중입니다.</p><button autoFocus onClick={()=>setRepair(false)}>확인</button></section></div>}
+  {repair&&<div className="island-modal" onClick={()=>setRepair(false)}><section role="dialog" aria-modal="true" aria-labelledby="repair-title" onClick={e=>e.stopPropagation()}><h2 id="repair-title">Under Repair</h2><p>해당 모드는 현재 점검 중입니다.</p><button autoFocus onClick={()=>setRepair(false)}>확인</button></section></div>}
  </main>;
 }

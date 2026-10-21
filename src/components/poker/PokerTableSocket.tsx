@@ -275,7 +275,7 @@ export function PokerTableSocket({ userName, onToast, tableSize=8 }: Props) {
       )}
 
       {/* 하단 액션 패널 */}
-      <div className="relative z-20 p-1.5 sm:p-3 pb-[max(0.375rem,env(safe-area-inset-bottom))] bg-gradient-to-t from-slate-950 via-slate-950/95 to-transparent">
+      <div className="poker-action-area relative z-20 p-1.5 sm:p-3 pb-[max(0.375rem,env(safe-area-inset-bottom))] bg-gradient-to-t from-slate-950 via-slate-950/95 to-transparent">
         <div className="max-w-3xl mx-auto">
           {isUserTurn ? (
             <div className="bg-slate-900/95 border-2 border-amber-600 rounded-xl p-2 sm:p-3 shadow-2xl backdrop-blur-md">

@@ -1,3 +1,4 @@
+import {postflopSupport,type HumanHitHint} from './poker-postflop-support';
 import {supportTightParticipation} from './poker-participation';
 import {riverCatchDecision} from './poker-river-defense';
 import {minimumRaiseTo} from "./poker-sizing";
@@ -12,7 +13,7 @@ import { stackContext } from './poker-stack';
 import { planPreflop } from './poker-preflop';
 
 export const LIVE_RULES = Object.freeze({
-  version: "1.14.0",
+  version: "1.14.1",
   seats: 8, smallBlind: 100, bigBlind: 200, buyIn: 5000,
   botCashOut: 100000, userSeconds: 10, maxActions: 256,
   botThinkMin: 700, botThinkJitter: 900, actionPause: 800, resultPause: 5000,
@@ -90,6 +91,7 @@ export function decideLiveBot(trainer: SelfPlayTrainer, ctx: {
   threeBetRead?: {opportunities:number;rate:number;looseness:number}; lastRaiserSeat?:number;
   checkedThisStreet?: boolean;
   allowHumanCall?: () => boolean;
+  humanHitHint?: () => HumanHitHint;
   onAudit?: (audit: Record<string, unknown>) => void;
   limpedPreflop?:boolean; previousStreetAggressor?:number|null; openedPreflop?:boolean;
 }): LiveAction {
@@ -117,6 +119,13 @@ export function decideLiveBot(trainer: SelfPlayTrainer, ctx: {
       raiseLevel:ctx.raiseLevel,minRaise:ctx.minRaise,maxRaise:ctx.maxRaise,canRaise:seats.some(s=>s.seatId!==actor.seatId&&s.inHand&&!s.folded&&!s.allIn&&s.stack>0),pot:livePot,
       opponents:seats.filter(s=>s.inHand&&!s.folded&&s.seatId!==actor.seatId).length},action);
     action=entry.action;if(entry.participation?.supported)decisionPath='tight-participation-support';
+    const support=postflopSupport({hole:actor.holeCards,board,base:actor.persona||RPG_BOT_POOL[0],persona,
+      call,pot:livePot,stack:actor.stack,currentBet:actor.currentBet,minRaise:ctx.minRaise,maxRaise:ctx.maxRaise,
+      canRaise:hasBettingOpponent(seats,actor.seatId),isOOP:context.position.isOOP,
+      initiative:ctx.previousStreetAggressor===actor.seatId,checked:!!ctx.checkedThisStreet,
+      opponents:context.seats.filter(s=>s.seatId!==actor.seatId&&s.inHand&&!s.folded).length,
+      hint:board.length>=3&&persona.vpip<=.40?ctx.humanHitHint?.():undefined},action);
+    action=support.action;if(support.path)decisionPath=support.path;
     const riverCatch=action.action==='fold' && board.length===5
       ? riverCatchDecision({hole:actor.holeCards,board,seats:context.seats,actorId:actor.seatId,
           base:actor.persona||RPG_BOT_POOL[0],persona}) : null;
