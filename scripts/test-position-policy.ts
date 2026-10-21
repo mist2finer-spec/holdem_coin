@@ -169,8 +169,8 @@ test('stack bands tighten low-chip entry and boost aggression starting at exactl
   assert.equal(applyStackTraits(persona,1000).aggression,persona.aggression);
 });
 
-test('short 66/77 mix strong raises and positive-EV jams against a 2.5BB open', () => {
-  for(const rank of ['6','7'] as Card['rank'][]) {
+test('short pair decisions respect full-bet rake instead of forcing negative-EV jams', () => {
+  for(const rank of ['6','7','9'] as Card['rank'][]) {
     const table=seats();
     Object.assign(table[0],{stack:2300,currentBet:200,totalBet:200});
     Object.assign(table[1],{stack:4500,currentBet:500,totalBet:500});
@@ -178,16 +178,16 @@ test('short 66/77 mix strong raises and positive-EV jams against a 2.5BB open', 
     const cards=[card(rank,'♠'),card(rank,'♥')];
     const p={vpip:0.16,aggression:0.45,bluffFreq:0.05};
     const options=shortStackOptions({hole:cards,board:[],call:300,minRaise:800,maxRaise:2500,
-      pot:800,stack:2300,currentBet:200,raiseLevel:1,persona:p,context})!;
+      pot:700,stack:2300,currentBet:200,raiseLevel:1,persona:p,context})!;
     const counts=[0,0,0,0,0];
     withSeed(()=>{for(let i=0;i<300;i++){
-      const d=trainer.decideActionForLive(cards,[],300,800,2500,800,2300,200,1,0,2,1,1,p,context);
+      const d=trainer.decideActionForLive(cards,[],300,800,2500,700,2300,200,1,0,2,1,1,p,context);
       counts[d.action]++;
       const mapped=d.action===4?{action:'allin',amount:2300}:d.action===2?{action:'raise',amount:d.amount}:d.action===1?{action:'call',amount:300}:{action:'fold',amount:0};
       assert.ok(normalizeLiveAction(table,0,mapped,300));
     }});
-    assert.ok(counts[2]+counts[4]>180,JSON.stringify({rank,counts,options}));
-    assert.ok(counts[1]<counts[2]+counts[4]);
+    if(Math.max(options.callEV,options.jamEV,options.strongRaiseEV)<=0)assert.equal(counts[0],300,JSON.stringify({rank,counts,options}));
+    else assert.ok(counts[1]+counts[2]+counts[4]>0,JSON.stringify({rank,counts,options}));
     if(counts[4])assert.ok(options.jamEV>0);
     if(counts[2])assert.ok(options.strongRaiseEV>0);
   }

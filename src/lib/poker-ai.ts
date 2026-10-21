@@ -1,5 +1,5 @@
 import { Card, evaluateBestHand } from './poker-engine';
-import { BettingSeat, contributionLayers, RAKE_RATE } from './poker-rules';
+import { BettingSeat, rakedContributionLayers, RAKE_RATE } from './poker-rules';
 import type { PositionContext } from './poker-position';
 import type { stackContext } from './poker-stack';
 
@@ -83,14 +83,21 @@ export function calledActionEV(hole: Card[], board: Card[], context: DecisionCon
     return {...seat,totalBet:seat.totalBet+extra};
   });
   let expected=0;
-  for(const layer of contributionLayers(projected)) {
-    if(layer.refundSeatId!==undefined){if(layer.refundSeatId===actor.seatId)expected+=layer.amount;continue;}
+  for(const layer of rakedContributionLayers(projected,rate)) {
+    if(layer.refundSeatId!==undefined){if(layer.refundSeatId===actor.seatId)expected+=layer.amount-layer.rake;continue;}
     if(!layer.eligibleSeatIds.includes(actor.seatId))continue;
     const opponentIds=layer.eligibleSeatIds.filter(id=>id!==actor.seatId);
     const ranges=rangesBySeat ? opponentIds.map(id=>rangesBySeat[id]||range||'open') : undefined;
     const q=estimateEquity(hole,board,opponentIds.length,samples,range,
       ranges?.some(r=>r!==range)?ranges:undefined);
-    expected+=q*(layer.amount-Math.floor(layer.amount*rate));
+    expected+=q*(layer.amount-layer.rake);
   }
   return expected-cost; // previously committed chips are sunk at this decision
+}
+
+// If everyone folds, our new bet returns to us AFTER the same house rake.
+// Previous contributions are sunk; subtract only the incremental action cost.
+export function uncontestedActionEV(context:DecisionContext,cost:number,rate=RAKE_RATE) {
+  const pot=context.seats.reduce((sum,seat)=>sum+seat.totalBet,0);
+  return pot-Math.floor((pot+cost)*rate);
 }

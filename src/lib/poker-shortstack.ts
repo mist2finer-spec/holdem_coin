@@ -1,5 +1,5 @@
 import type { Card } from './poker-engine';
-import { calledActionEV, type OpponentRange, type DecisionContext } from './poker-ai';
+import { calledActionEV, uncontestedActionEV, type OpponentRange, type DecisionContext } from './poker-ai';
 import { hasBettingOpponent, RAKE_RATE } from './poker-rules';
 import { connectorAllowed } from './poker-preflop';
 
@@ -30,7 +30,7 @@ export function shortStackOptions(spot: ShortSpot) {
       : Math.min(0.45,0.25+(target-highest)/Math.max(1,highest)*0.05);
     const committed=opponents.some(s=>s.currentBet/Math.max(1,s.stack+s.totalBet)>=0.40);
     const foldProbability=canMakeFold ? Math.pow(threeBet&&committed?Math.min(0.10,perOpponent):perOpponent,opponents.length) : 0;
-    return foldProbability*pot*(1-RAKE_RATE)+(1-foldProbability)*called;
+    return foldProbability*uncontestedActionEV(context,cost)+(1-foldProbability)*called;
   };
   const callCost=Math.min(call,stack);
   const allInOpponent=opponents.some(s=>s.allIn);
