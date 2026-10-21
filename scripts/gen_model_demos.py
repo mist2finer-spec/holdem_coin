@@ -39,18 +39,6 @@ MODELS = {
             {'key': 'run_b', 'label_en': 'Run B',  'label_ko': '달리기 B', 'fps': 14, 'loop': True},
         ],
     },
-    'model_4': {
-        'name_en': 'Heavy Knight',
-        'name_ko': '중갑 기사',
-        'asset_dir': '../assets/character/model_4',
-        'manifest_path': '/home/z/my-project/src/ui/assets/character/model_4/manifest.json',
-        'description_en': 'Armored knight with battle axe — walk + attack',
-        'description_ko': '전투 도끼를 든 중갑 기사 — 걷기 + 공격',
-        'anims': [
-            {'key': 'walk',   'label_en': 'Walk',    'label_ko': '걷기',  'fps': 10, 'loop': True},
-            {'key': 'attack', 'label_en': 'Attack',  'label_ko': '공격',  'fps': 12, 'loop': False},
-        ],
-    },
     'model_5': {
         'name_en': 'Green Slime',
         'name_ko': '초록 슬라임',

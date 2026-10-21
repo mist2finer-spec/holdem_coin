@@ -73,7 +73,7 @@ class ModelSpec:
     row_frame_counts: Optional[List[int]] = None
 
 
-# ─── 4 model specs ────────────────────────────────────────────────────────
+# ─── 3 model specs (model_4 was discarded) ────────────────────────────────
 MODELS = [
     # ── model_2: Skeleton warrior — 2 rows × 5 cols, both rows are "walk"
     ModelSpec(
@@ -101,21 +101,6 @@ MODELS = [
         animations=[
             AnimSpec('run', row=0, frame_count=5, fps=14, loop=True),
             AnimSpec('run_b', row=1, frame_count=5, fps=14, loop=True),
-        ],
-        bg_threshold=140,
-    ),
-
-    # ── model_4: Heavy armored warrior — 2 rows × 5 cols: row0=walk, row1=attack
-    ModelSpec(
-        model_id='model_4',
-        source='model_4.jpg',
-        display_name='Heavy Knight',
-        display_name_ko='중갑 기사',
-        grid=(5, 2),
-        source_size=(2912, 1440),  # cell = 582x720
-        animations=[
-            AnimSpec('walk', row=0, frame_count=5, fps=10, loop=True),
-            AnimSpec('attack', row=1, frame_count=5, fps=12, loop=False),
         ],
         bg_threshold=140,
     ),

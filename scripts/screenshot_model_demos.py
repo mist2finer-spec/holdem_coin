@@ -5,7 +5,6 @@ from pathlib import Path
 DEMOS = [
     ('model_2', '/home/z/my-project/download/character_model_2_standalone.html'),
     ('model_3', '/home/z/my-project/download/character_model_3_standalone.html'),
-    ('model_4', '/home/z/my-project/download/character_model_4_standalone.html'),
     ('model_5', '/home/z/my-project/download/character_model_5_standalone.html'),
 ]
 

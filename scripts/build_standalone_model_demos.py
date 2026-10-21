@@ -15,8 +15,6 @@ DEMOS = [
                  '/home/z/my-project/src/ui/assets/character/model_2/manifest.json'),
     ('model_3', '/home/z/my-project/src/ui/demo/model_3_animation.html',
                  '/home/z/my-project/src/ui/assets/character/model_3/manifest.json'),
-    ('model_4', '/home/z/my-project/src/ui/demo/model_4_animation.html',
-                 '/home/z/my-project/src/ui/assets/character/model_4/manifest.json'),
     ('model_5', '/home/z/my-project/src/ui/demo/model_5_animation.html',
                  '/home/z/my-project/src/ui/assets/character/model_5/manifest.json'),
 ]

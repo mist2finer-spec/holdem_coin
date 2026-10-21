@@ -235,3 +235,31 @@ Stage Summary:
 - 골드 카지노 톤 일관성: 모든 데모가 동일한 디자인 시스템 사용 (Cinzel 폰트, gold gradient text, amber 색상 팔레트)
 - 키보드 + 버튼 양쪽 제어 지원, 0.5×/1×/1.5×/2× 속도 조절, Pause/Play 토글
 - 한영 병기: 모든 라벨, 버튼, 설명에 한국어 + 영문 동시 표기
+
+---
+Task ID: discard-model-4-and-push
+Agent: main (GLM)
+Task: model_4 (Heavy Knight) 폐기 — 모든 model_4 파일 삭제 + 스크립트에서 model_4 설정 제거 + character_index.html에서 model_4 카드 제거. 이후 feature/new-ui-assets 브랜치에서 커밋 후 GitHub로 push.
+
+Work Log:
+- model_4 관련 파일 6종 삭제:
+  - src/ui/assets/character/model_4/ (디렉토리 전체, 22개 파일)
+  - src/ui/demo/model_4_animation.html
+  - download/character_model_4_standalone.html
+  - download/character_model_4_screenshot.png
+  - download/character_model_4_screenshot_small.png
+- character_index.html에서 model_4 카드 블록 제거 (정규식으로 <a class="model-card" href="model_4_animation.html">...</a> 전체 제거)
+- 스크립트 4개에서 model_4 설정 제거:
+  - gen_character_sprites_v2.py: MODELS 리스트에서 model_4 ModelSpec 제거 (3개 모델만 남음)
+  - gen_model_demos.py: MODELS 딕셔너리에서 model_4 항목 제거
+  - build_standalone_model_demos.py: DEMOS 리스트에서 model_4 제거
+  - screenshot_model_demos.py: DEMOS 리스트에서 model_4 제거
+- 검증: character_index.html에서 model_4 참조 0개 확인, 실제 model-card 링크 4개 (model_1, 2, 3, 5)
+- 인덱스 페이지 스크린샷 재생성 (model_4 카드 없이 정상 렌더링 확인)
+- feature/new-ui-assets 브랜치에서 커밋 후 GitHub push 예정
+
+Stage Summary:
+- model_4 완전 폐기: 22개 캐릭터 프레임 PNG + sprite_sheet + manifest + 데모 HTML + standalone HTML + 스크린샷 2종 = 총 28개 파일 삭제
+- 스크립트 4개에서 model_4 설정 제거하여 재실행 시 model_4가 다시 생성되지 않도록 차단
+- character_index.html에서 model_4 카드 제거, 남은 4개 모델(model_1, 2, 3, 5) 카드만 표시
+- 최종 캐릭터 라인업: Orc Warrior (model_1), Skeleton Warrior (model_2), Valkyrie (model_3), Green Slime (model_5)
