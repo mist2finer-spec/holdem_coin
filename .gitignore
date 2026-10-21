@@ -1,2 +1,9 @@
 skills/
 node_modules/
+
+# UI-only pipeline artifacts (optional — uncomment to keep local-only)
+# .aider.ui.conf.yml
+# .aiderignore.ui
+# scripts/ai_ui_pipeline.sh
+# scripts/validate_ui.mjs
+# CONVENTIONS_UI.md

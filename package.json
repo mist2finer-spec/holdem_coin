@@ -1,0 +1,17 @@
+{
+  "name": "holdem_coin",
+  "version": "0.0.0",
+  "private": true,
+  "description": "holdem_coin — UI-only pipeline scaffold. Merge the 'scripts' block below into your existing package.json if you already have one.",
+  "_NOTE": [
+    "This package.json is a MINIMAL SCAFFOLD created by the ai-ui setup.",
+    "If you already have a package.json in your holdem_coin project,",
+    "DO NOT overwrite it — instead, copy the 'scripts' entries below",
+    "(especially 'ai-ui', 'validate:ui') into your existing package.json."
+  ],
+  "scripts": {
+    "ai-ui": "bash scripts/ai_ui_pipeline.sh",
+    "validate:ui": "node scripts/validate_ui.mjs",
+    "build:ui": "echo 'override me — typically: vite build / next build / tsc --noEmit' && exit 1"
+  }
+}

@@ -1,0 +1,64 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# holdem_coin :: UI-ONLY Aider Profile
+# ─────────────────────────────────────────────────────────────────────────────
+# Invoked by :  npm run ai-ui   (or: aider --config .aider.ui.conf.yml ...)
+# Purpose    :  Strictly isolate UI/frontend context from server & game-core
+#               logic to save tokens and prevent accidental backend edits.
+#
+# Hard boundary is enforced via .aiderignore.ui (gitignore-style patterns).
+# Aider will REFUSE to read, write, or accept file-add requests for any
+# path matched by .aiderignore.ui, even if explicitly passed on the CLI.
+#
+# Allowed scope (whitelist, enforced indirectly):
+#     src/ui/**, public/**, styles/**, index.html,
+#     tailwind.config.{js,ts,cjs,mjs}, postcss.config.{js,ts,cjs,mjs},
+#     vite.config.{js,ts}, components.json
+#
+# Forbidden scope (hard ignore):
+#     src/server/**, src/api/**, src/services/**,
+#     src/lib/poker-live.ts, src/lib/poker-*.ts, src/lib/game/**,
+#     src/lib/db/**, src/lib/auth/**, src/lib/socket/**, src/lib/wallet/**,
+#     src/lib/solana/**, src/lib/contract/**, src/lib/blockchain/**,
+#     scripts/**, tests/**, test/**, prisma/**, drizzle/**, .env*
+# ─────────────────────────────────────────────────────────────────────────────
+
+# ── Model & cost control ────────────────────────────────────────────────────
+# Pick a token-efficient model. Override per-run with: --model <name>
+model: gpt-5-codex
+# Weak model used for summarization / repo-map. Smaller == cheaper.
+weak-model: gpt-5-codex
+# Disable editor/format features that pull extra tokens
+edit-format: diff
+show-diffs: true
+
+# ── Commit behavior (pipeline controls git, NOT aider) ─────────────────────
+auto-commits: false
+dirty-commits: false
+auto-test: false
+commits-since: 0
+
+# ── Context discipline ───────────────────────────────────────────────────────
+# Repo map helps the model navigate without dumping every file.
+map-tokens: 1024
+# Don't auto-add every file the model mentions (token sink).
+implicit-auto-context: false
+# Don't auto-add all files mentioned in the user message.
+auto-add: false
+
+# ── Linting (off — pipeline does its own UI validation) ─────────────────────
+auto-lint: false
+
+# ── Boundary enforcement ───────────────────────────────────────────────────
+# This is THE key directive. .aiderignore.ui is gitignore-syntax and
+# guarantees the AI agent cannot see or touch backend/game-core code.
+aiderignore: .aiderignore.ui
+
+# Always read this small UI conventions doc into context if present.
+read:
+  - CONVENTIONS_UI.md
+
+# ── Misc ───────────────────────────────────────────────────────────────────
+pretty: false
+check-update: false
+analytics: false
+skip-sanity-check-repo: true

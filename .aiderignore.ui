@@ -1,0 +1,87 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# holdem_coin :: UI-ONLY ignore list (used by .aider.ui.conf.yml)
+# ─────────────────────────────────────────────────────────────────────────────
+# Gitignore-style syntax. Aider will REFUSE to read or edit any path
+# matched here, even if explicitly passed via `aider --file ...`.
+#
+# This file is the HARD BOUNDARY that protects server & game-core logic.
+# ─────────────────────────────────────────────────────────────────────────────
+
+# ── Backend / API / services ────────────────────────────────────────────────
+src/server/
+src/server/**
+src/api/
+src/api/**
+src/services/
+src/services/**
+
+# ── Game core & on-chain logic (HARD LOCK) ──────────────────────────────────
+src/lib/poker-live.ts
+src/lib/poker-*.ts
+src/lib/poker*/**
+src/lib/game/
+src/lib/game/**
+
+# ── Data, auth, realtime, blockchain ────────────────────────────────────────
+src/lib/db/
+src/lib/db/**
+src/lib/auth/
+src/lib/auth/**
+src/lib/socket/
+src/lib/socket/**
+src/lib/wallet/
+src/lib/wallet/**
+src/lib/solana/
+src/lib/solana/**
+src/lib/contract/
+src/lib/contract/**
+src/lib/blockchain/
+src/lib/blockchain/**
+src/lib/redis/
+src/lib/redis/**
+
+# ── Backend tests / simulations / scripts ───────────────────────────────────
+scripts/
+scripts/**
+tests/
+tests/**
+test/
+test/**
+src/server/__tests__/
+src/server/__tests__/**
+
+# ── ORM / migrations / env (sensitive & non-UI) ─────────────────────────────
+prisma/
+prisma/**
+drizzle/
+drizzle/**
+.env
+.env.*
+!.env.example
+
+# ── Build output / caches ───────────────────────────────────────────────────
+node_modules/
+node_modules/**
+dist/
+dist/**
+build/
+build/**
+.next/
+.next/**
+.cache/
+.cache/**
+
+# ── DB / binaries / logs ─────────────────────────────────────────────────────
+*.db
+*.sqlite
+*.sqlite3
+*.log
+*.pid
+
+# ── Misc non-UI files ───────────────────────────────────────────────────────
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+bun.lockb
+*.md
+!CONVENTIONS_UI.md
