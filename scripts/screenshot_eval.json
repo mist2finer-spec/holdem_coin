@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "이 페이지는 상단에 'HOLDEM COIN' 타이틀을 두고, 좌측에는 **리더보드** 프리뷰 영역과 플레이어 추가/삭제 버튼을, 우측에는 **칩 스프라이트** 정보를 배치한 깔끔한 2단 구성입니다. 리더보드는 흰색 테두리의 패널 안에 명확히 드러나 있으나, 칩 갤러리는 현재 텍스트 설명만 존재하여 실제 이미지 시각화는 되지 않은 상태입니다. 어두운 갈색 바탕에 금색 계열의 폰트와 버튼을 사용하여 **고급스러운 골드 카지노 톤**이 효과적으로 적용되었으며, 'LEADERBOARD · 리더보드'와 같이 모든 주요 섹션 및 UI 요소에 **한영 병기**가 일관되게 잘 구현되어 있습니다.",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1792597183,
+  "id": "2026102123393366ec4b6c2f9f4c13",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "2026102123393366ec4b6c2f9f4c13",
+  "usage": {
+    "completion_tokens": 248,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 6144,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 6392
+  }
+}
