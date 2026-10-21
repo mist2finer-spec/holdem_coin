@@ -27,3 +27,12 @@ Validation: 106 regression tests; server TypeScript check; production build; act
 - Pot Bet or All-In opens a keyboard-accessible, dismissible Radix popover. Opening only displays choices; selecting 1/4, 1/2, 3/4 pot or All-In submits. Fractions preserve literal pot sizing, minimum-raise restrictions and short-stack caps. Optional exact raise input now lives inside this menu.
 - A fixed 154px mobile / 170px desktop action region keeps the table steady between turns. Small-screen pieces shrink further on short viewports. Wagers have separate inward anchors so they do not cover the moved own seat.
 - Validation: token-free validator (application/server imports, 111 regressions, twenty eight-seat CPU hands), scoped ESLint, production build. No LLM API calls are needed for this patch.
+
+## 1.14.3 guide.pptx readability and showdown
+
+- Own seat information is grouped into one lower-left plaque, with enlarged own cards above it. Opponent cards render behind the portrait rather than covering the face.
+- Community cards grow from mobile .55 scale to .86 (.78 on short screens). Separate wager anchors keep chips outside the larger board area.
+- A shared ShowdownResults panel replaces the text-only category table and overlapping winner banner in both modes. At most three non-folded, revealed players are sorted by actual showdown strength and shown with portrait, nickname, private cards and relevant community cards; settlement profits/rake remain visible below.
+- Exact best-five selection enumerates all 21 combinations. Normal hands show two hole cards plus three board cards. Board-playing/one-hole-card hands instead show the actual four/five board cards and dim unused hole cards. Ties prefer an equally strong combination using more hole cards; display ranking never changes payouts or pot eligibility.
+- The server still masks private cards using the existing DTO; no additional hidden cards or bot strategy fields are transmitted.
+- Verified imports/types, 115 regressions including best-five/board-playing/top-three tests, 20 headless CPU hands, scoped lint and production build.

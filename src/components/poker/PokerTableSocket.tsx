@@ -8,6 +8,7 @@ import { CLIENT_REVISION, useReleaseUpdate } from "./useReleaseUpdate";
 import { IslandSeat } from "./IslandSeat";
 import { TableBet } from "./TableBet";
 import { PlayingCard } from "./PlayingCard";
+import {ShowdownResults} from "./ShowdownResults";
 import { Button } from "@/components/ui/button";
 import { TrainingPanel } from "./TrainingPanel";
 import { Card } from "@/lib/poker-engine";
@@ -62,7 +63,6 @@ export function PokerTableSocket({ userName, onToast, tableSize=8 }: Props) {
     phase,
     handNumber,
     boardCards,
-    showdownHands,
     winnerInfo,
     showdownReveal,
     bluffReveal,
@@ -189,7 +189,7 @@ export function PokerTableSocket({ userName, onToast, tableSize=8 }: Props) {
           )}
 
           {/* 승자 표시 */}
-          {winnerInfo && (
+          {winnerInfo && !showdownReveal && (
             <div className="absolute top-[22%] left-1/2 -translate-x-1/2 z-30">
               <div className="bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 px-4 py-1.5 sm:px-6 sm:py-2 rounded-lg border-2 border-amber-200 shadow-2xl">
                 <div className="text-amber-950 text-[9px] sm:text-[10px] font-bold tracking-widest text-center">
@@ -207,37 +207,11 @@ export function PokerTableSocket({ userName, onToast, tableSize=8 }: Props) {
             </div>
           )}
 
-          {/* 쇼다운 핸드 카테고리 패널 */}
-          {showdownReveal && showdownHands.length > 0 && (
-            <div className="absolute top-[8%] left-1/2 -translate-x-1/2 z-20">
-              <div className="bg-slate-950/95 border-2 border-amber-600/70 rounded-lg p-1.5 sm:p-2 shadow-2xl backdrop-blur-md max-w-[90vw]">
-                <div className="text-amber-300 text-[9px] sm:text-[10px] font-bold tracking-wider mb-1 text-center">
-                  ◆ SHOWDOWN — 핸드 족보 ◆
-                </div>
-                <div className="space-y-0.5">
-                  {showdownHands.map((h, i) => (
-                    <div
-                      key={i}
-                      className={`flex items-center gap-1.5 sm:gap-2 px-1.5 sm:px-2 py-0.5 rounded text-[10px] sm:text-xs ${
-                        h.isWinner
-                          ? "bg-amber-900/50 border border-amber-400"
-                          : "bg-slate-900/50 border border-slate-700/40"
-                      }`}
-                    >
-                      <span className="text-xs sm:text-sm">{h.isUser ? "⚔️" : "🎭"}</span>
-                      <span className={`font-bold truncate min-w-[50px] sm:min-w-[70px] ${h.isUser ? "text-blue-300" : "text-amber-200"}`}>
-                        {h.name}
-                      </span>
-                      <span className={`font-bold ml-auto ${h.isWinner ? "text-amber-300" : "text-slate-400"}`}>
-                        {h.handCategory}
-                      </span>
-                      {h.isWinner && <span className="text-amber-400 text-[10px]">★</span>}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
+          {showdownReveal&&<ShowdownResults board={board} winnerInfo={winnerInfo} players={rotatedSeats.map(s=>({
+            seatId:s.originalSeatId,name:s.name,portrait:s.isMe?4:s.portrait,
+            holeCards:s.holeCards.filter(c=>c!=="??").map(c=>({rank:c[0] as Card["rank"],suit:c[1] as Card["suit"]})),
+            inHand:s.inHand,folded:s.folded,
+          }))}/>}
 
           {rotatedSeats.map(seat => (
             <TableBet key={`bet-${seat.seatId}`} amount={seat.currentBet} name={seat.name} position={seat.position} />

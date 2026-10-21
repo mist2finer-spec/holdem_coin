@@ -41,3 +41,38 @@
  .island-seat{scale:.8}.poker-board{scale:.48}.poker-pot{scale:.6}.poker-bet{scale:.65}
 }
 @media(prefers-reduced-motion:reduce){.poker-pot-menu{animation:none!important}}
+/* guide.pptx: clear portraits, grouped own information, readable board/results. */
+.island-seat-info{display:flex;flex-direction:column;align-items:center;gap:2px}
+.island-hole-cards{z-index:0;top:-15px;right:-3px}
+.island-avatar{z-index:1}
+.island-seat-self{width:104px}
+.island-seat-self .island-hole-cards{top:-37px;z-index:0}
+.island-seat-self .island-hole-cards>div{width:35px;height:48px}
+.island-seat-self .island-seat-info{position:relative;z-index:2;width:100px;background:#071315f2;border:1px solid #c0a05b;border-radius:8px;padding:3px 4px;gap:0}
+.island-seat-self .island-seat-name,.island-seat-self .island-seat-stack{background:transparent;border:0;padding:1px 3px}
+.island-seat-self .island-seat-name{font-size:12px;max-width:90px}
+.island-seat-self .island-seat-stack{font-size:11px}
+.poker-board{scale:1}
+.poker-showdown-results{position:absolute;top:3%;left:50%;translate:-50% 0;z-index:45;width:min(94%,540px);max-height:94%;overflow:auto;background:#061b19f5;border:1px solid #bd9a47;border-radius:12px;padding:10px;box-shadow:0 14px 45px #000a;color:#f9e6ad;scrollbar-width:thin}
+.poker-showdown-results h2{font-size:12px;letter-spacing:.12em;font-weight:900;text-align:center;margin-bottom:8px}
+.poker-showdown-results h2 span{font-size:10px;letter-spacing:0;color:#c1b999;margin-left:8px}
+.showdown-player{display:flex;gap:12px;align-items:center;padding:8px;border:1px solid #386155;border-radius:8px;margin-bottom:6px;background:#092922}
+.showdown-player-won{border-color:#eac15c;background:#33401c}
+.showdown-person{width:64px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:4px}
+.showdown-avatar{width:42px;height:47px;border:1px solid #bea167;border-radius:8px;background:#152a29}
+.showdown-person strong{font-size:10px;max-width:64px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.showdown-hand{min-width:0}.showdown-card-groups{display:flex;gap:12px}.showdown-card-groups small{display:block;font-size:9px;color:#a7c5b7;margin-bottom:3px}
+.showdown-cards{display:flex;gap:3px}.showdown-cards>div{width:31px;height:44px;flex-shrink:0}
+.showdown-hand p{font-size:11px;font-weight:800;margin-top:4px}.showdown-hand p span{font-size:9px;font-weight:400}
+.showdown-awards{border:1px solid #eabf4d;background:#c99019;color:#201b09;border-radius:8px;text-align:center;padding:8px}
+.showdown-awards strong{font-size:13px}.showdown-awards p{font-size:11px}.showdown-awards small{font-size:9px}
+@media(max-width:639px){
+ .island-seat-self .island-hole-cards{top:-34px}.island-seat-self .island-hole-cards>div{width:32px;height:44px}
+ .island-seat-self .island-seat-info{width:86px}.island-seat-self .island-seat-name{font-size:11px;max-width:78px}.island-seat-self .island-seat-stack{font-size:10px}
+ .poker-board{scale:.86;gap:4px}
+ .poker-showdown-results{padding:6px}.showdown-player{gap:7px;padding:6px}
+ .showdown-person{width:48px}.showdown-avatar{width:34px;height:38px}.showdown-person strong{font-size:9px;max-width:48px}
+ .showdown-card-groups{gap:7px}.showdown-cards{gap:2px}.showdown-cards>div{width:25px;height:36px}
+ .showdown-hand p{font-size:10px}.showdown-card-groups small{font-size:8px}
+}
+@media(max-width:639px) and (max-height:650px){.poker-board{scale:.78}.island-seat-self{scale:.9}}

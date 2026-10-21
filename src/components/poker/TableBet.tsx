@@ -12,7 +12,7 @@ export function TableBet({ amount, name, position }: Props) {
   if (amount <= 0) return null;
   const seatTop = parseFloat(position.top);
   const seatLeft = parseFloat(position.left);
-  const top = seatTop>75 ? 74 : 50+(seatTop-50)*.6;
+  const top = seatTop>75 ? 76 : seatTop<20 ? 27 : seatTop<40 ? 35 : 65;
   const left = seatTop>75 ? (seatLeft<50?42:58) : 50+(seatLeft-50)*.60;
   return (
     <div

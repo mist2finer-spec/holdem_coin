@@ -17,8 +17,8 @@ export function IslandSeat({name,stack,holeCards,folded,allIn,isMe,portrait=4,is
    <div className="island-avatar"><CharacterPortrait portrait={portrait} name={name}/>{folded&&<span className="island-fold">FOLD</span>}
     {(isDealer||isSmallBlind||isBigBlind)&&<span className={`island-position ${isBigBlind?'bb':isSmallBlind?'sb':''}`}>{isBigBlind?'BB':isSmallBlind?'SB':'D'}</span>}
    </div>
-   <div className="island-seat-name">{name}</div>
-   <div className="island-seat-stack">◈ {stack.toLocaleString()}</div>
+   <div className="island-seat-info"><div className="island-seat-name">{name}</div>
+   <div className="island-seat-stack">◈ {stack.toLocaleString()}</div></div>
    {allIn&&<span className="island-seat-status">ALL-IN</span>}
   </div>
   <div className="island-hole-cards">

@@ -8,6 +8,7 @@ import { PlayerSeat } from "./PlayerSeat";
 import { TableBet } from "./TableBet";
 import {SEAT_POSITIONS} from "@/lib/poker-seat-view";
 import { PlayingCard } from "./PlayingCard";
+import {ShowdownResults} from "./ShowdownResults";
 import { Button } from "@/components/ui/button";
 import { TrainingPanel } from "./TrainingPanel";
 import { evaluateBestHand, scoreToCategoryName } from "@/lib/poker-engine";
@@ -29,7 +30,6 @@ export function PokerTable({ userName, onToast }: Props) {
     lastActions,
     showdownReveal,
     bluffReveal,
-    showdownHands,
     winnerInfo,
     log,
     isDealing,
@@ -150,7 +150,7 @@ export function PokerTable({ userName, onToast }: Props) {
           )}
 
           {/* 승자 표시 */}
-          {winnerInfo && (
+          {winnerInfo && !showdownReveal && (
             <div className="absolute top-[22%] left-1/2 -translate-x-1/2 z-30 animate-[fadeIn_0.3s_ease-out]">
               <div className="bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 px-4 py-1.5 sm:px-6 sm:py-2 rounded-lg border-2 border-amber-200 shadow-2xl">
                 <div className="text-amber-950 text-[9px] sm:text-[10px] font-bold tracking-widest text-center">
@@ -168,37 +168,9 @@ export function PokerTable({ userName, onToast }: Props) {
             </div>
           )}
 
-          {/* 쇼다운 핸드 카테고리 패널 (각 콘텐더의 족보 표시) */}
-          {showdownReveal && showdownHands.length > 0 && (
-            <div className="absolute top-[8%] left-1/2 -translate-x-1/2 z-20 animate-[fadeIn_0.3s_ease-out]">
-              <div className="bg-slate-950/95 border-2 border-amber-600/70 rounded-lg p-1.5 sm:p-2 shadow-2xl backdrop-blur-md max-w-[90vw]">
-                <div className="text-amber-300 text-[9px] sm:text-[10px] font-bold tracking-wider mb-1 text-center">
-                  ◆ SHOWDOWN — 핸드 족보 ◆
-                </div>
-                <div className="space-y-0.5">
-                  {showdownHands.map((h) => (
-                    <div
-                      key={h.seatId}
-                      className={`flex items-center gap-1.5 sm:gap-2 px-1.5 sm:px-2 py-0.5 rounded text-[10px] sm:text-xs ${
-                        h.isWinner
-                          ? "bg-amber-900/50 border border-amber-400"
-                          : "bg-slate-900/50 border border-slate-700/40"
-                      }`}
-                    >
-                      <span className="text-xs sm:text-sm">{h.isUser ? "⚔️" : "🎭"}</span>
-                      <span className={`font-bold truncate min-w-[50px] sm:min-w-[70px] ${h.isUser ? "text-blue-300" : "text-amber-200"}`}>
-                        {h.name}
-                      </span>
-                      <span className={`font-bold ml-auto ${h.isWinner ? "text-amber-300" : "text-slate-400"}`}>
-                        {h.handCategory}
-                      </span>
-                      {h.isWinner && <span className="text-amber-400 text-[10px]">★</span>}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
+          {showdownReveal&&<ShowdownResults board={board} winnerInfo={winnerInfo} players={seats.map(s=>({
+            seatId:s.seatId,name:s.name,portrait:s.isUser?4:s.persona?.portrait,holeCards:s.holeCards,inHand:s.inHand,folded:s.folded,
+          }))}/>}
 
           {seats.map(seat => (
             <TableBet key={`bet-${seat.seatId}`} amount={seat.currentBet} name={seat.name} position={SEAT_POSITIONS[seat.seatId]} />
