@@ -1,4 +1,4 @@
-import type {Card} from './poker-engine';
+import {evaluateBestHand,type Card} from './poker-engine';
 import type {BotPersona} from './personas';
 import type {LiveAction} from './poker-live';
 import {classifyHandTier,HandTier} from './equity-engine';
@@ -26,6 +26,23 @@ export function postflopSupport(c:{hole:Card[];board:Card[];base:BotPersona;pers
   // Never turn a small probe into a forced shove, or bet into a dry side pot.
   return c.canRaise&&target<c.maxRaise ? {action:{action:'raise' as const,amount:target,isBluff:!made},path}:{action};
  };
+ // Value mix applies on every street, OOP or after checks in position.
+ // Estimate only from our cards and the public board, never human hit hints.
+ if(c.call===0&&!c.checked&&c.canRaise&&['check','fold'].includes(action.action)
+   &&tier>=HandTier.TOP_PAIR&&c.pot>0) {
+  const playsBoard=c.board.length===5&&evaluateBestHand(c.hole,c.board)===evaluateBestHand([],c.board);
+  const eq=playsBoard?0:estimateEquity(c.hole,c.board,Math.max(1,c.opponents),192);
+  if(eq>=.62) {
+   const frequency=Math.max(.3,Math.min(.85,.40+c.persona.aggression*.45-(c.isOOP?.08:0)));
+   if(random()<frequency) {
+    const fraction=[.25,.5,.75][Math.min(2,Math.floor(random()*3))];
+    const target=c.currentBet+Math.floor(c.pot*fraction);
+    // Preserve literal pot fractions: don't silently inflate an illegal small bet.
+    if(target>=c.minRaise&&target<=c.maxRaise&&target>c.currentBet)
+     return {action:{action:target===c.maxRaise?'allin':'raise',amount:target,isBluff:false},path:'persona-value-bet'};
+   }
+  }
+ }
  // One flop decision only: last preflop aggressor, no incoming bet or prior check.
  if(c.board.length===3&&c.initiative&&!c.checked&&c.call===0&&!made&&c.canRaise) {
   if(c.persona.aggression>=.65) {

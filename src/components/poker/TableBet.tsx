@@ -20,9 +20,9 @@ export function TableBet({ amount, name, position }: Props) {
       style={{ "--bet-top": `${top}%`, "--bet-mobile-top": `${top}%`, left: `${left}%` } as CSSProperties}
       aria-label={`${name} 베팅 ${amount.toLocaleString()} 칩`}
     >
-      <div className="flex items-center gap-1 sm:gap-1.5 rounded-full border border-rose-400/70 bg-slate-950/95 px-1.5 py-0.5 sm:px-2.5 sm:py-1 shadow-lg whitespace-nowrap">
+      <div className="flex items-center gap-1 sm:gap-1.5 rounded-full border border-amber-300 bg-slate-950 px-2 py-1 sm:px-2.5 sm:py-1 shadow-lg whitespace-nowrap">
         <span aria-hidden="true" className="flex h-3 w-3 sm:h-4 sm:w-4 items-center justify-center rounded-full border-2 border-dashed border-rose-200 bg-rose-700 text-[7px] text-white">◆</span>
-        <span className="text-[10px] sm:text-xs font-black text-amber-100 tabular-nums">{amount.toLocaleString()}</span>
+        <span className="text-[13px] sm:text-sm font-black text-white tabular-nums">{amount.toLocaleString()}</span>
       </div>
     </div>
   );

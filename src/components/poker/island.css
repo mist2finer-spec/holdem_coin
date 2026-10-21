@@ -36,3 +36,18 @@
  .island-tournament{padding:14px 10px;margin-top:14px;font-size:13px}.island-tournament span{font-size:10px}
  .island-lobby-foot{font-size:8px;margin-top:12px}.island-back{top:12px;left:14px;padding:6px 10px}
 }
+/* guide_3: separate mode currencies and shop entry in place of name input. */
+.lobby-wallets{position:absolute;top:15px;right:24px;left:160px;display:flex;justify-content:flex-end;gap:8px;z-index:4}
+.lobby-currency{position:relative;width:170px;min-width:0;height:54px;background:url('/ui/currency/currency_bg_x4.png') center/100% 100% no-repeat;display:flex;align-items:center;padding:4px 25px 4px 8px;color:#ffe7a4}
+.lobby-currency>img{width:34px;height:34px;object-fit:contain;flex-shrink:0}.lobby-currency>div{flex:1;min-width:0;text-align:center;line-height:1.1}.lobby-currency strong{font:700 14px Arial;font-variant-numeric:tabular-nums}.lobby-currency small{display:block;font-size:9px;color:#d8c99e}
+.lobby-currency button{position:absolute;right:1px;top:12px;width:28px;height:28px;padding:3px}.lobby-currency button img{width:100%;height:100%;object-fit:contain}
+.lobby-shop-buttons{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.lobby-shop-buttons button,.lobby-rank-button{border:1px solid #aa8551;background:#0b2535eb;border-radius:7px;color:#f8e6ad;padding:12px 3px;font-size:13px}
+.lobby-rank-button{display:block;width:100%;margin-top:12px;background:#17291ee8}
+.lobby-overlay{position:fixed;inset:0;background:#000b;z-index:90;display:grid;place-items:center;padding:20px}.lobby-overlay>section{position:relative;width:min(100%,450px);max-height:94svh;overflow:auto}.lobby-overlay p{background:#130d07;color:#c9b780;font-size:10px;text-align:center;padding:10px}.lobby-close{position:absolute;right:20px;top:16px;z-index:5;background:#000c;color:#f8df92;border-radius:50%;width:30px;height:30px;font-size:22px}
+@media(max-width:639px){
+ .lobby-wallets{left:83px;right:8px;top:8px;gap:3px}
+ .lobby-currency{flex:1;width:auto;height:42px;padding:3px 17px 3px 2px}.lobby-currency>img{width:23px;height:26px}.lobby-currency strong{font-size:11px}.lobby-currency small{font-size:8px}.lobby-currency button{width:21px;height:25px;right:-2px;top:8px;padding:2px}
+ .island-back{left:8px;top:13px;font-size:10px;padding:6px}.lobby-shop-buttons{gap:5px}.lobby-shop-buttons button{padding:10px 2px;font-size:12px}
+ .lobby-rank-button{font-size:11px;padding:8px;margin-top:8px}
+}
+.island-welcome{display:flex;flex-direction:column}.island-modes{order:2}.island-tournament{order:3}.lobby-rank-button{order:4}

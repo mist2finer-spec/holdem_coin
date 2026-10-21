@@ -1,4 +1,5 @@
 "use client";
+import {soloBalance,saveSoloBalance} from "@/lib/lobby-client";
 import {humanHitHint} from '@/lib/poker-postflop-support';
 import {OpponentModel} from "@/lib/poker-opponent-model";
 import {minimumRaiseTo} from "@/lib/poker-sizing";
@@ -235,6 +236,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     if (st.rebuyPending) {
       const mine = st.seats.find(s => s.isUser)!;
       mine.stack = DEFAULT_BUYIN;
+      saveSoloBalance(mine.stack);
       st.rebuyPending = false;
       st.playerBusted = false;
     }
@@ -613,6 +615,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     pushLog(`◆ 레이크 ${settlement.totalRake.toLocaleString()} 칩 (5%)`,"system");
     const mine=settlement.results.find(r=>r.seatId===userSeatId);
     if(mine && mine.award>0) onToast?.(`순수익 ${mine.netProfit>=0?"+":""}${mine.netProfit.toLocaleString()} 칩`,mine.netProfit>0?"win":"info");
+    saveSoloBalance(st.seats.find(s=>s.isUser)?.stack??0);
     st.pot=0;
     st.seats=st.seats.map(seat=>({...seat,currentBet:0,totalBet:0}));
 
@@ -767,7 +770,7 @@ function initSeats(userName: string): SeatState[] {
         name: userName,
         isBot: false,
         isUser: true,
-        stack: DEFAULT_BUYIN,
+        stack: typeof window==='undefined'?DEFAULT_BUYIN:soloBalance(),
         currentBet: 0,
         totalBet: 0,
         inHand: true,

@@ -1,4 +1,5 @@
 "use client";
+import {lobbyToken} from "@/lib/lobby-client";
 import {handHistoryCSV,type HandHistory} from '@/lib/poker-hand-history';
 import {browserHistory,mergeHandHistories,downloadHistoryFile} from '@/lib/poker-hand-history-client';
 import { LIVE_RULES } from "@/lib/poker-live";
@@ -164,7 +165,10 @@ export function usePokerSocket({ userName, onToast, tableSize=8 }: UsePokerSocke
       setConnected(true);
       console.log("[Socket] 연결됨:", socket.id, "(transport:", socket.io.engine.transport.name, ")");
       // 입장
-      socket.emit("JOIN_ROOM", { name: userName, tableSize });
+      socket.emit('LOBBY_HELLO',{token:lobbyToken()},(account:{token?:string})=>{
+        if(account.token)localStorage.setItem('holdem-lobby-token',account.token);
+        socket.emit("JOIN_ROOM", { name: userName, tableSize });
+      });
       socket.timeout(20000).emitWithAck('GET_HAND_HISTORY')
         .then((result:{hands?:HandHistory[]})=>{if(result.hands)historyHandler.current(result.hands);})
         .catch(()=>{});

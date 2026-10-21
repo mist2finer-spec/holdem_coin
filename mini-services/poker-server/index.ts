@@ -1,3 +1,4 @@
+import {lobbyLedger} from './lobby-ledger';
 import {humanHitHint} from '../../src/lib/poker-postflop-support';
 import {OpponentModel} from "../../src/lib/poker-opponent-model.ts";
 import {minimumRaiseTo} from "../../src/lib/poker-sizing.ts";
@@ -263,6 +264,7 @@ export class HybridHoldemRoom {
           `다음에 다시 오세요!`,
         ],
       });
+      lobbyLedger.release(socket.id);
       // 관전만 허용 (착석 불가)
       socket.emit("TABLE_STATE", this.createSafeSnapshot(socket.id));
       return;
@@ -316,6 +318,7 @@ export class HybridHoldemRoom {
 
     this.pendingRebuys.delete(socketId);
     this.users.delete(socketId);
+    if(user.seatId===null)lobbyLedger.release(socketId);
     this.broadcast("SYSTEM_NOTICE", {
       messages: [`👋 [${user.name}]님이 퇴장했습니다.`],
     });
@@ -362,6 +365,11 @@ export class HybridHoldemRoom {
   // ============================================================
 
   private processSeatSwaps() {
+    // Credits are applied between hands only, preserving current-hand stacks/pots.
+    for(const seat of this.state.seats)if(!seat.isBot&&seat.socketId&&!this.leaveSeats.has(seat.seatId)) {
+      seat.stack+=lobbyLedger.takeCredit(seat.socketId);
+      lobbyLedger.sync(seat.socketId,seat.stack);
+    }
     for (const socketId of this.pendingRebuys) {
       const user = this.users.get(socketId);
       const seat = user?.seatId != null ? this.state.seats[user.seatId] : null;
@@ -401,6 +409,7 @@ export class HybridHoldemRoom {
       const persona = avail.length > 0
         ? avail[Math.floor(Math.random() * avail.length)]
         : RPG_BOT_POOL[Math.floor(Math.random() * RPG_BOT_POOL.length)];
+      if(seat.socketId)lobbyLedger.release(seat.socketId,seat.stack);
       seat.isBot = true;
       seat.name = persona.name;
       seat.socketId = null;
@@ -423,7 +432,7 @@ export class HybridHoldemRoom {
       targetSeat.name = user.name;
       targetSeat.socketId = user.socketId;
       targetSeat.persona = undefined;
-      targetSeat.stack = DEFAULT_BUYIN;
+      targetSeat.stack = lobbyLedger.start(user.socketId);
       user.seatId = targetSeat.seatId;
 
       this.broadcast("SYSTEM_NOTICE", {
@@ -909,6 +918,7 @@ export class HybridHoldemRoom {
     const settlement = settleHand(st.seats, st.board, st.buttonSeat);
     this.endHistory(settlement,isShowdown);
     st.seats = st.seats.map(seat => ({ ...seat, stack: seat.stack + settlement.results.find(r=>r.seatId===seat.seatId)!.payout }));
+    for(const seat of st.seats)if(!seat.isBot&&seat.socketId)lobbyLedger.sync(seat.socketId,seat.stack);
     const winners = settlement.results.filter(r=>r.award>0);
     const hand = isShowdown && winners[0]
       ? scoreToCategoryName(evaluateBestHand(st.seats[winners[0].seatId].holeCards, st.board))
@@ -1092,11 +1102,27 @@ if (process.env.POKER_TEST_MODE !== "1") {
     let selectedRoom: HybridHoldemRoom | undefined;
     console.log(`[Socket] 연결: ${socket.id}`);
 
+    let registered=false;
+    let lastRecharge=0;
+    socket.on('LOBBY_HELLO',(data:{token?:string},reply:unknown)=>{
+      if(typeof reply!=='function')return;
+      try {if(registered){reply(lobbyLedger.view(socket.id));return;}const account=lobbyLedger.connect(socket.id,data?.token);registered=true;reply(account);}catch{reply({error:'접속자가 많습니다. 잠시 후 재시도해 주세요.'});}
+    });
+    socket.on('LOBBY_RECHARGE',(reply:unknown)=>{
+      if(typeof reply!=='function')return;
+      if(!registered||Date.now()-lastRecharge<1000){reply({error:'잠시 후 다시 시도해 주세요.'});return;}
+      lastRecharge=Date.now();reply(lobbyLedger.recharge(socket.id));
+    });
+    socket.on('LOBBY_STATUS',(reply:unknown)=>{if(typeof reply==='function')reply(lobbyLedger.view(socket.id));});
+    socket.on('GET_LEADERBOARD',(reply:unknown)=>{if(typeof reply==='function')reply({players:lobbyLedger.leaderboard(),updatedAt:Date.now(),tableSize:6});});
     socket.on("JOIN_ROOM", (data: { name: string; tableSize?: number }) => {
       if(selectedRoom)return;
       if(data?.tableSize!==6){socket.emit("SYSTEM_NOTICE",{messages:["8인 서버: Under Repair — 6인 서버를 이용해 주세요."]});return;}
+      // Older clients also receive an automatic unique tester identity.
+      if(!registered){lobbyLedger.connect(socket.id,undefined);registered=true;}
+      if(!lobbyLedger.reserve(socket.id)){socket.emit('SYSTEM_NOTICE',{messages:['동일 계정이 다른 테이블에 연결되어 있습니다. 이전 핸드 종료 후 재접속해 주세요.']});return;}
       selectedRoom=data?.tableSize===6?room6:room;
-      selectedRoom?.onUserConnect(socket, data?.name || "용사");
+      selectedRoom?.onUserConnect(socket, lobbyLedger.view(socket.id)?.name || "테스터");
     });
 
     socket.on("PLAYER_ACTION", (data: { action: string; amount: number }) => {
@@ -1119,6 +1145,7 @@ if (process.env.POKER_TEST_MODE !== "1") {
 
     socket.on("disconnect", () => {
       selectedRoom?.onUserDisconnect(socket.id);
+      lobbyLedger.disconnect(socket.id);
     });
   });
 

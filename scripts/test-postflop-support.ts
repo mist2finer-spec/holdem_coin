@@ -37,3 +37,26 @@ test('hit hint cannot force an expensive/all-in call or an air-hand catch',()=>{
  assert.deepEqual(postflopSupport(c,fold,()=>0).action,fold);
  assert.deepEqual(postflopSupport({...c,call:200},fold,()=>0).action,fold);
 });
+const parse=(s:string):Card[]=>s.split(' ').map(c=>({rank:c[0],suit:c[1]} as Card));
+const valueSpot={...spot,hole:parse('A♠ A♥'),board:parse('A♦ 7♣ 2♥'),initiative:false};
+test('strong value checks can lead OOP or bet IP; pot sizes have equal selection mass',()=>{
+ for(const isOOP of [true,false]){
+  const counts=new Map<number,number>();
+  for(let i=0;i<300;i++){
+   const rolls=[0,(i+.5)/300];const d=postflopSupport({...valueSpot,isOOP},check,()=>rolls.shift()!);
+   assert.equal(d.path,'persona-value-bet');assert.equal(d.action.isBluff,false);
+   counts.set(d.action.amount,(counts.get(d.action.amount)||0)+1);
+  }
+  assert.deepEqual([...counts.entries()],[[300,100],[600,100],[900,100]]);
+ }
+});
+test('personality controls value lead frequency and preserves traps and existing value raises',()=>{
+ const run=(persona:typeof aggressive)=>Array.from({length:100},(_,i)=>{const rolls=[i/100,0];return postflopSupport({...valueSpot,persona},check,()=>rolls.shift()!).path==='persona-value-bet';}).filter(Boolean).length;
+ assert.ok(run(aggressive)>run(tight));assert.ok(run(tight)>0&&run(aggressive)<100);
+ const raise={action:'raise' as const,amount:1800};assert.deepEqual(postflopSupport(valueSpot,raise,()=>0).action,raise);
+});
+test('value support does not act into a bet, after own check, or in dry side pots; board-only nuts stay checks',()=>{
+ for(const patch of [{call:200},{checked:true},{canRaise:false},{minRaise:1000},{maxRaise:250}])
+  assert.deepEqual(postflopSupport({...valueSpot,...patch},check,()=>0).action,check);
+ assert.deepEqual(postflopSupport({...valueSpot,hole:parse('2♣ 3♦'),board:parse('A♠ K♠ Q♠ J♠ T♠')},check,()=>0).action,check);
+});

@@ -53,7 +53,14 @@ const clients=[];
   for(let i=0;i<3;i++) {
    const client=io(origin,{transports:['polling'],reconnection:false,timeout:3000});clients.push(client);
    const sent=new Set();
-   client.on('connect',()=>{client.emit('JOIN_ROOM',{name:'Smoke',tableSize:6});client.emit('JOIN_ROOM',{name:'Smoke',tableSize:6});});
+   client.on('connect',async()=>{
+    try {
+     const account=await client.timeout(5000).emitWithAck('LOBBY_HELLO',{});
+     assert.match(account.name,/^테스터[1-9]\d?$/);assert.equal(account.multi,5000);
+     if(i===0){const credit=await client.timeout(5000).emitWithAck('LOBBY_RECHARGE');assert.equal(credit.multi,10000);}
+     client.emit('JOIN_ROOM',{name:'Smoke',tableSize:6});client.emit('JOIN_ROOM',{name:'Smoke',tableSize:6});
+    }catch(e){stats[i].errors.push(String(e));}
+   });
    client.on('connect_error',e=>stats[i].errors.push(e.message));
    client.on('TABLE_STATE',st=>{
     const r=stats[i];if(st.seats.length!==6)r.errors.push('wrong room size');r.states++;r.hands.add(st.handNumber);
@@ -78,6 +85,8 @@ const clients=[];
   for(const s of stats){assert.ok(s.seated);assert.ok(s.actions>0);assert.ok(s.hands.size>=3);assert.equal(s.ownSeats.size,1);assert.deepEqual(s.errors,[]);}
   const finalHealth=await (await fetch(origin+'/health?XTransformPort='+port)).json();
   assert.equal(finalHealth.users,3);
+  const ranks=await clients[0].timeout(5000).emitWithAck('GET_LEADERBOARD');
+  assert.equal(ranks.players.length,3);assert.equal(ranks.tableSize,6);assert.equal(new Set(ranks.players.map(p=>p.name)).size,3);
   const exportResult=await clients[0].timeout(5000).emitWithAck('GET_HAND_HISTORY');
   assert.ok(exportResult.hands.length>0,'public archive exists');
   assert.ok(!JSON.stringify(exportResult).includes('privateAudit'));

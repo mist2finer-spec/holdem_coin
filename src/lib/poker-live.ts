@@ -13,7 +13,7 @@ import { stackContext } from './poker-stack';
 import { planPreflop } from './poker-preflop';
 
 export const LIVE_RULES = Object.freeze({
-  version: "1.14.3",
+  version: "1.15.0",
   seats: 8, smallBlind: 100, bigBlind: 200, buyIn: 5000,
   botCashOut: 100000, userSeconds: 10, maxActions: 256,
   botThinkMin: 700, botThinkJitter: 900, actionPause: 800, resultPause: 5000,
