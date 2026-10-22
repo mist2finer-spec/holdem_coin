@@ -70,3 +70,6 @@ mini-services/poker-server/data/
 
 # Curated hunting prototype images
 !public/rpg/*.png
+
+# Local extracted native combat evidence
+/data/rpg-reference/

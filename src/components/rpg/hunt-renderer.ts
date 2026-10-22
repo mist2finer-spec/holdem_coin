@@ -30,7 +30,7 @@ async function actor(name: string, signal: AbortSignal, gl: WebGLRenderingContex
  const idle = data.animations.find(a=>/stay1|idle/i.test(a.name));
  if(idle){state.setAnimation(0,idle.name,true);state.apply(skeleton);}
  skeleton.updateWorldTransform(Physics.update);
- return {skeleton, state, atlas, animation: '', available: data.animations.map(a => a.name)};
+ return {skeleton, state, atlas, animation: '', serial:-1, available: data.animations.map(a => a.name)};
 }
 export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: AbortSignal) {
  Skeleton.yDown = true;
@@ -42,11 +42,11 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
  const fallback = renderer ? null : new CanvasRenderer(ctx);
  if(fallback) fallback.triangleRendering=true;
  canvas.dataset.renderer=renderer?'webgl':'canvas';
- const animate = (a: typeof hero, anim: string, x: number, y: number, scale: number, direction: number, dt: number) => {
+ const animate = (a: typeof hero, anim: string, x: number, y: number, scale: number, direction: number, dt: number,serial=0,speed=1) => {
   const next = a.available.includes(anim) ? anim : a.available.find(n => /stay|idle/i.test(n)) || a.available[0];
-  if (a.animation !== next && next) { a.state.setAnimation(0, next, /stay|idle|run/i.test(next)); a.animation = next; }
+  if ((a.animation !== next||a.serial!==serial) && next) { a.state.setAnimation(0, next, /stay|idle|run/i.test(next)); a.animation = next;a.serial=serial; }
   a.skeleton.x = x; a.skeleton.y = y; a.skeleton.scaleX = scale * direction; a.skeleton.scaleY = scale;
-  a.state.update(dt); a.state.apply(a.skeleton); a.skeleton.update(dt); a.skeleton.updateWorldTransform(Physics.update); if(renderer) renderer.drawSkeleton(a.skeleton, true); else fallback!.draw(a.skeleton);
+  a.state.update(dt*speed); a.state.apply(a.skeleton); a.skeleton.update(dt); a.skeleton.updateWorldTransform(Physics.update); if(renderer) renderer.drawSkeleton(a.skeleton, true); else fallback!.draw(a.skeleton);
  };
  return {
   draw(game: HuntEngine, dt: number) {
@@ -67,11 +67,14 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
    ctx.fillStyle='#192a20'; for(let i=0;i<20;i++) ctx.fillRect(i*90-camera%90,floor+28+(i%3)*12,46,3);
    const scale = w < 600 ? .78 : 1.05;
    ctx.fillStyle='#0005';ctx.beginPath();ctx.ellipse(game.x-camera,floor+4,35,8,0,0,Math.PI*2);ctx.fill();
-   if(game.enemyHP>0) {
-    animate(enemy, game.hitUntil>game.elapsed ? 'damage1' : 'stay1',game.enemyX-camera,floor,scale*2.5,-1,dt);
-    ctx.fillStyle='#111c';ctx.fillRect(game.enemyX-camera-26,floor-68,52,5);ctx.fillStyle='#e07b67';ctx.fillRect(game.enemyX-camera-26,floor-68,52*game.enemyHP/100,5);
+   if(game.enemyHP>0||game.elapsed<game.respawnAt) {
+    const hurt=game.enemyHP>0&&game.hitUntil>game.elapsed;
+    const anim=game.enemyHP<=0?'die1':hurt&&enemy.available.includes('damage1')?'damage1':'stay1';
+    const shake=hurt?Math.sin(game.elapsed*90)*3:0;
+    animate(enemy,anim,game.enemyX-camera+shake,floor,scale*2.5,-1,dt,game.enemySerial);
+    if(game.enemyHP>0){ctx.fillStyle='#111c';ctx.fillRect(game.enemyX-camera-26,floor-68,52,5);ctx.fillStyle='#e07b67';ctx.fillRect(game.enemyX-camera-26,floor-68,52*game.enemyHP/100,5);}
    }
-   animate(hero,game.action,game.x-camera,floor,scale,game.facing,dt);
+   animate(hero,game.action,game.x-camera,floor,scale,game.facing,dt,game.actionSerial,game.animationSpeed);
    if(renderer){renderer.end();ctx.drawImage(layer,0,0,w,h);}
    if(game.hitUntil>game.elapsed) {ctx.fillStyle='#ffdb8b';ctx.font='bold 24px sans-serif';ctx.textAlign='center';ctx.fillText(String(game.lastDamage),game.enemyX-camera,floor-85-(.75-(game.hitUntil-game.elapsed))*35);}
    // Foreground decoration follows the world more quickly than the distant forest.

@@ -1,0 +1,170 @@
+{
+  "schemaVersion": 1,
+  "archive": "Vardian_COMPLETE_HANDOFF_2026-10-18.zip",
+  "archiveSha256": "cf96ece9b0e9a881002a583e7730d16f80c57f3360836e4c1ce1ddcf0e547265",
+  "nestedArchive": "Vardian_COMPLETE_HANDOFF_2026-10-18/02_EVIDENCE/VERIFIED_SOURCE/Vardian_Bulk_Combat_Audit.zip",
+  "nestedSha256": "186acee19de0119ffaa4301e93e670e4b45c1e22f782b41eaaf6783a07c01e98",
+  "functions": [
+    {
+      "method": "CombatHeroAI.OnAdvance",
+      "token": "0x60044EE",
+      "address": "0x3CFECF4",
+      "member": "Vardian_Bulk_Combat_Audit/code/CombatHeroAI__OnAdvance__T60044EE.txt",
+      "sha256": "e0b118eb366a56cde4fb313e3254083f3fe83850efa755af352c3185d884b88e",
+      "evidence": "NATIVE_BODY_PRESENT_NOT_COMPLETE_BEHAVIOR_PROOF"
+    },
+    {
+      "method": "CombatHeroAI.ResetDefaultAttackCombo",
+      "token": "0x60044E9",
+      "address": "0x3CFE744",
+      "member": "Vardian_Bulk_Combat_Audit/code/CombatHeroAI__ResetDefaultAttackCombo__T60044E9.txt",
+      "sha256": "b4cb79e8b9fdbf11de6f49def1c61249564f1af694d091247153e5c580ec94b2",
+      "evidence": "NATIVE_BODY_PRESENT_NOT_COMPLETE_BEHAVIOR_PROOF"
+    },
+    {
+      "method": "CombatHeroAI.MakeExecutableSkillAndItsTargetInRange",
+      "token": "0x60044F3",
+      "address": "0x3D013B8",
+      "member": "Vardian_Bulk_Combat_Audit/code/CombatHeroAI__MakeExecutableSkillAndItsTargetInRange__T60044F3.txt",
+      "sha256": "f815410f52196808c804e620baac60d8d1132acc24b40302367d771897ef3349",
+      "evidence": "NATIVE_BODY_PRESENT_NOT_COMPLETE_BEHAVIOR_PROOF"
+    },
+    {
+      "method": "CombatHeroAI.ReserveAvoid",
+      "token": "0x60044E7",
+      "address": "0x3CFE724",
+      "member": "Vardian_Bulk_Combat_Audit/code/CombatHeroAI__ReserveAvoid__T60044E7.txt",
+      "sha256": "e983d9d790f931db679c653870894bfdb09f58f257a0115f3a0cf009193a341f",
+      "evidence": "NATIVE_BODY_PRESENT_NOT_COMPLETE_BEHAVIOR_PROOF"
+    },
+    {
+      "method": "CombatActor.StartRush",
+      "token": "0x600433F",
+      "address": "0x3CDEA8C",
+      "member": "Vardian_Bulk_Combat_Audit/code/CombatActor__StartRush__T600433F.txt",
+      "sha256": "c244cc1b2ec5674b91a9dd9e865af7c36d9fca15900170264348348a5818c4af",
+      "evidence": "NATIVE_BODY_PRESENT_NOT_COMPLETE_BEHAVIOR_PROOF"
+    },
+    {
+      "method": "CombatActor.StopRush",
+      "token": "0x6004340",
+      "address": "0x3CDEAB0",
+      "member": "Vardian_Bulk_Combat_Audit/code/CombatActor__StopRush__T6004340.txt",
+      "sha256": "7f3f6a19ae31c01a7f3922c5bb9511d980a48ce390ee68649025d79a7d15da00",
+      "evidence": "NATIVE_BODY_PRESENT_NOT_COMPLETE_BEHAVIOR_PROOF"
+    },
+    {
+      "method": "CombatActor.StartDash",
+      "token": "0x600432F",
+      "address": "0x3CDE79C",
+      "member": "Vardian_Bulk_Combat_Audit/code/CombatActor__StartDash__T600432F.txt",
+      "sha256": "1b88225b9ac1d17559f6cebef83dbe3c5d8df5eb6c5405481d7824f61b3619b7",
+      "evidence": "NATIVE_BODY_PRESENT_NOT_COMPLETE_BEHAVIOR_PROOF"
+    },
+    {
+      "method": "CombatActor.StopDash",
+      "token": "0x6004331",
+      "address": "0x3CDE898",
+      "member": "Vardian_Bulk_Combat_Audit/code/CombatActor__StopDash__T6004331.txt",
+      "sha256": "f0321d6c22c3b93f6058f0257d4ca639542ded7073cb8113ae55eaf02cce1a07",
+      "evidence": "NATIVE_BODY_PRESENT_NOT_COMPLETE_BEHAVIOR_PROOF"
+    },
+    {
+      "method": "CombatActor.get_DefaultAttackSkillTypeCount",
+      "token": "0x60043A1",
+      "address": "0x3CE08B4",
+      "member": "Vardian_Bulk_Combat_Audit/code/CombatActor__get_DefaultAttackSkillTypeCount__T60043A1.txt",
+      "sha256": "8fd52889b40ded03c72e2f591f659d83ed0295855589aa1c3fcc49e15d37ceb9",
+      "evidence": "NATIVE_BODY_PRESENT_NOT_COMPLETE_BEHAVIOR_PROOF"
+    },
+    {
+      "method": "CombatActor.GetDefaultAttackSkillType",
+      "token": "0x60043A2",
+      "address": "0x3CE0900",
+      "member": "Vardian_Bulk_Combat_Audit/code/CombatActor__GetDefaultAttackSkillType__T60043A2.txt",
+      "sha256": "53971eeffe83f3c2b554ff62be3289004362ebecdcfaf630f179543456ceafa4",
+      "evidence": "NATIVE_BODY_PRESENT_NOT_COMPLETE_BEHAVIOR_PROOF"
+    },
+    {
+      "method": "CombatActor.ExecuteSkill",
+      "token": "0x60043AE",
+      "address": "0x3CE1C20",
+      "member": "Vardian_Bulk_Combat_Audit/code/CombatActor__ExecuteSkill__T60043AE.txt",
+      "sha256": "1033708895f7de623a90f34565d8fdbfbeba014053e4b22134d2359b8f568674",
+      "evidence": "NATIVE_BODY_PRESENT_NOT_COMPLETE_BEHAVIOR_PROOF"
+    },
+    {
+      "method": "CombatActorManager.ProcessRush",
+      "token": "0x6004466",
+      "address": "0x3CEDA5C",
+      "member": "Vardian_Bulk_Combat_Audit/code/CombatActorManager__ProcessRush__T6004466.txt",
+      "sha256": "0df07b90fd81b63b8082d74fe11888fdc689519a42972dcc6348927e9997d07d",
+      "evidence": "NATIVE_BODY_PRESENT_NOT_COMPLETE_BEHAVIOR_PROOF"
+    },
+    {
+      "method": "CombatActorManager.ProcessDash",
+      "token": "0x6004464",
+      "address": "0x3CED74C",
+      "member": "Vardian_Bulk_Combat_Audit/code/CombatActorManager__ProcessDash__T6004464.txt",
+      "sha256": "1e597e9129c827b02757731de8bf1b9eaa510b2019a3b30cb89f28bc734cd6bc",
+      "evidence": "NATIVE_BODY_PRESENT_NOT_COMPLETE_BEHAVIOR_PROOF"
+    },
+    {
+      "method": "CombatActorManager.RunActionMotion",
+      "token": "0x6004495",
+      "address": "0x3CF5248",
+      "member": "Vardian_Bulk_Combat_Audit/code/CombatActorManager__RunActionMotion__T6004495.txt",
+      "sha256": "ce0b8cc4f5be2f0526f43857dc4b89cf5345ba8ab7efbbd47fc8239e5be14aef",
+      "evidence": "NATIVE_BODY_PRESENT_NOT_COMPLETE_BEHAVIOR_PROOF"
+    },
+    {
+      "method": "CombatActorManager.RunActionImpactor",
+      "token": "0x6004498",
+      "address": "0x3CF59FC",
+      "member": "Vardian_Bulk_Combat_Audit/code/CombatActorManager__RunActionImpactor__T6004498.txt",
+      "sha256": "43192af97532f11e3e8a9ddb3a209cf8d44cf6e696bfa919ae204713d1423ffe",
+      "evidence": "NATIVE_BODY_PRESENT_NOT_COMPLETE_BEHAVIOR_PROOF"
+    },
+    {
+      "method": "CombatActorManager.RunActionAvoid",
+      "token": "0x60044AF",
+      "address": "0x3CF72B8",
+      "member": "Vardian_Bulk_Combat_Audit/code/CombatActorManager__RunActionAvoid__T60044AF.txt",
+      "sha256": "658598afba54f76143ce2d0aa92ffb3d57d5791950d7ba6dcc83d34ce5489ddb",
+      "evidence": "NATIVE_BODY_PRESENT_NOT_COMPLETE_BEHAVIOR_PROOF"
+    }
+  ],
+  "configAudit": {
+    "archive": "Vardian_COMPLETE_HANDOFF_2026-10-18/02_EVIDENCE/STAGE_ASSETS/Vardian_Remaining_Assets_And_Loader_Audit.zip",
+    "objectsInspected": 88,
+    "actionsDatabaseLocalReferences": [
+      {
+        "pathId": "-7567690226279539123",
+        "name": "SpeedAction"
+      },
+      {
+        "pathId": "3107983836245867624",
+        "name": "WaitAnyInputAction"
+      },
+      {
+        "pathId": "7746959866967301499",
+        "name": "WaitForAction"
+      }
+    ],
+    "note": "SpeedAction/WaitAnyInputAction/WaitForAction are not the combat SkillType/ActionData mapping",
+    "matchingRushComboFields": []
+  },
+  "supportedStructure": [
+    "combo advances modulo configured skill count",
+    "combo timer/reset",
+    "approach Rush separate from action Dash",
+    "timed motion/impactor action processing"
+  ],
+  "unresolved": [
+    "actual equipped default-attack skill list/count",
+    "SkillType -> ActionData -> motion alias",
+    "impactor hit frames/range/damage",
+    "Rush enabled/min/max distance/speed config",
+    "collision flags and interruption semantics"
+  ]
+}

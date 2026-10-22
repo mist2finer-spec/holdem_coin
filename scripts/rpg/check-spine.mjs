@@ -11,7 +11,7 @@ for(const name of ['Hero_Axe01','Enemy_Slime_01_R']) {
  skeleton.setSlotsToSetupPose();skeleton.updateWorldTransform(Physics.update);
  console.log(name,'setup bounds',skeleton.getBoundsRect());
  const state=new AnimationState(new AnimationStateData(data));
- for(const a of data.animations){skeleton.setToSetupPose();state.setAnimation(0,a.name,false);for(let i=0;i<30;i++){state.update(1/30);state.apply(skeleton);skeleton.update(1/30);skeleton.updateWorldTransform(Physics.update);for(const b of skeleton.bones)assert.ok([b.worldX,b.worldY,b.a,b.b,b.c,b.d].every(Number.isFinite),`${name} ${a.name}`);}}
+ for(const a of data.animations){skeleton.setToSetupPose();state.setAnimation(0,a.name,false);for(let i=0;i<Math.ceil(a.duration*60)+2;i++){state.update(1/60);state.apply(skeleton);skeleton.update(1/60);skeleton.updateWorldTransform(Physics.update);for(const b of skeleton.bones)assert.ok([b.worldX,b.worldY,b.a,b.b,b.c,b.d].every(Number.isFinite),`${name} ${a.name}`);}}
  state.setAnimation(0,'stay1',true);state.update(.1);state.apply(skeleton);skeleton.updateWorldTransform(Physics.update);console.log(name,'stay bounds',skeleton.getBoundsRect());
  console.log(name,data.animations.length,'animations: PASS');
 }
