@@ -3,6 +3,8 @@ import { BettingSeat, rakedContributionLayers, BOT_EV_RAKE_RATE } from './poker-
 import type { PositionContext } from './poker-position';
 import type { stackContext } from './poker-stack';
 import {preflopCallModel} from './poker-opponent-model';
+import {publicRangeProfile,type PublicLine,type PublicRangeProfile} from './poker-public-line';
+import {classifyHandTier,HandTier} from './equity-engine';
 
 // Bounded deterministic rollouts using only the acting player's cards and public board.
 // This is an equity estimator, not a GTO solver or knowledge of opponents' cards.
@@ -26,9 +28,9 @@ export function matchesOpponentRange(hole: Card[], range: OpponentRange) {
     : (high===12 && low>=8) || (high===11 && low>=9) || (suited && high>=9 && low>=7)
       || (suited&&low>=3&&high-low<=2);
 }
-export function estimateEquity(hole: Card[], board: Card[], opponents: number, samples=48, range?: OpponentRange, opponentRanges?:OpponentRange[]): number {
+export function estimateEquity(hole: Card[], board: Card[], opponents: number, samples=48, range?: OpponentRange, opponentRanges?:OpponentRange[], profiles?:PublicRangeProfile[]): number {
   if(opponents<=0)return 1;
-  const key=[hole.map(c=>c.rank+c.suit).sort().join(''),board.map(c=>c.rank+c.suit).join(''),opponents,samples,range||'random',...(opponentRanges?[opponentRanges.join(',')]:[])].join('|');
+  const key=[hole.map(c=>c.rank+c.suit).sort().join(''),board.map(c=>c.rank+c.suit).join(''),opponents,samples,range||'random',...(opponentRanges?[opponentRanges.join(',')]:[]),...(profiles?[JSON.stringify(profiles)]:[])].join('|');
   const saved=cache.get(key);if(saved!==undefined)return saved;
   const known=new Set([...hole,...board].map(c=>c.rank+c.suit));
   const deck: Card[]=[];
@@ -41,20 +43,27 @@ export function estimateEquity(hole: Card[], board: Card[], opponents: number, s
   for(let n=0;n<samples;n++) {
     const cards=[...deck];
     const draw=()=>cards.splice(Math.floor(random()*cards.length),1)[0];
-    const drawHole=(opponentRange=range)=>{
-      if(!opponentRange)return [draw(),draw()];
+    const drawHole=(opponentRange=range,profile?:PublicRangeProfile)=>{
+      if(!opponentRange&&!profile)return [draw(),draw()];
       let a=0,b=1;
       // Bounded rejection sampling; fallback to the final legal pair if a very
       // depleted deck has no matching pair. Never inspect actual opponent cards.
       for(let attempt=0;attempt<64;attempt++) {
         a=Math.floor(random()*cards.length);b=Math.floor(random()*(cards.length-1));if(b>=a)b++;
-        if(matchesOpponentRange([cards[a],cards[b]],opponentRange))break;
+        if(opponentRange&&!matchesOpponentRange([cards[a],cards[b]],opponentRange))continue;
+        if(profile&&board.length>=3){
+          const tier=classifyHandTier([cards[a],cards[b]],board).tier;
+          const weight=tier>=HandTier.TWO_PAIR_PLUS?profile.strong:tier>=HandTier.WEAK_PAIR?profile.medium
+            :tier===HandTier.DRAW?profile.draw:profile.air;
+          if(random()>weight/Math.max(profile.strong,profile.medium,profile.draw,profile.air))continue;
+        }
+        break;
       }
       const result=[cards[a],cards[b]];
       cards.splice(Math.max(a,b),1);cards.splice(Math.min(a,b),1);return result;
     };
     // Select range-conditioned hole cards before unknown board runouts.
-    const hands=Array.from({length:opponents},(_,i)=>drawHole(opponentRanges?.[i]));
+    const hands=Array.from({length:opponents},(_,i)=>drawHole(opponentRanges?.[i],profiles?.[i]));
     const fullBoard=[...board];while(fullBoard.length<5)fullBoard.push(draw());
     const myScore=evaluateBestHand(hole,fullBoard);let ties=1,beaten=false;
     for(let i=0;i<opponents;i++) {
@@ -69,7 +78,12 @@ export function estimateEquity(hole: Card[], board: Card[], opponents: number, s
   cache.set(key,result);return result;
 }
 
-export interface DecisionContext { boardLength?:number; preflopPosition?: {early:boolean;inPositionVsRaiser:boolean}; seats: BettingSeat[]; actorId: number; position?: PositionContext; stack?: ReturnType<typeof stackContext>; forbidLimp?:boolean; limpedPreflop?:boolean; initiative?:boolean; openedPreflop?:boolean; isBlind?:boolean; threeBetRead?: {opportunities:number;rate:number;looseness:number}; lastRaiserSeat?:number }
+export interface DecisionContext { publicLine?:PublicLine; boardLength?:number; preflopPosition?: {early:boolean;inPositionVsRaiser:boolean}; seats: BettingSeat[]; actorId: number; position?: PositionContext; stack?: ReturnType<typeof stackContext>; forbidLimp?:boolean; limpedPreflop?:boolean; initiative?:boolean; openedPreflop?:boolean; isBlind?:boolean; threeBetRead?: {opportunities:number;rate:number;looseness:number}; lastRaiserSeat?:number }
+export function publicLineEquity(hole:Card[],board:Card[],context:DecisionContext,samples=96) {
+  const ids=context.seats.filter(s=>s.seatId!==context.actorId&&s.inHand&&!s.folded).map(s=>s.seatId);
+  return estimateEquity(hole,board,ids.length,samples,undefined,undefined,
+    board.length>=3&&context.publicLine?ids.map(id=>publicRangeProfile(context.publicLine!,id,board.length)):undefined);
+}
 export function afterRakeOdds(pot: number, cost: number, rate=BOT_EV_RAKE_RATE) {
   return cost>0?cost/Math.max(1,(pot+cost)*(1-rate)):0;
 }
@@ -103,7 +117,8 @@ export function calledActionEV(hole: Card[], board: Card[], context: DecisionCon
     const opponentIds=layer.eligibleSeatIds.filter(id=>id!==actor.seatId);
     const ranges=rangesBySeat ? opponentIds.map(id=>rangesBySeat[id]||range||'open') : undefined;
     const q=estimateEquity(hole,board,opponentIds.length,samples,range,
-      ranges?.some(r=>r!==range)?ranges:undefined);
+      ranges?.some(r=>r!==range)?ranges:undefined,
+      board.length>=3&&context.publicLine?opponentIds.map(id=>publicRangeProfile(context.publicLine!,id,board.length)):undefined);
     expected+=q*(layer.amount-layer.rake);
   }
   return expected-cost; // previously committed chips are sunk at this decision

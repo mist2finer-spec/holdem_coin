@@ -2,6 +2,7 @@
 import {StreetBetting,recordedAction} from '@/lib/poker-betting';
 import {soloBalance,saveSoloBalance} from "@/lib/lobby-client";
 import {OpponentModel} from "@/lib/poker-opponent-model";
+import {PublicLineTracker} from '@/lib/poker-public-line';
 import {minimumRaiseTo} from "@/lib/poker-sizing";
 /* eslint-disable react-hooks/immutability -- The imperative game loop and trainer expose mutable objects; callbacks run after render. */
 import { LIVE_RULES, handPositions, postBlind, normalizeLiveAction, applyLiveAction, decideLiveBot } from "@/lib/poker-live";
@@ -82,6 +83,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
   const mountedRef=useRef(true);
   const trainer = getGlobalTrainer();
   const opponentModel=useRef(new OpponentModel());
+  const publicLines=useRef(new PublicLineTracker());
   const opponentKey=(s:SeatState)=>s.isUser?'human:user':`cpu:${s.seatId}:${s.persona?.id||s.name}`;
 
   const [trainingStats, setTrainingStats] = useState<TrainingStats>(trainer.stats);
@@ -362,6 +364,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     const limpedPreflop = new Set<number>();
     const openedPreflop = new Set<number>();
     const previousStreetAggressor = st.lastStreetAggressor;
+    publicLines.current.begin(st.handNumber);
     let currentStreetAggressor: number | null = null;
     let lastActorIdx = -1; // 직전 액터 (턴 순서 추적용)
     while (mountedRef.current&&safetyCounter < LIVE_RULES.maxActions) {
@@ -425,6 +428,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
           smallBlind: st.smallBlindSeat, bigBlind: st.bigBlindSeat,
           hand: st.handNumber, raiseLevel: st.raiseLevel,
           checkedThisStreet: checkedThisStreet.has(actor.seatId),
+          publicLines:publicLines.current,
           lastRaiserSeat:st.lastAggression?.seatId,
           threeBetRead:st.lastAggression ? opponentModel.current.read(opponentKey(st.seats[st.lastAggression.seatId])) : undefined,
           limpedPreflop: limpedPreflop.has(actor.seatId), previousStreetAggressor,
@@ -432,6 +436,8 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
         });
       }
       const raiseLevelBefore=st.raiseLevel;
+      const lineStackBefore=actor.stack;
+      const linePotBefore=st.pot+st.seats.reduce((n,s)=>n+s.currentBet,0);
       const intendedBluff = !actor.isUser && decision.isBluff === true;
       decision = normalizeLiveAction(st.seats, actor.seatId, decision, st.lastRaiseSize,raiseAllowed,st.board.length===0?BIG_BLIND:0)
         ?? { action: callAmt === 0 ? "check" : "fold", amount: 0 };
@@ -451,6 +457,9 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
 
       // 액션 적용 (직접 ref 수정)
       applyActionToState(st, actorIdx, decision);
+      publicLines.current.observe(st.handNumber,{seatId:actor.seatId,street:st.board.length,
+        action:decision.action,call:callAmt,paid:lineStackBefore-st.seats[actorIdx].stack,
+        to:st.seats[actorIdx].currentBet,pot:linePotBefore,raises:raisesBet});
       if(st.board.length===0)opponentModel.current.observe(opponentKey(actor),st.handNumber,raiseLevelBefore,callAmt,raisesBet);
       if(st.board.length===0&&decision.action==="call"&&maxBet<=BIG_BLIND&&st.raiseLevel===0)limpedPreflop.add(actor.seatId);
       if (decision.action === "check") checkedThisStreet.add(actor.seatId);

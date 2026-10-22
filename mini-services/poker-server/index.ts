@@ -6,6 +6,7 @@ import {HandHistoryStore,authorizedHistory} from './hand-history-store.ts';
 import {publicHandHistory,type HandHistory,type HandAction} from '../../src/lib/poker-hand-history.ts';
 import path from 'node:path';
 import { LIVE_RULES, handPositions, postBlind, normalizeLiveAction, applyLiveAction, mapLiveDecision, decideLiveBot } from "../../src/lib/poker-live.ts";
+import {PublicLineTracker} from '../../src/lib/poker-public-line';
 import { BluffAggression, successfulBluff, bluffTaunt } from "../../src/lib/poker-bluff.ts";
 import { settleHand, bettingLocked, hasBettingOpponent, dealNextStreet, WinnerInfo } from "../../src/lib/poker-rules.ts";
 // ============================================================
@@ -112,6 +113,7 @@ export class HybridHoldemRoom {
   private pendingActionResolve: ((action: { action: string; amount: number }) => void) | null = null;
   private isRunning = false;
   private opponentModel=new OpponentModel();
+  private publicLines=new PublicLineTracker();
   private opponentKey(seatId:number) {
     const s=this.state.seats[seatId];
     return s.isBot?`cpu:${seatId}:${s.persona?.id||s.name}`:`human:${this.users.get(s.socketId||'')?.playerId||s.name}`;
@@ -593,6 +595,7 @@ export class HybridHoldemRoom {
     const limpedPreflop = new Set<number>();
     const openedPreflop = new Set<number>();
     const previousStreetAggressor = st.lastStreetAggressor;
+    this.publicLines.begin(st.handNumber);
     let currentStreetAggressor: number | null = null;
 
     while (safety < MAX_ACTIONS) {
@@ -700,6 +703,8 @@ export class HybridHoldemRoom {
       this.applyAction(actorIdx, decision);
       if(st.board.length===0)this.opponentModel.observe(this.opponentKey(actorIdx),st.handNumber,raiseLevelBefore,callAmt,raisesBet);
       const after=st.seats[actorIdx];
+      this.publicLines.observe(st.handNumber,{seatId:actor.seatId,street:st.board.length,
+        action:decision.action,call:callAmt,paid:before.stack-after.stack,to:after.currentBet,pot:potBefore,raises:raisesBet});
       this.currentHistory?.actions.push({sequence:this.currentHistory.actions.length+1,at:new Date().toISOString(),
         street:st.phase,board:st.board.map(c=>c.rank+c.suit),seatId:before.seatId,name:before.name,isBot:before.isBot,
         source:this.actionSource,action:recordedAction(decision.action,maxBet,st.board.length),
@@ -776,6 +781,7 @@ export class HybridHoldemRoom {
         smallBlind: this.state.smallBlindSeat, bigBlind: this.state.bigBlindSeat,
         hand: this.state.handNumber, raiseLevel: this.state.raiseLevel,
         checkedThisStreet,
+        publicLines:this.publicLines,
         lastRaiserSeat:this.state.lastAggression?.seatId,
         threeBetRead:this.state.lastAggression ? this.opponentModel.read(this.opponentKey(this.state.lastAggression.seatId)) : undefined,
         onAudit:audit=>{this.pendingAudit=audit;},

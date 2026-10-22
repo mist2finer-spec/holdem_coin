@@ -5,7 +5,7 @@ import { oopCheckMix } from "./poker-position";
 import { decideShortStack } from "./poker-shortstack";
 import { continuationBetFrequency, checkCallEquityRequired } from "./poker-postflop";
 import { settleHand, bettingLocked, dealNextStreet, hasBettingOpponent } from "./poker-rules";
-import { estimateEquity, estimateCallEquity, afterRakeOdds, calledActionEV, modeledCallEV, DecisionContext } from "./poker-ai";
+import { estimateEquity, estimateCallEquity, publicLineEquity, afterRakeOdds, calledActionEV, modeledCallEV, DecisionContext } from "./poker-ai";
 // ============================================================
 // 자가대국(Self-Play) 학습 트레이너
 // - 백그라운드에서 8인 테이블 시뮬레이션 반복
@@ -560,6 +560,7 @@ export class SelfPlayTrainer {
     }
     const multiEq = context&&board.length===0&&raiseLevel>0
       ? estimateCallEquity(hole,board,context,192,raiseLevel>=2?'three-bet':'open')
+      : context?.publicLine&&board.length>=3 ? publicLineEquity(hole,board,context,96)
       : estimateEquity(hole,board,activeOpponents);
     const position = context?.position;
     const positionCost = board.length === 0 ? (position?.preflopEquityPremium || 0) * (1.2 - persona.aggression * 0.6) : 0;

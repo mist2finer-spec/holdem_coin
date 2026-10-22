@@ -15,9 +15,11 @@ import { planPreflop, preflopPosition } from './poker-preflop';
 import {preflopCallModel} from './poker-opponent-model';
 import {proCatchDecision} from './poker-pro';
 import {pricedCallGuard} from './poker-priced-call';
+import {selectLineDecision} from './poker-line-policy';
+import type {PublicLineTracker} from './poker-public-line';
 
 export const LIVE_RULES = Object.freeze({
-  version: "1.21.1",
+  version: "1.22.0",
   seats: 8, smallBlind: 100, bigBlind: 200, buyIn: 5000,
   botCashOut: 100000, userSeconds: 10, maxActions: 256,
   botThinkMin: 700, botThinkJitter: 900, actionPause: 800, resultPause: 5000,
@@ -94,6 +96,7 @@ export function decideLiveBot(trainer: SelfPlayTrainer, ctx: {
   button: number; smallBlind: number; bigBlind: number; hand: number; raiseLevel: number;
   threeBetRead?: {opportunities:number;rate:number;looseness:number}; lastRaiserSeat?:number;
   checkedThisStreet?: boolean;
+  publicLines?:PublicLineTracker;
   /** @deprecated Private-card referee overrides are no longer evaluated. */
   allowHumanCall?: () => boolean;
   onAudit?: (audit: Record<string, unknown>) => void;
@@ -103,7 +106,7 @@ export function decideLiveBot(trainer: SelfPlayTrainer, ctx: {
   const persona = individualLivePersona(actor.persona || RPG_BOT_POOL[0], ctx.hand, actor.seatId, actor.stack + actor.totalBet);
   const call = Math.max(board.length===0?LIVE_RULES.bigBlind:0, ...seats.filter(s => s.inHand && !s.folded).map(s => s.currentBet)) - actor.currentBet;
   const livePot = ctx.pot + seats.reduce((sum, s) => sum + s.currentBet, 0);
-  const context={boardLength:board.length,preflopPosition:preflopPosition(seats.map(s=>s.seatId),actor.seatId,ctx.button,ctx.bigBlind,ctx.lastRaiserSeat??seats.find(s=>s.seatId!==actor.seatId&&s.currentBet===actor.currentBet+call)?.seatId),actorId:actor.seatId,threeBetRead:ctx.threeBetRead,lastRaiserSeat:ctx.lastRaiserSeat,isBlind:[ctx.smallBlind,ctx.bigBlind].includes(actor.seatId),stack:stackContext(seats,actor.seatId),
+  const context={publicLine:ctx.publicLines?.read(ctx.hand,board.length,actor.seatId),boardLength:board.length,preflopPosition:preflopPosition(seats.map(s=>s.seatId),actor.seatId,ctx.button,ctx.bigBlind,ctx.lastRaiserSeat??seats.find(s=>s.seatId!==actor.seatId&&s.currentBet===actor.currentBet+call)?.seatId),actorId:actor.seatId,threeBetRead:ctx.threeBetRead,lastRaiserSeat:ctx.lastRaiserSeat,isBlind:[ctx.smallBlind,ctx.bigBlind].includes(actor.seatId),stack:stackContext(seats,actor.seatId),
     position:positionContext(seats,actor.seatId,ctx.button,ctx.checkedThisStreet),
     limpedPreflop:ctx.limpedPreflop,openedPreflop:ctx.openedPreflop,initiative:ctx.previousStreetAggressor===actor.seatId,
     seats:seats.map(({seatId,stack,currentBet,totalBet,inHand,folded,allIn})=>({seatId,stack,currentBet,totalBet,inHand,folded,allIn}))};
@@ -111,13 +114,14 @@ export function decideLiveBot(trainer: SelfPlayTrainer, ctx: {
     minRaise:ctx.minRaise,maxRaise:ctx.maxRaise,raiseLevel:ctx.raiseLevel,smallBlind:ctx.smallBlind,persona,context});
   let decision=plan.decision;
   let decisionPath=decision ? "preflop-plan" : "trainer";
+  let lineChoice:ReturnType<typeof selectLineDecision>=null;
   const finish=(action:LiveAction)=>{
     const entry=supportTightParticipation(trainer,{base:actor.persona||RPG_BOT_POOL[0],hand:ctx.hand,seat:actor.seatId,
       hole:actor.holeCards,board,call,stack:actor.stack,starting:actor.stack+actor.totalBet,currentBet:actor.currentBet,
       raiseLevel:ctx.raiseLevel,minRaise:ctx.minRaise,maxRaise:ctx.maxRaise,canRaise:seats.some(s=>s.seatId!==actor.seatId&&s.inHand&&!s.folded&&!s.allIn&&s.stack>0),pot:livePot,
       opponents:seats.filter(s=>s.inHand&&!s.folded&&s.seatId!==actor.seatId).length,context},action);
     action=entry.action;if(entry.participation?.supported)decisionPath='tight-participation-support';
-    const support=postflopSupport({hole:actor.holeCards,board,base:actor.persona||RPG_BOT_POOL[0],persona,
+    const support=lineChoice?{action}:postflopSupport({hole:actor.holeCards,board,base:actor.persona||RPG_BOT_POOL[0],persona,
       call,pot:livePot,stack:actor.stack,currentBet:actor.currentBet,minRaise:ctx.minRaise,maxRaise:ctx.maxRaise,
       canRaise:ctx.maxRaise>actor.currentBet+call&&hasBettingOpponent(seats,actor.seatId),isOOP:context.position.isOOP,
       initiative:ctx.previousStreetAggressor===actor.seatId,checked:!!ctx.checkedThisStreet,
@@ -149,6 +153,7 @@ export function decideLiveBot(trainer: SelfPlayTrainer, ctx: {
     }
     const callModel=board.length===0&&ctx.raiseLevel>0?preflopCallModel(context):null;
     ctx.onAudit?.({participation:entry.participation,boardDefense,riverCatch,proCatch,pricedCall,decisionPath,
+      linePolicy:lineChoice?{path:lineChoice.path,equity:lineChoice.equity,ev:lineChoice.ev}:null,
       callModel:callModel?{committed:callModel.committed,pending:callModel.pending,overcallProbability:callModel.overcallProbability}:null,
       threeBetRead:ctx.threeBetRead,lastRaiserSeat:ctx.lastRaiserSeat,personaId:actor.persona?.id,vpip:persona.vpip,aggression:persona.aggression,
       bluffFreq:persona.bluffFreq,isOOP:context.position.isOOP,effectiveStack:context.stack.effectiveStack,
@@ -166,6 +171,14 @@ export function decideLiveBot(trainer: SelfPlayTrainer, ctx: {
     decision = mapLiveDecision(nn, call, actor.stack, actor.currentBet);
   }
   const highest = actor.currentBet + call;
+  lineChoice=selectLineDecision({hole:actor.holeCards,board,persona,context,call,pot:livePot,
+    stack:actor.stack,currentBet:actor.currentBet,minRaise:ctx.minRaise,maxRaise:ctx.maxRaise,
+    raiseLevel:ctx.raiseLevel,canRaise:ctx.maxRaise>highest&&hasBettingOpponent(seats,actor.seatId,highest)},decision);
+  if(lineChoice){
+    decision=lineChoice.action;decisionPath=lineChoice.path;
+    if(lineChoice.induce)ctx.publicLines?.armInduce(ctx.hand,board.length,actor.seatId);
+    return finish(decision);
+  }
   const limped = ctx.raiseLevel === 0 && highest <= LIVE_RULES.bigBlind;
   const smallOpen = ctx.raiseLevel === 1 && highest >= 2 * LIVE_RULES.bigBlind && highest <= 3 * LIVE_RULES.bigBlind;
   const { rawEquity } = classifyHandTier(actor.holeCards, []);
