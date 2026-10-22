@@ -556,7 +556,7 @@ export class SelfPlayTrainer {
     if(context) {
       const shortDecision=decideShortStack({hole,board,call:callAmount,minRaise,maxRaise,pot,
         stack:myStack,currentBet:myCurrentBet,raiseLevel,persona,context});
-      if(shortDecision)return {...shortDecision,tier,decisionPath:raiseLevel===2&&context.openedPreflop ? "three-bet-ev" : "small-open-ev"};
+      if(shortDecision)return {...shortDecision,tier,decisionPath:shortDecision.decisionPath||(raiseLevel===2&&context.openedPreflop ? "three-bet-ev" : "small-open-ev")};
     }
     const multiEq = context&&board.length===0&&raiseLevel>0
       ? estimateCallEquity(hole,board,context,192,raiseLevel>=2?'three-bet':'open')

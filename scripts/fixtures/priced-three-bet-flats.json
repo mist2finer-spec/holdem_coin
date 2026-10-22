@@ -1,0 +1,506 @@
+[
+  {
+    "hand": 11,
+    "hole": [
+      "K\u2660",
+      "J\u2663"
+    ],
+    "actorId": 3,
+    "seats": [
+      {
+        "seatId": 0,
+        "stack": 4950,
+        "currentBet": 800,
+        "totalBet": 800,
+        "inHand": true,
+        "folded": false,
+        "allIn": false
+      },
+      {
+        "seatId": 1,
+        "stack": 4275,
+        "currentBet": 200,
+        "totalBet": 200,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 2,
+        "stack": 4900,
+        "currentBet": 0,
+        "totalBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 3,
+        "stack": 5300,
+        "currentBet": 400,
+        "totalBet": 400,
+        "inHand": true,
+        "folded": false,
+        "allIn": false
+      },
+      {
+        "seatId": 4,
+        "stack": 4300,
+        "currentBet": 0,
+        "totalBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 5,
+        "stack": 4700,
+        "currentBet": 0,
+        "totalBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      }
+    ],
+    "pot": 1400,
+    "call": 400,
+    "minRaise": 1200,
+    "maxRaise": 5700,
+    "button": 5,
+    "smallBlind": 0,
+    "bigBlind": 1,
+    "raiseLevel": 2,
+    "persona": {
+      "vpip": 0.6022343930173665,
+      "aggression": 0.8269086704775691,
+      "bluffFreq": 0.13460578031837941
+    },
+    "lastRaiserSeat": 0,
+    "threeBetRead": {
+      "opportunities": 2,
+      "threeBets": 2,
+      "rate": 0.25,
+      "looseness": 0
+    }
+  },
+  {
+    "hand": 111,
+    "hole": [
+      "5\u2666",
+      "5\u2660"
+    ],
+    "actorId": 1,
+    "seats": [
+      {
+        "seatId": 0,
+        "stack": 8400,
+        "currentBet": 800,
+        "totalBet": 800,
+        "inHand": true,
+        "folded": false,
+        "allIn": false
+      },
+      {
+        "seatId": 1,
+        "stack": 4825,
+        "currentBet": 400,
+        "totalBet": 400,
+        "inHand": true,
+        "folded": false,
+        "allIn": false
+      },
+      {
+        "seatId": 2,
+        "stack": 5842,
+        "currentBet": 0,
+        "totalBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 3,
+        "stack": 3917,
+        "currentBet": 0,
+        "totalBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 4,
+        "stack": 20325,
+        "currentBet": 0,
+        "totalBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 5,
+        "stack": 1245,
+        "currentBet": 100,
+        "totalBet": 100,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      }
+    ],
+    "pot": 1300,
+    "call": 400,
+    "minRaise": 1200,
+    "maxRaise": 5225,
+    "button": 4,
+    "smallBlind": 5,
+    "bigBlind": 0,
+    "raiseLevel": 2,
+    "persona": {
+      "vpip": 0.31350000000000006,
+      "aggression": 0.6399999999999999,
+      "bluffFreq": 0.14
+    },
+    "lastRaiserSeat": 0,
+    "threeBetRead": {
+      "opportunities": 10,
+      "threeBets": 2,
+      "rate": 0.1590909090909091,
+      "looseness": 0.1303030303030303
+    }
+  },
+  {
+    "hand": 152,
+    "hole": [
+      "J\u2660",
+      "A\u2666"
+    ],
+    "actorId": 0,
+    "seats": [
+      {
+        "seatId": 0,
+        "stack": 6368,
+        "currentBet": 400,
+        "totalBet": 400,
+        "inHand": true,
+        "folded": false,
+        "allIn": false
+      },
+      {
+        "seatId": 1,
+        "stack": 31841,
+        "currentBet": 800,
+        "totalBet": 800,
+        "inHand": true,
+        "folded": false,
+        "allIn": false
+      },
+      {
+        "seatId": 2,
+        "stack": 1112,
+        "currentBet": 0,
+        "totalBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 3,
+        "stack": 3573,
+        "currentBet": 0,
+        "totalBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 4,
+        "stack": 4073,
+        "currentBet": 100,
+        "totalBet": 100,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 5,
+        "stack": 30026,
+        "currentBet": 800,
+        "totalBet": 800,
+        "inHand": true,
+        "folded": false,
+        "allIn": false
+      }
+    ],
+    "pot": 2100,
+    "call": 400,
+    "minRaise": 1200,
+    "maxRaise": 6768,
+    "button": 3,
+    "smallBlind": 4,
+    "bigBlind": 5,
+    "raiseLevel": 2,
+    "persona": {
+      "vpip": 0.501,
+      "aggression": 0.7649999999999999,
+      "bluffFreq": 0.4
+    },
+    "lastRaiserSeat": 1,
+    "threeBetRead": {
+      "opportunities": 6,
+      "threeBets": 2,
+      "rate": 0.19444444444444445,
+      "looseness": 0.1488888888888889
+    }
+  },
+  {
+    "hand": 191,
+    "hole": [
+      "3\u2660",
+      "A\u2660"
+    ],
+    "actorId": 5,
+    "seats": [
+      {
+        "seatId": 0,
+        "stack": 5011,
+        "currentBet": 800,
+        "totalBet": 800,
+        "inHand": true,
+        "folded": false,
+        "allIn": false
+      },
+      {
+        "seatId": 1,
+        "stack": 34609,
+        "currentBet": 100,
+        "totalBet": 100,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 2,
+        "stack": 2300,
+        "currentBet": 200,
+        "totalBet": 200,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 3,
+        "stack": 5000,
+        "currentBet": 0,
+        "totalBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 4,
+        "stack": 14884,
+        "currentBet": 0,
+        "totalBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 5,
+        "stack": 28366,
+        "currentBet": 400,
+        "totalBet": 400,
+        "inHand": true,
+        "folded": false,
+        "allIn": false
+      }
+    ],
+    "pot": 1500,
+    "call": 400,
+    "minRaise": 1200,
+    "maxRaise": 28766,
+    "button": 0,
+    "smallBlind": 1,
+    "bigBlind": 2,
+    "raiseLevel": 2,
+    "persona": {
+      "vpip": 0.44600000000000006,
+      "aggression": 0.7024999999999999,
+      "bluffFreq": 0.12
+    },
+    "lastRaiserSeat": 0,
+    "threeBetRead": {
+      "opportunities": 20,
+      "threeBets": 5,
+      "rate": 0.203125,
+      "looseness": 0.3325
+    }
+  },
+  {
+    "hand": 195,
+    "hole": [
+      "A\u2666",
+      "3\u2663"
+    ],
+    "actorId": 1,
+    "seats": [
+      {
+        "seatId": 0,
+        "stack": 10586,
+        "currentBet": 200,
+        "totalBet": 200,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 1,
+        "stack": 30809,
+        "currentBet": 400,
+        "totalBet": 400,
+        "inHand": true,
+        "folded": false,
+        "allIn": false
+      },
+      {
+        "seatId": 2,
+        "stack": 5000,
+        "currentBet": 0,
+        "totalBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 3,
+        "stack": 5295,
+        "currentBet": 800,
+        "totalBet": 800,
+        "inHand": true,
+        "folded": false,
+        "allIn": false
+      },
+      {
+        "seatId": 4,
+        "stack": 14284,
+        "currentBet": 0,
+        "totalBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 5,
+        "stack": 28606,
+        "currentBet": 100,
+        "totalBet": 100,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      }
+    ],
+    "pot": 1500,
+    "call": 400,
+    "minRaise": 1200,
+    "maxRaise": 31209,
+    "button": 4,
+    "smallBlind": 5,
+    "bigBlind": 0,
+    "raiseLevel": 2,
+    "persona": {
+      "vpip": 0.44600000000000006,
+      "aggression": 0.7024999999999999,
+      "bluffFreq": 0.12
+    },
+    "lastRaiserSeat": 3,
+    "threeBetRead": {
+      "opportunities": 2,
+      "threeBets": 1,
+      "rate": 0.17857142857142858,
+      "looseness": 0
+    }
+  },
+  {
+    "hand": 217,
+    "hole": [
+      "T\u2665",
+      "K\u2663"
+    ],
+    "actorId": 0,
+    "seats": [
+      {
+        "seatId": 0,
+        "stack": 17084,
+        "currentBet": 400,
+        "totalBet": 400,
+        "inHand": true,
+        "folded": false,
+        "allIn": false
+      },
+      {
+        "seatId": 1,
+        "stack": 23297,
+        "currentBet": 880,
+        "totalBet": 880,
+        "inHand": true,
+        "folded": false,
+        "allIn": false
+      },
+      {
+        "seatId": 2,
+        "stack": 2304,
+        "currentBet": 0,
+        "totalBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 3,
+        "stack": 10592,
+        "currentBet": 100,
+        "totalBet": 100,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 4,
+        "stack": 11914,
+        "currentBet": 200,
+        "totalBet": 200,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 5,
+        "stack": 23892,
+        "currentBet": 0,
+        "totalBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      }
+    ],
+    "pot": 1580,
+    "call": 480,
+    "minRaise": 1360,
+    "maxRaise": 17484,
+    "button": 2,
+    "smallBlind": 3,
+    "bigBlind": 4,
+    "raiseLevel": 2,
+    "persona": {
+      "vpip": 0.6335000000000001,
+      "aggression": 0.7675,
+      "bluffFreq": 0.32999999999999996
+    },
+    "lastRaiserSeat": 1,
+    "threeBetRead": {
+      "opportunities": 3,
+      "threeBets": 2,
+      "rate": 0.23333333333333334,
+      "looseness": 0
+    }
+  }
+]

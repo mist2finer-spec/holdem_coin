@@ -17,7 +17,7 @@ import {proCatchDecision} from './poker-pro';
 import {pricedCallGuard} from './poker-priced-call';
 
 export const LIVE_RULES = Object.freeze({
-  version: "1.21.0",
+  version: "1.21.1",
   seats: 8, smallBlind: 100, bigBlind: 200, buyIn: 5000,
   botCashOut: 100000, userSeconds: 10, maxActions: 256,
   botThinkMin: 700, botThinkJitter: 900, actionPause: 800, resultPause: 5000,

@@ -24,7 +24,12 @@ export function shortStackOptions(spot: ShortSpot) {
   const callCost=Math.min(call,stack);
   const allInOpponent=opponents.some(s=>s.allIn);
   const looseness=threeBet&&!allInOpponent ? context.threeBetRead?.looseness||0 : 0;
-  const spr=Math.max(0,stack-callCost)/Math.max(1,pot+callCost);
+  // Only chips an eligible opponent can still match create future-street risk.
+  // A deep covering stack must not make a short opponent look deep as well.
+  const responseTarget=currentBet+callCost;
+  const opponentRemaining=Math.max(0,...opponents.map(s=>Math.max(0,
+    s.stack-Math.max(0,responseTarget-s.currentBet))));
+  const spr=Math.min(Math.max(0,stack-callCost),opponentRemaining)/Math.max(1,pot+callCost);
   const raiseTo=Math.min(maxRaise,Math.max(minRaise,Math.floor(highest*(threeBet?2.2:3))));
   const raiseCost=raiseTo-currentBet;
   // Small pairs may defend an actual blind at an affordable price; they do
@@ -49,12 +54,22 @@ export function shortStackOptions(spot: ShortSpot) {
       ||(looseness>=0.20&&affordable&&((pair&&low>=3)
         ||(high>=10&&low>=8)||(suited&&high===12&&low>=6)));
   }
+  // Original openers can price a SMALL non-all-in three-bet even when the
+  // aggressive continuation range rejects the hand. This unlocks calls only.
+  const effective=context.stack?.effectiveStack??starting;
+  const smallPrice=threeBet&&!allInOpponent&&callCost<stack&&starting>2500&&effective>=3000
+    &&currentBet>=400&&callCost<=600&&callCost<=currentBet*1.25
+    &&callCost<=Math.min(starting,effective)*.12&&callCost/Math.max(1,pot+callCost)<=.28;
+  const flatHand=(pair&&low>=3)||(high===12&&low>=9)
+    ||(suited&&high===12&&persona.vpip>=.35)
+    ||(high>=10&&low>=9&&persona.vpip>=.30);
+  const callOnlyDefense=!playable&&smallPrice&&flatHand;
   // Entry gates never use EV: avoid hundreds of discarded rollouts for trash.
-  if(!playable)return {callEV:-Infinity,jamEV:-Infinity,strongRaiseEV:-Infinity,
+  if(!playable&&!callOnlyDefense)return {callOnlyDefense,callEV:-Infinity,jamEV:-Infinity,strongRaiseEV:-Infinity,
     raiseTo,raiseCost,playable,starting,threeBet,canRaise,spr,blindPairDefense,looseness};
   // Fold equity is a bounded model assumption, not knowledge of a CPU's hand.
   const raiseEV=(target:number)=>{
-    if(!canRaise)return Number.NEGATIVE_INFINITY;
+    if(!canRaise||callOnlyDefense)return Number.NEGATIVE_INFINITY;
     const cost=Math.min(stack,target-currentBet);
     const called=calledActionEV(hole,board,context,cost,BOT_EV_RAKE_RATE,threeBet&&starting>5000?'four-bet-call':'jam-call',threeBet?768:192);
     const perOpponent=threeBet ? Math.min(0.20,0.08+(target-highest)/Math.max(1,highest)*0.04)
@@ -83,15 +98,25 @@ export function shortStackOptions(spot: ShortSpot) {
   const callEV=(called+callCost)*realization-callCost-riskPremium;
   const jamEV=raiseEV(maxRaise);
   const strongRaiseEV=raiseEV(raiseTo);
-  return {callEV,jamEV,strongRaiseEV,raiseTo,raiseCost,playable,starting,threeBet,canRaise,spr,blindPairDefense,looseness};
+  return {callEV,jamEV,strongRaiseEV,raiseTo,raiseCost,playable:playable||callOnlyDefense,callOnlyDefense,starting,threeBet,canRaise,spr,blindPairDefense,looseness};
 }
 
-export function decideShortStack(spot: ShortSpot): {action:number;amount:number;isBluff?:boolean} | null {
+export function decideShortStack(spot: ShortSpot): {action:number;amount:number;isBluff?:boolean;decisionPath?:string} | null {
   const options=shortStackOptions(spot);
   if(!options)return null;
   // Narrow entry range first; aggression is conditional on having a suitable
   // hand. A short stack is not permission to shove arbitrary weak broadways.
   if(!options.playable)return {action:0,amount:0};
+  if(options.callOnlyDefense){
+    // A wider evaluation gate is not permission to call a negative/marginal EV
+    // spot, or to turn a cheap defensive flat into a four-bet or shove.
+    const margin=Math.max(1,spot.pot*.02);
+    if(options.callEV<=margin)return {action:0,amount:0,decisionPath:'priced-three-bet-flat-ev-fold'};
+    const rate=options.callEV>=spot.pot*.20?1:Math.min(.99,.65+spot.persona.vpip*.25
+      +options.callEV/Math.max(1,spot.pot)*1.25-(spot.context.position?.isOOP?.05:0));
+    return Math.random()<rate?{action:1,amount:Math.min(spot.call,spot.stack),decisionPath:'priced-three-bet-flat'}
+      :{action:0,amount:0,decisionPath:'priced-three-bet-flat-mix-fold'};
+  }
   if(options.threeBet) {
     const candidates:{action:number;amount:number;ev:number}[]=[];
     if(options.callEV>0)candidates.push({action:1,amount:Math.min(spot.call,spot.stack),ev:options.callEV});
