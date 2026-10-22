@@ -1,11 +1,10 @@
 "use client";
+import {StreetBetting,recordedAction} from '@/lib/poker-betting';
 import {soloBalance,saveSoloBalance} from "@/lib/lobby-client";
-import {humanHitHint} from '@/lib/poker-postflop-support';
 import {OpponentModel} from "@/lib/poker-opponent-model";
 import {minimumRaiseTo} from "@/lib/poker-sizing";
 /* eslint-disable react-hooks/immutability -- The imperative game loop and trainer expose mutable objects; callbacks run after render. */
 import { LIVE_RULES, handPositions, postBlind, normalizeLiveAction, applyLiveAction, decideLiveBot } from "@/lib/poker-live";
-import {allowHumanDefense} from '@/lib/poker-human-defense';
 import { BluffAggression, successfulBluff, bluffTaunt } from "@/lib/poker-bluff";
 import { settleHand, bettingLocked, hasBettingOpponent, dealNextStreet, WinnerInfo } from "@/lib/poker-rules";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -350,7 +349,8 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     const st = stateRef.current;
     st.phase = currentPhase;
     st.raiseLevel = 0; // 라운드 시작마다 리셋
-    st.lastRaiseSize = BIG_BLIND; // ★ 라운드 시작마다 BB로 리셋 (표준 NLHE)
+    st.lastRaiseSize = BIG_BLIND;
+    const betting=new StreetBetting(BIG_BLIND);
     // hasActed 리셋
     st.seats = st.seats.map(s => ({ ...s, hasActed: false }));
     st.lastActions = {};
@@ -372,7 +372,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
       const notAllIn = aliveInHand.filter(s => !s.allIn);
       if (notAllIn.length === 0) break;
 
-      const maxBet = Math.max(...aliveInHand.map(s => s.currentBet));
+      const maxBet = Math.max(st.board.length===0?BIG_BLIND:0,...aliveInHand.map(s => s.currentBet));
       const needsAction = notAllIn.filter(s => !s.hasActed || s.currentBet < maxBet);
       if (needsAction.length === 0) break;
 
@@ -398,9 +398,10 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
       st.activeSeatId = actorIdx;
       const callAmt = Math.max(0, maxBet - actor.currentBet);
       st.callAmount = callAmt;
-      // Table house rule: every full raise is at least 2x the highest street total.
-      const minR = minimumRaiseTo(maxBet,BIG_BLIND);
-      const maxR = hasBettingOpponent(st.seats, actor.seatId) ? actor.stack + actor.currentBet : maxBet;
+      // Standard no-limit increment; short all-ins do not automatically reopen.
+      const minR = minimumRaiseTo(maxBet,BIG_BLIND,betting.lastFullRaise);
+      const raiseAllowed=betting.canRaise(actor.seatId,maxBet);
+      const maxR = raiseAllowed&&hasBettingOpponent(st.seats, actor.seatId) ? actor.stack + actor.currentBet : maxBet;
       st.minRaise = minR;
       st.maxRaise = maxR;
       tick();
@@ -424,9 +425,6 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
           smallBlind: st.smallBlindSeat, bigBlind: st.bigBlindSeat,
           hand: st.handNumber, raiseLevel: st.raiseLevel,
           checkedThisStreet: checkedThisStreet.has(actor.seatId),
-        humanHitHint:()=>humanHitHint(st.seats,st.board,st.lastAggression?.seatId),
-          allowHumanCall:()=>allowHumanDefense({seats:st.seats,actorId:actor.seatId,
-            humanId:st.lastAggression?.seatId,board:st.board,raiseLevel:st.raiseLevel}),
           lastRaiserSeat:st.lastAggression?.seatId,
           threeBetRead:st.lastAggression ? opponentModel.current.read(opponentKey(st.seats[st.lastAggression.seatId])) : undefined,
           limpedPreflop: limpedPreflop.has(actor.seatId), previousStreetAggressor,
@@ -435,29 +433,17 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
       }
       const raiseLevelBefore=st.raiseLevel;
       const intendedBluff = !actor.isUser && decision.isBluff === true;
-      decision = normalizeLiveAction(st.seats, actor.seatId, decision, st.lastRaiseSize)
+      decision = normalizeLiveAction(st.seats, actor.seatId, decision, st.lastRaiseSize,raiseAllowed,st.board.length===0?BIG_BLIND:0)
         ?? { action: callAmt === 0 ? "check" : "fold", amount: 0 };
 
-      // raiseLevel 추적 + 다른 플레이어 hasActed 리셋 (올바른 포커 룰)
       const raisesBet=decision.action === "raise" || (decision.action === "allin" && actor.currentBet + actor.stack > maxBet);
+      const newTotal=raisesBet?(decision.action==='allin'?actor.currentBet+actor.stack:decision.amount):maxBet;
+      const fullRaise=betting.record(actor.seatId,maxBet,newTotal);
+      st.lastRaiseSize=betting.lastFullRaise;
       if (raisesBet) {
-        st.raiseLevel += 1;
-        // ★ lastRaiseSize 업데이트 (표준 NLHE min-raise 계산용)
-        // 레이즈 크기 = 새 베팅 총액 - 이전 최대 베팅
-        const oldMaxBet = maxBet;
-        const newBetTotal = decision.action === "allin"
-          ? actor.currentBet + actor.stack  // 올인이면 현재 베팅 + 스택
-          : decision.amount;                // 레이즈면 목표 금액
-        const raiseSize = newBetTotal - oldMaxBet;
-        if (raiseSize > st.lastRaiseSize) {
-          st.lastRaiseSize = raiseSize; // 더 큰 레이즈가 오면 업데이트 (작은 레이즈는 무시)
-        }
-        // 레이즈가 발생하면 다른 모든 생존 플레이어가 다시 행동해야 함
-        // (단, 레이즈한 본인은 hasActed=true 유지)
-        for (let i = 0; i < st.seats.length; i++) {
-          if (i !== actorIdx && st.seats[i].inHand && !st.seats[i].folded && !st.seats[i].allIn) {
-            st.seats[i].hasActed = false;
-          }
+        if(fullRaise){
+          st.raiseLevel++;
+          for(const seat of st.seats)if(seat.seatId!==actor.seatId&&seat.inHand&&!seat.folded&&!seat.allIn)seat.hasActed=false;
         }
         // ★ 레이즈 발생 시 유저의 '콜/체크' 사전 액션 자동 취소 (폴드는 유지)
         cancelCallPreActionOnRaise();
@@ -474,7 +460,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
         currentStreetAggressor = actor.seatId;
         if(st.board.length===0&&st.raiseLevel===1)openedPreflop.add(actor.seatId);
       }
-      const actionLabel = labelAction(decision.action, decision.amount, callAmt);
+      const actionLabel = labelAction(recordedAction(decision.action,maxBet,st.board.length), decision.amount, callAmt);
       st.lastActions = { ...st.lastActions, [actorIdx]: actionLabel };
       pushLog(`${actor.name}: ${actionLabel}`, "action");
 
@@ -824,11 +810,12 @@ function applyActionToState(st: GameState, seatId: number, decision: { action: A
   st.seats[seatId] = applyLiveAction(st.seats[seatId], decision);
 }
 
-function labelAction(action: ActionType, amount: number, callAmt: number): string {
+function labelAction(action: ActionType | "bet", amount: number, callAmt: number): string {
   switch (action) {
     case "fold": return "FOLD";
     case "check": return "CHECK";
     case "call": return `CALL ${amount.toLocaleString()}`;
+    case "bet": return `BET ${amount.toLocaleString()}`;
     case "raise": return `RAISE ${amount.toLocaleString()}`;
     case "allin": return `ALL-IN ${amount.toLocaleString()}`;
   }

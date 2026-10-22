@@ -62,6 +62,7 @@ test('server snapshots contain no bot personality attributes or style labels',()
 
 test('real server retains check history through a raise and clears it on the next street', async () => {
   const room = roomWith([0, 0]);
+  room.state.board=[{rank:'2',suit:'♠'},{rank:'7',suit:'♥'},{rank:'J',suit:'♦'}];room.state.phase='FLOP';
   const checked: boolean[] = [];
   const actions = [
     {action:'check',amount:0}, {action:'raise',amount:200},
@@ -111,7 +112,7 @@ test('server computes calls and rejects illegal checks and raises', () => {
   const room=roomWith();
   assert.deepEqual(room.mapUserAction({action:'call',amount:-999}),{action:'call',amount:200});
   assert.equal(room.mapUserAction({action:'check',amount:0}),null);
-  for(const amount of [0,-1,NaN,Infinity,500,600,799,30000,800.5])
+  for(const amount of [0,-1,NaN,Infinity,500,599,30000,800.5])
     assert.equal(room.mapUserAction({action:'raise',amount}),null);
   assert.deepEqual(room.mapUserAction({action:'raise',amount:800}),{action:'raise',amount:800});
   assert.throws(()=>room.applyAction(0,{action:'raise',amount:0}));

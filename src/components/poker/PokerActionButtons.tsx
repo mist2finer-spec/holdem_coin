@@ -14,7 +14,7 @@ export function PokerActionButtons({currentBet,call,stack,minRaise,maxRaise,pot,
  const [custom,setCustom]=useState('');
  const submit=(action:ActionType,amount:number)=>{setOpen(false);onSubmit(action,amount);};
  const customAmount=Number(custom);
- const validCustom=custom.trim()!==''&&Number.isSafeInteger(customAmount)&&customAmount>=minRaise&&customAmount<=maxRaise&&stack>call;
+ const validCustom=custom.trim()!==''&&Number.isSafeInteger(customAmount)&&customAmount>=minRaise&&customAmount<=maxRaise&&maxRaise>currentBet+call&&stack>call;
  return <div className="poker-action-row" aria-label="배팅 액션">
   <ActionSkinButton skin="red" className="poker-main-action" onClick={()=>submit('fold',0)}>FOLD</ActionSkinButton>
   <ActionSkinButton skin="blue" className="poker-main-action" onClick={()=>submit(call>0?'call':'check',Math.min(call,stack))}>
@@ -32,7 +32,7 @@ export function PokerActionButtons({currentBet,call,stack,minRaise,maxRaise,pot,
     aria-label="팟 베팅 또는 올인 선택">
     <p className="text-[10px] text-center mb-2 text-amber-200/80">금액을 눌러 베팅</p>
     <div className="grid gap-1.5">
-     <ActionSkinButton skin="red" className="h-11" onClick={()=>submit('allin',stack)}>ALL-IN · {stack.toLocaleString()}</ActionSkinButton>
+     <ActionSkinButton skin="red" className="h-11" disabled={stack>call&&maxRaise<=currentBet+call} onClick={()=>submit('allin',stack)}>ALL-IN · {stack.toLocaleString()}</ActionSkinButton>
      {[{f:3/4,label:'3/4 POT'},{f:1/2,label:'1/2 POT'},{f:1/4,label:'1/4 POT'}].map(({f,label})=>{
       const size=potFractionSizing(currentBet,call,stack,minRaise,maxRaise,pot,f);
       return <ActionSkinButton key={label} skin="purple" className="h-11" disabled={!size.canRaise}

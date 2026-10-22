@@ -1,3 +1,4 @@
+import {StreetBetting} from './poker-betting';
 import {minimumRaiseTo} from "./poker-sizing";
 import { bluffFrequency } from "./poker-bluff";
 import { oopCheckMix } from "./poker-position";
@@ -77,9 +78,9 @@ export class SelfPlayTrainer {
   private conclusionEMA = 0;
 
   // localStorage 저장용
-  // ★ 버전업: AIR 버그 수정 이전의 오염된 가중치 강제 초기화
-  private static STORAGE_KEY = "rpg_poker_policy_v4_rake05";
-  private static STATS_KEY = "rpg_poker_stats_v4_rake05";
+  // New rules use a separate checkpoint; legacy weights/stats are preserved.
+  private static STORAGE_KEY = "rpg_poker_policy_v5_standard_nlhe";
+  private static STATS_KEY = "rpg_poker_stats_v5_standard_nlhe";
 
   constructor() {
     // 저장된 가중치 로드 시도
@@ -351,6 +352,7 @@ export class SelfPlayTrainer {
     let allInCount = 0;
     let actionCount = 0;
     let raiseLevel = 0;
+    const betting=new StreetBetting(BB);
 
     for (const p of players) p.hasActed = false;
 
@@ -363,7 +365,7 @@ export class SelfPlayTrainer {
       const notAllIn = alive.filter(p => !p.allIn);
       if (notAllIn.length === 0) break;
 
-      const maxBet = Math.max(...alive.map(p => p.currentBet));
+      const maxBet = Math.max(board.length===0?BB:0,...alive.map(p => p.currentBet));
       const needsAction = notAllIn.filter(p => !p.hasActed || p.currentBet < maxBet);
       if (needsAction.length === 0) break;
 
@@ -387,9 +389,9 @@ export class SelfPlayTrainer {
       const actor = players[actorIdx];
       const callAmt = Math.max(0, maxBet - actor.currentBet);
       const activeOpp = alive.length - 1;
-      const minRaise = minimumRaiseTo(maxBet,BB);
+      const minRaise = minimumRaiseTo(maxBet,BB,betting.lastFullRaise);
       const publicSeats=players.map(p=>({...p,seatId:p.seatIndex}));
-      const maxRaise = hasBettingOpponent(publicSeats,actorIdx) ? actor.stack + actor.currentBet : maxBet;
+      const maxRaise = betting.canRaise(actorIdx,maxBet)&&hasBettingOpponent(publicSeats,actorIdx) ? actor.stack + actor.currentBet : maxBet;
       const livePot=pot+players.reduce((sum,p)=>sum+p.currentBet,0);
 
       // 에퀴티 계산
@@ -476,7 +478,7 @@ export class SelfPlayTrainer {
         const cost = finalTarget - actor.currentBet;
         actor.stack -= cost;
         actor.currentBet = finalTarget;
-        raiseLevel++;
+
         if (actor.stack === 0) {
           actor.allIn = true;
           allInCount++;
@@ -488,7 +490,7 @@ export class SelfPlayTrainer {
         const cost = finalTarget - actor.currentBet;
         actor.stack -= cost;
         actor.currentBet = finalTarget;
-        raiseLevel++;
+
         if (actor.stack === 0) {
           actor.allIn = true;
           allInCount++;
@@ -496,8 +498,9 @@ export class SelfPlayTrainer {
       }
       actor.totalBet+=beforeStack-actor.stack;
       actor.hasActed = true;
-      // 레이즈 시 다른 생존 플레이어 모두 다시 행동해야 함 (올바른 포커 룰)
-      if (action === 2 || action === 3) {
+      const fullRaise=betting.record(actorIdx,maxBet,Math.max(maxBet,actor.currentBet));
+      if ((action === 2 || action === 3)&&fullRaise) {
+        raiseLevel++;
         for (let i = 0; i < players.length; i++) {
           if (i !== actorIdx && players[i].inHand && !players[i].folded && !players[i].allIn) {
             players[i].hasActed = false;

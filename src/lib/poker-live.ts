@@ -1,4 +1,4 @@
-import {postflopSupport,type HumanHitHint} from './poker-postflop-support';
+import {postflopSupport} from './poker-postflop-support';
 import {supportTightParticipation} from './poker-participation';
 import {riverCatchDecision} from './poker-river-defense';
 import {minimumRaiseTo} from "./poker-sizing";
@@ -13,7 +13,7 @@ import { stackContext } from './poker-stack';
 import { planPreflop, preflopPosition } from './poker-preflop';
 
 export const LIVE_RULES = Object.freeze({
-  version: "1.17.0",
+  version: "1.18.0",
   seats: 8, smallBlind: 100, bigBlind: 200, buyIn: 5000,
   botCashOut: 100000, userSeconds: 10, maxActions: 256,
   botThinkMin: 700, botThinkJitter: 900, actionPause: 800, resultPause: 5000,
@@ -43,11 +43,11 @@ export function postBlind<T extends LiveSeat>(seat: T, blind: number): T {
     totalBet: seat.totalBet + cost, allIn: seat.stack === cost };
 }
 
-export function normalizeLiveAction(seats: BettingSeat[], actorId: number, input: unknown, _lastRaiseSize: number): LiveAction | null {
+export function normalizeLiveAction(seats: BettingSeat[], actorId: number, input: unknown, lastRaiseSize: number, raiseAllowed=true, bringIn=0): LiveAction | null {
   const actor = seats.find(s => s.seatId === actorId);
   if (!actor || !actor.inHand || actor.folded || actor.allIn || !input || typeof input !== 'object') return null;
   const { action, amount } = input as { action?: string; amount?: number };
-  const maxBet = Math.max(0, ...seats.filter(s => s.inHand && !s.folded).map(s => s.currentBet));
+  const maxBet = Math.max(bringIn, ...seats.filter(s => s.inHand && !s.folded).map(s => s.currentBet));
   const call = Math.max(0, maxBet - actor.currentBet);
   const callAction = (): LiveAction => ({ action: call >= actor.stack ? 'allin' : call > 0 ? 'call' : 'check', amount: Math.min(call, actor.stack) });
   const maxRaise = actor.currentBet + actor.stack;
@@ -55,10 +55,10 @@ export function normalizeLiveAction(seats: BettingSeat[], actorId: number, input
     case 'fold': return { action, amount: 0 };
     case 'check': return call === 0 ? { action, amount: 0 } : null;
     case 'call': return callAction();
-    case 'allin': return hasBettingOpponent(seats, actorId) ? { action, amount: actor.stack } : callAction();
+    case 'allin': return hasBettingOpponent(seats, actorId) && raiseAllowed ? { action, amount: actor.stack } : callAction();
     case 'raise':
-      if (!hasBettingOpponent(seats, actorId) || !Number.isSafeInteger(amount) || amount! <= maxBet || amount! > maxRaise) return null;
-      if (amount !== maxRaise && amount! < minimumRaiseTo(maxBet,LIVE_RULES.bigBlind)) return null;
+      if (!raiseAllowed || !hasBettingOpponent(seats, actorId) || !Number.isSafeInteger(amount) || amount! <= maxBet || amount! > maxRaise) return null;
+      if (amount !== maxRaise && amount! < minimumRaiseTo(maxBet,LIVE_RULES.bigBlind,lastRaiseSize)) return null;
       return { action: amount === maxRaise ? 'allin' : 'raise', amount: amount === maxRaise ? actor.stack : amount! };
     default: return null;
   }
@@ -90,16 +90,16 @@ export function decideLiveBot(trainer: SelfPlayTrainer, ctx: {
   button: number; smallBlind: number; bigBlind: number; hand: number; raiseLevel: number;
   threeBetRead?: {opportunities:number;rate:number;looseness:number}; lastRaiserSeat?:number;
   checkedThisStreet?: boolean;
+  /** @deprecated Private-card referee overrides are no longer evaluated. */
   allowHumanCall?: () => boolean;
-  humanHitHint?: () => HumanHitHint;
   onAudit?: (audit: Record<string, unknown>) => void;
   limpedPreflop?:boolean; previousStreetAggressor?:number|null; openedPreflop?:boolean;
 }): LiveAction {
   const { actor, seats, board } = ctx;
   const persona = individualLivePersona(actor.persona || RPG_BOT_POOL[0], ctx.hand, actor.seatId, actor.stack + actor.totalBet);
-  const call = Math.max(0, ...seats.filter(s => s.inHand && !s.folded).map(s => s.currentBet)) - actor.currentBet;
+  const call = Math.max(board.length===0?LIVE_RULES.bigBlind:0, ...seats.filter(s => s.inHand && !s.folded).map(s => s.currentBet)) - actor.currentBet;
   const livePot = ctx.pot + seats.reduce((sum, s) => sum + s.currentBet, 0);
-  const context={preflopPosition:preflopPosition(seats.map(s=>s.seatId),actor.seatId,ctx.button,ctx.bigBlind,ctx.lastRaiserSeat??seats.find(s=>s.seatId!==actor.seatId&&s.currentBet===actor.currentBet+call)?.seatId),actorId:actor.seatId,threeBetRead:ctx.threeBetRead,lastRaiserSeat:ctx.lastRaiserSeat,isBlind:[ctx.smallBlind,ctx.bigBlind].includes(actor.seatId),stack:stackContext(seats,actor.seatId),
+  const context={boardLength:board.length,preflopPosition:preflopPosition(seats.map(s=>s.seatId),actor.seatId,ctx.button,ctx.bigBlind,ctx.lastRaiserSeat??seats.find(s=>s.seatId!==actor.seatId&&s.currentBet===actor.currentBet+call)?.seatId),actorId:actor.seatId,threeBetRead:ctx.threeBetRead,lastRaiserSeat:ctx.lastRaiserSeat,isBlind:[ctx.smallBlind,ctx.bigBlind].includes(actor.seatId),stack:stackContext(seats,actor.seatId),
     position:positionContext(seats,actor.seatId,ctx.button,ctx.checkedThisStreet),
     limpedPreflop:ctx.limpedPreflop,openedPreflop:ctx.openedPreflop,initiative:ctx.previousStreetAggressor===actor.seatId,
     seats:seats.map(({seatId,stack,currentBet,totalBet,inHand,folded,allIn})=>({seatId,stack,currentBet,totalBet,inHand,folded,allIn}))};
@@ -108,12 +108,6 @@ export function decideLiveBot(trainer: SelfPlayTrainer, ctx: {
   let decision=plan.decision;
   let decisionPath=decision ? "preflop-plan" : "trainer";
   const finish=(action:LiveAction)=>{
-    // Final fallback covers every preflop fold path, including hard entry gates.
-    // The private referee supplies a boolean only; never cards or future boards.
-    if(action.action==='fold' && board.length===0 && ctx.raiseLevel>=1 && call>0 && ctx.allowHumanCall?.()) {
-      decisionPath='human-equity-call-defense';
-      action={action:call>=actor.stack?'allin':'call',amount:Math.min(call,actor.stack)};
-    }
     const entry=supportTightParticipation(trainer,{base:actor.persona||RPG_BOT_POOL[0],hand:ctx.hand,seat:actor.seatId,
       hole:actor.holeCards,board,call,stack:actor.stack,starting:actor.stack+actor.totalBet,currentBet:actor.currentBet,
       raiseLevel:ctx.raiseLevel,minRaise:ctx.minRaise,maxRaise:ctx.maxRaise,canRaise:seats.some(s=>s.seatId!==actor.seatId&&s.inHand&&!s.folded&&!s.allIn&&s.stack>0),pot:livePot,
@@ -121,10 +115,9 @@ export function decideLiveBot(trainer: SelfPlayTrainer, ctx: {
     action=entry.action;if(entry.participation?.supported)decisionPath='tight-participation-support';
     const support=postflopSupport({hole:actor.holeCards,board,base:actor.persona||RPG_BOT_POOL[0],persona,
       call,pot:livePot,stack:actor.stack,currentBet:actor.currentBet,minRaise:ctx.minRaise,maxRaise:ctx.maxRaise,
-      canRaise:hasBettingOpponent(seats,actor.seatId),isOOP:context.position.isOOP,
+      canRaise:ctx.maxRaise>actor.currentBet+call&&hasBettingOpponent(seats,actor.seatId),isOOP:context.position.isOOP,
       initiative:ctx.previousStreetAggressor===actor.seatId,checked:!!ctx.checkedThisStreet,
-      opponents:context.seats.filter(s=>s.seatId!==actor.seatId&&s.inHand&&!s.folded).length,
-      hint:board.length>=3&&persona.vpip<=.40?ctx.humanHitHint?.():undefined},action);
+      opponents:context.seats.filter(s=>s.seatId!==actor.seatId&&s.inHand&&!s.folded).length},action);
     action=support.action;if(support.path)decisionPath=support.path;
     const riverCatch=action.action==='fold' && board.length===5
       ? riverCatchDecision({hole:actor.holeCards,board,seats:context.seats,actorId:actor.seatId,

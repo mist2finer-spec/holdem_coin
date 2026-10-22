@@ -68,7 +68,7 @@ export function estimateEquity(hole: Card[], board: Card[], opponents: number, s
   cache.set(key,result);return result;
 }
 
-export interface DecisionContext { preflopPosition?: {early:boolean;inPositionVsRaiser:boolean}; seats: BettingSeat[]; actorId: number; position?: PositionContext; stack?: ReturnType<typeof stackContext>; forbidLimp?:boolean; limpedPreflop?:boolean; initiative?:boolean; openedPreflop?:boolean; isBlind?:boolean; threeBetRead?: {opportunities:number;rate:number;looseness:number}; lastRaiserSeat?:number }
+export interface DecisionContext { boardLength?:number; preflopPosition?: {early:boolean;inPositionVsRaiser:boolean}; seats: BettingSeat[]; actorId: number; position?: PositionContext; stack?: ReturnType<typeof stackContext>; forbidLimp?:boolean; limpedPreflop?:boolean; initiative?:boolean; openedPreflop?:boolean; isBlind?:boolean; threeBetRead?: {opportunities:number;rate:number;looseness:number}; lastRaiserSeat?:number }
 export function afterRakeOdds(pot: number, cost: number, rate=RAKE_RATE) {
   return cost>0?cost/Math.max(1,(pot+cost)*(1-rate)):0;
 }
@@ -95,9 +95,12 @@ export function calledActionEV(hole: Card[], board: Card[], context: DecisionCon
   return expected-cost; // previously committed chips are sunk at this decision
 }
 
-// If everyone folds, our new bet returns to us AFTER the same house rake.
-// Previous contributions are sunk; subtract only the incremental action cost.
+// A fold win returns the uncalled bet untaxed. Only matched chips are raked,
+// and only after the flop. Previous contributions are sunk at this decision.
 export function uncontestedActionEV(context:DecisionContext,cost:number,rate=RAKE_RATE) {
-  const pot=context.seats.reduce((sum,seat)=>sum+seat.totalBet,0);
-  return pot-Math.floor((pot+cost)*rate);
+  const actor=context.seats.find(s=>s.seatId===context.actorId)!;
+  const projected=context.seats.map(s=>({...s,totalBet:s.totalBet+(s.seatId===actor.seatId?cost:0),
+    inHand:s.seatId===actor.seatId,folded:s.seatId!==actor.seatId}));
+  return rakedContributionLayers(projected,rate,(context.boardLength??0)>=3)
+    .reduce((sum,p)=>sum+p.amount-p.rake,0)-cost;
 }

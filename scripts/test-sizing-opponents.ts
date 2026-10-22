@@ -9,7 +9,7 @@ import {positionContext} from '../src/lib/poker-position.ts';
 import type {Card} from '../src/lib/poker-engine.ts';
 
 test('2x raise totals and integer-tenth multipliers do not contain rake or floating-point drift',()=>{
-  assert.equal(minimumRaiseTo(200),400);assert.equal(minimumRaiseTo(600),1200);
+  assert.equal(minimumRaiseTo(200),400);assert.equal(minimumRaiseTo(600,200,400),1000);
   assert.equal(minimumRaiseTo(0),200);
   const first=raiseSizing(100,100,4900,400,5000);
   assert.equal(first.target,400);assert.equal(first.label,'2X');
@@ -53,10 +53,11 @@ test('pot shortcuts use only the displayed pot, disabling undersized raises with
   assert.equal(potFractionSizing(0,600,500,1200,500,2000,.75).canRaise,false);
 });
 
-test('server enforces a double street total, preserving short all-in exception and chip conservation',()=>{
+test('server enforces the last full increment, preserving short all-in exception and chip conservation',()=>{
   const seats=[{seatId:0,stack:1500,currentBet:100,totalBet:100,inHand:true,folded:false,allIn:false},
     {seatId:1,stack:4400,currentBet:600,totalBet:600,inHand:true,folded:false,allIn:false}];
-  assert.equal(normalizeLiveAction(seats,0,{action:'raise',amount:1000},400),null);
+  assert.equal(normalizeLiveAction(seats,0,{action:'raise',amount:999},400),null);
+  assert.deepEqual(normalizeLiveAction(seats,0,{action:'raise',amount:1000},400),{action:'raise',amount:1000});
   assert.deepEqual(normalizeLiveAction(seats,0,{action:'raise',amount:1200},400),{action:'raise',amount:1200});
   seats[0].stack=900;
   assert.deepEqual(normalizeLiveAction(seats,0,{action:'raise',amount:1000},400),{action:'allin',amount:900});

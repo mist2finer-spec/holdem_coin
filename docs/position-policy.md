@@ -1,3 +1,5 @@
+> Current rules: [1.18 standard NLHE patch](poker/STANDARD_RULES_1_18.md). Earlier house-rake, double-total minimum, and private human-card referee sections below are historical and superseded.
+
 # Live bot position policy (rules 1.11.0)
 
 Single-player and multiplayer both call `decideLiveBot`. Position is computed

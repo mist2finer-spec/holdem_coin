@@ -12,6 +12,7 @@ export interface HandAction {
   source: 'cpu' | 'human' | 'pre-action' | 'timeout' | 'disconnect';
   action: string; amount: number; paid: number; callBefore: number;
   potBefore: number; potAfter: number; stackBefore: number; stackAfter: number;
+  minRaiseBefore?:number; lastFullRaiseBefore?:number; canRaiseBefore?:boolean;
   betBefore: number; betAfter: number; raiseLevelBefore: number;
   activePlayers: number; allInPlayers: number; activePlayersBefore: number; allInPlayersBefore: number; decisionMs: number;
   privateAudit?: Record<string, unknown>;

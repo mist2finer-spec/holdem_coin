@@ -1,7 +1,6 @@
-// Table house rule: every full raise is at least twice the current highest
-// street total. A shorter all-in is legal, but cannot exceed the player's stack.
-export function minimumRaiseTo(highest:number,bigBlind=200) {
-  return highest>0 ? highest*2 : bigBlind;
+// Standard no-limit minimum: current total plus the last full increase.
+export function minimumRaiseTo(highest:number,bigBlind=200,lastFullRaise=bigBlind) {
+  return highest>0 ? highest+Math.max(bigBlind,lastFullRaise) : bigBlind;
 }
 export function clampRaiseTo(min:number,max:number,target:number) {
   return Math.min(max,Math.max(min,Math.floor(target)));
@@ -18,7 +17,7 @@ export function raiseSizing(currentBet:number,call:number,stack:number,minRaise:
 }
 
 // Fractions refer strictly to the displayed pot and produce STREET TOTALS.
-// Never silently turn a fraction below the house minimum into a larger raise.
+// Never silently turn a fraction below the legal minimum into a larger raise.
 export function potFractionSizing(currentBet:number,call:number,stack:number,minRaise:number,maxRaise:number,pot:number,fraction:number) {
   const highest=currentBet+call,cap=Math.min(maxRaise,currentBet+stack);
   const requested=Math.floor(pot*fraction),target=Math.min(cap,requested);

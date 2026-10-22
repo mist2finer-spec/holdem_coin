@@ -1,12 +1,11 @@
+import {StreetBetting,recordedAction} from '../../src/lib/poker-betting';
 import {lobbyLedger} from './lobby-ledger';
-import {humanHitHint} from '../../src/lib/poker-postflop-support';
 import {OpponentModel} from "../../src/lib/poker-opponent-model.ts";
 import {minimumRaiseTo} from "../../src/lib/poker-sizing.ts";
 import {HandHistoryStore,authorizedHistory} from './hand-history-store.ts';
 import {publicHandHistory,type HandHistory,type HandAction} from '../../src/lib/poker-hand-history.ts';
 import path from 'node:path';
 import { LIVE_RULES, handPositions, postBlind, normalizeLiveAction, applyLiveAction, mapLiveDecision, decideLiveBot } from "../../src/lib/poker-live.ts";
-import {allowHumanDefense} from '../../src/lib/poker-human-defense.ts';
 import { BluffAggression, successfulBluff, bluffTaunt } from "../../src/lib/poker-bluff.ts";
 import { settleHand, bettingLocked, hasBettingOpponent, dealNextStreet, WinnerInfo } from "../../src/lib/poker-rules.ts";
 // ============================================================
@@ -573,10 +572,13 @@ export class HybridHoldemRoom {
     }
   }
 
+  private bettingRound?: StreetBetting;
+
   private async runBettingRound(btnSeat: number, startOffset: number, deck: Card[]) {
     const st = this.state;
     st.raiseLevel = 0;
     st.lastRaiseSize = BIG_BLIND;
+    const betting=this.bettingRound=new StreetBetting(BIG_BLIND);
     st.seats = st.seats.map(s => ({ ...s, hasActed: false }));
     st.lastActions = {};
     this.broadcastTableState();
@@ -604,7 +606,7 @@ export class HybridHoldemRoom {
       if (notAllIn.length === 0) break;
 
       // ★ 생존자 중 올인이 아닌 사람이 1명이고 그 사람이 이미 콜한 상태면 종료
-      const maxBet = Math.max(...alive.map(s => s.currentBet));
+      const maxBet = Math.max(st.board.length===0?BIG_BLIND:0,...alive.map(s => s.currentBet));
       const needsAction = notAllIn.filter(s => !s.hasActed || s.currentBet < maxBet);
       if (needsAction.length === 0) break;
 
@@ -629,9 +631,11 @@ export class HybridHoldemRoom {
       st.activeSeatId = actorIdx;
       const callAmt = Math.max(0, maxBet - actor.currentBet);
       st.callAmount = callAmt;
-      // Shared table house rule: full raises double the highest street total.
-      const minR = minimumRaiseTo(maxBet,BIG_BLIND);
-      const maxR = hasBettingOpponent(st.seats, actor.seatId) ? actor.stack + actor.currentBet : maxBet;
+      // Standard increment and independent short-all-in reopening rights.
+      const minR = minimumRaiseTo(maxBet,BIG_BLIND,betting.lastFullRaise);
+      const raiseAllowed=betting.canRaise(actor.seatId,maxBet);
+      const lastFullRaiseBefore=betting.lastFullRaise;
+      const maxR = raiseAllowed&&hasBettingOpponent(st.seats, actor.seatId) ? actor.stack + actor.currentBet : maxBet;
       st.minRaise = minR;
       st.maxRaise = maxR;
 
@@ -674,20 +678,14 @@ export class HybridHoldemRoom {
       decision = normalized ?? { action: callAmt === 0 ? "check" : "fold", amount: 0 };
       const raisesBet = decision.action === "raise" ||
         (decision.action === "allin" && actor.currentBet + actor.stack > maxBet);
-      // An all-in call is not a raise.
+      // A short all-in can require calls without reopening a previous raiser.
+      const newTotal=raisesBet?(decision.action==='allin'?actor.currentBet+actor.stack:decision.amount):maxBet;
+      const fullRaise=betting.record(actor.seatId,maxBet,newTotal);
+      st.lastRaiseSize=betting.lastFullRaise;
       if (raisesBet) {
-        for (const seat of st.seats) {
-          if (seat.seatId !== actorIdx && seat.inHand && !seat.folded && !seat.allIn) seat.hasActed = false;
-        }
-        st.raiseLevel += 1;
-        // ★ lastRaiseSize 업데이트 (표준 NLHE min-raise)
-        const oldMaxBet = maxBet;
-        const newBetTotal = decision.action === "allin"
-          ? actor.currentBet + actor.stack
-          : decision.amount;
-        const raiseSize = newBetTotal - oldMaxBet;
-        if (raiseSize > st.lastRaiseSize) {
-          st.lastRaiseSize = raiseSize;
+        if(fullRaise){
+          for(const seat of st.seats)if(seat.seatId!==actor.seatId&&seat.inHand&&!seat.folded&&!seat.allIn)seat.hasActed=false;
+          st.raiseLevel++;
         }
         for (const u of this.users.values()) {
           if (u.preAction && (u.preAction.type === "call" || u.preAction.type === "check")) {
@@ -703,7 +701,8 @@ export class HybridHoldemRoom {
       const after=st.seats[actorIdx];
       this.currentHistory?.actions.push({sequence:this.currentHistory.actions.length+1,at:new Date().toISOString(),
         street:st.phase,board:st.board.map(c=>c.rank+c.suit),seatId:before.seatId,name:before.name,isBot:before.isBot,
-        source:this.actionSource,action:decision.action,amount:decision.amount,paid:before.stack-after.stack,
+        source:this.actionSource,action:recordedAction(decision.action,maxBet,st.board.length),
+        minRaiseBefore:minR,lastFullRaiseBefore,canRaiseBefore:raiseAllowed,amount:decision.amount,paid:before.stack-after.stack,
         callBefore:callAmt,potBefore,potAfter:st.pot+st.seats.reduce((sum,s)=>sum+s.currentBet,0),
         stackBefore:before.stack,stackAfter:after.stack,betBefore:before.currentBet,betAfter:after.currentBet,
         raiseLevelBefore,activePlayersBefore,allInPlayersBefore,activePlayers:st.seats.filter(s=>s.inHand&&!s.folded).length,
@@ -717,7 +716,7 @@ export class HybridHoldemRoom {
         currentStreetAggressor = actor.seatId;
         if(st.board.length===0&&st.raiseLevel===1)openedPreflop.add(actor.seatId);
       }
-      const actionLabel = this.labelAction(decision.action, decision.amount, callAmt);
+      const actionLabel = this.labelAction(recordedAction(decision.action,maxBet,st.board.length), decision.amount, callAmt);
       st.lastActions = { ...st.lastActions, [actorIdx]: actionLabel };
       this.broadcast("PLAYER_ACTION", {
         seatId: actorIdx,
@@ -776,9 +775,6 @@ export class HybridHoldemRoom {
         smallBlind: this.state.smallBlindSeat, bigBlind: this.state.bigBlindSeat,
         hand: this.state.handNumber, raiseLevel: this.state.raiseLevel,
         checkedThisStreet,
-        humanHitHint:()=>humanHitHint(this.state.seats,this.state.board,this.state.lastAggression?.seatId),
-        allowHumanCall:()=>allowHumanDefense({seats:this.state.seats,actorId:actor.seatId,
-          humanId:this.state.lastAggression?.seatId,board:this.state.board,raiseLevel:this.state.raiseLevel}),
         lastRaiserSeat:this.state.lastAggression?.seatId,
         threeBetRead:this.state.lastAggression ? this.opponentModel.read(this.opponentKey(this.state.lastAggression.seatId)) : undefined,
         onAudit:audit=>{this.pendingAudit=audit;},
@@ -825,7 +821,9 @@ export class HybridHoldemRoom {
   }
 
   private mapUserAction(act: unknown): { action: ActionType; amount: number } | null {
-    return normalizeLiveAction(this.state.seats, this.state.activeSeatId, act, this.state.lastRaiseSize);
+    const highest=Math.max(this.state.board.length===0?BIG_BLIND:0,...this.state.seats.filter(s=>s.inHand&&!s.folded).map(s=>s.currentBet));
+    return normalizeLiveAction(this.state.seats, this.state.activeSeatId, act, this.state.lastRaiseSize,
+      this.bettingRound?.canRaise(this.state.activeSeatId,highest)??true,this.state.board.length===0?BIG_BLIND:0);
   }
 
   private mapNNAction(nn: {action: number; amount: number; isBluff?: boolean}, callAmt: number, myStack: number) {
@@ -836,11 +834,12 @@ export class HybridHoldemRoom {
     this.state.seats[seatId] = applyLiveAction(this.state.seats[seatId], decision);
   }
 
-  private labelAction(action: ActionType, amount: number, callAmt: number): string {
+  private labelAction(action: ActionType | "bet", amount: number, callAmt: number): string {
     switch (action) {
       case "fold": return "FOLD";
       case "check": return "CHECK";
       case "call": return `CALL ${amount.toLocaleString()}`;
+      case "bet": return `BET ${amount.toLocaleString()}`;
       case "raise": return `RAISE ${amount.toLocaleString()}`;
       case "allin": return `ALL-IN ${amount.toLocaleString()}`;
     }

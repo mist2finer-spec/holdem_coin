@@ -35,16 +35,16 @@ export function contributionLayers(seats: Pick<BettingSeat,'seatId'|'totalBet'|'
   return pots;
 }
 
-// House rule: tax ALL committed chips, including unmatched excess. Carry
-// rounding between layers so the hand total is exactly floor(totalBet * rate).
-// This is shared by settlement and expected-value projections.
-export function rakedContributionLayers(seats: Parameters<typeof contributionLayers>[0], rate=RAKE_RATE) {
+// Only contested contributions are raked. Uncalled chips return in full.
+// Carry rounding across side pots so total rake is floor(contested * rate).
+export function rakedContributionLayers(seats: Parameters<typeof contributionLayers>[0], rate=RAKE_RATE, flopSeen=true) {
   if(!Number.isFinite(rate)||rate<0||rate>1)throw new Error('Invalid rake');
-  let gross=0,charged=0;
+  let contested=0,charged=0;
   return contributionLayers(seats).map(layer=>{
-    gross+=layer.amount;
-    if(!Number.isSafeInteger(gross))throw new Error('Invalid total contribution');
-    const cumulative=Math.floor(gross*rate),rake=cumulative-charged;
+    if(layer.refundSeatId!==undefined||!flopSeen)return {...layer,rake:0};
+    contested+=layer.amount;
+    if(!Number.isSafeInteger(contested))throw new Error('Invalid total contribution');
+    const cumulative=Math.floor(contested*rate),rake=cumulative-charged;
     charged=cumulative;
     return {...layer,rake};
   });
@@ -54,7 +54,7 @@ export function settleHand(seats: SettlementSeat[], board: Card[], buttonSeat: n
   const results: HandResult[]=seats.map(s=>({seatId:s.seatId,name:s.name,contribution:s.totalBet,payout:0,award:0,refund:0,netProfit:0}));
   const byId=new Map(results.map(r=>[r.seatId,r]));
   let totalRake=0;
-  const pots=rakedContributionLayers(seats,rakeRate).map(pot=>{
+  const pots=rakedContributionLayers(seats,rakeRate,board.length>=3).map(pot=>{
     const rake=pot.rake;
     totalRake+=rake;
     if(pot.refundSeatId!==undefined) {
@@ -64,7 +64,8 @@ export function settleHand(seats: SettlementSeat[], board: Card[], buttonSeat: n
     const eligible=pot.eligibleSeatIds.map(id=>seats.find(s=>s.seatId===id)!);
     const winners=eligible.length===1?[eligible[0]]:determineWinners(eligible.map(s=>({holeCards:s.holeCards})),board).map(i=>eligible[i]);
     // Odd chips clockwise from the first seat after the button.
-    winners.sort((a,b)=>((a.seatId-buttonSeat-1+seats.length)%seats.length)-((b.seatId-buttonSeat-1+seats.length)%seats.length));
+    const ringSize=Math.max(seats.length,...seats.map(s=>s.seatId+1));
+    winners.sort((a,b)=>((a.seatId-buttonSeat-1+ringSize)%ringSize)-((b.seatId-buttonSeat-1+ringSize)%ringSize));
     const net=pot.amount-rake,share=Math.floor(net/winners.length),odd=net-share*winners.length;
     winners.forEach((s,i)=>byId.get(s.seatId)!.award+=share+(i<odd?1:0));
     return {...pot,rake,winnerSeatIds:winners.map(s=>s.seatId)};

@@ -17,11 +17,11 @@ test('5% rake and net profit: equal 20k all-ins pay 38k and display +18k',()=>{
  const result=settleHand(seats([20000,20000]),board,0);
  assert.equal(result.totalRake,2000);assert.equal(result.results[0].payout,38000);assert.equal(result.results[0].netProfit,18000);
 });
-test('uncalled excess is taxed but stays with its contributor, never the main-pot winner',()=>{
+test('uncalled excess returns in full and never belongs to the main-pot winner',()=>{
  const result=settleHand(seats([5000,20000]),board,0);
- assert.equal(result.totalRake,1250);assert.equal(result.results[0].award,9500);
- assert.equal(result.results[1].refund,14250);assert.equal(result.results[1].award,0);
- assert.equal(result.results[1].netProfit,-5750);
+ assert.equal(result.totalRake,500);assert.equal(result.results[0].award,9500);
+ assert.equal(result.results[1].refund,15000);assert.equal(result.results[1].award,0);
+ assert.equal(result.results[1].netProfit,-5000);
 });
 test('main and side pot are independently raked; short stack cannot win side pot',()=>{
  const result=settleHand(seats([5000,10000,10000]),board,0);
@@ -37,9 +37,9 @@ test('split pot may have negative profit after rake; odd chips clockwise from bu
  const odd=settleHand(seats([101,100]),royal,0);assert.equal(odd.results[0].refund,1);
  assert.equal(odd.results.reduce((a,p)=>a+p.payout,0),191);
 });
-test('preflop fold pot is raked once and does not mutate input',()=>{
+test('preflop fold pot has no rake and does not mutate input',()=>{
  const s=seats([1000,200]);s[1].folded=true;s[1].inHand=false;const before=JSON.stringify(s);
- const a=settleHand(s,[],0),b=settleHand(s,[],0);assert.equal(a.totalRake,60);assert.deepEqual(a,b);assert.equal(JSON.stringify(s),before);
+ const a=settleHand(s,[],0),b=settleHand(s,[],0);assert.equal(a.totalRake,0);assert.deepEqual(a,b);assert.equal(JSON.stringify(s),before);
 });
 test('matched covering player locks action, unmatched player must still call/fold',()=>{
  const s=seats([5000,5000]);s[0].allIn=true;s[0].stack=0;
@@ -101,7 +101,8 @@ test('randomized settlement conserves chips minus only rake',()=>{
   const result=settleHand(s,board,0);
   assert.equal(result.results.reduce((a,r)=>a+r.payout,0)+result.totalRake,s.reduce((a,p)=>a+p.totalBet,0));
   assert.equal(result.results.reduce((a,r)=>a+r.netProfit,0),-result.totalRake);
-  assert.equal(result.totalRake,Math.floor(s.reduce((sum,p)=>sum+p.totalBet,0)*.05));
+  const sorted=s.map(p=>p.totalBet).sort((a,b)=>b-a);
+  assert.equal(result.totalRake,Math.floor((s.reduce((sum,p)=>sum+p.totalBet,0)-(sorted[0]-sorted[1]))*.05));
  }
 });
 
@@ -121,11 +122,11 @@ test('real server waits for one covering call, then skips all later betting',asy
  await room.advancePhase(makeDeck());assert.equal(actions,1);
 });
 
-test('folded-to all-in taxes the entire committed total, not just the matched pot',()=>{
+test('preflop fold-win all-in returns excess with no rake',()=>{
  const s=seats([20000,200]);s[1].folded=true;s[1].inHand=false;
  const r=settleHand(s,[],0);
- assert.equal(r.totalRake,1010);assert.equal(r.results[0].payout,19190);
- assert.equal(r.results[0].netProfit,-810);assert.equal(r.results[1].payout,0);
+ assert.equal(r.totalRake,0);assert.equal(r.results[0].payout,20200);
+ assert.equal(r.results[0].netProfit,200);assert.equal(r.results[1].payout,0);
 });
 
 test('called EV matches real settlement when the covering player has unmatched chips',()=>{
@@ -135,23 +136,23 @@ test('called EV matches real settlement when the covering player has unmatched c
  const ev=calledActionEV(s[1].holeCards,royal,{seats:s,actorId:1},19800);
  const projected=s.map((p,i)=>i===1?{...p,totalBet:20000,currentBet:20000}:p);
  const payout=settleHand(projected,royal,0).results[1].payout;
- assert.equal(ev,payout-19800);assert.equal(ev,-800);
+ assert.equal(ev,payout-19800);assert.equal(ev,-50);
 });
 
-test('fold-win EV penalizes oversized bets even if everyone folds',()=>{
+test('fold-win EV excludes uncalled chips from rake and honors no flop no drop',()=>{
  const s=seats([200,200]);
  const context={seats:s,actorId:0};
- assert.equal(uncontestedActionEV(context,400),360);
- assert.equal(uncontestedActionEV(context,19800),-610);
+ assert.equal(uncontestedActionEV(context,400),400);
+ assert.equal(uncontestedActionEV(context,19800),400);
 });
 
-test('real server fold settlement pays gross contributions less full house rake',async()=>{
+test('real server preflop fold settlement returns uncalled chips without rake',async()=>{
  const room:any=new HybridHoldemRoom(false);room.sleep=async()=>{};
  const s=seats([20000,200]);s[1].folded=true;s[1].inHand=false;
  room.state.seats=s;room.state.board=[];room.state.buttonSeat=0;
  let observed:any;room.broadcastTableState=()=>{if(room.state.winnerInfo)observed=structuredClone(room.state.winnerInfo);};
  await room.finishHand(false);
- assert.equal(observed.rake,1010);
- assert.equal(observed.results[0].payout,19190);
- assert.equal(room.state.seats[0].stack,19190);
+ assert.equal(observed.rake,0);
+ assert.equal(observed.results[0].payout,20200);
+ assert.equal(room.state.seats[0].stack,20200);
 });
