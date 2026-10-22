@@ -702,7 +702,7 @@ export class HybridHoldemRoom {
       this.currentHistory?.actions.push({sequence:this.currentHistory.actions.length+1,at:new Date().toISOString(),
         street:st.phase,board:st.board.map(c=>c.rank+c.suit),seatId:before.seatId,name:before.name,isBot:before.isBot,
         source:this.actionSource,action:recordedAction(decision.action,maxBet,st.board.length),
-        minRaiseBefore:minR,lastFullRaiseBefore,canRaiseBefore:raiseAllowed,amount:decision.amount,paid:before.stack-after.stack,
+        minRaiseBefore:minR,lastFullRaiseBefore,canRaiseBefore:maxR>maxBet,amount:decision.amount,paid:before.stack-after.stack,
         callBefore:callAmt,potBefore,potAfter:st.pot+st.seats.reduce((sum,s)=>sum+s.currentBet,0),
         stackBefore:before.stack,stackAfter:after.stack,betBefore:before.currentBet,betAfter:after.currentBet,
         raiseLevelBefore,activePlayersBefore,allInPlayersBefore,activePlayers:st.seats.filter(s=>s.inHand&&!s.folded).length,

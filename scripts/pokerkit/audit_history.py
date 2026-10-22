@@ -50,6 +50,7 @@ def audit(hand):
             if min(a['callBefore'],a['stackBefore'])!=pk_call:issue('call',pk_call,min(a['callBefore'],a['stackBefore']),seq)
             audit_data=a.get('privateAudit') or {}
             recorded_min=a.get('minRaiseBefore',audit_data.get('minRaise'))
+            if 'canRaiseBefore' in a and a['canRaiseBefore']!=state.can_complete_bet_or_raise_to():issue('canRaiseBefore',state.can_complete_bet_or_raise_to(),a['canRaiseBefore'],seq)
             pk_min=state.min_completion_betting_or_raising_to_amount
             if pk_min is not None and recorded_min is not None:
                 # Public minimum is uncapped; a shorter all-in is the sole exception.
