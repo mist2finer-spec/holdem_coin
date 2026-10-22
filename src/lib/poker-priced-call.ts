@@ -1,6 +1,6 @@
 import {evaluateBestHand,type Card} from './poker-engine';
 import {estimateEquity} from './poker-ai';
-import {rakedContributionLayers,RAKE_RATE,type BettingSeat} from './poker-rules';
+import {rakedContributionLayers,BOT_EV_RAKE_RATE,type BettingSeat} from './poker-rules';
 
 const cache=new Map<string,number>();
 const cardKey=(c:Card)=>c.rank+c.suit;
@@ -80,7 +80,7 @@ export function pricedCallGuard(c:{hole:Card[];board:Card[];seats:BettingSeat[];
     &&opponents.every(s=>s.allIn||s.currentBet>=highest);
   if(!locked&&!blindPair)return null;
   const projected=c.seats.map(s=>({...s,totalBet:s.totalBet+(s.seatId===actor.seatId?cost:0)}));
-  const layers=rakedContributionLayers(projected,RAKE_RATE,true)
+  const layers=rakedContributionLayers(projected,BOT_EV_RAKE_RATE,true)
     .filter(p=>p.refundSeatId===undefined&&p.eligibleSeatIds.includes(actor.seatId));
   const netPot=layers.reduce((n,p)=>n+p.amount-p.rake,0);
   if(netPot<=0)return null;

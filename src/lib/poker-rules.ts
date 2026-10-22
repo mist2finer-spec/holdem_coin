@@ -1,8 +1,11 @@
 import { Card, determineWinners } from './poker-engine';
 
 export const RAKE_RATE = 0.05;
+export const BOT_EV_RAKE_RATE = 0;
+export const RAKE_TRIGGER_BB = 4.5;
 export interface BettingSeat {
   seatId: number; stack: number; currentBet: number; totalBet: number;
+  peakStreetBet?: number;
   inHand: boolean; folded: boolean; allIn: boolean;
 }
 export interface SettlementSeat extends BettingSeat { name: string; holeCards: Card[] }
@@ -54,7 +57,9 @@ export function settleHand(seats: SettlementSeat[], board: Card[], buttonSeat: n
   const results: HandResult[]=seats.map(s=>({seatId:s.seatId,name:s.name,contribution:s.totalBet,payout:0,award:0,refund:0,netProfit:0}));
   const byId=new Map(results.map(r=>[r.seatId,r]));
   let totalRake=0;
-  const pots=rakedContributionLayers(seats,rakeRate,board.length>=3).map(pot=>{
+  // Trigger persists across streets, including a preflop fold win. Never tax refunds.
+  const activated=seats.some(s=>Math.max(s.peakStreetBet||0,s.currentBet)>=200*RAKE_TRIGGER_BB);
+  const pots=rakedContributionLayers(seats,rakeRate,activated).map(pot=>{
     const rake=pot.rake;
     totalRake+=rake;
     if(pot.refundSeatId!==undefined) {

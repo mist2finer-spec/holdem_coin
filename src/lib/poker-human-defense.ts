@@ -15,7 +15,7 @@ export function humanDefenseEstimate(seats:Seat[],actorId:number,humanId:number)
  const publicSeats=seats.map(({seatId,stack,currentBet,totalBet,inHand,folded,allIn})=>({seatId,stack,currentBet,totalBet,inHand,folded,allIn}));
  const opponents=publicSeats.filter(s=>s.seatId!==actorId&&s.inHand&&!s.folded).length;
  return {equity:estimateEquity(actor.holeCards,[],opponents,384,'three-bet'),
-  callEV:calledActionEV(actor.holeCards,[],{seats:publicSeats,actorId},cost,.05,'three-bet',384)};
+  callEV:calledActionEV(actor.holeCards,[],{seats:publicSeats,actorId},cost,0,'three-bet',384)};
 }
 export function allowHumanDefense(options:{seats:Seat[];actorId:number;humanId?:number;board:Card[];raiseLevel:number}){
  if(options.board.length||options.raiseLevel<1||options.humanId===undefined)return false;

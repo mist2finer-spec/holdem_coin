@@ -17,7 +17,7 @@ import {
   evaluateBestHand,
   scoreToCategoryName,
 } from "@/lib/poker-engine";
-import { RPG_BOT_POOL, BotPersona, getStrategyForHand, applyStrategyToPersona, STRATEGY_PROFILES, StrategyType, getExitMessage } from "@/lib/personas";
+import { assignBotStrategy, RPG_BOT_POOL, BotPersona, getStrategyForHand, applyStrategyToPersona, STRATEGY_PROFILES, StrategyType, getExitMessage } from "@/lib/personas";
 import { SelfPlayTrainer, TrainingStats } from "@/lib/self-play-trainer";
 
 const NUM_SEATS = LIVE_RULES.seats;
@@ -260,7 +260,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
         onToast?.(exitMsg, "info");
         usedNames.delete(name);
         const avail = RPG_BOT_POOL.filter(p => !usedNames.has(p.name));
-        const newP = avail.length > 0 ? avail[Math.floor(Math.random() * avail.length)] : RPG_BOT_POOL[Math.floor(Math.random() * RPG_BOT_POOL.length)];
+        const newP = assignBotStrategy(avail.length > 0 ? avail[Math.floor(Math.random() * avail.length)] : RPG_BOT_POOL[Math.floor(Math.random() * RPG_BOT_POOL.length)]);
         persona = newP;
         name = newP.name;
         usedNames.add(name);
@@ -272,7 +272,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
         pushLog(exitMsg, "system");
         usedNames.delete(name);
         const avail = RPG_BOT_POOL.filter(p => !usedNames.has(p.name));
-        const newP = avail.length > 0 ? avail[Math.floor(Math.random() * avail.length)] : RPG_BOT_POOL[Math.floor(Math.random() * RPG_BOT_POOL.length)];
+        const newP = assignBotStrategy(avail.length > 0 ? avail[Math.floor(Math.random() * avail.length)] : RPG_BOT_POOL[Math.floor(Math.random() * RPG_BOT_POOL.length)]);
         persona = newP;
         name = newP.name;
         usedNames.add(name);
@@ -289,7 +289,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
         name,
         stack: newStack,
         currentBet: 0,
-        totalBet: 0,
+        totalBet: 0, peakStreetBet: 0,
         inHand: newStack >= BIG_BLIND,
         folded: false,
         allIn: false,
@@ -474,7 +474,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     const remaining = st.seats.filter(seat => seat.inHand && !seat.folded);
     const highBet = Math.max(0, ...remaining.map(seat => seat.currentBet));
     if (remaining.length > 1 && !bettingLocked(st.seats) && remaining.some(seat => !seat.allIn && (!seat.hasActed || seat.currentBet < highBet))) {
-      st.seats = st.seats.map(seat => ({ ...seat, stack: seat.stack + seat.totalBet, totalBet: 0, currentBet: 0 }));
+      st.seats = st.seats.map(seat => ({ ...seat, stack: seat.stack + seat.totalBet, totalBet: 0, peakStreetBet: 0, currentBet: 0 }));
       st.pot = 0; st.handAborted = true; st.activeSeatId = -1;
       st.lastAggression = null; st.lastStreetAggressor = null; st.bluffReveal = null;
       pushLog("핸드 오류로 베팅을 반환하고 새 핸드를 시작합니다.", "system");
@@ -764,7 +764,7 @@ function getGlobalTrainer(): SelfPlayTrainer {
 // 헬퍼 (모듈 레벨)
 // =====================
 function initSeats(userName: string): SeatState[] {
-  const personas: BotPersona[] = [...RPG_BOT_POOL].sort(() => Math.random() - 0.5).slice(0, 7);
+  const personas: BotPersona[] = [...RPG_BOT_POOL].sort(() => Math.random() - 0.5).slice(0, 7).map(p=>assignBotStrategy(p));
   const arr: SeatState[] = [];
   const userSeatId = 0; // 하단 중앙 (유저)
   for (let i = 0; i < NUM_SEATS; i++) {
@@ -776,7 +776,7 @@ function initSeats(userName: string): SeatState[] {
         isUser: true,
         stack: typeof window==='undefined'?DEFAULT_BUYIN:soloBalance(),
         currentBet: 0,
-        totalBet: 0,
+        totalBet: 0, peakStreetBet: 0,
         inHand: true,
         folded: false,
         allIn: false,
@@ -794,7 +794,7 @@ function initSeats(userName: string): SeatState[] {
         persona: p,
         stack: DEFAULT_BUYIN,
         currentBet: 0,
-        totalBet: 0,
+        totalBet: 0, peakStreetBet: 0,
         inHand: true,
         folded: false,
         allIn: false,

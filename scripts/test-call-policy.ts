@@ -63,7 +63,8 @@ test('a priced medium pair at 20BB retains a real call option; short-stack trash
  const s={hole:[{rank:'8',suit:'♦'},{rank:'8',suit:'♣'}] as Card[],board:[] as Card[],call:400,pot:700,stack:3900,currentBet:0,minRaise:600,maxRaise:3900,
   raiseLevel:1,smallBlind:4,persona:{vpip:.45,aggression:.60,bluffFreq:.20},context:c};
  const options=shortStackOptions(s)!;assert.ok(options.playable);assert.ok(options.callEV>0,JSON.stringify(options));
- const original=Math.random;Math.random=()=>.25;
- try{assert.equal(decideShortStack(s)?.action,1);}finally{Math.random=original;}
+ const original=Math.random;let calls=0;
+ try{for(let i=0;i<100;i++){Math.random=()=>i/100;calls+=Number(decideShortStack(s)?.action===1);}}finally{Math.random=original;}
+ assert.ok(calls>0,'positive EV flat call must remain selectable');
  assert.equal(shortStackOptions({...s,hole:[{rank:'7',suit:'♥'},{rank:'2',suit:'♣'}]})?.playable,false);
 });

@@ -27,13 +27,13 @@ test('preflop minimum bring-in stays BB when a multiway blind is short',()=>{
  const s=seats();s[0].currentBet=100;s[1].currentBet=100;s[1].allIn=true;
  assert.deepEqual(normalizeLiveAction(s,2,{action:'call'},200,true,200),{action:'call',amount:200});
 });
-test('no flop no drop; flop fold win only taxes matched 400, with exact rounding and full refund',()=>{
- const s=seats().slice(0,2);s[0].totalBet=20000;s[1].totalBet=200;s[1].folded=true;s[1].inHand=false;
- const pre=settleHand(s,[],0);assert.equal(pre.totalRake,0);assert.equal(pre.results[0].refund,19800);assert.equal(pre.results[0].payout,20200);
+test('4.5BB trigger persists regardless of flop; matched chips only with exact rounding',()=>{
+ const s=seats().slice(0,2);s[0].totalBet=20000;Object.assign(s[0],{peakStreetBet:20000});s[1].totalBet=200;s[1].folded=true;s[1].inHand=false;
+ const pre=settleHand(s,[],0);assert.equal(pre.totalRake,20);assert.equal(pre.results[0].refund,19800);assert.equal(pre.results[0].payout,20180);
  const flop=[{rank:'2',suit:'♣'},{rank:'7',suit:'♦'},{rank:'J',suit:'♥'}] as Card[];
  const post=settleHand(s,flop,0);assert.equal(post.totalRake,20);assert.equal(post.results[0].refund,19800);assert.equal(post.results[0].payout,20180);
  assert.equal(post.results.reduce((n,r)=>n+r.payout,0)+post.totalRake,20200);
- assert.equal(uncontestedActionEV({seats:s,actorId:0,boardLength:3},1000),20180);
+ assert.equal(uncontestedActionEV({seats:s,actorId:0,boardLength:3},1000),20200);
  const rounded=seats();rounded.forEach((s,i)=>s.totalBet=[1,2,100][i]);const layers=rakedContributionLayers(rounded,.05);
  assert.equal(layers.filter(p=>p.refundSeatId!==undefined).reduce((n,p)=>n+p.rake,0),0);
  assert.equal(layers.reduce((n,p)=>n+p.rake,0),0);

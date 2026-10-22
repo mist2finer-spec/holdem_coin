@@ -21,7 +21,7 @@ import { settleHand, bettingLocked, hasBettingOpponent, dealNextStreet, WinnerIn
 import { createServer } from "http";
 import { Server, Socket } from "socket.io";
 import { SelfPlayTrainer } from "../../src/lib/self-play-trainer.ts";
-import { RPG_BOT_POOL, BotPersona, getStrategyForHand, applyStrategyToPersona, getExitMessage } from "../../src/lib/personas.ts";
+import { assignBotStrategy, RPG_BOT_POOL, BotPersona, getStrategyForHand, applyStrategyToPersona, getExitMessage } from "../../src/lib/personas.ts";
 import {
   makeDeck,
   Card,
@@ -54,6 +54,7 @@ interface ServerSeat {
   stack: number;
   currentBet: number;
   totalBet: number;
+  peakStreetBet?: number;
   inHand: boolean;
   folded: boolean;
   allIn: boolean;
@@ -171,7 +172,7 @@ export class HybridHoldemRoom {
   get userCount() { return this.users.size; }
 
   private createInitialState(): ServerGameState {
-    const personas: BotPersona[] = [...RPG_BOT_POOL].sort(() => Math.random() - 0.5).slice(0, this.seatCount);
+    const personas: BotPersona[] = [...RPG_BOT_POOL].sort(() => Math.random() - 0.5).slice(0, this.seatCount).map(p=>assignBotStrategy(p));
     const seats: ServerSeat[] = [];
     for (let i = 0; i < this.seatCount; i++) {
       seats.push({
@@ -181,7 +182,7 @@ export class HybridHoldemRoom {
         socketId: null,
         stack: DEFAULT_BUYIN,
         currentBet: 0,
-        totalBet: 0,
+        totalBet: 0, peakStreetBet: 0,
         inHand: true,
         folded: false,
         allIn: false,
@@ -390,9 +391,9 @@ export class HybridHoldemRoom {
 
       const usedNames = new Set(this.state.seats.filter(s => s.seatId !== seat.seatId).map(s => s.name));
       const avail = RPG_BOT_POOL.filter(p => !usedNames.has(p.name));
-      const newP = avail.length > 0
+      const newP = assignBotStrategy(avail.length > 0
         ? avail[Math.floor(Math.random() * avail.length)]
-        : RPG_BOT_POOL[Math.floor(Math.random() * RPG_BOT_POOL.length)];
+        : RPG_BOT_POOL[Math.floor(Math.random() * RPG_BOT_POOL.length)]);
       seat.name = newP.name;
       seat.persona = newP;
       seat.stack = DEFAULT_BUYIN;
@@ -406,9 +407,9 @@ export class HybridHoldemRoom {
       const seat = this.state.seats[seatId];
       const usedNames = new Set(this.state.seats.filter(s => s.seatId !== seatId).map(s => s.name));
       const avail = RPG_BOT_POOL.filter(p => !usedNames.has(p.name));
-      const persona = avail.length > 0
+      const persona = assignBotStrategy(avail.length > 0
         ? avail[Math.floor(Math.random() * avail.length)]
-        : RPG_BOT_POOL[Math.floor(Math.random() * RPG_BOT_POOL.length)];
+        : RPG_BOT_POOL[Math.floor(Math.random() * RPG_BOT_POOL.length)]);
       if(seat.socketId)lobbyLedger.release(seat.socketId,seat.stack);
       seat.isBot = true;
       seat.name = persona.name;
@@ -464,7 +465,7 @@ export class HybridHoldemRoom {
         this.endHistory();
         // An incomplete hand must not silently destroy already committed chips.
         this.state.seats = this.state.seats.map(seat => ({
-          ...seat, stack: seat.stack + seat.totalBet, totalBet: 0, currentBet: 0,
+          ...seat, stack: seat.stack + seat.totalBet, totalBet: 0, peakStreetBet: 0, currentBet: 0,
         }));
         this.state.pot = 0;
         this.state.phase = "HAND_END";
@@ -507,9 +508,9 @@ export class HybridHoldemRoom {
         if (s.isBot && s.stack < BIG_BLIND * 2) {
           usedNames.delete(name);
           const avail = RPG_BOT_POOL.filter(p => !usedNames.has(p.name));
-          const newP = avail.length > 0
+          const newP = assignBotStrategy(avail.length > 0
             ? avail[Math.floor(Math.random() * avail.length)]
-            : RPG_BOT_POOL[Math.floor(Math.random() * RPG_BOT_POOL.length)];
+            : RPG_BOT_POOL[Math.floor(Math.random() * RPG_BOT_POOL.length)]);
           persona = newP;
           name = newP.name;
           usedNames.add(name);
@@ -521,7 +522,7 @@ export class HybridHoldemRoom {
           name,
           stack: newStack,
           currentBet: 0,
-          totalBet: 0,
+          totalBet: 0, peakStreetBet: 0,
           inHand: newStack >= BIG_BLIND,
           folded: false,
           allIn: false,

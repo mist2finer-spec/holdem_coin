@@ -1,5 +1,5 @@
 import {evaluateBestHand, type Card} from './poker-engine';
-import {rakedContributionLayers, RAKE_RATE, type BettingSeat} from './poker-rules';
+import {rakedContributionLayers, BOT_EV_RAKE_RATE, type BettingSeat} from './poker-rules';
 import type {BotPersona} from './personas';
 
 const clamp=(n:number)=>Math.max(0,Math.min(1,n));
@@ -41,7 +41,7 @@ export function riverCatchDecision(ctx:{hole:Card[];board:Card[];seats:BettingSe
   // Existing contributions only: calling never invents future opponent bets.
   const projected=ctx.seats.map(s=>({...s,totalBet:s.totalBet+(s.seatId===actor.seatId?cost:0)}));
   let netPot=0,refund=0;
-  for(const layer of rakedContributionLayers(projected,RAKE_RATE,true)) {
+  for(const layer of rakedContributionLayers(projected,BOT_EV_RAKE_RATE,true)) {
     if(layer.refundSeatId===actor.seatId)refund+=layer.amount;
     else if(layer.eligibleSeatIds.includes(actor.seatId))netPot+=layer.amount-layer.rake;
   }

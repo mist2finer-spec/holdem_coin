@@ -1,5 +1,5 @@
 import { Card, evaluateBestHand } from './poker-engine';
-import { BettingSeat, rakedContributionLayers, RAKE_RATE } from './poker-rules';
+import { BettingSeat, rakedContributionLayers, BOT_EV_RAKE_RATE } from './poker-rules';
 import type { PositionContext } from './poker-position';
 import type { stackContext } from './poker-stack';
 import {preflopCallModel} from './poker-opponent-model';
@@ -70,7 +70,7 @@ export function estimateEquity(hole: Card[], board: Card[], opponents: number, s
 }
 
 export interface DecisionContext { boardLength?:number; preflopPosition?: {early:boolean;inPositionVsRaiser:boolean}; seats: BettingSeat[]; actorId: number; position?: PositionContext; stack?: ReturnType<typeof stackContext>; forbidLimp?:boolean; limpedPreflop?:boolean; initiative?:boolean; openedPreflop?:boolean; isBlind?:boolean; threeBetRead?: {opportunities:number;rate:number;looseness:number}; lastRaiserSeat?:number }
-export function afterRakeOdds(pot: number, cost: number, rate=RAKE_RATE) {
+export function afterRakeOdds(pot: number, cost: number, rate=BOT_EV_RAKE_RATE) {
   return cost>0?cost/Math.max(1,(pot+cost)*(1-rate)):0;
 }
 
@@ -81,7 +81,7 @@ export function estimateCallEquity(hole:Card[],board:Card[],context:DecisionCont
     s.context.seats.filter(p=>p.seatId!==context.actorId&&p.inHand&&!p.folded).length,samples,range),0);
 }
 
-export function modeledCallEV(hole:Card[],board:Card[],context:DecisionContext,cost:number,rate=RAKE_RATE,
+export function modeledCallEV(hole:Card[],board:Card[],context:DecisionContext,cost:number,rate=BOT_EV_RAKE_RATE,
   range?:OpponentRange,samples=range?192:48,rangesBySeat?:Record<number,OpponentRange>) {
   const model=preflopCallModel({...context,boardLength:board.length});
   return model.scenarios.reduce((sum,s)=>sum+s.weight*calledActionEV(hole,board,s.context,cost,rate,range,samples,rangesBySeat),0);
@@ -89,7 +89,7 @@ export function modeledCallEV(hole:Card[],board:Card[],context:DecisionContext,c
 
 // Conservative called EV: all eligible live opponents call up to their own stacks.
 // Side-pot eligibility and uncalled refunds are accounted for at contribution level.
-export function calledActionEV(hole: Card[], board: Card[], context: DecisionContext, cost: number, rate=RAKE_RATE, range?: OpponentRange, samples=range?192:48, rangesBySeat?:Record<number,OpponentRange>) {
+export function calledActionEV(hole: Card[], board: Card[], context: DecisionContext, cost: number, rate=BOT_EV_RAKE_RATE, range?: OpponentRange, samples=range?192:48, rangesBySeat?:Record<number,OpponentRange>) {
   const actor=context.seats.find(s=>s.seatId===context.actorId)!;
   const target=actor.currentBet+cost;
   const projected=context.seats.map(seat=>{
@@ -111,7 +111,7 @@ export function calledActionEV(hole: Card[], board: Card[], context: DecisionCon
 
 // A fold win returns the uncalled bet untaxed. Only matched chips are raked,
 // and only after the flop. Previous contributions are sunk at this decision.
-export function uncontestedActionEV(context:DecisionContext,cost:number,rate=RAKE_RATE) {
+export function uncontestedActionEV(context:DecisionContext,cost:number,rate=BOT_EV_RAKE_RATE) {
   const actor=context.seats.find(s=>s.seatId===context.actorId)!;
   const projected=context.seats.map(s=>({...s,totalBet:s.totalBet+(s.seatId===actor.seatId?cost:0),
     inHand:s.seatId===actor.seatId,folded:s.seatId!==actor.seatId}));

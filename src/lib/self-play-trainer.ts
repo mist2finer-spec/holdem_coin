@@ -35,6 +35,7 @@ interface SimPlayer {
   stack: number;
   currentBet: number;
   totalBet: number;
+  peakStreetBet?: number;
   inHand: boolean;
   folded: boolean;
   allIn: boolean;
@@ -79,8 +80,8 @@ export class SelfPlayTrainer {
 
   // localStorage 저장용
   // New rules use a separate checkpoint; legacy weights/stats are preserved.
-  private static STORAGE_KEY = "rpg_poker_policy_v5_standard_nlhe";
-  private static STATS_KEY = "rpg_poker_stats_v5_standard_nlhe";
+  private static STORAGE_KEY = "rpg_poker_policy_v6_gross_ev";
+  private static STATS_KEY = "rpg_poker_stats_v6_gross_ev";
 
   constructor() {
     // 저장된 가중치 로드 시도
@@ -232,7 +233,7 @@ export class SelfPlayTrainer {
     const players: SimPlayer[] = Array.from({ length: NUM_SEATS }, (_, i) => ({
       stack: START_STACK,
       currentBet: 0,
-      totalBet: 0,
+      totalBet: 0, peakStreetBet: 0,
       inHand: true,
       folded: false,
       allIn: false,
@@ -497,6 +498,7 @@ export class SelfPlayTrainer {
         }
       }
       actor.totalBet+=beforeStack-actor.stack;
+      actor.peakStreetBet=Math.max(actor.peakStreetBet||0,actor.currentBet);
       actor.hasActed = true;
       const fullRaise=betting.record(actorIdx,maxBet,Math.max(maxBet,actor.currentBet));
       if ((action === 2 || action === 3)&&fullRaise) {
@@ -638,7 +640,7 @@ export class SelfPlayTrainer {
       logits[1] -= gap;     // CALL 하락
     }
 
-    // Evaluate called downside after rake before sampling larger bets/all-ins.
+    // Evaluate called downside before rake before sampling larger bets/all-ins.
     // The anchor still supplies mixed bluffing; this is not a solver.
     if(context) {
       const targets=[0,Math.min(callAmount,myStack),

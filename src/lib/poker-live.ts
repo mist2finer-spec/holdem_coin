@@ -12,10 +12,11 @@ import { positionContext } from './poker-position';
 import { stackContext } from './poker-stack';
 import { planPreflop, preflopPosition } from './poker-preflop';
 import {preflopCallModel} from './poker-opponent-model';
+import {proCatchDecision} from './poker-pro';
 import {pricedCallGuard} from './poker-priced-call';
 
 export const LIVE_RULES = Object.freeze({
-  version: "1.19.1",
+  version: "1.20.0",
   seats: 8, smallBlind: 100, bigBlind: 200, buyIn: 5000,
   botCashOut: 100000, userSeconds: 10, maxActions: 256,
   botThinkMin: 700, botThinkJitter: 900, actionPause: 800, resultPause: 5000,
@@ -75,7 +76,7 @@ export function applyLiveAction<T extends LiveSeat>(seat: T, decision: LiveActio
     if (cost < 0 || cost > stack) throw new Error('Invalid action cost');
     stack -= cost; currentBet += cost; totalBet += cost; allIn = stack === 0;
   }
-  return { ...seat, stack, currentBet, totalBet, folded, inHand, allIn, hasActed: true };
+  return { ...seat, stack, currentBet, totalBet, peakStreetBet: Math.max(seat.peakStreetBet||0,currentBet), folded, inHand, allIn, hasActed: true };
 }
 
 export function mapLiveDecision(nn: {action: number; amount: number; isBluff?: boolean}, call: number, stack: number, currentBet: number): LiveAction {
@@ -128,6 +129,10 @@ export function decideLiveBot(trainer: SelfPlayTrainer, ctx: {
       decisionPath='river-bluff-catch';
       action={action:riverCatch.cost>=actor.stack?'allin':'call',amount:riverCatch.cost};
     }
+    const proCatch=action.action==='fold'&&(board.length>0||ctx.raiseLevel>0)
+      ?proCatchDecision({persona,hole:actor.holeCards,board,seats:context.seats,actorId:actor.seatId}):null;
+    if(proCatch?.accepted){decisionPath='pro-bluff-catch';
+      action={action:proCatch.cost>=actor.stack?'allin':'call',amount:proCatch.cost};}
     const pricedCall=action.action==='fold'?pricedCallGuard({hole:actor.holeCards,board,seats:context.seats,
       actorId:actor.seatId,bigBlindSeat:ctx.bigBlind,raiseLevel:ctx.raiseLevel,bigBlind:LIVE_RULES.bigBlind}):null;
     if(pricedCall?.accepted){
@@ -135,7 +140,7 @@ export function decideLiveBot(trainer: SelfPlayTrainer, ctx: {
       action={action:pricedCall.cost>=actor.stack?'allin':'call',amount:pricedCall.cost};
     }
     const callModel=board.length===0&&ctx.raiseLevel>0?preflopCallModel(context):null;
-    ctx.onAudit?.({participation:entry.participation,riverCatch,pricedCall,decisionPath,
+    ctx.onAudit?.({participation:entry.participation,riverCatch,proCatch,pricedCall,decisionPath,
       callModel:callModel?{committed:callModel.committed,pending:callModel.pending,overcallProbability:callModel.overcallProbability}:null,
       threeBetRead:ctx.threeBetRead,lastRaiserSeat:ctx.lastRaiserSeat,personaId:actor.persona?.id,vpip:persona.vpip,aggression:persona.aggression,
       bluffFreq:persona.bluffFreq,isOOP:context.position.isOOP,effectiveStack:context.stack.effectiveStack,

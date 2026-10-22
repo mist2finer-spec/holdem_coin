@@ -1,6 +1,6 @@
 import type { Card } from './poker-engine';
 import { calledActionEV, modeledCallEV, uncontestedActionEV, type OpponentRange, type DecisionContext } from './poker-ai';
-import { hasBettingOpponent, RAKE_RATE } from './poker-rules';
+import { hasBettingOpponent, BOT_EV_RAKE_RATE } from './poker-rules';
 import { connectorAllowed } from './poker-preflop';
 
 interface ShortSpot {
@@ -25,7 +25,7 @@ export function shortStackOptions(spot: ShortSpot) {
   const raiseEV=(target:number)=>{
     if(!canRaise)return Number.NEGATIVE_INFINITY;
     const cost=Math.min(stack,target-currentBet);
-    const called=calledActionEV(hole,board,context,cost,RAKE_RATE,threeBet&&starting>5000?'four-bet-call':'jam-call',threeBet?768:192);
+    const called=calledActionEV(hole,board,context,cost,BOT_EV_RAKE_RATE,threeBet&&starting>5000?'four-bet-call':'jam-call',threeBet?768:192);
     const perOpponent=threeBet ? Math.min(0.20,0.08+(target-highest)/Math.max(1,highest)*0.04)
       : Math.min(0.45,0.25+(target-highest)/Math.max(1,highest)*0.05);
     const committed=opponents.some(s=>s.currentBet/Math.max(1,s.stack+s.totalBet)>=0.40);
@@ -38,12 +38,12 @@ export function shortStackOptions(spot: ShortSpot) {
   const hasRaiser=threeBet&&context.lastRaiserSeat!==undefined;
   const callRanges:Record<number,OpponentRange>|undefined=hasRaiser ? Object.fromEntries(opponents.map(s=>[s.seatId,
     s.seatId===context.lastRaiserSeat?baseRange:'open'])) : undefined;
-  let called=modeledCallEV(hole,board,context,callCost,RAKE_RATE,baseRange,threeBet?768:192,callRanges);
+  let called=modeledCallEV(hole,board,context,callCost,BOT_EV_RAKE_RATE,baseRange,threeBet?768:192,callRanges);
   // Adapt to a persistent public three-bet frequency, never to private cards.
   const looseness=threeBet&&!allInOpponent ? context.threeBetRead?.looseness||0 : 0;
   if(looseness>0&&hasRaiser) {
     const wide={...callRanges,[context.lastRaiserSeat!]:'wide-three-bet' as const};
-    const wideEV=modeledCallEV(hole,board,context,callCost,RAKE_RATE,baseRange,768,wide);
+    const wideEV=modeledCallEV(hole,board,context,callCost,BOT_EV_RAKE_RATE,baseRange,768,wide);
     called=called*(1-looseness)+wideEV*looseness;
   }
   const spr=Math.max(0,stack-callCost)/Math.max(1,pot+callCost);
@@ -52,7 +52,7 @@ export function shortStackOptions(spot: ShortSpot) {
     : context.isBlind&&pair&&low<4 ? (context.position?.isOOP ? 0.85 : 0.92)
     : context.position?.isOOP ? 0.82 : 0.92;
   const riskPremium=threeBet ? ((context.stack?.equityPremium||0)*0.25
-    +(context.position?.preflopEquityPremium||0)*0.30)*(pot+callCost)*(1-RAKE_RATE) : 0;
+    +(context.position?.preflopEquityPremium||0)*0.30)*(pot+callCost)*(1-BOT_EV_RAKE_RATE) : 0;
   const callEV=(called+callCost)*realization-callCost-riskPremium;
   const raiseTo=Math.min(maxRaise,Math.max(minRaise,Math.floor(highest*(threeBet?2.2:3))));
   const raiseCost=raiseTo-currentBet;
@@ -104,7 +104,8 @@ export function decideShortStack(spot: ShortSpot): {action:number;amount:number;
     const continueRate=premium||best.ev>=spot.pot*0.25?1:Math.max(0.65,Math.min(0.99,0.65+best.ev/Math.max(1,spot.pot)*1.5
       +spot.persona.vpip*0.15-spot.persona.aggression*0.06+(spot.context.position?.isOOP?0:0.08)));
     if(Math.random()>=continueRate)return {action:0,amount:0};
-    const near=candidates.filter(c=>c.ev>=best.ev-spot.pot*0.08);
+    // A profitable low-commitment call remains available despite a larger modeled jam EV.
+    const near=candidates.filter(c=>c.ev>=best.ev-spot.pot*0.08||(c.action===1&&c.ev>spot.pot*.02));
     const weight=(action:number)=>action===1?1.5-spot.persona.aggression*0.5+spot.persona.vpip*0.6
       :action===4?0.4+spot.persona.aggression+(options.starting<=2000?0.7:0):0.4+spot.persona.aggression*0.8;
     let roll=Math.random()*near.reduce((sum,c)=>sum+weight(c.action),0);
@@ -126,7 +127,7 @@ export function decideShortStack(spot: ShortSpot): {action:number;amount:number;
   if(best) {
     const continueRate=best.ev>=spot.pot*.10?1:Math.min(.99,.80+spot.persona.vpip*.20);
     if(Math.random()>=continueRate)return {action:0,amount:0};
-    const near=choices.filter(c=>c.ev>=best.ev-spot.pot*.10);
+    const near=choices.filter(c=>c.ev>=best.ev-spot.pot*.10||(c.action===1&&c.ev>spot.pot*.02));
     const weight=(action:number)=>action===1
       ? (options.starting<=2000?.70:1.50)-spot.persona.aggression*.35+spot.persona.vpip*.60
       :action===4?(options.starting<=2000?1.10:.30)+spot.persona.aggression*.65:.40+spot.persona.aggression*.70;

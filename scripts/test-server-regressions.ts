@@ -56,7 +56,7 @@ test('server tracks limpers and real previous-street aggression, clearing checke
 test('server snapshots contain no bot personality attributes or style labels',()=>{
   const room=roomWith();
   for(const seat of room.createSafeSnapshot(null).seats) {
-    for(const key of ['persona','botStyle','style','vpip','aggression','bluffFreq'])assert.equal(key in seat,false);
+    for(const key of ['persona','botStyle','style','vpip','aggression','bluffFreq','role','catchEquity'])assert.equal(key in seat,false);
   }
 });
 

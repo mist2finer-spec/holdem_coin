@@ -3,6 +3,8 @@ import { applyStackTraits } from './poker-stack';
 
 export interface BotPersona {
   id: string;
+  role?: "pro";
+  catchEquity?: number;
   portrait?: number;
   name: string;
   title: string;          // 칭호
@@ -231,9 +233,14 @@ export const RPG_BOT_POOL: BotPersona[] = [
   },
 ];
 
+// Strategy template, not an externally identifiable visual character.
+RPG_BOT_POOL.push({...RPG_BOT_POOL[5],id:'pro',role:'pro',name:'Pro',
+ vpip:0.42,aggression:0.76,bluffFreq:0.20,style:'Pro'});
+
 // 캐릭터 퇴장 멘트 (100k 달성 시 또는 파산 시)
 // Visual identities are independent of stable strategy IDs and historical audits.
 const islandIdentities:Record<string,[string,number]>={
+ pro:['민서',2],
  elf_archer:['서린',9],orc_berserker:['태오',5],dwarf_merchant:['도윤',4],
  goblin_thief:['유나',6],paladin_commander:['정우',4],paladin:['정우',4],
  dark_mage:['미라',3],wandering_bard:['준',2],dragon_slayer:['강혁',5],
@@ -244,6 +251,14 @@ RPG_BOT_POOL.forEach((p,i)=>{const identity=islandIdentities[p.id]||[`민${i+1}`
  p.name=identity[0];p.portrait=identity[1];p.title='Island 플레이어';
  p.catchphrase='좋은 승부였어요.';p.taunt='다음 패도 기대할게요.';
 });
+
+/** Roll at entry, retain throughout this bot's stay. No fixed name/portrait -> role map. */
+export function assignBotStrategy(appearance:BotPersona, random=Math.random):BotPersona {
+ const strategy=RPG_BOT_POOL[Math.min(RPG_BOT_POOL.length-1,Math.floor(random()*RPG_BOT_POOL.length))];
+ return {...appearance,id:strategy.id,role:strategy.role,vpip:strategy.vpip,
+   aggression:strategy.aggression,bluffFreq:strategy.bluffFreq,style:strategy.style,
+   catchEquity:strategy.role==='pro'?0.45+Math.min(1,Math.max(0,random()))*0.07:undefined};
+}
 
 export function getExitMessage(persona: BotPersona, isCashOut: boolean): string {
   if (isCashOut) {

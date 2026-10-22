@@ -28,6 +28,7 @@ export interface SeatState {
   stack: number;
   currentBet: number;
   totalBet: number;
+  peakStreetBet?: number;
   inHand: boolean;
   folded: boolean;
   allIn: boolean;

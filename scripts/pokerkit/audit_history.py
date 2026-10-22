@@ -17,7 +17,9 @@ def audit(hand):
     results=hand['results'];contributed=sum(r['contribution'] for r in results)
     if contributed!=sum(r['payout'] for r in results)+hand['rake']:issue('chip_conservation',contributed,sum(r['payout'] for r in results)+hand['rake'])
     contested=sum(p['amount'] for p in hand['pots'] if p.get('refundSeatId') is None)
-    expected_rake=contested//20 if len(hand['board'])>=3 else 0
+    version=tuple(int(v) for v in hand.get('rulesVersion','0.0.0').split('.')[:3])
+    activated=any(a.get('betAfter',0)>=hand['bigBlind']*4.5 for a in hand['actions']) if version>=(1,20,0) else len(hand['board'])>=3
+    expected_rake=contested//20 if activated else 0
     if hand['rake']!=expected_rake:issue('rake',expected_rake,hand['rake'])
     for p in hand['pots']:
         if p.get('refundSeatId') is not None and p.get('rake',0)!=0:issue('refund_rake',0,p['rake'])
