@@ -21,43 +21,12 @@ export function shortStackOptions(spot: ShortSpot) {
   const [high,low]=ranks, pair=high===low, suited=hole[0].suit===hole[1].suit;
   const opponents=context.seats.filter(s=>s.seatId!==context.actorId&&s.inHand&&!s.folded);
   const canMakeFold=!opponents.some(s=>s.allIn);
-  // Fold equity is a bounded model assumption, not knowledge of a CPU's hand.
-  const raiseEV=(target:number)=>{
-    if(!canRaise)return Number.NEGATIVE_INFINITY;
-    const cost=Math.min(stack,target-currentBet);
-    const called=calledActionEV(hole,board,context,cost,BOT_EV_RAKE_RATE,threeBet&&starting>5000?'four-bet-call':'jam-call',threeBet?768:192);
-    const perOpponent=threeBet ? Math.min(0.20,0.08+(target-highest)/Math.max(1,highest)*0.04)
-      : Math.min(0.45,0.25+(target-highest)/Math.max(1,highest)*0.05);
-    const committed=opponents.some(s=>s.currentBet/Math.max(1,s.stack+s.totalBet)>=0.40);
-    const foldProbability=canMakeFold ? Math.pow(threeBet&&committed?Math.min(0.10,perOpponent):perOpponent,opponents.length) : 0;
-    return foldProbability*uncontestedActionEV(context,cost)+(1-foldProbability)*called;
-  };
   const callCost=Math.min(call,stack);
   const allInOpponent=opponents.some(s=>s.allIn);
-  const baseRange:OpponentRange=threeBet?(allInOpponent?'jam-call':'three-bet'):'open';
-  const hasRaiser=threeBet&&context.lastRaiserSeat!==undefined;
-  const callRanges:Record<number,OpponentRange>|undefined=hasRaiser ? Object.fromEntries(opponents.map(s=>[s.seatId,
-    s.seatId===context.lastRaiserSeat?baseRange:'open'])) : undefined;
-  let called=modeledCallEV(hole,board,context,callCost,BOT_EV_RAKE_RATE,baseRange,threeBet?768:192,callRanges);
-  // Adapt to a persistent public three-bet frequency, never to private cards.
   const looseness=threeBet&&!allInOpponent ? context.threeBetRead?.looseness||0 : 0;
-  if(looseness>0&&hasRaiser) {
-    const wide={...callRanges,[context.lastRaiserSeat!]:'wide-three-bet' as const};
-    const wideEV=modeledCallEV(hole,board,context,callCost,BOT_EV_RAKE_RATE,baseRange,768,wide);
-    called=called*(1-looseness)+wideEV*looseness;
-  }
   const spr=Math.max(0,stack-callCost)/Math.max(1,pot+callCost);
-  const realization=callCost===stack?1:threeBet
-    ? (context.position?.isOOP ? (spr<=1?0.96:0.86) : (spr<=1?0.99:0.94))
-    : context.isBlind&&pair&&low<4 ? (context.position?.isOOP ? 0.85 : 0.92)
-    : context.position?.isOOP ? 0.82 : 0.92;
-  const riskPremium=threeBet ? ((context.stack?.equityPremium||0)*0.25
-    +(context.position?.preflopEquityPremium||0)*0.30)*(pot+callCost)*(1-BOT_EV_RAKE_RATE) : 0;
-  const callEV=(called+callCost)*realization-callCost-riskPremium;
   const raiseTo=Math.min(maxRaise,Math.max(minRaise,Math.floor(highest*(threeBet?2.2:3))));
   const raiseCost=raiseTo-currentBet;
-  const jamEV=raiseEV(maxRaise);
-  const strongRaiseEV=raiseEV(raiseTo);
   // Small pairs may defend an actual blind at an affordable price; they do
   // not acquire the ordinary non-blind reshove range simply by being pairs.
   const blindPairDefense=!threeBet&&context.isBlind===true&&pair&&low<4
@@ -80,6 +49,40 @@ export function shortStackOptions(spot: ShortSpot) {
       ||(looseness>=0.20&&affordable&&((pair&&low>=3)
         ||(high>=10&&low>=8)||(suited&&high===12&&low>=6)));
   }
+  // Entry gates never use EV: avoid hundreds of discarded rollouts for trash.
+  if(!playable)return {callEV:-Infinity,jamEV:-Infinity,strongRaiseEV:-Infinity,
+    raiseTo,raiseCost,playable,starting,threeBet,canRaise,spr,blindPairDefense,looseness};
+  // Fold equity is a bounded model assumption, not knowledge of a CPU's hand.
+  const raiseEV=(target:number)=>{
+    if(!canRaise)return Number.NEGATIVE_INFINITY;
+    const cost=Math.min(stack,target-currentBet);
+    const called=calledActionEV(hole,board,context,cost,BOT_EV_RAKE_RATE,threeBet&&starting>5000?'four-bet-call':'jam-call',threeBet?768:192);
+    const perOpponent=threeBet ? Math.min(0.20,0.08+(target-highest)/Math.max(1,highest)*0.04)
+      : Math.min(0.45,0.25+(target-highest)/Math.max(1,highest)*0.05);
+    const committed=opponents.some(s=>s.currentBet/Math.max(1,s.stack+s.totalBet)>=0.40);
+    const foldProbability=canMakeFold ? Math.pow(threeBet&&committed?Math.min(0.10,perOpponent):perOpponent,opponents.length) : 0;
+    return foldProbability*uncontestedActionEV(context,cost)+(1-foldProbability)*called;
+  };
+  const baseRange:OpponentRange=threeBet?(allInOpponent?'jam-call':'three-bet'):'open';
+  const hasRaiser=threeBet&&context.lastRaiserSeat!==undefined;
+  const callRanges:Record<number,OpponentRange>|undefined=hasRaiser ? Object.fromEntries(opponents.map(s=>[s.seatId,
+    s.seatId===context.lastRaiserSeat?baseRange:'open'])) : undefined;
+  let called=modeledCallEV(hole,board,context,callCost,BOT_EV_RAKE_RATE,baseRange,threeBet?768:192,callRanges);
+  // Adapt to a persistent public three-bet frequency, never to private cards.
+  if(looseness>0&&hasRaiser) {
+    const wide={...callRanges,[context.lastRaiserSeat!]:'wide-three-bet' as const};
+    const wideEV=modeledCallEV(hole,board,context,callCost,BOT_EV_RAKE_RATE,baseRange,768,wide);
+    called=called*(1-looseness)+wideEV*looseness;
+  }
+  const realization=callCost===stack?1:threeBet
+    ? (context.position?.isOOP ? (spr<=1?0.96:0.86) : (spr<=1?0.99:0.94))
+    : context.isBlind&&pair&&low<4 ? (context.position?.isOOP ? 0.85 : 0.92)
+    : context.position?.isOOP ? 0.82 : 0.92;
+  const riskPremium=threeBet ? ((context.stack?.equityPremium||0)*0.25
+    +(context.position?.preflopEquityPremium||0)*0.30)*(pot+callCost)*(1-BOT_EV_RAKE_RATE) : 0;
+  const callEV=(called+callCost)*realization-callCost-riskPremium;
+  const jamEV=raiseEV(maxRaise);
+  const strongRaiseEV=raiseEV(raiseTo);
   return {callEV,jamEV,strongRaiseEV,raiseTo,raiseCost,playable,starting,threeBet,canRaise,spr,blindPairDefense,looseness};
 }
 

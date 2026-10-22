@@ -17,7 +17,7 @@ Pro is an additional aggressive strategy template (VPIP .42, aggression .76,
 bluff .20 before existing mood/stack adjustments). On entry, independently draw
 a fixed catch threshold in [.45,.52]. Only a proposed fold may be rescued into
 a call: equity uses the actor's own cards and public board against the existing
-public value prior; no opponent cards or hit flags. Calls must also have positive
+public three-bet prior (128 bounded rollouts); no opponent cards or hit flags. Calls must also have positive
 eligible-pot EV with a 1% pot safety margin and .85 future-street realization
 unless locked/all-in or on the river. Multiway estimates and side-pot limits apply.
 No forced raise, no automatic call solely from a threshold, no new raise rights.
@@ -48,3 +48,12 @@ Two folds priced at <=12%:
 These historical decision exceptions were not globally changed in this release.
 The expressly requested Pro role and zero-rake EV may independently change new
 hands; the uploaded history itself was never edited.
+
+Pro uses the shared bounded rollout cache rather than building and sorting a
+full board-value range for each live fold, keeping the synchronous decision path
+small. The validation seed is installed before room construction so independent
+strategy assignments and all subsequent hands are reproducible.
+
+Performance: run existing short-stack entry gates before EV, and return an existing
+short-stack decision before calculating unused trainer equity. The gates and
+accepted action mixtures are unchanged; rejected hands skip discarded rollouts.

@@ -553,6 +553,11 @@ export class SelfPlayTrainer {
   ): { action: number; amount: number; isBluff?: boolean; tier?: number; decisionPath?: string } {
     // 1) 새로운 정밀 핸드 티어 분류 (AIR 버그 수정 적용)
     const { tier } = classifyHandTier(hole, board);
+    if(context) {
+      const shortDecision=decideShortStack({hole,board,call:callAmount,minRaise,maxRaise,pot,
+        stack:myStack,currentBet:myCurrentBet,raiseLevel,persona,context});
+      if(shortDecision)return {...shortDecision,tier,decisionPath:raiseLevel===2&&context.openedPreflop ? "three-bet-ev" : "small-open-ev"};
+    }
     const multiEq = context&&board.length===0&&raiseLevel>0
       ? estimateCallEquity(hole,board,context,192,raiseLevel>=2?'three-bet':'open')
       : estimateEquity(hole,board,activeOpponents);
@@ -561,11 +566,7 @@ export class SelfPlayTrainer {
     const stackCost = (context?.stack?.equityPremium || 0) * (board.length === 0 ? 1 : 0.5);
     const potOdds = Math.min(1, afterRakeOdds(pot,Math.min(callAmount,myStack)) + positionCost + stackCost);
 
-    if(context) {
-      const shortDecision=decideShortStack({hole,board,call:callAmount,minRaise,maxRaise,pot,
-        stack:myStack,currentBet:myCurrentBet,raiseLevel,persona,context});
-      if(shortDecision)return {...shortDecision,tier,decisionPath:raiseLevel===2&&context.openedPreflop ? "three-bet-ev" : "small-open-ev"};
-    }
+
 
     // 2) 베팅 압박 수위 (0~3)
     let pressure: number;

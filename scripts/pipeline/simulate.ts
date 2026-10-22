@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {HybridHoldemRoom} from '../../mini-services/poker-server/index';
-const room:any=new HybridHoldemRoom(false,8);
 let seed=83021;Math.random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};
+const room:any=new HybridHoldemRoom(false,8);
 const inspect=()=>{
  const st=room.state;assert.equal(st.seats.length,8);
  for(const s of st.seats)for(const k of ['stack','currentBet','totalBet'])assert.ok(Number.isSafeInteger(s[k])&&s[k]>=0,`${k} invalid at seat ${s.seatId}`);

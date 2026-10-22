@@ -1,7 +1,7 @@
 import type {BotPersona} from './personas';
 import type {Card} from './poker-engine';
 import {contributionLayers,type BettingSeat} from './poker-rules';
-import {pricedCallEquity} from './poker-priced-call';
+import {estimateEquity} from './poker-ai';
 
 /** Call-only rescue against a public value range, with no access to opponent cards. */
 export function proCatchDecision(ctx:{persona:BotPersona;hole:Card[];board:Card[];seats:BettingSeat[];actorId:number}) {
@@ -17,7 +17,9 @@ export function proCatchDecision(ctx:{persona:BotPersona;hole:Card[];board:Card[
  for(const layer of contributionLayers(projected)) {
   if(layer.refundSeatId!==undefined||!layer.eligibleSeatIds.includes(actor.seatId))continue;
   const opponents=layer.eligibleSeatIds.length-1;
-  const equity=pricedCallEquity(ctx.hole,ctx.board,opponents);
+  // Bounded range-conditioned rollouts share the existing LRU cache.
+  // Avoid enumerating 1,000+ board-ranked combinations on every live fold.
+  const equity=estimateEquity(ctx.hole,ctx.board,opponents,128,'three-bet');
   pot+=layer.amount;expected+=layer.amount*equity;
  }
  const equity=pot?expected/pot:0;
