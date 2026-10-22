@@ -17,9 +17,10 @@ import {proCatchDecision} from './poker-pro';
 import {pricedCallGuard} from './poker-priced-call';
 import {selectLineDecision} from './poker-line-policy';
 import type {PublicLineTracker} from './poker-public-line';
+import {marginalThreeBetFlat} from './poker-marginal-flat';
 
 export const LIVE_RULES = Object.freeze({
-  version: "1.22.0",
+  version: "1.22.1",
   seats: 8, smallBlind: 100, bigBlind: 200, buyIn: 5000,
   botCashOut: 100000, userSeconds: 10, maxActions: 256,
   botThinkMin: 700, botThinkJitter: 900, actionPause: 800, resultPause: 5000,
@@ -151,8 +152,14 @@ export function decideLiveBot(trainer: SelfPlayTrainer, ctx: {
       decisionPath=pricedCall.kind==='committed-allin'?'priced-allin-call':'priced-bb-pair-call';
       action={action:pricedCall.cost>=actor.stack?'allin':'call',amount:pricedCall.cost};
     }
+    // Exactly one extra low-frequency roll, after existing call policies have
+    // had their chance. Never demote a call/raise or read the bettor's cards.
+    const marginalFlat=action.action==='fold'?marginalThreeBetFlat({hole:actor.holeCards,board,
+      base:actor.persona||RPG_BOT_POOL[0],persona,context,raiseLevel:ctx.raiseLevel}):null;
+    if(marginalFlat?.accepted){decisionPath='marginal-three-bet-flat';
+      action={action:'call',amount:marginalFlat.cost};}
     const callModel=board.length===0&&ctx.raiseLevel>0?preflopCallModel(context):null;
-    ctx.onAudit?.({participation:entry.participation,boardDefense,riverCatch,proCatch,pricedCall,decisionPath,
+    ctx.onAudit?.({participation:entry.participation,boardDefense,riverCatch,proCatch,pricedCall,marginalFlat,decisionPath,
       linePolicy:lineChoice?{path:lineChoice.path,equity:lineChoice.equity,ev:lineChoice.ev}:null,
       callModel:callModel?{committed:callModel.committed,pending:callModel.pending,overcallProbability:callModel.overcallProbability}:null,
       threeBetRead:ctx.threeBetRead,lastRaiserSeat:ctx.lastRaiserSeat,personaId:actor.persona?.id,vpip:persona.vpip,aggression:persona.aggression,
