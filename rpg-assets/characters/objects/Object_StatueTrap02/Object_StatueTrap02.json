@@ -1,0 +1,131 @@
+{
+"skeleton": {
+	"hash": "Fl1qUJtRWwM",
+	"spine": "4.2.43",
+	"x": -33.69,
+	"y": -13.08,
+	"width": 77,
+	"height": 120,
+	"images": "./images/",
+	"audio": "./audio"
+},
+"bones": [
+	{ "name": "root" },
+	{ "name": "bone", "parent": "root", "y": 33.58 },
+	{ "name": "bone2", "parent": "bone", "x": 24.86, "y": 58 }
+],
+"slots": [
+	{ "name": "body2", "bone": "root", "attachment": "body2" },
+	{ "name": "fx", "bone": "root", "attachment": "fx" },
+	{ "name": "body1", "bone": "bone", "attachment": "body1" },
+	{ "name": "eye", "bone": "bone", "attachment": "eye" }
+],
+"skins": [
+	{
+		"name": "default",
+		"attachments": {
+			"body1": {
+				"body1": {
+					"type": "mesh",
+					"uvs": [ 1, 1, 0, 1, 0, 0, 1, 0 ],
+					"triangles": [ 1, 2, 3, 1, 3, 0 ],
+					"vertices": [ 38.31, -13.37, -24.69, -13.37, -24.69, 70.63, 38.31, 70.63 ],
+					"hull": 4,
+					"edges": [ 0, 2, 2, 4, 4, 6, 0, 6 ],
+					"width": 63,
+					"height": 84
+				}
+			},
+			"body2": {
+				"body2": {
+					"type": "mesh",
+					"uvs": [ 1, 1, 0, 1, 0, 0, 1, 0 ],
+					"triangles": [ 1, 2, 3, 1, 3, 0 ],
+					"vertices": [ 33.31, -3.79, -33.69, -3.79, -33.69, 22.21, 33.31, 22.21 ],
+					"hull": 4,
+					"edges": [ 0, 2, 2, 4, 4, 6, 0, 6 ],
+					"width": 67,
+					"height": 28
+				}
+			},
+			"eye": {
+				"eye": {
+					"type": "mesh",
+					"uvs": [ 1, 1, 0, 1, 0, 0, 1, 0 ],
+					"triangles": [ 1, 2, 3, 1, 3, 0 ],
+					"vertices": [ 25.31, 43.63, 19.31, 43.63, 19.31, 47.63, 25.31, 47.63 ],
+					"hull": 4,
+					"edges": [ 0, 2, 2, 4, 4, 6, 0, 6 ],
+					"width": 6,
+					"height": 4
+				}
+			},
+			"fx": {
+				"fx": {
+					"type": "mesh",
+					"uvs": [ 1, 1, 0, 1, 0, 0, 1, 0 ],
+					"triangles": [ 1, 2, 3, 1, 3, 0 ],
+					"vertices": [ 43.31, -15.79, -25.69, -15.79, -25.69, 34.21, 43.31, 34.21 ],
+					"hull": 4,
+					"edges": [ 0, 2, 2, 4, 4, 6, 0, 6 ],
+					"width": 69,
+					"height": 50
+				}
+			}
+		}
+	}
+],
+"animations": {
+	"attack1": {
+		"slots": {
+			"fx": {
+				"attachment": [
+					{},
+					{ "time": 0.4, "name": "fx" }
+				]
+			}
+		},
+		"bones": {
+			"bone": {
+				"translate": [
+					{},
+					{ "time": 0.0333, "x": -2.59 },
+					{ "time": 0.0667, "x": -3.06 },
+					{ "time": 0.1, "x": -2.35 },
+					{ "time": 0.1333, "x": -3.96, "curve": "stepped" },
+					{ "time": 0.3333, "x": -3.96 },
+					{ "time": 0.4 },
+					{ "time": 0.4333, "x": -1.73 },
+					{ "time": 0.5 }
+				]
+			},
+			"bone2": {
+				"scale": [
+					{ "time": 1 }
+				]
+			}
+		}
+	},
+	"stay1": {
+		"slots": {
+			"eye": {
+				"attachment": [
+					{}
+				]
+			},
+			"fx": {
+				"attachment": [
+					{}
+				]
+			}
+		},
+		"bones": {
+			"bone": {
+				"translate": [
+					{ "time": 0.3333 }
+				]
+			}
+		}
+	}
+}
+}

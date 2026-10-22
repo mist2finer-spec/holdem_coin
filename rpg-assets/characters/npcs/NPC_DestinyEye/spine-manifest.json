@@ -1,0 +1,79 @@
+{
+  "name": "NPC_DestinyEye",
+  "source_object": "model_assets_all_4b7c1041d63a541f1599d6ee7559998f.bundle:CAB-8567a9a245cb1780b2cf82cab834069b:-6139907173366490735",
+  "atlas": "NPC_DestinyEye.atlas",
+  "pages": [
+    "NPC_DestinyEye.png"
+  ],
+  "parts": [
+    {
+      "name": "body",
+      "file": "parts/body__230d8358.png",
+      "page": "NPC_DestinyEye.png",
+      "bounds": [
+        2,
+        2,
+        46,
+        57
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        46,
+        57
+      ]
+    },
+    {
+      "name": "close",
+      "file": "parts/close__310ff200.png",
+      "page": "NPC_DestinyEye.png",
+      "bounds": [
+        50,
+        24,
+        33,
+        35
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        33,
+        35
+      ]
+    },
+    {
+      "name": "eye",
+      "file": "parts/eye__47c215b5.png",
+      "page": "NPC_DestinyEye.png",
+      "bounds": [
+        50,
+        9,
+        13,
+        13
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        13,
+        13
+      ]
+    }
+  ],
+  "errors": [],
+  "skeleton": "NPC_DestinyEye.json",
+  "spine_version": "4.2.43",
+  "skins": [
+    "default"
+  ],
+  "animations": [
+    "stay1"
+  ]
+}

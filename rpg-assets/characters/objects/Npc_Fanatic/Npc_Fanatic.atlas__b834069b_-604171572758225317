@@ -1,0 +1,8 @@
+Npc_Fanatic.png
+size:128,64
+body
+bounds:2,9,43,76
+offsets:0,1,43,77
+rotate:90
+eye
+bounds:2,2,12,5

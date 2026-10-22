@@ -1,0 +1,15 @@
+Enemy_Undine_01.png
+size:256,128
+filter:MipMapNearestNearest,MipMapNearestNearest
+Larm
+bounds:81,2,34,20
+Lleg
+bounds:81,77,49,49
+Rarm
+bounds:170,102,40,24
+Rleg
+bounds:81,24,40,51
+body
+bounds:132,89,36,37
+head
+bounds:2,13,77,113

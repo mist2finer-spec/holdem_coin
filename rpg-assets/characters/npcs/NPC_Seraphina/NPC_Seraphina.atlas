@@ -1,0 +1,9 @@
+NPC_Seraphina.png
+size:128,64
+filter:MipMapNearestNearest,MipMapNearestNearest
+1
+bounds:2,2,47,51
+2
+bounds:51,14,47,39
+face
+bounds:100,42,13,11

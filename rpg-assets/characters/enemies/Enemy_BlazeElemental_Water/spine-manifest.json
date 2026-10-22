@@ -1,0 +1,123 @@
+{
+  "name": "Enemy_BlazeElemental_Water",
+  "source_object": "model_assets_all_4b7c1041d63a541f1599d6ee7559998f.bundle:CAB-8567a9a245cb1780b2cf82cab834069b:-6589480322415575956",
+  "atlas": "Enemy_BlazeElemental_Water.atlas",
+  "pages": [
+    "Enemy_BlazeElemental_Water.png"
+  ],
+  "parts": [
+    {
+      "name": "Larm",
+      "file": "parts/Larm__34b585fe.png",
+      "page": "Enemy_BlazeElemental_Water.png",
+      "bounds": [
+        105,
+        31,
+        8,
+        14
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        8,
+        14
+      ]
+    },
+    {
+      "name": "Rarm",
+      "file": "parts/Rarm__3e10b249.png",
+      "page": "Enemy_BlazeElemental_Water.png",
+      "bounds": [
+        105,
+        47,
+        10,
+        13
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        10,
+        13
+      ]
+    },
+    {
+      "name": "body",
+      "file": "parts/body__230d8358.png",
+      "page": "Enemy_BlazeElemental_Water.png",
+      "bounds": [
+        2,
+        2,
+        36,
+        58
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        36,
+        58
+      ]
+    },
+    {
+      "name": "ect",
+      "file": "parts/ect__2fdc47fc.png",
+      "page": "Enemy_BlazeElemental_Water.png",
+      "bounds": [
+        83,
+        20,
+        20,
+        40
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        20,
+        40
+      ]
+    },
+    {
+      "name": "head",
+      "file": "parts/head__9f2e6d33.png",
+      "page": "Enemy_BlazeElemental_Water.png",
+      "bounds": [
+        40,
+        11,
+        41,
+        49
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        41,
+        49
+      ]
+    }
+  ],
+  "errors": [],
+  "skeleton": "Enemy_BlazeElemental_Water.json",
+  "spine_version": "4.2.43",
+  "skins": [
+    "default"
+  ],
+  "animations": [
+    "attack1",
+    "die1",
+    "run1",
+    "skill1",
+    "stay1"
+  ]
+}

@@ -1,0 +1,164 @@
+{
+  "name": "Enemy_GoblinSword_01",
+  "source_object": "model_assets_all_4b7c1041d63a541f1599d6ee7559998f.bundle:CAB-8567a9a245cb1780b2cf82cab834069b:6107387658555963786",
+  "atlas": "Enemy_GoblinSword_01.atlas",
+  "pages": [
+    "Enemy_GoblinSword_01.png"
+  ],
+  "parts": [
+    {
+      "name": "Larm",
+      "file": "parts/Larm__34b585fe.png",
+      "page": "Enemy_GoblinSword_01.png",
+      "bounds": [
+        2,
+        2,
+        10,
+        14
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        10,
+        14
+      ]
+    },
+    {
+      "name": "Lleg",
+      "file": "parts/Lleg__95243c19.png",
+      "page": "Enemy_GoblinSword_01.png",
+      "bounds": [
+        46,
+        12,
+        18,
+        15
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        18,
+        15
+      ]
+    },
+    {
+      "name": "Rleg",
+      "file": "parts/Rleg__d6433c3f.png",
+      "page": "Enemy_GoblinSword_01.png",
+      "bounds": [
+        109,
+        43,
+        19,
+        16
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        19,
+        16
+      ]
+    },
+    {
+      "name": "body",
+      "file": "parts/body__230d8358.png",
+      "page": "Enemy_GoblinSword_01.png",
+      "bounds": [
+        60,
+        33,
+        26,
+        29
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        26,
+        29
+      ]
+    },
+    {
+      "name": "head",
+      "file": "parts/head__9f2e6d33.png",
+      "page": "Enemy_GoblinSword_01.png",
+      "bounds": [
+        2,
+        32,
+        56,
+        30
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        56,
+        30
+      ]
+    },
+    {
+      "name": "rarm",
+      "file": "parts/rarm__73ecc3db.png",
+      "page": "Enemy_GoblinSword_01.png",
+      "bounds": [
+        88,
+        43,
+        19,
+        19
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        19,
+        19
+      ]
+    },
+    {
+      "name": "wp",
+      "file": "parts/wp__bd2b8a40.png",
+      "page": "Enemy_GoblinSword_01.png",
+      "bounds": [
+        2,
+        14,
+        42,
+        16
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        42,
+        16
+      ]
+    }
+  ],
+  "errors": [],
+  "skeleton": "Enemy_GoblinSword_01.json",
+  "spine_version": "4.2.43",
+  "skins": [
+    "default"
+  ],
+  "animations": [
+    "action1",
+    "action2",
+    "attack1",
+    "die1",
+    "run1",
+    "stay1"
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "name": "Npc_DemonEye",
+  "source_object": "model_assets_all_4b7c1041d63a541f1599d6ee7559998f.bundle:CAB-8567a9a245cb1780b2cf82cab834069b:3065232485674909254",
+  "atlas": "Npc_DemonEye.atlas",
+  "pages": [
+    "Npc_DemonEye.png"
+  ],
+  "parts": [
+    {
+      "name": "body",
+      "file": "parts/body__230d8358.png",
+      "page": "Npc_DemonEye.png",
+      "bounds": [
+        2,
+        38,
+        81,
+        82
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        81,
+        82
+      ]
+    },
+    {
+      "name": "eyye",
+      "file": "parts/eyye__c8fcc064.png",
+      "page": "Npc_DemonEye.png",
+      "bounds": [
+        2,
+        2,
+        34,
+        42
+      ],
+      "rotation": 90,
+      "offset": [
+        1,
+        0
+      ],
+      "original_size": [
+        35,
+        42
+      ]
+    },
+    {
+      "name": "glow",
+      "file": "parts/glow__d27608cc.png",
+      "page": "Npc_DemonEye.png",
+      "bounds": [
+        85,
+        113,
+        9,
+        7
+      ],
+      "rotation": 0,
+      "offset": [
+        1,
+        1
+      ],
+      "original_size": [
+        11,
+        9
+      ]
+    }
+  ],
+  "errors": [],
+  "skeleton": "Npc_DemonEye.json",
+  "spine_version": "4.2.43",
+  "skins": [
+    "default"
+  ],
+  "animations": [
+    "stay1"
+  ]
+}

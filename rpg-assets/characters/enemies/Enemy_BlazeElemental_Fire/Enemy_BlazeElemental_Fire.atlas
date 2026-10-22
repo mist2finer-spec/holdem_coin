@@ -1,0 +1,13 @@
+Enemy_BlazeElemental_Fire.png
+size:128,64
+filter:MipMapNearestNearest,MipMapNearestNearest
+Larm
+bounds:105,31,8,14
+Rarm
+bounds:105,47,10,13
+body
+bounds:2,2,36,58
+ect
+bounds:83,20,20,40
+head
+bounds:40,11,41,49

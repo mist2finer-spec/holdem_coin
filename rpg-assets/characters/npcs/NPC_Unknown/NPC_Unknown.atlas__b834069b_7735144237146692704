@@ -1,0 +1,10 @@
+NPC_Unknown.png
+size:128,64
+body1
+bounds:40,11,33,31
+body2
+bounds:2,11,36,31
+eye
+bounds:2,2,15,7
+head
+bounds:75,11,31,31

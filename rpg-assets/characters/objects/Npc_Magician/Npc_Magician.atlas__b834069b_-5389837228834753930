@@ -1,0 +1,6 @@
+Npc_Magician.png
+size:128,64
+body
+bounds:2,2,45,75
+offsets:0,1,45,76
+rotate:90

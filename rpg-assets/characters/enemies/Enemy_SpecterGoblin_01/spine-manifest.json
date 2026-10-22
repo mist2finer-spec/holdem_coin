@@ -1,0 +1,195 @@
+{
+  "name": "Enemy_SpecterGoblin_01",
+  "source_object": "model_assets_all_4b7c1041d63a541f1599d6ee7559998f.bundle:CAB-8567a9a245cb1780b2cf82cab834069b:8847079087172471487",
+  "atlas": "Enemy_SpecterGoblin_01.atlas",
+  "pages": [
+    "Enemy_SpecterGoblin_01.png"
+  ],
+  "parts": [
+    {
+      "name": "Larm1",
+      "file": "parts/Larm1__38d88ba8.png",
+      "page": "Enemy_SpecterGoblin_01.png",
+      "bounds": [
+        2,
+        2,
+        69,
+        62
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        69,
+        62
+      ]
+    },
+    {
+      "name": "Lleg",
+      "file": "parts/Lleg__95243c19.png",
+      "page": "Enemy_SpecterGoblin_01.png",
+      "bounds": [
+        283,
+        70,
+        71,
+        55
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        71,
+        55
+      ]
+    },
+    {
+      "name": "Rarm1",
+      "file": "parts/Rarm1__1a10657c.png",
+      "page": "Enemy_SpecterGoblin_01.png",
+      "bounds": [
+        460,
+        91,
+        42,
+        34
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        42,
+        34
+      ]
+    },
+    {
+      "name": "Rarm2",
+      "file": "parts/Rarm2__99d37085.png",
+      "page": "Enemy_SpecterGoblin_01.png",
+      "bounds": [
+        418,
+        86,
+        40,
+        39
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        40,
+        39
+      ]
+    },
+    {
+      "name": "Rleg",
+      "file": "parts/Rleg__d6433c3f.png",
+      "page": "Enemy_SpecterGoblin_01.png",
+      "bounds": [
+        356,
+        69,
+        60,
+        56
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        60,
+        56
+      ]
+    },
+    {
+      "name": "body",
+      "file": "parts/body__230d8358.png",
+      "page": "Enemy_SpecterGoblin_01.png",
+      "bounds": [
+        205,
+        71,
+        54,
+        76
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        54,
+        76
+      ]
+    },
+    {
+      "name": "head",
+      "file": "parts/head__9f2e6d33.png",
+      "page": "Enemy_SpecterGoblin_01.png",
+      "bounds": [
+        2,
+        66,
+        97,
+        59
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        97,
+        59
+      ]
+    },
+    {
+      "name": "wp",
+      "file": "parts/wp__bd2b8a40.png",
+      "page": "Enemy_SpecterGoblin_01.png",
+      "bounds": [
+        101,
+        95,
+        30,
+        102
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        30,
+        102
+      ]
+    }
+  ],
+  "errors": [],
+  "skeleton": "Enemy_SpecterGoblin_01.json",
+  "spine_version": "4.2.43",
+  "skins": [
+    "default"
+  ],
+  "animations": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "appear1",
+    "attack1",
+    "die1",
+    "groggy1",
+    "run1",
+    "skill1_end",
+    "skill1_loop",
+    "skill2",
+    "skill3",
+    "skill4",
+    "skill4_end",
+    "skill4_loop",
+    "stay1"
+  ]
+}

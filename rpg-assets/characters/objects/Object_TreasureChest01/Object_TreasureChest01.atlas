@@ -1,0 +1,10 @@
+Object_TreasureChest01.png
+size:128,64
+box
+bounds:78,27,48,28
+close_up
+bounds:45,5,50,31
+rotate:90
+open_up
+bounds:2,2,53,41
+rotate:90

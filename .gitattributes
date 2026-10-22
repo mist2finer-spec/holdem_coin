@@ -1,0 +1,4 @@
+rpg-assets/**/*.png binary
+rpg-assets/**/*.jpg binary
+rpg-assets/**/*.bundle binary
+rpg-assets/**/*.zip binary

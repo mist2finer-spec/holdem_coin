@@ -1,0 +1,12 @@
+Npc_DemonEye.png
+size:128,128
+filter:MipMapNearestNearest,MipMapNearestNearest
+body
+bounds:2,38,81,82
+eyye
+bounds:2,2,34,42
+offsets:1,0,35,42
+rotate:90
+glow
+bounds:85,113,9,7
+offsets:1,1,11,9

@@ -1,0 +1,16 @@
+Enemy_BatM_01.png
+size:256,64
+filter:MipMapNearestNearest,MipMapNearestNearest
+Lwing1
+bounds:84,9,32,41
+Lwing2
+bounds:118,9,32,41
+Rwing1
+bounds:2,2,39,48
+Rwing2
+bounds:43,2,39,48
+body
+bounds:181,29,21,32
+rotate:90
+head
+bounds:152,19,27,31

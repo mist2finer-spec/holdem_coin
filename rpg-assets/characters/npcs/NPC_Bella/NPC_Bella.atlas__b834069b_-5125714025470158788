@@ -1,0 +1,15 @@
+NPC_Bella.png
+size:128,64
+filter:MipMapNearestNearest,MipMapNearestNearest
+Larm
+bounds:79,30,19,23
+Rarm
+bounds:100,36,17,25
+rotate:90
+body
+bounds:2,2,34,51
+offsets:2,0,36,52
+face
+bounds:38,4,13,9
+head
+bounds:38,15,39,38

@@ -1,0 +1,119 @@
+{
+  "name": "NPC_Bella",
+  "source_object": "model_assets_all_4b7c1041d63a541f1599d6ee7559998f.bundle:CAB-8567a9a245cb1780b2cf82cab834069b:-5125714025470158788",
+  "atlas": "NPC_Bella.atlas",
+  "pages": [
+    "NPC_Bella.png"
+  ],
+  "parts": [
+    {
+      "name": "Larm",
+      "file": "parts/Larm__34b585fe.png",
+      "page": "NPC_Bella.png",
+      "bounds": [
+        79,
+        30,
+        19,
+        23
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        19,
+        23
+      ]
+    },
+    {
+      "name": "Rarm",
+      "file": "parts/Rarm__3e10b249.png",
+      "page": "NPC_Bella.png",
+      "bounds": [
+        100,
+        36,
+        17,
+        25
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        17,
+        25
+      ]
+    },
+    {
+      "name": "body",
+      "file": "parts/body__230d8358.png",
+      "page": "NPC_Bella.png",
+      "bounds": [
+        2,
+        2,
+        34,
+        51
+      ],
+      "rotation": 0,
+      "offset": [
+        2,
+        0
+      ],
+      "original_size": [
+        36,
+        52
+      ]
+    },
+    {
+      "name": "face",
+      "file": "parts/face__0282d9b7.png",
+      "page": "NPC_Bella.png",
+      "bounds": [
+        38,
+        4,
+        13,
+        9
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        13,
+        9
+      ]
+    },
+    {
+      "name": "head",
+      "file": "parts/head__9f2e6d33.png",
+      "page": "NPC_Bella.png",
+      "bounds": [
+        38,
+        15,
+        39,
+        38
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        39,
+        38
+      ]
+    }
+  ],
+  "errors": [],
+  "skeleton": "NPC_Bella.json",
+  "spine_version": "4.2.43",
+  "skins": [
+    "default"
+  ],
+  "animations": [
+    "stay1"
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "name": "Npc_Magician",
+  "source_object": "model_assets_all_4b7c1041d63a541f1599d6ee7559998f.bundle:CAB-8567a9a245cb1780b2cf82cab834069b:-5389837228834753930",
+  "atlas": "Npc_Magician.atlas",
+  "pages": [
+    "Npc_Magician.png"
+  ],
+  "parts": [
+    {
+      "name": "body",
+      "file": "parts/body__230d8358.png",
+      "page": "Npc_Magician.png",
+      "bounds": [
+        2,
+        2,
+        45,
+        75
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        1
+      ],
+      "original_size": [
+        45,
+        76
+      ]
+    }
+  ],
+  "errors": [],
+  "skeleton": "Npc_Magician.json",
+  "spine_version": "4.2.43",
+  "skins": [
+    "default"
+  ],
+  "animations": [
+    "stay1"
+  ]
+}

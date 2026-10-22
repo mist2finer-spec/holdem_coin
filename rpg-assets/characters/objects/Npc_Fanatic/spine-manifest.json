@@ -1,0 +1,59 @@
+{
+  "name": "Npc_Fanatic",
+  "source_object": "model_assets_all_4b7c1041d63a541f1599d6ee7559998f.bundle:CAB-8567a9a245cb1780b2cf82cab834069b:-604171572758225317",
+  "atlas": "Npc_Fanatic.atlas",
+  "pages": [
+    "Npc_Fanatic.png"
+  ],
+  "parts": [
+    {
+      "name": "body",
+      "file": "parts/body__230d8358.png",
+      "page": "Npc_Fanatic.png",
+      "bounds": [
+        2,
+        9,
+        43,
+        76
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        1
+      ],
+      "original_size": [
+        43,
+        77
+      ]
+    },
+    {
+      "name": "eye",
+      "file": "parts/eye__47c215b5.png",
+      "page": "Npc_Fanatic.png",
+      "bounds": [
+        2,
+        2,
+        12,
+        5
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        12,
+        5
+      ]
+    }
+  ],
+  "errors": [],
+  "skeleton": "Npc_Fanatic.json",
+  "spine_version": "4.2.43",
+  "skins": [
+    "default"
+  ],
+  "animations": [
+    "stay1"
+  ]
+}

@@ -1,0 +1,222 @@
+{
+  "name": "Enemy_Spider_01",
+  "source_object": "model_assets_all_4b7c1041d63a541f1599d6ee7559998f.bundle:CAB-8567a9a245cb1780b2cf82cab834069b:3181270253553690554",
+  "atlas": "Enemy_Spider_01.atlas",
+  "pages": [
+    "Enemy_Spider_01.png"
+  ],
+  "parts": [
+    {
+      "name": "Lleg",
+      "file": "parts/Lleg__95243c19.png",
+      "page": "Enemy_Spider_01.png",
+      "bounds": [
+        218,
+        15,
+        4,
+        15
+      ],
+      "rotation": 0,
+      "offset": [
+        1,
+        1
+      ],
+      "original_size": [
+        6,
+        17
+      ]
+    },
+    {
+      "name": "Rarm",
+      "file": "parts/Rarm__3e10b249.png",
+      "page": "Enemy_Spider_01.png",
+      "bounds": [
+        218,
+        15,
+        4,
+        15
+      ],
+      "rotation": 0,
+      "offset": [
+        1,
+        1
+      ],
+      "original_size": [
+        6,
+        17
+      ]
+    },
+    {
+      "name": "Lleg1",
+      "file": "parts/Lleg1__535b27aa.png",
+      "page": "Enemy_Spider_01.png",
+      "bounds": [
+        179,
+        8,
+        22,
+        22
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        22,
+        22
+      ]
+    },
+    {
+      "name": "Lleg2",
+      "file": "parts/Lleg2__c0b5a504.png",
+      "page": "Enemy_Spider_01.png",
+      "bounds": [
+        2,
+        2,
+        29,
+        28
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        29,
+        28
+      ]
+    },
+    {
+      "name": "Lleg3",
+      "file": "parts/Lleg3__54c8d867.png",
+      "page": "Enemy_Spider_01.png",
+      "bounds": [
+        94,
+        11,
+        28,
+        19
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        28,
+        19
+      ]
+    },
+    {
+      "name": "Rleg1",
+      "file": "parts/Rleg1__906d9e04.png",
+      "page": "Enemy_Spider_01.png",
+      "bounds": [
+        154,
+        8,
+        23,
+        22
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        23,
+        22
+      ]
+    },
+    {
+      "name": "Rleg2",
+      "file": "parts/Rleg2__bfbe3919.png",
+      "page": "Enemy_Spider_01.png",
+      "bounds": [
+        33,
+        2,
+        29,
+        28
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        29,
+        28
+      ]
+    },
+    {
+      "name": "Rleg3",
+      "file": "parts/Rleg3__584bf741.png",
+      "page": "Enemy_Spider_01.png",
+      "bounds": [
+        124,
+        11,
+        28,
+        19
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        28,
+        19
+      ]
+    },
+    {
+      "name": "body",
+      "file": "parts/body__230d8358.png",
+      "page": "Enemy_Spider_01.png",
+      "bounds": [
+        64,
+        7,
+        28,
+        23
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        28,
+        23
+      ]
+    },
+    {
+      "name": "head",
+      "file": "parts/head__9f2e6d33.png",
+      "page": "Enemy_Spider_01.png",
+      "bounds": [
+        203,
+        14,
+        13,
+        16
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        13,
+        16
+      ]
+    }
+  ],
+  "errors": [],
+  "skeleton": "Enemy_Spider_01.json",
+  "spine_version": "4.2.43",
+  "skins": [
+    "default"
+  ],
+  "animations": [
+    "attack1",
+    "die1",
+    "run1",
+    "stay1"
+  ]
+}

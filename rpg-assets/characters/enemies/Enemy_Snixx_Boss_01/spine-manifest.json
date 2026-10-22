@@ -1,0 +1,225 @@
+{
+  "name": "Enemy_Snixx_Boss_01",
+  "source_object": "model_assets_all_4b7c1041d63a541f1599d6ee7559998f.bundle:CAB-8567a9a245cb1780b2cf82cab834069b:-4260021464523683075",
+  "atlas": "Enemy_Snixx_Boss_01.atlas",
+  "pages": [
+    "Enemy_Snixx_Boss_01.png"
+  ],
+  "parts": [
+    {
+      "name": "Cacc",
+      "file": "parts/Cacc__a1968318.png",
+      "page": "Enemy_Snixx_Boss_01.png",
+      "bounds": [
+        2,
+        6,
+        13,
+        21
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        13,
+        21
+      ]
+    },
+    {
+      "name": "Larm1",
+      "file": "parts/Larm1__38d88ba8.png",
+      "page": "Enemy_Snixx_Boss_01.png",
+      "bounds": [
+        194,
+        20,
+        24,
+        19
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        24,
+        19
+      ]
+    },
+    {
+      "name": "Larm2",
+      "file": "parts/Larm2__ab2b45db.png",
+      "page": "Enemy_Snixx_Boss_01.png",
+      "bounds": [
+        71,
+        27,
+        48,
+        35
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        48,
+        35
+      ]
+    },
+    {
+      "name": "Lleg",
+      "file": "parts/Lleg__95243c19.png",
+      "page": "Enemy_Snixx_Boss_01.png",
+      "bounds": [
+        121,
+        33,
+        35,
+        29
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        35,
+        29
+      ]
+    },
+    {
+      "name": "Rarm1",
+      "file": "parts/Rarm1__1a10657c.png",
+      "page": "Enemy_Snixx_Boss_01.png",
+      "bounds": [
+        194,
+        41,
+        25,
+        21
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        25,
+        21
+      ]
+    },
+    {
+      "name": "Rarm2",
+      "file": "parts/Rarm2__99d37085.png",
+      "page": "Enemy_Snixx_Boss_01.png",
+      "bounds": [
+        221,
+        42,
+        25,
+        20
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        25,
+        20
+      ]
+    },
+    {
+      "name": "Rleg",
+      "file": "parts/Rleg__d6433c3f.png",
+      "page": "Enemy_Snixx_Boss_01.png",
+      "bounds": [
+        121,
+        2,
+        33,
+        29
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        33,
+        29
+      ]
+    },
+    {
+      "name": "body",
+      "file": "parts/body__230d8358.png",
+      "page": "Enemy_Snixx_Boss_01.png",
+      "bounds": [
+        158,
+        2,
+        30,
+        30
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        30,
+        30
+      ]
+    },
+    {
+      "name": "head",
+      "file": "parts/head__9f2e6d33.png",
+      "page": "Enemy_Snixx_Boss_01.png",
+      "bounds": [
+        2,
+        21,
+        67,
+        41
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        67,
+        41
+      ]
+    },
+    {
+      "name": "wp",
+      "file": "parts/wp__bd2b8a40.png",
+      "page": "Enemy_Snixx_Boss_01.png",
+      "bounds": [
+        158,
+        34,
+        28,
+        34
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        28,
+        34
+      ]
+    }
+  ],
+  "errors": [],
+  "skeleton": "Enemy_Snixx_Boss_01.json",
+  "spine_version": "4.2.43",
+  "skins": [
+    "default"
+  ],
+  "animations": [
+    "appear1",
+    "attack1",
+    "die1",
+    "run1",
+    "skill1",
+    "skill2",
+    "stay1"
+  ]
+}

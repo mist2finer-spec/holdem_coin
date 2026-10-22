@@ -1,0 +1,80 @@
+{
+  "name": "FX_UI_LumibirdEgg",
+  "source_object": "uipopup_assets_all_ada71fa6cc650350194f55ee62a46fd5.bundle:CAB-688ed1f8211301c136c4cdc8b5a1ffd6:6113119148150804623",
+  "atlas": "FX_UI_LumibirdEgg.atlas",
+  "pages": [
+    "FX_UI_LumibirdEgg.png"
+  ],
+  "parts": [
+    {
+      "name": "1",
+      "file": "parts/1__6b86b273.png",
+      "page": "FX_UI_LumibirdEgg.png",
+      "bounds": [
+        581,
+        7,
+        285,
+        379
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        285,
+        379
+      ]
+    },
+    {
+      "name": "2",
+      "file": "parts/2__d4735e3a.png",
+      "page": "FX_UI_LumibirdEgg.png",
+      "bounds": [
+        293,
+        6,
+        286,
+        380
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        286,
+        380
+      ]
+    },
+    {
+      "name": "3",
+      "file": "parts/3__4e074085.png",
+      "page": "FX_UI_LumibirdEgg.png",
+      "bounds": [
+        2,
+        2,
+        289,
+        384
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        289,
+        384
+      ]
+    }
+  ],
+  "errors": [],
+  "skeleton": "FX_UI_LumibirdEgg.json",
+  "spine_version": "4.2.43",
+  "skins": [
+    "default"
+  ],
+  "animations": [
+    "action1",
+    "stay1"
+  ]
+}

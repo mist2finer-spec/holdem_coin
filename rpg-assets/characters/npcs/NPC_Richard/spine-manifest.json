@@ -1,0 +1,99 @@
+{
+  "name": "NPC_Richard",
+  "source_object": "model_assets_all_4b7c1041d63a541f1599d6ee7559998f.bundle:CAB-8567a9a245cb1780b2cf82cab834069b:-6281640414625628151",
+  "atlas": "NPC_Richard.atlas",
+  "pages": [
+    "NPC_Richard.png"
+  ],
+  "parts": [
+    {
+      "name": "1",
+      "file": "parts/1__6b86b273.png",
+      "page": "NPC_Richard.png",
+      "bounds": [
+        2,
+        10,
+        45,
+        61
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        45,
+        61
+      ]
+    },
+    {
+      "name": "2",
+      "file": "parts/2__d4735e3a.png",
+      "page": "NPC_Richard.png",
+      "bounds": [
+        123,
+        20,
+        29,
+        35
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        29,
+        35
+      ]
+    },
+    {
+      "name": "3",
+      "file": "parts/3__4e074085.png",
+      "page": "NPC_Richard.png",
+      "bounds": [
+        65,
+        19,
+        56,
+        36
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        56,
+        36
+      ]
+    },
+    {
+      "name": "eye",
+      "file": "parts/eye__47c215b5.png",
+      "page": "NPC_Richard.png",
+      "bounds": [
+        2,
+        2,
+        14,
+        6
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        14,
+        6
+      ]
+    }
+  ],
+  "errors": [],
+  "skeleton": "NPC_Richard.json",
+  "spine_version": "4.2.43",
+  "skins": [
+    "default"
+  ],
+  "animations": [
+    "stay1"
+  ]
+}

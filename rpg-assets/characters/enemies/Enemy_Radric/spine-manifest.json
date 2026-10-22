@@ -1,0 +1,211 @@
+{
+  "name": "Enemy_Radric",
+  "source_object": "model_assets_all_4b7c1041d63a541f1599d6ee7559998f.bundle:CAB-8567a9a245cb1780b2cf82cab834069b:5393912607950533135",
+  "atlas": "Enemy_Radric.atlas",
+  "pages": [
+    "Enemy_Radric.png"
+  ],
+  "parts": [
+    {
+      "name": "Bacc",
+      "file": "parts/Bacc__7adf71b4.png",
+      "page": "Enemy_Radric.png",
+      "bounds": [
+        2,
+        57,
+        84,
+        65
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        84,
+        65
+      ]
+    },
+    {
+      "name": "Cacc",
+      "file": "parts/Cacc__a1968318.png",
+      "page": "Enemy_Radric.png",
+      "bounds": [
+        149,
+        29,
+        77,
+        40
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        77,
+        40
+      ]
+    },
+    {
+      "name": "Larm1",
+      "file": "parts/Larm1__38d88ba8.png",
+      "page": "Enemy_Radric.png",
+      "bounds": [
+        101,
+        37,
+        23,
+        23
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        23,
+        23
+      ]
+    },
+    {
+      "name": "Lmeg",
+      "file": "parts/Lmeg__8aa11b34.png",
+      "page": "Enemy_Radric.png",
+      "bounds": [
+        71,
+        25,
+        28,
+        30
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        28,
+        30
+      ]
+    },
+    {
+      "name": "Rarm1",
+      "file": "parts/Rarm1__1a10657c.png",
+      "page": "Enemy_Radric.png",
+      "bounds": [
+        88,
+        62,
+        59,
+        60
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        59,
+        60
+      ]
+    },
+    {
+      "name": "Rarm2",
+      "file": "parts/Rarm2__99d37085.png",
+      "page": "Enemy_Radric.png",
+      "bounds": [
+        71,
+        2,
+        21,
+        29
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        21,
+        29
+      ]
+    },
+    {
+      "name": "Rleg",
+      "file": "parts/Rleg__d6433c3f.png",
+      "page": "Enemy_Radric.png",
+      "bounds": [
+        218,
+        85,
+        26,
+        37
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        26,
+        37
+      ]
+    },
+    {
+      "name": "body",
+      "file": "parts/body__230d8358.png",
+      "page": "Enemy_Radric.png",
+      "bounds": [
+        2,
+        4,
+        51,
+        67
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        51,
+        67
+      ]
+    },
+    {
+      "name": "body1",
+      "file": "parts/body1__85316b1d.png",
+      "page": "Enemy_Radric.png",
+      "bounds": [
+        149,
+        71,
+        51,
+        67
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        51,
+        67
+      ]
+    }
+  ],
+  "errors": [],
+  "skeleton": "Enemy_Radric.json",
+  "spine_version": "4.2.43",
+  "skins": [
+    "default"
+  ],
+  "animations": [
+    "1",
+    "2",
+    "appear1",
+    "attack1",
+    "die1",
+    "groggy1",
+    "run1",
+    "skill1",
+    "skill2",
+    "skill3",
+    "skill3_end",
+    "skill3_loop",
+    "stay1"
+  ]
+}

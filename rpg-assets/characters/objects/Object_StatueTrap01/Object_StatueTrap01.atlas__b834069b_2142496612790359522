@@ -1,0 +1,12 @@
+Object_StatueTrap01.png
+size:128,128
+filter:MipMapNearestNearest,MipMapNearestNearest
+FX
+bounds:68,46,74,53
+rotate:90
+body1
+bounds:2,38,64,82
+body2
+bounds:2,8,74,28
+eye
+bounds:2,2,4,4

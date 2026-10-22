@@ -1,0 +1,274 @@
+{
+  "name": "Enemy_NerissaQueen_01",
+  "source_object": "model_assets_all_4b7c1041d63a541f1599d6ee7559998f.bundle:CAB-8567a9a245cb1780b2cf82cab834069b:-3269743353469598006",
+  "atlas": "Enemy_NerissaQueen_01.atlas",
+  "pages": [
+    "Enemy_NerissaQueen_01.png"
+  ],
+  "parts": [
+    {
+      "name": "Larm1",
+      "file": "parts/Larm1__38d88ba8.png",
+      "page": "Enemy_NerissaQueen_01.png",
+      "bounds": [
+        314,
+        110,
+        63,
+        108
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        63,
+        108
+      ]
+    },
+    {
+      "name": "Larm2",
+      "file": "parts/Larm2__ab2b45db.png",
+      "page": "Enemy_NerissaQueen_01.png",
+      "bounds": [
+        2,
+        124,
+        88,
+        130
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        88,
+        130
+      ]
+    },
+    {
+      "name": "Larm3",
+      "file": "parts/Larm3__68740662.png",
+      "page": "Enemy_NerissaQueen_01.png",
+      "bounds": [
+        2,
+        48,
+        74,
+        137
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        74,
+        137
+      ]
+    },
+    {
+      "name": "Lhand1",
+      "file": "parts/Lhand1__70b29b95.png",
+      "page": "Enemy_NerissaQueen_01.png",
+      "bounds": [
+        321,
+        175,
+        79,
+        130
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        79,
+        130
+      ]
+    },
+    {
+      "name": "Rhand2",
+      "file": "parts/Rhand2__569a07b6.png",
+      "page": "Enemy_NerissaQueen_01.png",
+      "bounds": [
+        321,
+        175,
+        79,
+        130
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        79,
+        130
+      ]
+    },
+    {
+      "name": "Rarm1",
+      "file": "parts/Rarm1__1a10657c.png",
+      "page": "Enemy_NerissaQueen_01.png",
+      "bounds": [
+        314,
+        45,
+        63,
+        108
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        63,
+        108
+      ]
+    },
+    {
+      "name": "Rarm2",
+      "file": "parts/Rarm2__99d37085.png",
+      "page": "Enemy_NerissaQueen_01.png",
+      "bounds": [
+        92,
+        124,
+        88,
+        130
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        88,
+        130
+      ]
+    },
+    {
+      "name": "Rarm3",
+      "file": "parts/Rarm3__d2aa1016.png",
+      "page": "Enemy_NerissaQueen_01.png",
+      "bounds": [
+        182,
+        180,
+        74,
+        137
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        74,
+        137
+      ]
+    },
+    {
+      "name": "Rhand1",
+      "file": "parts/Rhand1__173bfe1e.png",
+      "page": "Enemy_NerissaQueen_01.png",
+      "bounds": [
+        182,
+        99,
+        79,
+        130
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        79,
+        130
+      ]
+    },
+    {
+      "name": "body1",
+      "file": "parts/body1__85316b1d.png",
+      "page": "Enemy_NerissaQueen_01.png",
+      "bounds": [
+        424,
+        20,
+        62,
+        63
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        62,
+        63
+      ]
+    },
+    {
+      "name": "body2",
+      "file": "parts/body2__93926848.png",
+      "page": "Enemy_NerissaQueen_01.png",
+      "bounds": [
+        424,
+        84,
+        68,
+        89
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        68,
+        89
+      ]
+    },
+    {
+      "name": "head",
+      "file": "parts/head__9f2e6d33.png",
+      "page": "Enemy_NerissaQueen_01.png",
+      "bounds": [
+        2,
+        2,
+        38,
+        44
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        38,
+        44
+      ]
+    }
+  ],
+  "errors": [],
+  "skeleton": "Enemy_NerissaQueen_01.json",
+  "spine_version": "4.2.43",
+  "skins": [
+    "default"
+  ],
+  "animations": [
+    "1",
+    "2",
+    "appear1",
+    "attack1",
+    "die1",
+    "groggy1",
+    "run1",
+    "skill1",
+    "skill2",
+    "skill2_end",
+    "skill2_loop",
+    "skill3",
+    "skill4",
+    "skill4_end",
+    "skill4_loop",
+    "stay1"
+  ]
+}

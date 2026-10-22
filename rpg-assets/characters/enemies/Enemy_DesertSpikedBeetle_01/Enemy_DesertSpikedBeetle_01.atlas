@@ -1,0 +1,15 @@
+Enemy_DesertSpikedBeetle_01.png
+size:128,64
+filter:MipMapNearestNearest,MipMapNearestNearest
+Lleg1
+bounds:83,2,14,27
+Lleg2
+bounds:63,31,21,31
+Lleg3
+bounds:63,2,18,27
+Rleg1
+bounds:86,34,19,28
+Rleg2
+bounds:107,33,11,29
+body
+bounds:2,14,59,48

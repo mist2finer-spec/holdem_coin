@@ -1,0 +1,100 @@
+{
+  "name": "Object_StatueTrap02",
+  "source_object": "model_assets_all_4b7c1041d63a541f1599d6ee7559998f.bundle:CAB-8567a9a245cb1780b2cf82cab834069b:-1801096748042135096",
+  "atlas": "Object_StatueTrap02.atlas",
+  "pages": [
+    "Object_StatueTrap02.png"
+  ],
+  "parts": [
+    {
+      "name": "body1",
+      "file": "parts/body1__85316b1d.png",
+      "page": "Object_StatueTrap02.png",
+      "bounds": [
+        2,
+        32,
+        63,
+        84
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        63,
+        84
+      ]
+    },
+    {
+      "name": "body2",
+      "file": "parts/body2__93926848.png",
+      "page": "Object_StatueTrap02.png",
+      "bounds": [
+        2,
+        2,
+        67,
+        28
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        67,
+        28
+      ]
+    },
+    {
+      "name": "eye",
+      "file": "parts/eye__47c215b5.png",
+      "page": "Object_StatueTrap02.png",
+      "bounds": [
+        119,
+        112,
+        6,
+        4
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        6,
+        4
+      ]
+    },
+    {
+      "name": "fx",
+      "file": "parts/fx__6956e1df.png",
+      "page": "Object_StatueTrap02.png",
+      "bounds": [
+        67,
+        47,
+        69,
+        50
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        69,
+        50
+      ]
+    }
+  ],
+  "errors": [],
+  "skeleton": "Object_StatueTrap02.json",
+  "spine_version": "4.2.43",
+  "skins": [
+    "default"
+  ],
+  "animations": [
+    "attack1",
+    "stay1"
+  ]
+}

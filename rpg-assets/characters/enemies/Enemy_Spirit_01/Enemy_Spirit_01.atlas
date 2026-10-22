@@ -1,0 +1,7 @@
+Enemy_Spirit_01.png
+size:64,64
+filter:MipMapNearestNearest,MipMapNearestNearest
+body
+bounds:2,13,54,48
+eye
+bounds:2,2,14,9

@@ -1,0 +1,200 @@
+{
+  "name": "NPC_Noble_M_04",
+  "source_object": "model_assets_all_4b7c1041d63a541f1599d6ee7559998f.bundle:CAB-8567a9a245cb1780b2cf82cab834069b:6550802398863271608",
+  "atlas": "NPC_Noble_M_04.atlas",
+  "pages": [
+    "NPC_Noble_M_04.png"
+  ],
+  "parts": [
+    {
+      "name": "Larm",
+      "file": "parts/Larm__34b585fe.png",
+      "page": "NPC_Noble_M_04.png",
+      "bounds": [
+        2,
+        2,
+        15,
+        29
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        15,
+        29
+      ]
+    },
+    {
+      "name": "Lleg1",
+      "file": "parts/Lleg1__535b27aa.png",
+      "page": "NPC_Noble_M_04.png",
+      "bounds": [
+        36,
+        28,
+        21,
+        33
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        21,
+        33
+      ]
+    },
+    {
+      "name": "Lleg2",
+      "file": "parts/Lleg2__c0b5a504.png",
+      "page": "NPC_Noble_M_04.png",
+      "bounds": [
+        91,
+        12,
+        17,
+        31
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        17,
+        31
+      ]
+    },
+    {
+      "name": "Rarm",
+      "file": "parts/Rarm__3e10b249.png",
+      "page": "NPC_Noble_M_04.png",
+      "bounds": [
+        65,
+        3,
+        26,
+        24
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        26,
+        24
+      ]
+    },
+    {
+      "name": "Rleg",
+      "file": "parts/Rleg__d6433c3f.png",
+      "page": "NPC_Noble_M_04.png",
+      "bounds": [
+        96,
+        31,
+        17,
+        30
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        17,
+        30
+      ]
+    },
+    {
+      "name": "body",
+      "file": "parts/body__230d8358.png",
+      "page": "NPC_Noble_M_04.png",
+      "bounds": [
+        2,
+        19,
+        32,
+        42
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        32,
+        42
+      ]
+    },
+    {
+      "name": "ect",
+      "file": "parts/ect__2fdc47fc.png",
+      "page": "NPC_Noble_M_04.png",
+      "bounds": [
+        33,
+        3,
+        30,
+        14
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        30,
+        14
+      ]
+    },
+    {
+      "name": "face",
+      "file": "parts/face__0282d9b7.png",
+      "page": "NPC_Noble_M_04.png",
+      "bounds": [
+        36,
+        21,
+        13,
+        5
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        13,
+        5
+      ]
+    },
+    {
+      "name": "head",
+      "file": "parts/head__9f2e6d33.png",
+      "page": "NPC_Noble_M_04.png",
+      "bounds": [
+        65,
+        31,
+        30,
+        29
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        30,
+        29
+      ]
+    }
+  ],
+  "errors": [],
+  "skeleton": "NPC_Noble_M_04.json",
+  "spine_version": "4.2.43",
+  "skins": [
+    "default"
+  ],
+  "animations": [
+    "run1",
+    "stay1"
+  ]
+}

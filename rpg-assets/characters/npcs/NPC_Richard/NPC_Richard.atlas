@@ -1,0 +1,12 @@
+NPC_Richard.png
+size:256,64
+filter:MipMap,MipMap
+1
+bounds:2,10,45,61
+rotate:90
+2
+bounds:123,20,29,35
+3
+bounds:65,19,56,36
+eye
+bounds:2,2,14,6

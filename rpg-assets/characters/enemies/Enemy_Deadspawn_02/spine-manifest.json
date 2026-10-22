@@ -1,0 +1,163 @@
+{
+  "name": "Enemy_Deadspawn_02",
+  "source_object": "model_assets_all_4b7c1041d63a541f1599d6ee7559998f.bundle:CAB-8567a9a245cb1780b2cf82cab834069b:-5834720225389108771",
+  "atlas": "Enemy_Deadspawn_02.atlas",
+  "pages": [
+    "Enemy_Deadspawn_02.png"
+  ],
+  "parts": [
+    {
+      "name": "BLleg",
+      "file": "parts/BLleg__c5ce8d39.png",
+      "page": "Enemy_Deadspawn_02.png",
+      "bounds": [
+        19,
+        3,
+        14,
+        16
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        14,
+        16
+      ]
+    },
+    {
+      "name": "BRleg",
+      "file": "parts/BRleg__3eaeed08.png",
+      "page": "Enemy_Deadspawn_02.png",
+      "bounds": [
+        46,
+        16,
+        14,
+        16
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        14,
+        16
+      ]
+    },
+    {
+      "name": "FLleg",
+      "file": "parts/FLleg__b1f02841.png",
+      "page": "Enemy_Deadspawn_02.png",
+      "bounds": [
+        2,
+        2,
+        15,
+        17
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        15,
+        17
+      ]
+    },
+    {
+      "name": "FRleg",
+      "file": "parts/FRleg__8c92fccd.png",
+      "page": "Enemy_Deadspawn_02.png",
+      "bounds": [
+        114,
+        44,
+        12,
+        16
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        12,
+        16
+      ]
+    },
+    {
+      "name": "body",
+      "file": "parts/body__230d8358.png",
+      "page": "Enemy_Deadspawn_02.png",
+      "bounds": [
+        46,
+        32,
+        39,
+        28
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        39,
+        28
+      ]
+    },
+    {
+      "name": "head",
+      "file": "parts/head__9f2e6d33.png",
+      "page": "Enemy_Deadspawn_02.png",
+      "bounds": [
+        2,
+        21,
+        42,
+        39
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        42,
+        39
+      ]
+    },
+    {
+      "name": "tail",
+      "file": "parts/tail__0c62f876.png",
+      "page": "Enemy_Deadspawn_02.png",
+      "bounds": [
+        87,
+        32,
+        25,
+        28
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        25,
+        28
+      ]
+    }
+  ],
+  "errors": [],
+  "skeleton": "Enemy_Deadspawn_02.json",
+  "spine_version": "4.2.43",
+  "skins": [
+    "default"
+  ],
+  "animations": [
+    "1",
+    "attack1",
+    "die1",
+    "run1",
+    "stay1"
+  ]
+}

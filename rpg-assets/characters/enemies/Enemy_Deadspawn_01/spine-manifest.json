@@ -1,0 +1,122 @@
+{
+  "name": "Enemy_Deadspawn_01",
+  "source_object": "model_assets_all_4b7c1041d63a541f1599d6ee7559998f.bundle:CAB-8567a9a245cb1780b2cf82cab834069b:-5751047941388735027",
+  "atlas": "Enemy_Deadspawn_01.atlas",
+  "pages": [
+    "Enemy_Deadspawn_01.png"
+  ],
+  "parts": [
+    {
+      "name": "BLleg",
+      "file": "parts/BLleg__c5ce8d39.png",
+      "page": "Enemy_Deadspawn_01.png",
+      "bounds": [
+        44,
+        8,
+        5,
+        8
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        5,
+        8
+      ]
+    },
+    {
+      "name": "BRleg",
+      "file": "parts/BRleg__3eaeed08.png",
+      "page": "Enemy_Deadspawn_01.png",
+      "bounds": [
+        34,
+        4,
+        8,
+        10
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        8,
+        10
+      ]
+    },
+    {
+      "name": "FLleg",
+      "file": "parts/FLleg__b1f02841.png",
+      "page": "Enemy_Deadspawn_01.png",
+      "bounds": [
+        34,
+        16,
+        8,
+        11
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        8,
+        11
+      ]
+    },
+    {
+      "name": "FRleg",
+      "file": "parts/FRleg__8c92fccd.png",
+      "page": "Enemy_Deadspawn_01.png",
+      "bounds": [
+        44,
+        18,
+        7,
+        9
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        7,
+        9
+      ]
+    },
+    {
+      "name": "body",
+      "file": "parts/body__230d8358.png",
+      "page": "Enemy_Deadspawn_01.png",
+      "bounds": [
+        2,
+        2,
+        30,
+        25
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        30,
+        25
+      ]
+    }
+  ],
+  "errors": [],
+  "skeleton": "Enemy_Deadspawn_01.json",
+  "spine_version": "4.2.43",
+  "skins": [
+    "default"
+  ],
+  "animations": [
+    "attack1",
+    "die1",
+    "run1",
+    "stay1"
+  ]
+}

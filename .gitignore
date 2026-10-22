@@ -70,3 +70,7 @@ mini-services/poker-server/data/
 
 # Curated hunting prototype images
 !public/rpg/*.png
+
+# Offline RPG asset library (asset branch only)
+!rpg-assets/**/*.png
+scripts/rpg/__pycache__/

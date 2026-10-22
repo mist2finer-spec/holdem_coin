@@ -1,0 +1,17 @@
+NPC_Noble_F_03.png
+size:128,64
+filter:MipMapNearestNearest,MipMapNearestNearest
+Larm
+bounds:53,2,14,27
+Lleg1
+bounds:87,32,8,8
+Rarm
+bounds:87,42,21,20
+Rleg
+bounds:69,21,10,8
+body
+bounds:2,11,49,51
+face
+bounds:2,3,14,6
+head
+bounds:53,31,32,31

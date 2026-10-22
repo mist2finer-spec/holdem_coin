@@ -1,0 +1,303 @@
+[
+  {
+    "bundle": "fx_assets_all_1171c389019a2f69167c23b819ff61ea.bundle",
+    "sha256": "53d214852703cf536f383a876278ff9ba16a1ab8b611ba26733cca5db70b5360",
+    "objects": 25749,
+    "types": {
+      "MeshFilter": 545,
+      "GameObject": 6044,
+      "ParticleSystemRenderer": 4560,
+      "Transform": 5677,
+      "ParticleSystem": 4560,
+      "Material": 958,
+      "Texture2D": 741,
+      "MonoBehaviour": 1267,
+      "MeshRenderer": 545,
+      "RectTransform": 367,
+      "Mesh": 124,
+      "CanvasRenderer": 155,
+      "SortingGroup": 164,
+      "Light": 13,
+      "TrailRenderer": 18,
+      "Shader": 9,
+      "Animator": 1,
+      "AssetBundle": 1
+    }
+  },
+  {
+    "bundle": "localization-assets-shared_assets_all.bundle",
+    "sha256": "8df55c3f7911a387cfaeb5ea5586ed559a369fa8d5465620a3b693982d5e716e",
+    "objects": 2,
+    "types": {
+      "AssetBundle": 1,
+      "MonoBehaviour": 1
+    }
+  },
+  {
+    "bundle": "localization-locales_assets_all.bundle",
+    "sha256": "606478d29d58acdb77cd2e19fab59d9c7ae00bb05a468fc313386006b3a75fa1",
+    "objects": 3,
+    "types": {
+      "MonoBehaviour": 2,
+      "AssetBundle": 1
+    }
+  },
+  {
+    "bundle": "localization-string-tables-english(en)_assets_all.bundle",
+    "sha256": "5a6e02c188c6486662f29af34efe89f5da49bb2f3cf96bc35d42170f8867b130",
+    "objects": 2,
+    "types": {
+      "AssetBundle": 1,
+      "MonoBehaviour": 1
+    }
+  },
+  {
+    "bundle": "localization-string-tables-korean(ko)_assets_all.bundle",
+    "sha256": "140f58771ef1a617a93dcbf5eb86f32ec009d4841c1c0a3718530800e22b10a7",
+    "objects": 2,
+    "types": {
+      "MonoBehaviour": 1,
+      "AssetBundle": 1
+    }
+  },
+  {
+    "bundle": "login_assets_all_2be3de58747a3ef84b149451eb0e1731.bundle",
+    "sha256": "cbbb8073e41a5b1d73850ba2f7a470e892d4e1d2603ddd142ad72aac4f76ee26",
+    "objects": 10,
+    "types": {
+      "MonoBehaviour": 2,
+      "AnimatorController": 1,
+      "Texture2D": 1,
+      "TextAsset": 2,
+      "AnimatorOverrideController": 1,
+      "AssetBundle": 1,
+      "AnimationClip": 1,
+      "Material": 1
+    }
+  },
+  {
+    "bundle": "map_assets_all_9a2547367880a72516ddfb87af0076d5.bundle",
+    "sha256": "91c93cee16b63938e0fbd652812d4ffe0b3030747db94a7d7bef9fbd942f228f",
+    "objects": 365,
+    "types": {
+      "Texture2D": 142,
+      "LightProbes": 79,
+      "MonoBehaviour": 96,
+      "Cubemap": 21,
+      "Material": 24,
+      "AssetBundle": 1,
+      "NavMeshData": 2
+    }
+  },
+  {
+    "bundle": "model_assets_all_4b7c1041d63a541f1599d6ee7559998f.bundle",
+    "sha256": "892542ea0b03330f975199672ec8787cc974ed3f97efc53941f78287276324db",
+    "objects": 3438,
+    "types": {
+      "AnimationClip": 878,
+      "MonoBehaviour": 487,
+      "TextAsset": 324,
+      "Texture2D": 283,
+      "MeshFilter": 163,
+      "MeshRenderer": 163,
+      "AnimatorController": 162,
+      "Mesh": 163,
+      "Animator": 163,
+      "Material": 162,
+      "AnimatorOverrideController": 162,
+      "GameObject": 163,
+      "Transform": 163,
+      "Shader": 1,
+      "AssetBundle": 1
+    }
+  },
+  {
+    "bundle": "prefab_assets_all_b70d2429abf5af761cf3407964e278a9.bundle",
+    "sha256": "fa8b29cfba0da37078e1c9e8129a0b2f5bc4f08f51e1619f6b82a61b1e69a2be",
+    "objects": 123871,
+    "types": {
+      "RectTransform": 30283,
+      "MonoBehaviour": 39221,
+      "CanvasRenderer": 20992,
+      "GameObject": 30329,
+      "Animator": 1864,
+      "ParticleSystem": 26,
+      "Material": 20,
+      "Animation": 523,
+      "Texture2D": 36,
+      "Transform": 46,
+      "Canvas": 143,
+      "Sprite": 20,
+      "CanvasGroup": 305,
+      "ParticleSystemRenderer": 26,
+      "SpriteRenderer": 1,
+      "Shader": 10,
+      "TextAsset": 4,
+      "Camera": 1,
+      "MeshRenderer": 8,
+      "MeshFilter": 5,
+      "SortingGroup": 4,
+      "AssetBundle": 1,
+      "Mesh": 1,
+      "MeshCollider": 1,
+      "AnimatorController": 1
+    }
+  },
+  {
+    "bundle": "scene_scenes_all_f9371131995094d1b375887e51eb438b.bundle",
+    "sha256": "81c085039a0afca87558620cac5d399502cdec1d620f3b140efa2f99c775671e",
+    "objects": 56054,
+    "types": {
+      "PreloadData": 2,
+      "AssetBundle": 1,
+      "Material": 19,
+      "Texture2D": 31,
+      "MonoBehaviour": 17843,
+      "AnimatorController": 1,
+      "Shader": 8,
+      "Sprite": 15,
+      "TextAsset": 4,
+      "Mesh": 4,
+      "GameObject": 13677,
+      "Transform": 35,
+      "Camera": 3,
+      "AudioListener": 2,
+      "Animator": 847,
+      "RenderSettings": 2,
+      "Animation": 233,
+      "LightmapSettings": 2,
+      "NavMeshSettings": 2,
+      "ParticleSystem": 11,
+      "ParticleSystemRenderer": 11,
+      "CanvasRenderer": 9428,
+      "Canvas": 79,
+      "RectTransform": 13642,
+      "CanvasGroup": 150,
+      "MeshRenderer": 1,
+      "MeshFilter": 1
+    }
+  },
+  {
+    "bundle": "scriptgraph_assets_all_c1165db8bfe669d9297a3b26c4e644aa.bundle",
+    "sha256": "691862e89e966510b98ae24defcfb05683001d9aee407e9ae7f669260a3e8f21",
+    "objects": 6,
+    "types": {
+      "Transform": 1,
+      "MonoBehaviour": 3,
+      "AssetBundle": 1,
+      "GameObject": 1
+    }
+  },
+  {
+    "bundle": "shader_assets_all_20022e3aaf14f98b92436e3968048656.bundle",
+    "sha256": "a147b5c1fc431efcd8362f6a88f0b8698199e2ba311abd973795ffaaa18d1cb1",
+    "objects": 78,
+    "types": {
+      "Shader": 54,
+      "Texture2D": 10,
+      "Material": 12,
+      "AssetBundle": 1,
+      "RenderTexture": 1
+    }
+  },
+  {
+    "bundle": "uicommon_assets_all_f76fb7d1845e2563aa8b0b1d44068991.bundle",
+    "sha256": "b3f1b8f1ab46466058eef13f2898d57e5f1ca664bbf4ea0ef4e5b7f0a9af619f",
+    "objects": 1275,
+    "types": {
+      "Texture2D": 740,
+      "Sprite": 534,
+      "AssetBundle": 1
+    }
+  },
+  {
+    "bundle": "uiicons_assets_all_b136036949c5b0f0605b836074e3b5be.bundle",
+    "sha256": "142fbe2f5e9fbb13cb900f9000c1d43a19db919c0204c828fc4edbe301ce59b8",
+    "objects": 1174,
+    "types": {
+      "Texture2D": 1169,
+      "Sprite": 4,
+      "AssetBundle": 1
+    }
+  },
+  {
+    "bundle": "uipopup_assets_all_ada71fa6cc650350194f55ee62a46fd5.bundle",
+    "sha256": "ae63592124c159b1a1ea4d7ee5ddc136481f1b9fbe501b85b31b9008f5d8fd45",
+    "objects": 27695,
+    "types": {
+      "CanvasRenderer": 4633,
+      "GameObject": 6768,
+      "RectTransform": 6768,
+      "MonoBehaviour": 8668,
+      "Animation": 281,
+      "CanvasGroup": 145,
+      "Animator": 370,
+      "Sprite": 19,
+      "Material": 11,
+      "Texture2D": 15,
+      "PlayableDirector": 1,
+      "AnimatorController": 3,
+      "Shader": 5,
+      "Canvas": 1,
+      "AssetBundle": 1,
+      "TextAsset": 6
+    }
+  },
+  {
+    "bundle": "animation_assets_all_c87d5c60a4b8931239429786917fbc2a.bundle",
+    "sha256": "a5382e268e82467d5a9235591e83583c1a0ddbabdd6c9ff77a8f66bea8e52a8d",
+    "objects": 199,
+    "types": {
+      "MonoBehaviour": 48,
+      "AnimationClip": 145,
+      "AnimatorController": 5,
+      "AssetBundle": 1
+    }
+  },
+  {
+    "bundle": "be9e4d904692f945f3910b57349aeb09_monoscripts_055fc17f654344b4793d9973828751ed.bundle",
+    "sha256": "f5b7095c8774f8eff8c03f691a0fbd1de9f042bdfd6c13c06cd223fb46b4b460",
+    "objects": 737,
+    "types": {
+      "MonoScript": 736,
+      "AssetBundle": 1
+    }
+  },
+  {
+    "bundle": "be9e4d904692f945f3910b57349aeb09_unitybuiltinassets_6b18f9d23679617f55dba2c6ab292720.bundle",
+    "sha256": "10921836de8780586cfc733e54af63dd9a01788ec7574ce57e633e352ccf4e12",
+    "objects": 22,
+    "types": {
+      "Texture2D": 3,
+      "Shader": 13,
+      "Cubemap": 1,
+      "Material": 3,
+      "Sprite": 1,
+      "AssetBundle": 1
+    }
+  },
+  {
+    "bundle": "config_assets_all_cb1f2067f6690fa973f18bedca05d0ec.bundle",
+    "sha256": "c634ef3558e841ff0c2fc001de83baa4eb2807ef2cb4a5ad1c8e4d3edf579e74",
+    "objects": 102,
+    "types": {
+      "MonoBehaviour": 88,
+      "Sprite": 9,
+      "SpriteAtlas": 2,
+      "Texture2D": 2,
+      "AssetBundle": 1
+    }
+  },
+  {
+    "bundle": "font_assets_all_e09a0ec6041575facb6be32acc155988.bundle",
+    "sha256": "db4feea09d5f0bd7dbef78e1313662b87366e26796d1c96eb56556608e1fb2d5",
+    "objects": 24,
+    "types": {
+      "Material": 19,
+      "MonoBehaviour": 1,
+      "Texture2D": 2,
+      "AssetBundle": 1,
+      "Font": 1
+    }
+  }
+]

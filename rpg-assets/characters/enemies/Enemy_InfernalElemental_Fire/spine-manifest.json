@@ -1,0 +1,108 @@
+{
+  "name": "Enemy_InfernalElemental_Fire",
+  "source_object": "model_assets_all_4b7c1041d63a541f1599d6ee7559998f.bundle:CAB-8567a9a245cb1780b2cf82cab834069b:7710546176676347446",
+  "atlas": "Enemy_InfernalElemental_Fire.atlas",
+  "pages": [
+    "Enemy_InfernalElemental_Fire.png"
+  ],
+  "parts": [
+    {
+      "name": "Layer 1",
+      "file": "parts/Layer_1__ca900bb0.png",
+      "page": "Enemy_InfernalElemental_Fire.png",
+      "bounds": [
+        236,
+        10,
+        16,
+        50
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        16,
+        50
+      ]
+    },
+    {
+      "name": "Layer 2",
+      "file": "parts/Layer_2__620558ce.png",
+      "page": "Enemy_InfernalElemental_Fire.png",
+      "bounds": [
+        101,
+        19,
+        109,
+        41
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        109,
+        41
+      ]
+    },
+    {
+      "name": "Layer 3",
+      "file": "parts/Layer_3__fae4c3c8.png",
+      "page": "Enemy_InfernalElemental_Fire.png",
+      "bounds": [
+        212,
+        2,
+        22,
+        58
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        22,
+        58
+      ]
+    },
+    {
+      "name": "Layer 4",
+      "file": "parts/Layer_4__bf5a7e47.png",
+      "page": "Enemy_InfernalElemental_Fire.png",
+      "bounds": [
+        2,
+        5,
+        97,
+        55
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        97,
+        55
+      ]
+    }
+  ],
+  "errors": [],
+  "skeleton": "Enemy_InfernalElemental_Fire.json",
+  "spine_version": "4.2.43",
+  "skins": [
+    "default"
+  ],
+  "animations": [
+    "2",
+    "appear1",
+    "attack1",
+    "die1",
+    "run1",
+    "skill1",
+    "skill2",
+    "skill2_end",
+    "skill2_loop",
+    "stay1"
+  ]
+}

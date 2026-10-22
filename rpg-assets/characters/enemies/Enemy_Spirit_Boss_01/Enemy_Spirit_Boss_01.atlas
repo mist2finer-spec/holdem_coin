@@ -1,0 +1,11 @@
+Enemy_Spirit_Boss_01.png
+size:256,64
+filter:MipMapNearestNearest,MipMapNearestNearest
+Layer 1
+bounds:236,10,16,50
+Layer 2
+bounds:101,19,109,41
+Layer 3
+bounds:212,2,22,58
+Layer 4
+bounds:2,5,97,55

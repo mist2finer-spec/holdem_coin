@@ -1,0 +1,76 @@
+{
+"skeleton": {
+	"hash": "bNo3JYHGRvE",
+	"spine": "4.2.43",
+	"x": -24.85,
+	"y": -5.94,
+	"width": 50,
+	"height": 111,
+	"images": "./images/",
+	"audio": "./audio"
+},
+"bones": [
+	{ "name": "root" },
+	{ "name": "bone2", "parent": "root", "x": 1.82, "y": 2.44 }
+],
+"slots": [
+	{ "name": "2", "bone": "bone2" },
+	{ "name": "1", "bone": "root", "attachment": "1" }
+],
+"skins": [
+	{
+		"name": "default",
+		"attachments": {
+			"1": {
+				"1": {
+					"type": "mesh",
+					"uvs": [ 1, 1, 0, 1, 0, 0, 1, 0 ],
+					"triangles": [ 1, 2, 3, 1, 3, 0 ],
+					"vertices": [ 25.15, -6.02, -24.85, -6.02, -24.85, 117.98, 25.15, 117.98 ],
+					"hull": 4,
+					"edges": [ 0, 2, 2, 4, 4, 6, 0, 6 ],
+					"width": 50,
+					"height": 124
+				}
+			},
+			"2": {
+				"2": {
+					"type": "mesh",
+					"uvs": [ 1, 1, 0, 1, 0, 0, 1, 0 ],
+					"triangles": [ 1, 2, 3, 1, 3, 0 ],
+					"vertices": [ 23.33, -8.38, -26.67, -8.38, -26.67, 17.62, 23.33, 17.62 ],
+					"hull": 4,
+					"edges": [ 0, 2, 2, 4, 4, 6, 0, 6 ],
+					"width": 50,
+					"height": 26
+				}
+			}
+		}
+	}
+],
+"animations": {
+	"die1": {
+		"slots": {
+			"1": {
+				"attachment": [
+					{}
+				]
+			},
+			"2": {
+				"attachment": [
+					{ "name": "2" }
+				]
+			}
+		}
+	},
+	"stay1": {
+		"bones": {
+			"root": {
+				"translate": [
+					{ "time": 0.0333 }
+				]
+			}
+		}
+	}
+}
+}

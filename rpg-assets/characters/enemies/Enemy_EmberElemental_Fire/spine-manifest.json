@@ -1,0 +1,63 @@
+{
+  "name": "Enemy_EmberElemental_Fire",
+  "source_object": "model_assets_all_4b7c1041d63a541f1599d6ee7559998f.bundle:CAB-8567a9a245cb1780b2cf82cab834069b:-7647832277086857259",
+  "atlas": "Enemy_EmberElemental_Fire.atlas",
+  "pages": [
+    "Enemy_EmberElemental_Fire.png"
+  ],
+  "parts": [
+    {
+      "name": "body",
+      "file": "parts/body__230d8358.png",
+      "page": "Enemy_EmberElemental_Fire.png",
+      "bounds": [
+        2,
+        13,
+        54,
+        48
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        54,
+        48
+      ]
+    },
+    {
+      "name": "eye",
+      "file": "parts/eye__47c215b5.png",
+      "page": "Enemy_EmberElemental_Fire.png",
+      "bounds": [
+        2,
+        2,
+        14,
+        9
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        14,
+        9
+      ]
+    }
+  ],
+  "errors": [],
+  "skeleton": "Enemy_EmberElemental_Fire.json",
+  "spine_version": "4.2.43",
+  "skins": [
+    "default"
+  ],
+  "animations": [
+    "1",
+    "attack1",
+    "die1",
+    "run1",
+    "stay1"
+  ]
+}

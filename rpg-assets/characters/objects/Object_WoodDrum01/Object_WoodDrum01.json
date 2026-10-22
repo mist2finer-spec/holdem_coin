@@ -1,0 +1,237 @@
+{
+"skeleton": {
+	"hash": "YnwRKnYtp7Y",
+	"spine": "4.2.43",
+	"x": -16.74,
+	"y": -2.75,
+	"width": 32.03,
+	"height": 37.03,
+	"images": "./images/",
+	"audio": "./audio"
+},
+"bones": [
+	{ "name": "root" },
+	{ "name": "bone", "parent": "root", "x": 5.87, "y": 2.52 },
+	{ "name": "bone2", "parent": "root", "x": -6.42, "y": 2.64 }
+],
+"slots": [
+	{ "name": "WoodDrum01", "bone": "root", "attachment": "WoodDrum01" },
+	{ "name": "WoodDrum01_D", "bone": "root", "attachment": "WoodDrum01_D" },
+	{ "name": "WoodDrum01_B1", "bone": "bone2", "attachment": "WoodDrum01_B1" },
+	{ "name": "WoodDrum01_B2", "bone": "bone", "attachment": "WoodDrum01_B2" }
+],
+"skins": [
+	{
+		"name": "default",
+		"attachments": {
+			"WoodDrum01": {
+				"WoodDrum01": {
+					"type": "mesh",
+					"uvs": [ 1, 1, 0, 1, 0, 0, 1, 0 ],
+					"triangles": [ 1, 2, 3, 1, 3, 0 ],
+					"vertices": [ 15.26, -2.72, -16.74, -2.72, -16.74, 34.28, 15.26, 34.28 ],
+					"hull": 4,
+					"edges": [ 0, 2, 2, 4, 4, 6, 0, 6 ],
+					"width": 32,
+					"height": 37
+				}
+			},
+			"WoodDrum01_B1": {
+				"WoodDrum01_B1": {
+					"type": "mesh",
+					"uvs": [ 1, 1, 0, 1, 0, 0, 1, 0 ],
+					"triangles": [ 1, 2, 3, 1, 3, 0 ],
+					"vertices": [ 7.95, -5.34, -9.05, -5.34, -9.05, 9.66, 7.95, 9.66 ],
+					"hull": 4,
+					"edges": [ 0, 2, 2, 4, 4, 6, 0, 6 ],
+					"width": 17,
+					"height": 15
+				}
+			},
+			"WoodDrum01_B2": {
+				"WoodDrum01_B2": {
+					"type": "mesh",
+					"uvs": [ 1, 1, 0, 1, 0, 0, 1, 0 ],
+					"triangles": [ 1, 2, 3, 1, 3, 0 ],
+					"vertices": [ 9.42, -5.27, -8.58, -5.27, -8.58, 9.73, 9.42, 9.73 ],
+					"hull": 4,
+					"edges": [ 0, 2, 2, 4, 4, 6, 0, 6 ],
+					"width": 18,
+					"height": 15
+				}
+			},
+			"WoodDrum01_D": {
+				"WoodDrum01_D": {
+					"type": "mesh",
+					"uvs": [ 1, 1, 0, 1, 0, 0, 1, 0 ],
+					"triangles": [ 1, 2, 3, 1, 3, 0 ],
+					"vertices": [ 15.26, -2.72, -16.74, -2.72, -16.74, 33.28, 15.26, 33.28 ],
+					"hull": 4,
+					"edges": [ 0, 2, 2, 4, 4, 6, 0, 6 ],
+					"width": 32,
+					"height": 36
+				}
+			}
+		}
+	}
+],
+"animations": {
+	"1": {
+		"slots": {
+			"WoodDrum01": {
+				"attachment": [
+					{}
+				]
+			},
+			"WoodDrum01_B1": {
+				"rgba": [
+					{ "time": 0.2, "color": "ffffffff", "curve": "stepped" },
+					{ "time": 0.3, "color": "ffffff00", "curve": "stepped" },
+					{ "time": 0.4, "color": "ffffffff", "curve": "stepped" },
+					{ "time": 0.5667, "color": "ffffff00", "curve": "stepped" },
+					{ "time": 0.6667, "color": "ffffffff", "curve": "stepped" },
+					{ "time": 0.7667, "color": "ffffff00", "curve": "stepped" },
+					{ "time": 0.8667, "color": "ffffffff", "curve": "stepped" },
+					{ "time": 1, "color": "ffffff00" }
+				]
+			},
+			"WoodDrum01_B2": {
+				"rgba": [
+					{ "time": 0.2, "color": "ffffffff", "curve": "stepped" },
+					{ "time": 0.3, "color": "ffffff00", "curve": "stepped" },
+					{ "time": 0.4, "color": "ffffffff", "curve": "stepped" },
+					{ "time": 0.5667, "color": "ffffff00", "curve": "stepped" },
+					{ "time": 0.6667, "color": "ffffffff", "curve": "stepped" },
+					{ "time": 0.7667, "color": "ffffff00", "curve": "stepped" },
+					{ "time": 0.8667, "color": "ffffffff", "curve": "stepped" },
+					{ "time": 1, "color": "ffffff00" }
+				]
+			},
+			"WoodDrum01_D": {
+				"attachment": [
+					{}
+				]
+			}
+		},
+		"bones": {
+			"bone": {
+				"translate": [
+					{},
+					{ "time": 0.2, "x": 5.72, "y": 11.49 },
+					{ "time": 0.4667, "x": 7.88, "y": 6.83 },
+					{ "time": 0.6333, "x": 9.22, "y": 0.67 },
+					{ "time": 0.7, "x": 9.72, "y": 3.63 },
+					{ "time": 0.7667, "x": 9.51, "y": 0.79 }
+				]
+			},
+			"bone2": {
+				"translate": [
+					{},
+					{ "time": 0.1667, "x": -1.59, "y": 9.11 },
+					{ "time": 0.3, "x": -5.62, "y": 10.27 },
+					{ "time": 0.4, "x": -6.24, "y": 0.55 },
+					{ "time": 0.4667, "x": -7.15, "y": 3.3 },
+					{ "time": 0.5333, "x": -8.07, "y": 0.49 }
+				]
+			}
+		}
+	},
+	"die1": {
+		"slots": {
+			"WoodDrum01": {
+				"attachment": [
+					{}
+				]
+			},
+			"WoodDrum01_B1": {
+				"rgba": [
+					{ "time": 0.5, "color": "ffffffff", "curve": "stepped" },
+					{ "time": 0.6667, "color": "ffffff00", "curve": "stepped" },
+					{ "time": 0.8333, "color": "ffffffff", "curve": "stepped" },
+					{ "time": 1, "color": "ffffff00", "curve": "stepped" },
+					{ "time": 1.1667, "color": "ffffffff", "curve": "stepped" },
+					{ "time": 1.3333, "color": "ffffff00", "curve": "stepped" },
+					{ "time": 1.5, "color": "ffffffff", "curve": "stepped" },
+					{ "time": 1.6667, "color": "ffffff00" }
+				]
+			},
+			"WoodDrum01_B2": {
+				"rgba": [
+					{ "time": 0.5, "color": "ffffffff", "curve": "stepped" },
+					{ "time": 0.6667, "color": "ffffff00", "curve": "stepped" },
+					{ "time": 0.8333, "color": "ffffffff", "curve": "stepped" },
+					{ "time": 1, "color": "ffffff00", "curve": "stepped" },
+					{ "time": 1.1667, "color": "ffffffff", "curve": "stepped" },
+					{ "time": 1.3333, "color": "ffffff00", "curve": "stepped" },
+					{ "time": 1.5, "color": "ffffffff", "curve": "stepped" },
+					{ "time": 1.6667, "color": "ffffff00" }
+				]
+			},
+			"WoodDrum01_D": {
+				"attachment": [
+					{}
+				]
+			}
+		},
+		"drawOrder": [
+			{
+				"offsets": [
+					{ "slot": "WoodDrum01_B1", "offset": 1 }
+				]
+			}
+		]
+	},
+	"stay1": {
+		"slots": {
+			"WoodDrum01_B1": {
+				"attachment": [
+					{}
+				]
+			},
+			"WoodDrum01_B2": {
+				"attachment": [
+					{}
+				]
+			},
+			"WoodDrum01_D": {
+				"attachment": [
+					{}
+				]
+			}
+		},
+		"bones": {
+			"root": {
+				"translate": [
+					{ "time": 0.0333 }
+				]
+			}
+		}
+	},
+	"damage1": {
+		"slots": {
+			"WoodDrum01": {
+				"attachment": [
+					{}
+				]
+			},
+			"WoodDrum01_B1": {
+				"attachment": [
+					{}
+				]
+			},
+			"WoodDrum01_B2": {
+				"attachment": [
+					{}
+				]
+			}
+		},
+		"bones": {
+			"root": {
+				"translate": [
+					{ "time": 0.0333 }
+				]
+			}
+		}
+	}
+}
+}

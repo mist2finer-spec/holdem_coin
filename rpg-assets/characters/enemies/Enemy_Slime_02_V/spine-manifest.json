@@ -1,0 +1,83 @@
+{
+  "name": "Enemy_Slime_02_V",
+  "source_object": "model_assets_all_4b7c1041d63a541f1599d6ee7559998f.bundle:CAB-8567a9a245cb1780b2cf82cab834069b:-5845129110746229137",
+  "atlas": "Enemy_Slime_02_V.atlas",
+  "pages": [
+    "Enemy_Slime_02_V.png"
+  ],
+  "parts": [
+    {
+      "name": "body",
+      "file": "parts/body__230d8358.png",
+      "page": "Enemy_Slime_02_V.png",
+      "bounds": [
+        2,
+        14,
+        67,
+        37
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        67,
+        37
+      ]
+    },
+    {
+      "name": "eye_C",
+      "file": "parts/eye_C__5c2764b0.png",
+      "page": "Enemy_Slime_02_V.png",
+      "bounds": [
+        71,
+        47,
+        16,
+        4
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        16,
+        4
+      ]
+    },
+    {
+      "name": "eye_O",
+      "file": "parts/eye_O__5b65c965.png",
+      "page": "Enemy_Slime_02_V.png",
+      "bounds": [
+        2,
+        2,
+        16,
+        10
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        16,
+        10
+      ]
+    }
+  ],
+  "errors": [],
+  "skeleton": "Enemy_Slime_02_V.json",
+  "spine_version": "4.2.43",
+  "skins": [
+    "default"
+  ],
+  "animations": [
+    "attack1",
+    "die1",
+    "run1",
+    "skill1",
+    "stay1"
+  ]
+}

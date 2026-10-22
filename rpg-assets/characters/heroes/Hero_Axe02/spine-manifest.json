@@ -1,0 +1,1040 @@
+{
+  "name": "Hero_Axe02",
+  "source_object": "model_assets_all_4b7c1041d63a541f1599d6ee7559998f.bundle:CAB-8567a9a245cb1780b2cf82cab834069b:2060599285729935743",
+  "atlas": "Hero_Axe02.atlas",
+  "pages": [
+    "Hero_Axe02.png"
+  ],
+  "parts": [
+    {
+      "name": "axe01",
+      "file": "parts/axe01__1aa4d50f.png",
+      "page": "Hero_Axe02.png",
+      "bounds": [
+        2,
+        82,
+        82,
+        172
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        82,
+        172
+      ]
+    },
+    {
+      "name": "axe02",
+      "file": "parts/axe02__ad215997.png",
+      "page": "Hero_Axe02.png",
+      "bounds": [
+        86,
+        82,
+        82,
+        172
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        82,
+        172
+      ]
+    },
+    {
+      "name": "axe03",
+      "file": "parts/axe03__726d04a9.png",
+      "page": "Hero_Axe02.png",
+      "bounds": [
+        170,
+        82,
+        82,
+        172
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        82,
+        172
+      ]
+    },
+    {
+      "name": "axe04",
+      "file": "parts/axe04__d4690811.png",
+      "page": "Hero_Axe02.png",
+      "bounds": [
+        254,
+        82,
+        82,
+        172
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        82,
+        172
+      ]
+    },
+    {
+      "name": "axe05",
+      "file": "parts/axe05__4729969a.png",
+      "page": "Hero_Axe02.png",
+      "bounds": [
+        338,
+        82,
+        82,
+        172
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        82,
+        172
+      ]
+    },
+    {
+      "name": "axe06",
+      "file": "parts/axe06__3213eb3a.png",
+      "page": "Hero_Axe02.png",
+      "bounds": [
+        422,
+        82,
+        82,
+        172
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        82,
+        172
+      ]
+    },
+    {
+      "name": "axe07",
+      "file": "parts/axe07__3fdb43ca.png",
+      "page": "Hero_Axe02.png",
+      "bounds": [
+        506,
+        82,
+        82,
+        172
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        82,
+        172
+      ]
+    },
+    {
+      "name": "axe08",
+      "file": "parts/axe08__6a79db97.png",
+      "page": "Hero_Axe02.png",
+      "bounds": [
+        590,
+        82,
+        82,
+        172
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        82,
+        172
+      ]
+    },
+    {
+      "name": "axe09",
+      "file": "parts/axe09__7ece8014.png",
+      "page": "Hero_Axe02.png",
+      "bounds": [
+        674,
+        82,
+        82,
+        172
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        82,
+        172
+      ]
+    },
+    {
+      "name": "cos37_B_Larm",
+      "file": "parts/cos37_B_Larm__7bdca1d8.png",
+      "page": "Hero_Axe02.png",
+      "bounds": [
+        309,
+        66,
+        14,
+        28
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        14,
+        28
+      ]
+    },
+    {
+      "name": "cos37_B_Lleg1",
+      "file": "parts/cos37_B_Lleg1__8dacba5f.png",
+      "page": "Hero_Axe02.png",
+      "bounds": [
+        179,
+        68,
+        12,
+        32
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        12,
+        32
+      ]
+    },
+    {
+      "name": "cos37_B_Lleg2",
+      "file": "parts/cos37_B_Lleg2__47c8d619.png",
+      "page": "Hero_Axe02.png",
+      "bounds": [
+        888,
+        242,
+        12,
+        32
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        12,
+        32
+      ]
+    },
+    {
+      "name": "cos37_B_Rarm",
+      "file": "parts/cos37_B_Rarm__b3ff7a49.png",
+      "page": "Hero_Axe02.png",
+      "bounds": [
+        758,
+        126,
+        22,
+        23
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        22,
+        23
+      ]
+    },
+    {
+      "name": "cos37_B_Rleg",
+      "file": "parts/cos37_B_Rleg__2b5a76a7.png",
+      "page": "Hero_Axe02.png",
+      "bounds": [
+        145,
+        67,
+        13,
+        32
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        13,
+        32
+      ]
+    },
+    {
+      "name": "cos37_B_body",
+      "file": "parts/cos37_B_body__4a853448.png",
+      "page": "Hero_Axe02.png",
+      "bounds": [
+        2,
+        45,
+        39,
+        35
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        39,
+        35
+      ]
+    },
+    {
+      "name": "cos37_B_head",
+      "file": "parts/cos37_B_head__3cc7a705.png",
+      "page": "Hero_Axe02.png",
+      "bounds": [
+        2,
+        9,
+        31,
+        34
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        31,
+        34
+      ]
+    },
+    {
+      "name": "cos37_Larm",
+      "file": "parts/cos37_Larm__77c2f6c9.png",
+      "page": "Hero_Axe02.png",
+      "bounds": [
+        339,
+        66,
+        14,
+        28
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        14,
+        28
+      ]
+    },
+    {
+      "name": "cos37_Larm2",
+      "file": "parts/cos37_Larm2__b60318c4.png",
+      "page": "Hero_Axe02.png",
+      "bounds": [
+        870,
+        225,
+        16,
+        29
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        16,
+        29
+      ]
+    },
+    {
+      "name": "cos37_Larm_S",
+      "file": "parts/cos37_Larm_S__587b0a0e.png",
+      "page": "Hero_Axe02.png",
+      "bounds": [
+        888,
+        225,
+        15,
+        29
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        15,
+        29
+      ]
+    },
+    {
+      "name": "cos37_Lleg1",
+      "file": "parts/cos37_Lleg1__966958ec.png",
+      "page": "Hero_Axe02.png",
+      "bounds": [
+        179,
+        54,
+        12,
+        32
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        12,
+        32
+      ]
+    },
+    {
+      "name": "cos37_Lleg2",
+      "file": "parts/cos37_Lleg2__51b4cc42.png",
+      "page": "Hero_Axe02.png",
+      "bounds": [
+        213,
+        68,
+        12,
+        32
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        12,
+        32
+      ]
+    },
+    {
+      "name": "cos37_Rarm",
+      "file": "parts/cos37_Rarm__fa3e4be8.png",
+      "page": "Hero_Axe02.png",
+      "bounds": [
+        758,
+        101,
+        22,
+        23
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        22,
+        23
+      ]
+    },
+    {
+      "name": "cos37_Rleg",
+      "file": "parts/cos37_Rleg__2e5f1cb0.png",
+      "page": "Hero_Axe02.png",
+      "bounds": [
+        145,
+        52,
+        13,
+        32
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        13,
+        32
+      ]
+    },
+    {
+      "name": "cos37_S_head",
+      "file": "parts/cos37_S_head__c7113448.png",
+      "page": "Hero_Axe02.png",
+      "bounds": [
+        43,
+        49,
+        33,
+        31
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        33,
+        31
+      ]
+    },
+    {
+      "name": "cos37_body",
+      "file": "parts/cos37_body__25237ee1.png",
+      "page": "Hero_Axe02.png",
+      "bounds": [
+        758,
+        219,
+        39,
+        35
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        39,
+        35
+      ]
+    },
+    {
+      "name": "cos37_face",
+      "file": "parts/cos37_face__a8b8bb72.png",
+      "page": "Hero_Axe02.png",
+      "bounds": [
+        2,
+        2,
+        12,
+        5
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        12,
+        5
+      ]
+    },
+    {
+      "name": "cos37_face1",
+      "file": "parts/cos37_face1__d769884d.png",
+      "page": "Hero_Axe02.png",
+      "bounds": [
+        1015,
+        240,
+        14,
+        7
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        14,
+        7
+      ]
+    },
+    {
+      "name": "cos37_face2",
+      "file": "parts/cos37_face2__21cec50a.png",
+      "page": "Hero_Axe02.png",
+      "bounds": [
+        504,
+        63,
+        12,
+        8
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        12,
+        8
+      ]
+    },
+    {
+      "name": "cos37_head",
+      "file": "parts/cos37_head__27706de7.png",
+      "page": "Hero_Axe02.png",
+      "bounds": [
+        78,
+        49,
+        31,
+        32
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        31,
+        32
+      ]
+    },
+    {
+      "name": "cos39_B_Larm",
+      "file": "parts/cos39_B_Larm__d902c509.png",
+      "page": "Hero_Axe02.png",
+      "bounds": [
+        427,
+        69,
+        11,
+        25
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        11,
+        25
+      ]
+    },
+    {
+      "name": "cos39_B_Lleg1",
+      "file": "parts/cos39_B_Lleg1__1315ad9b.png",
+      "page": "Hero_Axe02.png",
+      "bounds": [
+        922,
+        240,
+        14,
+        29
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        14,
+        29
+      ]
+    },
+    {
+      "name": "cos39_B_Lleg2",
+      "file": "parts/cos39_B_Lleg2__9b349efe.png",
+      "page": "Hero_Axe02.png",
+      "bounds": [
+        213,
+        54,
+        12,
+        29
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        12,
+        29
+      ]
+    },
+    {
+      "name": "cos39_B_Rarm",
+      "file": "parts/cos39_B_Rarm__065a601d.png",
+      "page": "Hero_Axe02.png",
+      "bounds": [
+        758,
+        79,
+        20,
+        21
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        20,
+        21
+      ]
+    },
+    {
+      "name": "cos39_B_Rleg",
+      "file": "parts/cos39_B_Rleg__2fb33385.png",
+      "page": "Hero_Axe02.png",
+      "bounds": [
+        247,
+        67,
+        13,
+        29
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        13,
+        29
+      ]
+    },
+    {
+      "name": "cos39_B_body",
+      "file": "parts/cos39_B_body__054c2a85.png",
+      "page": "Hero_Axe02.png",
+      "bounds": [
+        758,
+        151,
+        29,
+        34
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        29,
+        34
+      ]
+    },
+    {
+      "name": "cos39_B_head",
+      "file": "parts/cos39_B_head__541734bb.png",
+      "page": "Hero_Axe02.png",
+      "bounds": [
+        758,
+        187,
+        34,
+        30
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        34,
+        30
+      ]
+    },
+    {
+      "name": "cos39_Larm",
+      "file": "parts/cos39_Larm__141aa82b.png",
+      "page": "Hero_Axe02.png",
+      "bounds": [
+        454,
+        69,
+        11,
+        25
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        11,
+        25
+      ]
+    },
+    {
+      "name": "cos39_Larm2",
+      "file": "parts/cos39_Larm2__11c81a0b.png",
+      "page": "Hero_Axe02.png",
+      "bounds": [
+        400,
+        67,
+        13,
+        25
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        13,
+        25
+      ]
+    },
+    {
+      "name": "cos39_Larm_S",
+      "file": "parts/cos39_Larm_S__669ddc60.png",
+      "page": "Hero_Axe02.png",
+      "bounds": [
+        953,
+        239,
+        15,
+        29
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        15,
+        29
+      ]
+    },
+    {
+      "name": "cos39_Lleg1",
+      "file": "parts/cos39_Lleg1__598eca73.png",
+      "page": "Hero_Axe02.png",
+      "bounds": [
+        984,
+        240,
+        14,
+        29
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        14,
+        29
+      ]
+    },
+    {
+      "name": "cos39_Lleg2",
+      "file": "parts/cos39_Lleg2__4b8be597.png",
+      "page": "Hero_Axe02.png",
+      "bounds": [
+        369,
+        68,
+        12,
+        29
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        12,
+        29
+      ]
+    },
+    {
+      "name": "cos39_Rarm",
+      "file": "parts/cos39_Rarm__1014aac5.png",
+      "page": "Hero_Axe02.png",
+      "bounds": [
+        481,
+        60,
+        20,
+        21
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        20,
+        21
+      ]
+    },
+    {
+      "name": "cos39_Rleg",
+      "file": "parts/cos39_Rleg__4c758c99.png",
+      "page": "Hero_Axe02.png",
+      "bounds": [
+        278,
+        67,
+        13,
+        29
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        13,
+        29
+      ]
+    },
+    {
+      "name": "cos39_S_head",
+      "file": "parts/cos39_S_head__2424b566.png",
+      "page": "Hero_Axe02.png",
+      "bounds": [
+        112,
+        49,
+        31,
+        31
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        31,
+        31
+      ]
+    },
+    {
+      "name": "cos39_body",
+      "file": "parts/cos39_body__da9351a3.png",
+      "page": "Hero_Axe02.png",
+      "bounds": [
+        835,
+        225,
+        29,
+        33
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        29,
+        33
+      ]
+    },
+    {
+      "name": "cos39_face",
+      "file": "parts/cos39_face__7a995c82.png",
+      "page": "Hero_Axe02.png",
+      "bounds": [
+        16,
+        2,
+        12,
+        5
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        12,
+        5
+      ]
+    },
+    {
+      "name": "cos39_face1",
+      "file": "parts/cos39_face1__6183177b.png",
+      "page": "Hero_Axe02.png",
+      "bounds": [
+        504,
+        73,
+        14,
+        7
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        14,
+        7
+      ]
+    },
+    {
+      "name": "cos39_face2",
+      "file": "parts/cos39_face2__b6472bfd.png",
+      "page": "Hero_Axe02.png",
+      "bounds": [
+        520,
+        72,
+        12,
+        8
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        12,
+        8
+      ]
+    },
+    {
+      "name": "cos39_head",
+      "file": "parts/cos39_head__cede53e9.png",
+      "page": "Hero_Axe02.png",
+      "bounds": [
+        799,
+        224,
+        34,
+        30
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        34,
+        30
+      ]
+    }
+  ],
+  "errors": [],
+  "skeleton": "Hero_Axe02.json",
+  "spine_version": "4.2.43",
+  "skins": [
+    "cos/cos37",
+    "cos/cos39",
+    "weapon/grade1",
+    "weapon/grade2",
+    "weapon/grade3",
+    "weapon/grade4",
+    "weapon/grade5",
+    "weapon/grade6",
+    "weapon/grade7",
+    "weapon/grade8",
+    "weapon/skin1"
+  ],
+  "animations": [
+    "attack1",
+    "attack2",
+    "attack3",
+    "attack4",
+    "attack5",
+    "avoid1",
+    "dash",
+    "defeat1",
+    "defeat2",
+    "die1",
+    "jump1",
+    "jump2",
+    "jump3",
+    "jump4",
+    "jump5",
+    "knockdown1",
+    "nstay1",
+    "rest1",
+    "run1",
+    "skill1",
+    "skill2",
+    "skill3",
+    "skill4",
+    "skill5",
+    "skill5_end",
+    "skill5_loop",
+    "sliding1",
+    "sliding2",
+    "stay1",
+    "victory1",
+    "victory2",
+    "wall1"
+  ]
+}

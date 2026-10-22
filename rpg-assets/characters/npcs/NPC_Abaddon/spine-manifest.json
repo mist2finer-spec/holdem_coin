@@ -1,0 +1,59 @@
+{
+  "name": "NPC_Abaddon",
+  "source_object": "model_assets_all_4b7c1041d63a541f1599d6ee7559998f.bundle:CAB-8567a9a245cb1780b2cf82cab834069b:6912672096297597261",
+  "atlas": "NPC_Abaddon.atlas",
+  "pages": [
+    "NPC_Abaddon.png"
+  ],
+  "parts": [
+    {
+      "name": "1",
+      "file": "parts/1__6b86b273.png",
+      "page": "NPC_Abaddon.png",
+      "bounds": [
+        2,
+        2,
+        48,
+        64
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        48,
+        64
+      ]
+    },
+    {
+      "name": "2",
+      "file": "parts/2__d4735e3a.png",
+      "page": "NPC_Abaddon.png",
+      "bounds": [
+        68,
+        8,
+        54,
+        42
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        54,
+        42
+      ]
+    }
+  ],
+  "errors": [],
+  "skeleton": "NPC_Abaddon.json",
+  "spine_version": "4.2.43",
+  "skins": [
+    "default"
+  ],
+  "animations": [
+    "stay1"
+  ]
+}

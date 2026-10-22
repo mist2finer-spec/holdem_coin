@@ -1,0 +1,144 @@
+{
+  "name": "Enemy_BatM_01",
+  "source_object": "model_assets_all_4b7c1041d63a541f1599d6ee7559998f.bundle:CAB-8567a9a245cb1780b2cf82cab834069b:1173339956327401924",
+  "atlas": "Enemy_BatM_01.atlas",
+  "pages": [
+    "Enemy_BatM_01.png"
+  ],
+  "parts": [
+    {
+      "name": "Lwing1",
+      "file": "parts/Lwing1__9f5c09db.png",
+      "page": "Enemy_BatM_01.png",
+      "bounds": [
+        84,
+        9,
+        32,
+        41
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        32,
+        41
+      ]
+    },
+    {
+      "name": "Lwing2",
+      "file": "parts/Lwing2__82857831.png",
+      "page": "Enemy_BatM_01.png",
+      "bounds": [
+        118,
+        9,
+        32,
+        41
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        32,
+        41
+      ]
+    },
+    {
+      "name": "Rwing1",
+      "file": "parts/Rwing1__3fddb2b6.png",
+      "page": "Enemy_BatM_01.png",
+      "bounds": [
+        2,
+        2,
+        39,
+        48
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        39,
+        48
+      ]
+    },
+    {
+      "name": "Rwing2",
+      "file": "parts/Rwing2__c36761a4.png",
+      "page": "Enemy_BatM_01.png",
+      "bounds": [
+        43,
+        2,
+        39,
+        48
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        39,
+        48
+      ]
+    },
+    {
+      "name": "body",
+      "file": "parts/body__230d8358.png",
+      "page": "Enemy_BatM_01.png",
+      "bounds": [
+        181,
+        29,
+        21,
+        32
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        21,
+        32
+      ]
+    },
+    {
+      "name": "head",
+      "file": "parts/head__9f2e6d33.png",
+      "page": "Enemy_BatM_01.png",
+      "bounds": [
+        152,
+        19,
+        27,
+        31
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        27,
+        31
+      ]
+    }
+  ],
+  "errors": [],
+  "skeleton": "Enemy_BatM_01.json",
+  "spine_version": "4.2.43",
+  "skins": [
+    "default"
+  ],
+  "animations": [
+    "1",
+    "attack1",
+    "die1",
+    "run1",
+    "skill1",
+    "stay1"
+  ]
+}

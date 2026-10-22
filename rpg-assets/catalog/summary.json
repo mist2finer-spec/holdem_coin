@@ -1,0 +1,16 @@
+{
+  "source_zip_sha256": "9e112fef2aa400aa45864ba509adc6db91ebad79b7013b91396dae502f64c847",
+  "bundles": 20,
+  "unity_objects": 240808,
+  "exports": 4535,
+  "statuses": {
+    "metadata_only": 236377,
+    "extracted": 4430,
+    "empty_runtime_texture": 1
+  },
+  "errors": 0,
+  "spine_groups": 170,
+  "spine_regions": 4526,
+  "gallery_images": 8428,
+  "contact_sheets": 246
+}

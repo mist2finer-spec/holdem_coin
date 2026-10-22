@@ -1,0 +1,143 @@
+{
+  "name": "Enemy_DesertSpikedBeetle_01",
+  "source_object": "model_assets_all_4b7c1041d63a541f1599d6ee7559998f.bundle:CAB-8567a9a245cb1780b2cf82cab834069b:2459468297664278682",
+  "atlas": "Enemy_DesertSpikedBeetle_01.atlas",
+  "pages": [
+    "Enemy_DesertSpikedBeetle_01.png"
+  ],
+  "parts": [
+    {
+      "name": "Lleg1",
+      "file": "parts/Lleg1__535b27aa.png",
+      "page": "Enemy_DesertSpikedBeetle_01.png",
+      "bounds": [
+        83,
+        2,
+        14,
+        27
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        14,
+        27
+      ]
+    },
+    {
+      "name": "Lleg2",
+      "file": "parts/Lleg2__c0b5a504.png",
+      "page": "Enemy_DesertSpikedBeetle_01.png",
+      "bounds": [
+        63,
+        31,
+        21,
+        31
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        21,
+        31
+      ]
+    },
+    {
+      "name": "Lleg3",
+      "file": "parts/Lleg3__54c8d867.png",
+      "page": "Enemy_DesertSpikedBeetle_01.png",
+      "bounds": [
+        63,
+        2,
+        18,
+        27
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        18,
+        27
+      ]
+    },
+    {
+      "name": "Rleg1",
+      "file": "parts/Rleg1__906d9e04.png",
+      "page": "Enemy_DesertSpikedBeetle_01.png",
+      "bounds": [
+        86,
+        34,
+        19,
+        28
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        19,
+        28
+      ]
+    },
+    {
+      "name": "Rleg2",
+      "file": "parts/Rleg2__bfbe3919.png",
+      "page": "Enemy_DesertSpikedBeetle_01.png",
+      "bounds": [
+        107,
+        33,
+        11,
+        29
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        11,
+        29
+      ]
+    },
+    {
+      "name": "body",
+      "file": "parts/body__230d8358.png",
+      "page": "Enemy_DesertSpikedBeetle_01.png",
+      "bounds": [
+        2,
+        14,
+        59,
+        48
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        59,
+        48
+      ]
+    }
+  ],
+  "errors": [],
+  "skeleton": "Enemy_DesertSpikedBeetle_01.json",
+  "spine_version": "4.2.43",
+  "skins": [
+    "default"
+  ],
+  "animations": [
+    "1",
+    "attack1",
+    "die1",
+    "run1",
+    "stay1"
+  ]
+}

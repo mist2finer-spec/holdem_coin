@@ -1,0 +1,204 @@
+{
+  "name": "Enemy_Kordun_Boss_01",
+  "source_object": "model_assets_all_4b7c1041d63a541f1599d6ee7559998f.bundle:CAB-8567a9a245cb1780b2cf82cab834069b:-8513425753568765996",
+  "atlas": "Enemy_Kordun_Boss_01.atlas",
+  "pages": [
+    "Enemy_Kordun_Boss_01.png"
+  ],
+  "parts": [
+    {
+      "name": "Cacc",
+      "file": "parts/Cacc__a1968318.png",
+      "page": "Enemy_Kordun_Boss_01.png",
+      "bounds": [
+        286,
+        38,
+        24,
+        42
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        24,
+        42
+      ]
+    },
+    {
+      "name": "Larm1",
+      "file": "parts/Larm1__38d88ba8.png",
+      "page": "Enemy_Kordun_Boss_01.png",
+      "bounds": [
+        254,
+        23,
+        30,
+        39
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        30,
+        39
+      ]
+    },
+    {
+      "name": "Larm2",
+      "file": "parts/Larm2__ab2b45db.png",
+      "page": "Enemy_Kordun_Boss_01.png",
+      "bounds": [
+        330,
+        37,
+        38,
+        25
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        38,
+        25
+      ]
+    },
+    {
+      "name": "Lleg",
+      "file": "parts/Lleg__95243c19.png",
+      "page": "Enemy_Kordun_Boss_01.png",
+      "bounds": [
+        153,
+        19,
+        43,
+        48
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        43,
+        48
+      ]
+    },
+    {
+      "name": "Rarm1",
+      "file": "parts/Rarm1__1a10657c.png",
+      "page": "Enemy_Kordun_Boss_01.png",
+      "bounds": [
+        203,
+        20,
+        49,
+        42
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        49,
+        42
+      ]
+    },
+    {
+      "name": "Rarm2",
+      "file": "parts/Rarm2__99d37085.png",
+      "page": "Enemy_Kordun_Boss_01.png",
+      "bounds": [
+        286,
+        2,
+        34,
+        32
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        34,
+        32
+      ]
+    },
+    {
+      "name": "Rleg",
+      "file": "parts/Rleg__d6433c3f.png",
+      "page": "Enemy_Kordun_Boss_01.png",
+      "bounds": [
+        56,
+        13,
+        47,
+        49
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        47,
+        49
+      ]
+    },
+    {
+      "name": "body",
+      "file": "parts/body__230d8358.png",
+      "page": "Enemy_Kordun_Boss_01.png",
+      "bounds": [
+        2,
+        5,
+        52,
+        57
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        52,
+        57
+      ]
+    },
+    {
+      "name": "head",
+      "file": "parts/head__9f2e6d33.png",
+      "page": "Enemy_Kordun_Boss_01.png",
+      "bounds": [
+        105,
+        15,
+        46,
+        47
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        46,
+        47
+      ]
+    }
+  ],
+  "errors": [],
+  "skeleton": "Enemy_Kordun_Boss_01.json",
+  "spine_version": "4.2.43",
+  "skins": [
+    "default"
+  ],
+  "animations": [
+    "attack1",
+    "die1",
+    "run1",
+    "skill1",
+    "skill2",
+    "stay1"
+  ]
+}

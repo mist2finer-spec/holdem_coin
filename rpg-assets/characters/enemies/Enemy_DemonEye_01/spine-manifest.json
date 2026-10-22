@@ -1,0 +1,108 @@
+{
+  "name": "Enemy_DemonEye_01",
+  "source_object": "model_assets_all_4b7c1041d63a541f1599d6ee7559998f.bundle:CAB-8567a9a245cb1780b2cf82cab834069b:-2970314337869144517",
+  "atlas": "Enemy_DemonEye_01.atlas",
+  "pages": [
+    "Enemy_DemonEye_01.png"
+  ],
+  "parts": [
+    {
+      "name": "body",
+      "file": "parts/body__230d8358.png",
+      "page": "Enemy_DemonEye_01.png",
+      "bounds": [
+        2,
+        2,
+        209,
+        215
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        209,
+        215
+      ]
+    },
+    {
+      "name": "bodycap",
+      "file": "parts/bodycap__43231b79.png",
+      "page": "Enemy_DemonEye_01.png",
+      "bounds": [
+        213,
+        31,
+        146,
+        177
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        146,
+        177
+      ]
+    },
+    {
+      "name": "chain01",
+      "file": "parts/chain01__7f6cfb44.png",
+      "page": "Enemy_DemonEye_01.png",
+      "bounds": [
+        213,
+        179,
+        38,
+        292
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        38,
+        292
+      ]
+    },
+    {
+      "name": "chain02",
+      "file": "parts/chain02__f70e1494.png",
+      "page": "Enemy_DemonEye_01.png",
+      "bounds": [
+        392,
+        62,
+        52,
+        115
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        52,
+        115
+      ]
+    }
+  ],
+  "errors": [],
+  "skeleton": "Enemy_DemonEye_01.json",
+  "spine_version": "4.2.43",
+  "skins": [
+    "default"
+  ],
+  "animations": [
+    "appear1",
+    "die1",
+    "groggy1",
+    "rest1",
+    "skill1",
+    "skill2",
+    "skill3",
+    "skill3_end",
+    "skill3_loop",
+    "stay1"
+  ]
+}

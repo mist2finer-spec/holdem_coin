@@ -1,0 +1,163 @@
+{
+  "name": "Enemy_SkeletonMBoss_02",
+  "source_object": "model_assets_all_4b7c1041d63a541f1599d6ee7559998f.bundle:CAB-8567a9a245cb1780b2cf82cab834069b:8844159041367735713",
+  "atlas": "Enemy_SkeletonMBoss_02.atlas",
+  "pages": [
+    "Enemy_SkeletonMBoss_02.png"
+  ],
+  "parts": [
+    {
+      "name": "Larm",
+      "file": "parts/Larm__34b585fe.png",
+      "page": "Enemy_SkeletonMBoss_02.png",
+      "bounds": [
+        200,
+        20,
+        26,
+        24
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        26,
+        24
+      ]
+    },
+    {
+      "name": "Lleg",
+      "file": "parts/Lleg__95243c19.png",
+      "page": "Enemy_SkeletonMBoss_02.png",
+      "bounds": [
+        165,
+        15,
+        33,
+        29
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        33,
+        29
+      ]
+    },
+    {
+      "name": "Rarm",
+      "file": "parts/Rarm__3e10b249.png",
+      "page": "Enemy_SkeletonMBoss_02.png",
+      "bounds": [
+        56,
+        2,
+        18,
+        25
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        18,
+        25
+      ]
+    },
+    {
+      "name": "Rleg",
+      "file": "parts/Rleg__d6433c3f.png",
+      "page": "Enemy_SkeletonMBoss_02.png",
+      "bounds": [
+        228,
+        24,
+        20,
+        25
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        20,
+        25
+      ]
+    },
+    {
+      "name": "body",
+      "file": "parts/body__230d8358.png",
+      "page": "Enemy_SkeletonMBoss_02.png",
+      "bounds": [
+        2,
+        2,
+        52,
+        42
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        52,
+        42
+      ]
+    },
+    {
+      "name": "head",
+      "file": "parts/head__9f2e6d33.png",
+      "page": "Enemy_SkeletonMBoss_02.png",
+      "bounds": [
+        122,
+        11,
+        41,
+        33
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        41,
+        33
+      ]
+    },
+    {
+      "name": "wp",
+      "file": "parts/wp__bd2b8a40.png",
+      "page": "Enemy_SkeletonMBoss_02.png",
+      "bounds": [
+        56,
+        22,
+        64,
+        22
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        64,
+        22
+      ]
+    }
+  ],
+  "errors": [],
+  "skeleton": "Enemy_SkeletonMBoss_02.json",
+  "spine_version": "4.2.43",
+  "skins": [
+    "default"
+  ],
+  "animations": [
+    "attack1",
+    "die1",
+    "run1",
+    "skill1",
+    "stay1"
+  ]
+}

@@ -1,0 +1,153 @@
+{
+  "name": "Enemy_Undine_01",
+  "source_object": "model_assets_all_4b7c1041d63a541f1599d6ee7559998f.bundle:CAB-8567a9a245cb1780b2cf82cab834069b:4342533207769874993",
+  "atlas": "Enemy_Undine_01.atlas",
+  "pages": [
+    "Enemy_Undine_01.png"
+  ],
+  "parts": [
+    {
+      "name": "Larm",
+      "file": "parts/Larm__34b585fe.png",
+      "page": "Enemy_Undine_01.png",
+      "bounds": [
+        81,
+        2,
+        34,
+        20
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        34,
+        20
+      ]
+    },
+    {
+      "name": "Lleg",
+      "file": "parts/Lleg__95243c19.png",
+      "page": "Enemy_Undine_01.png",
+      "bounds": [
+        81,
+        77,
+        49,
+        49
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        49,
+        49
+      ]
+    },
+    {
+      "name": "Rarm",
+      "file": "parts/Rarm__3e10b249.png",
+      "page": "Enemy_Undine_01.png",
+      "bounds": [
+        170,
+        102,
+        40,
+        24
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        40,
+        24
+      ]
+    },
+    {
+      "name": "Rleg",
+      "file": "parts/Rleg__d6433c3f.png",
+      "page": "Enemy_Undine_01.png",
+      "bounds": [
+        81,
+        24,
+        40,
+        51
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        40,
+        51
+      ]
+    },
+    {
+      "name": "body",
+      "file": "parts/body__230d8358.png",
+      "page": "Enemy_Undine_01.png",
+      "bounds": [
+        132,
+        89,
+        36,
+        37
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        36,
+        37
+      ]
+    },
+    {
+      "name": "head",
+      "file": "parts/head__9f2e6d33.png",
+      "page": "Enemy_Undine_01.png",
+      "bounds": [
+        2,
+        13,
+        77,
+        113
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        77,
+        113
+      ]
+    }
+  ],
+  "errors": [],
+  "skeleton": "Enemy_Undine_01.json",
+  "spine_version": "4.2.43",
+  "skins": [
+    "default"
+  ],
+  "animations": [
+    "1",
+    "appear1",
+    "attack1",
+    "die1",
+    "groggy1",
+    "run1",
+    "skill1",
+    "skill2",
+    "skill2_end",
+    "skill2_loop",
+    "skill3",
+    "skill3_end",
+    "skill3_loop",
+    "skill4",
+    "stay1"
+  ]
+}

@@ -1,0 +1,240 @@
+{
+  "name": "NPC_Kellar",
+  "source_object": "model_assets_all_4b7c1041d63a541f1599d6ee7559998f.bundle:CAB-8567a9a245cb1780b2cf82cab834069b:2154487596536962524",
+  "atlas": "NPC_Kellar.atlas",
+  "pages": [
+    "NPC_Kellar.png"
+  ],
+  "parts": [
+    {
+      "name": "Larm1",
+      "file": "parts/Larm1__38d88ba8.png",
+      "page": "NPC_Kellar.png",
+      "bounds": [
+        232,
+        42,
+        16,
+        21
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        16,
+        21
+      ]
+    },
+    {
+      "name": "Larm2",
+      "file": "parts/Larm2__ab2b45db.png",
+      "page": "NPC_Kellar.png",
+      "bounds": [
+        160,
+        18,
+        15,
+        18
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        15,
+        18
+      ]
+    },
+    {
+      "name": "Lleg1",
+      "file": "parts/Lleg1__535b27aa.png",
+      "page": "NPC_Kellar.png",
+      "bounds": [
+        199,
+        45,
+        13,
+        31
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        13,
+        31
+      ]
+    },
+    {
+      "name": "Lleg2",
+      "file": "parts/Lleg2__c0b5a504.png",
+      "page": "NPC_Kellar.png",
+      "bounds": [
+        145,
+        9,
+        13,
+        29
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        13,
+        29
+      ]
+    },
+    {
+      "name": "Rarm",
+      "file": "parts/Rarm__3e10b249.png",
+      "page": "NPC_Kellar.png",
+      "bounds": [
+        170,
+        38,
+        27,
+        20
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        27,
+        20
+      ]
+    },
+    {
+      "name": "Rleg1",
+      "file": "parts/Rleg1__906d9e04.png",
+      "page": "NPC_Kellar.png",
+      "bounds": [
+        129,
+        9,
+        14,
+        29
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        14,
+        29
+      ]
+    },
+    {
+      "name": "body",
+      "file": "parts/body__230d8358.png",
+      "page": "NPC_Kellar.png",
+      "bounds": [
+        101,
+        2,
+        26,
+        38
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        26,
+        38
+      ]
+    },
+    {
+      "name": "body_up",
+      "file": "parts/body_up__27d4f8cd.png",
+      "page": "NPC_Kellar.png",
+      "bounds": [
+        134,
+        40,
+        34,
+        18
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        34,
+        18
+      ]
+    },
+    {
+      "name": "ect",
+      "file": "parts/ect__2fdc47fc.png",
+      "page": "NPC_Kellar.png",
+      "bounds": [
+        2,
+        9,
+        58,
+        49
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        58,
+        49
+      ]
+    },
+    {
+      "name": "head",
+      "file": "parts/head__9f2e6d33.png",
+      "page": "NPC_Kellar.png",
+      "bounds": [
+        62,
+        6,
+        34,
+        37
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        34,
+        37
+      ]
+    },
+    {
+      "name": "weapon",
+      "file": "parts/weapon__c68fef1a.png",
+      "page": "NPC_Kellar.png",
+      "bounds": [
+        62,
+        42,
+        16,
+        70
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        16,
+        70
+      ]
+    }
+  ],
+  "errors": [],
+  "skeleton": "NPC_Kellar.json",
+  "spine_version": "4.2.43",
+  "skins": [
+    "default"
+  ],
+  "animations": [
+    "run1",
+    "stay1"
+  ]
+}

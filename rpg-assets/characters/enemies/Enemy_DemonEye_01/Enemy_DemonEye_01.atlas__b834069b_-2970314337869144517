@@ -1,0 +1,13 @@
+Enemy_DemonEye_01.png
+size:512,256
+filter:MipMapNearestNearest,MipMapNearestNearest
+body
+bounds:2,2,209,215
+bodycap
+bounds:213,31,146,177
+rotate:90
+chain01
+bounds:213,179,38,292
+rotate:90
+chain02
+bounds:392,62,52,115

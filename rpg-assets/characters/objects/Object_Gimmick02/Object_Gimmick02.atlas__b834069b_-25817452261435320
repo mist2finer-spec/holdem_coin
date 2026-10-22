@@ -1,0 +1,11 @@
+Object_Gimmick02.png
+size:256,64
+filter:MipMapNearestNearest,MipMapNearestNearest
+off
+bounds:2,2,43,83
+offsets:1,1,45,85
+rotate:90
+on
+bounds:87,2,43,83
+offsets:1,1,45,85
+rotate:90

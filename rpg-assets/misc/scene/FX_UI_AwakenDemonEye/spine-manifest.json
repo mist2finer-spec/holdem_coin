@@ -1,0 +1,99 @@
+{
+  "name": "FX_UI_AwakenDemonEye",
+  "source_object": "scene_scenes_all_f9371131995094d1b375887e51eb438b.bundle:CAB-adec48d26ada5e749169f22a86bf676d.sharedAssets:67",
+  "atlas": "FX_UI_AwakenDemonEye.atlas",
+  "pages": [
+    "FX_UI_AwakenDemonEye.png"
+  ],
+  "parts": [
+    {
+      "name": "1",
+      "file": "parts/1__6b86b273.png",
+      "page": "FX_UI_AwakenDemonEye.png",
+      "bounds": [
+        2,
+        48,
+        88,
+        136
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        88,
+        136
+      ]
+    },
+    {
+      "name": "2",
+      "file": "parts/2__d4735e3a.png",
+      "page": "FX_UI_AwakenDemonEye.png",
+      "bounds": [
+        409,
+        350,
+        160,
+        160
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        160,
+        160
+      ]
+    },
+    {
+      "name": "3",
+      "file": "parts/3__4e074085.png",
+      "page": "FX_UI_AwakenDemonEye.png",
+      "bounds": [
+        2,
+        138,
+        405,
+        372
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        405,
+        372
+      ]
+    },
+    {
+      "name": "L",
+      "file": "parts/L__72dfcfb0.png",
+      "page": "FX_UI_AwakenDemonEye.png",
+      "bounds": [
+        2,
+        2,
+        44,
+        40
+      ],
+      "rotation": 90,
+      "offset": [
+        2,
+        6
+      ],
+      "original_size": [
+        49,
+        48
+      ]
+    }
+  ],
+  "errors": [],
+  "skeleton": "FX_UI_AwakenDemonEye.json",
+  "spine_version": "4.2.43",
+  "skins": [
+    "default"
+  ],
+  "animations": [
+    "stay1"
+  ]
+}

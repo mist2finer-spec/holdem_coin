@@ -1,0 +1,186 @@
+{
+  "name": "Enemy_Slime_Boss_02_G",
+  "source_object": "model_assets_all_4b7c1041d63a541f1599d6ee7559998f.bundle:CAB-8567a9a245cb1780b2cf82cab834069b:6181134897188631631",
+  "atlas": "Enemy_Slime_Boss_02_G.atlas",
+  "pages": [
+    "Enemy_Slime_Boss_02_G.png"
+  ],
+  "parts": [
+    {
+      "name": "body1_G",
+      "file": "parts/body1_G__c86d4914.png",
+      "page": "Enemy_Slime_Boss_02_G.png",
+      "bounds": [
+        2,
+        43,
+        119,
+        83
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        119,
+        83
+      ]
+    },
+    {
+      "name": "body2_G",
+      "file": "parts/body2_G__3373931a.png",
+      "page": "Enemy_Slime_Boss_02_G.png",
+      "bounds": [
+        123,
+        78,
+        40,
+        48
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        40,
+        48
+      ]
+    },
+    {
+      "name": "ect1_G",
+      "file": "parts/ect1_G__2eace455.png",
+      "page": "Enemy_Slime_Boss_02_G.png",
+      "bounds": [
+        123,
+        50,
+        8,
+        10
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        8,
+        10
+      ]
+    },
+    {
+      "name": "ect2_G",
+      "file": "parts/ect2_G__33695400.png",
+      "page": "Enemy_Slime_Boss_02_G.png",
+      "bounds": [
+        2,
+        17,
+        9,
+        24
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        9,
+        24
+      ]
+    },
+    {
+      "name": "ect3_G",
+      "file": "parts/ect3_G__b7b32cc7.png",
+      "page": "Enemy_Slime_Boss_02_G.png",
+      "bounds": [
+        2,
+        2,
+        8,
+        13
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        8,
+        13
+      ]
+    },
+    {
+      "name": "eye_C_G",
+      "file": "parts/eye_C_G__8f65ac86.png",
+      "page": "Enemy_Slime_Boss_02_G.png",
+      "bounds": [
+        13,
+        37,
+        17,
+        4
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        17,
+        4
+      ]
+    },
+    {
+      "name": "eye_M_G",
+      "file": "parts/eye_M_G__6e2d9e45.png",
+      "page": "Enemy_Slime_Boss_02_G.png",
+      "bounds": [
+        165,
+        119,
+        17,
+        7
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        17,
+        7
+      ]
+    },
+    {
+      "name": "eye_O_G",
+      "file": "parts/eye_O_G__9917e34b.png",
+      "page": "Enemy_Slime_Boss_02_G.png",
+      "bounds": [
+        123,
+        62,
+        19,
+        14
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        19,
+        14
+      ]
+    }
+  ],
+  "errors": [],
+  "skeleton": "Enemy_Slime_Boss_02_G.json",
+  "spine_version": "4.2.43",
+  "skins": [
+    "default"
+  ],
+  "animations": [
+    "appear1",
+    "attack1",
+    "die1",
+    "groggy1",
+    "run1",
+    "skill1",
+    "skill2",
+    "stay1"
+  ]
+}

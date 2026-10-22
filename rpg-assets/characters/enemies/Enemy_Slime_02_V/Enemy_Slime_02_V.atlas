@@ -1,0 +1,9 @@
+Enemy_Slime_02_V.png
+size:128,64
+filter:MipMapNearestNearest,MipMapNearestNearest
+body
+bounds:2,14,67,37
+eye_C
+bounds:71,47,16,4
+eye_O
+bounds:2,2,16,10

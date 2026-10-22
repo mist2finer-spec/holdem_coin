@@ -1,0 +1,202 @@
+{
+  "name": "Enemy_Mimic_01",
+  "source_object": "model_assets_all_4b7c1041d63a541f1599d6ee7559998f.bundle:CAB-8567a9a245cb1780b2cf82cab834069b:8534209903214327323",
+  "atlas": "Enemy_Mimic_01.atlas",
+  "pages": [
+    "Enemy_Mimic_01.png"
+  ],
+  "parts": [
+    {
+      "name": "Lleg1",
+      "file": "parts/Lleg1__535b27aa.png",
+      "page": "Enemy_Mimic_01.png",
+      "bounds": [
+        34,
+        10,
+        10,
+        14
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        10,
+        14
+      ]
+    },
+    {
+      "name": "Lleg2",
+      "file": "parts/Lleg2__c0b5a504.png",
+      "page": "Enemy_Mimic_01.png",
+      "bounds": [
+        46,
+        18,
+        12,
+        13
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        12,
+        13
+      ]
+    },
+    {
+      "name": "Rleg1",
+      "file": "parts/Rleg1__906d9e04.png",
+      "page": "Enemy_Mimic_01.png",
+      "bounds": [
+        19,
+        2,
+        7,
+        11
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        7,
+        11
+      ]
+    },
+    {
+      "name": "Rleg2",
+      "file": "parts/Rleg2__bfbe3919.png",
+      "page": "Enemy_Mimic_01.png",
+      "bounds": [
+        46,
+        5,
+        11,
+        13
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        11,
+        13
+      ]
+    },
+    {
+      "name": "body",
+      "file": "parts/body__230d8358.png",
+      "page": "Enemy_Mimic_01.png",
+      "bounds": [
+        2,
+        26,
+        40,
+        35
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        40,
+        35
+      ]
+    },
+    {
+      "name": "close_eye",
+      "file": "parts/close_eye__a4a83c63.png",
+      "page": "Enemy_Mimic_01.png",
+      "bounds": [
+        44,
+        48,
+        13,
+        13
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        13,
+        13
+      ]
+    },
+    {
+      "name": "close_eye1",
+      "file": "parts/close_eye1__f0d6e047.png",
+      "page": "Enemy_Mimic_01.png",
+      "bounds": [
+        19,
+        11,
+        13,
+        13
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        13,
+        13
+      ]
+    },
+    {
+      "name": "ect",
+      "file": "parts/ect__2fdc47fc.png",
+      "page": "Enemy_Mimic_01.png",
+      "bounds": [
+        2,
+        5,
+        15,
+        19
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        15,
+        19
+      ]
+    },
+    {
+      "name": "eye",
+      "file": "parts/eye__47c215b5.png",
+      "page": "Enemy_Mimic_01.png",
+      "bounds": [
+        44,
+        33,
+        13,
+        13
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        13,
+        13
+      ]
+    }
+  ],
+  "errors": [],
+  "skeleton": "Enemy_Mimic_01.json",
+  "spine_version": "4.2.43",
+  "skins": [
+    "default"
+  ],
+  "animations": [
+    "attack1",
+    "die1",
+    "run1",
+    "stay1"
+  ]
+}

@@ -1,0 +1,14 @@
+NPC_Adelaide.png
+size:128,64
+filter:MipMapNearestNearest,MipMapNearestNearest
+Larm
+bounds:94,37,20,20
+Rarm
+bounds:53,2,13,25
+rotate:90
+body
+bounds:2,5,49,52
+face
+bounds:94,26,14,9
+head
+bounds:53,17,39,40

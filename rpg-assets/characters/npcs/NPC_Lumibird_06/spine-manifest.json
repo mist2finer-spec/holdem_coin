@@ -1,0 +1,432 @@
+{
+  "name": "NPC_Lumibird_06",
+  "source_object": "model_assets_all_4b7c1041d63a541f1599d6ee7559998f.bundle:CAB-8567a9a245cb1780b2cf82cab834069b:-6759524942731146827",
+  "atlas": "NPC_Lumibird_06.atlas",
+  "pages": [
+    "NPC_Lumibird_06.png"
+  ],
+  "parts": [
+    {
+      "name": "Larm1",
+      "file": "parts/Larm1__38d88ba8.png",
+      "page": "NPC_Lumibird_06.png",
+      "bounds": [
+        185,
+        46,
+        19,
+        16
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        19,
+        16
+      ]
+    },
+    {
+      "name": "Larm2",
+      "file": "parts/Larm2__ab2b45db.png",
+      "page": "NPC_Lumibird_06.png",
+      "bounds": [
+        46,
+        43,
+        20,
+        19
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        20,
+        19
+      ]
+    },
+    {
+      "name": "Lleg1",
+      "file": "parts/Lleg1__535b27aa.png",
+      "page": "NPC_Lumibird_06.png",
+      "bounds": [
+        106,
+        41,
+        11,
+        7
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        11,
+        7
+      ]
+    },
+    {
+      "name": "Lleg2",
+      "file": "parts/Lleg2__c0b5a504.png",
+      "page": "NPC_Lumibird_06.png",
+      "bounds": [
+        90,
+        30,
+        16,
+        14
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        16,
+        14
+      ]
+    },
+    {
+      "name": "Rarm2",
+      "file": "parts/Rarm2__99d37085.png",
+      "page": "NPC_Lumibird_06.png",
+      "bounds": [
+        23,
+        2,
+        13,
+        17
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        13,
+        17
+      ]
+    },
+    {
+      "name": "Rleg1",
+      "file": "parts/Rleg1__906d9e04.png",
+      "page": "NPC_Lumibird_06.png",
+      "bounds": [
+        87,
+        22,
+        13,
+        6
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        13,
+        6
+      ]
+    },
+    {
+      "name": "Rleg2",
+      "file": "parts/Rleg2__bfbe3919.png",
+      "page": "NPC_Lumibird_06.png",
+      "bounds": [
+        68,
+        16,
+        17,
+        12
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        17,
+        12
+      ]
+    },
+    {
+      "name": "body1",
+      "file": "parts/body1__85316b1d.png",
+      "page": "NPC_Lumibird_06.png",
+      "bounds": [
+        2,
+        17,
+        42,
+        45
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        42,
+        45
+      ]
+    },
+    {
+      "name": "bubble",
+      "file": "parts/bubble__df4ac416.png",
+      "page": "NPC_Lumibird_06.png",
+      "bounds": [
+        46,
+        22,
+        20,
+        19
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        20,
+        19
+      ]
+    },
+    {
+      "name": "bubble2",
+      "file": "parts/bubble2__aad4f961.png",
+      "page": "NPC_Lumibird_06.png",
+      "bounds": [
+        206,
+        46,
+        17,
+        16
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        17,
+        16
+      ]
+    },
+    {
+      "name": "bubble3",
+      "file": "parts/bubble3__f6f5f16b.png",
+      "page": "NPC_Lumibird_06.png",
+      "bounds": [
+        225,
+        46,
+        17,
+        16
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        17,
+        16
+      ]
+    },
+    {
+      "name": "bubble4",
+      "file": "parts/bubble4__75b0ae60.png",
+      "page": "NPC_Lumibird_06.png",
+      "bounds": [
+        42,
+        2,
+        13,
+        14
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        13,
+        14
+      ]
+    },
+    {
+      "name": "face",
+      "file": "parts/face__0282d9b7.png",
+      "page": "NPC_Lumibird_06.png",
+      "bounds": [
+        244,
+        43,
+        19,
+        10
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        19,
+        10
+      ]
+    },
+    {
+      "name": "face2",
+      "file": "parts/face2__8a49fe28.png",
+      "page": "NPC_Lumibird_06.png",
+      "bounds": [
+        68,
+        30,
+        20,
+        16
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        20,
+        16
+      ]
+    },
+    {
+      "name": "face3",
+      "file": "parts/face3__f42ff3f5.png",
+      "page": "NPC_Lumibird_06.png",
+      "bounds": [
+        68,
+        48,
+        23,
+        14
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        23,
+        14
+      ]
+    },
+    {
+      "name": "face4",
+      "file": "parts/face4__f401bfd5.png",
+      "page": "NPC_Lumibird_06.png",
+      "bounds": [
+        2,
+        2,
+        19,
+        13
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        19,
+        13
+      ]
+    },
+    {
+      "name": "face5",
+      "file": "parts/face5__65555c87.png",
+      "page": "NPC_Lumibird_06.png",
+      "bounds": [
+        141,
+        50,
+        20,
+        12
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        20,
+        12
+      ]
+    },
+    {
+      "name": "face6",
+      "file": "parts/face6__797ef96f.png",
+      "page": "NPC_Lumibird_06.png",
+      "bounds": [
+        93,
+        50,
+        22,
+        12
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        22,
+        12
+      ]
+    },
+    {
+      "name": "face7",
+      "file": "parts/face7__4b61f52c.png",
+      "page": "NPC_Lumibird_06.png",
+      "bounds": [
+        117,
+        50,
+        22,
+        12
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        22,
+        12
+      ]
+    },
+    {
+      "name": "face8",
+      "file": "parts/face8__cac82ba2.png",
+      "page": "NPC_Lumibird_06.png",
+      "bounds": [
+        163,
+        48,
+        20,
+        14
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        20,
+        14
+      ]
+    }
+  ],
+  "errors": [],
+  "skeleton": "NPC_Lumibird_06.json",
+  "spine_version": "4.2.43",
+  "skins": [
+    "default"
+  ],
+  "animations": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "action1",
+    "action2",
+    "action3",
+    "action4",
+    "action5",
+    "action6",
+    "run1",
+    "stay1"
+  ]
+}

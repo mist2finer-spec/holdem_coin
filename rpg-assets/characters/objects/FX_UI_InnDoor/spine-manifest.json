@@ -1,0 +1,81 @@
+{
+  "name": "FX_UI_InnDoor",
+  "source_object": "model_assets_all_4b7c1041d63a541f1599d6ee7559998f.bundle:CAB-8567a9a245cb1780b2cf82cab834069b:4727658406328619637",
+  "atlas": "FX_UI_InnDoor.atlas",
+  "pages": [
+    "FX_UI_InnDoor.png"
+  ],
+  "parts": [
+    {
+      "name": "1",
+      "file": "parts/1__6b86b273.png",
+      "page": "FX_UI_InnDoor.png",
+      "bounds": [
+        2,
+        518,
+        211,
+        417
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        211,
+        417
+      ]
+    },
+    {
+      "name": "2",
+      "file": "parts/2__d4735e3a.png",
+      "page": "FX_UI_InnDoor.png",
+      "bounds": [
+        2,
+        2,
+        72,
+        514
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        72,
+        514
+      ]
+    },
+    {
+      "name": "3",
+      "file": "parts/3__4e074085.png",
+      "page": "FX_UI_InnDoor.png",
+      "bounds": [
+        215,
+        518,
+        19,
+        417
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        19,
+        417
+      ]
+    }
+  ],
+  "errors": [],
+  "skeleton": "FX_UI_InnDoor.json",
+  "spine_version": "4.2.43",
+  "skins": [
+    "default"
+  ],
+  "animations": [
+    "1",
+    "close",
+    "open"
+  ]
+}

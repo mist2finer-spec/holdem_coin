@@ -1,0 +1,59 @@
+{
+  "name": "Npc_Woman_03",
+  "source_object": "model_assets_all_4b7c1041d63a541f1599d6ee7559998f.bundle:CAB-8567a9a245cb1780b2cf82cab834069b:-2365245904714032594",
+  "atlas": "Npc_Woman_03.atlas",
+  "pages": [
+    "Npc_Woman_03.png"
+  ],
+  "parts": [
+    {
+      "name": "body",
+      "file": "parts/body__230d8358.png",
+      "page": "Npc_Woman_03.png",
+      "bounds": [
+        2,
+        18,
+        39,
+        73
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        39,
+        73
+      ]
+    },
+    {
+      "name": "ect",
+      "file": "parts/ect__2fdc47fc.png",
+      "page": "Npc_Woman_03.png",
+      "bounds": [
+        2,
+        2,
+        17,
+        14
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        17,
+        14
+      ]
+    }
+  ],
+  "errors": [],
+  "skeleton": "Npc_Woman_03.json",
+  "spine_version": "4.2.43",
+  "skins": [
+    "default"
+  ],
+  "animations": [
+    "stay1"
+  ]
+}

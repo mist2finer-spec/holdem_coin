@@ -1,0 +1,16 @@
+Enemy_DesertBeetle_01.png
+size:128,32
+filter:MipMapNearestNearest,MipMapNearestNearest
+Lleg1
+bounds:33,12,12,18
+Lleg2
+bounds:33,12,12,18
+Rleg1
+bounds:47,2,9,16
+rotate:90
+Rleg2
+bounds:47,13,11,17
+Rleg3
+bounds:60,15,10,15
+body
+bounds:2,3,29,27

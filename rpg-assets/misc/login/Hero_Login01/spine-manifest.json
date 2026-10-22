@@ -1,0 +1,59 @@
+{
+  "name": "Hero_Login01",
+  "source_object": "login_assets_all_2be3de58747a3ef84b149451eb0e1731.bundle:CAB-f1638d46d5e9bdd37a215fe58874130d:-733939515379882671",
+  "atlas": "Hero_Login01.atlas",
+  "pages": [
+    "Hero_Login01.png"
+  ],
+  "parts": [
+    {
+      "name": "body",
+      "file": "parts/body__230d8358.png",
+      "page": "Hero_Login01.png",
+      "bounds": [
+        2,
+        2,
+        174,
+        257
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        174,
+        257
+      ]
+    },
+    {
+      "name": "ect",
+      "file": "parts/ect__2fdc47fc.png",
+      "page": "Hero_Login01.png",
+      "bounds": [
+        261,
+        64,
+        79,
+        112
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        79,
+        112
+      ]
+    }
+  ],
+  "errors": [],
+  "skeleton": "Hero_Login01.json",
+  "spine_version": "4.2.43",
+  "skins": [
+    "default"
+  ],
+  "animations": [
+    "stay1"
+  ]
+}

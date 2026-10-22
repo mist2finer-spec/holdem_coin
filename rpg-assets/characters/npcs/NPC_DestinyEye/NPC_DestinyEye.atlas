@@ -1,0 +1,9 @@
+NPC_DestinyEye.png
+size:128,64
+filter:MipMapNearestNearest,MipMapNearestNearest
+body
+bounds:2,2,46,57
+close
+bounds:50,24,33,35
+eye
+bounds:50,9,13,13

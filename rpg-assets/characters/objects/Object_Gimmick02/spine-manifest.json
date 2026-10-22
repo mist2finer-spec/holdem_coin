@@ -1,0 +1,61 @@
+{
+  "name": "Object_Gimmick02",
+  "source_object": "model_assets_all_4b7c1041d63a541f1599d6ee7559998f.bundle:CAB-8567a9a245cb1780b2cf82cab834069b:-25817452261435320",
+  "atlas": "Object_Gimmick02.atlas",
+  "pages": [
+    "Object_Gimmick02.png"
+  ],
+  "parts": [
+    {
+      "name": "off",
+      "file": "parts/off__b4dc66dd.png",
+      "page": "Object_Gimmick02.png",
+      "bounds": [
+        2,
+        2,
+        43,
+        83
+      ],
+      "rotation": 90,
+      "offset": [
+        1,
+        1
+      ],
+      "original_size": [
+        45,
+        85
+      ]
+    },
+    {
+      "name": "on",
+      "file": "parts/on__b8d31e85.png",
+      "page": "Object_Gimmick02.png",
+      "bounds": [
+        87,
+        2,
+        43,
+        83
+      ],
+      "rotation": 90,
+      "offset": [
+        1,
+        1
+      ],
+      "original_size": [
+        45,
+        85
+      ]
+    }
+  ],
+  "errors": [],
+  "skeleton": "Object_Gimmick02.json",
+  "spine_version": "4.2.43",
+  "skins": [
+    "default"
+  ],
+  "animations": [
+    "1",
+    "action1",
+    "stay1"
+  ]
+}

@@ -1,0 +1,142 @@
+{
+  "name": "Enemy_DesertBeetle_01",
+  "source_object": "model_assets_all_4b7c1041d63a541f1599d6ee7559998f.bundle:CAB-8567a9a245cb1780b2cf82cab834069b:-5022351605053802883",
+  "atlas": "Enemy_DesertBeetle_01.atlas",
+  "pages": [
+    "Enemy_DesertBeetle_01.png"
+  ],
+  "parts": [
+    {
+      "name": "Lleg1",
+      "file": "parts/Lleg1__535b27aa.png",
+      "page": "Enemy_DesertBeetle_01.png",
+      "bounds": [
+        33,
+        12,
+        12,
+        18
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        12,
+        18
+      ]
+    },
+    {
+      "name": "Lleg2",
+      "file": "parts/Lleg2__c0b5a504.png",
+      "page": "Enemy_DesertBeetle_01.png",
+      "bounds": [
+        33,
+        12,
+        12,
+        18
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        12,
+        18
+      ]
+    },
+    {
+      "name": "Rleg1",
+      "file": "parts/Rleg1__906d9e04.png",
+      "page": "Enemy_DesertBeetle_01.png",
+      "bounds": [
+        47,
+        2,
+        9,
+        16
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        9,
+        16
+      ]
+    },
+    {
+      "name": "Rleg2",
+      "file": "parts/Rleg2__bfbe3919.png",
+      "page": "Enemy_DesertBeetle_01.png",
+      "bounds": [
+        47,
+        13,
+        11,
+        17
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        11,
+        17
+      ]
+    },
+    {
+      "name": "Rleg3",
+      "file": "parts/Rleg3__584bf741.png",
+      "page": "Enemy_DesertBeetle_01.png",
+      "bounds": [
+        60,
+        15,
+        10,
+        15
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        10,
+        15
+      ]
+    },
+    {
+      "name": "body",
+      "file": "parts/body__230d8358.png",
+      "page": "Enemy_DesertBeetle_01.png",
+      "bounds": [
+        2,
+        3,
+        29,
+        27
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        29,
+        27
+      ]
+    }
+  ],
+  "errors": [],
+  "skeleton": "Enemy_DesertBeetle_01.json",
+  "spine_version": "4.2.43",
+  "skins": [
+    "default"
+  ],
+  "animations": [
+    "attack1",
+    "die1",
+    "run1",
+    "stay1"
+  ]
+}

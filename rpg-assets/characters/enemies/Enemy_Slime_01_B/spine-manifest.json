@@ -1,0 +1,62 @@
+{
+  "name": "Enemy_Slime_01_B",
+  "source_object": "model_assets_all_4b7c1041d63a541f1599d6ee7559998f.bundle:CAB-8567a9a245cb1780b2cf82cab834069b:-4998576464669044246",
+  "atlas": "Enemy_Slime_01_B.atlas",
+  "pages": [
+    "Enemy_Slime_01_B.png"
+  ],
+  "parts": [
+    {
+      "name": "body_B",
+      "file": "parts/body_B__879f260c.png",
+      "page": "Enemy_Slime_01_B.png",
+      "bounds": [
+        2,
+        2,
+        36,
+        23
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        36,
+        23
+      ]
+    },
+    {
+      "name": "eye_B",
+      "file": "parts/eye_B__01a71028.png",
+      "page": "Enemy_Slime_01_B.png",
+      "bounds": [
+        40,
+        17,
+        11,
+        8
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        11,
+        8
+      ]
+    }
+  ],
+  "errors": [],
+  "skeleton": "Enemy_Slime_01_B.json",
+  "spine_version": "4.2.43",
+  "skins": [
+    "default"
+  ],
+  "animations": [
+    "attack1",
+    "die1",
+    "run1",
+    "stay1"
+  ]
+}

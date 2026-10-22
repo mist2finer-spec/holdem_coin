@@ -1,0 +1,15 @@
+NPC_Lillia.png
+size:128,64
+filter:MipMapNearestNearest,MipMapNearestNearest
+Larm
+bounds:105,43,14,21
+rotate:90
+Rarm
+bounds:80,36,23,21
+body
+bounds:2,11,39,46
+offsets:1,0,40,46
+face
+bounds:2,2,13,7
+head
+bounds:43,31,35,26

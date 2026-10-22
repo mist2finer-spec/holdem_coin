@@ -1,0 +1,84 @@
+{
+"skeleton": {
+	"hash": "v6xOHA9rkIU",
+	"spine": "4.2.43",
+	"x": -22.5,
+	"y": -5.6,
+	"width": 45,
+	"height": 85,
+	"images": "./images/",
+	"audio": "./audio"
+},
+"bones": [
+	{ "name": "root" },
+	{ "name": "on", "parent": "root", "length": 67.17, "rotation": 90, "y": 12.88 }
+],
+"slots": [
+	{ "name": "off", "bone": "on", "attachment": "off" },
+	{ "name": "on", "bone": "on", "attachment": "on" }
+],
+"skins": [
+	{
+		"name": "default",
+		"attachments": {
+			"off": {
+				"off": { "x": 24.02, "rotation": -90, "width": 45, "height": 85 }
+			},
+			"on": {
+				"on": { "x": 24.02, "rotation": -90, "width": 45, "height": 85 }
+			}
+		}
+	}
+],
+"animations": {
+	"1": {
+		"slots": {
+			"off": {
+				"rgba": [
+					{ "color": "ffffffff" },
+					{ "time": 0.1667, "color": "ffffff00" }
+				]
+			}
+		},
+		"bones": {
+			"on": {
+				"translate": [
+					{ "time": 1 }
+				]
+			}
+		},
+		"drawOrder": [
+			{
+				"offsets": [
+					{ "slot": "off", "offset": 1 }
+				]
+			}
+		]
+	},
+	"action1": {
+		"bones": {
+			"on": {
+				"translate": [
+					{ "time": 0.1667 }
+				]
+			}
+		}
+	},
+	"stay1": {
+		"slots": {
+			"on": {
+				"attachment": [
+					{}
+				]
+			}
+		},
+		"bones": {
+			"on": {
+				"translate": [
+					{ "time": 0.1667 }
+				]
+			}
+		}
+	}
+}
+}

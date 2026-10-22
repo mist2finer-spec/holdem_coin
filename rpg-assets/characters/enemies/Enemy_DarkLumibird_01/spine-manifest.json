@@ -1,0 +1,204 @@
+{
+  "name": "Enemy_DarkLumibird_01",
+  "source_object": "model_assets_all_4b7c1041d63a541f1599d6ee7559998f.bundle:CAB-8567a9a245cb1780b2cf82cab834069b:4260487058796772951",
+  "atlas": "Enemy_DarkLumibird_01.atlas",
+  "pages": [
+    "Enemy_DarkLumibird_01.png"
+  ],
+  "parts": [
+    {
+      "name": "Larm1",
+      "file": "parts/Larm1__38d88ba8.png",
+      "page": "Enemy_DarkLumibird_01.png",
+      "bounds": [
+        2,
+        2,
+        30,
+        25
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        30,
+        25
+      ]
+    },
+    {
+      "name": "Larm2",
+      "file": "parts/Larm2__ab2b45db.png",
+      "page": "Enemy_DarkLumibird_01.png",
+      "bounds": [
+        2,
+        29,
+        33,
+        32
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        33,
+        32
+      ]
+    },
+    {
+      "name": "Lleg1",
+      "file": "parts/Lleg1__535b27aa.png",
+      "page": "Enemy_DarkLumibird_01.png",
+      "bounds": [
+        37,
+        52,
+        15,
+        9
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        15,
+        9
+      ]
+    },
+    {
+      "name": "Lleg2",
+      "file": "parts/Lleg2__c0b5a504.png",
+      "page": "Enemy_DarkLumibird_01.png",
+      "bounds": [
+        34,
+        2,
+        25,
+        21
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        25,
+        21
+      ]
+    },
+    {
+      "name": "Rarm2",
+      "file": "parts/Rarm2__99d37085.png",
+      "page": "Enemy_DarkLumibird_01.png",
+      "bounds": [
+        145,
+        96,
+        21,
+        30
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        21,
+        30
+      ]
+    },
+    {
+      "name": "Rleg1",
+      "file": "parts/Rleg1__906d9e04.png",
+      "page": "Enemy_DarkLumibird_01.png",
+      "bounds": [
+        168,
+        117,
+        19,
+        9
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        19,
+        9
+      ]
+    },
+    {
+      "name": "Rleg2",
+      "file": "parts/Rleg2__bfbe3919.png",
+      "page": "Enemy_DarkLumibird_01.png",
+      "bounds": [
+        145,
+        66,
+        28,
+        19
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        28,
+        19
+      ]
+    },
+    {
+      "name": "body1",
+      "file": "parts/body1__85316b1d.png",
+      "page": "Enemy_DarkLumibird_01.png",
+      "bounds": [
+        74,
+        64,
+        69,
+        62
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        69,
+        62
+      ]
+    },
+    {
+      "name": "body2",
+      "file": "parts/body2__93926848.png",
+      "page": "Enemy_DarkLumibird_01.png",
+      "bounds": [
+        2,
+        63,
+        70,
+        63
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        70,
+        63
+      ]
+    }
+  ],
+  "errors": [],
+  "skeleton": "Enemy_DarkLumibird_01.json",
+  "spine_version": "4.2.43",
+  "skins": [
+    "default"
+  ],
+  "animations": [
+    "die1",
+    "run1",
+    "run2",
+    "run3",
+    "stay1",
+    "stay2"
+  ]
+}

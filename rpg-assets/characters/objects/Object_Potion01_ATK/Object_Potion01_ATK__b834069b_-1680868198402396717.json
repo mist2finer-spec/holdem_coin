@@ -1,0 +1,48 @@
+{
+"skeleton": {
+	"hash": "rzNnL8+eLv0",
+	"spine": "4.2.43",
+	"x": -8,
+	"y": -1.09,
+	"width": 16,
+	"height": 23,
+	"images": "./images/",
+	"audio": "./audio"
+},
+"bones": [
+	{ "name": "center" }
+],
+"slots": [
+	{ "name": "ATPotion01", "bone": "center", "attachment": "ATPotion01" }
+],
+"skins": [
+	{
+		"name": "default",
+		"attachments": {
+			"ATPotion01": {
+				"ATPotion01": {
+					"type": "mesh",
+					"uvs": [ 1, 1, 0, 1, 0, 0, 1, 0 ],
+					"triangles": [ 1, 2, 3, 1, 3, 0 ],
+					"vertices": [ 8, -1.09, -8, -1.09, -8, 21.91, 8, 21.91 ],
+					"hull": 4,
+					"edges": [ 0, 2, 2, 4, 4, 6, 0, 6 ],
+					"width": 16,
+					"height": 23
+				}
+			}
+		}
+	}
+],
+"animations": {
+	"stay1": {
+		"bones": {
+			"center": {
+				"translate": [
+					{ "time": 0.0333 }
+				]
+			}
+		}
+	}
+}
+}

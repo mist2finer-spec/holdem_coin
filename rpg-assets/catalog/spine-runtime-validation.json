@@ -1,0 +1,15 @@
+{
+  "skeletons": 170,
+  "animations": 1333,
+  "failures": [
+    {
+      "name": "Enemy_DemonEye_01",
+      "error": "rest1/chain02: non-finite transform"
+    }
+  ],
+  "runtime": "@esotericsoftware/spine-canvas 4.2.120",
+  "scope": "Headless parse and two animation samples per animation until first error per skeleton; not a visual animation review",
+  "animations_in_sources": 1340,
+  "fully_passed_skeletons": 169,
+  "source_files_modified": false
+}

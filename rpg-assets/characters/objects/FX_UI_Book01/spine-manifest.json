@@ -1,0 +1,80 @@
+{
+  "name": "FX_UI_Book01",
+  "source_object": "model_assets_all_4b7c1041d63a541f1599d6ee7559998f.bundle:CAB-8567a9a245cb1780b2cf82cab834069b:3021909534721816110",
+  "atlas": "FX_UI_Book01.atlas",
+  "pages": [
+    "FX_UI_Book01.png"
+  ],
+  "parts": [
+    {
+      "name": "close",
+      "file": "parts/close__310ff200.png",
+      "page": "FX_UI_Book01.png",
+      "bounds": [
+        346,
+        77,
+        145,
+        170
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        145,
+        170
+      ]
+    },
+    {
+      "name": "open",
+      "file": "parts/open__2348f998.png",
+      "page": "FX_UI_Book01.png",
+      "bounds": [
+        2,
+        2,
+        245,
+        174
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        245,
+        174
+      ]
+    },
+    {
+      "name": "page",
+      "file": "parts/page__3660315a.png",
+      "page": "FX_UI_Book01.png",
+      "bounds": [
+        178,
+        25,
+        166,
+        222
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        166,
+        222
+      ]
+    }
+  ],
+  "errors": [],
+  "skeleton": "FX_UI_Book01.json",
+  "spine_version": "4.2.43",
+  "skins": [
+    "default"
+  ],
+  "animations": [
+    "close",
+    "open"
+  ]
+}

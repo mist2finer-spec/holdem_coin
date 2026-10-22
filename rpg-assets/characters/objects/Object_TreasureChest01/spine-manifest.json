@@ -1,0 +1,81 @@
+{
+  "name": "Object_TreasureChest01",
+  "source_object": "model_assets_all_4b7c1041d63a541f1599d6ee7559998f.bundle:CAB-8567a9a245cb1780b2cf82cab834069b:2112801477129333319",
+  "atlas": "Object_TreasureChest01.atlas",
+  "pages": [
+    "Object_TreasureChest01.png"
+  ],
+  "parts": [
+    {
+      "name": "box",
+      "file": "parts/box__26f8567f.png",
+      "page": "Object_TreasureChest01.png",
+      "bounds": [
+        78,
+        27,
+        48,
+        28
+      ],
+      "rotation": 0,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        48,
+        28
+      ]
+    },
+    {
+      "name": "close_up",
+      "file": "parts/close_up__8f5e4ffc.png",
+      "page": "Object_TreasureChest01.png",
+      "bounds": [
+        45,
+        5,
+        50,
+        31
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        50,
+        31
+      ]
+    },
+    {
+      "name": "open_up",
+      "file": "parts/open_up__f50a67d7.png",
+      "page": "Object_TreasureChest01.png",
+      "bounds": [
+        2,
+        2,
+        53,
+        41
+      ],
+      "rotation": 90,
+      "offset": [
+        0,
+        0
+      ],
+      "original_size": [
+        53,
+        41
+      ]
+    }
+  ],
+  "errors": [],
+  "skeleton": "Object_TreasureChest01.json",
+  "spine_version": "4.2.43",
+  "skins": [
+    "default"
+  ],
+  "animations": [
+    "die1",
+    "open1",
+    "stay1"
+  ]
+}
