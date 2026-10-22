@@ -1,5 +1,5 @@
 import type { Card } from './poker-engine';
-import { calledActionEV, uncontestedActionEV, type OpponentRange, type DecisionContext } from './poker-ai';
+import { calledActionEV, modeledCallEV, uncontestedActionEV, type OpponentRange, type DecisionContext } from './poker-ai';
 import { hasBettingOpponent, RAKE_RATE } from './poker-rules';
 import { connectorAllowed } from './poker-preflop';
 
@@ -38,19 +38,19 @@ export function shortStackOptions(spot: ShortSpot) {
   const hasRaiser=threeBet&&context.lastRaiserSeat!==undefined;
   const callRanges:Record<number,OpponentRange>|undefined=hasRaiser ? Object.fromEntries(opponents.map(s=>[s.seatId,
     s.seatId===context.lastRaiserSeat?baseRange:'open'])) : undefined;
-  let called=calledActionEV(hole,board,context,callCost,RAKE_RATE,baseRange,threeBet?768:192,callRanges);
+  let called=modeledCallEV(hole,board,context,callCost,RAKE_RATE,baseRange,threeBet?768:192,callRanges);
   // Adapt to a persistent public three-bet frequency, never to private cards.
   const looseness=threeBet&&!allInOpponent ? context.threeBetRead?.looseness||0 : 0;
   if(looseness>0&&hasRaiser) {
     const wide={...callRanges,[context.lastRaiserSeat!]:'wide-three-bet' as const};
-    const wideEV=calledActionEV(hole,board,context,callCost,RAKE_RATE,baseRange,768,wide);
+    const wideEV=modeledCallEV(hole,board,context,callCost,RAKE_RATE,baseRange,768,wide);
     called=called*(1-looseness)+wideEV*looseness;
   }
   const spr=Math.max(0,stack-callCost)/Math.max(1,pot+callCost);
   const realization=callCost===stack?1:threeBet
     ? (context.position?.isOOP ? (spr<=1?0.96:0.86) : (spr<=1?0.99:0.94))
     : context.isBlind&&pair&&low<4 ? (context.position?.isOOP ? 0.85 : 0.92)
-    : context.position?.isOOP ? 0.70 : 0.85;
+    : context.position?.isOOP ? 0.82 : 0.92;
   const riskPremium=threeBet ? ((context.stack?.equityPremium||0)*0.25
     +(context.position?.preflopEquityPremium||0)*0.30)*(pot+callCost)*(1-RAKE_RATE) : 0;
   const callEV=(called+callCost)*realization-callCost-riskPremium;
@@ -116,24 +116,23 @@ export function decideShortStack(spot: ShortSpot): {action:number;amount:number;
       ? {action:1,amount:Math.min(spot.call,spot.stack)} : {action:0,amount:0};
   }
   const choices:{action:number;amount:number;ev:number}[]=[];
+  if(options.callEV>0)choices.push({action:1,amount:Math.min(spot.call,spot.stack),ev:options.callEV});
   if(options.jamEV>0)choices.push({action:4,amount:spot.maxRaise,ev:options.jamEV});
   // Avoid committing most of the stack with a nominal non-all-in raise.
   if(options.raiseCost<spot.stack*0.70 && options.raiseTo<spot.maxRaise && options.strongRaiseEV>0)
     choices.push({action:2,amount:options.raiseTo,ev:options.strongRaiseEV});
   choices.sort((a,b)=>b.ev-a.ev);
   const best=choices[0];
-  if(best && best.ev>=Math.max(0,options.callEV)-spot.pot*0.10) {
-    if(Math.random()<0.70+spot.persona.aggression*0.20) {
-      // At <= 12.5BB, favor a positive-EV shove over a near-equivalent re-raise.
-      const jam=choices.find(c=>c.action===4);
-      const chosen=options.starting<=2500 && jam && jam.ev>=best.ev-spot.pot*0.10 ? jam : best;
-      return {action:chosen.action,amount:chosen.amount,isBluff:false};
-    }
+  if(best) {
+    const continueRate=best.ev>=spot.pot*.10?1:Math.min(.99,.80+spot.persona.vpip*.20);
+    if(Math.random()>=continueRate)return {action:0,amount:0};
+    const near=choices.filter(c=>c.ev>=best.ev-spot.pot*.10);
+    const weight=(action:number)=>action===1
+      ? (options.starting<=2000?.70:1.50)-spot.persona.aggression*.35+spot.persona.vpip*.60
+      :action===4?(options.starting<=2000?1.10:.30)+spot.persona.aggression*.65:.40+spot.persona.aggression*.70;
+    let roll=Math.random()*near.reduce((sum,c)=>sum+weight(c.action),0);
+    for(const c of near){roll-=weight(c.action);if(roll<=0)return {action:c.action,amount:c.amount,isBluff:false};}
+    return {action:best.action,amount:best.amount,isBluff:false};
   }
-  const ranks=spot.hole.map(c=>'23456789TJQKA'.indexOf(c.rank)).sort((a,b)=>b-a);
-  const premium=(ranks[0]===ranks[1]&&ranks[0]>=9)||(ranks[0]===12&&ranks[1]===11);
-  if(premium && best)return {action:best.action,amount:best.amount,isBluff:false};
-  if(options.callEV>0 && Math.random()<0.20+spot.persona.vpip*0.35)
-    return {action:1,amount:Math.min(spot.call,spot.stack)};
   return {action:0,amount:0};
 }

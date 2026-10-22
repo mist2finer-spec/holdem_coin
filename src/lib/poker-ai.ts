@@ -2,6 +2,7 @@ import { Card, evaluateBestHand } from './poker-engine';
 import { BettingSeat, rakedContributionLayers, RAKE_RATE } from './poker-rules';
 import type { PositionContext } from './poker-position';
 import type { stackContext } from './poker-stack';
+import {preflopCallModel} from './poker-opponent-model';
 
 // Bounded deterministic rollouts using only the acting player's cards and public board.
 // This is an equity estimator, not a GTO solver or knowledge of opponents' cards.
@@ -71,6 +72,19 @@ export function estimateEquity(hole: Card[], board: Card[], opponents: number, s
 export interface DecisionContext { boardLength?:number; preflopPosition?: {early:boolean;inPositionVsRaiser:boolean}; seats: BettingSeat[]; actorId: number; position?: PositionContext; stack?: ReturnType<typeof stackContext>; forbidLimp?:boolean; limpedPreflop?:boolean; initiative?:boolean; openedPreflop?:boolean; isBlind?:boolean; threeBetRead?: {opportunities:number;rate:number;looseness:number}; lastRaiserSeat?:number }
 export function afterRakeOdds(pot: number, cost: number, rate=RAKE_RATE) {
   return cost>0?cost/Math.max(1,(pot+cost)*(1-rate)):0;
+}
+
+/** Price a call against the actual raiser/callers, retaining a bounded overcall risk. */
+export function estimateCallEquity(hole:Card[],board:Card[],context:DecisionContext,samples=192,range?:OpponentRange) {
+  const model=preflopCallModel({...context,boardLength:board.length});
+  return model.scenarios.reduce((sum,s)=>sum+s.weight*estimateEquity(hole,board,
+    s.context.seats.filter(p=>p.seatId!==context.actorId&&p.inHand&&!p.folded).length,samples,range),0);
+}
+
+export function modeledCallEV(hole:Card[],board:Card[],context:DecisionContext,cost:number,rate=RAKE_RATE,
+  range?:OpponentRange,samples=range?192:48,rangesBySeat?:Record<number,OpponentRange>) {
+  const model=preflopCallModel({...context,boardLength:board.length});
+  return model.scenarios.reduce((sum,s)=>sum+s.weight*calledActionEV(hole,board,s.context,cost,rate,range,samples,rangesBySeat),0);
 }
 
 // Conservative called EV: all eligible live opponents call up to their own stacks.

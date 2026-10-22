@@ -11,9 +11,10 @@ import type { SelfPlayTrainer } from './self-play-trainer';
 import { positionContext } from './poker-position';
 import { stackContext } from './poker-stack';
 import { planPreflop, preflopPosition } from './poker-preflop';
+import {preflopCallModel} from './poker-opponent-model';
 
 export const LIVE_RULES = Object.freeze({
-  version: "1.18.0",
+  version: "1.19.0",
   seats: 8, smallBlind: 100, bigBlind: 200, buyIn: 5000,
   botCashOut: 100000, userSeconds: 10, maxActions: 256,
   botThinkMin: 700, botThinkJitter: 900, actionPause: 800, resultPause: 5000,
@@ -111,7 +112,7 @@ export function decideLiveBot(trainer: SelfPlayTrainer, ctx: {
     const entry=supportTightParticipation(trainer,{base:actor.persona||RPG_BOT_POOL[0],hand:ctx.hand,seat:actor.seatId,
       hole:actor.holeCards,board,call,stack:actor.stack,starting:actor.stack+actor.totalBet,currentBet:actor.currentBet,
       raiseLevel:ctx.raiseLevel,minRaise:ctx.minRaise,maxRaise:ctx.maxRaise,canRaise:seats.some(s=>s.seatId!==actor.seatId&&s.inHand&&!s.folded&&!s.allIn&&s.stack>0),pot:livePot,
-      opponents:seats.filter(s=>s.inHand&&!s.folded&&s.seatId!==actor.seatId).length},action);
+      opponents:seats.filter(s=>s.inHand&&!s.folded&&s.seatId!==actor.seatId).length,context},action);
     action=entry.action;if(entry.participation?.supported)decisionPath='tight-participation-support';
     const support=postflopSupport({hole:actor.holeCards,board,base:actor.persona||RPG_BOT_POOL[0],persona,
       call,pot:livePot,stack:actor.stack,currentBet:actor.currentBet,minRaise:ctx.minRaise,maxRaise:ctx.maxRaise,
@@ -126,7 +127,10 @@ export function decideLiveBot(trainer: SelfPlayTrainer, ctx: {
       decisionPath='river-bluff-catch';
       action={action:riverCatch.cost>=actor.stack?'allin':'call',amount:riverCatch.cost};
     }
-    ctx.onAudit?.({participation:entry.participation,riverCatch,decisionPath,threeBetRead:ctx.threeBetRead,lastRaiserSeat:ctx.lastRaiserSeat,personaId:actor.persona?.id,vpip:persona.vpip,aggression:persona.aggression,
+    const callModel=board.length===0&&ctx.raiseLevel>0?preflopCallModel(context):null;
+    ctx.onAudit?.({participation:entry.participation,riverCatch,decisionPath,
+      callModel:callModel?{committed:callModel.committed,pending:callModel.pending,overcallProbability:callModel.overcallProbability}:null,
+      threeBetRead:ctx.threeBetRead,lastRaiserSeat:ctx.lastRaiserSeat,personaId:actor.persona?.id,vpip:persona.vpip,aggression:persona.aggression,
       bluffFreq:persona.bluffFreq,isOOP:context.position.isOOP,effectiveStack:context.stack.effectiveStack,
       stackEquityPremium:context.stack.equityPremium,openedPreflop:!!ctx.openedPreflop,
       limpedPreflop:!!ctx.limpedPreflop,checkedThisStreet:!!ctx.checkedThisStreet,

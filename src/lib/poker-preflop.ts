@@ -1,5 +1,5 @@
 import type { ActionType, Card } from './poker-engine';
-import { afterRakeOdds, estimateEquity, type DecisionContext } from './poker-ai';
+import { afterRakeOdds, estimateCallEquity, type DecisionContext } from './poker-ai';
 import { hasBettingOpponent } from './poker-rules';
 
 export function connectorInfo(hole: Card[]) {
@@ -17,7 +17,7 @@ export function connectorAllowed(hole: Card[], persona: {vpip:number;aggression:
   return h.seven && (h.gap===0 ? persona.vpip>=0.42&&persona.aggression>=0.58 : persona.vpip>=0.48&&persona.aggression>=0.65);
 }
 
-export function limpFrequency(aggression:number) { return Math.max(0.04,0.12*(1-0.5*aggression)); }
+export function limpFrequency(aggression:number) { return Math.max(0.07,0.14*(1-0.35*aggression)); }
 
 export function flatCallFrequency(persona:{vpip:number;aggression:number}, isOOP:boolean, premium=false) {
   const rate=0.30+(persona.vpip-0.35)*0.60-(persona.aggression-0.55)*0.45+(isOOP?-0.08:0.10);
@@ -55,7 +55,7 @@ export function planPreflop(spot:PreflopSpot):{decision:Decision|null;forbidLimp
   const result=(decision:Decision|null,allowBlindDefense=true)=>({decision,forbidLimp:unopened&&call>0,allowBlindDefense});
   const foldOrCheck=():Decision=>({action:call>0?'fold':'check',amount:0});
   const callDecision=():Decision=>({action:call>=stack?'allin':'call',amount:Math.min(call,stack)});
-  const equity=()=>estimateEquity(hole,[],Math.max(1,opponents.length),192,raiseLevel>=2?'three-bet':'open');
+  const equity=()=>estimateCallEquity(hole,[],context,192,raiseLevel>=2?'three-bet':'open');
   const odds=afterRakeOdds(spot.pot,call);
 
   // Sizing policy precedes the trainer/reshove branches in BOTH game modes.
@@ -116,8 +116,8 @@ export function planPreflop(spot:PreflopSpot):{decision:Decision|null;forbidLimp
   const connector=h.connector;
   const allowed=connectorAllowed(hole,persona);
   if(unopened&&call>0) {
-    const late=(context.position?.relativePosition??0)>=0.65||context.actorId===spot.smallBlind;
-    const limpable=(h.pair&&h.low<=7)||(allowed&&h.suited);
+    const late=(context.position?.relativePosition??0)>=0.40||context.actorId===spot.smallBlind;
+    const limpable=(h.pair&&h.low<=9)||(allowed&&h.suited)||(h.suited&&h.high===14&&h.low<=11);
     if(own>2500&&late&&limpable&&call<stack&&Math.random()<limpFrequency(persona.aggression))return result(callDecision());
     if(connector) {
       if(allowed&&own>=4000&&hasBettingOpponent(context.seats,context.actorId)&&Math.random()<0.25+persona.vpip*0.35) {
@@ -140,10 +140,14 @@ export function planPreflop(spot:PreflopSpot):{decision:Decision|null;forbidLimp
   }
 
   const open=raiseLevel===1||(raiseLevel===2&&currentBet>=400);
-  if(affordable&&open&&((highest>=600&&highest<=800)||defendingOpen)) {
+  // Normal-stack flats also exist against a 2BB open. The short-stack branch
+  // remains responsible for priced small-stack calls and reshoves.
+  if(own>5000&&affordable&&open&&((highest>=400&&highest<=800)||defendingOpen)) {
+    const flatHand=h.pair||(h.high===14&&h.low>=10)||(h.suited&&h.high===14&&h.low>=5)
+      ||(h.high>=12&&h.low>=10)||(h.suited&&h.high>=10&&h.low>=9);
     const premium=(h.pair&&h.low>=11)||(h.high===14&&h.low===13);
     const required=odds+Math.max(0,(0.35-persona.vpip)*0.10);
-    if(equity()>=required&&Math.random()<flatCallFrequency(persona,context.position?.isOOP??true,premium))return result(callDecision());
+    if(flatHand&&equity()>=required&&Math.random()<flatCallFrequency(persona,context.position?.isOOP??true,premium))return result(callDecision());
   }
   return result(null);
 }

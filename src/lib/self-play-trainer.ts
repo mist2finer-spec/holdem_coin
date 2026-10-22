@@ -5,7 +5,7 @@ import { oopCheckMix } from "./poker-position";
 import { decideShortStack } from "./poker-shortstack";
 import { continuationBetFrequency, checkCallEquityRequired } from "./poker-postflop";
 import { settleHand, bettingLocked, dealNextStreet, hasBettingOpponent } from "./poker-rules";
-import { estimateEquity, afterRakeOdds, calledActionEV, DecisionContext } from "./poker-ai";
+import { estimateEquity, estimateCallEquity, afterRakeOdds, calledActionEV, modeledCallEV, DecisionContext } from "./poker-ai";
 // ============================================================
 // 자가대국(Self-Play) 학습 트레이너
 // - 백그라운드에서 8인 테이블 시뮬레이션 반복
@@ -551,7 +551,9 @@ export class SelfPlayTrainer {
   ): { action: number; amount: number; isBluff?: boolean; tier?: number; decisionPath?: string } {
     // 1) 새로운 정밀 핸드 티어 분류 (AIR 버그 수정 적용)
     const { tier } = classifyHandTier(hole, board);
-    const multiEq = estimateEquity(hole,board,activeOpponents);
+    const multiEq = context&&board.length===0&&raiseLevel>0
+      ? estimateCallEquity(hole,board,context,192,raiseLevel>=2?'three-bet':'open')
+      : estimateEquity(hole,board,activeOpponents);
     const position = context?.position;
     const positionCost = board.length === 0 ? (position?.preflopEquityPremium || 0) * (1.2 - persona.aggression * 0.6) : 0;
     const stackCost = (context?.stack?.equityPremium || 0) * (board.length === 0 ? 1 : 0.5);
@@ -644,7 +646,8 @@ export class SelfPlayTrainer {
         Math.min(maxRaise,Math.max(minRaise,Math.floor(minRaise+pot))),maxRaise];
       for(let i=1;i<5;i++) {
         const cost=i===1?targets[i]:Math.max(0,targets[i]-myCurrentBet);
-        const ev=calledActionEV(hole,board,context,Math.min(cost,myStack));
+        const ev=i===1 ? modeledCallEV(hole,board,context,Math.min(cost,myStack))
+          : calledActionEV(hole,board,context,Math.min(cost,myStack));
         logits[i]+=Math.max(-3,Math.min(1,ev/Math.max(pot,cost,1)*3));
         if(i===4 && cost>pot && ev<0)logits[i]-=3;
         if(i===4 && (context.stack?.ownStack ?? Infinity)<=5000 && tier>=HandTier.TOP_PAIR && ev>0) {
@@ -663,6 +666,19 @@ export class SelfPlayTrainer {
     // ★ 핵심: 베팅/레이즈 직면 시 노히트(AIR) 또는 레이즈 직면 노페어(OVERCARDS)는 단순 콜(1) 원천 금지!
     if (callAmount > 0 && (tier === HandTier.AIR || (tier === HandTier.OVERCARDS && pressure >= 2))) {
       mask[1] = false;
+    }
+    // Preflop "AIR" is not postflop air (e.g. AJo/QTo). Keep a priced flat
+    // available to suitable broadways, pairs and suited aces. Connector and
+    // rare-low entry caps remain owned by planPreflop, never bypassed here.
+    if(board.length===0&&raiseLevel>0&&callAmount>0&&callAmount<myStack) {
+      const ranks=hole.map(c=>'23456789TJQKA'.indexOf(c.rank)+2).sort((a,b)=>b-a);
+      const [high,low]=ranks,suited=hole[0].suit===hole[1].suit;
+      const flatHand=high===low||(high===14&&low>=10)||(suited&&high===14&&low>=5)
+        ||(high>=12&&low>=10)||(suited&&high>=10&&low>=9);
+      if(flatHand&&multiEq>=potOdds&&callAmount<=(context?.stack?.ownStack??myStack)*.20) {
+        mask[1]=true;
+        logits[1]=Math.max(logits[1],.10+persona.vpip*1.8-persona.aggression*.8);
+      }
     }
     if(context?.forbidLimp&&board.length===0&&callAmount>0)mask[1]=false;
     if(board.length>0&&context?.position?.checkedThisStreet&&callAmount>0) {

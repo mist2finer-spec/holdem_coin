@@ -6,12 +6,16 @@ const env=Object.fromEntries(Object.entries(process.env).filter(([k])=>['PATH','
 env.POKER_TEST_MODE='1';
 function run(cmd,args,{timeout=90000,simulation=false}={}){
  return new Promise((resolve,reject)=>{
-  let tail='',pending='',done=false,count=0;const child=spawn(cmd,args,{cwd:root,env,stdio:['ignore','pipe','pipe']});
+  let tail='',pending='',done=false,count=0,handTimer=null;const child=spawn(cmd,args,{cwd:root,env,stdio:['ignore','pipe','pipe']});
   let timer=setTimeout(()=>{child.kill('SIGKILL');finish(new Error('Validation process timeout'));},timeout);
-  function finish(err){if(done)return;done=true;clearTimeout(timer);err?reject(err):resolve();}
+  function finish(err){if(done)return;done=true;clearTimeout(timer);clearTimeout(handTimer);err?reject(err):resolve();}
   function receive(data){const s=data.toString();tail=(tail+s).slice(-12000);
-   if(simulation){pending+=s;const lines=pending.split('\n');pending=lines.pop();for(const line of lines)if(/^HAND_START \d+$/.test(line)){
-    count++;clearTimeout(timer);timer=setTimeout(()=>{child.kill('SIGKILL');finish(new Error(`Hand ${count}: event loop/OOP/IP timeout (5 seconds)`));},5000);
+   if(simulation){pending+=s;const lines=pending.split('\n');pending=lines.pop();for(const line of lines){
+    const start=/^HAND_START \d+$/.test(line),progress=/^HAND_PROGRESS \d+ \d+$/.test(line);
+    if(start){
+     count++;clearTimeout(handTimer);handTimer=setTimeout(()=>{child.kill('SIGKILL');finish(new Error(`Hand ${count}: total-hand timeout (30 seconds)`));},30000);
+    }
+    if(start||progress){clearTimeout(timer);timer=setTimeout(()=>{child.kill('SIGKILL');finish(new Error(`Hand ${count}: event loop/OOP/IP action timeout (5 seconds)`));},5000);}
    }}
   }
   child.stdout.on('data',receive);child.stderr.on('data',receive);child.on('error',finish);

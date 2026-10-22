@@ -11,7 +11,12 @@ const inspect=()=>{
  const pot=st.pot+st.seats.reduce((n:number,s:any)=>n+s.currentBet,0);
  for(const s of live){const call=Math.min(s.stack,Math.max(0,highest-s.currentBet));const odds=call/Math.max(1,pot+call);assert.ok(Number.isFinite(odds)&&odds>=0&&odds<=1,'invalid pot odds');}
 };
-room.broadcastTableState=inspect;
+let lastProgress='';
+room.broadcastTableState=()=>{
+ inspect();
+ const h=room.currentHistory,step=h?.actions.length??0,key=`${h?.id}:${step}`;
+ if(step>0&&key!==lastProgress){lastProgress=key;process.stdout.write(`HAND_PROGRESS ${room.state.handNumber} ${step}\n`);}
+};
 let joined=false;
 room.sleep=async()=>{
  inspect();

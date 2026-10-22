@@ -1,12 +1,12 @@
 import type {Card} from './poker-engine';
 import type {BotPersona} from './personas';
 import type {LiveAction} from './poker-live';
-import {estimateEquity,afterRakeOdds} from './poker-ai';
+import {estimateEquity,estimateCallEquity,afterRakeOdds,type DecisionContext} from './poker-ai';
 import {connectorInfo} from './poker-preflop';
 // Per-table, per-identity rolling window. No persistent growth or cross-room reads.
 const tables=new WeakMap<object,Map<string,{hand:number;entered:boolean}[]>>();
 export function supportTightParticipation(table:object,ctx:{base:BotPersona;hand:number;seat:number;hole:Card[];
- board:Card[];call:number;stack:number;starting:number;currentBet:number;raiseLevel:number;minRaise:number;maxRaise:number;canRaise:boolean;pot:number;opponents:number},action:LiveAction) {
+ board:Card[];call:number;stack:number;starting:number;currentBet:number;raiseLevel:number;minRaise:number;maxRaise:number;canRaise:boolean;pot:number;opponents:number;context?:DecisionContext},action:LiveAction) {
  if(ctx.board.length||ctx.base.vpip>.30||ctx.base.aggression>.55)return {action};
  let stats=tables.get(table);if(!stats){stats=new Map();tables.set(table,stats);}
  const key=`${ctx.seat}:${ctx.base.id}`;
@@ -23,7 +23,8 @@ export function supportTightParticipation(table:object,ctx:{base:BotPersona;hand
    if(ctx.canRaise&&ctx.raiseLevel===0&&ctx.starting>=1000&&ctx.minRaise<ctx.maxRaise&&ctx.minRaise<=ctx.starting*.4) {
     action={action:'raise',amount:ctx.minRaise};supported=true;
    } else if(ctx.raiseLevel===1&&ctx.call<=ctx.starting*.15) {
-    const q=estimateEquity(ctx.hole,[],Math.max(1,ctx.opponents),192,'open');
+    const q=ctx.context?estimateCallEquity(ctx.hole,[],ctx.context,192,'open')
+      :estimateEquity(ctx.hole,[],Math.max(1,ctx.opponents),192,'open');
     if(q>afterRakeOdds(ctx.pot,ctx.call)+.02){action={action:'call',amount:ctx.call};supported=true;}
    }
   }
