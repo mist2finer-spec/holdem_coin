@@ -1,0 +1,128 @@
+[
+  {
+    "file": "BG_Forest01.png",
+    "bundle": "map_assets_all_9a2547367880a72516ddfb87af0076d5.bundle",
+    "object_id": "-8496802691543211834",
+    "bundle_sha256": "91c93cee16b63938e0fbd652812d4ffe0b3030747db94a7d7bef9fbd942f228f",
+    "sha256": "59d0fe1d2b6ef3ced52dbfe01af1b649dc54d8aaa5363be33be80200821d7847"
+  },
+  {
+    "file": "BG_Tree01.png",
+    "bundle": "map_assets_all_9a2547367880a72516ddfb87af0076d5.bundle",
+    "object_id": "6639061157530197882",
+    "bundle_sha256": "91c93cee16b63938e0fbd652812d4ffe0b3030747db94a7d7bef9fbd942f228f",
+    "sha256": "c21472f5a176204f373ab3a501aec04b323d2167157b32fb9799c426a22f83eb"
+  },
+  {
+    "file": "FrameCombatArtSkillFrame.png",
+    "bundle": "uicommon_assets_all_f76fb7d1845e2563aa8b0b1d44068991.bundle",
+    "object_id": "-4139027150975193985",
+    "bundle_sha256": "b3f1b8f1ab46466058eef13f2898d57e5f1ca664bbf4ea0ef4e5b7f0a9af619f",
+    "sha256": "e28012772b438fc92b8e7aae64bc53bfcbb1ced74bcc523c61aec6a363ece194"
+  },
+  {
+    "file": "Portrait_Hero_005.png",
+    "bundle": "uiicons_assets_all_b136036949c5b0f0605b836074e3b5be.bundle",
+    "object_id": "-8950820563218474705",
+    "bundle_sha256": "142fbe2f5e9fbb13cb900f9000c1d43a19db919c0204c828fc4edbe301ce59b8",
+    "sha256": "d742dc087d5214f3780dd4240dfadee8e3b24aeff82abf496ec33f7b0b609266"
+  },
+  {
+    "file": "SkillIcon_DarkHole.png",
+    "bundle": "uiicons_assets_all_b136036949c5b0f0605b836074e3b5be.bundle",
+    "object_id": "-8211984039644861466",
+    "bundle_sha256": "142fbe2f5e9fbb13cb900f9000c1d43a19db919c0204c828fc4edbe301ce59b8",
+    "sha256": "469f7ca6352d3ad4f5739af3bc51b25f0098a9c0048931d5b7c87e7e004208cf"
+  },
+  {
+    "file": "SkillIcon_GroundRift.png",
+    "bundle": "uiicons_assets_all_b136036949c5b0f0605b836074e3b5be.bundle",
+    "object_id": "-7843675199585575528",
+    "bundle_sha256": "142fbe2f5e9fbb13cb900f9000c1d43a19db919c0204c828fc4edbe301ce59b8",
+    "sha256": "bf44ec9a3b4abd996017fdad26c623da0209fd116f116f31fe8d8e09b192309f"
+  },
+  {
+    "file": "SkillIcon_VitalRecovery.png",
+    "bundle": "uiicons_assets_all_b136036949c5b0f0605b836074e3b5be.bundle",
+    "object_id": "-7271645549363569561",
+    "bundle_sha256": "142fbe2f5e9fbb13cb900f9000c1d43a19db919c0204c828fc4edbe301ce59b8",
+    "sha256": "d43295e3228f848e8b74a3d7895e156e1b649b85caea13e815aaa06142ba5b36"
+  },
+  {
+    "file": "SkillIcon_Blizzard3.png",
+    "bundle": "uiicons_assets_all_b136036949c5b0f0605b836074e3b5be.bundle",
+    "object_id": "-6947137986646705048",
+    "bundle_sha256": "142fbe2f5e9fbb13cb900f9000c1d43a19db919c0204c828fc4edbe301ce59b8",
+    "sha256": "c40826bc68d808885b675f0da99a330d0649e617b6d4430a82237a47112fa935"
+  },
+  {
+    "file": "SkillIcon_HolyWrath2.png",
+    "bundle": "uiicons_assets_all_b136036949c5b0f0605b836074e3b5be.bundle",
+    "object_id": "-5666008669847451648",
+    "bundle_sha256": "142fbe2f5e9fbb13cb900f9000c1d43a19db919c0204c828fc4edbe301ce59b8",
+    "sha256": "0e9a546475fe39a609187668c5afc01bcff8b0c2e1f4903a327c50ba9bb25747"
+  },
+  {
+    "file": "SkillIcon_Whirlwind.png",
+    "bundle": "uiicons_assets_all_b136036949c5b0f0605b836074e3b5be.bundle",
+    "object_id": "-4638808423898039062",
+    "bundle_sha256": "142fbe2f5e9fbb13cb900f9000c1d43a19db919c0204c828fc4edbe301ce59b8",
+    "sha256": "10a74d33d6a626280b72b4b0788dceb1396c524d2c229bd742b1027c8d4ca8dc"
+  },
+  {
+    "file": "mat_gold.png",
+    "bundle": "uiicons_assets_all_b136036949c5b0f0605b836074e3b5be.bundle",
+    "object_id": "-3282853557043448829",
+    "bundle_sha256": "142fbe2f5e9fbb13cb900f9000c1d43a19db919c0204c828fc4edbe301ce59b8",
+    "sha256": "ff178b05d27d4228bf1ca5142cf340470cffa65bab960e15be85eea71138f6ec"
+  },
+  {
+    "file": "mat_arcanegem.png",
+    "bundle": "uiicons_assets_all_b136036949c5b0f0605b836074e3b5be.bundle",
+    "object_id": "440015624771526080",
+    "bundle_sha256": "142fbe2f5e9fbb13cb900f9000c1d43a19db919c0204c828fc4edbe301ce59b8",
+    "sha256": "ae083280bfb4fa1bc2ad77523923e5f2ee4b99ebbcf8f1eec41e480226482baa"
+  },
+  {
+    "file": "Enemy_Slime_01_R.atlas",
+    "bundle": "model_assets_all_4b7c1041d63a541f1599d6ee7559998f.bundle",
+    "object_id": "-6665256475911903601",
+    "bundle_sha256": "892542ea0b03330f975199672ec8787cc974ed3f97efc53941f78287276324db",
+    "sha256": "5cf6ec65dce344143eb65130896559264af813c6a1d9155f93a057d132f4f765"
+  },
+  {
+    "file": "Hero_Axe01.json",
+    "bundle": "model_assets_all_4b7c1041d63a541f1599d6ee7559998f.bundle",
+    "object_id": "-5641566546299852505",
+    "bundle_sha256": "892542ea0b03330f975199672ec8787cc974ed3f97efc53941f78287276324db",
+    "sha256": "665127ea81721e5aaa1d1dddb5de768432532efb423302b01b4ebf1da13a8cb2"
+  },
+  {
+    "file": "Hero_Axe01.png",
+    "bundle": "model_assets_all_4b7c1041d63a541f1599d6ee7559998f.bundle",
+    "object_id": "256441069626070932",
+    "bundle_sha256": "892542ea0b03330f975199672ec8787cc974ed3f97efc53941f78287276324db",
+    "sha256": "95b9ee98404c4affb5ad031b11aaeb7af2b78c1d22f6bd19f58dc8d4b5384d46"
+  },
+  {
+    "file": "Enemy_Slime_01_R.png",
+    "bundle": "model_assets_all_4b7c1041d63a541f1599d6ee7559998f.bundle",
+    "object_id": "1244622798133244205",
+    "bundle_sha256": "892542ea0b03330f975199672ec8787cc974ed3f97efc53941f78287276324db",
+    "sha256": "1d42701493bd4a2103b3ffd3c43d2a69aaebde5369fa65ea68bbdd6c7a4df03a"
+  },
+  {
+    "file": "Enemy_Slime_01_R.json",
+    "bundle": "model_assets_all_4b7c1041d63a541f1599d6ee7559998f.bundle",
+    "object_id": "5516009500387004797",
+    "bundle_sha256": "892542ea0b03330f975199672ec8787cc974ed3f97efc53941f78287276324db",
+    "sha256": "7b8af72468145f76cc71a28531a9d5f96920d49852d4534b6d1d64367871631a"
+  },
+  {
+    "file": "Hero_Axe01.atlas",
+    "bundle": "model_assets_all_4b7c1041d63a541f1599d6ee7559998f.bundle",
+    "object_id": "5887561295014625069",
+    "bundle_sha256": "892542ea0b03330f975199672ec8787cc974ed3f97efc53941f78287276324db",
+    "sha256": "2289a48aaf0438abdd162defba65ff22d9b74c75e6c11d1bf4af99858eff834a"
+  }
+]

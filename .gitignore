@@ -67,3 +67,6 @@ mini-services/poker-server/data/
 !.env.example
 
 .env.pipeline.local
+
+# Curated hunting prototype images
+!public/rpg/*.png

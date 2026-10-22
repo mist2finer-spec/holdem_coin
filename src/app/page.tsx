@@ -1,5 +1,7 @@
 "use client";
 import {useState,useCallback} from 'react';
+import dynamic from 'next/dynamic';
+const HuntPrototype = dynamic(()=>import('@/components/rpg/HuntPrototype').then(m=>m.HuntPrototype),{ssr:false});
 import {LobbyPanel} from '@/components/poker/LobbyPanel';
 import {PokerTable} from '@/components/poker/PokerTable';
 import {PokerTableSocket} from '@/components/poker/PokerTableSocket';
@@ -7,11 +9,12 @@ import {ActionSkinButton} from '@/components/poker/ActionSkinButton';
 import {toast} from 'sonner';
 import '@/components/poker/island.css';
 export default function Home() {
- const [screen,setScreen]=useState<'start'|'lobby'|'single'|'six'|'eight'>('start');
+ const [screen,setScreen]=useState<'start'|'lobby'|'single'|'six'|'eight'|'hunt'>('start');
  const [name,setName]=useState('테스터1');
  const [repair,setRepair]=useState(false);
  const returnToLobby=useCallback(()=>setScreen('lobby'),[]);
  const notice=(msg:string,tone?:'info'|'win'|'lose')=>tone==='win'?toast.success(msg):tone==='lose'?toast.error(msg):toast(msg);
+ if(screen==='hunt')return <HuntPrototype onExit={()=>setScreen('start')}/>;
  if(screen==='single')return <PokerTable userName={name.trim()||'플레이어'} onToast={notice} onMain={returnToLobby}/>;
  if(screen==='six'||screen==='eight')return <PokerTableSocket tableSize={screen==='six'?6:8} userName={name.trim()||'플레이어'} onToast={notice} onMain={returnToLobby}/>;
  if(screen==='start')return <main className="island-start">
@@ -19,7 +22,7 @@ export default function Home() {
    <div className="island-neon-glow" aria-hidden="true"/>
    <h1 className="sr-only">Island Hold’em</h1>
    <div className="island-entry-buttons">
-    <ActionSkinButton skin="blue" onClick={()=>setRepair(true)}>사냥하기</ActionSkinButton>
+    <ActionSkinButton skin="blue" onClick={()=>setScreen('hunt')}>사냥하기</ActionSkinButton>
     <ActionSkinButton skin="red" onClick={()=>setScreen('lobby')}>주점 입장</ActionSkinButton>
    </div>
   </div>
