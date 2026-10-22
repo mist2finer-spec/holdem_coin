@@ -449,7 +449,7 @@ function SocketPlayerSeat({
   // - 본인(isMe): 폴드해도 카드 계속 보임 + 폴드 오버레이
   // - 다른 플레이어: 폴드 시 카드 숨김, 쇼다운 시 공개
   return <IslandSeat name={seat.name} stack={seat.stack} holeCards={holeCards}
-    folded={seat.folded} allIn={seat.allIn} isMe={seat.isMe} portrait={seat.isMe?4:seat.portrait}
+    folded={seat.folded} isMe={seat.isMe} portrait={seat.isMe?4:seat.portrait}
     isActive={isActive} isDealer={isDealer} isSmallBlind={isSmallBlind} isBigBlind={isBigBlind}
     showCards={showCards} position={position}/>;
 }

@@ -30,7 +30,6 @@ export function PokerTable({ userName, onToast, onMain }: Props) {
     handNumber,
     buttonSeat,
     activeSeatId,
-    lastActions,
     showdownReveal,
     bluffReveal,
     winnerInfo,
@@ -174,7 +173,6 @@ export function PokerTable({ userName, onToast, onMain }: Props) {
               isBigBlind={bigBlindSeat === seat.seatId}
               showCards={showdownReveal || bluffReveal === seat.seatId}
               position={SEAT_POSITIONS[seat.seatId]}
-              lastActionText={lastActions[seat.seatId]}
             />
           ))}
         </div>
