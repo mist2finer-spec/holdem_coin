@@ -392,7 +392,7 @@ export class SelfPlayTrainer {
       const activeOpp = alive.length - 1;
       const minRaise = minimumRaiseTo(maxBet,BB,betting.lastFullRaise);
       const publicSeats=players.map(p=>({...p,seatId:p.seatIndex}));
-      const maxRaise = betting.canRaise(actorIdx,maxBet)&&hasBettingOpponent(publicSeats,actorIdx) ? actor.stack + actor.currentBet : maxBet;
+      const maxRaise = betting.canRaise(actorIdx,maxBet)&&hasBettingOpponent(publicSeats,actorIdx,maxBet) ? actor.stack + actor.currentBet : maxBet;
       const livePot=pot+players.reduce((sum,p)=>sum+p.currentBet,0);
 
       // 에퀴티 계산

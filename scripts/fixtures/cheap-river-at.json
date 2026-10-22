@@ -1,0 +1,70 @@
+{
+  "hole": [
+    "T\u2665",
+    "A\u2663"
+  ],
+  "board": [
+    "A\u2660",
+    "9\u2663",
+    "K\u2660",
+    "2\u2660",
+    "3\u2663"
+  ],
+  "seats": [
+    {
+      "seatId": 0,
+      "stack": 0,
+      "currentBet": 250,
+      "totalBet": 5900,
+      "inHand": true,
+      "folded": false,
+      "allIn": true
+    },
+    {
+      "seatId": 1,
+      "stack": 3500,
+      "currentBet": 0,
+      "totalBet": 0,
+      "inHand": false,
+      "folded": true,
+      "allIn": false
+    },
+    {
+      "seatId": 2,
+      "stack": 625,
+      "currentBet": 0,
+      "totalBet": 5650,
+      "inHand": true,
+      "folded": false,
+      "allIn": false
+    },
+    {
+      "seatId": 3,
+      "stack": 3060,
+      "currentBet": 0,
+      "totalBet": 2000,
+      "inHand": false,
+      "folded": true,
+      "allIn": false
+    },
+    {
+      "seatId": 4,
+      "stack": 4300,
+      "currentBet": 0,
+      "totalBet": 200,
+      "inHand": false,
+      "folded": true,
+      "allIn": false
+    },
+    {
+      "seatId": 5,
+      "stack": 4700,
+      "currentBet": 0,
+      "totalBet": 0,
+      "inHand": false,
+      "folded": true,
+      "allIn": false
+    }
+  ],
+  "actorId": 2
+}

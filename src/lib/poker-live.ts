@@ -1,3 +1,4 @@
+import {boardDefenseDecision} from './poker-board-defense';
 import {postflopSupport} from './poker-postflop-support';
 import {supportTightParticipation} from './poker-participation';
 import {riverCatchDecision} from './poker-river-defense';
@@ -16,7 +17,7 @@ import {proCatchDecision} from './poker-pro';
 import {pricedCallGuard} from './poker-priced-call';
 
 export const LIVE_RULES = Object.freeze({
-  version: "1.20.0",
+  version: "1.21.0",
   seats: 8, smallBlind: 100, bigBlind: 200, buyIn: 5000,
   botCashOut: 100000, userSeconds: 10, maxActions: 256,
   botThinkMin: 700, botThinkJitter: 900, actionPause: 800, resultPause: 5000,
@@ -58,9 +59,9 @@ export function normalizeLiveAction(seats: BettingSeat[], actorId: number, input
     case 'fold': return { action, amount: 0 };
     case 'check': return call === 0 ? { action, amount: 0 } : null;
     case 'call': return callAction();
-    case 'allin': return hasBettingOpponent(seats, actorId) && raiseAllowed ? { action, amount: actor.stack } : callAction();
+    case 'allin': return hasBettingOpponent(seats, actorId,maxBet) && raiseAllowed ? { action, amount: actor.stack } : callAction();
     case 'raise':
-      if (!raiseAllowed || !hasBettingOpponent(seats, actorId) || !Number.isSafeInteger(amount) || amount! <= maxBet || amount! > maxRaise) return null;
+      if (!raiseAllowed || !hasBettingOpponent(seats, actorId,maxBet) || !Number.isSafeInteger(amount) || amount! <= maxBet || amount! > maxRaise) return null;
       if (amount !== maxRaise && amount! < minimumRaiseTo(maxBet,LIVE_RULES.bigBlind,lastRaiseSize)) return null;
       return { action: amount === maxRaise ? 'allin' : 'raise', amount: amount === maxRaise ? actor.stack : amount! };
     default: return null;
@@ -122,14 +123,21 @@ export function decideLiveBot(trainer: SelfPlayTrainer, ctx: {
       initiative:ctx.previousStreetAggressor===actor.seatId,checked:!!ctx.checkedThisStreet,
       opponents:context.seats.filter(s=>s.seatId!==actor.seatId&&s.inHand&&!s.folded).length},action);
     action=support.action;if(support.path)decisionPath=support.path;
-    const riverCatch=action.action==='fold' && board.length===5
+    const boardDefense=action.action==='fold'?boardDefenseDecision({hole:actor.holeCards,board,seats:context.seats,
+      actorId:actor.seatId,base:actor.persona||RPG_BOT_POOL[0],persona,isOOP:context.position.isOOP,raiseLevel:ctx.raiseLevel}):null;
+    if(boardDefense?.accepted){
+      decisionPath=boardDefense.kind==='cheap-river'?'priced-river-call':'draw-board-catch';
+      action={action:boardDefense.cost>=actor.stack?'allin':'call',amount:boardDefense.cost};
+    }
+    // One mixed draw-board rescue per fold; do not compound river/Pro rolls past 60%.
+    const riverCatch=!boardDefense && action.action==='fold' && board.length===5
       ? riverCatchDecision({hole:actor.holeCards,board,seats:context.seats,actorId:actor.seatId,
           base:actor.persona||RPG_BOT_POOL[0],persona}) : null;
     if(riverCatch?.accepted) {
       decisionPath='river-bluff-catch';
       action={action:riverCatch.cost>=actor.stack?'allin':'call',amount:riverCatch.cost};
     }
-    const proCatch=action.action==='fold'&&(board.length>0||ctx.raiseLevel>0)
+    const proCatch=!boardDefense && action.action==='fold'&&(board.length>0||ctx.raiseLevel>0)
       ?proCatchDecision({persona,hole:actor.holeCards,board,seats:context.seats,actorId:actor.seatId}):null;
     if(proCatch?.accepted){decisionPath='pro-bluff-catch';
       action={action:proCatch.cost>=actor.stack?'allin':'call',amount:proCatch.cost};}
@@ -140,7 +148,7 @@ export function decideLiveBot(trainer: SelfPlayTrainer, ctx: {
       action={action:pricedCall.cost>=actor.stack?'allin':'call',amount:pricedCall.cost};
     }
     const callModel=board.length===0&&ctx.raiseLevel>0?preflopCallModel(context):null;
-    ctx.onAudit?.({participation:entry.participation,riverCatch,proCatch,pricedCall,decisionPath,
+    ctx.onAudit?.({participation:entry.participation,boardDefense,riverCatch,proCatch,pricedCall,decisionPath,
       callModel:callModel?{committed:callModel.committed,pending:callModel.pending,overcallProbability:callModel.overcallProbability}:null,
       threeBetRead:ctx.threeBetRead,lastRaiserSeat:ctx.lastRaiserSeat,personaId:actor.persona?.id,vpip:persona.vpip,aggression:persona.aggression,
       bluffFreq:persona.bluffFreq,isOOP:context.position.isOOP,effectiveStack:context.stack.effectiveStack,

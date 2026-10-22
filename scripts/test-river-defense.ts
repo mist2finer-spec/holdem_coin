@@ -9,7 +9,7 @@ const cards=(s:string)=>s.split(' ').map(c=>({rank:c[0],suit:c[1]} as Card));
 const base=RPG_BOT_POOL.find(p=>p.id==='paladin_captain')||RPG_BOT_POOL.reduce((a,b)=>a.vpip<b.vpip?a:b);
 const actor={seatId:0,stack:1000,currentBet:0,totalBet:500,inHand:true,folded:false,allIn:false,holeCards:cards('A♠ A♥'),persona:base};
 const rival={seatId:1,stack:1000,currentBet:100,totalBet:600,inHand:true,folded:false,allIn:false};
-const ctx={hole:actor.holeCards,board:cards('A♦ K♥ 8♣ 5♠ 2♦'),seats:[actor,rival],actorId:0,base,persona:base};
+const ctx={hole:actor.holeCards,board:cards('A♦ K♥ 8♣ 8♠ 2♦'),seats:[actor,rival],actorId:0,base,persona:base};
 test('tight identities get higher 5–40 percent catch frequency',()=>{
  assert.ok(Math.abs(riverCatchFrequency({vpip:.18,aggression:.20})-.4)<1e-12);
  assert.equal(riverCatchFrequency({vpip:.65,aggression:.82}),.05);

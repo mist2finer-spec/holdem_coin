@@ -79,8 +79,10 @@ export function settleHand(seats: SettlementSeat[], board: Card[], buttonSeat: n
   return {results,pots,totalRake,totalAward:results.reduce((n,r)=>n+r.award,0)};
 }
 
-export function hasBettingOpponent(seats: BettingSeat[], actorId: number) {
-  return seats.some(s=>s.seatId!==actorId && s.inHand&&!s.folded&&!s.allIn&&s.stack>0);
+export function hasBettingOpponent(seats: BettingSeat[], actorId: number, bringIn=0) {
+  const highest=Math.max(bringIn,...seats.filter(s=>s.inHand&&!s.folded).map(s=>s.currentBet));
+  // A responder must have chips above the current price, not merely chips left to call.
+  return seats.some(s=>s.seatId!==actorId && s.inHand&&!s.folded&&!s.allIn&&s.stack>0&&s.currentBet+s.stack>highest);
 }
 export function bettingLocked(seats: BettingSeat[]) {
   const alive=seats.filter(s=>s.inHand&&!s.folded);

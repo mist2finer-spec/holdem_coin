@@ -1,3 +1,4 @@
+import {drawBoard} from './poker-board-defense';
 import {evaluateBestHand,type Card} from './poker-engine';
 import type {BotPersona} from './personas';
 import type {LiveAction} from './poker-live';
@@ -22,7 +23,7 @@ export function postflopSupport(c:{hole:Card[];board:Card[];base:BotPersona;pers
  // Estimate only from our cards and the public board, never human hit hints.
  if(c.call===0&&!c.checked&&c.canRaise&&['check','fold'].includes(action.action)
    &&tier>=HandTier.TOP_PAIR&&c.pot>0) {
-  const playsBoard=c.board.length===5&&evaluateBestHand(c.hole,c.board)===evaluateBestHand([],c.board);
+  const playsBoard=c.board.length===5&&evaluateBestHand(c.hole,c.board)===evaluateBestHand(c.board.slice(0,2),c.board.slice(2));
   const eq=playsBoard?0:estimateEquity(c.hole,c.board,Math.max(1,c.opponents),192);
   if(eq>=.62) {
    const frequency=Math.max(.3,Math.min(.85,.40+c.persona.aggression*.45-(c.isOOP?.08:0)));
@@ -46,7 +47,7 @@ export function postflopSupport(c:{hole:Card[];board:Card[];base:BotPersona;pers
    return bet(1/3+random()*(3/4-1/3),'tight-position-probe');
  }
  // Defend using own equity and public information, never an opponent hit flag.
- if(tight&&c.board.length<5&&action.action==='fold'&&c.call>0
+ if(!drawBoard(c.board)&&tight&&c.board.length<5&&action.action==='fold'&&c.call>0
    &&c.call<c.stack&&c.call<=c.pot*.5&&c.call<=c.stack*.2&&(made||tier===HandTier.DRAW)) {
   const eq=estimateEquity(c.hole,c.board,Math.max(1,c.opponents),192);
   if(eq>=afterRakeOdds(c.pot,c.call)&&random()<.4)

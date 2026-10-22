@@ -636,7 +636,7 @@ export class HybridHoldemRoom {
       const minR = minimumRaiseTo(maxBet,BIG_BLIND,betting.lastFullRaise);
       const raiseAllowed=betting.canRaise(actor.seatId,maxBet);
       const lastFullRaiseBefore=betting.lastFullRaise;
-      const maxR = raiseAllowed&&hasBettingOpponent(st.seats, actor.seatId) ? actor.stack + actor.currentBet : maxBet;
+      const maxR = raiseAllowed&&hasBettingOpponent(st.seats, actor.seatId,maxBet) ? actor.stack + actor.currentBet : maxBet;
       st.minRaise = minR;
       st.maxRaise = maxR;
 
