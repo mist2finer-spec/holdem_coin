@@ -1,0 +1,743 @@
+[
+  {
+    "hand": 355,
+    "hole": [
+      "8♥",
+      "5♣"
+    ],
+    "board": [
+      "4♠",
+      "6♥",
+      "Q♥"
+    ],
+    "seats": [
+      {
+        "seatId": 0,
+        "stack": 9587,
+        "currentBet": 0,
+        "totalBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 1,
+        "stack": 46706,
+        "currentBet": 2680,
+        "totalBet": 3480,
+        "inHand": true,
+        "folded": false,
+        "allIn": false
+      },
+      {
+        "seatId": 2,
+        "stack": 4502,
+        "currentBet": 0,
+        "totalBet": 100,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 3,
+        "stack": 4700,
+        "currentBet": 0,
+        "totalBet": 200,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 4,
+        "stack": 0,
+        "currentBet": 3310,
+        "totalBet": 4110,
+        "inHand": true,
+        "folded": false,
+        "allIn": true
+      },
+      {
+        "seatId": 5,
+        "stack": 10661,
+        "currentBet": 0,
+        "totalBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      }
+    ],
+    "actorId": 1,
+    "bigBlindSeat": 3,
+    "raiseLevel": 2,
+    "bigBlind": 200,
+    "minRaise": 4650,
+    "maxRaise": 3310,
+    "button": 1,
+    "smallBlind": 2
+  },
+  {
+    "hand": 379,
+    "hole": [
+      "7♦",
+      "4♣"
+    ],
+    "board": [],
+    "seats": [
+      {
+        "seatId": 0,
+        "stack": 11601,
+        "currentBet": 0,
+        "totalBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 1,
+        "stack": 48606,
+        "currentBet": 0,
+        "totalBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 2,
+        "stack": 0,
+        "currentBet": 942,
+        "totalBet": 942,
+        "inHand": true,
+        "folded": false,
+        "allIn": true
+      },
+      {
+        "seatId": 3,
+        "stack": 3160,
+        "currentBet": 200,
+        "totalBet": 200,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 4,
+        "stack": 7163,
+        "currentBet": 400,
+        "totalBet": 400,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 5,
+        "stack": 9840,
+        "currentBet": 800,
+        "totalBet": 800,
+        "inHand": true,
+        "folded": false,
+        "allIn": false
+      }
+    ],
+    "actorId": 5,
+    "bigBlindSeat": 3,
+    "raiseLevel": 2,
+    "bigBlind": 200,
+    "minRaise": 1342,
+    "maxRaise": 942,
+    "button": 1,
+    "smallBlind": 2
+  },
+  {
+    "hand": 426,
+    "hole": [
+      "7♠",
+      "5♥"
+    ],
+    "board": [
+      "T♠",
+      "6♠",
+      "4♠"
+    ],
+    "seats": [
+      {
+        "seatId": 0,
+        "stack": 0,
+        "currentBet": 2596,
+        "totalBet": 2996,
+        "inHand": true,
+        "folded": false,
+        "allIn": true
+      },
+      {
+        "seatId": 1,
+        "stack": 50987,
+        "currentBet": 0,
+        "totalBet": 400,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 2,
+        "stack": 1171,
+        "currentBet": 2100,
+        "totalBet": 2500,
+        "inHand": true,
+        "folded": false,
+        "allIn": false
+      },
+      {
+        "seatId": 3,
+        "stack": 4515,
+        "currentBet": 0,
+        "totalBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 4,
+        "stack": 1693,
+        "currentBet": 0,
+        "totalBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 5,
+        "stack": 15754,
+        "currentBet": 0,
+        "totalBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      }
+    ],
+    "actorId": 2,
+    "bigBlindSeat": 2,
+    "raiseLevel": 2,
+    "bigBlind": 200,
+    "minRaise": 4396,
+    "maxRaise": 2596,
+    "button": 0,
+    "smallBlind": 1
+  },
+  {
+    "hand": 438,
+    "hole": [
+      "A♦",
+      "J♣"
+    ],
+    "board": [],
+    "seats": [
+      {
+        "seatId": 0,
+        "stack": 4186,
+        "currentBet": 400,
+        "totalBet": 400,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 1,
+        "stack": 52913,
+        "currentBet": 800,
+        "totalBet": 800,
+        "inHand": true,
+        "folded": false,
+        "allIn": false
+      },
+      {
+        "seatId": 2,
+        "stack": 0,
+        "currentBet": 1071,
+        "totalBet": 1071,
+        "inHand": true,
+        "folded": false,
+        "allIn": true
+      },
+      {
+        "seatId": 3,
+        "stack": 4270,
+        "currentBet": 0,
+        "totalBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 4,
+        "stack": 1093,
+        "currentBet": 0,
+        "totalBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 5,
+        "stack": 14754,
+        "currentBet": 0,
+        "totalBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      }
+    ],
+    "actorId": 1,
+    "bigBlindSeat": 2,
+    "raiseLevel": 2,
+    "bigBlind": 200,
+    "minRaise": 1471,
+    "maxRaise": 1071,
+    "button": 0,
+    "smallBlind": 1
+  },
+  {
+    "hand": 474,
+    "hole": [
+      "J♣",
+      "K♥"
+    ],
+    "board": [
+      "K♣",
+      "3♥",
+      "2♥"
+    ],
+    "seats": [
+      {
+        "seatId": 0,
+        "stack": 1486,
+        "currentBet": 0,
+        "totalBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 1,
+        "stack": 53862,
+        "currentBet": 0,
+        "totalBet": 100,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 2,
+        "stack": 0,
+        "currentBet": 816,
+        "totalBet": 4336,
+        "inHand": true,
+        "folded": false,
+        "allIn": true
+      },
+      {
+        "seatId": 3,
+        "stack": 550,
+        "currentBet": 0,
+        "totalBet": 3520,
+        "inHand": true,
+        "folded": false,
+        "allIn": false
+      },
+      {
+        "seatId": 4,
+        "stack": 5285,
+        "currentBet": 0,
+        "totalBet": 800,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 5,
+        "stack": 17435,
+        "currentBet": 0,
+        "totalBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      }
+    ],
+    "actorId": 3,
+    "bigBlindSeat": 2,
+    "raiseLevel": 1,
+    "bigBlind": 200,
+    "minRaise": 1632,
+    "maxRaise": 816,
+    "button": 0,
+    "smallBlind": 1
+  },
+  {
+    "hand": 523,
+    "hole": [
+      "A♠",
+      "T♣"
+    ],
+    "board": [
+      "7♠",
+      "5♥",
+      "8♥",
+      "4♥"
+    ],
+    "seats": [
+      {
+        "seatId": 0,
+        "stack": 3700,
+        "currentBet": 0,
+        "totalBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 1,
+        "stack": 61302,
+        "currentBet": 0,
+        "totalBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 2,
+        "stack": 0,
+        "currentBet": 4559,
+        "totalBet": 5359,
+        "inHand": true,
+        "folded": false,
+        "allIn": true
+      },
+      {
+        "seatId": 3,
+        "stack": 1850,
+        "currentBet": 4400,
+        "totalBet": 5200,
+        "inHand": true,
+        "folded": false,
+        "allIn": false
+      },
+      {
+        "seatId": 4,
+        "stack": 7936,
+        "currentBet": 0,
+        "totalBet": 400,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 5,
+        "stack": 14435,
+        "currentBet": 0,
+        "totalBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      }
+    ],
+    "actorId": 3,
+    "bigBlindSeat": 3,
+    "raiseLevel": 2,
+    "bigBlind": 200,
+    "minRaise": 6759,
+    "maxRaise": 4559,
+    "button": 1,
+    "smallBlind": 2
+  },
+  {
+    "hand": 539,
+    "hole": [
+      "3♥",
+      "A♣"
+    ],
+    "board": [
+      "Q♣",
+      "K♣",
+      "4♣"
+    ],
+    "seats": [
+      {
+        "seatId": 0,
+        "stack": 3100,
+        "currentBet": 0,
+        "totalBet": 100,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 1,
+        "stack": 57077,
+        "currentBet": 1320,
+        "totalBet": 1830,
+        "inHand": true,
+        "folded": false,
+        "allIn": false
+      },
+      {
+        "seatId": 2,
+        "stack": 0,
+        "currentBet": 1533,
+        "totalBet": 2043,
+        "inHand": true,
+        "folded": false,
+        "allIn": true
+      },
+      {
+        "seatId": 3,
+        "stack": 2945,
+        "currentBet": 0,
+        "totalBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 4,
+        "stack": 17514,
+        "currentBet": 0,
+        "totalBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 5,
+        "stack": 13915,
+        "currentBet": 0,
+        "totalBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      }
+    ],
+    "actorId": 1,
+    "bigBlindSeat": 1,
+    "raiseLevel": 1,
+    "bigBlind": 200,
+    "minRaise": 2853,
+    "maxRaise": 1533,
+    "button": 5,
+    "smallBlind": 0
+  },
+  {
+    "hand": 1047,
+    "hole": [
+      "8♥",
+      "A♥"
+    ],
+    "board": [],
+    "seats": [
+      {
+        "seatId": 0,
+        "stack": 5678,
+        "currentBet": 0,
+        "totalBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 1,
+        "stack": 5617,
+        "currentBet": 0,
+        "totalBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 2,
+        "stack": 69963,
+        "currentBet": 400,
+        "totalBet": 400,
+        "inHand": true,
+        "folded": false,
+        "allIn": false
+      },
+      {
+        "seatId": 3,
+        "stack": 5000,
+        "currentBet": 0,
+        "totalBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 4,
+        "stack": 19801,
+        "currentBet": 100,
+        "totalBet": 100,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 5,
+        "stack": 0,
+        "currentBet": 530,
+        "totalBet": 530,
+        "inHand": true,
+        "folded": false,
+        "allIn": true
+      }
+    ],
+    "actorId": 2,
+    "bigBlindSeat": 5,
+    "raiseLevel": 1,
+    "bigBlind": 200,
+    "minRaise": 730,
+    "maxRaise": 530,
+    "button": 3,
+    "smallBlind": 4
+  },
+  {
+    "hand": 709,
+    "hole": [
+      "8♣",
+      "8♠"
+    ],
+    "board": [],
+    "seats": [
+      {
+        "seatId": 0,
+        "stack": 16350,
+        "currentBet": 0,
+        "totalBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 1,
+        "stack": 20901,
+        "currentBet": 400,
+        "totalBet": 400,
+        "inHand": true,
+        "folded": false,
+        "allIn": false
+      },
+      {
+        "seatId": 2,
+        "stack": 40257,
+        "currentBet": 400,
+        "totalBet": 400,
+        "inHand": true,
+        "folded": false,
+        "allIn": false
+      },
+      {
+        "seatId": 3,
+        "stack": 4800,
+        "currentBet": 200,
+        "totalBet": 200,
+        "inHand": true,
+        "folded": false,
+        "allIn": false
+      },
+      {
+        "seatId": 4,
+        "stack": 4013,
+        "currentBet": 0,
+        "totalBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 5,
+        "stack": 21143,
+        "currentBet": 0,
+        "totalBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      }
+    ],
+    "actorId": 3,
+    "bigBlindSeat": 3,
+    "raiseLevel": 1,
+    "bigBlind": 200,
+    "minRaise": 600,
+    "maxRaise": 5000,
+    "button": 1,
+    "smallBlind": 2
+  },
+  {
+    "hand": 1114,
+    "hole": [
+      "8♠",
+      "8♦"
+    ],
+    "board": [],
+    "seats": [
+      {
+        "seatId": 0,
+        "stack": 4197,
+        "currentBet": 200,
+        "totalBet": 200,
+        "inHand": true,
+        "folded": false,
+        "allIn": false
+      },
+      {
+        "seatId": 1,
+        "stack": 2452,
+        "currentBet": 400,
+        "totalBet": 400,
+        "inHand": true,
+        "folded": false,
+        "allIn": false
+      },
+      {
+        "seatId": 2,
+        "stack": 55526,
+        "currentBet": 0,
+        "totalBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 3,
+        "stack": 7613,
+        "currentBet": 0,
+        "totalBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 4,
+        "stack": 32780,
+        "currentBet": 0,
+        "totalBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 5,
+        "stack": 9903,
+        "currentBet": 400,
+        "totalBet": 400,
+        "inHand": true,
+        "folded": false,
+        "allIn": false
+      }
+    ],
+    "actorId": 0,
+    "bigBlindSeat": 0,
+    "raiseLevel": 1,
+    "bigBlind": 200,
+    "minRaise": 600,
+    "maxRaise": 4397,
+    "button": 4,
+    "smallBlind": 5
+  }
+]

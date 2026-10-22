@@ -12,9 +12,10 @@ import { positionContext } from './poker-position';
 import { stackContext } from './poker-stack';
 import { planPreflop, preflopPosition } from './poker-preflop';
 import {preflopCallModel} from './poker-opponent-model';
+import {pricedCallGuard} from './poker-priced-call';
 
 export const LIVE_RULES = Object.freeze({
-  version: "1.19.0",
+  version: "1.19.1",
   seats: 8, smallBlind: 100, bigBlind: 200, buyIn: 5000,
   botCashOut: 100000, userSeconds: 10, maxActions: 256,
   botThinkMin: 700, botThinkJitter: 900, actionPause: 800, resultPause: 5000,
@@ -127,8 +128,14 @@ export function decideLiveBot(trainer: SelfPlayTrainer, ctx: {
       decisionPath='river-bluff-catch';
       action={action:riverCatch.cost>=actor.stack?'allin':'call',amount:riverCatch.cost};
     }
+    const pricedCall=action.action==='fold'?pricedCallGuard({hole:actor.holeCards,board,seats:context.seats,
+      actorId:actor.seatId,bigBlindSeat:ctx.bigBlind,raiseLevel:ctx.raiseLevel,bigBlind:LIVE_RULES.bigBlind}):null;
+    if(pricedCall?.accepted){
+      decisionPath=pricedCall.kind==='committed-allin'?'priced-allin-call':'priced-bb-pair-call';
+      action={action:pricedCall.cost>=actor.stack?'allin':'call',amount:pricedCall.cost};
+    }
     const callModel=board.length===0&&ctx.raiseLevel>0?preflopCallModel(context):null;
-    ctx.onAudit?.({participation:entry.participation,riverCatch,decisionPath,
+    ctx.onAudit?.({participation:entry.participation,riverCatch,pricedCall,decisionPath,
       callModel:callModel?{committed:callModel.committed,pending:callModel.pending,overcallProbability:callModel.overcallProbability}:null,
       threeBetRead:ctx.threeBetRead,lastRaiserSeat:ctx.lastRaiserSeat,personaId:actor.persona?.id,vpip:persona.vpip,aggression:persona.aggression,
       bluffFreq:persona.bluffFreq,isOOP:context.position.isOOP,effectiveStack:context.stack.effectiveStack,
