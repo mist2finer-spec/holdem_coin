@@ -59,7 +59,7 @@ export function handHistoryCSV(hands: HandHistory[]) {
     'callBefore','potBefore','potAfter','stackBefore','stackAfter','betBefore','betAfter',
     'raiseLevelBefore','activePlayersBefore','allInPlayersBefore','activePlayers','allInPlayers','decisionMs','startingStack','position',
     'holeCards','contribution','payout','refund','netProfit','handRake',
-    'dealingProfile','premiumRange','humanPremiumMultiplier','cpuPremiumMultiplier'];
+    'dealingProfile','dealingMethod','pairRejection','suitedRejection','connectorRejection'];
   const cell=(v:unknown)=>{
     let s=String(v??'');
     if(/^[\s]*[=+@\-\t\r]/.test(s)&&typeof v==='string')s="'"+s;
@@ -78,8 +78,8 @@ export function handHistoryCSV(hands: HandHistory[]) {
       a.callBefore,a.potBefore,a.potAfter,a.stackBefore,a.stackAfter,a.betBefore,a.betAfter,
       a.raiseLevelBefore,a.activePlayersBefore,a.allInPlayersBefore,a.activePlayers,a.allInPlayers,a.decisionMs,p?.startingStack,p?.position,
       p?.holeCards.join(' '),r?.contribution,r?.payout,r?.refund,r?.netProfit,h.rake,
-      h.dealingProfile?.id,h.dealingProfile?.premiumRange,
-      h.dealingProfile?.humanPremiumMultiplier,h.dealingProfile?.cpuPremiumMultiplier];
+      h.dealingProfile?.id,h.dealingProfile?.method,
+      h.dealingProfile?.pairRejection,h.dealingProfile?.suitedRejection,h.dealingProfile?.connectorRejection];
     return values.map(cell).join(',');
   }));
   return '\uFEFF'+[columns.join(','),...rows].join('\r\n');

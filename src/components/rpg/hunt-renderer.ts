@@ -1,6 +1,7 @@
 import {CanvasTexture, SkeletonRenderer as CanvasRenderer} from '@esotericsoftware/spine-canvas';
 import {AnimationState, AnimationStateData, AtlasAttachmentLoader, GLTexture, Physics, SceneRenderer, Skeleton, SkeletonJson, Skin, TextureAtlas} from '@esotericsoftware/spine-webgl';
-import {HuntEngine, WORLD_WIDTH} from './hunt-engine';
+import {HuntEngine} from './hunt-engine';
+import {huntViewport} from './hunt-layout';
 const base = '/rpg/';
 const image = (url: string, signal: AbortSignal) => new Promise<HTMLImageElement>((resolve, reject) => {
  const img = new Image();
@@ -37,6 +38,13 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
  const layer = document.createElement('canvas');
  const gl = layer.getContext('webgl', {alpha:true, premultipliedAlpha:true, antialias:true});
  const [hero, enemy, forest, trees] = await Promise.all([actor('Hero_Axe01', signal, gl), actor('Enemy_Slime_01_R', signal, gl), image(base + 'BG_Forest01.png', signal), image(base + 'BG_Tree01.png', signal)]);
+ // Each slime owns its pose/animation state, while sharing immutable skeleton data and atlas textures.
+ const enemies=Array.from({length:7},()=>{
+  const skeleton=new Skeleton(enemy.skeleton.data);
+  if(enemy.skeleton.skin)skeleton.setSkin(enemy.skeleton.skin);
+  skeleton.setSlotsToSetupPose();
+  return {...enemy,skeleton,state:new AnimationState(enemy.state.data),animation:'',serial:0};
+ });
  const ctx = canvas.getContext('2d'); if (!ctx) throw Error('Canvas를 사용할 수 없습니다.');
  const renderer = gl ? new SceneRenderer(layer, gl) : null;
  const fallback = renderer ? null : new CanvasRenderer(ctx);
@@ -58,27 +66,34 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
     gl.viewport(0,0,layer.width,layer.height);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);
     renderer.camera.position.set(w/2,h/2,0);renderer.camera.setViewport(w,-h);renderer.begin();
    }
-   const floor = h * .79, camera = Math.max(0, Math.min(WORLD_WIDTH - w, game.x - w*.4));
-   const tile = Math.max(h*1.15, 380), offset = camera*.22 % tile;
+   const floor=h*.76,{zoom,camera,screenX}=huntViewport(w,game.x);
+   canvas.dataset.enemyCount=String(game.enemies.filter(e=>e.hp>0).length);
+   canvas.dataset.visibleEnemies=String(game.enemies.filter(e=>e.hp>0&&screenX(e.x)>=0&&screenX(e.x)<=w).length);
+   const tile = Math.max(h*.8,230), offset = camera*zoom*.22 % tile;
    for(let x=-tile-offset; x<w; x+=tile) ctx.drawImage(forest, x, 0, tile, floor+45);
    const shade = ctx.createLinearGradient(0, 0, 0, h); shade.addColorStop(0, '#04191755'); shade.addColorStop(.55, '#091e1600'); shade.addColorStop(1, '#071b13'); ctx.fillStyle=shade;ctx.fillRect(0,0,w,h);
    ctx.fillStyle='#26372a';ctx.fillRect(0,floor+5,w,h-floor);
    ctx.fillStyle='#658150';ctx.fillRect(0,floor+5,w,4);
    ctx.fillStyle='#192a20'; for(let i=0;i<20;i++) ctx.fillRect(i*90-camera%90,floor+28+(i%3)*12,46,3);
-   const scale = w < 600 ? .78 : 1.05;
-   ctx.fillStyle='#0005';ctx.beginPath();ctx.ellipse(game.x-camera,floor+4,35,8,0,0,Math.PI*2);ctx.fill();
-   if(game.enemyHP>0||game.elapsed<game.respawnAt) {
-    const hurt=game.enemyHP>0&&game.hitUntil>game.elapsed;
-    const anim=game.enemyHP<=0?'die1':hurt&&enemy.available.includes('damage1')?'damage1':'stay1';
-    const shake=hurt?Math.sin(game.elapsed*90)*3:0;
-    animate(enemy,anim,game.enemyX-camera+shake,floor,scale*2.5,-1,dt,game.enemySerial);
-    if(game.enemyHP>0){ctx.fillStyle='#111c';ctx.fillRect(game.enemyX-camera-26,floor-68,52,5);ctx.fillStyle='#e07b67';ctx.fillRect(game.enemyX-camera-26,floor-68,52*game.enemyHP/100,5);}
+   const scale=.9*zoom;
+   ctx.fillStyle='#0005';ctx.beginPath();ctx.ellipse(screenX(game.x),floor+4,25*zoom,5*zoom,0,0,Math.PI*2);ctx.fill();
+   for(const mob of game.enemies){
+    if(mob.hp<=0&&game.elapsed>=mob.respawnAt)continue;
+    const visual=enemies[mob.slot],hurt=mob.hp>0&&mob.hitUntil>game.elapsed;
+    const anim=mob.hp<=0?'die1':hurt&&visual.available.includes('damage1')?'damage1':'stay1';
+    const shake=hurt?Math.sin(game.elapsed*90)*2*zoom:0,x=screenX(mob.x),y=floor+(mob.slot%3-1)*6;
+    animate(visual,anim,x+shake,y,2.4*zoom,mob.x>game.x?-1:1,dt,mob.serial);
    }
-   animate(hero,game.action,game.x-camera,floor,scale,game.facing,dt,game.actionSerial,game.animationSpeed);
+   animate(hero,game.action,screenX(game.x),floor,scale,game.facing,dt,game.actionSerial,game.animationSpeed);
    if(renderer){renderer.end();ctx.drawImage(layer,0,0,w,h);}
-   if(game.hitUntil>game.elapsed) {ctx.fillStyle='#ffdb8b';ctx.font='bold 24px sans-serif';ctx.textAlign='center';ctx.fillText(String(game.lastDamage),game.enemyX-camera,floor-85-(.75-(game.hitUntil-game.elapsed))*35);}
+   // UI overlays are painted after the WebGL layer so health and damage remain visible.
+   for(const mob of game.enemies){
+    const x=screenX(mob.x),bar=Math.max(20,36*zoom),y=floor-48*zoom;
+    if(mob.hp>0){ctx.fillStyle='#111c';ctx.fillRect(x-bar/2,y,bar,3);ctx.fillStyle='#e07b67';ctx.fillRect(x-bar/2,y,bar*mob.hp/100,3);}
+    if(mob.hitUntil>game.elapsed){ctx.fillStyle='#ffdb8b';ctx.font=`bold ${Math.max(12,20*zoom)}px sans-serif`;ctx.textAlign='center';ctx.fillText(String(mob.lastDamage),x,y-8-(.75-(mob.hitUntil-game.elapsed))*25);}
+   }
    // Foreground decoration follows the world more quickly than the distant forest.
-   ctx.globalAlpha=.7;ctx.drawImage(trees, -170-camera*.4%700, floor-250,220,280);ctx.globalAlpha=1;
+   ctx.globalAlpha=.7;ctx.drawImage(trees, -170-camera*.4%700, floor-165,145,190);ctx.globalAlpha=1;
   },
   dispose() { hero.atlas.dispose(); enemy.atlas.dispose(); renderer?.dispose(); },
   animations: {hero: hero.available, enemy: enemy.available},

@@ -51,14 +51,14 @@ export function HuntPrototype({onExit}: {onExit?:()=>void}) {
    <div className="hunt-currencies"><span><img src="/rpg/mat_gold.png" alt="골드"/>{view.coins.toLocaleString()}</span><span><img src="/rpg/mat_arcanegem.png" alt="보석"/>0</span></div>
   </header>
   <section className="hunt-stage" aria-label="달빛 숲 사냥터">
-   <canvas ref={canvas} aria-label="이동하는 전사와 슬라임" data-status={status} data-position={view.x} data-action={view.action}/>
+   <canvas ref={canvas} aria-label="이동하는 전사와 최대 7마리 슬라임" data-status={status} data-position={view.x} data-action={view.action}/>
    <div className="hunt-identity"><img src="/rpg/Portrait_Hero_005.png" alt="전사 초상화"/><div><small>Lv. 1 · 견습 전사</small><strong>숲의 여행자</strong><span>⚔ 전투력 1,250</span></div></div>
    <div className="hunt-location"><small>CHAPTER 01</small><h1>달빛 숲 <span>1–1</span></h1><p><i/>{view.paused?'휴식 중':view.auto?'자동 사냥 중':'자유 탐험'} · 처치 {view.kills}</p></div>
    <button className="hunt-menu-toggle" aria-label="메뉴" aria-expanded={menu} onClick={()=>setMenu(!menu)}>☰</button>
    {menu&&<nav className="hunt-drawer" aria-label="사냥 메뉴">{menus.map(([title,body])=><button key={title} onClick={()=>{setDialog([title,body]);setMenu(false);}}>{title}</button>)}</nav>}
    {status==='loading'&&<div className="hunt-loading" role="status"><span/><strong>숲으로 향하는 중…</strong><small>캐릭터와 배경을 불러오고 있습니다.</small></div>}
    {status==='error'&&<div className="hunt-loading" role="alert"><strong>리소스를 불러오지 못했습니다.</strong><small>{error}</small><button onClick={()=>location.reload()}>다시 시도</button></div>}
-   <div className="hunt-stage-caption"><span>✦ 시작의 숲</span><small>탐험하며 슬라임을 처치해 보세요</small></div>
+   <div className="hunt-stage-caption"><span>✦ 시작의 숲</span><small>최대 7마리 · 탐험하며 슬라임을 처치해 보세요</small></div>
   </section>
   <section className="hunt-console" aria-label="전투 조작">
    <div className="hunt-vitals"><div><span>HP</span><meter min="0" max="100" value={view.hp}/><small>{view.hp}/100</small></div><div><span>EXP</span><progress max="100" value={view.xp%100}/><small>{view.xp%100}%</small></div></div>

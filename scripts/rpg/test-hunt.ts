@@ -5,7 +5,7 @@ import crypto from 'node:crypto';
 import {HuntEngine,WORLD_WIDTH} from '../../src/components/rpg/hunt-engine';
 import {HUNT_RULES,motions,combatProfile} from '../../src/components/rpg/combat-rules';
 function advance(g:HuntEngine,seconds:number,direction=0){for(let t=0;t<seconds-1e-8;t+=.01)g.step(Math.min(.01,seconds-t),direction);}
-function ready(){const g=new HuntEngine();g.x=500;g.enemyX=580;return g;}
+function ready(){const g=new HuntEngine(HUNT_RULES.combo,1);g.x=500;g.enemyX=580;return g;}
 test('motion profile matches actual skeleton bytes and every requested attack/skill alias exists',()=>{
  const raw=fs.readFileSync('public/rpg/Hero_Axe01.json'),data=JSON.parse(raw.toString());
  assert.equal(crypto.createHash('sha256').update(raw).digest('hex'),motions.sha256);
@@ -35,7 +35,7 @@ test('five-stage configured combo advances modulo the list rather than repeating
  }
 });
 test('three/four-stage loadouts use their configured list length; invalid profiles fail early',()=>{
- for(const n of [3,4]){const g=new HuntEngine(HUNT_RULES.combo.slice(0,n));g.enemyX=g.x+80;g.enemyHP=1000;
+ for(const n of [3,4]){const g=new HuntEngine(HUNT_RULES.combo.slice(0,n),1);g.enemyX=g.x+80;g.enemyHP=1000;
   for(let i=0;i<n+1;i++){g.attack();assert.equal(g.comboStage,i%n+1);advance(g,HUNT_RULES.combo[i%n].duration+.01);}}
  assert.throws(()=>new HuntEngine([]));assert.throws(()=>new HuntEngine([{animation:'attack1',hitAt:99,damage:20}]));
 });
@@ -50,19 +50,19 @@ test('held attack supports repeated swings and clearing input stops further queu
  g.clearInput();advance(g,.8);const hp=g.enemyHP;advance(g,1);assert.equal(g.enemyHP,hp);
 });
 test('automatic approach Rush advances over time, stops in range and inflicts no contact damage',()=>{
- const g=new HuntEngine();g.setAuto(true);g.step(.01,0);assert.equal(g.action,'dash');const start=g.x;
+ const g=new HuntEngine(HUNT_RULES.combo,1);g.setAuto(true);g.step(.01,0);assert.equal(g.action,'dash');const start=g.x;
  g.step(.01,0);assert.ok(g.x>start&&g.x<g.enemyX-HUNT_RULES.stopRange);assert.equal(g.enemyHP,100);
  advance(g,.1);assert.ok(g.action.startsWith('attack'));assert.ok(g.x<=g.enemyX-HUNT_RULES.stopRange+1e-8);
  assert.equal(g.enemyHP,100);advance(g,.22);assert.equal(g.enemyHP,80);
 });
 test('manual input and AUTO OFF cancel approach Rush without teleporting to its old destination',()=>{
- for(const manual of [true,false]){const g=new HuntEngine();g.setAuto(true);g.step(.01,0);g.step(.01,0);const x=g.x;
+ for(const manual of [true,false]){const g=new HuntEngine(HUNT_RULES.combo,1);g.setAuto(true);g.step(.01,0);g.step(.01,0);const x=g.x;
   if(manual)g.step(.01,-1);else g.setAuto(false);
   assert.notEqual(g.action,'dash');assert.ok(g.x<=x);if(!manual){advance(g,.5);assert.equal(g.x,x);}}
 });
 test('manual attack request approaches a remote target, while a far target is reached by ordinary run first',()=>{
- const g=new HuntEngine();g.attack();g.step(.01,0);assert.equal(g.action,'dash');
- const far=new HuntEngine();far.enemyX=1800;far.setAuto(true);far.step(.01,0);assert.equal(far.action,'run1');
+ const g=new HuntEngine(HUNT_RULES.combo,1);g.attack();g.step(.01,0);assert.equal(g.action,'dash');
+ const far=new HuntEngine(HUNT_RULES.combo,1);far.enemyX=1800;far.setAuto(true);far.step(.01,0);assert.equal(far.action,'run1');
  assert.ok(far.x>620&&far.x<630);
 });
 test('dodge travels continuously for the actual avoid clip and clamps world bounds',()=>{
@@ -89,10 +89,10 @@ test('pause freezes motion, hits and cooldowns; one kill yields one reward and o
  assert.equal(g.enemyHP,100);assert.equal(g.kills,1);
 });
 test('repeat animations carry fresh serials, auto play remains finite and replays deterministically',()=>{
- const run=()=>{const g=new HuntEngine();g.setAuto(true);advance(g,50);assert.ok(g.kills>0);
+ const run=()=>{const g=new HuntEngine(HUNT_RULES.combo,1);g.setAuto(true);advance(g,50);assert.ok(g.kills>0);
   assert.equal(g.coins,g.kills*25);assert.ok([g.x,g.enemyHP,g.elapsed].every(Number.isFinite));return JSON.stringify(g);};
  assert.equal(run(),run());
- const g=new HuntEngine(HUNT_RULES.combo.slice(0,1));g.enemyX=g.x+80;g.attack();const serial=g.actionSerial;
+ const g=new HuntEngine(HUNT_RULES.combo.slice(0,1),1);g.enemyX=g.x+80;g.attack();const serial=g.actionSerial;
  advance(g,HUNT_RULES.combo[0].duration+.01);g.attack();assert.equal(g.action,'attack1');assert.ok(g.actionSerial>serial);
 });
 
@@ -109,4 +109,26 @@ test('native combo timer and avoid cooldown are independent of animation complet
  assert.equal(HUNT_RULES.comboReset,.75);assert.equal(HUNT_RULES.dodgeCooldown,2);
  const g=ready();g.dodge(1);advance(g,1.5);assert.equal(g.dodge(1),false);
  advance(g,.51);assert.equal(g.dodge(1),true);
+});
+
+test('seven independent slimes retarget only after an attack, never share health or generation IDs',()=>{
+ const g=new HuntEngine();assert.equal(g.enemies.length,7);assert.equal(new Set(g.enemies.map(e=>e.serial)).size,7);
+ g.setAuto(true);advance(g,.02);const id=g.enemySerial;
+ advance(g,.21);assert.equal(g.enemies.find(e=>e.serial===id)!.hp,80);
+ assert.equal(g.enemies.filter(e=>e.hp===80).length,1);
+ assert.equal(g.enemies.filter(e=>e.hp===100).length,6);
+ advance(g,80);assert.ok(g.kills>3);
+ assert.equal(new Set(g.enemies.map(e=>e.serial)).size,7);
+ assert.ok(g.enemies.every(e=>e.hp>=0&&e.hp<=100&&Number.isFinite(e.x)));
+ assert.throws(()=>new HuntEngine(HUNT_RULES.combo,8));
+});
+
+test('mobile and desktop cameras fit seven spawn positions without altering world positions',async()=>{
+ const {huntViewport}=await import('../../src/components/rpg/hunt-layout');
+ const g=new HuntEngine();
+ for(const width of [320,390,430,1280]){
+  const v=huntViewport(width,g.x);
+  assert.equal(g.enemies.filter(e=>v.screenX(e.x)>0&&v.screenX(e.x)<width).length,7);
+  assert.ok(v.zoom>0&&v.zoom<=1);
+ }
 });

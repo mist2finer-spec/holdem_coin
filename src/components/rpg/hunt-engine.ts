@@ -4,22 +4,39 @@ type Motion={kind:'attack'|'skill'|'rush'|'dodge';start:number;duration:number;t
  segments:{animation:string;duration:number}[];phase:number;hits:{at:number;damage:number;range:number;done:boolean;heal?:boolean}[];
  destination?:number;speed?:number};
 const clampX=(x:number)=>Math.max(65,Math.min(WORLD_WIDTH-65,x));
+export type HuntEnemy={slot:number;x:number;hp:number;serial:number;respawnAt:number;lastDamage:number;hitUntil:number};
 /** Browser-local restoration scaffold. Original formulas/config remain unresolved. */
 export class HuntEngine {
- x=620;enemyX=780;facing=1;enemyHP=100;hp=100;enemySerial=1;
+ x=620;facing=1;hp=100;
+ readonly enemies:HuntEnemy[];private targetSlot=0;
+ private get target(){return this.enemies[this.targetSlot];}
+ get enemyX(){return this.target.x;}set enemyX(v:number){this.target.x=v;}
+ get enemyHP(){return this.target.hp;}set enemyHP(v:number){this.target.hp=v;}
+ get enemySerial(){return this.target.serial;}set enemySerial(v:number){this.target.serial=v;}
+ get respawnAt(){return this.target.respawnAt;}set respawnAt(v:number){this.target.respawnAt=v;}
+ get lastDamage(){return this.target.lastDamage;}set lastDamage(v:number){this.target.lastDamage=v;}
+ get hitUntil(){return this.target.hitUntil;}set hitUntil(v:number){this.target.hitUntil=v;}
  elapsed=0;kills=0;coins=0;xp=0;auto=false;paused=false;
  action='stay1';actionSerial=0;animationSpeed=1;actionUntil=0;
- cooldowns=[0,0,0,0,0,0];dodgeReady=0;attackReady=0;respawnAt=0;
- lastDamage=0;hitUntil=0;comboStage=0;attackHeld=false;
+ cooldowns=[0,0,0,0,0,0];dodgeReady=0;attackReady=0;
+ comboStage=0;attackHeld=false;
  private motion:Motion|null=null;
  private comboIndex=0;private comboExpires=0;private queuedUntil=0;private attackIntent=false;
  readonly combo:readonly ComboStage[];
- constructor(combo:readonly ComboStage[]=HUNT_RULES.combo){
+ constructor(combo:readonly ComboStage[]=HUNT_RULES.combo,enemyCount=7){
+  if(!Number.isInteger(enemyCount)||enemyCount<1||enemyCount>7)throw Error('Invalid monster count');
+  const positions=[780,700,860,540,940,460,1020];
+  this.enemies=positions.slice(0,enemyCount).map((x,slot)=>({slot,x,hp:100,serial:slot+1,respawnAt:0,lastDamage:0,hitUntil:0}));
   if(!combo.length||combo.some(s=>!motions.durations[s.animation]||!Number.isFinite(s.hitAt)
    ||s.hitAt<0||s.hitAt>(s.duration??motions.durations[s.animation])
    ||s.duration!==undefined&&(!Number.isFinite(s.duration)||s.duration<motions.durations[s.animation])
    ||!Number.isFinite(s.damage)||s.damage<=0))throw Error('Invalid combo profile');
   this.combo=combo.map(s=>({...s}));
+ }
+ private selectTarget(){
+  if(this.motion)return; // In-flight hits must retain their original target identity.
+  const alive=this.enemies.filter(e=>e.hp>0);
+  if(alive.length)this.targetSlot=alive.reduce((a,b)=>Math.abs(b.x-this.x)<Math.abs(a.x-this.x)?b:a).slot;
  }
  private pose(animation:string,restart=false,speed=1){
   if(restart||animation!==this.action){this.action=animation;this.actionSerial++;}
@@ -71,12 +88,13 @@ export class HuntEngine {
   dt=Math.max(0,Math.min(Number.isFinite(dt)?dt:0,.05));
   direction=Number.isFinite(direction)?Math.max(-1,Math.min(1,direction)):0;
   this.elapsed+=dt;this.cooldowns=this.cooldowns.map(t=>Math.max(0,t-dt));
-  if(this.enemyHP<=0&&this.elapsed>=this.respawnAt){
-   this.enemyHP=100;this.enemySerial++;this.hitUntil=0;
-   this.enemyX=Math.min(WORLD_WIDTH-90,Math.max(90,this.x+this.facing*230));
+  for(const enemy of this.enemies)if(enemy.hp<=0&&this.elapsed>=enemy.respawnAt){
+   enemy.hp=100;enemy.serial+=this.enemies.length;enemy.hitUntil=0;
+   if(this.enemies.length===1)enemy.x=Math.min(WORLD_WIDTH-90,Math.max(90,this.x+this.facing*230));
   }
   this.advanceMotion(dt,direction);
   if(this.motion)return;
+  this.selectTarget();
   if(this.elapsed>this.comboExpires)this.resetCombo();
   if(direction){
    this.attackIntent=false;this.queuedUntil=0;this.facing=Math.sign(direction);
@@ -107,6 +125,7 @@ export class HuntEngine {
    }
    return false;
   }
+  this.selectTarget();
   if(this.elapsed+1e-8<this.attackReady||skill>=0&&this.cooldowns[skill]>0)return false;
   if(skill===-1&&this.enemyHP<=0)return false;
   if(skill===-1&&Math.abs(this.enemyX-this.x)>HUNT_RULES.attackRange){this.attackIntent=true;return true;}

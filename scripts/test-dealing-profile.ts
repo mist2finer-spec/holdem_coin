@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {makeDeck,type Card} from '../src/lib/poker-engine';
-import {dealStartingHands,isPremiumStartingHand,DEALING_PROFILE} from '../src/lib/poker-deal';
+import {dealStartingHands,isPremiumStartingHand,DEALING_PROFILE,startingHandFeatures,startingHandWeight} from '../src/lib/poker-deal';
 import {dealNextStreet} from '../src/lib/poker-rules';
 function seeded(seed:number){return ()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};}
 const cards=(...xs:string[])=>xs.map(x=>({rank:x[0],suit:x[1]} as Card));
@@ -35,22 +35,35 @@ test('no seat gets an advantage from input array order; invalid RNG/seats fail e
  // Constant RNG must terminate instead of repeatedly rejecting a premium pair.
  assert.equal(dealStartingHands(seats,0,()=>0).hands.size,6);
 });
-test('seeded 40k mixed tables approximate human -20% and CPU -10% without dropping ranks',()=>{
- const random=seeded(0x20261023),counts={human:0,cpu:0},samples={human:0,cpu:0};
- const ranks=new Map<string,number>(),seats=Array.from({length:6},(_,seatId)=>({seatId,isBot:seatId>=3}));
- for(let hand=0;hand<40000;hand++) {
-  const {hands}=dealStartingHands(seats,hand%6,random);
-  for(const s of seats){const hole=hands.get(s.seatId)!,kind=s.isBot?'cpu':'human';samples[kind]++;
-   if(isPremiumStartingHand(hole))counts[kind]++;
-   for(const c of hole)ranks.set(c.rank,(ranks.get(c.rank)||0)+1);
+test('weighted features overlap by maximum, recognize wheel and preserve nonzero probabilities',()=>{
+ assert.equal(startingHandWeight(...cards('A♠','A♥') as [Card,Card]),.4);
+ assert.equal(startingHandWeight(...cards('7♠','8♠') as [Card,Card]),.5);
+ assert.equal(startingHandWeight(...cards('7♠','9♥') as [Card,Card]),.6);
+ assert.equal(startingHandWeight(...cards('2♠','K♥') as [Card,Card]),1);
+ assert.equal(startingHandFeatures(...cards('A♠','2♥') as [Card,Card]).connector,true);
+ const seats=[0,1,2,3,4,5].map(seatId=>({seatId,isBot:false}));
+ assert.deepEqual(dealStartingHands(seats,0,seeded(5)),dealStartingHands(seats.map(s=>({...s,isBot:true})),0,seeded(5)));
+});
+test('seeded 20k tables suppress textures for both roles and conserve every rank',()=>{
+ const random=seeded(0x20261023),seats=Array.from({length:6},(_,seatId)=>({seatId,isBot:seatId>=3}));
+ const counts={pair:0,suited:0,connector:0},first={pair:0,suited:0,connector:0};
+ const deck=makeDeck(seeded(1)),expected={pair:0,suited:0,connector:0};let weight=0;
+ for(let a=0;a<52;a++)for(let b=a+1;b<52;b++){
+  const w=startingHandWeight(deck[a],deck[b]),f=startingHandFeatures(deck[a],deck[b]);weight+=w;
+  for(const k of Object.keys(expected) as (keyof typeof expected)[])if(f[k])expected[k]+=w;
+ }
+ for(const k of Object.keys(expected) as (keyof typeof expected)[])expected[k]/=weight;
+ const ranks=new Set<string>();
+ for(let hand=0;hand<20000;hand++){
+  const {hands}=dealStartingHands(seats,hand%6,random),firstId=(hand%6+1)%6;
+  for(const [id,hole] of hands){const f=startingHandFeatures(hole[0],hole[1]);
+   for(const c of hole)ranks.add(c.rank);
+   for(const k of Object.keys(counts) as (keyof typeof counts)[])if(f[k]){counts[k]++;if(id===firstId)first[k]++;}
   }
  }
- const fair=40/1326,human=counts.human/samples.human,cpu=counts.cpu/samples.cpu;
- assert.ok(Math.abs(human-fair*DEALING_PROFILE.humanPremiumMultiplier)<.0018,`human ${human}`);
- assert.ok(Math.abs(cpu-fair*DEALING_PROFILE.cpuPremiumMultiplier)<.0018,`cpu ${cpu}`);
- assert.ok(cpu>human);
- // Suppressing high pairs/AK slightly alters rank marginals by design; prevent
- // a gross card-removal bug, not a false claim of fully uniform starting ranks.
- for(const n of ranks.values())assert.ok(n>30000&&n<44000);
- console.log(JSON.stringify({tables:40000,fair,human,cpu,humanReduction:1-human/fair,cpuReduction:1-cpu/fair}));
+ for(const k of Object.keys(expected) as (keyof typeof expected)[])
+  assert.ok(Math.abs(first[k]/20000-expected[k])<.012,`${k}: ${first[k]/20000} expected ${expected[k]}`);
+ assert.ok(counts.pair/120000<78/1326);assert.ok(counts.suited/120000<312/1326);
+ assert.equal(ranks.size,13);
+ console.log(JSON.stringify({profile:DEALING_PROFILE.id,tables:20000,expectedFirstSeat:expected,observedFirstSeat:Object.fromEntries(Object.entries(first).map(([k,v])=>[k,v/20000])),observedAllSeats:Object.fromEntries(Object.entries(counts).map(([k,v])=>[k,v/120000]))}));
 });
