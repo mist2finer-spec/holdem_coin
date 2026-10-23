@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import crypto from 'node:crypto';
 import {HuntEngine,WORLD_WIDTH} from '../../src/components/rpg/hunt-engine';
-import {HUNT_RULES,motions} from '../../src/components/rpg/combat-rules';
+import {HUNT_RULES,motions,combatProfile} from '../../src/components/rpg/combat-rules';
 function advance(g:HuntEngine,seconds:number,direction=0){for(let t=0;t<seconds-1e-8;t+=.01)g.step(Math.min(.01,seconds-t),direction);}
 function ready(){const g=new HuntEngine();g.x=500;g.enemyX=580;return g;}
 test('motion profile matches actual skeleton bytes and every requested attack/skill alias exists',()=>{
@@ -31,28 +31,28 @@ test('five-stage configured combo advances modulo the list rather than repeating
  const g=ready();g.enemyHP=1000;
  for(let i=0;i<7;i++){
   assert.equal(g.attack(),true);assert.equal(g.action,`attack${i%5+1}`);assert.equal(g.comboStage,i%5+1);
-  advance(g,motions.durations[`attack${i%5+1}` as keyof typeof motions.durations]+.01);
+  advance(g,HUNT_RULES.combo[i%5].duration+.01);
  }
 });
 test('three/four-stage loadouts use their configured list length; invalid profiles fail early',()=>{
  for(const n of [3,4]){const g=new HuntEngine(HUNT_RULES.combo.slice(0,n));g.enemyX=g.x+80;g.enemyHP=1000;
-  for(let i=0;i<n+1;i++){g.attack();assert.equal(g.comboStage,i%n+1);advance(g,.4);}}
+  for(let i=0;i<n+1;i++){g.attack();assert.equal(g.comboStage,i%n+1);advance(g,HUNT_RULES.combo[i%n].duration+.01);}}
  assert.throws(()=>new HuntEngine([]));assert.throws(()=>new HuntEngine([{animation:'attack1',hitAt:99,damage:20}]));
 });
 test('combo expires after a gap; buffered input is limited to one upcoming basic attack',()=>{
  const g=ready();g.enemyHP=1000;g.attack();advance(g,.1);assert.equal(g.attack(),false);
- advance(g,.15);assert.equal(g.attack(),true);assert.equal(g.attack(),true);
- advance(g,.15);assert.equal(g.action,'attack2');advance(g,.4);assert.equal(g.enemyHP,960);
+ advance(g,.25);assert.equal(g.attack(),true);assert.equal(g.attack(),true);
+ advance(g,.16);assert.equal(g.action,'attack2');advance(g,.51);assert.equal(g.enemyHP,960);
  advance(g,HUNT_RULES.comboReset+.1);g.attack();assert.equal(g.action,'attack1');
 });
 test('held attack supports repeated swings and clearing input stops further queued swings',()=>{
- const g=ready();g.enemyHP=1000;g.attackHeld=true;advance(g,1.6);assert.ok(g.enemyHP<940);
+ const g=ready();g.enemyHP=1000;g.attackHeld=true;advance(g,1.8);assert.ok(g.enemyHP<940);
  g.clearInput();advance(g,.8);const hp=g.enemyHP;advance(g,1);assert.equal(g.enemyHP,hp);
 });
 test('automatic approach Rush advances over time, stops in range and inflicts no contact damage',()=>{
  const g=new HuntEngine();g.setAuto(true);g.step(.01,0);assert.equal(g.action,'dash');const start=g.x;
  g.step(.01,0);assert.ok(g.x>start&&g.x<g.enemyX-HUNT_RULES.stopRange);assert.equal(g.enemyHP,100);
- advance(g,.25);assert.ok(g.action.startsWith('attack'));assert.ok(g.x<=g.enemyX-HUNT_RULES.stopRange+1e-8);
+ advance(g,.1);assert.ok(g.action.startsWith('attack'));assert.ok(g.x<=g.enemyX-HUNT_RULES.stopRange+1e-8);
  assert.equal(g.enemyHP,100);advance(g,.22);assert.equal(g.enemyHP,80);
 });
 test('manual input and AUTO OFF cancel approach Rush without teleporting to its old destination',()=>{
@@ -68,7 +68,7 @@ test('manual attack request approaches a remote target, while a far target is re
 test('dodge travels continuously for the actual avoid clip and clamps world bounds',()=>{
  const g=ready(),x=g.x;assert.equal(g.dodge(1),true);assert.equal(g.x,x);g.step(.05,0);assert.ok(g.x>x&&g.x<x+125);
  advance(g,.46);assert.equal(g.x,x+125);assert.equal(g.dodge(1),false);
- advance(g,.8);g.x=WORLD_WIDTH-80;g.dodge(1);advance(g,.51);assert.equal(g.x,WORLD_WIDTH-65);
+ advance(g,HUNT_RULES.dodgeCooldown);g.x=WORLD_WIDTH-80;g.dodge(1);advance(g,.51);assert.equal(g.x,WORLD_WIDTH-65);
 });
 test('long skills are not cut at .6 seconds, and channel start/loop/end all play',()=>{
  for(const skill of [2,3]){const g=ready();g.attack(skill);advance(g,.7);assert.equal(g.action,`skill${skill+1}`);
@@ -93,5 +93,20 @@ test('repeat animations carry fresh serials, auto play remains finite and replay
   assert.equal(g.coins,g.kills*25);assert.ok([g.x,g.enemyHP,g.elapsed].every(Number.isFinite));return JSON.stringify(g);};
  assert.equal(run(),run());
  const g=new HuntEngine(HUNT_RULES.combo.slice(0,1));g.enemyX=g.x+80;g.attack();const serial=g.actionSerial;
- advance(g,.38);g.attack();assert.equal(g.action,'attack1');assert.ok(g.actionSerial>serial);
+ advance(g,HUNT_RULES.combo[0].duration+.01);g.attack();assert.equal(g.action,'attack1');assert.ok(g.actionSerial>serial);
+});
+
+test('recovered activation/hold times replace fractional clip timing and prevent early reattack',()=>{
+ assert.deepEqual(HUNT_RULES.combo.map(s=>s.hitAt),[.2,.2,.2,.2,.3]);
+ assert.deepEqual(HUNT_RULES.combo.map(s=>s.duration),[.5,.5,.5,.5,.67]);
+ const g=ready();g.enemyHP=1000;g.attack();advance(g,.19);assert.equal(g.enemyHP,1000);
+ advance(g,.02);assert.equal(g.enemyHP,980);advance(g,.1);assert.equal(g.attack(),false);
+ advance(g,.2);assert.equal(g.attack(),true);assert.equal(g.comboStage,2);
+ assert.equal(combatProfile.prefabSkeletonLinkStatus,'OBJECT_REFERENCES_VERIFIED');
+ assert.ok(combatProfile.limitations.length>0);
+});
+test('native combo timer and avoid cooldown are independent of animation completion',()=>{
+ assert.equal(HUNT_RULES.comboReset,.75);assert.equal(HUNT_RULES.dodgeCooldown,2);
+ const g=ready();g.dodge(1);advance(g,1.5);assert.equal(g.dodge(1),false);
+ advance(g,.51);assert.equal(g.dodge(1),true);
 });

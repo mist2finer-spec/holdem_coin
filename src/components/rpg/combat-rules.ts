@@ -1,14 +1,20 @@
 import motions from './motion-profile.json';
+import combatProfile from './combat-profile.json';
 export const WORLD_WIDTH=2400;
 export const SKILL_COOLDOWNS=[5,8,7,9,6,12];
-export type ComboStage={animation:keyof typeof motions.durations;hitAt:number;damage:number};
-// DESIGN_PROPOSAL: native evidence proves configurable combo/rush structure,
-// not these five equipped attacks, hit offsets, damage or world-pixel values.
+export type ComboStage={animation:keyof typeof motions.durations;hitAt:number;damage:number;duration?:number};
+// Native time values are recovered; pixel distances/damage and enum-to-clip names
+// are explicit web adapter choices (see combat-profile.json limitations).
+const PIXELS_PER_NATIVE_UNIT=100;
 export const HUNT_RULES={
- moveSpeed:175,attackRange:155,stopRange:125,rushMin:180,rushMax:480,rushSpeed:720,
- dodgeDistance:125,comboReset:.55,inputBuffer:.18,
- combo:['attack1','attack2','attack3','attack4','attack5'].map((name,i)=>({
-  animation:name as ComboStage['animation'],hitAt:motions.durations[name as keyof typeof motions.durations]*.55,
-  damage:i===4?30:20})),
+ moveSpeed:175,attackRange:120,stopRange:100,
+ useRush:Boolean(combatProfile.native.useRush),
+ rushMin:combatProfile.native.rushMin*PIXELS_PER_NATIVE_UNIT,
+ rushMax:combatProfile.native.rushMax*PIXELS_PER_NATIVE_UNIT,
+ rushSpeed:combatProfile.native.rushSpeed*PIXELS_PER_NATIVE_UNIT,
+ dodgeDistance:125,dodgeCooldown:combatProfile.native.avoidCooldown,
+ comboReset:combatProfile.native.comboDelay,minAttackDelay:combatProfile.native.minAttackDelay,inputBuffer:.18,
+ combo:combatProfile.combo.map(stage=>({animation:stage.animation as ComboStage['animation'],
+  hitAt:stage.hitAt,damage:stage.damage,duration:stage.duration})),
 };
-export {motions};
+export {motions,combatProfile};

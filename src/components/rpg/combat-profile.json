@@ -1,0 +1,182 @@
+{
+  "format": 1,
+  "actorType": 2,
+  "actorGuid": "7d09d20bec5eaf94cbaa907e7bc294e6",
+  "asset": "Hero_Axe01",
+  "assetSha256": "665127ea81721e5aaa1d1dddb5de768432532efb423302b01b4ebf1da13a8cb2",
+  "guidLinkStatus": "CATALOG_ADJACENCY_CORROBORATED_NOT_RESOURCE_LOCATION_PROOF",
+  "prefabSkeletonLinkStatus": "OBJECT_REFERENCES_VERIFIED",
+  "native": {
+    "useRush": 1,
+    "rushMin": 1.0,
+    "rushMax": 2.0,
+    "rushSpeed": 20.0,
+    "minAttackDelay": 0.15000000596046448,
+    "comboDelay": 0.75,
+    "avoidDuration": 0.5,
+    "avoidCooldown": 2.0
+  },
+  "combo": [
+    {
+      "skillType": 911,
+      "animationState": 11,
+      "animation": "attack1",
+      "animationMapping": "EXPLICIT_WEB_ADAPTER_ENUM_NOT_RECOVERED",
+      "duration": 0.5,
+      "hitAt": 0.2,
+      "damage": 20,
+      "impactorActivations": [
+        {
+          "at": 0.2,
+          "dataId": 5,
+          "dataIdx": 0,
+          "movingHitCount": 1,
+          "colliderWidth": 1.2999999523162842,
+          "colliderHeight": 1.0
+        }
+      ]
+    },
+    {
+      "skillType": 912,
+      "animationState": 12,
+      "animation": "attack2",
+      "animationMapping": "EXPLICIT_WEB_ADAPTER_ENUM_NOT_RECOVERED",
+      "duration": 0.5,
+      "hitAt": 0.2,
+      "damage": 20,
+      "impactorActivations": [
+        {
+          "at": 0.2,
+          "dataId": 5,
+          "dataIdx": 0,
+          "movingHitCount": 1,
+          "colliderWidth": 1.2999999523162842,
+          "colliderHeight": 1.0
+        }
+      ]
+    },
+    {
+      "skillType": 913,
+      "animationState": 13,
+      "animation": "attack3",
+      "animationMapping": "EXPLICIT_WEB_ADAPTER_ENUM_NOT_RECOVERED",
+      "duration": 0.5,
+      "hitAt": 0.2,
+      "damage": 20,
+      "impactorActivations": [
+        {
+          "at": 0.2,
+          "dataId": 5,
+          "dataIdx": 0,
+          "movingHitCount": 1,
+          "colliderWidth": 2.0999999046325684,
+          "colliderHeight": 1.0
+        }
+      ]
+    },
+    {
+      "skillType": 914,
+      "animationState": 14,
+      "animation": "attack4",
+      "animationMapping": "EXPLICIT_WEB_ADAPTER_ENUM_NOT_RECOVERED",
+      "duration": 0.5,
+      "hitAt": 0.2,
+      "damage": 20,
+      "impactorActivations": [
+        {
+          "at": 0.2,
+          "dataId": 5,
+          "dataIdx": 0,
+          "movingHitCount": 1,
+          "colliderWidth": 1.2999999523162842,
+          "colliderHeight": 1.0
+        }
+      ]
+    },
+    {
+      "skillType": 915,
+      "animationState": 15,
+      "animation": "attack5",
+      "animationMapping": "EXPLICIT_WEB_ADAPTER_ENUM_NOT_RECOVERED",
+      "duration": 0.67,
+      "hitAt": 0.3,
+      "damage": 30,
+      "impactorActivations": [
+        {
+          "at": 0.3,
+          "dataId": 5,
+          "dataIdx": 0,
+          "movingHitCount": 2,
+          "colliderWidth": 3.0,
+          "colliderHeight": 1.0
+        }
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "name": "000-ActionBasicData.txt",
+      "sha256": "c28f4961cf8db0b772289347ae18ca321d82e0f947f00a0b5ca2bce58a320a51"
+    },
+    {
+      "name": "001-ActionDashData.txt",
+      "sha256": "b7e6831cf63f49a91566334d1e91cc183b24fcbeddd2c485a4c605aafc3313f7"
+    },
+    {
+      "name": "002-ActionImpactorData.txt",
+      "sha256": "b05568dd5caa71e4e7445bfccf5c30beeca4e1222e8e0277e92986012f7e8fc0"
+    },
+    {
+      "name": "003-ActionMotionData.txt",
+      "sha256": "81363931ca786f5f0bf3214e712f87c52bc05282132be8e806dbd38be6ce5f10"
+    },
+    {
+      "name": "004-ActionMoveData.txt",
+      "sha256": "3d79fdef3ba590d69a3049d8eedf5fa9ea488a3e611e54a13af080474f8cc240"
+    },
+    {
+      "name": "fef94dd999990ae7437681f4566eed6d84b4ff91:rpg-assets/metadata/model/GameObject.zip!CAB-8567a9a245cb1780b2cf82cab834069b/768041873079057063.json",
+      "sha256": "ddbf56072d274a73f9f54b35a36a87efc077a5efd95636bb7aa052a6d28da57c"
+    },
+    {
+      "name": "fef94dd999990ae7437681f4566eed6d84b4ff91:rpg-assets/metadata/model/MonoBehaviour.zip!CAB-8567a9a245cb1780b2cf82cab834069b/7164544061370055335.json",
+      "sha256": "b55687c6da7498a17747dbeca20980be44363566b672b50419ca0b45533cf84d"
+    },
+    {
+      "name": "fef94dd999990ae7437681f4566eed6d84b4ff91:rpg-assets/metadata/model/MonoBehaviour.zip!CAB-8567a9a245cb1780b2cf82cab834069b/5623481548197092486.json",
+      "sha256": "91f42042f3f5262e8f9a099ba1ed811e6fa5dc6e1f47a8291a3a1d45b798fc3d"
+    },
+    {
+      "name": "catalog_strings.csv",
+      "sha256": "cc68ab1e69bb942345750534bb6c8899a1a578697e16d0a6ed5c03735d531d1d",
+      "guidLine": 3245,
+      "nextLine": "assets/aa/catalog.bin,Hero_Axe01.prefab"
+    },
+    {
+      "name": "CombatActorManager__RunAction__T6004476.txt",
+      "sha256": "235b4778e357195c0cc9559fdb17ff724fcc273c247e71924ea31daf49095d5f"
+    },
+    {
+      "name": "CombatActorManager__ProcessActions__T6004475.txt",
+      "sha256": "46d993fe7f531eadf78005be46d2c743ee3dbaf6e052b324b5bc862f3e2c310a"
+    },
+    {
+      "name": "CombatActorManager__GetActionDuration__T6004485.txt",
+      "sha256": "76dad98ddfdf8928e532cc3afa66c7f961026c34192e17eb6aed57175db885e8"
+    },
+    {
+      "name": "CombatActorManager__RunActionImpactor__T6004498.txt",
+      "sha256": "43192af97532f11e3e8a9ddb3a209cf8d44cf6e696bfa919ae204713d1423ffe"
+    }
+  ],
+  "traceSha256": "fadadb06264e710c62f7a363e100e00908e1a3e71ad1ab40f1cbf62e337c9081",
+  "combatDataSha256": "8fc2d98479de6bd2116c22a55943c58af2e06396dec7b21825dc7d293632744f",
+  "limitations": [
+    "Native AnimationState enum-to-name lookup not recovered; web mapping is explicit.",
+    "Axe GUID association is catalog adjacency; raw Addressables resource-location proof unavailable.",
+    "Impactor activation times verified from data/dispatch, damage uses one-target contact approximation.",
+    "Full five-stage loadout is a prototype choice; mastery unlocks not restored.",
+    "Damage, skill cooldowns, world-pixel scale and collision shapes remain prototype values.",
+    "Native code and data captures have different address ranges; semantic evidence, not ABI reproduction."
+  ]
+}

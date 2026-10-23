@@ -6,7 +6,7 @@ type Motion={kind:'attack'|'skill'|'rush'|'dodge';start:number;duration:number;t
 const clampX=(x:number)=>Math.max(65,Math.min(WORLD_WIDTH-65,x));
 /** Browser-local restoration scaffold. Original formulas/config remain unresolved. */
 export class HuntEngine {
- x=620;enemyX=920;facing=1;enemyHP=100;hp=100;enemySerial=1;
+ x=620;enemyX=780;facing=1;enemyHP=100;hp=100;enemySerial=1;
  elapsed=0;kills=0;coins=0;xp=0;auto=false;paused=false;
  action='stay1';actionSerial=0;animationSpeed=1;actionUntil=0;
  cooldowns=[0,0,0,0,0,0];dodgeReady=0;attackReady=0;respawnAt=0;
@@ -16,7 +16,9 @@ export class HuntEngine {
  readonly combo:readonly ComboStage[];
  constructor(combo:readonly ComboStage[]=HUNT_RULES.combo){
   if(!combo.length||combo.some(s=>!motions.durations[s.animation]||!Number.isFinite(s.hitAt)
-   ||s.hitAt<0||s.hitAt>motions.durations[s.animation]||!Number.isFinite(s.damage)||s.damage<=0))throw Error('Invalid combo profile');
+   ||s.hitAt<0||s.hitAt>(s.duration??motions.durations[s.animation])
+   ||s.duration!==undefined&&(!Number.isFinite(s.duration)||s.duration<motions.durations[s.animation])
+   ||!Number.isFinite(s.damage)||s.damage<=0))throw Error('Invalid combo profile');
   this.combo=combo.map(s=>({...s}));
  }
  private pose(animation:string,restart=false,speed=1){
@@ -84,7 +86,7 @@ export class HuntEngine {
    this.queuedUntil=0;this.attackIntent=true;
    const distance=Math.abs(this.enemyX-this.x);this.facing=Math.sign(this.enemyX-this.x)||this.facing;
    if(distance<=HUNT_RULES.attackRange){this.attack();return;}
-   if(distance>=HUNT_RULES.rushMin&&distance<=HUNT_RULES.rushMax){
+   if(HUNT_RULES.useRush&&distance>=HUNT_RULES.rushMin&&distance<=HUNT_RULES.rushMax){
     const destination=clampX(this.enemyX-this.facing*HUNT_RULES.stopRange);
     const duration=Math.abs(destination-this.x)/HUNT_RULES.rushSpeed;
     if(duration>0)this.start({kind:'rush',start:this.elapsed,duration,target:this.enemySerial,
@@ -111,9 +113,9 @@ export class HuntEngine {
   this.facing=Math.sign(this.enemyX-this.x)||this.facing;this.attackIntent=false;
   if(this.elapsed>this.comboExpires)this.resetCombo();
   if(skill===-1){
-   const stage=this.combo[this.comboIndex],duration=motions.durations[stage.animation];
+   const stage=this.combo[this.comboIndex],duration=stage.duration??motions.durations[stage.animation];
    this.comboStage=this.comboIndex+1;this.comboIndex=(this.comboIndex+1)%this.combo.length;
-   this.comboExpires=this.elapsed+duration+HUNT_RULES.comboReset;this.attackReady=this.elapsed+duration;
+   this.comboExpires=this.elapsed+duration+HUNT_RULES.comboReset;this.attackReady=this.elapsed+Math.max(duration,HUNT_RULES.minAttackDelay);
    this.start({kind:'attack',start:this.elapsed,duration,target:this.enemySerial,
     segments:[{animation:stage.animation,duration}],phase:0,
     hits:[{at:stage.hitAt,damage:stage.damage,range:HUNT_RULES.attackRange,done:false}]});
@@ -133,6 +135,6 @@ export class HuntEngine {
   const duration=motions.durations.avoid1,destination=clampX(this.x+this.facing*HUNT_RULES.dodgeDistance);
   this.start({kind:'dodge',start:this.elapsed,duration,target:this.enemySerial,segments:[{animation:'avoid1',duration}],
    phase:0,hits:[],destination,speed:HUNT_RULES.dodgeDistance/duration});
-  this.dodgeReady=this.elapsed+1.2;return true;
+  this.dodgeReady=this.elapsed+HUNT_RULES.dodgeCooldown;return true;
  }
 }
