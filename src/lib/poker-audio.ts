@@ -7,6 +7,7 @@ let master: GainNode | undefined;
 let scene: PokerAudioScene = null;
 let music: AudioBufferSourceNode | undefined;
 let musicRequest = 0;
+let dealRequest = 0;
 let unlocked = false;
 let muted = false;
 let hidden = false;
@@ -72,13 +73,15 @@ export function unlockPokerAudio() {
 }
 export async function playPokerSound(name: PokerSound, duration?: number) {
   if (!context || !unlocked || muted || hidden || scene !== 'table') return;
+  const isDeal = name === 'shuffle_card' || name === 'taking_card';
+  const deal = isDeal ? ++dealRequest : dealRequest;
   if (name === 'taking_card') {
     for (const [source, kind] of effects) if (kind === 'shuffle_card') { try { source.stop(); } catch {} effects.delete(source); }
   }
   const requested = musicRequest;
   try {
     const data = await buffer(name);
-    if (!context || requested !== musicRequest || muted || hidden || scene !== 'table') return;
+    if (!context || requested !== musicRequest || (isDeal && deal !== dealRequest) || muted || hidden || scene !== 'table') return;
     const source = context.createBufferSource(); const gain = context.createGain();
     gain.gain.value = .65; source.buffer = data;
     source.connect(gain).connect(master!);
