@@ -38,7 +38,7 @@ def prepare(args):
  roster=read(ROOT/'public/rpg/characters/roster.json');c=next((c for c in roster if c['id']==args.character),None)
  if c is None:raise ValueError('Unknown character')
  if not args.checkpoint:raise ValueError('--checkpoint must match a checkpoint installed in ComfyUI')
- source=ROOT/'public/rpg/characters'/c['id']/'rig/preview.png'
+ source=ROOT/'public/rpg/characters'/c['id']/'frames/00-idle-0.png'
  graph=read(ROOT/'workflows/comfyui/img2img.api.json')
  graph['4']['inputs']['ckpt_name']=args.checkpoint
  graph['3']['inputs'].update(seed=args.seed,denoise=args.denoise)

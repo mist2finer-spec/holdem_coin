@@ -5,8 +5,8 @@
     "portraitId": 2,
     "manifest": "boy-hoodie/manifest.json",
     "sheet": "boy-hoodie/sheet.png",
-    "rig": "boy-hoodie/rig/character.json",
-    "preview": "boy-hoodie/rig/preview.png"
+    "preview": "boy-hoodie/illustration.jpg",
+    "renderMode": "sprite-16-v1"
   },
   {
     "id": "white-bob",
@@ -14,8 +14,8 @@
     "portraitId": 3,
     "manifest": "white-bob/manifest.json",
     "sheet": "white-bob/sheet.png",
-    "rig": "white-bob/rig/character.json",
-    "preview": "white-bob/rig/preview.png"
+    "preview": "white-bob/illustration.jpg",
+    "renderMode": "sprite-16-v1"
   },
   {
     "id": "gold-dress",
@@ -23,8 +23,8 @@
     "portraitId": 1,
     "manifest": "gold-dress/manifest.json",
     "sheet": "gold-dress/sheet.png",
-    "rig": "gold-dress/rig/character.json",
-    "preview": "gold-dress/rig/preview.png"
+    "preview": "gold-dress/illustration.jpg",
+    "renderMode": "sprite-16-v1"
   },
   {
     "id": "black-suit",
@@ -32,8 +32,8 @@
     "portraitId": 4,
     "manifest": "black-suit/manifest.json",
     "sheet": "black-suit/sheet.png",
-    "rig": "black-suit/rig/character.json",
-    "preview": "black-suit/rig/preview.png"
+    "preview": "black-suit/illustration.jpg",
+    "renderMode": "sprite-16-v1"
   },
   {
     "id": "longhair-man",
@@ -41,8 +41,8 @@
     "portraitId": 5,
     "manifest": "longhair-man/manifest.json",
     "sheet": "longhair-man/sheet.png",
-    "rig": "longhair-man/rig/character.json",
-    "preview": "longhair-man/rig/preview.png"
+    "preview": "longhair-man/illustration.jpg",
+    "renderMode": "sprite-16-v1"
   },
   {
     "id": "teal-twins",
@@ -50,8 +50,8 @@
     "portraitId": 6,
     "manifest": "teal-twins/manifest.json",
     "sheet": "teal-twins/sheet.png",
-    "rig": "teal-twins/rig/character.json",
-    "preview": "teal-twins/rig/preview.png"
+    "preview": "teal-twins/illustration.jpg",
+    "renderMode": "sprite-16-v1"
   },
   {
     "id": "hong",
@@ -59,8 +59,8 @@
     "portraitId": 7,
     "manifest": "hong/manifest.json",
     "sheet": "hong/sheet.png",
-    "rig": "hong/rig/character.json",
-    "preview": "hong/rig/preview.png"
+    "preview": "hong/illustration.jpg",
+    "renderMode": "sprite-16-v1"
   },
   {
     "id": "pink-glasses",
@@ -68,8 +68,8 @@
     "portraitId": 8,
     "manifest": "pink-glasses/manifest.json",
     "sheet": "pink-glasses/sheet.png",
-    "rig": "pink-glasses/rig/character.json",
-    "preview": "pink-glasses/rig/preview.png"
+    "preview": "pink-glasses/illustration.jpg",
+    "renderMode": "sprite-16-v1"
   },
   {
     "id": "blonde-office",
@@ -77,7 +77,7 @@
     "portraitId": 9,
     "manifest": "blonde-office/manifest.json",
     "sheet": "blonde-office/sheet.png",
-    "rig": "blonde-office/rig/character.json",
-    "preview": "blonde-office/rig/preview.png"
+    "preview": "blonde-office/illustration.jpg",
+    "renderMode": "sprite-16-v1"
   }
 ]

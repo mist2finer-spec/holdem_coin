@@ -79,3 +79,6 @@ mini-services/poker-server/data/
 /.tools/
 /data/comfyui/
 /scripts/rpg/__pycache__/
+
+# Preserved character Spine rigs (not served by the web app)
+!archive/rpg/spine-characters/**/*.png

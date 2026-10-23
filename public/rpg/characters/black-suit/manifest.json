@@ -295,7 +295,7 @@
     "Not a Spine rig or a recovered original animation.",
     "Skills reuse melee poses; dedicated skill effects and death poses are not supplied."
   ],
-  "rig": "rig/character.json",
-  "rigAtlas": "rig/character.atlas.txt",
-  "renderMode": "spine-4.2-articulated"
+  "renderMode": "sprite-16-v1",
+  "illustration": "illustration.jpg",
+  "spineArchive": "archive/rpg/spine-characters/black-suit"
 }

@@ -18,3 +18,38 @@ test('contact poses match actual engine impact clock without changing damage tim
  for(const stage of HUNT_RULES.combo){assert.equal(combatSpriteFrame(stage.animation,stage.hitAt-1e-5,stage.hitAt),8);assert.ok(combatSpriteFrame(stage.animation,stage.hitAt,stage.hitAt)>=9);}
  for(const action of ['stay1','run1','dash','avoid1','attack1','attack2','attack3','attack4','attack5','skill5','damage1'])for(const time of [0,.1,.3,1,100])assert.ok(combatSpriteFrame(action,time)>=0&&combatSpriteFrame(action,time)<16);
 });
+test('sprite cells keep one floor anchor and scale across all frames and facing directions',async()=>{
+ const {spritePlacement}=await import('../../src/components/rpg/combat-sprite');
+ for(let frame=0;frame<16;frame++)for(const direction of [-1,1])for(const scale of [.2,.62,1]){
+  const p=spritePlacement(frame,100,240,scale,direction);
+  assert.ok(p.source[0]+p.source[2]<=1024&&p.source[1]+p.source[3]<=1024);
+  assert.equal(p.x+(p.target[0]+128)*p.scaleX,100);
+  assert.equal(p.y+(p.target[1]+224)*p.scaleY,240);
+ }
+ assert.throws(()=>spritePlacement(16,0,0,1,1));
+});
+test('each repeated strike restarts its sprite windup while pause freezes the pose',async()=>{
+ const {CombatSpriteClock}=await import('../../src/components/rpg/combat-sprite');
+ const clock=new CombatSpriteClock();
+ assert.equal(clock.frame('attack1',1,.1),8);
+ assert.equal(clock.frame('attack1',1,.1),9);
+ assert.equal(clock.frame('attack1',1,0),9);
+ assert.equal(clock.frame('attack1',2,0),8);
+ assert.equal(clock.frame('attack1',2,.1,2),9);
+ assert.equal(clock.frame('run1',3,0),4);
+ assert.equal(clock.frame('run1',3,.1),5);
+ assert.equal(clock.frame('run1',3,0),5);
+});
+test('active character sheets stay unchanged and archived Spine skeletons retain their hashes',async()=>{
+ const {createHash}=await import('node:crypto');
+ const archive=JSON.parse(fs.readFileSync('archive/rpg/spine-characters/index.json','utf8'));
+ for(const c of COMBAT_CHARACTERS){
+  const root=`public/rpg/characters/${c.id}`,meta=JSON.parse(fs.readFileSync(`${root}/manifest.json`,'utf8'));
+  assert.equal(meta.renderMode,'sprite-16-v1');assert.equal(meta.rig,undefined);
+  assert.equal(createHash('sha256').update(fs.readFileSync(`${root}/sheet.png`)).digest('hex'),meta.sheetSha256);
+  assert.ok(fs.statSync(`${root}/illustration.jpg`).size>1000);
+  assert.equal(fs.existsSync(`${root}/rig`),false);
+  const archived=archive.characters.find((a:{id:string})=>a.id===c.id);
+  assert.equal(createHash('sha256').update(fs.readFileSync(`${archived.path}/character.json`)).digest('hex'),archived.skeletonSha256);
+ }
+});

@@ -1,5 +1,7 @@
 # 로비 캐릭터 전투 에셋 1차
 
+> 현재 전투 캐릭터: 16프레임 스프라이트. 선택창: 원본 일러스트. 아래 Spine 제작 섹션은 이력이며 리그는 archive/rpg/spine-characters에 보존됨.
+
 로비/포커 외형 9종을 현재 횡스크롤 사냥 프로토타입용으로 제작했다. 홍은 chr_7과 동일 외형이다.
 외형 이름은 포커 랜덤 성향과 무관하다. 새 PNG는 built-in image_gen 생성물이며 원본 JPG는 유지한다.
 
@@ -55,3 +57,13 @@ npm run build
 
 현재 웹은 AI 재해석 파츠 대신 원본 chr JPG의 파츠 열을 사용한다. 이전 source.png/sheet.png는 레거시 참고 자료이며 게임에서는 사용하지 않는다.
 현재 진입점은 rig/character.json, 선택창은 rig/preview.png이다. 이동·회피·공격은 Hero_Axe01의 실제 모션을 리타게팅한다. 원본 외형 출처는 original-art.json, 모션 출처·보완 한계는 rig-manifest.json 및 UNITY_SPINE_IMPORT.md에 명시한다.
+
+## Current: 16-frame sprite combat
+
+The active renderer uses `public/rpg/characters/<id>/sheet.png` only for the player. It samples the original 4x4 cells, preserves their 128/224 foot anchor and uses one scale for all poses. Engine action serials restart windup/contact timing for every combo hit. Character selection uses `illustration.jpg`, cropped from the original illustration column, rather than a generated rig preview. The HUD uses the existing sprite portrait.
+
+All nine character Spine rigs have been moved intact to `archive/rpg/spine-characters/<id>`. They are excluded from browser loading and remain available for future Unity work. Native slime animations continue to use their original Spine assets.
+
+The 16-frame sheets provide four idle frames, four run frames, one windup, four contact poses, two dodge poses and one hurt pose. Five combo stages share four contact poses; skills reuse these poses. This is an existing sprite prototype, not a new sixteen-frame animation for each action.
+
+Rebuild selection art: `python scripts/rpg/build_selection_illustrations.py`.

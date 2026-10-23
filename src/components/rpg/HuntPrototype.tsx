@@ -9,7 +9,7 @@ const skills = [
 ];
 const menus = [['출석','달빛 숲에 오신 것을 환영합니다. 출석 보상은 다음 버전에 연결됩니다.'],['우편','도착한 우편이 없습니다.'],['설정','이 프로토타입은 소리 없이 실행됩니다. 키보드 A/D 또는 ←/→로 이동하고 Space로 공격합니다.'],['공지','사냥 화면 프로토타입입니다. 전투·재화·경험치는 테스트용이며 계정에 저장되지 않습니다.']];
 const initial = () => ({hp:100,xp:0,coins:0,kills:0,auto:false,paused:false,cooldowns:[0,0,0,0,0,0],x:620,action:'stay1'});
-export function HuntPrototype({onExit,character='axe'}: {onExit?:()=>void;character?:string}) {
+export function HuntPrototype({onExit,character='hong'}: {onExit?:()=>void;character?:string}) {
  const canvas = useRef<HTMLCanvasElement>(null), engine = useRef<HuntEngine|null>(null), direction = useRef(0), keys = useRef(new Set<string>()),attackPointer=useRef(false);
  const [view,setView] = useState(initial), [status,setStatus] = useState('loading'), [error,setError] = useState(''), [menu,setMenu] = useState(false), [dialog,setDialog] = useState<[string,string]|null>(null);
  const [stick,setStick] = useState(0);
@@ -53,7 +53,7 @@ export function HuntPrototype({onExit,character='axe'}: {onExit?:()=>void;charac
   </header>
   <section className="hunt-stage" aria-label="달빛 숲 사냥터">
    <canvas ref={canvas} aria-label="이동하는 전사와 최대 7마리 슬라임" data-status={status} data-position={view.x} data-action={view.action}/>
-   <div className="hunt-identity"><img src={character==='axe'?'/rpg/Portrait_Hero_005.png':`/rpg/characters/${character}/rig/parts/head.png`} alt="선택한 캐릭터 초상화"/><div><small>Lv. 1 · 견습 전사</small><strong>{COMBAT_CHARACTERS.find(c=>c.id===character)?.label||'숲의 여행자'}</strong><span>⚔ 전투력 1,250</span></div></div>
+   <div className="hunt-identity"><img src={`/rpg/characters/${character}/portrait.png`} alt="선택한 캐릭터 초상화"/><div><small>Lv. 1 · 견습 전사</small><strong>{COMBAT_CHARACTERS.find(c=>c.id===character)?.label||'숲의 여행자'}</strong><span>⚔ 전투력 1,250</span></div></div>
    <div className="hunt-location"><small>CHAPTER 01</small><h1>달빛 숲 <span>1–1</span></h1><p><i/>{view.paused?'휴식 중':view.auto?'자동 사냥 중':'자유 탐험'} · 처치 {view.kills}</p></div>
    <button className="hunt-menu-toggle" aria-label="메뉴" aria-expanded={menu} onClick={()=>setMenu(!menu)}>☰</button>
    {menu&&<nav className="hunt-drawer" aria-label="사냥 메뉴">{menus.map(([title,body])=><button key={title} onClick={()=>{setDialog([title,body]);setMenu(false);}}>{title}</button>)}</nav>}

@@ -21,7 +21,7 @@ def animations():
 def build(inputs):
  for key,label,portrait in ROSTER:
   if key not in inputs:continue
-  dest=ROOT/'public/rpg/characters'/key/'rig';dest.mkdir(parents=True,exist_ok=True);(dest/'parts').mkdir(exist_ok=True)
+  dest=ROOT/'archive/rpg/spine-characters'/key;dest.mkdir(parents=True,exist_ok=True);(dest/'parts').mkdir(exist_ok=True)
   source=Path(inputs[key]);im=Image.open(source).convert('RGBA');shutil.copyfile(source,dest/'parts-source.png')
   mask=im.getchannel('A').point(lambda a:255 if a>=40 else 0)
   try:
@@ -73,9 +73,6 @@ def build(inputs):
   sk={'skeleton':{'spine':'4.2.43','hash':hashlib.sha256(source.read_bytes()).hexdigest()[:12],'images':'parts/','audio':''},'bones':bones,'slots':slots,'skins':[{'name':'default','attachments':attachments}],'events':{'contact':{}},'animations':animations()}
   (dest/'character.json').write_text(json.dumps(sk,ensure_ascii=False,separators=(',',':'))+'\n')
   (dest/'rig-manifest.json').write_text(json.dumps({'id':key,'version':'original-art-vardian-motion-v2','spine':'4.2','bones':len(bones),'parts':PARTS,'animations':list(sk['animations']),'hitEvents':'contact; metadata only in web, HuntEngine owns damage','alpha':'straight','sourceSha256':hashlib.sha256(source.read_bytes()).hexdigest(),'artProvenance':'original-art.json','motionProvenance':{k:v for k,v in json.loads((ROOT/'scripts/rpg/vardian-retarget.json').read_text()).items() if k!='animations'},'limitations':['Region attachments, not weighted meshes or IK.','Original Hero_Axe01 motion retargeted to common cutout proportions; not a native character rig.','No native .spine editor project or Unity-generated .meta/material assets.']},ensure_ascii=False,indent=2)+'\n')
-  metaPath=dest.parent/'manifest.json'
-  meta=json.loads(metaPath.read_text());meta.update({'rig':'rig/character.json','rigAtlas':'rig/character.atlas.txt','renderMode':'spine-4.2-articulated'})
-  metaPath.write_text(json.dumps(meta,ensure_ascii=False,indent=2)+'\n')
   print('SPINE_RIG_BUILT',key,len(bones),'bones',len(sk['animations']),'animations')
 if __name__=='__main__':
  p=argparse.ArgumentParser();p.add_argument('--inputs',required=True);a=p.parse_args();build(json.loads(Path(a.inputs).read_text()))

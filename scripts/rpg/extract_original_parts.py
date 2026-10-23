@@ -59,7 +59,7 @@ def main():
   for i,p in enumerate(PARTS):
    cell=parts[p];cell.thumbnail((220,220),Image.Resampling.NEAREST)
    atlas.alpha_composite(cell,(i%4*256+(256-cell.width)//2,i//4*256+(256-cell.height)//2))
-  dest=ROOT/'public/rpg/characters'/key/'rig';path=dest/'original-parts.png';temp=path.with_suffix('.tmp.png');atlas.save(temp,optimize=True);temp.replace(path);inputs[key]=str(path)
+  dest=ROOT/'archive/rpg/spine-characters'/key;path=dest/'original-parts.png';temp=path.with_suffix('.tmp.png');atlas.save(temp,optimize=True);temp.replace(path);inputs[key]=str(path)
   audit={'source':f'public/island/chr_{n}.jpg','sourceSha256':hashlib.sha256((ROOT/f'public/island/chr_{n}.jpg').read_bytes()).hexdigest(),'referenceCanvas':[2048,1143],'rectangles':s,'method':'Original third-column JPEG cutouts, background matte estimation, leg segments split at knee; no generative redraw.','supplements':['Gold dress hidden legs borrowed from chr_3 beneath full-length skirt.'] if n==1 else [],'limitations':['JPEG edge alpha is estimated, not original layered art.','Backside and occluded joint interiors are not recovered.']}
   (dest/'original-art.json').write_text(json.dumps(audit,ensure_ascii=False,indent=2)+'\n')
  (ROOT/'scripts/rpg/original-parts-inputs.json').write_text(json.dumps({k:str(Path(v).relative_to(ROOT)) for k,v in inputs.items()},indent=2)+'\n')

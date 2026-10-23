@@ -7,7 +7,7 @@ import {attachmentBottom,groundSkeleton} from '../../src/components/rpg/hunt-gro
 import {HUNT_RULES} from '../../src/components/rpg/combat-rules';
 Skeleton.yDown=true;
 for(const c of COMBAT_CHARACTERS)test(`${c.id}: articulated Spine rig, motion, floor and single contact timing`,()=>{
- const folder=`public/rpg/characters/${c.id}/rig`,raw=JSON.parse(fs.readFileSync(`${folder}/character.json`,'utf8'));
+ const folder=`archive/rpg/spine-characters/${c.id}`,raw=JSON.parse(fs.readFileSync(`${folder}/character.json`,'utf8'));
  const atlasText=fs.readFileSync(`${folder}/character.atlas`,'utf8');assert.equal(atlasText,fs.readFileSync(`${folder}/character.atlas.txt`,'utf8'));
  const atlas=new TextureAtlas(atlasText);for(const p of atlas.pages)p.setTexture(new CanvasTexture({width:p.width,height:p.height} as HTMLImageElement));
  const data=new SkeletonJson(new AtlasAttachmentLoader(atlas)).readSkeletonData(raw);
@@ -42,7 +42,7 @@ test('all appearances preserve supplied art provenance and use the same native m
  assert.equal(motions.source,'public/rpg/Hero_Axe01.json');
  assert.equal(motions.sampleRate,60);
  for(const c of COMBAT_CHARACTERS){
-  const root=`public/rpg/characters/${c.id}/rig`;
+  const root=`archive/rpg/spine-characters/${c.id}`;
   const art=JSON.parse(fs.readFileSync(`${root}/original-art.json`,'utf8'));
   assert.equal(art.source,`public/island/chr_${c.portrait}.jpg`);
   const raw=JSON.parse(fs.readFileSync(`${root}/character.json`,'utf8'));

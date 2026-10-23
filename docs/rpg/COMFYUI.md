@@ -52,7 +52,7 @@ npm run comfy:doctor
 
 ## 4. 원본 보존과 Spine 연결
 
-참조 이미지는 현재 승인된 `public/rpg/characters/<id>/rig/preview.png`이며 첫 3종의 정확한 연결도 현재 roster를 따른다. 전체 JPG 보드를 생성기에 넣지 않는다.
+참조 이미지는 현재 승인된 `public/rpg/characters/<id>/frames/00-idle-0.png`이며 첫 3종의 정확한 연결도 현재 roster를 따른다. 전체 JPG 보드를 생성기에 넣지 않는다.
 결과와 seed·워크플로·원본 SHA256·upstream 커밋은 `data/comfyui/review/<character>/<prompt-id>/`에 저장한다. 생성된 결과는 public 디렉터리나 실제 게임 이미지에 자동으로 덮어쓰지 않는다.
 
 낮은 denoise는 외형 보존에 도움을 주지만 보장하지 않는다. 참조 이미지의 투명 배경도 생성 결과에 자동 보존되지 않는다. 원본 얼굴·의상·실루엣·알파를 비교한 뒤 승인된 보완 파츠만 기존 Spine 리그에 편입한다.

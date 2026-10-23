@@ -19,7 +19,7 @@ class API(BaseHTTPRequestHandler):
   elif self.path=='/object_info':
    graph=b.read(b.ROOT/'workflows/comfyui/img2img.api.json');result={v['class_type']:{} for v in graph.values()};result['CheckpointLoaderSimple']={'input':{'required':{'ckpt_name':[['test.safetensors']]}}}
   elif self.path=='/system_stats':result={'devices':[{'type':'mock'}]}
-  else:self.wfile.write((b.ROOT/'public/rpg/characters/hong/rig/preview.png').read_bytes());return
+  else:self.wfile.write((b.ROOT/'public/rpg/characters/hong/frames/00-idle-0.png').read_bytes());return
   self.wfile.write(json.dumps(result).encode())
 class BridgeTests(unittest.TestCase):
  def test_actual_http_job_lifecycle_preserves_public_assets(self):
@@ -29,18 +29,18 @@ class BridgeTests(unittest.TestCase):
    b.doctor(url)
    with tempfile.TemporaryDirectory() as tmp:
     job=Path(tmp)/'job.json';args=argparse.Namespace(character='hong',checkpoint='test.safetensors',seed=42,denoise=.25,prompt='same outfit',job=str(job))
-    b.prepare(args);before=(b.ROOT/'public/rpg/characters/hong/rig/preview.png').read_bytes()
+    b.prepare(args);before=(b.ROOT/'public/rpg/characters/hong/frames/00-idle-0.png').read_bytes()
     # Redirect the review directory to a temporary root; copy only the reference.
-    original=b.ROOT;root=Path(tmp);asset=root/'public/rpg/characters/hong/rig/preview.png';asset.parent.mkdir(parents=True);asset.write_bytes(before)
+    original=b.ROOT;root=Path(tmp);asset=root/'public/rpg/characters/hong/frames/00-idle-0.png';asset.parent.mkdir(parents=True);asset.write_bytes(before)
     with patch.object(b,'ROOT',root):b.run(argparse.Namespace(job=str(job),url=url,timeout=5))
     self.assertEqual(API.submitted['prompt']['10']['inputs']['image'],'reference.png')
     outputs=list((root/'data/comfyui/review').rglob('*.png'));self.assertEqual(len(outputs),1)
-    self.assertEqual((original/'public/rpg/characters/hong/rig/preview.png').read_bytes(),before)
+    self.assertEqual((original/'public/rpg/characters/hong/frames/00-idle-0.png').read_bytes(),before)
     self.assertTrue(outputs[0].with_name('provenance.json').is_file())
   finally:server.shutdown();server.server_close();thread.join()
  def test_modified_reference_is_rejected_before_upload(self):
   with tempfile.TemporaryDirectory() as tmp:
-   root=Path(tmp);p=root/'public/rpg/characters/hong/rig/preview.png';p.parent.mkdir(parents=True);p.write_bytes(b'changed')
+   root=Path(tmp);p=root/'public/rpg/characters/hong/frames/00-idle-0.png';p.parent.mkdir(parents=True);p.write_bytes(b'changed')
    job=root/'job.json';b.save(job,{'reference':str(p.relative_to(root)),'referenceSha256':'wrong'})
    with patch.object(b,'ROOT',root),self.assertRaisesRegex(ValueError,'Reference changed'):b.run(argparse.Namespace(job=str(job),url='http://127.0.0.1:1',timeout=1))
 if __name__=='__main__':unittest.main()

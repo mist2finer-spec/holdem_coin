@@ -15,12 +15,13 @@
     "validate:holdem": "node scripts/validate_holdem.js",
     "ai-task": "node scripts/auto_pipeline.mjs",
     "ai-web": "node scripts/pipeline_web.mjs",
-    "test:rpg": "node scripts/rpg/check-spine.mjs && node --import ./mini-services/poker-server/node_modules/tsx/dist/loader.mjs --test scripts/rpg/test-hunt.ts scripts/rpg/test-ground.ts scripts/rpg/test-character-assets.ts scripts/rpg/test-spine-characters.ts",
+    "test:rpg": "node scripts/rpg/check-spine.mjs && node --import ./mini-services/poker-server/node_modules/tsx/dist/loader.mjs --test scripts/rpg/test-hunt.ts scripts/rpg/test-ground.ts scripts/rpg/test-character-assets.ts",
     "comfy:bootstrap": "python scripts/rpg/comfyui_assets.py bootstrap",
     "comfy:doctor": "python scripts/rpg/comfyui_assets.py doctor",
     "comfy:prepare": "python scripts/rpg/comfyui_assets.py prepare",
     "comfy:run": "python scripts/rpg/comfyui_assets.py run",
-    "test:comfy": "python -m unittest discover -s scripts/rpg -p test_comfyui.py"
+    "test:comfy": "python -m unittest discover -s scripts/rpg -p test_comfyui.py",
+    "test:rpg:archive": "node --import ./mini-services/poker-server/node_modules/tsx/dist/loader.mjs --test scripts/rpg/test-spine-characters.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

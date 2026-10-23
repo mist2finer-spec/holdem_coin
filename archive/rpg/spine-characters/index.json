@@ -1,0 +1,50 @@
+{
+  "status": "archived-unused-by-game",
+  "characters": [
+    {
+      "id": "black-suit",
+      "path": "archive/rpg/spine-characters/black-suit",
+      "skeletonSha256": "c5cd88aff584657a0dc293e2870d227c17c7681273bbd713697b4a0abf9b9612"
+    },
+    {
+      "id": "blonde-office",
+      "path": "archive/rpg/spine-characters/blonde-office",
+      "skeletonSha256": "27985245d9a74253c881064e3b87cb50836f029594ac80905000f939031ffbd5"
+    },
+    {
+      "id": "boy-hoodie",
+      "path": "archive/rpg/spine-characters/boy-hoodie",
+      "skeletonSha256": "fd32e9790de46d7ad368e963a067cd88b4bddc0d5dfd62a3c6e44dbaeb392c88"
+    },
+    {
+      "id": "gold-dress",
+      "path": "archive/rpg/spine-characters/gold-dress",
+      "skeletonSha256": "1bd38b45165745a9e90837a79c71f9d88d582950e7ed34e0b7c2caad8bd88f04"
+    },
+    {
+      "id": "hong",
+      "path": "archive/rpg/spine-characters/hong",
+      "skeletonSha256": "9bcafc6db5092ff022ba3463d85de6bb3263c841d37416f70ee2a953c189eaab"
+    },
+    {
+      "id": "longhair-man",
+      "path": "archive/rpg/spine-characters/longhair-man",
+      "skeletonSha256": "ab095fd430eba63797eb6a05bd44aa2eae7477200284f1c9d35581c248148a25"
+    },
+    {
+      "id": "pink-glasses",
+      "path": "archive/rpg/spine-characters/pink-glasses",
+      "skeletonSha256": "5cef950b08e4bb2dd33c648ac4ecc3fe8995b9886d16a7ff42ab265bc6d4cd66"
+    },
+    {
+      "id": "teal-twins",
+      "path": "archive/rpg/spine-characters/teal-twins",
+      "skeletonSha256": "75107d44aa2dcda18883b2372b673e45c89e9bfb97f197f54c46f5de4c74588d"
+    },
+    {
+      "id": "white-bob",
+      "path": "archive/rpg/spine-characters/white-bob",
+      "skeletonSha256": "1a8961fb74720762d29a5b8070ee754ca5d4c68b342223b4fce7cffb696031b3"
+    }
+  ]
+}

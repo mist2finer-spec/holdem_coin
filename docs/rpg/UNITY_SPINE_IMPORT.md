@@ -1,5 +1,7 @@
 # Island 전투 캐릭터: Unity / Spine 4.2
 
+> 보관용: 현재 웹 플레이어는 Spine을 사용하지 않음. 이 문서는 archive/rpg/spine-characters의 향후 Unity 재사용을 위한 안내임.
+
 9종을 위한 **18본·16 Region 파츠**의 실제 관절형 리그다. 완성 포즈를 교체하는 애니메이션이 아니다.
 신규 파츠는 기존 캐릭터를 참고해 image_gen으로 생성했다. 공통 본 계층과 키프레임 모션은 코드로 작성했다.
 `.spine` 편집기 프로젝트를 생성했다고 주장하지 않는다. 아래는 Spine JSON 가져오기/런타임 배포용 구성이다.
@@ -58,3 +60,7 @@ python scripts/rpg/build_spine_characters.py --inputs scripts/rpg/original-parts
 ```
 
 damage1은 원본에 해당 이름이 없어 defeat1에 연결한다. 공격 contact는 기존 엔진 시각을 유지하며 짧은 원본 클립 뒤에는 마지막 포즈를 유지한다. 회피 이동 거리·몬스터 통과 제한·피해 계산은 그대로다.
+
+## Archive status
+
+The nine character rigs are now preserved in `archive/rpg/spine-characters/<id>`, outside the web-served assets. The web player uses 16-frame sprites. Export and rig regeneration scripts operate on the archive; no runtime reactivation occurs. Native monster Spine assets remain in use.

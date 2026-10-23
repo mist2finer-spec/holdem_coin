@@ -7,7 +7,7 @@ const roster=JSON.parse(fs.readFileSync('public/rpg/characters/roster.json','utf
 Skeleton.yDown=true;
 const canvas=createCanvas(960,960),ctx=canvas.getContext('2d');ctx.fillStyle='#10272b';ctx.fillRect(0,0,960,960);
 for(let i=0;i<roster.length;i++){
- const c=roster[i],folder=`public/rpg/characters/${c.id}/rig`;
+ const c=roster[i],folder=`archive/rpg/spine-characters/${c.id}`;
  if(!fs.existsSync(`${folder}/character.json`))continue;
  const atlas=new TextureAtlas(fs.readFileSync(`${folder}/character.atlas`,'utf8'));
  for(const page of atlas.pages)page.setTexture(new CanvasTexture(await loadImage(path.resolve(folder,page.name))));
