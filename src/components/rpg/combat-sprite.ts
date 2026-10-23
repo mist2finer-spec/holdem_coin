@@ -1,6 +1,6 @@
 import {combatSpriteFrame,SPRITE_CELL,SPRITE_FOOT} from './combat-characters';
 /** A single scale and foot anchor for every pose: never resize to a frame's bounds. */
-export const COMBAT_SPRITE_SCALE=.62;
+export const COMBAT_SPRITE_SCALE=.62*.75;
 export function spritePlacement(frame:number,x:number,floor:number,scale:number,facing:number){
  if(!Number.isInteger(frame)||frame<0||frame>15)throw Error('Invalid sprite frame');
  return {source:[frame%4*SPRITE_CELL,Math.floor(frame/4)*SPRITE_CELL,SPRITE_CELL,SPRITE_CELL] as const,

@@ -1,8 +1,9 @@
 /** Browser prototype body sizes in world units, independent of viewport zoom.
- * Slime radius matches the half-size sprite (~34 * 1.2 / 2). Weapons are not bodies.
+ * Medium player diameter 48, small slime diameter 24. Small enemies may overlap
+ * one another; only player/enemy separation is enforced. Dodge capacity remains 3 small bodies.
  */
-export const HUNT_BODIES={heroRadius:16,slimeRadius:20,maxDodgeSlimes:3} as const;
-export const HUNT_VISUALS={heroScale:.9,slimeScale:1.2} as const;
+export const HUNT_BODIES={heroRadius:24,slimeRadius:12,maxDodgeSlimes:3} as const;
+export const HUNT_VISUALS={heroScale:.9*.75,slimeScale:1.2*.75} as const;
 export type Body={x:number;hp:number};
 const EPS=1e-6;
 export const bodySeparation=HUNT_BODIES.heroRadius+HUNT_BODIES.slimeRadius;

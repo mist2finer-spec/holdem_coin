@@ -1,4 +1,5 @@
 'use client';
+import {Shield} from 'lucide-react';
 import {useEffect, useRef, useState} from 'react';
 import {HuntEngine} from './hunt-engine';
 import {COMBAT_CHARACTERS} from './combat-characters';
@@ -7,7 +8,7 @@ const skills = [
  ['대지 균열','SkillIcon_GroundRift','1'],['암흑 구체','SkillIcon_DarkHole','2'],['서리 폭풍','SkillIcon_Blizzard3','3'],
  ['빛의 심판','SkillIcon_HolyWrath2','4'],['회오리','SkillIcon_Whirlwind','5'],['회복','SkillIcon_VitalRecovery','6'],
 ];
-const menus = [['출석','달빛 숲에 오신 것을 환영합니다. 출석 보상은 다음 버전에 연결됩니다.'],['우편','도착한 우편이 없습니다.'],['설정','이 프로토타입은 소리 없이 실행됩니다. 키보드 A/D 또는 ←/→로 이동하고 Space로 공격합니다.'],['공지','사냥 화면 프로토타입입니다. 전투·재화·경험치는 테스트용이며 계정에 저장되지 않습니다.']];
+const menus = [['출석','달빛 숲에 오신 것을 환영합니다. 출석 보상은 다음 버전에 연결됩니다.'],['우편','도착한 우편이 없습니다.'],['설정','이 프로토타입은 소리 없이 실행됩니다. A/D 또는 ←/→ 이동, Space 기본공격, Q/E 회피. 패링은 준비 중입니다.'],['공지','사냥 화면 프로토타입입니다. 전투·재화·경험치는 테스트용이며 계정에 저장되지 않습니다.']];
 const initial = () => ({hp:100,xp:0,coins:0,kills:0,auto:false,paused:false,cooldowns:[0,0,0,0,0,0],x:620,action:'stay1'});
 export function HuntPrototype({onExit,character='hong'}: {onExit?:()=>void;character?:string}) {
  const canvas = useRef<HTMLCanvasElement>(null), engine = useRef<HuntEngine|null>(null), direction = useRef(0), keys = useRef(new Set<string>()),attackPointer=useRef(false);
@@ -64,15 +65,11 @@ export function HuntPrototype({onExit,character='hong'}: {onExit?:()=>void;chara
   <section className="hunt-console" aria-label="전투 조작">
    <div className="hunt-vitals"><div><span>HP</span><meter min="0" max="100" value={view.hp}/><small>{view.hp}/100</small></div><div><span>EXP</span><progress max="100" value={view.xp%100}/><small>{view.xp%100}%</small></div></div>
    <div className="hunt-skill-row">{skills.map(([name,icon,key],i)=><button className="hunt-skill" key={name} aria-label={`${name} 스킬`} disabled={!active||view.cooldowns[i]>0} onClick={()=>engine.current?.attack(i)}><img src={`/rpg/${icon}.png`} alt=""/><span>{view.cooldowns[i]>0?Math.ceil(view.cooldowns[i]):key}</span><small>{name}</small></button>)}</div>
-   <div className="hunt-mode-row"><span>TEST MODE · 진행은 저장되지 않습니다</span><button disabled={status!=='ready'} onClick={()=>{if(engine.current){engine.current.paused=!engine.current.paused;engine.current.clearInput();keys.current.clear();attackPointer.current=false;direction.current=0;setStick(0);}}}>{view.paused?'▶ 계속':'Ⅱ 휴식'}</button><button className={view.auto?'is-on':''} disabled={status!=='ready'} aria-pressed={view.auto} onClick={()=>engine.current?.setAuto(!engine.current.auto)}>AUTO {view.auto?'ON':'OFF'}</button></div>
+   <div className="hunt-mode-row"><span>TEST MODE · 진행은 저장되지 않습니다</span><button className={view.auto?'is-on':''} disabled={status!=='ready'} aria-pressed={view.auto} onClick={()=>engine.current?.setAuto(!engine.current.auto)}>AUTO {view.auto?'ON':'OFF'}</button></div>
    <div className="hunt-controls">
     <button className="hunt-dodge" disabled={!active} onClick={()=>engine.current?.dodge(-1)} aria-label="왼쪽 회피">↶<small>회피 · Q</small></button>
     <div className="hunt-joystick" role="group" aria-label="좌우 이동" onPointerDown={e=>{if(!active)return;e.currentTarget.setPointerCapture(e.pointerId);stickMove(e);}} onPointerMove={e=>{if(e.currentTarget.hasPointerCapture(e.pointerId))stickMove(e);}} onPointerUp={endStick} onPointerCancel={endStick} onLostPointerCapture={endStick}><span className="hunt-stick-rail">‹ ─── ›</span><span className="hunt-stick" style={{transform:`translateX(${stick*38}px)`}}/><small>A / D · ← / →</small></div>
-    <button className="hunt-attack" disabled={!active}
-     onPointerDown={e=>{if(!active)return;e.currentTarget.setPointerCapture(e.pointerId);attackPointer.current=true;engine.current?.attack();}}
-     onPointerUp={()=>{attackPointer.current=false;}} onPointerCancel={()=>{attackPointer.current=false;}}
-     onLostPointerCapture={()=>{attackPointer.current=false;}}
-     onClick={e=>{if(e.detail===0)engine.current?.attack();}} aria-label="기본 공격, 길게 누르면 연속 공격">⚔<small>공격 · SPACE</small></button>
+    <button className="hunt-parry" disabled={!active} onClick={()=>setDialog(['패링 · 준비 중','몬스터 공격을 정확한 타이밍에 막고 반격하는 기능은 다음 전투 업데이트에 연결됩니다. 기본 공격은 AUTO 또는 Space로 사용할 수 있습니다.'])} aria-label="패링, 준비 중"><Shield aria-hidden="true"/><small>패링</small></button>
     <button className="hunt-dodge" disabled={!active} onClick={()=>engine.current?.dodge(1)} aria-label="오른쪽 회피">↷<small>회피 · E</small></button>
    </div>
   </section>

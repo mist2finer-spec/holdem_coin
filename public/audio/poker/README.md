@@ -12,3 +12,5 @@ User-supplied MP3 assets; the user states these are free to use without a licens
 | all_in_chip.mp3 | Confirmed all-in, including stack-exhausting calls |
 
 Music volume 24%, effects 65%. First interaction unlocks browser audio. Mute preference persists locally; leaving poker stops all audio, hidden tabs are silent. Audio failure never blocks gameplay. Multiplayer dealStage snapshots are deduplicated; reconnecting does not replay prior actions.
+
+Start-screen ambience: `choose_map.mp3` loops at 42% gain; `tv_sound.mp3` loops at 3.5% gain as a faint background layer. Both stop together on navigation, mute or tab hiding. These two additional files were supplied by the user.

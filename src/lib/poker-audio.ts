@@ -1,11 +1,11 @@
 // Browser-only audio, shared by solo and multiplayer. No audio enters the engine.
 export type PokerSound = 'chip_raise' | 'all_in_chip' | 'shuffle_card' | 'taking_card';
-export type PokerAudioScene = 'lobby' | 'table' | null;
+export type PokerAudioScene = 'start' | 'lobby' | 'table' | null;
 const file = (name: string) => `/audio/poker/${name}.mp3`;
 let context: AudioContext | undefined;
 let master: GainNode | undefined;
 let scene: PokerAudioScene = null;
-let music: AudioBufferSourceNode | undefined;
+const music = new Set<AudioBufferSourceNode>();
 let musicRequest = 0;
 let dealRequest = 0;
 let unlocked = false;
@@ -27,18 +27,21 @@ function stopEffects() {
 }
 async function startMusic() {
   const request = ++musicRequest;
-  music?.stop(); music = undefined;
+  for(const source of music) source.stop(); music.clear();
   if (!context || !unlocked || !scene || muted || hidden) return;
-  const track = scene === 'lobby' ? 'game_room' : 'poker_room';
-  try {
-    const data = await buffer(track);
-    if (request !== musicRequest || muted || hidden || !context) return;
-    const source = context.createBufferSource();
-    const gain = context.createGain(); gain.gain.value = .24;
-    source.buffer = data; source.loop = true;
-    source.onended = () => { source.disconnect(); gain.disconnect(); };
-    source.connect(gain).connect(master!); source.start(); music = source;
-  } catch { /* Missing/blocked audio must never interrupt a hand. */ }
+  const tracks: ReadonlyArray<readonly [string,number]> = scene === 'start'
+    ? [['choose_map',.42],['tv_sound',.035]] : [[scene === 'lobby'?'game_room':'poker_room',.24]];
+  await Promise.all(tracks.map(async([track,volume])=>{
+    try {
+      const data = await buffer(track);
+      if (request !== musicRequest || muted || hidden || !context) return;
+      const source = context.createBufferSource();
+      const gain = context.createGain(); gain.gain.value = volume;
+      source.buffer = data; source.loop = true;
+      source.onended = () => { music.delete(source); source.disconnect(); gain.disconnect(); };
+      source.connect(gain).connect(master!); source.start(); music.add(source);
+    } catch { /* Audio failure never blocks navigation. */ }
+  }));
 }
 export function setPokerAudioScene(next: PokerAudioScene) {
   if (scene === next) return;

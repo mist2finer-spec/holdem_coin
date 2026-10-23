@@ -25,5 +25,5 @@ test('posed feet/body bottoms share the exact ground plane across animations, fl
    }
   }
  }
- assert.equal(HUNT_VISUALS.slimeScale,2.4/2);
+ assert.equal(HUNT_VISUALS.slimeScale,1.2*.75);
 });

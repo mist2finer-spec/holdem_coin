@@ -14,10 +14,10 @@ export default function Home() { return <><PokerAudioControl/><HomeContent/></>;
 function HomeContent() {
  const [screen,setScreen]=useState<'start'|'lobby'|'single'|'six'|'eight'|'hunt'>('start');
  const go=useCallback((next:typeof screen)=>{
-  setPokerAudioScene(next==='lobby'?'lobby':['single','six','eight'].includes(next)?'table':null);
+  setPokerAudioScene(next==='start'?'start':next==='lobby'?'lobby':['single','six','eight'].includes(next)?'table':null);
   setScreen(next);
  },[]);
- useEffect(()=>{setPokerAudioScene(screen==='lobby'?'lobby':['single','six','eight'].includes(screen)?'table':null);},[screen]);
+ useEffect(()=>{setPokerAudioScene(screen==='start'?'start':screen==='lobby'?'lobby':['single','six','eight'].includes(screen)?'table':null);},[screen]);
  const [name,setName]=useState('테스터1');
  const [repair,setRepair]=useState(false);
  const returnToLobby=useCallback(()=>go('lobby'),[go]);

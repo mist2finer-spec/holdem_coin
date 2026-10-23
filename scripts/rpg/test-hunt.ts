@@ -5,7 +5,7 @@ import crypto from 'node:crypto';
 import {HuntEngine,WORLD_WIDTH} from '../../src/components/rpg/hunt-engine';
 import {HUNT_RULES,motions,combatProfile} from '../../src/components/rpg/combat-rules';
 function advance(g:HuntEngine,seconds:number,direction=0){for(let t=0;t<seconds-1e-8;t+=.01)g.step(Math.min(.01,seconds-t),direction);}
-function ready(){const g=new HuntEngine(HUNT_RULES.combo,1);g.x=500;g.enemyX=580;return g;}
+function ready(){const g=new HuntEngine(HUNT_RULES.combo,1);g.x=500;g.enemyX=540;return g;}
 test('motion profile matches actual skeleton bytes and every requested attack/skill alias exists',()=>{
  const raw=fs.readFileSync('public/rpg/Hero_Axe01.json'),data=JSON.parse(raw.toString());
  assert.equal(crypto.createHash('sha256').update(raw).digest('hex'),motions.sha256);
@@ -35,7 +35,7 @@ test('five-stage configured combo advances modulo the list rather than repeating
  }
 });
 test('three/four-stage loadouts use their configured list length; invalid profiles fail early',()=>{
- for(const n of [3,4]){const g=new HuntEngine(HUNT_RULES.combo.slice(0,n),1);g.enemyX=g.x+80;g.enemyHP=1000;
+ for(const n of [3,4]){const g=new HuntEngine(HUNT_RULES.combo.slice(0,n),1);g.enemyX=g.x+40;g.enemyHP=1000;
   for(let i=0;i<n+1;i++){g.attack();assert.equal(g.comboStage,i%n+1);advance(g,HUNT_RULES.combo[i%n].duration+.01);}}
  assert.throws(()=>new HuntEngine([]));assert.throws(()=>new HuntEngine([{animation:'attack1',hitAt:99,damage:20}]));
 });
@@ -92,7 +92,7 @@ test('repeat animations carry fresh serials, auto play remains finite and replay
  const run=()=>{const g=new HuntEngine(HUNT_RULES.combo,1);g.setAuto(true);advance(g,50);assert.ok(g.kills>0);
   assert.equal(g.coins,g.kills*25);assert.ok([g.x,g.enemyHP,g.elapsed].every(Number.isFinite));return JSON.stringify(g);};
  assert.equal(run(),run());
- const g=new HuntEngine(HUNT_RULES.combo.slice(0,1),1);g.enemyX=g.x+80;g.attack();const serial=g.actionSerial;
+ const g=new HuntEngine(HUNT_RULES.combo.slice(0,1),1);g.enemyX=g.x+40;g.attack();const serial=g.actionSerial;
  advance(g,HUNT_RULES.combo[0].duration+.01);g.attack();assert.equal(g.action,'attack1');assert.ok(g.actionSerial>serial);
 });
 
@@ -112,7 +112,7 @@ test('native combo timer and avoid cooldown are independent of animation complet
 });
 
 test('seven independent slimes retarget only after an attack, never share health or generation IDs',()=>{
- const g=new HuntEngine();assert.equal(g.enemies.length,7);assert.equal(new Set(g.enemies.map(e=>e.serial)).size,7);
+ const g=new HuntEngine();g.enemies[1].x=g.x+40;assert.equal(g.enemies.length,7);assert.equal(new Set(g.enemies.map(e=>e.serial)).size,7);
  g.setAuto(true);advance(g,.02);const id=g.enemySerial;
  advance(g,.21);assert.equal(g.enemies.find(e=>e.serial===id)!.hp,80);
  assert.equal(g.enemies.filter(e=>e.hp===80).length,1);
@@ -135,9 +135,9 @@ test('mobile and desktop cameras fit seven spawn positions without altering worl
 
 test('walking cannot pass a live slime in either direction; dead bodies do not block',async()=>{
  const {bodySeparation}=await import('../../src/components/rpg/hunt-collision');
- const g=ready();advance(g,5,1);assert.equal(g.x,580-bodySeparation);
- g.x=660;advance(g,5,-1);assert.equal(g.x,580+bodySeparation);
- g.enemyHP=0;g.respawnAt=Infinity;advance(g,1,-1);assert.ok(g.x<580);
+ const g=ready();advance(g,5,1);assert.equal(g.x,540-bodySeparation);
+ g.x=660;advance(g,5,-1);assert.equal(g.x,540+bodySeparation);
+ g.enemyHP=0;g.respawnAt=Infinity;advance(g,1,-1);assert.ok(g.x<540);
 });
 test('swept Rush movement cannot tunnel through a newly blocking monster',async()=>{
  const {sweepHero,bodySeparation}=await import('../../src/components/rpg/hunt-collision');
@@ -166,6 +166,16 @@ test('dodge crosses at most three slimes, rolls in place against four, and never
 test('respawn waits until player leaves the body area, and occluded swings cannot hit through a slime',()=>{
  const g=new HuntEngine();g.x=g.enemies[0].x;g.enemies[0].hp=0;g.enemies[0].respawnAt=0;
  g.step(.05,0);assert.equal(g.enemies[0].hp,0);g.x+=100;advance(g,.3);assert.equal(g.enemies[0].hp,100);
- const h=new HuntEngine();h.x=500;h.enemies.forEach(e=>e.x=1800+e.slot*50);h.enemies[0].x=600;
- h.attack();h.enemies[1].x=550;advance(h,.25);assert.equal(h.enemies[0].hp,100);assert.equal(h.enemies[1].hp,100);
+ const h=new HuntEngine();h.x=500;h.enemies.forEach(e=>e.x=1800+e.slot*50);h.enemies[0].x=540;
+ h.attack();h.enemies[1].x=520;advance(h,.25);assert.equal(h.enemies[0].hp,100);assert.equal(h.enemies[1].hp,100);
+});
+
+
+test('medium hero and overlapping small slimes use half-size bodies and a two-slime reach',async()=>{
+ const {HUNT_BODIES,bodySeparation}=await import('../../src/components/rpg/hunt-collision');
+ assert.equal(HUNT_BODIES.heroRadius,HUNT_BODIES.slimeRadius*2);
+ assert.equal(HUNT_RULES.attackRange,HUNT_BODIES.slimeRadius*4);
+ assert.ok(HUNT_RULES.stopRange>=bodySeparation&&HUNT_RULES.stopRange<HUNT_RULES.attackRange);
+ const g=new HuntEngine();g.enemies[0].x=g.x+40;g.enemies[1].x=g.enemies[0].x;
+ g.setAuto(true);advance(g,8);assert.ok(g.kills>=2);assert.ok(Number.isFinite(g.x));
 });

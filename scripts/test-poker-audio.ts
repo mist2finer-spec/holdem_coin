@@ -11,17 +11,21 @@ test('audio follows confirmed actions, scene changes, shuffle duration, mute and
   assert.equal(pokerActionSound('CHECK'),null);
   const started:any[]=[];
   class Gain {gain={value:1,setValueAtTime(){}};connect(){return this;}disconnect(){} }
-  class Source {buffer:any;loop=false;onended?:()=>void;stops:number[]=[];connect(){return new Gain();}start(){started.push(this);}stop(time=0){this.stops.push(time);}disconnect(){} }
+  class Source {output:any;buffer:any;loop=false;onended?:()=>void;stops:number[]=[];connect(g:Gain){this.output=g;return g;}start(){started.push(this);}stop(time=0){this.stops.push(time);}disconnect(){} }
   class Context {currentTime=10;destination={};createGain(){return new Gain();}createBufferSource(){return new Source();}async resume(){}async decodeAudioData(b:any){return b;}}
   const saved={window:globalThis.window,AudioContext:globalThis.AudioContext,fetch:globalThis.fetch};
   Object.assign(globalThis,{window:{},AudioContext:Context,fetch:async(url:string)=>({ok:true,arrayBuffer:async()=>url})});
   const flush=async()=>{for(let i=0;i<12;i++)await Promise.resolve();};
   try {
-    setPokerAudioScene('lobby');
+    setPokerAudioScene('start');
     await playPokerSound('chip_raise');assert.equal(started.length,0); // no autoplay
     unlockPokerAudio();await flush();
+    const main=started.find(s=>s.buffer.endsWith('choose_map.mp3'));
+    const tv=started.find(s=>s.buffer.endsWith('tv_sound.mp3'));
+    assert.ok(main?.loop&&tv?.loop);assert.ok(main.output.gain.value>tv.output.gain.value*10);
+    setPokerAudioScene('lobby');await flush();assert.ok(main.stops.length&&tv.stops.length);
     assert.ok(started.some(s=>s.loop&&s.buffer.endsWith('game_room.mp3')));
-    const lobby=started[0];
+    const lobby=started.find(s=>s.buffer.endsWith('game_room.mp3'));
     setPokerAudioScene('table');await flush();assert.ok(lobby.stops.length);
     assert.ok(started.some(s=>s.loop&&s.buffer.endsWith('poker_room.mp3')));
     await playPokerSound('shuffle_card',1.5);
