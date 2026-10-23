@@ -86,6 +86,7 @@ interface ServerGameState {
   callAmount: number;
   minRaise: number;
   maxRaise: number;
+  preflopRaiseLevel?: number;
   raiseLevel: number;
   lastRaiseSize: number; // ★ 마지막 레이즈 크기 (표준 NLHE min-raise)
 }
@@ -144,7 +145,7 @@ export class HybridHoldemRoom {
     const h=this.currentHistory;if(!h)return;
     h.endedAt=new Date().toISOString();h.board=this.state.board.map(c=>c.rank+c.suit);
     h.players.forEach(p=>{p.revealed=!!settlement&&((isShowdown&&!this.state.seats[p.seatId].folded)||this.state.bluffReveal===p.seatId);});
-    if(settlement){h.results=settlement.results;h.pots=settlement.pots;h.rake=settlement.totalRake;}
+    if(settlement){h.results=settlement.results;h.pots=settlement.pots;h.rake=settlement.totalRake;h.rakePolicy=settlement.rakePolicy;}
     else {
       h.status='aborted';h.error='Hand aborted; contributions returned';
       h.results=this.state.seats.map(s=>({seatId:s.seatId,name:s.name,contribution:s.totalBet,
@@ -215,7 +216,8 @@ export class HybridHoldemRoom {
       callAmount: 0,
       minRaise: BIG_BLIND,
       maxRaise: 0,
-      raiseLevel: 0,
+      preflopRaiseLevel: 0,
+    raiseLevel: 0,
       lastRaiseSize: BIG_BLIND, // ★ 초기값 BB
     };
   }
@@ -497,6 +499,7 @@ export class HybridHoldemRoom {
       st.bluffReveal = null;
       st.showdownHands = [];
       st.winnerInfo = null;
+      st.preflopRaiseLevel = 0;
       st.raiseLevel = 0;
       st.lastRaiseSize = BIG_BLIND;
 
@@ -688,6 +691,7 @@ export class HybridHoldemRoom {
         if(fullRaise){
           for(const seat of st.seats)if(seat.seatId!==actor.seatId&&seat.inHand&&!seat.folded&&!seat.allIn)seat.hasActed=false;
           st.raiseLevel++;
+          if(st.board.length===0)st.preflopRaiseLevel=st.raiseLevel;
         }
         for (const u of this.users.values()) {
           if (u.preAction && (u.preAction.type === "call" || u.preAction.type === "check")) {
@@ -907,7 +911,7 @@ export class HybridHoldemRoom {
     await this.sleep(1500);
 
     const contenders = st.seats.filter(s => s.inHand && !s.folded);
-    const winningSeatIds = new Set(settleHand(st.seats, st.board, st.buttonSeat).pots.flatMap(p=>p.winnerSeatIds));
+    const winningSeatIds = new Set(settleHand(st.seats, st.board, st.buttonSeat,undefined,{bigBlind:BIG_BLIND,preflopRaiseLevel:st.preflopRaiseLevel}).pots.flatMap(p=>p.winnerSeatIds));
 
     st.showdownHands = contenders.map((c, i) => {
       const score = evaluateBestHand(c.holeCards, st.board);
@@ -933,7 +937,7 @@ export class HybridHoldemRoom {
       this.broadcast("SYSTEM_NOTICE", { messages: [bluffTaunt(st.seats[st.bluffReveal].name)] });
     }
 
-    const settlement = settleHand(st.seats, st.board, st.buttonSeat);
+    const settlement = settleHand(st.seats, st.board, st.buttonSeat,undefined,{bigBlind:BIG_BLIND,preflopRaiseLevel:st.preflopRaiseLevel});
     this.endHistory(settlement,isShowdown);
     st.seats = st.seats.map(seat => ({ ...seat, stack: seat.stack + settlement.results.find(r=>r.seatId===seat.seatId)!.payout }));
     for(const seat of st.seats)if(!seat.isBot&&seat.socketId)lobbyLedger.sync(seat.socketId,seat.stack);

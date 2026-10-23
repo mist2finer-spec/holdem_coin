@@ -19,6 +19,9 @@ def audit(hand):
     contested=sum(p['amount'] for p in hand['pots'] if p.get('refundSeatId') is None)
     version=tuple(int(v) for v in hand.get('rulesVersion','0.0.0').split('.')[:3])
     activated=any(a.get('betAfter',0)>=hand['bigBlind']*4.5 for a in hand['actions']) if version>=(1,20,0) else len(hand['board'])>=3
+    if version>=(1,25,0):
+        preflop_level=max([a.get('raiseLevelBefore',0) for a in hand['actions'] if a.get('street')=='PREFLOP']+[hand.get('rakePolicy',{}).get('preflopRaiseLevel',0)])
+        activated=len(hand['board'])>=3 or preflop_level>=2 or contested>=hand['bigBlind']*4
     expected_rake=contested//20 if activated else 0
     if hand['rake']!=expected_rake:issue('rake',expected_rake,hand['rake'])
     for p in hand['pots']:

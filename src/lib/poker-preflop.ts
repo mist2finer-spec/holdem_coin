@@ -17,6 +17,16 @@ export function connectorAllowed(hole: Card[], persona: {vpip:number;aggression:
   return h.seven && (h.gap===0 ? persona.vpip>=0.42&&persona.aggression>=0.58 : persona.vpip>=0.48&&persona.aggression>=0.65);
 }
 
+/** Explicit priced-call floor; full call price, not a tiny stack-capped cost. */
+export function smallOpenDefenseHand(hole:Card[]) {
+ if(hole.length!==2)return false;
+ const h=connectorInfo(hole);
+ return h.pair||(h.suited&&h.high===14)
+  ||(h.suited&&((h.high===13&&h.low>=9)||(h.high===12&&h.low>=9)||(h.high===11&&h.low>=9)))
+  ||(h.suited&&h.gap===0&&h.low>=4)
+  ||(!h.suited&&((h.high===14&&h.low>=10)||(h.high===13&&h.low>=11)||(h.high===12&&h.low===11)));
+}
+
 export function limpFrequency(aggression:number) { return Math.max(0.07,0.14*(1-0.35*aggression)); }
 
 export function flatCallFrequency(persona:{vpip:number;aggression:number}, isOOP:boolean, premium=false) {
@@ -32,7 +42,10 @@ export function preflopPosition(seatIds:number[],actor:number,button:number,bigB
   const order=[...seatIds].sort((a,b)=>after(a,bigBlind)-after(b,bigBlind));
   const smallBlind=[...seatIds].sort((a,b)=>after(a,button)-after(b,button))[0];
   const early=order.filter(id=>id!==button&&id!==smallBlind&&id!==bigBlind).slice(0,3).includes(actor);
-  return {early,inPositionVsRaiser:raiser!==undefined&&raiser!==actor&&after(actor,button)>after(raiser,button)};
+  const physical=[...seatIds].sort((a,b)=>a-b),btn=physical.indexOf(button);
+  const cutoff=physical[(btn-1+physical.length)%physical.length];
+  const late=actor===button||actor===smallBlind||(physical.length>=4&&actor===cutoff);
+  return {early,late,inPositionVsRaiser:raiser!==undefined&&raiser!==actor&&after(actor,button)>after(raiser,button)};
 }
 
 interface PreflopSpot {
@@ -77,6 +90,19 @@ export function planPreflop(spot:PreflopSpot):{decision:Decision|null;forbidLimp
       const reraising=raiseLevel<=2
         ? sizedRaise(highest*(raiseLevel===1?(context.preflopPosition?.inPositionVsRaiser?3:3.5):2.2),.65) : null;
       return result(reraising??callDecision());
+    }
+  }
+  const trulyUnopened=unopened&&opponents.filter(s=>s.currentBet>=200).length<=1;
+  if(trulyUnopened&&own>1000&&call<stack) {
+    const late=context.preflopPosition?.late??(context.actorId===spot.smallBlind||(context.position?.relativePosition??0)>=.8);
+    const core=(h.pair&&h.low>=6)||(h.high===14&&h.low>=11)||(h.suited&&h.high>=11&&h.low>=10);
+    const lateRange=h.pair||h.high===14||(h.suited&&((h.high>=12&&h.low>=9)||(h.gap===0&&h.low>=4)))
+      ||(persona.vpip>=.38&&h.suited&&h.high>=11&&h.low>=5)
+      ||(persona.vpip>=.42&&h.high>=11&&h.low>=10);
+    const frequency=core?1:Math.min(.95,.55+persona.vpip*.65);
+    if(core||(late&&lateRange&&Math.random()<frequency)) {
+      const opening=sizedRaise(500+Math.floor(Math.random()*7)*10,.65);
+      if(opening)return result(opening);
     }
   }
   const broadway=!h.pair&&(h.low>=11||(h.high===11&&h.low===10)); // two face ranks or JT, suited OR offsuit

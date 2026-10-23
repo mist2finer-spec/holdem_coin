@@ -29,6 +29,7 @@ export interface HandHistory {
   streets: {street:string;board:string[];at:string}[];
   forcedBets: {seatId: number; blind: 'SB' | 'BB'; paid: number}[];
   results: HandResult[]; pots: unknown[]; rake: number;
+  rakePolicy?: {id:string;contestedPot:number;sawFlop:boolean;preflopRaiseLevel:number;activated:boolean;bigBlind:number};
 }
 
 // Explicit public whitelist: never export server-only decision inputs or identifiers.
@@ -37,6 +38,7 @@ export function publicHandHistory(h: HandHistory, viewerPlayerId?: string): Hand
     schemaVersion: h.schemaVersion, id: h.id, sessionId: h.sessionId, handNumber: h.handNumber,
     rulesVersion: h.rulesVersion, revision: h.revision, startedAt: h.startedAt, endedAt: h.endedAt,
     dealingProfile:h.dealingProfile?{...h.dealingProfile}:undefined,
+    rakePolicy:h.rakePolicy?{...h.rakePolicy}:undefined,
     status: h.status, humans: h.humans, cpus: h.cpus, smallBlind: h.smallBlind, bigBlind: h.bigBlind,
     buttonSeat: h.buttonSeat, smallBlindSeat: h.smallBlindSeat, bigBlindSeat: h.bigBlindSeat,
     players: h.players.map(p => ({seatId:p.seatId,name:p.name,isBot:p.isBot,startingStack:p.startingStack,

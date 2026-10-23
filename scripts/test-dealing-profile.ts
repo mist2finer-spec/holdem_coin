@@ -36,9 +36,9 @@ test('no seat gets an advantage from input array order; invalid RNG/seats fail e
  assert.equal(dealStartingHands(seats,0,()=>0).hands.size,6);
 });
 test('weighted features overlap by maximum, recognize wheel and preserve nonzero probabilities',()=>{
- assert.equal(startingHandWeight(...cards('A♠','A♥') as [Card,Card]),.4);
- assert.equal(startingHandWeight(...cards('7♠','8♠') as [Card,Card]),.5);
- assert.equal(startingHandWeight(...cards('7♠','9♥') as [Card,Card]),.6);
+ assert.equal(startingHandWeight(...cards('A♠','A♥') as [Card,Card]),.8);
+ assert.equal(startingHandWeight(...cards('7♠','8♠') as [Card,Card]),.85);
+ assert.equal(startingHandWeight(...cards('7♠','9♥') as [Card,Card]),.9);
  assert.equal(startingHandWeight(...cards('2♠','K♥') as [Card,Card]),1);
  assert.equal(startingHandFeatures(...cards('A♠','2♥') as [Card,Card]).connector,true);
  const seats=[0,1,2,3,4,5].map(seatId=>({seatId,isBot:false}));

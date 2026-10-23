@@ -2,7 +2,8 @@ import { Card, determineWinners } from './poker-engine';
 
 export const RAKE_RATE = 0.05;
 export const BOT_EV_RAKE_RATE = 0;
-export const RAKE_TRIGGER_BB = 4.5;
+export const RAKE_TRIGGER_BB = 4;
+export interface RakeContext {bigBlind?:number;preflopRaiseLevel?:number}
 export interface BettingSeat {
   seatId: number; stack: number; currentBet: number; totalBet: number;
   peakStreetBet?: number;
@@ -53,12 +54,15 @@ export function rakedContributionLayers(seats: Parameters<typeof contributionLay
   });
 }
 
-export function settleHand(seats: SettlementSeat[], board: Card[], buttonSeat: number, rakeRate=RAKE_RATE) {
+export function settleHand(seats: SettlementSeat[], board: Card[], buttonSeat: number, rakeRate=RAKE_RATE,context:RakeContext={}) {
   const results: HandResult[]=seats.map(s=>({seatId:s.seatId,name:s.name,contribution:s.totalBet,payout:0,award:0,refund:0,netProfit:0}));
   const byId=new Map(results.map(r=>[r.seatId,r]));
   let totalRake=0;
-  // Trigger persists across streets, including a preflop fold win. Never tax refunds.
-  const activated=seats.some(s=>Math.max(s.peakStreetBet||0,s.currentBet)>=200*RAKE_TRIGGER_BB);
+  const bigBlind=context.bigBlind??200;
+  if(!Number.isSafeInteger(bigBlind)||bigBlind<=0)throw new Error('Invalid big blind');
+  const contestedPot=contributionLayers(seats).filter(p=>p.refundSeatId===undefined).reduce((sum,p)=>sum+p.amount,0);
+  const sawFlop=board.length>=3;
+  const activated=sawFlop||(context.preflopRaiseLevel??0)>=2||contestedPot>=bigBlind*RAKE_TRIGGER_BB;
   const pots=rakedContributionLayers(seats,rakeRate,activated).map(pot=>{
     const rake=pot.rake;
     totalRake+=rake;
@@ -76,7 +80,7 @@ export function settleHand(seats: SettlementSeat[], board: Card[], buttonSeat: n
     return {...pot,rake,winnerSeatIds:winners.map(s=>s.seatId)};
   });
   for(const r of results){r.payout=r.award+r.refund;r.netProfit=r.payout-r.contribution;}
-  return {results,pots,totalRake,totalAward:results.reduce((n,r)=>n+r.award,0)};
+  return {results,pots,totalRake,rakePolicy:{id:"contested-pot-v1",contestedPot,sawFlop,preflopRaiseLevel:context.preflopRaiseLevel??0,activated,bigBlind},totalAward:results.reduce((n,r)=>n+r.award,0)};
 }
 
 export function hasBettingOpponent(seats: BettingSeat[], actorId: number, bringIn=0) {

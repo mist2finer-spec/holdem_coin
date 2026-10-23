@@ -57,8 +57,8 @@ test('rare connector calls exclude short stacks, all-ins and re-raises',()=>{
   assert.equal(planPreflop({...s,persona:{vpip:.25,aggression:.35,bluffFreq:.05}}).decision?.action,'fold');
 });
 
-test('actual shared AI limp frequency stays below fifteen percent without fallback leakage',()=>{
-  const s=spot(cards('6','6'));s.context.seats[0].stack=9900;s.context.seats[0].currentBet=100;s.context.seats[0].totalBet=100;
+test('shared AI keeps rare limps below fifteen percent after prioritizing late opens',()=>{
+  const s=spot(cards('5','5'));s.context.seats[0].stack=9900;s.context.seats[0].currentBet=100;s.context.seats[0].totalBet=100;
   s.context.seats[1].stack=9800;s.context.seats[1].currentBet=200;s.context.seats[1].totalBet=200;
   const trainer=new SelfPlayTrainer();let calls=0;
   const bard=RPG_BOT_POOL.find(p=>p.id==='wandering_bard')!;
@@ -67,7 +67,7 @@ test('actual shared AI limp frequency stays below fifteen percent without fallba
       board:[],pot:0,minRaise:400,maxRaise:10000,button:1,smallBlind:0,bigBlind:1,hand:1,raiseLevel:0});
     if(d.action==='call')calls++;
   }});
-  assert.ok(calls>50&&calls<270,`${calls}/2000`);
+  assert.ok(calls>0&&calls<270,`${calls}/2000`);
   assert.ok(limpFrequency(.85)<limpFrequency(.35));
 });
 
@@ -108,7 +108,7 @@ test('qualified connector planner folds can reach blind defense, hard gate folds
     Math.random=()=>.4;
     assert.equal(decideLiveBot(forbidden,ctx).action,'call');
     assert.equal(decideLiveBot(forbidden,{...ctx,actor:{...ctx.actor,holeCards:cards('2','3')}}).action,'fold');
-    assert.equal(decideLiveBot(forbidden,{...ctx,raiseLevel:3}).action,'fold');
+    assert.equal(decideLiveBot(forbidden,{...ctx,raiseLevel:3}).action,'call');
     assert.equal(decideLiveBot(forbidden,{...ctx,actor:{...ctx.actor,holeCards:cards('4','6')}}).action,'fold');
   }finally {Math.random=old;}
 });

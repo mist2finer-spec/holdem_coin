@@ -277,6 +277,7 @@ export class SelfPlayTrainer {
       { name: "RIVER", boardCount: 5, startOffset: 1 },
     ];
 
+    let preflopRaiseLevel=0;
     let phaseIdx = 0;
     for (const phase of phases) {
       if (board.length < phase.boardCount) {
@@ -287,6 +288,7 @@ export class SelfPlayTrainer {
       const result = this._runBettingRound(
         players, board, btnSeat, phase.startOffset, pot, trajectories
       );
+      if(board.length===0)preflopRaiseLevel=result.raiseLevel;
       pot = result.pot;
       totalFoldCount += result.foldCount;
       totalAllInCount += result.allInCount;
@@ -302,7 +304,7 @@ export class SelfPlayTrainer {
 
     if (conclusionPhase === 0) conclusionPhase = 4; // 쇼다운까지 감
 
-    const settlement=settleHand(players.map(p=>({...p,seatId:p.seatIndex,name:`CPU${p.seatIndex}`})),board,btnSeat);
+    const settlement=settleHand(players.map(p=>({...p,seatId:p.seatIndex,name:`CPU${p.seatIndex}`})),board,btnSeat,undefined,{bigBlind:BB,preflopRaiseLevel});
     for(const result of settlement.results)players[result.seatId].stack+=result.payout;
 
     // 정책신경망 가중치 업데이트 (REINFORCE + EV-shaping)
@@ -347,7 +349,7 @@ export class SelfPlayTrainer {
     startOffset: number,
     initialPot: number,
     trajectories: TrajectoryStep[][]
-  ): { pot: number; foldCount: number; allInCount: number; actionCount: number } {
+  ): { pot: number; foldCount: number; allInCount: number; actionCount: number; raiseLevel:number } {
     let pot = initialPot;
     let foldCount = 0;
     let allInCount = 0;
@@ -519,7 +521,7 @@ export class SelfPlayTrainer {
       p.hasActed = false;
     }
 
-    return { pot, foldCount, allInCount, actionCount };
+    return { pot, foldCount, allInCount, actionCount, raiseLevel };
   }
 
   /**

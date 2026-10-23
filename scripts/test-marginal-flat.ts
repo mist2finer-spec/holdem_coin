@@ -77,7 +77,7 @@ test('shared single/server finish path runs one extra roll only after a fold; no
   hand:1,raiseLevel:2,lastRaiserSeat:1,openedPreflop:true};
  let audit:Record<string,unknown>={};
  const d=decideLiveBot(trainer,{...ctx,onAudit:a=>{audit=a;}});
- assert.equal(d.action,'call');assert.equal(d.amount,400);assert.equal(audit.decisionPath,'marginal-three-bet-flat');
+ assert.equal(d.action,'call');assert.equal(d.amount,400);assert.equal(audit.decisionPath,'small-open-defense-floor');
  for(const nn of [{action:1,amount:400},{action:2,amount:1600}]){
   t.mock.method(trainer,'decideActionForLive',()=>nn);
   const d=decideLiveBot(trainer,{...ctx,onAudit:a=>{audit=a;}});

@@ -12,7 +12,7 @@ export function proCatchDecision(ctx:{persona:BotPersona;hole:Card[];board:Card[
  const cost=Math.min(actor.stack,Math.max(...alive.map(s=>s.currentBet))-actor.currentBet);
  if(cost<=0)return null;
  const threshold=Math.max(.45,Math.min(.52,ctx.persona.catchEquity??.49));
- const projected=ctx.seats.map(s=>({...s,totalBet:s.totalBet+(s.seatId===actor.seatId?cost:0)}));
+ const projected=ctx.seats.map(s=>({seatId:s.seatId,stack:s.stack,currentBet:s.currentBet,inHand:s.inHand,folded:s.folded,allIn:s.allIn,totalBet:s.totalBet+(s.seatId===actor.seatId?cost:0)}));
  let pot=0,expected=0;
  for(const layer of contributionLayers(projected)) {
   if(layer.refundSeatId!==undefined||!layer.eligibleSeatIds.includes(actor.seatId))continue;
@@ -26,5 +26,8 @@ export function proCatchDecision(ctx:{persona:BotPersona;hole:Card[];board:Card[
  const locked=cost===actor.stack||alive.every(s=>s.seatId===actor.seatId||s.allIn||s.stack===0);
  const realization=ctx.board.length===5||locked?1:.85;
  const callEV=expected*realization-cost;
- return {cost,equity,threshold,callEV,realization,accepted:equity>=threshold&&callEV>Math.max(1,pot*.01)};
+ const requiredEquity=pot?cost/pot:1;
+ const priceSatisfied=pot>0&&equity*realization>=requiredEquity;
+ return {cost,equity,threshold,callEV,realization,requiredEquity,eligiblePot:pot,
+  accepted:pot>0&&(callEV>0||priceSatisfied)};
 }

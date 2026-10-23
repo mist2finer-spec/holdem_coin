@@ -11,7 +11,7 @@ import { classifyHandTier } from './equity-engine';
 import type { SelfPlayTrainer } from './self-play-trainer';
 import { positionContext } from './poker-position';
 import { stackContext } from './poker-stack';
-import { planPreflop, preflopPosition } from './poker-preflop';
+import { planPreflop, preflopPosition, smallOpenDefenseHand } from './poker-preflop';
 import {preflopCallModel} from './poker-opponent-model';
 import {proCatchDecision} from './poker-pro';
 import {pricedCallGuard} from './poker-priced-call';
@@ -20,7 +20,7 @@ import type {PublicLineTracker} from './poker-public-line';
 import {marginalThreeBetFlat} from './poker-marginal-flat';
 
 export const LIVE_RULES = Object.freeze({
-  version: "1.24.0",
+  version: "1.25.0",
   seats: 8, smallBlind: 100, bigBlind: 200, buyIn: 5000,
   botCashOut: 100000, userSeconds: 10, maxActions: 256,
   botThinkMin: 700, botThinkJitter: 900, actionPause: 800, resultPause: 5000,
@@ -134,24 +134,28 @@ export function decideLiveBot(trainer: SelfPlayTrainer, ctx: {
       decisionPath=boardDefense.kind==='cheap-river'?'priced-river-call':'draw-board-catch';
       action={action:boardDefense.cost>=actor.stack?'allin':'call',amount:boardDefense.cost};
     }
-    // One mixed draw-board rescue per fold; do not compound river/Pro rolls past 60%.
-    const riverCatch=!boardDefense && action.action==='fold' && board.length===5
+    // A declined draw mix cannot veto a deterministic positive-price river call.
+    // Keep only one stochastic rescue; later river attempts may only be forced.
+    const riverCatch= action.action==='fold' && board.length===5
       ? riverCatchDecision({hole:actor.holeCards,board,seats:context.seats,actorId:actor.seatId,
-          base:actor.persona||RPG_BOT_POOL[0],persona}) : null;
+          base:actor.persona||RPG_BOT_POOL[0],persona},boardDefense?()=>1:Math.random) : null;
     if(riverCatch?.accepted) {
       decisionPath='river-bluff-catch';
       action={action:riverCatch.cost>=actor.stack?'allin':'call',amount:riverCatch.cost};
     }
-    const proCatch=!boardDefense && action.action==='fold'&&(board.length>0||ctx.raiseLevel>0)
+    const proCatch= action.action==='fold'&&(board.length>0||ctx.raiseLevel>0)
       ?proCatchDecision({persona,hole:actor.holeCards,board,seats:context.seats,actorId:actor.seatId}):null;
     if(proCatch?.accepted){decisionPath='pro-bluff-catch';
       action={action:proCatch.cost>=actor.stack?'allin':'call',amount:proCatch.cost};}
     const pricedCall=action.action==='fold'?pricedCallGuard({hole:actor.holeCards,board,seats:context.seats,
       actorId:actor.seatId,bigBlindSeat:ctx.bigBlind,raiseLevel:ctx.raiseLevel,bigBlind:LIVE_RULES.bigBlind}):null;
     if(pricedCall?.accepted){
-      decisionPath=pricedCall.kind==='committed-allin'?'priced-allin-call':'priced-bb-pair-call';
+      decisionPath=pricedCall.kind==='committed-allin'?'priced-allin-call':pricedCall.kind==='pot-odds'?'priced-pot-odds-call':'priced-bb-pair-call';
       action={action:pricedCall.cost>=actor.stack?'allin':'call',amount:pricedCall.cost};
     }
+    const preflopDefense=action.action==='fold'&&board.length===0&&ctx.raiseLevel>0&&call>0
+      &&call<=2.5*LIVE_RULES.bigBlind&&smallOpenDefenseHand(actor.holeCards);
+    if(preflopDefense){decisionPath='small-open-defense-floor';action={action:call>=actor.stack?'allin':'call',amount:Math.min(call,actor.stack)};}
     // Exactly one extra low-frequency roll, after existing call policies have
     // had their chance. Never demote a call/raise or read the bettor's cards.
     const marginalFlat=action.action==='fold'?marginalThreeBetFlat({hole:actor.holeCards,board,
@@ -159,7 +163,7 @@ export function decideLiveBot(trainer: SelfPlayTrainer, ctx: {
     if(marginalFlat?.accepted){decisionPath='marginal-three-bet-flat';
       action={action:'call',amount:marginalFlat.cost};}
     const callModel=board.length===0&&ctx.raiseLevel>0?preflopCallModel(context):null;
-    ctx.onAudit?.({participation:entry.participation,boardDefense,riverCatch,proCatch,pricedCall,marginalFlat,decisionPath,
+    ctx.onAudit?.({participation:entry.participation,boardDefense,riverCatch,proCatch,pricedCall,preflopDefense,marginalFlat,decisionPath,
       linePolicy:lineChoice?{path:lineChoice.path,equity:lineChoice.equity,ev:lineChoice.ev}:null,
       callModel:callModel?{committed:callModel.committed,pending:callModel.pending,overcallProbability:callModel.overcallProbability}:null,
       threeBetRead:ctx.threeBetRead,lastRaiserSeat:ctx.lastRaiserSeat,personaId:actor.persona?.id,vpip:persona.vpip,aggression:persona.aggression,

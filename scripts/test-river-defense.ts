@@ -15,9 +15,9 @@ test('tight identities get higher 5–40 percent catch frequency',()=>{
  assert.equal(riverCatchFrequency({vpip:.65,aggression:.82}),.05);
  for(const p of RPG_BOT_POOL)assert.ok(riverCatchFrequency(p)>=.05&&riverCatchFrequency(p)<=.4);
 });
-test('positive EV only; probability gates calls; no opponent card dependency',()=>{
+test('clear positive EV bypasses the frequency gate; no opponent card dependency',()=>{
  const a=riverCatchDecision(ctx,()=>0)!;assert.ok(a.accepted&&a.callEV>0);
- assert.equal(riverCatchDecision(ctx,()=>.99)!.accepted,false);
+ assert.equal(riverCatchDecision(ctx,()=>.99)!.accepted,true);
  const hidden={...rival,holeCards:cards('Q♠ J♠')};
  assert.deepEqual(riverCatchDecision({...ctx,seats:[actor,hidden]},()=>0),a);
  assert.equal(riverCatchDecision({...ctx,board:ctx.board.slice(0,4)},()=>0),null);

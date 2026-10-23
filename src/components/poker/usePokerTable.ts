@@ -69,6 +69,7 @@ interface GameState {
   minRaise: number;
   maxRaise: number;
   deck: Card[];
+  preflopRaiseLevel?: number;
   raiseLevel: number; // 현재 라운드 레이즈 횟수 (3-bet, 4-bet 추적)
   lastRaiseSize: number; // ★ 마지막 레이즈 크기 (표준 NLHE min-raise 계산용)
   userTimer: number; // 유저 결정 타이머 (남은 초, 0=시간 없음)
@@ -126,6 +127,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     minRaise: BIG_BLIND,
     maxRaise: 0,
     deck: [],
+    preflopRaiseLevel: 0,
     raiseLevel: 0,
     lastRaiseSize: BIG_BLIND, // ★ 초기값은 BB 크기
     userTimer: 0,
@@ -232,6 +234,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     st.lastAggression = null; st.lastStreetAggressor = null;
     st.bluffReveal = null;
     st.winnerInfo = null;
+    st.preflopRaiseLevel = 0;
     st.board = [];
     st.pot = 0;
     st.phase = "PREFLOP";
@@ -449,6 +452,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
       if (raisesBet) {
         if(fullRaise){
           st.raiseLevel++;
+          if(st.board.length===0)st.preflopRaiseLevel=st.raiseLevel;
           for(const seat of st.seats)if(seat.seatId!==actor.seatId&&seat.inHand&&!seat.folded&&!seat.allIn)seat.hasActed=false;
         }
         // ★ 레이즈 발생 시 유저의 '콜/체크' 사전 액션 자동 취소 (폴드는 유지)
@@ -576,7 +580,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
 
     // 정확한 7카드 평가기로 승자 결정
     const contenders = st.seats.filter(s => s.inHand && !s.folded);
-    const winningSeatIds = new Set(settleHand(st.seats, st.board, st.buttonSeat).pots.flatMap(p=>p.winnerSeatIds));
+    const winningSeatIds = new Set(settleHand(st.seats, st.board, st.buttonSeat,undefined,{bigBlind:BIG_BLIND,preflopRaiseLevel:st.preflopRaiseLevel}).pots.flatMap(p=>p.winnerSeatIds));
 
     // 각 콘텐더의 족보 카테고리 추출 (UI 표시용)
     st.showdownHands = contenders.map((c, i) => {
@@ -604,7 +608,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
       pushLog(message, "taunt");
       onToast?.(message, "info");
     }
-    const settlement = settleHand(st.seats, st.board, st.buttonSeat);
+    const settlement = settleHand(st.seats, st.board, st.buttonSeat,undefined,{bigBlind:BIG_BLIND,preflopRaiseLevel:st.preflopRaiseLevel});
     const winners = settlement.results.filter(r=>r.award>0);
     st.seats = st.seats.map(seat=>({...seat, stack:seat.stack+settlement.results.find(r=>r.seatId===seat.seatId)!.payout}));
     const hand = isShowdown && winners[0]

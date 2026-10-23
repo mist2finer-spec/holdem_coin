@@ -29,9 +29,9 @@ test('the shared live path can recover a masked overcards fold against an under-
  assert.ok(normalizeLiveAction(s.seats,s.actorId,decision,2200,false));
 });
 
-test('a remaining opponent able to bet prevents a locked-runout override',()=>{
+test('a cheap-value call remains available when opponents can still bet a side pot',()=>{
  const s=spot(523);s.seats.push({seatId:6,stack:10000,currentBet:4559,totalBet:5359,inHand:true,folded:false,allIn:false});
- assert.equal(pricedCallGuard(s),null);
+ assert.equal(pricedCallGuard(s)?.accepted,true);
 });
 
 test('history #474 caps the call at 550, and no remaining actor can force additional chips',()=>{
@@ -51,12 +51,12 @@ test('ineligible side pots and uncalled refunds cannot subsidize a short stack c
   {seatId:2,stack:0,currentBet:2000,totalBet:2000,inHand:true,folded:false,allIn:true},
  ];
  const g=pricedCallGuard({hole:cards(['A♠','A♥']),board:cards(['2♦','4♣','8♥']),seats,actorId:0,bigBlindSeat:0,raiseLevel:2,bigBlind:200});
- assert.ok(g);assert.equal(g.reason,'price');assert.equal(g.accepted,false);assert.ok(g.netPot<100);
+ assert.ok(g);assert.equal(g.forced,false);assert.ok(g.requiredEquity>.15);assert.ok(g.netPot<100);
 });
 
-test('a losing river ace-high cannot auto-call just because the price is cheap',()=>{
+test('cheap river ace-high is an explicit call floor despite the conservative value-only prior',()=>{
  const s=spot(523);s.hole=cards(['A♣','2♣']);s.board=cards(['K♥','Q♦','9♠','7♥','4♣']);
- const g=pricedCallGuard(s);assert.ok(g);assert.equal(g.accepted,false,JSON.stringify(g));
+ const g=pricedCallGuard(s);assert.ok(g);assert.equal(g.accepted,true,JSON.stringify(g));assert.equal(g.forced,true);
  assert.equal(g.equity,0,'ace-high cannot beat the public value prior on this board');
 });
 

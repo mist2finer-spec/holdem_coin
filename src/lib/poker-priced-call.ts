@@ -1,3 +1,4 @@
+import {classifyHandTier,HandTier} from './equity-engine';
 import {evaluateBestHand,type Card} from './poker-engine';
 import {estimateEquity} from './poker-ai';
 import {rakedContributionLayers,BOT_EV_RAKE_RATE,type BettingSeat} from './poker-rules';
@@ -53,7 +54,7 @@ export function pricedCallEquity(hole:Card[],board:Card[],opponents:number):numb
   cache.set(key,equity);return equity;
 }
 
-/** Only rescues a fold: cheap, closed all-in runouts or priced BB pair defense.
+/** Only rescues a fold: cheap-value calls across streets, priced all-ins or BB pairs.
  * No speculative future side-pot money or OOP/stack risk premiums on a locked
  * runout. Future-street realization still discounts ordinary BB pair calls.
  */
@@ -78,25 +79,27 @@ export function pricedCallGuard(c:{hole:Card[];board:Card[];seats:BettingSeat[];
   const blindPair=c.board.length===0&&actor.seatId===c.bigBlindSeat&&c.raiseLevel===1&&pair
     &&highest<=2*c.bigBlind&&call<=c.bigBlind&&starting>=10*c.bigBlind&&cost<=starting*.10
     &&opponents.every(s=>s.allIn||s.currentBet>=highest);
-  if(!locked&&!blindPair)return null;
-  const projected=c.seats.map(s=>({...s,totalBet:s.totalBet+(s.seatId===actor.seatId?cost:0)}));
+  const projected=c.seats.map(s=>({seatId:s.seatId,stack:s.stack,currentBet:s.currentBet,inHand:s.inHand,folded:s.folded,allIn:s.allIn,totalBet:s.totalBet+(s.seatId===actor.seatId?cost:0)}));
   const layers=rakedContributionLayers(projected,BOT_EV_RAKE_RATE,true)
     .filter(p=>p.refundSeatId===undefined&&p.eligibleSeatIds.includes(actor.seatId));
   const netPot=layers.reduce((n,p)=>n+p.amount-p.rake,0);
   if(netPot<=0)return null;
   const requiredEquity=cost/netPot;
-  const kind=locked?'committed-allin':'bb-pair';
-  // A side pot the actor cannot win never makes a call appear artificially cheap.
-  if(locked&&requiredEquity>.15)return {kind,cost,netPot,requiredEquity,accepted:false,reason:'price'};
+  const tier=classifyHandTier(c.hole,c.board).tier;
+  const hasValue=c.hole[0].rank===c.hole[1].rank||c.hole.some(h=>h.rank==='A'||c.board.some(b=>b.rank===h.rank))
+    ||(c.board.length>0&&c.board.length<5&&tier===HandTier.DRAW);
+  const cheap=requiredEquity<=.15&&hasValue;
+  if(!locked&&!blindPair&&!cheap)return null;
+  const kind=locked?'committed-allin':blindPair?'bb-pair':'pot-odds';
   let expected=0;
   for(const p of layers){
     const count=p.eligibleSeatIds.length-1;
-    const q=locked?pricedCallEquity(c.hole,c.board,count):estimateEquity(c.hole,[],count,384,'open');
+    const q=locked||c.board.length>0?pricedCallEquity(c.hole,c.board,count):estimateEquity(c.hole,[],count,384,'open');
     expected+=(p.amount-p.rake)*q;
   }
-  const realization=locked||cost===actor.stack?1:.82;
+  const realization=c.board.length===5||locked||cost===actor.stack?1:.82;
   const callEV=expected*realization-cost;
   const margin=Math.max(1,netPot*.01);
   return {kind,cost,netPot,requiredEquity,equity:expected/netPot,realization,callEV,margin,
-    accepted:callEV>margin,reason:callEV>margin?'positive-ev':'equity'};
+    forced:cheap,accepted:cheap||callEV>margin,reason:cheap?'cheap-value':callEV>margin?'positive-ev':'equity'};
 }

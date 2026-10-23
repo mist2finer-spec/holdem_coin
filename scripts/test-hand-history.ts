@@ -49,7 +49,7 @@ test('actual room records mixed human/CPU hand, paid raise chips, blinds and rak
   assert.equal(h.actions[0].amount,600);assert.equal(h.actions[0].paid,500);
   assert.equal(h.actions[0].potBefore,300);assert.equal(h.actions[0].potAfter,800);
   assert.equal(h.actions[1].callBefore,400);assert.equal(h.actions[1].paid,400);
-  assert.equal(h.rake,0);assert.equal(h.results.reduce((n,r)=>n+r.netProfit,0),0);
+  assert.equal(h.rake,60);assert.equal(h.results.reduce((n,r)=>n+r.netProfit,0),-60);
   assert.equal(h.status,'completed');assert.ok(h.endedAt>=h.startedAt);
   assert.equal(h.actions[0].privateAudit?.decisionPath,'test');
 });

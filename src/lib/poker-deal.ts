@@ -5,8 +5,8 @@ import {makeDeck,type Card} from './poker-engine';
  * No opponent cards, hand outcomes, stack sizes or future board enter selection.
  */
 export const DEALING_PROFILE = Object.freeze({
-  id:'paced-textures-v2',method:'weighted-pairs',overlap:'maximum',sameForAllSeats:true,
-  pairRejection:0.6,suitedRejection:0.5,connectorRejection:0.4,
+  id:'paced-textures-v3',method:'weighted-pairs',overlap:'maximum',sameForAllSeats:true,
+  pairRejection:0.20,suitedRejection:0.15,connectorRejection:0.10,
 });
 export const DEALING_NOTICE = '밸런스 배분: 페어·수딧·커넥터/원갭 출현 억제 · 플레이어/CPU 동일 기준 (일반 무작위 배분과 다름)';
 const ranks='23456789TJQKA';

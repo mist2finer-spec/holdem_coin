@@ -1,3 +1,4 @@
+import {classifyHandTier,HandTier} from './equity-engine';
 import {evaluateBestHand, type Card} from './poker-engine';
 import {rakedContributionLayers, BOT_EV_RAKE_RATE, type BettingSeat} from './poker-rules';
 import type {BotPersona} from './personas';
@@ -39,7 +40,7 @@ export function riverCatchDecision(ctx:{hole:Card[];board:Card[];seats:BettingSe
   if(cost<=0)return null;
   const equity=riverRangeEquity(ctx.hole,ctx.board);
   // Existing contributions only: calling never invents future opponent bets.
-  const projected=ctx.seats.map(s=>({...s,totalBet:s.totalBet+(s.seatId===actor.seatId?cost:0)}));
+  const projected=ctx.seats.map(s=>({seatId:s.seatId,stack:s.stack,currentBet:s.currentBet,inHand:s.inHand,folded:s.folded,allIn:s.allIn,totalBet:s.totalBet+(s.seatId===actor.seatId?cost:0)}));
   let netPot=0,refund=0;
   for(const layer of rakedContributionLayers(projected,BOT_EV_RAKE_RATE,true)) {
     if(layer.refundSeatId===actor.seatId)refund+=layer.amount;
@@ -47,5 +48,9 @@ export function riverCatchDecision(ctx:{hole:Card[];board:Card[];seats:BettingSe
   }
   const callEV=equity*netPot+refund-cost;
   const eligible=callEV>0;
-  return {frequency,equity,callEV,cost,eligible,accepted:eligible&&random()<frequency};
+  const requiredEquity=netPot?Math.max(0,cost-refund)/netPot:1;
+  const playsBoard=evaluateBestHand(ctx.hole,ctx.board)===evaluateBestHand(ctx.board.slice(0,2),ctx.board.slice(2));
+  const strongMade=!playsBoard&&classifyHandTier(ctx.hole,ctx.board).tier>=HandTier.TOP_PAIR;
+  const forced=eligible&&(equity>=requiredEquity+.03||(strongMade&&equity>=.35));
+  return {frequency,equity,callEV,cost,requiredEquity,strongMade,forced,eligible,accepted:eligible&&(forced||random()<frequency)};
 }

@@ -76,7 +76,7 @@ test('real own flush draws may defend a flop at the same single personality freq
  assert.equal(boardDefenseDecision(c,()=>.999)!.accepted,false);
  c.hole=cards(['J♥','T♣']);assert.equal(boardDefenseDecision(c,()=>0),null,'mere backdoors must not unlock a call');
 });
-test('shared policy does not compound a declined draw roll with Pro or legacy river rolls',(t)=>{
+test('declined draw mix cannot veto a deterministic positive-EV call',(t)=>{
  t.mock.method(Math,'random',()=>.999);
  const c=spot();const own=c.seats.find((s:any)=>s.seatId===c.actorId);own.stack=10000;
  c.seats[0].currentBet=2000;c.seats[0].totalBet=7650;
@@ -84,8 +84,8 @@ test('shared policy does not compound a declined draw roll with Pro or legacy ri
  let audit:Record<string,unknown>={};
  const args={actor:{...own,holeCards:c.hole,persona:pro},seats:c.seats,board:c.board,pot:13500,minRaise:4000,maxRaise:10000,button:0,smallBlind:1,bigBlind:2,hand:8,raiseLevel:1,onAudit:(a:Record<string,unknown>)=>{audit=a;}};
  const fake={decideActionForLive:()=>({action:0,amount:0})} as unknown as SelfPlayTrainer;
- assert.equal(decideLiveBot(fake,args).action,'fold');
- assert.ok(audit.boardDefense);assert.equal(audit.proCatch,null);assert.equal(audit.riverCatch,null);
+ assert.equal(decideLiveBot(fake,args).action,'call');
+ assert.ok(audit.boardDefense);assert.ok(audit.riverCatch||audit.proCatch||audit.pricedCall);
  const raise={decideActionForLive:()=>({action:2,amount:4000})} as unknown as SelfPlayTrainer;
  assert.equal(decideLiveBot(raise,args).action,'raise');
 });

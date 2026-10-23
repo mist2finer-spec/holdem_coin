@@ -219,14 +219,14 @@ test('jam-call range reduces medium-pair equity relative to random callers', () 
   assert.equal(called,estimateEquity(cards,[],1,192,'jam-call'));
 });
 
-test('short blind defense cannot turn a policy fold back into a speculative call', () => {
+test('short blind broadway receives the explicit cheap-call floor', () => {
   const table=seats();Object.assign(table[0],{stack:2300,currentBet:200,totalBet:200});
   Object.assign(table[1],{stack:4500,currentBet:500,totalBet:500});
   const folding={decideActionForLive:()=>({action:0,amount:0})} as unknown as SelfPlayTrainer;
   withSeed(()=>{
     const d=decideLiveBot(folding,{actor:{...table[0],holeCards:[card('K','♠'),card('Q','♥')]},seats:table,
       board:[],pot:300,minRaise:800,maxRaise:2500,button:1,smallBlind:0,bigBlind:1,hand:1,raiseLevel:1});
-    assert.equal(d.action,'fold');
+    assert.equal(d.action,'call');
   });
 });
 

@@ -172,7 +172,7 @@ test('actual finishHand distributes each pot correctly and clears commitments', 
   assert.ok(room.state.seats.every((s:any)=>s.totalBet===0 && s.currentBet===0));
 });
 
-test('blind defence covers a 2BB open at 50% override probability', async () => {
+test('priced blind defense no longer randomly folds protected hands', async () => {
   const room=roomWith([0,0,200,400]);
   room.state.buttonSeat=0;room.state.activeSeatId=2;room.state.raiseLevel=1;
   room.trainer.decideActionForLive=()=>({action:0,amount:0});
@@ -181,10 +181,10 @@ test('blind defence covers a 2BB open at 50% override probability', async () => 
     Math.random=()=>0.25;
     assert.equal((await room.getDecision(room.state.seats[2],200,600,20200,false)).action,'call');
     Math.random=()=>0.75;
-    assert.equal((await room.getDecision(room.state.seats[2],200,600,20200,false)).action,'fold');
+    assert.equal((await room.getDecision(room.state.seats[2],200,600,20200,false)).action,'call');
     room.state.raiseLevel=2;
     Math.random=()=>0.25;
-    assert.equal((await room.getDecision(room.state.seats[2],200,600,20200,false)).action,'fold');
+    assert.equal((await room.getDecision(room.state.seats[2],200,600,20200,false)).action,'call');
   } finally {Math.random=random;}
 });
 
@@ -330,7 +330,7 @@ test('server decision window is ten seconds and clears its deadline on action', 
   assert.equal(room.createSafeSnapshot('a').isUserTurn,false);
 });
 
-test('shared live AI retains 50% small-open blind defence for both callers', () => {
+test('shared live AI always keeps qualified small-open blind defense', () => {
   const room=roomWith([200,400,200]);
   const random=Math.random;
   const trainer={decideActionForLive:()=>({action:0,amount:0})} as any;
@@ -338,7 +338,7 @@ test('shared live AI retains 50% small-open blind defence for both callers', () 
     button:0,smallBlind:1,bigBlind:2,hand:1,raiseLevel:1};
   try {
     Math.random=()=>0.25;assert.equal(decideLiveBot(trainer,ctx).action,'call');
-    Math.random=()=>0.75;assert.equal(decideLiveBot(trainer,ctx).action,'fold');
+    Math.random=()=>0.75;assert.equal(decideLiveBot(trainer,ctx).action,'call');
   } finally {Math.random=random;}
 });
 

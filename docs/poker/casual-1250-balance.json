@@ -1,0 +1,22 @@
+{
+  "method": "6-max actual HybridHoldemRoom, all bots, 1000 continuous hands per version, seed 20261023, default initial trainer, no training, natural refills/cashouts, weighted dealing enabled",
+  "beforeRevision": "d9fa52ff457b931e30ea03d99c6d7391f57034ec",
+  "beforeRules": "1.24.0",
+  "afterRules": "1.25.0",
+  "before": {
+    "hands": 1000,
+    "opportunities": 6000,
+    "vpipRate": 0.207,
+    "pfrRate": 0.1525,
+    "unopenedWalkRate": 0.294,
+    "preflopFoldWinRate": 0.678
+  },
+  "after": {
+    "hands": 1000,
+    "opportunities": 6000,
+    "vpipRate": 0.267,
+    "pfrRate": 0.18433333333333332,
+    "unopenedWalkRate": 0.178,
+    "preflopFoldWinRate": 0.522
+  }
+}
