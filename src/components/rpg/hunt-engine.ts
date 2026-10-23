@@ -1,8 +1,9 @@
 import {HUNT_RULES,motions,SKILL_COOLDOWNS,WORLD_WIDTH,type ComboStage} from './combat-rules';
+import {bodySeparation,planDodge,sweepHero} from './hunt-collision';
 export {SKILL_COOLDOWNS,WORLD_WIDTH} from './combat-rules';
 type Motion={kind:'attack'|'skill'|'rush'|'dodge';start:number;duration:number;target:number;
  segments:{animation:string;duration:number}[];phase:number;hits:{at:number;damage:number;range:number;done:boolean;heal?:boolean}[];
- destination?:number;speed?:number};
+ destination?:number;speed?:number;origin?:number};
 const clampX=(x:number)=>Math.max(65,Math.min(WORLD_WIDTH-65,x));
 export type HuntEnemy={slot:number;x:number;hp:number;serial:number;respawnAt:number;lastDamage:number;hitUntil:number};
 /** Browser-local restoration scaffold. Original formulas/config remain unresolved. */
@@ -33,6 +34,7 @@ export class HuntEngine {
    ||!Number.isFinite(s.damage)||s.damage<=0))throw Error('Invalid combo profile');
   this.combo=combo.map(s=>({...s}));
  }
+ private moveTo(destination:number){this.x=sweepHero(this.x,clampX(destination),this.enemies);}
  private selectTarget(){
   if(this.motion)return; // In-flight hits must retain their original target identity.
   const alive=this.enemies.filter(e=>e.hp>0);
@@ -66,20 +68,28 @@ export class HuntEngine {
   }
   if(m.destination!==undefined&&m.speed!==undefined){
    const delta=m.destination-this.x;
-   this.x=clampX(this.x+Math.sign(delta)*Math.min(Math.abs(delta),m.speed*dt));
+   const next=clampX(this.x+Math.sign(delta)*Math.min(Math.abs(delta),m.speed*dt));
+   if(m.kind==='dodge')this.x=next;else this.moveTo(next);
   }
   const age=this.elapsed-m.start;
   for(const hit of m.hits){
    if(hit.done||age+1e-8<hit.at)continue;hit.done=true;
    if(hit.heal){this.hp=Math.min(100,this.hp+25);continue;}
    if(m.target===this.enemySerial&&this.enemyHP>0&&Math.abs(this.enemyX-this.x)<=hit.range
-    &&(this.enemyX-this.x)*this.facing>=0)this.hurt(hit.damage);
+    &&(this.enemyX-this.x)*this.facing>=0
+    &&!this.enemies.some(e=>e.hp>0&&e.serial!==m.target&&(e.x-this.x)*this.facing>0
+     &&Math.abs(e.x-this.x)<Math.abs(this.enemyX-this.x)))this.hurt(hit.damage);
   }
   let end=0,phase=m.segments.length-1;
   for(let i=0;i<m.segments.length;i++){end+=m.segments[i].duration;if(age<end-1e-8){phase=i;break;}}
   if(m.phase!==phase){m.phase=phase;this.pose(m.segments[phase].animation,true);}
   if(age+1e-8>=m.duration){
-   if(m.destination!==undefined)this.x=clampX(m.destination);
+   if(m.destination!==undefined){
+    if(m.kind==='dodge'){
+     // Recheck landing in case a target was repositioned while the roll played.
+     this.x=planDodge(m.origin??this.x,clampX(m.destination),this.enemies).destination;
+    }else this.moveTo(m.destination);
+   }
    this.motion=null;this.actionUntil=this.elapsed;this.pose('stay1');
   }
  }
@@ -89,6 +99,9 @@ export class HuntEngine {
   direction=Number.isFinite(direction)?Math.max(-1,Math.min(1,direction)):0;
   this.elapsed+=dt;this.cooldowns=this.cooldowns.map(t=>Math.max(0,t-dt));
   for(const enemy of this.enemies)if(enemy.hp<=0&&this.elapsed>=enemy.respawnAt){
+   const spawnX=this.enemies.length===1?Math.min(WORLD_WIDTH-90,Math.max(90,this.x+this.facing*230)):enemy.x;
+   // Never respawn a solid enemy around the player (including during a roll).
+   if(Math.abs(spawnX-this.x)<bodySeparation){enemy.respawnAt=this.elapsed+.25;continue;}
    enemy.hp=100;enemy.serial+=this.enemies.length;enemy.hitUntil=0;
    if(this.enemies.length===1)enemy.x=Math.min(WORLD_WIDTH-90,Math.max(90,this.x+this.facing*230));
   }
@@ -98,19 +111,19 @@ export class HuntEngine {
   if(this.elapsed>this.comboExpires)this.resetCombo();
   if(direction){
    this.attackIntent=false;this.queuedUntil=0;this.facing=Math.sign(direction);
-   this.x=clampX(this.x+direction*HUNT_RULES.moveSpeed*dt);this.pose('run1');return;
+   this.moveTo(this.x+direction*HUNT_RULES.moveSpeed*dt);this.pose('run1');return;
   }
   if(this.enemyHP>0&&(this.auto||this.attackHeld||this.attackIntent||this.queuedUntil>this.elapsed)){
    this.queuedUntil=0;this.attackIntent=true;
    const distance=Math.abs(this.enemyX-this.x);this.facing=Math.sign(this.enemyX-this.x)||this.facing;
    if(distance<=HUNT_RULES.attackRange){this.attack();return;}
    if(HUNT_RULES.useRush&&distance>=HUNT_RULES.rushMin&&distance<=HUNT_RULES.rushMax){
-    const destination=clampX(this.enemyX-this.facing*HUNT_RULES.stopRange);
+    const destination=sweepHero(this.x,clampX(this.enemyX-this.facing*HUNT_RULES.stopRange),this.enemies);
     const duration=Math.abs(destination-this.x)/HUNT_RULES.rushSpeed;
     if(duration>0)this.start({kind:'rush',start:this.elapsed,duration,target:this.enemySerial,
      segments:[{animation:'dash',duration}],phase:0,hits:[],destination,speed:HUNT_RULES.rushSpeed});
    }else{
-    this.x=clampX(this.x+this.facing*Math.min(HUNT_RULES.moveSpeed*dt,Math.max(0,distance-HUNT_RULES.stopRange)));
+    this.moveTo(this.x+this.facing*Math.min(HUNT_RULES.moveSpeed*dt,Math.max(0,distance-HUNT_RULES.stopRange)));
     this.pose('run1');
    }
    return;
@@ -151,9 +164,10 @@ export class HuntEngine {
  dodge(direction:number){
   if(this.paused||this.elapsed<this.dodgeReady||this.motion||!Number.isFinite(direction)||!direction)return false;
   this.clearInput();this.resetCombo();this.facing=direction<0?-1:1;
-  const duration=motions.durations.avoid1,destination=clampX(this.x+this.facing*HUNT_RULES.dodgeDistance);
+  const duration=motions.durations.avoid1;
+  const destination=planDodge(this.x,clampX(this.x+this.facing*HUNT_RULES.dodgeDistance),this.enemies).destination;
   this.start({kind:'dodge',start:this.elapsed,duration,target:this.enemySerial,segments:[{animation:'avoid1',duration}],
-   phase:0,hits:[],destination,speed:HUNT_RULES.dodgeDistance/duration});
+   phase:0,hits:[],origin:this.x,destination,speed:Math.abs(destination-this.x)/duration});
   this.dodgeReady=this.elapsed+HUNT_RULES.dodgeCooldown;return true;
  }
 }

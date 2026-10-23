@@ -2,6 +2,8 @@ import {CanvasTexture, SkeletonRenderer as CanvasRenderer} from '@esotericsoftwa
 import {AnimationState, AnimationStateData, AtlasAttachmentLoader, GLTexture, Physics, SceneRenderer, Skeleton, SkeletonJson, Skin, TextureAtlas} from '@esotericsoftware/spine-webgl';
 import {HuntEngine} from './hunt-engine';
 import {huntViewport} from './hunt-layout';
+import {HUNT_VISUALS} from './hunt-collision';
+import {attachmentBottom,groundSkeleton} from './hunt-ground';
 const base = '/rpg/';
 const image = (url: string, signal: AbortSignal) => new Promise<HTMLImageElement>((resolve, reject) => {
  const img = new Image();
@@ -31,7 +33,7 @@ async function actor(name: string, signal: AbortSignal, gl: WebGLRenderingContex
  const idle = data.animations.find(a=>/stay1|idle/i.test(a.name));
  if(idle){state.setAnimation(0,idle.name,true);state.apply(skeleton);}
  skeleton.updateWorldTransform(Physics.update);
- return {skeleton, state, atlas, animation: '', serial:-1, available: data.animations.map(a => a.name)};
+ return {skeleton, state, atlas,groundSlots:name==='Hero_Axe01'?['Rleg','Lleg2']:['body'], animation: '', serial:-1, available: data.animations.map(a => a.name)};
 }
 export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: AbortSignal) {
  Skeleton.yDown = true;
@@ -54,7 +56,7 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
   const next = a.available.includes(anim) ? anim : a.available.find(n => /stay|idle/i.test(n)) || a.available[0];
   if ((a.animation !== next||a.serial!==serial) && next) { a.state.setAnimation(0, next, /stay|idle|run/i.test(next)); a.animation = next;a.serial=serial; }
   a.skeleton.x = x; a.skeleton.y = y; a.skeleton.scaleX = scale * direction; a.skeleton.scaleY = scale;
-  a.state.update(dt*speed); a.state.apply(a.skeleton); a.skeleton.update(dt); a.skeleton.updateWorldTransform(Physics.update); if(renderer) renderer.drawSkeleton(a.skeleton, true); else fallback!.draw(a.skeleton);
+  a.state.update(dt*speed); a.state.apply(a.skeleton); a.skeleton.update(dt); a.skeleton.updateWorldTransform(Physics.update); groundSkeleton(a.skeleton,y,a.groundSlots); if(renderer) renderer.drawSkeleton(a.skeleton, true); else fallback!.draw(a.skeleton);
  };
  return {
   draw(game: HuntEngine, dt: number) {
@@ -75,20 +77,24 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
    ctx.fillStyle='#26372a';ctx.fillRect(0,floor+5,w,h-floor);
    ctx.fillStyle='#658150';ctx.fillRect(0,floor+5,w,4);
    ctx.fillStyle='#192a20'; for(let i=0;i<20;i++) ctx.fillRect(i*90-camera%90,floor+28+(i%3)*12,46,3);
-   const scale=.9*zoom;
+   const scale=HUNT_VISUALS.heroScale*zoom;
    ctx.fillStyle='#0005';ctx.beginPath();ctx.ellipse(screenX(game.x),floor+4,25*zoom,5*zoom,0,0,Math.PI*2);ctx.fill();
    for(const mob of game.enemies){
     if(mob.hp<=0&&game.elapsed>=mob.respawnAt)continue;
     const visual=enemies[mob.slot],hurt=mob.hp>0&&mob.hitUntil>game.elapsed;
     const anim=mob.hp<=0?'die1':hurt&&visual.available.includes('damage1')?'damage1':'stay1';
-    const shake=hurt?Math.sin(game.elapsed*90)*2*zoom:0,x=screenX(mob.x),y=floor+(mob.slot%3-1)*6;
-    animate(visual,anim,x+shake,y,2.4*zoom,mob.x>game.x?-1:1,dt,mob.serial);
+    const shake=hurt?Math.sin(game.elapsed*90)*2*zoom:0,x=screenX(mob.x),y=floor;
+    animate(visual,anim,x+shake,y,HUNT_VISUALS.slimeScale*zoom,mob.x>game.x?-1:1,dt,mob.serial);
    }
    animate(hero,game.action,screenX(game.x),floor,scale,game.facing,dt,game.actionSerial,game.animationSpeed);
    if(renderer){renderer.end();ctx.drawImage(layer,0,0,w,h);}
+   canvas.dataset.groundY=String(floor);
+   const bottoms=[attachmentBottom(hero.skeleton,hero.groundSlots),...enemies.slice(0,game.enemies.length).map(e=>attachmentBottom(e.skeleton,e.groundSlots))];
+   canvas.dataset.groundError=String(Math.max(...bottoms.filter((b):b is number=>b!==null).map(b=>Math.abs(b-floor))));
+   canvas.dataset.slimeScale=String(HUNT_VISUALS.slimeScale);
    // UI overlays are painted after the WebGL layer so health and damage remain visible.
    for(const mob of game.enemies){
-    const x=screenX(mob.x),bar=Math.max(20,36*zoom),y=floor-48*zoom;
+    const x=screenX(mob.x),bar=Math.max(20,36*zoom),y=floor-30*zoom;
     if(mob.hp>0){ctx.fillStyle='#111c';ctx.fillRect(x-bar/2,y,bar,3);ctx.fillStyle='#e07b67';ctx.fillRect(x-bar/2,y,bar*mob.hp/100,3);}
     if(mob.hitUntil>game.elapsed){ctx.fillStyle='#ffdb8b';ctx.font=`bold ${Math.max(12,20*zoom)}px sans-serif`;ctx.textAlign='center';ctx.fillText(String(mob.lastDamage),x,y-8-(.75-(mob.hitUntil-game.elapsed))*25);}
    }

@@ -14,7 +14,7 @@ test('motion profile matches actual skeleton bytes and every requested attack/sk
   assert.ok(data.animations[name]&&motions.durations[name as keyof typeof motions.durations]>0);
 });
 test('manual movement remains bounded and invalid time/direction cannot poison state',()=>{
- const g=ready();advance(g,20,-1);assert.equal(g.x,65);advance(g,20,1);assert.equal(g.x,WORLD_WIDTH-65);
+ const g=ready();g.enemyHP=0;g.respawnAt=Infinity;advance(g,20,-1);assert.equal(g.x,65);advance(g,20,1);assert.equal(g.x,WORLD_WIDTH-65);
  g.step(NaN,Infinity);g.step(-1,NaN);g.step(Infinity,1);
  assert.ok([g.x,g.elapsed,...g.cooldowns].every(Number.isFinite));
 });
@@ -131,4 +131,41 @@ test('mobile and desktop cameras fit seven spawn positions without altering worl
   assert.equal(g.enemies.filter(e=>v.screenX(e.x)>0&&v.screenX(e.x)<width).length,7);
   assert.ok(v.zoom>0&&v.zoom<=1);
  }
+});
+
+test('walking cannot pass a live slime in either direction; dead bodies do not block',async()=>{
+ const {bodySeparation}=await import('../../src/components/rpg/hunt-collision');
+ const g=ready();advance(g,5,1);assert.equal(g.x,580-bodySeparation);
+ g.x=660;advance(g,5,-1);assert.equal(g.x,580+bodySeparation);
+ g.enemyHP=0;g.respawnAt=Infinity;advance(g,1,-1);assert.ok(g.x<580);
+});
+test('swept Rush movement cannot tunnel through a newly blocking monster',async()=>{
+ const {sweepHero,bodySeparation}=await import('../../src/components/rpg/hunt-collision');
+ assert.equal(sweepHero(500,1500,[{x:580,hp:100}]),580-bodySeparation);
+ assert.equal(sweepHero(1000,100,[{x:580,hp:100}]),580+bodySeparation);
+ const g=new HuntEngine();g.x=500;g.enemies.forEach(e=>e.x=1500+e.slot*80);
+ g.enemies[0].x=680;g.setAuto(true);g.step(.01,0);assert.equal(g.action,'dash');
+ g.enemies[1].x=550;advance(g,.15);assert.ok(g.x<=550-bodySeparation);
+});
+test('dodge crosses at most three slimes, rolls in place against four, and never lands inside a body',async()=>{
+ const {planDodge,isClearLanding}=await import('../../src/components/rpg/hunt-collision');
+ for(const dir of [-1,1]){
+  const bodies=[40,60,80].map(d=>({x:500+dir*d,hp:100}));
+  const plan=planDodge(500,500+dir*125,bodies);
+  assert.equal(plan.crossed,3);assert.equal(plan.destination,500+dir*125);assert.ok(isClearLanding(plan.destination,bodies));
+  bodies.push({x:500+dir*100,hp:100});
+  assert.deepEqual(planDodge(500,500+dir*125,bodies),{destination:500,crossed:4,inPlace:true});
+  bodies[3].hp=0;assert.equal(planDodge(500,500+dir*125,bodies).inPlace,false);
+ }
+ const crowded=[{x:620,hp:100}];const shortened=planDodge(500,625,crowded);
+ assert.equal(shortened.destination,584);assert.ok(isClearLanding(shortened.destination,crowded));
+ const g=new HuntEngine();g.x=500;g.enemies.forEach(e=>e.x=1800+e.slot*40);
+ [540,560,580,600].forEach((x,i)=>g.enemies[i].x=x);
+ assert.equal(g.dodge(1),true);assert.equal(g.action,'avoid1');advance(g,.51);assert.equal(g.x,500);
+});
+test('respawn waits until player leaves the body area, and occluded swings cannot hit through a slime',()=>{
+ const g=new HuntEngine();g.x=g.enemies[0].x;g.enemies[0].hp=0;g.enemies[0].respawnAt=0;
+ g.step(.05,0);assert.equal(g.enemies[0].hp,0);g.x+=100;advance(g,.3);assert.equal(g.enemies[0].hp,100);
+ const h=new HuntEngine();h.x=500;h.enemies.forEach(e=>e.x=1800+e.slot*50);h.enemies[0].x=600;
+ h.attack();h.enemies[1].x=550;advance(h,.25);assert.equal(h.enemies[0].hp,100);assert.equal(h.enemies[1].hp,100);
 });

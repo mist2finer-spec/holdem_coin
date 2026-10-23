@@ -15,7 +15,7 @@
     "validate:holdem": "node scripts/validate_holdem.js",
     "ai-task": "node scripts/auto_pipeline.mjs",
     "ai-web": "node scripts/pipeline_web.mjs",
-    "test:rpg": "node scripts/rpg/check-spine.mjs && node --import ./mini-services/poker-server/node_modules/tsx/dist/loader.mjs --test scripts/rpg/test-hunt.ts"
+    "test:rpg": "node scripts/rpg/check-spine.mjs && node --import ./mini-services/poker-server/node_modules/tsx/dist/loader.mjs --test scripts/rpg/test-hunt.ts scripts/rpg/test-ground.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
