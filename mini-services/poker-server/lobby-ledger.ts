@@ -16,9 +16,14 @@ export class LobbyLedger {
   a.connections.add(socket);a.lastSeen=Date.now();this.sockets.set(socket,a);return this.view(socket);
  }
  view(socket:string){const a=this.sockets.get(socket);return a?{id:a.id,token:a.token,name:a.name,multi:a.balance+a.tableAmount}:null;}
- // Legacy clients receive a clear refusal; public identities stay server-assigned.
- rename(_socket:string,_value:unknown):{error:string}{
-  return {error:'플레이어 이름은 서버에서 테스터 번호로 자동 생성됩니다.'};
+ rename(socket:string,value:unknown):{id?:string;token?:string;name?:string;multi?:number;error?:string}|null{
+  const a=this.sockets.get(socket);
+  if(!a)return {error:'서버 연결 후 다시 시도해 주세요.'};
+  if(a.seatSocket)return {error:'이전 핸드가 끝나고 퇴장 처리된 후 이름을 변경해 주세요.'};
+  const name=typeof value==='string'?value.trim():'';
+  if(!name||[...name].length>12||/[\x00-\x1f\x7f<>]/.test(name))return {error:'이름은 특수 제어문자 없이 1~12자로 입력해 주세요.'};
+  if([...this.accounts.values()].some(x=>x!==a&&x.name===name))return {error:'이미 사용 중인 이름입니다.'};
+  a.name=name;return this.view(socket);
  }
  reserve(socket:string){const a=this.sockets.get(socket);if(!a||a.seatSocket&&a.seatSocket!==socket)return false;a.seatSocket=socket;return true;}
  start(socket:string){const a=this.sockets.get(socket);if(!a)return 5000;a.played=true;const amount=a.balance;a.balance=0;a.tableAmount=amount;return amount;}
