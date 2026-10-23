@@ -30,7 +30,7 @@ async function startMusic() {
   for(const source of music) source.stop(); music.clear();
   if (!context || !unlocked || !scene || muted || hidden) return;
   const tracks: ReadonlyArray<readonly [string,number]> = scene === 'start'
-    ? [['choose_map',.42],['tv_sound',.035]] : [[scene === 'lobby'?'game_room':'poker_room',.24]];
+    ? [['choose_map',.42],['tv_sound',.22]] : [[scene === 'lobby'?'game_room':'poker_room',.24]];
   await Promise.all(tracks.map(async([track,volume])=>{
     try {
       const data = await buffer(track);

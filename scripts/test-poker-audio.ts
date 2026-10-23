@@ -22,7 +22,7 @@ test('audio follows confirmed actions, scene changes, shuffle duration, mute and
     unlockPokerAudio();await flush();
     const main=started.find(s=>s.buffer.endsWith('choose_map.mp3'));
     const tv=started.find(s=>s.buffer.endsWith('tv_sound.mp3'));
-    assert.ok(main?.loop&&tv?.loop);assert.ok(main.output.gain.value>tv.output.gain.value*10);
+    assert.ok(main?.loop&&tv?.loop);assert.ok(main.output.gain.value>tv.output.gain.value);
     setPokerAudioScene('lobby');await flush();assert.ok(main.stops.length&&tv.stops.length);
     assert.ok(started.some(s=>s.loop&&s.buffer.endsWith('game_room.mp3')));
     const lobby=started.find(s=>s.buffer.endsWith('game_room.mp3'));
