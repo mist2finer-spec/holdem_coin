@@ -1,4 +1,5 @@
 "use client";
+import {playPokerSound,pokerActionSound} from "@/lib/poker-audio";
 import {StreetBetting,recordedAction} from '@/lib/poker-betting';
 import {dealStartingHands} from '@/lib/poker-deal';
 import {soloBalance,saveSoloBalance} from "@/lib/lobby-client";
@@ -318,11 +319,13 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     pushLog(`${st.seats[positions.bigBlind].name}: BB ${BIG_BLIND}`, "system");
     tick();
 
-    await sleep(500); if(!mountedRef.current)return;
+    void playPokerSound('shuffle_card',1.5);
+    await sleep(1500); if(!mountedRef.current)return;
 
     // Same public dealing profile as multiplayer; no outcome/runout filtering.
     const dealt=dealStartingHands(st.seats.filter(s=>s.inHand),st.buttonSeat);
     st.deck=dealt.deck;
+    void playPokerSound('taking_card');
     st.seats = st.seats.map((s) => {
       if (!s.inHand) return s;
       return { ...s, holeCards: dealt.hands.get(s.seatId)! };
@@ -461,6 +464,8 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
 
       // 액션 적용 (직접 ref 수정)
       applyActionToState(st, actorIdx, decision);
+      const sound=pokerActionSound(st.seats[actorIdx].allIn ? 'allin' : decision.action);
+      if(sound) void playPokerSound(sound);
       publicLines.current.observe(st.handNumber,{seatId:actor.seatId,street:st.board.length,
         action:decision.action,call:callAmt,paid:lineStackBefore-st.seats[actorIdx].stack,
         to:st.seats[actorIdx].currentBet,pot:linePotBefore,raises:raisesBet});

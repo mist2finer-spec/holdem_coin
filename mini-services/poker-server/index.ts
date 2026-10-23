@@ -65,6 +65,7 @@ interface ServerSeat {
 }
 
 interface ServerGameState {
+  dealStage?: "shuffle" | "cards" | null;
   seats: ServerSeat[];
   board: Card[];
   pot: number;
@@ -278,7 +279,7 @@ export class HybridHoldemRoom {
     // ★ 핸드 진행 중인지 확인
     const handInProgress = this.state.phase !== "SHOWDOWN"
       && this.state.phase !== "HAND_END"
-      && this.state.activeSeatId >= 0;
+      && (this.state.activeSeatId >= 0 || Boolean(this.state.dealStage));
 
     // ★ 핵심 수정: 핸드 진행 중에는 절대 seats 배열을 건드리지 않음!
     if (handInProgress) {
@@ -490,6 +491,8 @@ export class HybridHoldemRoom {
 
       // 상태 리셋
       st.handNumber++;
+      st.dealStage = null;
+      st.activeSeatId = -1;
       st.board = [];
       st.pot = 0;
       st.phase = "PREFLOP";
@@ -552,6 +555,11 @@ export class HybridHoldemRoom {
       st.seats[positions.smallBlind] = postBlind(st.seats[positions.smallBlind], SMALL_BLIND);
       st.seats[positions.bigBlind] = postBlind(st.seats[positions.bigBlind], BIG_BLIND);
 
+      // Clients show an empty table and play the shuffle before any cards arrive.
+      st.dealStage = "shuffle";
+      this.broadcastTableState();
+      await this.sleep(1500);
+
       // Public paced-premium house rule; board uses the remaining shuffled deck.
       const {deck,hands}=dealStartingHands(st.seats.filter(s=>s.inHand),st.buttonSeat);
       for (const seat of st.seats) {
@@ -560,10 +568,12 @@ export class HybridHoldemRoom {
         }
       }
 
+      st.dealStage = "cards";
       this.broadcastTableState();
       this.beginHistory();
       this.broadcast("SYSTEM_NOTICE", { messages: [`◆ 핸드 #${st.handNumber} 시작`] });
       await this.sleep(800);
+      st.dealStage = null;
 
       // 프리플랍 베팅 (UTG부터)
       await this.runBettingRound(st.buttonSeat, (st.preflopStart - st.buttonSeat + this.seatCount) % this.seatCount, deck);
@@ -731,6 +741,7 @@ export class HybridHoldemRoom {
         name: actor.name,
         action: actionLabel,
         amount: decision.amount,
+        allIn: Boolean(st.seats[actorIdx].allIn),
       });
       this.broadcastTableState();
       await this.sleep(800);
@@ -993,7 +1004,7 @@ export class HybridHoldemRoom {
     const isShowdown = st.phase === "SHOWDOWN";
     const handInProgress = st.phase !== "SHOWDOWN"
       && st.phase !== "HAND_END"
-      && st.activeSeatId >= 0
+      && (st.activeSeatId >= 0 || Boolean(st.dealStage))
       && Boolean(user)
       && (mySeatId < 0 || !st.seats[mySeatId]?.inHand);
 
@@ -1058,6 +1069,7 @@ export class HybridHoldemRoom {
       activeSeatId: Number(st.activeSeatId ?? -1),
       totalPot: Number(totalPot),
       boardCards,
+      dealStage: st.dealStage ?? null,
       callAmount: Number(st.callAmount || 0),
       minRaise: Number(st.minRaise || 0),
       maxRaise: Number(st.maxRaise || 0),

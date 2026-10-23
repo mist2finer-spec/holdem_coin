@@ -358,3 +358,27 @@ test('only timed-out folds count; fourth fold removes user without mutating the 
  assert.equal(room.state.seats[0].isBot,false);assert.ok(room.leaveSeats.has(0));
  assert.equal(room.actionSource,'timeout');assert.equal(room.actionDeadline,0);
 });
+
+test('server clears cards for 1500ms before dealing and queues joins during shuffle',async()=>{
+ const room:any=new HybridHoldemRoom(false,6);
+ let shuffled=false;const stages:string[]=[];
+ room.broadcastTableState=()=>{const s=room.createSafeSnapshot(null);if(s.dealStage)stages.push(s.dealStage);};
+ room.getDecision=async()=>({action:'fold',amount:0});
+ room.sleep=async(ms:number)=>{
+  if(!shuffled&&room.state.dealStage==='shuffle'){
+   shuffled=true;assert.equal(ms,1500);assert.equal(room.state.activeSeatId,-1);
+   const snapshot=room.createSafeSnapshot(null);
+   assert.deepEqual(snapshot.boardCards,[]);
+   assert.ok(snapshot.seats.every((s:any)=>s.holeCards.length===0));
+   const before=JSON.stringify(room.state.seats);
+   room.onUserConnect({id:'shuffle-viewer',emit(){}},'Viewer');
+   assert.equal(JSON.stringify(room.state.seats),before);
+   assert.equal(room.pendingJoinQueue.length,1);
+   assert.equal(room.createSafeSnapshot('shuffle-viewer').handInProgress,true);
+  }
+ };
+ await room.playOneHand();
+ assert.ok(shuffled);assert.deepEqual(stages.slice(0,2),['shuffle','cards']);
+ assert.equal(room.state.dealStage,null);
+ room.onUserDisconnect('shuffle-viewer');
+});

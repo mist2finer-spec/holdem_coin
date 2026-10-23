@@ -1,4 +1,5 @@
 "use client";
+import {playPokerSound,pokerActionSound} from "@/lib/poker-audio";
 import {lobbyToken} from "@/lib/lobby-client";
 import {handHistoryCSV,type HandHistory} from '@/lib/poker-hand-history';
 import {browserHistory,mergeHandHistories,downloadHistoryFile} from '@/lib/poker-hand-history-client';
@@ -36,6 +37,7 @@ export interface SocketSeat {
 
 export interface SocketTableState {
   type: "TABLE_STATE";
+  dealStage?: "shuffle" | "cards" | null;
   handNumber: number;
   phase: string;
   buttonSeat: number;
@@ -77,6 +79,7 @@ interface UsePokerSocketOpts {
 
 export function usePokerSocket({ userName, onToast, tableSize=8, onExit }: UsePokerSocketOpts) {
   const socketRef = useRef<Socket | null>(null);
+  const lastDealSound = useRef('');
   const [state, setState] = useState<SocketTableState | null>(null);
   const [connected, setConnected] = useState(false);
   const [clock, setClock] = useState(Date.now);
@@ -194,6 +197,11 @@ export function usePokerSocket({ userName, onToast, tableSize=8, onExit }: UsePo
 
     socket.on("TABLE_STATE", (data: SocketTableState) => {
       console.log("[Socket] TABLE_STATE 수신:", data.phase, "mySeat:", data.mySeatId);
+      const dealKey=`${data.handNumber}:${data.dealStage}`;
+      if(data.dealStage && lastDealSound.current!==dealKey){
+        lastDealSound.current=dealKey;
+        void playPokerSound(data.dealStage==='shuffle'?'shuffle_card':'taking_card',data.dealStage==='shuffle'?1.5:undefined);
+      }
       setState(data);
       setClock(Date.now());
       setPreAction(data.preAction);
@@ -201,7 +209,9 @@ export function usePokerSocket({ userName, onToast, tableSize=8, onExit }: UsePo
 
     socket.on('HAND_HISTORY',(hand:HandHistory)=>historyHandler.current([hand]));
 
-    socket.on("PLAYER_ACTION", (data: { seatId: number; name: string; action: string; amount: number }) => {
+    socket.on("PLAYER_ACTION", (data: { seatId: number; name: string; action: string; amount: number; allIn?: boolean }) => {
+      const sound=pokerActionSound(data.allIn?'allin':data.action);
+      if(sound) void playPokerSound(sound);
       pushLog(`${data.name}: ${data.action}`, "action");
     });
 

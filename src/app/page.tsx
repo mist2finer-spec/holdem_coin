@@ -1,5 +1,7 @@
 "use client";
-import {useState,useCallback} from 'react';
+import {useState,useCallback,useEffect} from 'react';
+import {setPokerAudioScene} from '@/lib/poker-audio';
+import {PokerAudioControl} from '@/components/poker/PokerAudioControl';
 import dynamic from 'next/dynamic';
 const HuntEntry = dynamic(()=>import('@/components/rpg/HuntEntry').then(m=>m.HuntEntry),{ssr:false});
 import {LobbyPanel} from '@/components/poker/LobbyPanel';
@@ -8,8 +10,10 @@ import {PokerTableSocket} from '@/components/poker/PokerTableSocket';
 import {ActionSkinButton} from '@/components/poker/ActionSkinButton';
 import {toast} from 'sonner';
 import '@/components/poker/island.css';
-export default function Home() {
+export default function Home() { return <><PokerAudioControl/><HomeContent/></>; }
+function HomeContent() {
  const [screen,setScreen]=useState<'start'|'lobby'|'single'|'six'|'eight'|'hunt'>('start');
+ useEffect(()=>{setPokerAudioScene(screen==='lobby'?'lobby':['single','six','eight'].includes(screen)?'table':null);},[screen]);
  const [name,setName]=useState('테스터1');
  const [repair,setRepair]=useState(false);
  const returnToLobby=useCallback(()=>setScreen('lobby'),[]);
