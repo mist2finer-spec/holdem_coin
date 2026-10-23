@@ -294,5 +294,8 @@
     "Five attack mappings use four distinct contact poses.",
     "Not a Spine rig or a recovered original animation.",
     "Skills reuse melee poses; dedicated skill effects and death poses are not supplied."
-  ]
+  ],
+  "rig": "rig/character.json",
+  "rigAtlas": "rig/character.atlas.txt",
+  "renderMode": "spine-4.2-articulated"
 }

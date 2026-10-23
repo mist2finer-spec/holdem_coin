@@ -1,7 +1,7 @@
 "use client";
 import {useState,useCallback} from 'react';
 import dynamic from 'next/dynamic';
-const HuntPrototype = dynamic(()=>import('@/components/rpg/HuntPrototype').then(m=>m.HuntPrototype),{ssr:false});
+const HuntEntry = dynamic(()=>import('@/components/rpg/HuntEntry').then(m=>m.HuntEntry),{ssr:false});
 import {LobbyPanel} from '@/components/poker/LobbyPanel';
 import {PokerTable} from '@/components/poker/PokerTable';
 import {PokerTableSocket} from '@/components/poker/PokerTableSocket';
@@ -14,7 +14,7 @@ export default function Home() {
  const [repair,setRepair]=useState(false);
  const returnToLobby=useCallback(()=>setScreen('lobby'),[]);
  const notice=(msg:string,tone?:'info'|'win'|'lose')=>tone==='win'?toast.success(msg):tone==='lose'?toast.error(msg):toast(msg);
- if(screen==='hunt')return <HuntPrototype onExit={()=>setScreen('start')}/>;
+ if(screen==='hunt')return <HuntEntry onExit={()=>setScreen('start')}/>;
  if(screen==='single')return <PokerTable userName={name.trim()||'플레이어'} onToast={notice} onMain={returnToLobby}/>;
  if(screen==='six'||screen==='eight')return <PokerTableSocket tableSize={screen==='six'?6:8} userName={name.trim()||'플레이어'} onToast={notice} onMain={returnToLobby}/>;
  if(screen==='start')return <main className="island-start">

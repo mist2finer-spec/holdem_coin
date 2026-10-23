@@ -1,0 +1,53 @@
+{
+  "id": "teal-twins",
+  "version": "articulated-cutout-v1",
+  "spine": "4.2",
+  "bones": 18,
+  "parts": [
+    "head",
+    "torso",
+    "pelvis",
+    "front-upper-arm",
+    "front-forearm",
+    "front-hand",
+    "back-upper-arm",
+    "back-forearm",
+    "back-hand",
+    "front-thigh",
+    "front-shin",
+    "front-foot",
+    "back-thigh",
+    "back-shin",
+    "back-foot",
+    "hair-back"
+  ],
+  "animations": [
+    "stay1",
+    "run1",
+    "attack1",
+    "attack2",
+    "attack3",
+    "attack4",
+    "attack5",
+    "avoid1",
+    "dash",
+    "skill1",
+    "skill2",
+    "skill3",
+    "skill4",
+    "skill5",
+    "skill5_loop",
+    "skill5_end",
+    "rest1",
+    "damage1",
+    "die1"
+  ],
+  "hitEvents": "contact; metadata only in web, HuntEngine owns damage",
+  "alpha": "straight",
+  "sourceSha256": "bfe6b2d852ff6bac79d5f16cc2007e8f021442fcc919981a0ce28785cfdd96f9",
+  "limitations": [
+    "Region attachments, not weighted meshes or IK.",
+    "Procedural common choreography; not recovered original animation.",
+    "No native .spine editor project or Unity-generated .meta/material assets."
+  ]
+}

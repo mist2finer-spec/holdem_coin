@@ -1,0 +1,53 @@
+{
+  "id": "blonde-office",
+  "version": "articulated-cutout-v1",
+  "spine": "4.2",
+  "bones": 18,
+  "parts": [
+    "head",
+    "torso",
+    "pelvis",
+    "front-upper-arm",
+    "front-forearm",
+    "front-hand",
+    "back-upper-arm",
+    "back-forearm",
+    "back-hand",
+    "front-thigh",
+    "front-shin",
+    "front-foot",
+    "back-thigh",
+    "back-shin",
+    "back-foot",
+    "hair-back"
+  ],
+  "animations": [
+    "stay1",
+    "run1",
+    "attack1",
+    "attack2",
+    "attack3",
+    "attack4",
+    "attack5",
+    "avoid1",
+    "dash",
+    "skill1",
+    "skill2",
+    "skill3",
+    "skill4",
+    "skill5",
+    "skill5_loop",
+    "skill5_end",
+    "rest1",
+    "damage1",
+    "die1"
+  ],
+  "hitEvents": "contact; metadata only in web, HuntEngine owns damage",
+  "alpha": "straight",
+  "sourceSha256": "5ae838abd8a8f9dba4716adb73aea5eeb8cb92e345d26a9932b4ed6be18716b3",
+  "limitations": [
+    "Region attachments, not weighted meshes or IK.",
+    "Procedural common choreography; not recovered original animation.",
+    "No native .spine editor project or Unity-generated .meta/material assets."
+  ]
+}

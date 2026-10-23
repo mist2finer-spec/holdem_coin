@@ -43,3 +43,10 @@ node --import ./mini-services/poker-server/node_modules/tsx/dist/loader.mjs --te
 npx tsc --noEmit -p tsconfig.rpg-check.json
 npm run build
 ```
+
+## Spine 확장 (현재 웹 사용)
+
+현재 사냥 진입은 HuntEntry의 캐릭터 선택 → 사냥 시작 → HuntPrototype이다. 선택 화면은 rig/preview.png로 실제 리그 외형을 표시한다.
+전투 출력은 래스터 포즈 시트 대신 rig/character.json + character.atlas + character.png의 18본/16파츠 Spine를 사용한다.
+기존 원본 시트와 144프레임은 참고/대체용으로 보존한다. 앞의 래스터 프레임 공유 제약은 신규 리그에 적용되지 않는다.
+신규 리그는 attack1..5 각각의 본 타임라인을 가진다. Unity 가져오기는 UNITY_SPINE_IMPORT.md 참조.

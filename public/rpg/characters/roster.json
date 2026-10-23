@@ -4,62 +4,80 @@
     "label": "갈색 후드",
     "portraitId": 1,
     "manifest": "boy-hoodie/manifest.json",
-    "sheet": "boy-hoodie/sheet.png"
+    "sheet": "boy-hoodie/sheet.png",
+    "rig": "boy-hoodie/rig/character.json",
+    "preview": "boy-hoodie/rig/preview.png"
   },
   {
     "id": "white-bob",
     "label": "백발 붉은 드레스",
     "portraitId": 2,
     "manifest": "white-bob/manifest.json",
-    "sheet": "white-bob/sheet.png"
+    "sheet": "white-bob/sheet.png",
+    "rig": "white-bob/rig/character.json",
+    "preview": "white-bob/rig/preview.png"
   },
   {
     "id": "gold-dress",
     "label": "금빛 드레스",
     "portraitId": 3,
     "manifest": "gold-dress/manifest.json",
-    "sheet": "gold-dress/sheet.png"
+    "sheet": "gold-dress/sheet.png",
+    "rig": "gold-dress/rig/character.json",
+    "preview": "gold-dress/rig/preview.png"
   },
   {
     "id": "black-suit",
     "label": "안경 검은 정장",
     "portraitId": 4,
     "manifest": "black-suit/manifest.json",
-    "sheet": "black-suit/sheet.png"
+    "sheet": "black-suit/sheet.png",
+    "rig": "black-suit/rig/character.json",
+    "preview": "black-suit/rig/preview.png"
   },
   {
     "id": "longhair-man",
     "label": "장발 검은 셔츠",
     "portraitId": 5,
     "manifest": "longhair-man/manifest.json",
-    "sheet": "longhair-man/sheet.png"
+    "sheet": "longhair-man/sheet.png",
+    "rig": "longhair-man/rig/character.json",
+    "preview": "longhair-man/rig/preview.png"
   },
   {
     "id": "teal-twins",
     "label": "청록 트윈테일",
     "portraitId": 6,
     "manifest": "teal-twins/manifest.json",
-    "sheet": "teal-twins/sheet.png"
+    "sheet": "teal-twins/sheet.png",
+    "rig": "teal-twins/rig/character.json",
+    "preview": "teal-twins/rig/preview.png"
   },
   {
     "id": "hong",
     "label": "홍",
     "portraitId": 7,
     "manifest": "hong/manifest.json",
-    "sheet": "hong/sheet.png"
+    "sheet": "hong/sheet.png",
+    "rig": "hong/rig/character.json",
+    "preview": "hong/rig/preview.png"
   },
   {
     "id": "pink-glasses",
     "label": "분홍머리 안경",
     "portraitId": 8,
     "manifest": "pink-glasses/manifest.json",
-    "sheet": "pink-glasses/sheet.png"
+    "sheet": "pink-glasses/sheet.png",
+    "rig": "pink-glasses/rig/character.json",
+    "preview": "pink-glasses/rig/preview.png"
   },
   {
     "id": "blonde-office",
     "label": "금발 오피스",
     "portraitId": 9,
     "manifest": "blonde-office/manifest.json",
-    "sheet": "blonde-office/sheet.png"
+    "sheet": "blonde-office/sheet.png",
+    "rig": "blonde-office/rig/character.json",
+    "preview": "blonde-office/rig/preview.png"
   }
 ]

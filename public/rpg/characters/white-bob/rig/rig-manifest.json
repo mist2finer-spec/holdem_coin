@@ -1,0 +1,53 @@
+{
+  "id": "white-bob",
+  "version": "articulated-cutout-v1",
+  "spine": "4.2",
+  "bones": 18,
+  "parts": [
+    "head",
+    "torso",
+    "pelvis",
+    "front-upper-arm",
+    "front-forearm",
+    "front-hand",
+    "back-upper-arm",
+    "back-forearm",
+    "back-hand",
+    "front-thigh",
+    "front-shin",
+    "front-foot",
+    "back-thigh",
+    "back-shin",
+    "back-foot",
+    "hair-back"
+  ],
+  "animations": [
+    "stay1",
+    "run1",
+    "attack1",
+    "attack2",
+    "attack3",
+    "attack4",
+    "attack5",
+    "avoid1",
+    "dash",
+    "skill1",
+    "skill2",
+    "skill3",
+    "skill4",
+    "skill5",
+    "skill5_loop",
+    "skill5_end",
+    "rest1",
+    "damage1",
+    "die1"
+  ],
+  "hitEvents": "contact; metadata only in web, HuntEngine owns damage",
+  "alpha": "straight",
+  "sourceSha256": "6959961847dd9559a1c286ad418f36490a192ce06e07bbd34f70ec0c99a103fd",
+  "limitations": [
+    "Region attachments, not weighted meshes or IK.",
+    "Procedural common choreography; not recovered original animation.",
+    "No native .spine editor project or Unity-generated .meta/material assets."
+  ]
+}
