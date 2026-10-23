@@ -3,7 +3,6 @@ import {useState,useCallback} from 'react';
 import dynamic from 'next/dynamic';
 const HuntPrototype = dynamic(()=>import('@/components/rpg/HuntPrototype').then(m=>m.HuntPrototype),{ssr:false});
 import {LobbyPanel} from '@/components/poker/LobbyPanel';
-import {DEALING_NOTICE} from '@/lib/poker-deal';
 import {PokerTable} from '@/components/poker/PokerTable';
 import {PokerTableSocket} from '@/components/poker/PokerTableSocket';
 import {ActionSkinButton} from '@/components/poker/ActionSkinButton';
@@ -35,7 +34,6 @@ export default function Home() {
    <div className="island-host" role="img" aria-label="안내인 홍"/>
    <section className="island-welcome">
     <div className="island-dialogue"><span>HONG · 홍</span><h1>어서오세요.<br/>어디로 모실까요?</h1></div>
-    <p className="mx-auto max-w-xl px-4 text-center text-xs text-amber-100/70">{DEALING_NOTICE}</p>
     <LobbyPanel onName={setName}/>
     <div className="island-modes">
      <button onClick={()=>setScreen('single')}><span>♠</span><strong>싱글 플레이</strong><small>AI 7명과 대전</small><em>SOLO TABLE</em></button>
