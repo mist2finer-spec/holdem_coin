@@ -1,6 +1,6 @@
 {
   "id": "gold-dress",
-  "version": "articulated-cutout-v1",
+  "version": "original-art-vardian-motion-v2",
   "spine": "4.2",
   "bones": 18,
   "parts": [
@@ -24,13 +24,13 @@
   "animations": [
     "stay1",
     "run1",
+    "dash",
+    "avoid1",
     "attack1",
     "attack2",
     "attack3",
     "attack4",
     "attack5",
-    "avoid1",
-    "dash",
     "skill1",
     "skill2",
     "skill3",
@@ -44,10 +44,36 @@
   ],
   "hitEvents": "contact; metadata only in web, HuntEngine owns damage",
   "alpha": "straight",
-  "sourceSha256": "e44439fc49f6ce162b36cd6b5b6b87cb45206722a25c92822fa20e73a5cc2f37",
+  "sourceSha256": "3c36710347a569a67e5c8659d133f06217403838bc0032eb9272cb239ad3cf8b",
+  "artProvenance": "original-art.json",
+  "motionProvenance": {
+    "source": "public/rpg/Hero_Axe01.json",
+    "sourceSha256": "665127ea81721e5aaa1d1dddb5de768432532efb423302b01b4ebf1da13a8cb2",
+    "sampleRate": 60,
+    "roles": {
+      "center": "center",
+      "torso": "bone2",
+      "head": "head",
+      "front-upper-arm": "Rarm",
+      "front-forearm": "Rarm2",
+      "back-upper-arm": "Larm",
+      "back-forearm": "Larm2",
+      "front-thigh": "Rleg",
+      "front-shin": "Rleg2",
+      "front-foot": "Rleg3",
+      "back-thigh": "Lleg",
+      "back-shin": "Lleg2",
+      "back-foot": "Lleg3",
+      "hair": "head"
+    },
+    "aliases": {
+      "damage1": "defeat1"
+    },
+    "method": "Original runtime-evaluated post-IK applied-local rotation deltas; center translation x2; hair follows 0.12 of head rotation. Native clips held to the existing combat clock, never changing impact timing."
+  },
   "limitations": [
     "Region attachments, not weighted meshes or IK.",
-    "Procedural common choreography; not recovered original animation.",
+    "Original Hero_Axe01 motion retargeted to common cutout proportions; not a native character rig.",
     "No native .spine editor project or Unity-generated .meta/material assets."
   ]
 }

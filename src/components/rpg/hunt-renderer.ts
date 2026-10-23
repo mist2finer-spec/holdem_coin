@@ -94,7 +94,7 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
 
    if(renderer){renderer.end();ctx.drawImage(layer,0,0,w,h);}
    canvas.dataset.character=characterId;
-   canvas.dataset.heroRig=characterId==='axe'?'legacy-spine':'articulated-cutout-v1';
+   canvas.dataset.heroRig=characterId==='axe'?'legacy-spine':'original-art-vardian-motion-v2';
    canvas.dataset.groundY=String(floor);
    const bottoms=[attachmentBottom(hero.skeleton,hero.groundSlots),...enemies.slice(0,game.enemies.length).map(e=>attachmentBottom(e.skeleton,e.groundSlots))];
    canvas.dataset.groundError=String(Math.max(...bottoms.filter((b):b is number=>b!==null).map(b=>Math.abs(b-floor))));

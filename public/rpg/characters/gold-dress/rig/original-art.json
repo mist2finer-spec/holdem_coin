@@ -1,0 +1,112 @@
+{
+  "source": "public/island/chr_1.jpg",
+  "sourceSha256": "3dc09007e259a0728e36a34e02ec06e1ba41e3a99ccdf7b29ed3a0ada5d07d70",
+  "referenceCanvas": [
+    2048,
+    1143
+  ],
+  "rectangles": {
+    "head": [
+      1031,
+      220,
+      1179,
+      379
+    ],
+    "torso": [
+      1171,
+      382,
+      1342,
+      578
+    ],
+    "pelvis": [
+      1120,
+      587,
+      1394,
+      971
+    ],
+    "arms": [
+      [
+        1073,
+        403,
+        1157,
+        544
+      ],
+      [
+        1357,
+        404,
+        1440,
+        544
+      ]
+    ],
+    "fore": [
+      [
+        1044,
+        547,
+        1132,
+        655
+      ],
+      [
+        1381,
+        547,
+        1470,
+        655
+      ]
+    ],
+    "hands": [
+      [
+        1043,
+        656,
+        1100,
+        739
+      ],
+      [
+        1413,
+        656,
+        1471,
+        737
+      ]
+    ],
+    "legs": [
+      [
+        1163,
+        729,
+        1247,
+        1016
+      ],
+      [
+        1275,
+        733,
+        1349,
+        1016
+      ]
+    ],
+    "feet": [
+      [
+        1154,
+        983,
+        1236,
+        1056
+      ],
+      [
+        1278,
+        983,
+        1359,
+        1056
+      ]
+    ],
+    "hair": [
+      1213,
+      220,
+      1350,
+      346
+    ]
+  },
+  "method": "Original third-column JPEG cutouts, background matte estimation, leg segments split at knee; no generative redraw.",
+  "supplements": [
+    "Gold dress hidden legs borrowed from chr_3 beneath full-length skirt."
+  ],
+  "limitations": [
+    "JPEG edge alpha is estimated, not original layered art.",
+    "Backside and occluded joint interiors are not recovered."
+  ]
+}

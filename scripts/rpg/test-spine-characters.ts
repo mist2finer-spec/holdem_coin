@@ -37,3 +37,18 @@ for(const c of COMBAT_CHARACTERS)test(`${c.id}: articulated Spine rig, motion, f
  // The active joints must actually change over the run cycle.
  const state=new AnimationState(new AnimationStateData(data));skeleton.setToSetupPose();state.setAnimation(0,'run1',true);state.update(.01);state.apply(skeleton);const first=skeleton.findBone('front-thigh')!.rotation;state.update(.24);state.apply(skeleton);assert.ok(Math.abs(skeleton.findBone('front-thigh')!.rotation-first)>10);
 });
+test('all appearances preserve supplied art provenance and use the same native motion retarget',()=>{
+ const motions=JSON.parse(fs.readFileSync('scripts/rpg/vardian-retarget.json','utf8'));
+ assert.equal(motions.source,'public/rpg/Hero_Axe01.json');
+ assert.equal(motions.sampleRate,60);
+ for(const c of COMBAT_CHARACTERS){
+  const root=`public/rpg/characters/${c.id}/rig`;
+  const art=JSON.parse(fs.readFileSync(`${root}/original-art.json`,'utf8'));
+  assert.equal(art.source,`public/island/chr_${c.portrait}.jpg`);
+  const raw=JSON.parse(fs.readFileSync(`${root}/character.json`,'utf8'));
+  assert.deepEqual(raw.animations,motions.animations);
+ }
+ assert.equal(COMBAT_CHARACTERS.find(c=>c.id==='boy-hoodie')!.portrait,2);
+ assert.equal(COMBAT_CHARACTERS.find(c=>c.id==='white-bob')!.portrait,3);
+ assert.equal(COMBAT_CHARACTERS.find(c=>c.id==='gold-dress')!.portrait,1);
+});

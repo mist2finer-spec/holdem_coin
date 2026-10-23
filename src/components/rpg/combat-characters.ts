@@ -1,8 +1,8 @@
 /** Visual-only roster: appearance never selects poker AI or changes combat balance. */
 export const COMBAT_CHARACTERS = [
- {id:'boy-hoodie',label:'갈색 후드',portrait:1},
- {id:'white-bob',label:'백발 붉은 드레스',portrait:2},
- {id:'gold-dress',label:'금빛 드레스',portrait:3},
+ {id:'boy-hoodie',label:'갈색 후드',portrait:2},
+ {id:'white-bob',label:'백발 붉은 드레스',portrait:3},
+ {id:'gold-dress',label:'금빛 드레스',portrait:1},
  {id:'black-suit',label:'안경 검은 정장',portrait:4},
  {id:'longhair-man',label:'장발 검은 셔츠',portrait:5},
  {id:'teal-twins',label:'청록 트윈테일',portrait:6},

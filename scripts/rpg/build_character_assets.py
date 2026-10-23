@@ -7,7 +7,7 @@ import argparse,hashlib,json,shutil
 from pathlib import Path
 from PIL import Image
 ROOT=Path(__file__).resolve().parents[2]
-ROSTER=[('boy-hoodie','갈색 후드',1),('white-bob','백발 붉은 드레스',2),('gold-dress','금빛 드레스',3),('black-suit','안경 검은 정장',4),('longhair-man','장발 검은 셔츠',5),('teal-twins','청록 트윈테일',6),('hong','홍',7),('pink-glasses','분홍머리 안경',8),('blonde-office','금발 오피스',9)]
+ROSTER=[('boy-hoodie','갈색 후드',2),('white-bob','백발 붉은 드레스',3),('gold-dress','금빛 드레스',1),('black-suit','안경 검은 정장',4),('longhair-man','장발 검은 셔츠',5),('teal-twins','청록 트윈테일',6),('hong','홍',7),('pink-glasses','분홍머리 안경',8),('blonde-office','금발 오피스',9)]
 NAMES=['idle-0','idle-1','idle-2','idle-3','run-0','run-1','run-2','run-3','windup','jab','cross','kick','finisher','dodge-start','dodge-roll','hurt']
 def digest(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 def grid_boundaries(mask,axis):

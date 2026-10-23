@@ -1,7 +1,7 @@
 {
   "id": "white-bob",
   "label": "백발 붉은 드레스",
-  "portraitId": 2,
+  "portraitId": 3,
   "format": "rgba-grid-v1",
   "sheet": "sheet.png",
   "source": "source.png",
@@ -297,5 +297,6 @@
   ],
   "rig": "rig/character.json",
   "rigAtlas": "rig/character.atlas.txt",
-  "renderMode": "spine-4.2-articulated"
+  "renderMode": "spine-4.2-articulated",
+  "legacyRasterOnly": true
 }

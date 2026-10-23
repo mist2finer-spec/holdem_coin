@@ -1,0 +1,110 @@
+{
+  "source": "public/island/chr_9.jpg",
+  "sourceSha256": "28bbafc212363bf0dc1dde3bc59ba9138a5a9c9980b1d5852eb004ad2e4d4e55",
+  "referenceCanvas": [
+    2048,
+    1143
+  ],
+  "rectangles": {
+    "head": [
+      1042,
+      95,
+      1176,
+      276
+    ],
+    "torso": [
+      1183,
+      299,
+      1342,
+      493
+    ],
+    "pelvis": [
+      1166,
+      514,
+      1351,
+      706
+    ],
+    "arms": [
+      [
+        1081,
+        343,
+        1154,
+        467
+      ],
+      [
+        1367,
+        343,
+        1441,
+        467
+      ]
+    ],
+    "fore": [
+      [
+        1064,
+        476,
+        1124,
+        612
+      ],
+      [
+        1401,
+        476,
+        1462,
+        611
+      ]
+    ],
+    "hands": [
+      [
+        1054,
+        616,
+        1116,
+        702
+      ],
+      [
+        1410,
+        615,
+        1471,
+        702
+      ]
+    ],
+    "legs": [
+      [
+        1162,
+        726,
+        1251,
+        1017
+      ],
+      [
+        1273,
+        730,
+        1354,
+        1017
+      ]
+    ],
+    "feet": [
+      [
+        1171,
+        1026,
+        1243,
+        1091
+      ],
+      [
+        1282,
+        1026,
+        1377,
+        1086
+      ]
+    ],
+    "hair": [
+      1345,
+      95,
+      1484,
+      276
+    ]
+  },
+  "method": "Original third-column JPEG cutouts, background matte estimation, leg segments split at knee; no generative redraw.",
+  "supplements": [],
+  "limitations": [
+    "JPEG edge alpha is estimated, not original layered art.",
+    "Backside and occluded joint interiors are not recovered."
+  ]
+}

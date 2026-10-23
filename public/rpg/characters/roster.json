@@ -2,7 +2,7 @@
   {
     "id": "boy-hoodie",
     "label": "갈색 후드",
-    "portraitId": 1,
+    "portraitId": 2,
     "manifest": "boy-hoodie/manifest.json",
     "sheet": "boy-hoodie/sheet.png",
     "rig": "boy-hoodie/rig/character.json",
@@ -11,7 +11,7 @@
   {
     "id": "white-bob",
     "label": "백발 붉은 드레스",
-    "portraitId": 2,
+    "portraitId": 3,
     "manifest": "white-bob/manifest.json",
     "sheet": "white-bob/sheet.png",
     "rig": "white-bob/rig/character.json",
@@ -20,7 +20,7 @@
   {
     "id": "gold-dress",
     "label": "금빛 드레스",
-    "portraitId": 3,
+    "portraitId": 1,
     "manifest": "gold-dress/manifest.json",
     "sheet": "gold-dress/sheet.png",
     "rig": "gold-dress/rig/character.json",

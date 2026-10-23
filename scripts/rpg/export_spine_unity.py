@@ -7,7 +7,7 @@ roster=json.loads((ROOT/'public/rpg/characters/roster.json').read_text())
 with zipfile.ZipFile(dest,'w',zipfile.ZIP_DEFLATED) as z:
  for c in roster:
   folder=ROOT/'public/rpg/characters'/c['id']/'rig'
-  for name in ['character.json','character.atlas.txt','character.png','rig-manifest.json']:
+  for name in ['character.json','character.atlas.txt','character.png','rig-manifest.json','original-art.json']:
    z.write(folder/name,f"Assets/IslandCombat/Characters/{c['id']}/{name}")
  for f in (ROOT/'unity/IslandCombat/Runtime').glob('*.cs'):z.write(f,'Assets/IslandCombat/Runtime/'+f.name)
  z.write(ROOT/'docs/rpg/UNITY_SPINE_IMPORT.md','README.md')

@@ -50,3 +50,8 @@ npm run build
 전투 출력은 래스터 포즈 시트 대신 rig/character.json + character.atlas + character.png의 18본/16파츠 Spine를 사용한다.
 기존 원본 시트와 144프레임은 참고/대체용으로 보존한다. 앞의 래스터 프레임 공유 제약은 신규 리그에 적용되지 않는다.
 신규 리그는 attack1..5 각각의 본 타임라인을 가진다. Unity 가져오기는 UNITY_SPINE_IMPORT.md 참조.
+
+## v2: 원본 외형 복구와 바르디안 모션
+
+현재 웹은 AI 재해석 파츠 대신 원본 chr JPG의 파츠 열을 사용한다. 이전 source.png/sheet.png는 레거시 참고 자료이며 게임에서는 사용하지 않는다.
+현재 진입점은 rig/character.json, 선택창은 rig/preview.png이다. 이동·회피·공격은 Hero_Axe01의 실제 모션을 리타게팅한다. 원본 외형 출처는 original-art.json, 모션 출처·보완 한계는 rig-manifest.json 및 UNITY_SPINE_IMPORT.md에 명시한다.
