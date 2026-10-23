@@ -17,6 +17,16 @@ test('one-hole-card flush displays four board cards and the correct hole highlig
  const v=bestFiveView(cards('A♠','3♦'),cards('K♠','Q♠','J♠','9♠','2♥'))!;
  assert.deepEqual(v.holeUsed,[true,false]);assert.equal(v.board.length,4);
 });
+test('hand 133: winning AK uses three board cards while losing 93 correctly uses four',()=>{
+ const board=cards('6♦','4♥','J♠','A♦','8♠');
+ const winner=bestFiveView(cards('A♣','K♦'),board)!;
+ const loser=bestFiveView(cards('9♦','3♦'),board)!;
+ assert.equal(winner.category,'원페어');assert.equal(loser.category,'하이카드');
+ assert.deepEqual(winner.holeUsed,[true,true]);assert.deepEqual(loser.holeUsed,[true,false]);
+ assert.equal(winner.board.length,3);assert.equal(loser.board.length,4);
+ assert.equal(winner.bestFive.length,5);assert.equal(loser.bestFive.length,5);
+ assert.ok(winner.score>loser.score);
+});
 test('showdown includes at most three ranked non-folded players and rejects hidden/duplicate cards',()=>{
  const b=cards('2♠','5♥','9♦','J♣','K♣');
  const players=[['A♠','A♥'],['Q♠','Q♥'],['T♠','T♥'],['8♠','8♥']].map((h,i)=>({seatId:i,name:'CPU'+i,holeCards:cards(...h),inHand:true,folded:false}));

@@ -1,5 +1,6 @@
 "use client";
 import {StreetBetting,recordedAction} from '@/lib/poker-betting';
+import {dealStartingHands} from '@/lib/poker-deal';
 import {soloBalance,saveSoloBalance} from "@/lib/lobby-client";
 import {OpponentModel} from "@/lib/poker-opponent-model";
 import {PublicLineTracker} from '@/lib/poker-public-line';
@@ -10,7 +11,6 @@ import { BluffAggression, successfulBluff, bluffTaunt } from "@/lib/poker-bluff"
 import { settleHand, bettingLocked, hasBettingOpponent, dealNextStreet, WinnerInfo } from "@/lib/poker-rules";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
-  makeDeck,
   Card,
   SeatState,
   Phase,
@@ -236,7 +236,7 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
     st.pot = 0;
     st.phase = "PREFLOP";
     st.lastActions = {};
-    st.deck = makeDeck();
+    st.deck = [];
     if (st.rebuyPending) {
       const mine = st.seats.find(s => s.isUser)!;
       mine.stack = DEFAULT_BUYIN;
@@ -317,12 +317,12 @@ export function usePokerTable({ userName, onToast }: UseTableOpts) {
 
     await sleep(500); if(!mountedRef.current)return;
 
-    // 홀카드
+    // Same public dealing profile as multiplayer; no outcome/runout filtering.
+    const dealt=dealStartingHands(st.seats.filter(s=>s.inHand),st.buttonSeat);
+    st.deck=dealt.deck;
     st.seats = st.seats.map((s) => {
       if (!s.inHand) return s;
-      const c1 = st.deck.pop()!;
-      const c2 = st.deck.pop()!;
-      return { ...s, holeCards: [c1, c2] };
+      return { ...s, holeCards: dealt.hands.get(s.seatId)! };
     });
     tick();
     await sleep(400); if(!mountedRef.current)return;

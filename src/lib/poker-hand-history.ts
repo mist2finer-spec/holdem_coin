@@ -1,4 +1,5 @@
 import type { HandResult } from './poker-rules';
+import type {DEALING_PROFILE} from './poker-deal';
 
 export interface HandPlayer {
   seatId: number; name: string; isBot: boolean; startingStack: number;
@@ -20,6 +21,7 @@ export interface HandAction {
 export interface HandHistory {
   schemaVersion: 1; id: string; sessionId: string; handNumber: number;
   rulesVersion: string; revision: string; startedAt: string; endedAt: string;
+  dealingProfile?: typeof DEALING_PROFILE;
   status: 'completed' | 'aborted'; error?: string;
   humans: number; cpus: number; smallBlind: number; bigBlind: number;
   buttonSeat: number; smallBlindSeat: number; bigBlindSeat: number;
@@ -34,6 +36,7 @@ export function publicHandHistory(h: HandHistory, viewerPlayerId?: string): Hand
   return {
     schemaVersion: h.schemaVersion, id: h.id, sessionId: h.sessionId, handNumber: h.handNumber,
     rulesVersion: h.rulesVersion, revision: h.revision, startedAt: h.startedAt, endedAt: h.endedAt,
+    dealingProfile:h.dealingProfile?{...h.dealingProfile}:undefined,
     status: h.status, humans: h.humans, cpus: h.cpus, smallBlind: h.smallBlind, bigBlind: h.bigBlind,
     buttonSeat: h.buttonSeat, smallBlindSeat: h.smallBlindSeat, bigBlindSeat: h.bigBlindSeat,
     players: h.players.map(p => ({seatId:p.seatId,name:p.name,isBot:p.isBot,startingStack:p.startingStack,
@@ -55,7 +58,8 @@ export function handHistoryCSV(hands: HandHistory[]) {
     'sequence','street','board','seatId','name','isBot','source','action','amount','paid',
     'callBefore','potBefore','potAfter','stackBefore','stackAfter','betBefore','betAfter',
     'raiseLevelBefore','activePlayersBefore','allInPlayersBefore','activePlayers','allInPlayers','decisionMs','startingStack','position',
-    'holeCards','contribution','payout','refund','netProfit','handRake'];
+    'holeCards','contribution','payout','refund','netProfit','handRake',
+    'dealingProfile','premiumRange','humanPremiumMultiplier','cpuPremiumMultiplier'];
   const cell=(v:unknown)=>{
     let s=String(v??'');
     if(/^[\s]*[=+@\-\t\r]/.test(s)&&typeof v==='string')s="'"+s;
@@ -73,7 +77,9 @@ export function handHistoryCSV(hands: HandHistory[]) {
       a.sequence,a.street,a.board.join(' '),a.seatId,a.name,a.isBot,a.source,a.action,a.amount,a.paid,
       a.callBefore,a.potBefore,a.potAfter,a.stackBefore,a.stackAfter,a.betBefore,a.betAfter,
       a.raiseLevelBefore,a.activePlayersBefore,a.allInPlayersBefore,a.activePlayers,a.allInPlayers,a.decisionMs,p?.startingStack,p?.position,
-      p?.holeCards.join(' '),r?.contribution,r?.payout,r?.refund,r?.netProfit,h.rake];
+      p?.holeCards.join(' '),r?.contribution,r?.payout,r?.refund,r?.netProfit,h.rake,
+      h.dealingProfile?.id,h.dealingProfile?.premiumRange,
+      h.dealingProfile?.humanPremiumMultiplier,h.dealingProfile?.cpuPremiumMultiplier];
     return values.map(cell).join(',');
   }));
   return '\uFEFF'+[columns.join(','),...rows].join('\r\n');

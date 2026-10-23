@@ -1,4 +1,5 @@
 import {StreetBetting,recordedAction} from '../../src/lib/poker-betting';
+import {dealStartingHands,DEALING_PROFILE} from '../../src/lib/poker-deal';
 import {lobbyLedger} from './lobby-ledger';
 import {OpponentModel} from "../../src/lib/poker-opponent-model.ts";
 import {minimumRaiseTo} from "../../src/lib/poker-sizing.ts";
@@ -24,7 +25,6 @@ import { Server, Socket } from "socket.io";
 import { SelfPlayTrainer } from "../../src/lib/self-play-trainer.ts";
 import { assignBotStrategy, RPG_BOT_POOL, BotPersona, getStrategyForHand, applyStrategyToPersona, getExitMessage } from "../../src/lib/personas.ts";
 import {
-  makeDeck,
   Card,
   ActionType,
   evaluateBestHand,
@@ -131,7 +131,7 @@ export class HybridHoldemRoom {
       position:(s.seatId===st.buttonSeat ? (s.seatId===st.smallBlindSeat?'BTN/SB':'BTN')
         :s.seatId===st.smallBlindSeat?'SB':s.seatId===st.bigBlindSeat?'BB':'OTHER') as HandHistory['players'][number]['position']}));
     this.currentHistory={schemaVersion:1,id:`${this.history.sessionId}:${st.handNumber}`,sessionId:this.history.sessionId,
-      handNumber:st.handNumber,rulesVersion:LIVE_RULES.version,revision:process.env.RENDER_GIT_COMMIT||'local',
+      handNumber:st.handNumber,rulesVersion:LIVE_RULES.version,dealingProfile:DEALING_PROFILE,revision:process.env.RENDER_GIT_COMMIT||'local',
       startedAt:new Date().toISOString(),endedAt:'',status:'completed',humans:players.filter(p=>!p.isBot).length,
       cpus:players.filter(p=>p.isBot).length,smallBlind:SMALL_BLIND,bigBlind:BIG_BLIND,
       buttonSeat:st.buttonSeat,smallBlindSeat:st.smallBlindSeat,bigBlindSeat:st.bigBlindSeat,
@@ -533,9 +533,6 @@ export class HybridHoldemRoom {
         };
       });
 
-      // 덱 생성
-      const deck = makeDeck();
-
       if (st.seats.filter(seat => seat.inHand).length < 2) {
         st.phase = "HAND_END";
         st.activeSeatId = -1;
@@ -552,10 +549,11 @@ export class HybridHoldemRoom {
       st.seats[positions.smallBlind] = postBlind(st.seats[positions.smallBlind], SMALL_BLIND);
       st.seats[positions.bigBlind] = postBlind(st.seats[positions.bigBlind], BIG_BLIND);
 
-      // 홀카드 딜
+      // Public paced-premium house rule; board uses the remaining shuffled deck.
+      const {deck,hands}=dealStartingHands(st.seats.filter(s=>s.inHand),st.buttonSeat);
       for (const seat of st.seats) {
         if (seat.inHand) {
-          seat.holeCards = [deck.pop()!, deck.pop()!];
+          seat.holeCards = hands.get(seat.seatId)!;
         }
       }
 

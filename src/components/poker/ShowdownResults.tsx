@@ -16,10 +16,10 @@ export function ShowdownResults({players,board,winnerInfo}:{players:ShowdownPlay
     <div className="showdown-person"><div className="showdown-avatar"><CharacterPortrait portrait={p.portrait} name={p.name}/></div><strong>{i+1}. {p.name}</strong></div>
     <div className="showdown-hand">
      <div className="showdown-card-groups">
-      <div><small>홀카드</small><div className="showdown-cards">{p.holeCards.map((c,j)=><PlayingCard key={j} card={c} size="xs" className={p.holeUsed[j]?'':'opacity-40'}/>)}</div></div>
-      <div><small>베스트 보드 {p.board.length}장</small><div className="showdown-cards">{p.board.map((c,j)=><PlayingCard key={j} card={c} size="xs"/>)}</div></div>
+      <div><small>홀카드 · {5-p.board.length}장 사용</small><div className="showdown-cards">{p.holeCards.map((c,j)=><PlayingCard key={j} card={c} size="xs" className={p.holeUsed[j]?'':'opacity-40'}/>)}</div></div>
+      <div><small>사용한 보드 {p.board.length}장</small><div className="showdown-cards">{p.board.map((c,j)=><PlayingCard key={j} card={c} size="xs"/>)}</div></div>
      </div>
-     <p>{won?'★ ':''}{p.category}{p.board.length>3&&<span> · 홀카드 {5-p.board.length}장 사용</span>}</p>
+     <p>{won?'★ ':''}{p.category}<span> · 홀카드 {5-p.board.length} + 보드 {p.board.length} = 5장</span></p>
     </div>
    </div>;
   })}

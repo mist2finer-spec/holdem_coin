@@ -42,12 +42,12 @@ export type Phase = "PREFLOP" | "FLOP" | "TURN" | "RIVER" | "SHOWDOWN";
 const SUITS: Suit[] = ["♠", "♥", "♦", "♣"];
 const RANKS: Rank[] = ["2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A"];
 
-export function makeDeck(): Card[] {
+export function makeDeck(random=Math.random): Card[] {
   const deck: Card[] = [];
   for (const s of SUITS) for (const r of RANKS) deck.push({ rank: r, suit: s });
   // Fisher-Yates 셔플
   for (let i = deck.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
+    const j = Math.floor(random() * (i + 1));
     [deck[i], deck[j]] = [deck[j], deck[i]];
   }
   return deck;

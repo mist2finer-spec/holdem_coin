@@ -9,6 +9,7 @@ import {publicHandHistory,handHistoryCSV,type HandHistory} from '../src/lib/poke
 import {mergeHandHistories} from '../src/lib/poker-hand-history-client.ts';
 import {decideLiveBot} from '../src/lib/poker-live.ts';
 import {SelfPlayTrainer} from '../src/lib/self-play-trainer.ts';
+import {DEALING_PROFILE} from '../src/lib/poker-deal';
 
 function fixture() {
   const room:any=new HybridHoldemRoom(false);room.sleep=async()=>{};
@@ -40,6 +41,7 @@ async function finished():Promise<HandHistory> {
 
 test('actual room records mixed human/CPU hand, paid raise chips, blinds and rake exactly once',async()=>{
   const h=await finished();
+  assert.deepEqual(h.dealingProfile,DEALING_PROFILE);
   assert.equal(h.humans,1);assert.equal(h.cpus,2);assert.equal(h.players.length,3);
   assert.ok(h.players.every(p=>p.startingStack===5000));
   assert.deepEqual(h.forcedBets.map(b=>b.paid),[100,200]);
@@ -54,6 +56,7 @@ test('actual room records mixed human/CPU hand, paid raise chips, blinds and rak
 
 test('public export masks folded cards, private identities and all CPU decision details',async()=>{
   const h=await finished(),visible=publicHandHistory(h);
+  assert.deepEqual(visible.dealingProfile,DEALING_PROFILE);
   assert.deepEqual(visible.players[0].holeCards,['??','??']);
   assert.deepEqual(visible.players[1].holeCards,['A♠','A♥']);
   const json=JSON.stringify(visible);
@@ -93,6 +96,7 @@ test('CSV includes settlements for players without actions and escapes formula n
   const h=publicHandHistory(await finished());h.players[0].name='=HYPERLINK("evil")';
   h.actions=h.actions.filter(a=>a.seatId!==0);
   const csv=handHistoryCSV([h]);assert.ok(csv.includes('"settlement"'));
+  assert.ok(csv.includes(DEALING_PROFILE.id));
   assert.ok(csv.includes("'=HYPERLINK"));assert.ok(!csv.includes('privateAudit'));
   assert.equal(csv.split('\r\n').length,1+h.actions.length+h.players.length);
 });
