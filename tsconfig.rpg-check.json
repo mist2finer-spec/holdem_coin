@@ -1,0 +1,1 @@
+{"extends":"./tsconfig.json","include":["src/components/rpg/**/*.ts","src/components/rpg/**/*.tsx","src/app/hunt/**/*.tsx"],"exclude":["node_modules","scripts","mini-services","examples"],"compilerOptions":{"incremental":false}}

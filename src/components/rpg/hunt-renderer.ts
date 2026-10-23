@@ -1,6 +1,7 @@
 import {CanvasTexture, SkeletonRenderer as CanvasRenderer} from '@esotericsoftware/spine-canvas';
 import {AnimationState, AnimationStateData, AtlasAttachmentLoader, GLTexture, Physics, SceneRenderer, Skeleton, SkeletonJson, Skin, TextureAtlas} from '@esotericsoftware/spine-webgl';
 import {HuntEngine} from './hunt-engine';
+import {combatCharacter,combatSpriteFrame,SPRITE_CELL,SPRITE_FOOT} from './combat-characters';
 import {huntViewport} from './hunt-layout';
 import {HUNT_VISUALS} from './hunt-collision';
 import {attachmentBottom,groundSkeleton} from './hunt-ground';
@@ -52,6 +53,17 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
  const fallback = renderer ? null : new CanvasRenderer(ctx);
  if(fallback) fallback.triangleRendering=true;
  canvas.dataset.renderer=renderer?'webgl':'canvas';
+ let selectedSprite:HTMLImageElement|null=null,selectedId='',spriteClock=0,spriteSerial=-1,selectionSerial=0;
+ const spriteCache=new Map<string,HTMLImageElement>();
+ const selectCharacter=async(id:string)=>{
+  const request=++selectionSerial;
+  if(id==='axe'){selectedSprite=null;selectedId='';return;}
+  if(!combatCharacter(id))throw Error('Unknown combat character');
+  const sprite=spriteCache.get(id)||await image(`${base}characters/${id}/sheet.png`,signal);
+  if(signal.aborted||request!==selectionSerial)return;
+  spriteCache.set(id,sprite);selectedSprite=sprite;selectedId=id;spriteClock=0;spriteSerial=-1;
+ };
+
  const animate = (a: typeof hero, anim: string, x: number, y: number, scale: number, direction: number, dt: number,serial=0,speed=1) => {
   const next = a.available.includes(anim) ? anim : a.available.find(n => /stay|idle/i.test(n)) || a.available[0];
   if ((a.animation !== next||a.serial!==serial) && next) { a.state.setAnimation(0, next, /stay|idle|run/i.test(next)); a.animation = next;a.serial=serial; }
@@ -59,6 +71,7 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
   a.state.update(dt*speed); a.state.apply(a.skeleton); a.skeleton.update(dt); a.skeleton.updateWorldTransform(Physics.update); groundSkeleton(a.skeleton,y,a.groundSlots); if(renderer) renderer.drawSkeleton(a.skeleton, true); else fallback!.draw(a.skeleton);
  };
  return {
+  selectCharacter,
   draw(game: HuntEngine, dt: number) {
    const w = canvas.clientWidth, h = canvas.clientHeight, dpr = Math.min(Math.max(devicePixelRatio || 1, renderer ? 1 : 2), 2);
    if (canvas.width !== Math.round(w*dpr) || canvas.height !== Math.round(h*dpr)) {canvas.width = Math.round(w*dpr); canvas.height = Math.round(h*dpr);}
@@ -86,10 +99,19 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
     const shake=hurt?Math.sin(game.elapsed*90)*2*zoom:0,x=screenX(mob.x),y=floor;
     animate(visual,anim,x+shake,y,HUNT_VISUALS.slimeScale*zoom,mob.x>game.x?-1:1,dt,mob.serial);
    }
-   animate(hero,game.action,screenX(game.x),floor,scale,game.facing,dt,game.actionSerial,game.animationSpeed);
+   if(!selectedSprite)animate(hero,game.action,screenX(game.x),floor,scale,game.facing,dt,game.actionSerial,game.animationSpeed);
+
    if(renderer){renderer.end();ctx.drawImage(layer,0,0,w,h);}
+   if(selectedSprite){
+    if(spriteSerial!==game.actionSerial){spriteClock=0;spriteSerial=game.actionSerial;}
+    spriteClock+=dt*game.animationSpeed;
+    const frame=combatSpriteFrame(game.action,spriteClock,game.combo.find(stage=>stage.animation===game.action)?.hitAt??.2),size=175*zoom;
+    ctx.save();ctx.translate(screenX(game.x),floor);ctx.scale(game.facing,1);ctx.imageSmoothingEnabled=false;
+    ctx.drawImage(selectedSprite,(frame%4)*SPRITE_CELL,Math.floor(frame/4)*SPRITE_CELL,SPRITE_CELL,SPRITE_CELL,-size*SPRITE_FOOT.x/SPRITE_CELL,-size*SPRITE_FOOT.y/SPRITE_CELL,size,size);ctx.restore();
+   }
+   canvas.dataset.character=selectedId||'axe';
    canvas.dataset.groundY=String(floor);
-   const bottoms=[attachmentBottom(hero.skeleton,hero.groundSlots),...enemies.slice(0,game.enemies.length).map(e=>attachmentBottom(e.skeleton,e.groundSlots))];
+   const bottoms=[selectedSprite?floor:attachmentBottom(hero.skeleton,hero.groundSlots),...enemies.slice(0,game.enemies.length).map(e=>attachmentBottom(e.skeleton,e.groundSlots))];
    canvas.dataset.groundError=String(Math.max(...bottoms.filter((b):b is number=>b!==null).map(b=>Math.abs(b-floor))));
    canvas.dataset.slimeScale=String(HUNT_VISUALS.slimeScale);
    // UI overlays are painted after the WebGL layer so health and damage remain visible.

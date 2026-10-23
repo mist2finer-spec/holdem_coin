@@ -1,6 +1,7 @@
 'use client';
 import {useEffect, useRef, useState} from 'react';
 import {HuntEngine} from './hunt-engine';
+import {COMBAT_CHARACTERS} from './combat-characters';
 import './hunt.css';
 const skills = [
  ['대지 균열','SkillIcon_GroundRift','1'],['암흑 구체','SkillIcon_DarkHole','2'],['서리 폭풍','SkillIcon_Blizzard3','3'],
@@ -11,13 +12,22 @@ const initial = () => ({hp:100,xp:0,coins:0,kills:0,auto:false,paused:false,cool
 export function HuntPrototype({onExit}: {onExit?:()=>void}) {
  const canvas = useRef<HTMLCanvasElement>(null), engine = useRef<HuntEngine|null>(null), direction = useRef(0), keys = useRef(new Set<string>()),attackPointer=useRef(false);
  const [view,setView] = useState(initial), [status,setStatus] = useState('loading'), [error,setError] = useState(''), [menu,setMenu] = useState(false), [dialog,setDialog] = useState<[string,string]|null>(null);
- const [stick,setStick] = useState(0);
+ const [stick,setStick] = useState(0),[character,setCharacter]=useState('axe'),[characterBusy,setCharacterBusy]=useState(false);
+ const rendererRef=useRef<Awaited<ReturnType<typeof import('./hunt-renderer').createHuntRenderer>>|null>(null);
+ const selectCharacter=async(id:string)=>{
+  if(!rendererRef.current)return;
+  setCharacterBusy(true);
+  try{await rendererRef.current.selectCharacter(id);setCharacter(id);setError('');}
+  catch(e){setError(`캐릭터 로드 실패: ${String(e)}`);}
+  finally{setCharacterBusy(false);}
+ };
+
  useEffect(()=>{
   const controller = new AbortController(); let frame=0; let renderer: Awaited<ReturnType<typeof import('./hunt-renderer').createHuntRenderer>>|undefined;
   const game = new HuntEngine();engine.current=game;let last=0,lastUI=0;
   const reset=()=>{keys.current.clear();direction.current=0;attackPointer.current=false;game.clearInput();setStick(0);};
   const keydown=(e:KeyboardEvent)=>{
-   if (e.target instanceof HTMLElement && /INPUT|TEXTAREA/.test(e.target.tagName)) return;
+   if (e.target instanceof HTMLElement && /INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
    if(['ArrowLeft','ArrowRight',' ','a','d','q','e','1','2','3','4','5','6'].includes(e.key)){e.preventDefault();keys.current.add(e.key);}
    if(e.repeat)return;
    if(e.key===' ')game.attack();else if(/^[1-6]$/.test(e.key))game.attack(Number(e.key)-1);else if(e.key==='q'||e.key==='e')game.dodge(e.key==='q'?-1:1);
@@ -26,7 +36,7 @@ export function HuntPrototype({onExit}: {onExit?:()=>void}) {
   const visibility=()=>{reset();last=0;};
   window.addEventListener('keydown',keydown);window.addEventListener('keyup',keyup);window.addEventListener('blur',reset);document.addEventListener('visibilitychange',visibility);
   import('./hunt-renderer').then(m=>m.createHuntRenderer(canvas.current!,controller.signal)).then(r=>{
-   if(controller.signal.aborted){r.dispose();return;}renderer=r;setStatus('ready');
+   if(controller.signal.aborted){r.dispose();return;}renderer=r;rendererRef.current=r;setStatus('ready');
    const loop=(now:number)=>{
     if(document.hidden){last=0;frame=requestAnimationFrame(loop);return;}
     const dt=last?Math.min((now-last)/1000,.05):0;last=now;
@@ -37,7 +47,7 @@ export function HuntPrototype({onExit}: {onExit?:()=>void}) {
     frame=requestAnimationFrame(loop);
    };frame=requestAnimationFrame(loop);
   }).catch(e=>{if(!controller.signal.aborted){setStatus('error');setError(String(e));}});
-  return()=>{controller.abort();cancelAnimationFrame(frame);renderer?.dispose();engine.current=null;window.removeEventListener('keydown',keydown);window.removeEventListener('keyup',keyup);window.removeEventListener('blur',reset);document.removeEventListener('visibilitychange',visibility);};
+  return()=>{controller.abort();cancelAnimationFrame(frame);renderer?.dispose();rendererRef.current=null;engine.current=null;window.removeEventListener('keydown',keydown);window.removeEventListener('keyup',keyup);window.removeEventListener('blur',reset);document.removeEventListener('visibilitychange',visibility);};
  },[]);
  const active=status==='ready'&&!view.paused;
  const stickMove=(e:React.PointerEvent<HTMLDivElement>)=>{
@@ -52,7 +62,7 @@ export function HuntPrototype({onExit}: {onExit?:()=>void}) {
   </header>
   <section className="hunt-stage" aria-label="달빛 숲 사냥터">
    <canvas ref={canvas} aria-label="이동하는 전사와 최대 7마리 슬라임" data-status={status} data-position={view.x} data-action={view.action}/>
-   <div className="hunt-identity"><img src="/rpg/Portrait_Hero_005.png" alt="전사 초상화"/><div><small>Lv. 1 · 견습 전사</small><strong>숲의 여행자</strong><span>⚔ 전투력 1,250</span></div></div>
+   <div className="hunt-identity"><img src={character==='axe'?'/rpg/Portrait_Hero_005.png':`/rpg/characters/${character}/portrait.png`} alt="선택한 캐릭터 초상화"/><div><small>Lv. 1 · 견습 전사</small><strong>{COMBAT_CHARACTERS.find(c=>c.id===character)?.label||'숲의 여행자'}</strong><span>⚔ 전투력 1,250</span></div></div>
    <div className="hunt-location"><small>CHAPTER 01</small><h1>달빛 숲 <span>1–1</span></h1><p><i/>{view.paused?'휴식 중':view.auto?'자동 사냥 중':'자유 탐험'} · 처치 {view.kills}</p></div>
    <button className="hunt-menu-toggle" aria-label="메뉴" aria-expanded={menu} onClick={()=>setMenu(!menu)}>☰</button>
    {menu&&<nav className="hunt-drawer" aria-label="사냥 메뉴">{menus.map(([title,body])=><button key={title} onClick={()=>{setDialog([title,body]);setMenu(false);}}>{title}</button>)}</nav>}
@@ -61,6 +71,8 @@ export function HuntPrototype({onExit}: {onExit?:()=>void}) {
    <div className="hunt-stage-caption"><span>✦ 시작의 숲</span><small>최대 7마리 · 탐험하며 슬라임을 처치해 보세요</small></div>
   </section>
   <section className="hunt-console" aria-label="전투 조작">
+   <label className="hunt-character-select">캐릭터 <select aria-label="전투 캐릭터" value={character} disabled={status!=='ready'||characterBusy} onChange={e=>void selectCharacter(e.target.value)}><option value="axe">기존 도끼 전사</option>{COMBAT_CHARACTERS.map(c=><option key={c.id} value={c.id}>{c.label}</option>)}</select>{characterBusy&&<small role="status">불러오는 중…</small>}</label>
+   {error&&status==='ready'&&<p role="alert">{error}</p>}
    <div className="hunt-vitals"><div><span>HP</span><meter min="0" max="100" value={view.hp}/><small>{view.hp}/100</small></div><div><span>EXP</span><progress max="100" value={view.xp%100}/><small>{view.xp%100}%</small></div></div>
    <div className="hunt-skill-row">{skills.map(([name,icon,key],i)=><button className="hunt-skill" key={name} aria-label={`${name} 스킬`} disabled={!active||view.cooldowns[i]>0} onClick={()=>engine.current?.attack(i)}><img src={`/rpg/${icon}.png`} alt=""/><span>{view.cooldowns[i]>0?Math.ceil(view.cooldowns[i]):key}</span><small>{name}</small></button>)}</div>
    <div className="hunt-mode-row"><span>TEST MODE · 진행은 저장되지 않습니다</span><button disabled={status!=='ready'} onClick={()=>{if(engine.current){engine.current.paused=!engine.current.paused;engine.current.clearInput();keys.current.clear();attackPointer.current=false;direction.current=0;setStick(0);}}}>{view.paused?'▶ 계속':'Ⅱ 휴식'}</button><button className={view.auto?'is-on':''} disabled={status!=='ready'} aria-pressed={view.auto} onClick={()=>engine.current?.setAuto(!engine.current.auto)}>AUTO {view.auto?'ON':'OFF'}</button></div>

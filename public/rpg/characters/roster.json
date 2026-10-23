@@ -1,0 +1,65 @@
+[
+  {
+    "id": "boy-hoodie",
+    "label": "갈색 후드",
+    "portraitId": 1,
+    "manifest": "boy-hoodie/manifest.json",
+    "sheet": "boy-hoodie/sheet.png"
+  },
+  {
+    "id": "white-bob",
+    "label": "백발 붉은 드레스",
+    "portraitId": 2,
+    "manifest": "white-bob/manifest.json",
+    "sheet": "white-bob/sheet.png"
+  },
+  {
+    "id": "gold-dress",
+    "label": "금빛 드레스",
+    "portraitId": 3,
+    "manifest": "gold-dress/manifest.json",
+    "sheet": "gold-dress/sheet.png"
+  },
+  {
+    "id": "black-suit",
+    "label": "안경 검은 정장",
+    "portraitId": 4,
+    "manifest": "black-suit/manifest.json",
+    "sheet": "black-suit/sheet.png"
+  },
+  {
+    "id": "longhair-man",
+    "label": "장발 검은 셔츠",
+    "portraitId": 5,
+    "manifest": "longhair-man/manifest.json",
+    "sheet": "longhair-man/sheet.png"
+  },
+  {
+    "id": "teal-twins",
+    "label": "청록 트윈테일",
+    "portraitId": 6,
+    "manifest": "teal-twins/manifest.json",
+    "sheet": "teal-twins/sheet.png"
+  },
+  {
+    "id": "hong",
+    "label": "홍",
+    "portraitId": 7,
+    "manifest": "hong/manifest.json",
+    "sheet": "hong/sheet.png"
+  },
+  {
+    "id": "pink-glasses",
+    "label": "분홍머리 안경",
+    "portraitId": 8,
+    "manifest": "pink-glasses/manifest.json",
+    "sheet": "pink-glasses/sheet.png"
+  },
+  {
+    "id": "blonde-office",
+    "label": "금발 오피스",
+    "portraitId": 9,
+    "manifest": "blonde-office/manifest.json",
+    "sheet": "blonde-office/sheet.png"
+  }
+]

@@ -3,3 +3,5 @@
 @media(max-height:650px) and (min-width:700px){.hunt-shell{min-height:430px}.hunt-console{padding-top:7px}.hunt-vitals{margin-bottom:6px}.hunt-skill-row{max-width:450px;gap:15px;margin-bottom:9px}.hunt-skill{max-height:45px}.hunt-controls{height:75px}.hunt-mode-row{margin-top:18px}.hunt-header{height:46px}.hunt-footer{height:33px}.hunt-stage{min-height:150px}.hunt-identity{top:12px}.hunt-location{top:10px}}
 
 @media(max-width:360px){.hunt-controls{gap:10px}.hunt-joystick{width:95px}.hunt-mode-row>span{max-width:125px}}
+
+.hunt-character-select{display:flex;align-items:center;gap:8px;font-size:12px;color:#e5d3a1;padding:4px 0 8px}.hunt-character-select select{min-width:0;max-width:220px;background:#122b2c;color:#f3e3b7;border:1px solid #8b794e;border-radius:6px;padding:5px 8px}

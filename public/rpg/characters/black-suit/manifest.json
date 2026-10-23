@@ -1,0 +1,298 @@
+{
+  "id": "black-suit",
+  "label": "안경 검은 정장",
+  "portraitId": 4,
+  "format": "rgba-grid-v1",
+  "sheet": "sheet.png",
+  "source": "source.png",
+  "cell": [
+    256,
+    256
+  ],
+  "grid": [
+    4,
+    4
+  ],
+  "facing": "right",
+  "footAnchor": [
+    128,
+    224
+  ],
+  "frames": [
+    {
+      "index": 0,
+      "name": "idle-0",
+      "rect": [
+        0,
+        0,
+        256,
+        256
+      ],
+      "anchor": [
+        128,
+        224
+      ]
+    },
+    {
+      "index": 1,
+      "name": "idle-1",
+      "rect": [
+        256,
+        0,
+        256,
+        256
+      ],
+      "anchor": [
+        128,
+        224
+      ]
+    },
+    {
+      "index": 2,
+      "name": "idle-2",
+      "rect": [
+        512,
+        0,
+        256,
+        256
+      ],
+      "anchor": [
+        128,
+        224
+      ]
+    },
+    {
+      "index": 3,
+      "name": "idle-3",
+      "rect": [
+        768,
+        0,
+        256,
+        256
+      ],
+      "anchor": [
+        128,
+        224
+      ]
+    },
+    {
+      "index": 4,
+      "name": "run-0",
+      "rect": [
+        0,
+        256,
+        256,
+        256
+      ],
+      "anchor": [
+        128,
+        224
+      ]
+    },
+    {
+      "index": 5,
+      "name": "run-1",
+      "rect": [
+        256,
+        256,
+        256,
+        256
+      ],
+      "anchor": [
+        128,
+        224
+      ]
+    },
+    {
+      "index": 6,
+      "name": "run-2",
+      "rect": [
+        512,
+        256,
+        256,
+        256
+      ],
+      "anchor": [
+        128,
+        224
+      ]
+    },
+    {
+      "index": 7,
+      "name": "run-3",
+      "rect": [
+        768,
+        256,
+        256,
+        256
+      ],
+      "anchor": [
+        128,
+        224
+      ]
+    },
+    {
+      "index": 8,
+      "name": "windup",
+      "rect": [
+        0,
+        512,
+        256,
+        256
+      ],
+      "anchor": [
+        128,
+        224
+      ]
+    },
+    {
+      "index": 9,
+      "name": "jab",
+      "rect": [
+        256,
+        512,
+        256,
+        256
+      ],
+      "anchor": [
+        128,
+        224
+      ]
+    },
+    {
+      "index": 10,
+      "name": "cross",
+      "rect": [
+        512,
+        512,
+        256,
+        256
+      ],
+      "anchor": [
+        128,
+        224
+      ]
+    },
+    {
+      "index": 11,
+      "name": "kick",
+      "rect": [
+        768,
+        512,
+        256,
+        256
+      ],
+      "anchor": [
+        128,
+        224
+      ]
+    },
+    {
+      "index": 12,
+      "name": "finisher",
+      "rect": [
+        0,
+        768,
+        256,
+        256
+      ],
+      "anchor": [
+        128,
+        224
+      ]
+    },
+    {
+      "index": 13,
+      "name": "dodge-start",
+      "rect": [
+        256,
+        768,
+        256,
+        256
+      ],
+      "anchor": [
+        128,
+        224
+      ]
+    },
+    {
+      "index": 14,
+      "name": "dodge-roll",
+      "rect": [
+        512,
+        768,
+        256,
+        256
+      ],
+      "anchor": [
+        128,
+        224
+      ]
+    },
+    {
+      "index": 15,
+      "name": "hurt",
+      "rect": [
+        768,
+        768,
+        256,
+        256
+      ],
+      "anchor": [
+        128,
+        224
+      ]
+    }
+  ],
+  "animations": {
+    "idle": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "run": [
+      4,
+      5,
+      6,
+      7
+    ],
+    "attack1": [
+      8,
+      9
+    ],
+    "attack2": [
+      8,
+      10
+    ],
+    "attack3": [
+      8,
+      11
+    ],
+    "attack4": [
+      8,
+      12
+    ],
+    "attack5": [
+      8,
+      12
+    ],
+    "avoid1": [
+      13,
+      14
+    ],
+    "damage1": [
+      15
+    ]
+  },
+  "sourceReference": "/island/chr_4.jpg",
+  "sourceSha256": "fcd1984af4fa868e2dc3b820d680a6ef2ff537faeeb743e7b7dc6a29eb516350",
+  "sheetSha256": "3022c55822acb0d3847ce11f9062fb2b65e1467c52733ada1c3d1610213097f1",
+  "generator": "built-in image_gen",
+  "status": "prototype-generated-poses",
+  "limitations": [
+    "Five attack mappings use four distinct contact poses.",
+    "Not a Spine rig or a recovered original animation.",
+    "Skills reuse melee poses; dedicated skill effects and death poses are not supplied."
+  ]
+}
