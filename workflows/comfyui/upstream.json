@@ -1,0 +1,7 @@
+{
+  "repository": "https://github.com/comfyanonymous/ComfyUI.git",
+  "canonicalRepository": "https://github.com/Comfy-Org/ComfyUI",
+  "commit": "8baf68d53d751216dd95d4f678bf109d82db3442",
+  "license": "GPL-3.0",
+  "role": "external authoring tool; not bundled into game server"
+}

@@ -74,3 +74,8 @@ mini-services/poker-server/data/
 
 # Local extracted native combat evidence
 /data/rpg-reference/
+
+# External ComfyUI checkout, models and unapproved generated candidates
+/.tools/
+/data/comfyui/
+/scripts/rpg/__pycache__/
