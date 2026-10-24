@@ -7,7 +7,7 @@ import {HuntEngine} from '../../src/components/rpg/hunt-engine';
 import {HUNT_RULES} from '../../src/components/rpg/combat-rules';
 import {huntLoadout} from '../../src/components/rpg/hunt-loadouts';
 import {COMBAT_CHARACTERS} from '../../src/components/rpg/combat-characters';
-import {curveValue,awardHuntKill,newHuntProgress,upgradeHunt,DEFAULT_HUNT_BALANCE as balance} from '../../src/components/rpg/hunt-progression';
+import {curveValue,awardHuntKill,newHuntProgress,upgradeHunt,HUNT_QUESTS,DEFAULT_HUNT_BALANCE as balance} from '../../src/components/rpg/hunt-progression';
 import {RpgStore} from '../../src/lib/rpg-store';
 import {RpgService,parseHuntInput} from '../../src/lib/rpg-service';
 const input={move:0,attack:false,auto:false};
@@ -66,4 +66,21 @@ test('server upgrade charges once, raises combat stats and survives re-entry',()
 test('respawn cannot introduce a fourth blocker or occupy the origin during a dodge',()=>{
  const g=new HuntEngine(HUNT_RULES.combo,2,{hostile:true});g.x=500;g.enemies[0].x=540;g.enemies[1].x=500;g.enemies[1].hp=0;g.enemies[1].respawnAt=0;
  g.dodge(1);advance(g,.4);assert.equal(g.enemies[1].hp,0);advance(g,.3);assert.ok(g.enemies.every(e=>e.hp<=0||Math.abs(e.x-g.x)>=36-1e-6));
+});
+test('legacy guest rows gain inventory fields without resetting earned balances',()=>{
+ const store=new RpgStore(':memory:');store.load('old');store.db.prepare('UPDATE rpg_players SET progress=? WHERE id=?').run(JSON.stringify({level:2,xp:9,gold:75,soulGem:6,kills:3,weaponLevel:2,armorLevel:1}),'old');
+ const saved=store.load('old');assert.equal(saved.progress.gold,75);assert.equal(saved.progress.level,2);assert.equal(saved.progress.potions,3);assert.equal(saved.progress.questTier,0);store.close();
+});
+test('quest claims and potion purchases consume once, survive reentry and reject unearned rewards',()=>{
+ const store=new RpgStore(':memory:'),saved=store.load('g');saved.progress.kills=HUNT_QUESTS[0].kills;saved.progress.gold=0;store.save('g',saved.progress,saved.revision);
+ const service=new RpgService(store,balance,()=>0),v=service.start('g','hong');
+ const q=service.command('g',v.id,1,input,'quest');assert.equal(q.progress.questTier,1);assert.equal(q.progress.gold,50);
+ assert.deepEqual(service.command('g',v.id,1,input,'quest'),q);assert.throws(()=>service.command('g',v.id,2,input,'quest'));
+ const purchase=service.command('g',v.id,2,input,'buy-potion');assert.equal(purchase.progress.gold,0);assert.equal(purchase.progress.potions,4);
+ assert.deepEqual(service.command('g',v.id,2,input,'buy-potion'),purchase);assert.equal(service.start('g','hong').progress.potions,4);store.close();
+});
+test('healing potion cannot resurrect, exceed max HP, or bypass cooldown',()=>{
+ const g=new HuntEngine(HUNT_RULES.combo,1,{hostile:true});assert.throws(()=>g.usePotion());g.hp=30;g.usePotion();assert.equal(g.hp,70);assert.equal(g.progress.potions,2);
+ assert.throws(()=>g.usePotion());g.enemyHP=0;g.respawnAt=Infinity;advance(g,2.1);g.usePotion();assert.equal(g.hp,100);assert.equal(g.progress.potions,1);
+ g.hp=0;assert.throws(()=>g.usePotion());assert.equal(g.progress.potions,1);
 });

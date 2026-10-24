@@ -11,7 +11,7 @@ export function HuntEntry({onExit}:{onExit?:()=>void}){
  const current=COMBAT_CHARACTERS.find(c=>c.id===selected);
  return <main className="hunt-selection">
   <header><a href="/" onClick={e=>{if(onExit){e.preventDefault();onExit();}}}>← 처음으로</a><span>ISLAND · ADVENTURE</span></header>
-  <section className="hunt-selection-heading"><small>달빛 숲으로</small><h1>함께할 캐릭터를 선택하세요</h1><p>마음에 드는 여행자와 사냥을 시작하세요.</p></section>
+  <section className="hunt-selection-heading"><small>달빛 숲으로</small><h1>함께할 캐릭터를 선택하세요</h1><p>사냥으로 성장하고 장비를 강화하세요. 가방과 사냥 의뢰도 이용할 수 있습니다.</p></section>
   <div className="hunt-roster" role="group" aria-label="사냥 캐릭터 선택">
    {COMBAT_CHARACTERS.map(c=><button type="button" className={`hunt-roster-card ${selected===c.id?'is-selected':''}`} key={c.id} aria-pressed={selected===c.id} aria-label={`${c.label} 선택`} onClick={()=>setSelected(c.id)}>
     <img src={`/rpg/characters/${c.id}/illustration.jpg`} alt="" draggable={false}/><strong>{c.label}</strong><span>{selected===c.id?'선택됨':'선택'}</span>

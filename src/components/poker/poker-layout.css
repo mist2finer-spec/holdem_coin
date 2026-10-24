@@ -61,6 +61,7 @@
 .showdown-person strong{font-size:10px;max-width:64px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .showdown-hand{min-width:0}.showdown-card-groups{display:flex;gap:12px}.showdown-card-groups small{display:block;font-size:9px;color:#a7c5b7;margin-bottom:3px}
 .showdown-cards{display:flex;gap:3px}.showdown-cards>div{width:31px;height:44px;flex-shrink:0}
+.showdown-community>.showdown-street-start{margin-left:3px}
 .showdown-hand p{font-size:11px;font-weight:800;margin-top:4px}.showdown-hand p span{font-size:9px;font-weight:400}
 .showdown-awards{border:1px solid #eabf4d;background:#c99019;color:#201b09;border-radius:8px;text-align:center;padding:8px}
 .showdown-awards strong{font-size:13px}.showdown-awards p{font-size:11px}.showdown-awards small{font-size:9px}

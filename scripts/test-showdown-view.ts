@@ -26,6 +26,15 @@ test('hand 133: winning AK uses three board cards while losing 93 correctly uses
  assert.equal(winner.board.length,3);assert.equal(loser.board.length,4);
  assert.equal(winner.bestFive.length,5);assert.equal(loser.bestFive.length,5);
  assert.ok(winner.score>loser.score);
+ assert.deepEqual(winner.communityCards,board);assert.deepEqual(loser.communityCards,board);
+ assert.equal(winner.boardUsed.filter(Boolean).length,3);assert.equal(loser.boardUsed.filter(Boolean).length,4);
+});
+test('all five community cards retain flop-turn-river order and unused cards stay separately marked',()=>{
+ const hole=cards('A♠','3♦'),board=cards('9♠','K♠','2♥','Q♠','J♠'),before=JSON.stringify(board);
+ const v=bestFiveView(hole,board)!;assert.deepEqual(v.communityCards,board);
+ assert.deepEqual(v.boardUsed,[true,true,false,true,true]);assert.deepEqual(v.holeUsed,[true,false]);
+ assert.equal(v.boardUsed.filter(Boolean).length+v.holeUsed.filter(Boolean).length,5);
+ assert.equal(JSON.stringify(board),before);
 });
 test('showdown includes at most three ranked non-folded players and rejects hidden/duplicate cards',()=>{
  const b=cards('2♠','5♥','9♦','J♣','K♣');

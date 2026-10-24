@@ -12,7 +12,7 @@ export function bestFiveView(hole:Card[],board:Card[]) {
   if(score>best||score===best&&indices.filter(i=>i<2).length>chosen.filter(i=>i<2).length){best=score;chosen=indices;}
  }
  return {score:best,category:scoreToCategoryName(best),holeUsed:hole.map((_,i)=>chosen.includes(i)),
-  board:chosen.filter(i=>i>=2).map(i=>all[i]),bestFive:chosen.map(i=>all[i])};
+  board:chosen.filter(i=>i>=2).map(i=>all[i]),communityCards:[...board],boardUsed:board.map((_,i)=>chosen.includes(i+2)),bestFive:chosen.map(i=>all[i])};
 }
 export function topShowdownPlayers(players:ShowdownPlayer[],board:Card[]) {
  return players.filter(p=>p.inHand&&!p.folded).flatMap(p=>{const view=bestFiveView(p.holeCards,board);return view?[{...p,...view}]:[];})

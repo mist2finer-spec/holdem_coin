@@ -34,7 +34,6 @@ function HomeContent() {
     <ActionSkinButton skin="red" onClick={()=>go('lobby')}>주점 입장</ActionSkinButton>
    </div>
   </div>
-  {repair&&<div className="island-modal" onClick={()=>setRepair(false)}><section role="dialog" aria-modal="true" aria-labelledby="hunting-title" onClick={e=>e.stopPropagation()}><h2 id="hunting-title">사냥하기 · 준비 중</h2><p>RPG 사냥 콘텐츠를 준비하고 있습니다.</p><button autoFocus onClick={()=>setRepair(false)}>확인</button></section></div>}
  </main>;
  return <main className="island-lobby">
   <button className="island-back" onClick={()=>go('start')}>← 처음으로</button>

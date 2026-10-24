@@ -12,6 +12,9 @@ export class RpgStore{
    this.db.prepare('INSERT OR IGNORE INTO rpg_players(id,progress,updated_at) VALUES(?,?,?)').run(id,JSON.stringify(newHuntProgress()),Date.now());
    row=this.db.prepare('SELECT progress,revision FROM rpg_players WHERE id=?').get(id) as {progress:string;revision:number};}
   const progress=JSON.parse(row.progress) as HuntProgress;
+  // Additive migration preserves balances in existing guest JSON rows.
+  if(progress.potions===undefined)progress.potions=3;
+  if(progress.questTier===undefined)progress.questTier=0;
   for(const value of Object.values(progress))if(!Number.isSafeInteger(value)||value<0||value>1e12)throw Error('Invalid saved progress');
   if(!progress.level||!progress.weaponLevel||!progress.armorLevel)throw Error('Invalid saved levels');
   return {progress,revision:row.revision};

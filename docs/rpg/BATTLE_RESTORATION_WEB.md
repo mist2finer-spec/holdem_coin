@@ -91,3 +91,15 @@ for hostile damage/death/revival, training loadouts, native curve samples,
 SQLite reopen/CAS, guest separation, replay/time manipulation and input rejection.
 Original monster AI, damage formula, eight dedicated character motion sets and
 login/account migration remain future restoration tasks, not completed claims.
+
+## Inventory and hunt requests
+
+The battle footer now opens a real bag and three cumulative kill requests
+(5/20/50). Claims require server-recorded kills, advance a saved quest index and
+cannot be paid twice on request replay. The bag can buy a healing potion for
+50 prototype gold, up to 99 held; using one restores 40% max HP with a two-second
+battle cooldown. It cannot revive or heal beyond max HP. Three initial training
+potions are granted to new guests. Existing saved JSON rows add potion/quest
+fields without resetting currency, levels or equipment. These item prices,
+quest targets/rewards and healing values are web design settings, not recovered
+original loot rules. The full RPG suite now includes 44 tests.

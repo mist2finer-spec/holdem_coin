@@ -1,7 +1,7 @@
 import {randomUUID} from 'node:crypto';
 import {HuntEngine,type HuntEnemy} from '../components/rpg/hunt-engine';
 import {huntLoadout} from '../components/rpg/hunt-loadouts';
-import {curveValue,upgradeHunt,type HuntBalance,type HuntProgress} from '../components/rpg/hunt-progression';
+import {curveValue,upgradeHunt,buyHuntPotion,claimHuntQuest,type HuntBalance,type HuntProgress} from '../components/rpg/hunt-progression';
 import {RpgStore} from './rpg-store';
 export type HuntInput={move:number;attack:boolean;auto:boolean;basic?:boolean;skill?:number;dodge?:number;parry?:boolean};
 export function parseHuntInput(raw:unknown):HuntInput{
@@ -12,7 +12,7 @@ export function parseHuntInput(raw:unknown):HuntInput{
  return {move:x.move,attack:x.attack,auto:x.auto,basic:x.basic as boolean|undefined,skill:x.skill as number|undefined,dodge:x.dodge as number|undefined,parry:x.parry as boolean|undefined};
 }
 export type BattleView={id:string;sequence:number;character:string;hp:number;maxHP:number;x:number;elapsed:number;action:string;actionSerial:number;animationSpeed:number;facing:number;
- enemies:HuntEnemy[];cooldowns:number[];auto:boolean;progress:HuntProgress;xpRequired:number;weaponCost:number;armorCost:number;loadout:string;dead:boolean;reviveReady:boolean;heroHitUntil:number;lastHeroDamage:number;source:string};
+ enemies:HuntEnemy[];cooldowns:number[];auto:boolean;progress:HuntProgress;xpRequired:number;weaponCost:number;armorCost:number;loadout:string;dead:boolean;reviveReady:boolean;potionReady:boolean;heroHitUntil:number;lastHeroDamage:number;source:string};
 type Battle={id:string;character:string;engine:HuntEngine;revision:number;last:number;input:HuntInput;sequence:number;cached:BattleView;seen:number};
 export class RpgService{
  private sessions=new Map<string,Battle>();
@@ -30,13 +30,14 @@ export class RpgService{
   return {id:b.id,sequence:b.sequence,character:b.character,hp:g.hp,maxHP:g.maxHP,x:g.x,elapsed:g.elapsed,action:g.action,actionSerial:g.actionSerial,animationSpeed:g.animationSpeed,facing:g.facing,
    enemies:g.enemies.map(e=>({...e})),cooldowns:[...g.cooldowns],auto:g.auto,progress:{...g.progress},xpRequired:g.progress.level>=this.balance.maxLevel?0:curveValue(this.balance.team,g.progress.level),
    weaponCost:curveValue(this.balance.weapon,g.progress.weaponLevel),armorCost:curveValue(this.balance.armor,g.progress.armorLevel),loadout:huntLoadout(b.character).name,
-   dead:g.hp<=0,reviveReady:g.hp<=0&&g.elapsed-g.deadAt>=2,heroHitUntil:g.heroHitUntil,lastHeroDamage:g.lastHeroDamage,source:this.balance.source};}
- command(account:string,id:string,sequence:number,input:HuntInput,action:'tick'|'revive'|'weapon'|'armor'='tick'){
+   dead:g.hp<=0,reviveReady:g.hp<=0&&g.elapsed-g.deadAt>=2,potionReady:g.hp>0&&g.hp<g.maxHP&&g.elapsed>=g.potionReady&&g.progress.potions>0,heroHitUntil:g.heroHitUntil,lastHeroDamage:g.lastHeroDamage,source:this.balance.source};}
+ command(account:string,id:string,sequence:number,input:HuntInput,action:'tick'|'revive'|'weapon'|'armor'|'potion'|'buy-potion'|'quest'='tick'){
   const b=this.sessions.get(account);if(!b||b.id!==id)throw Error('사냥 세션이 만료되거나 다른 창에서 입장했습니다. 다시 입장해 주세요.');
   if(sequence===b.sequence)return b.cached;
   if(!Number.isSafeInteger(sequence)||sequence!==b.sequence+1)throw Error('Invalid sequence');
   const g=b.engine,now=this.now();const before=JSON.stringify(g.progress);
   if(action==='weapon'||action==='armor')upgradeHunt(g.progress,this.balance,action);
+  if(action==='potion')g.usePotion();if(action==='buy-potion')buyHuntPotion(g.progress);if(action==='quest')claimHuntQuest(g.progress);
   // Requests do not manufacture time. Background gaps are capped; no offline farming.
   let remaining=Math.max(0,Math.min((now-b.last)/1000,.3));b.last=now;b.seen=now;
   while(remaining>1e-8){const dt=Math.min(.01,remaining);const auto=b.input.auto&&g.hp>0;if(g.auto!==auto)g.setAuto(auto);g.attackHeld=b.input.attack;g.step(dt,b.input.move);remaining-=dt;}

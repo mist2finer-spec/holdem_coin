@@ -25,6 +25,7 @@ export class HuntEngine {
  cooldowns=[0,0,0,0,0,0];dodgeReady=0;attackReady=0;
  comboStage=0;attackHeld=false;
  deadAt=-1;lastHeroDamage=0;heroHitUntil=0;parryUntil=0;parryReady=0;critical=false;
+ potionReady=0;
  readonly progress:HuntProgress;readonly balance:HuntBalance;readonly hostile:boolean;
  private rng:number;private range:number;private crit:number;
  get stats(){return heroStats(this.progress);}
@@ -111,6 +112,8 @@ export class HuntEngine {
  }
  parry(){if(this.paused||this.hp<=0||this.elapsed<this.parryReady||this.motion)return false;
   this.parryUntil=this.elapsed+.3;this.parryReady=this.elapsed+1.5;return true;}
+ usePotion(){if(this.hp<=0||this.hp>=this.maxHP||this.elapsed<this.potionReady||this.progress.potions<=0)throw Error('HP가 감소한 상태에서 물약을 사용할 수 있습니다. 재사용 대기시간은 2초입니다.');
+  this.progress.potions--;this.hp=Math.min(this.maxHP,this.hp+Math.ceil(this.maxHP*.4));this.potionReady=this.elapsed+2;}
  revive(){if(this.hp>0||this.elapsed-this.deadAt<2)return false;
   const spot=Array.from({length:64},(_,i)=>65+i*36).find(x=>this.enemies.every(e=>e.hp<=0||Math.abs(e.x-x)>=bodySeparation));
   if(spot===undefined)return false;

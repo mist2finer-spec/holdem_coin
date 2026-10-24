@@ -5,14 +5,15 @@ import {useRouter} from 'next/navigation';
 import {HuntEngine} from './hunt-engine';
 import {COMBAT_CHARACTERS} from './combat-characters';
 import {huntLoadout} from './hunt-loadouts';
+import {HUNT_QUESTS,POTION_PRICE} from './hunt-progression';
 import type {BattleView,HuntInput} from '../../lib/rpg-service';
 import './hunt.css';
 const skills=[['대지 균열','SkillIcon_GroundRift'],['암흑 구체','SkillIcon_DarkHole'],['서리 폭풍','SkillIcon_Blizzard3'],['빛의 심판','SkillIcon_HolyWrath2'],['회오리','SkillIcon_Whirlwind'],['회복','SkillIcon_VitalRecovery']];
-type Queued=Partial<HuntInput>&{action?:'revive'|'weapon'|'armor'};
+type Queued=Partial<HuntInput>&{action?:'revive'|'weapon'|'armor'|'potion'|'buy-potion'|'quest'};
 export function HuntPrototype({onExit,character='hong'}:{onExit?:()=>void;character?:string}){
  const router=useRouter();
  const canvas=useRef<HTMLCanvasElement>(null),keys=useRef(new Set<string>()),direction=useRef(0),held=useRef(false),auto=useRef(false),queue=useRef<Queued[]>([]);
- const [view,setView]=useState<BattleView|null>(null),[status,setStatus]=useState('loading'),[error,setError]=useState(''),[notice,setNotice]=useState(''),[menu,setMenu]=useState(false),[dialog,setDialog]=useState(false),[stick,setStick]=useState(0);
+ const [view,setView]=useState<BattleView|null>(null),[status,setStatus]=useState('loading'),[error,setError]=useState(''),[notice,setNotice]=useState(''),[menu,setMenu]=useState(false),[dialog,setDialog]=useState<'growth'|'bag'|'quest'|null>(null),[stick,setStick]=useState(0);
  const enqueue=(command:Queued)=>{if(queue.current.length<8)queue.current.push(command);};
  useEffect(()=>{
   const controller=new AbortController();let frame=0,timer:ReturnType<typeof setInterval>|undefined,renderer:Awaited<ReturnType<typeof import('./hunt-renderer').createHuntRenderer>>|undefined;
@@ -24,7 +25,7 @@ export function HuntPrototype({onExit,character='hong'}:{onExit?:()=>void;charac
    game.hp=value.hp;game.elapsed=value.elapsed;game.action=value.action;game.actionSerial=value.actionSerial;game.animationSpeed=value.animationSpeed;game.facing=value.facing;
    game.heroHitUntil=value.heroHitUntil;game.lastHeroDamage=value.lastHeroDamage;game.cooldowns=value.cooldowns;game.auto=value.auto;
    value.enemies.forEach((e,i)=>Object.assign(game.enemies[i],e));
-   if(value.dead){held.current=false;auto.current=false;keys.current.clear();direction.current=0;setDialog(false);}
+   if(value.dead){held.current=false;auto.current=false;keys.current.clear();direction.current=0;setDialog(null);}
    setView(value);
   };
   const request=async(body:Record<string,unknown>)=>{
@@ -69,6 +70,7 @@ export function HuntPrototype({onExit,character='hong'}:{onExit?:()=>void;charac
   return()=>{controller.abort();if(timer)clearInterval(timer);cancelAnimationFrame(frame);renderer?.dispose();reset();window.removeEventListener('keydown',keydown);window.removeEventListener('keyup',keyup);window.removeEventListener('blur',reset);document.removeEventListener('visibilitychange',visibility);};
  },[character]);
  const active=status==='ready'&&!!view&&!view.dead;
+ const quest=view?HUNT_QUESTS[view.progress.questTier]:null;
  const exit=()=>{if(onExit)onExit();else router.push('/');};
  const endStick=()=>{direction.current=0;setStick(0);};
  return <main className="hunt-shell">
@@ -78,7 +80,7 @@ export function HuntPrototype({onExit,character='hong'}:{onExit?:()=>void;charac
    <div className="hunt-identity"><img src={`/rpg/characters/${character}/portrait.png`} alt="선택한 캐릭터 초상화"/><div><small>Lv. {view?.progress.level??1} · {view?.loadout??'여행자'}</small><strong>{COMBAT_CHARACTERS.find(c=>c.id===character)?.label}</strong><span>무기 +{(view?.progress.weaponLevel??1)-1} · 방어구 +{(view?.progress.armorLevel??1)-1}</span></div></div>
    <div className="hunt-location"><small>CHAPTER 01</small><h1>달빛 숲 <span>1–1</span></h1><p><i/>{view?.dead?'복귀 대기':view?.auto?'자동 사냥 중':'자유 탐험'} · 처치 {view?.progress.kills??0}</p></div>
    <button className="hunt-menu-toggle" aria-label="메뉴" aria-expanded={menu} onClick={()=>setMenu(!menu)}>☰</button>
-   {menu&&<nav className="hunt-drawer" aria-label="사냥 메뉴"><button onClick={()=>{setDialog(true);setMenu(false);}}>장비 · 성장</button><button onClick={()=>setNotice('A/D 이동 · Space 공격 · Q/E 회피 · F 패링 · 숫자 1–6 스킬')}>조작 안내</button><button onClick={exit}>캐릭터 선택으로</button></nav>}
+   {menu&&<nav className="hunt-drawer" aria-label="사냥 메뉴"><button onClick={()=>{setDialog('growth');setMenu(false);}}>장비 · 성장</button><button onClick={()=>setNotice('A/D 이동 · Space 공격 · Q/E 회피 · F 패링 · 숫자 1–6 스킬')}>조작 안내</button><button onClick={()=>{setDialog('bag');setMenu(false);}}>가방 · 물약</button><button onClick={()=>{setDialog('quest');setMenu(false);}}>사냥 의뢰</button><button onClick={exit}>캐릭터 선택으로</button></nav>}
    {status==='loading'&&<div className="hunt-loading" role="status"><span/><strong>숲으로 향하는 중…</strong></div>}
    {status==='error'&&<div className="hunt-loading" role="alert"><strong>사냥터에 연결하지 못했습니다.</strong><small>{error}</small><button onClick={()=>location.reload()}>다시 시도</button><button onClick={exit}>돌아가기</button></div>}
    {view?.dead&&<div className="hunt-loading" role="dialog" aria-modal="true" aria-label="전투 불능"><strong>전투 불능</strong><small>획득한 성장과 재화는 저장됐습니다.</small><button disabled={!view.reviveReady} onClick={()=>enqueue({action:'revive'})}>{view.reviveReady?'안전한 위치로 복귀':'복귀 준비 중…'}</button><button onClick={exit}>캐릭터 선택으로</button></div>}
@@ -88,14 +90,17 @@ export function HuntPrototype({onExit,character='hong'}:{onExit?:()=>void;charac
    {notice&&<p className="hunt-notice" role="status">{notice} <button onClick={()=>location.reload()}>다시 입장</button></p>}
    <div className="hunt-vitals"><div><span>HP</span><meter min="0" max={view?.maxHP??100} value={view?.hp??100}/><small>{view?.hp??100}/{view?.maxHP??100}</small></div><div><span>EXP</span><progress max={Math.max(1,view?.xpRequired??1000)} value={view?.progress.xp??0}/><small>{view?.xpRequired?`${Math.floor((view.progress.xp/view.xpRequired)*100)}%`:'MAX'}</small></div></div>
    <div className="hunt-skill-row">{skills.map(([name,icon],i)=><button className="hunt-skill" key={name} aria-label={`${name} 스킬`} disabled={!active||(view?.cooldowns[i]??0)>0} onClick={()=>enqueue({skill:i})}><img src={`/rpg/${icon}.png`} alt=""/><span>{(view?.cooldowns[i]??0)>0?Math.ceil(view!.cooldowns[i]):i+1}</span><small>{name}</small></button>)}</div>
-   <div className="hunt-mode-row"><span>테스트 밸런스 · 이 브라우저의 게스트 진행 저장</span><button className={view?.auto?'is-on':''} disabled={!active} aria-pressed={view?.auto??false} onClick={()=>{auto.current=!auto.current;}}>AUTO {view?.auto?'ON':'OFF'}</button></div>
+   <div className="hunt-mode-row"><span>게스트 진행 저장</span><button disabled={!active||!view?.potionReady} onClick={()=>enqueue({action:'potion'})}>물약 {view?.progress.potions??0}</button><button className={view?.auto?'is-on':''} disabled={!active} aria-pressed={view?.auto??false} onClick={()=>{auto.current=!auto.current;}}>AUTO {view?.auto?'ON':'OFF'}</button></div>
    <div className="hunt-controls"><button className="hunt-dodge" disabled={!active} onClick={()=>enqueue({dodge:-1})} aria-label="왼쪽 회피">↶<small>회피 · Q</small></button>
     <div className="hunt-joystick" role="group" aria-label="좌우 이동" onPointerDown={e=>{if(!active)return;e.currentTarget.setPointerCapture(e.pointerId);const r=e.currentTarget.getBoundingClientRect(),v=Math.max(-1,Math.min(1,(e.clientX-r.left-r.width/2)/(r.width*.35)));setStick(v);direction.current=Math.abs(v)<.18?0:v;}} onPointerMove={e=>{if(!e.currentTarget.hasPointerCapture(e.pointerId))return;const r=e.currentTarget.getBoundingClientRect(),v=Math.max(-1,Math.min(1,(e.clientX-r.left-r.width/2)/(r.width*.35)));setStick(v);direction.current=Math.abs(v)<.18?0:v;}} onPointerUp={endStick} onPointerCancel={endStick} onLostPointerCapture={endStick}><span className="hunt-stick-rail">‹ ─── ›</span><span className="hunt-stick" style={{transform:`translateX(${stick*38}px)`}}/><small>A / D · ← / →</small></div>
     <button className="hunt-basic" disabled={!active} aria-label="기본 공격" onPointerDown={e=>{if(!active)return;e.currentTarget.setPointerCapture(e.pointerId);held.current=true;enqueue({basic:true});}} onPointerUp={()=>{held.current=false;}} onPointerCancel={()=>{held.current=false;}} onLostPointerCapture={()=>{held.current=false;}}><Swords/><small>공격</small></button>
     <button className="hunt-parry" disabled={!active} onClick={()=>enqueue({parry:true})} aria-label="패링"><Shield/><small>패링 · F</small></button>
     <button className="hunt-dodge" disabled={!active} onClick={()=>enqueue({dodge:1})} aria-label="오른쪽 회피">↷<small>회피 · E</small></button></div>
   </section>
-  <footer className="hunt-footer"><button onClick={()=>setDialog(true)}>성장 · 장비</button><strong>✦ 탐험</strong><span>영혼석으로 장비 강화</span></footer>
-  {dialog&&<div className="hunt-modal" onClick={()=>setDialog(false)}><section role="dialog" aria-modal="true" aria-labelledby="hunt-growth-title" onClick={e=>e.stopPropagation()}><h2 id="hunt-growth-title">성장 · 훈련 장비</h2><p>영혼석 {view?.progress.soulGem??0} · Lv. {view?.progress.level??1}</p><p>무기 강화는 공격력, 방어구 강화는 HP·방어력을 높입니다.</p><button disabled={!active||!view?.weaponCost||view.progress.soulGem<view.weaponCost} onClick={()=>enqueue({action:'weapon'})}>무기 강화 · {view?.weaponCost||'MAX'} 영혼석</button><button disabled={!active||!view?.armorCost||view.progress.soulGem<view.armorCost} onClick={()=>enqueue({action:'armor'})}>방어구 강화 · {view?.armorCost||'MAX'} 영혼석</button><p>9종은 임시 훈련 특성을 사용합니다. 원작 전용 모션·밸런스와는 구분됩니다.</p><button autoFocus onClick={()=>setDialog(false)}>닫기</button></section></div>}
+  <footer className="hunt-footer"><button onClick={()=>setDialog('growth')}>성장 · 장비</button><button onClick={()=>setDialog('bag')}>가방</button><strong>✦ 탐험</strong><button onClick={()=>setDialog('quest')}>사냥 의뢰</button></footer>
+  {dialog&&<div className="hunt-modal" onClick={()=>setDialog(null)}><section role="dialog" aria-modal="true" aria-labelledby="hunt-growth-title" onClick={e=>e.stopPropagation()}><h2 id="hunt-growth-title">{dialog==='growth'?'성장 · 훈련 장비':dialog==='bag'?'가방 · 회복 물약':'사냥 의뢰'}</h2>{dialog==='growth'&&<><p>영혼석 {view?.progress.soulGem??0} · Lv. {view?.progress.level??1}</p><p>무기 강화는 공격력, 방어구 강화는 HP·방어력을 높입니다.</p><button disabled={!active||!view?.weaponCost||view.progress.soulGem<view.weaponCost} onClick={()=>enqueue({action:'weapon'})}>무기 강화 · {view?.weaponCost||'MAX'} 영혼석</button><button disabled={!active||!view?.armorCost||view.progress.soulGem<view.armorCost} onClick={()=>enqueue({action:'armor'})}>방어구 강화 · {view?.armorCost||'MAX'} 영혼석</button><p>9종은 임시 훈련 특성을 사용합니다. 원작 전용 모션·밸런스와는 구분됩니다.</p></>}
+   {dialog==='bag'&&<><p>골드 {view?.progress.gold??0} · 물약 {view?.progress.potions??0}개</p><p>회복 물약: 최대 HP의 40% 회복 · 재사용 2초</p><button disabled={!active||!view?.potionReady} onClick={()=>enqueue({action:'potion'})}>물약 사용</button><button disabled={!active||!view||view.progress.gold<POTION_PRICE||view.progress.potions>=99} onClick={()=>enqueue({action:'buy-potion'})}>물약 구매 · {POTION_PRICE} 골드</button><p>훈련 무기 +{(view?.progress.weaponLevel??1)-1} · 방어구 +{(view?.progress.armorLevel??1)-1}</p></>}
+   {dialog==='quest'&&<>{quest?<><p>{quest.name}</p><p>슬라임 처치 {Math.min(view?.progress.kills??0,quest.kills)} / {quest.kills}</p><p>보상: {quest.gold} 골드 · {quest.soulGem} 영혼석</p><button disabled={!view||(view.progress.kills<quest.kills)} onClick={()=>enqueue({action:'quest'})}>의뢰 보상 받기</button></>:<p>모든 사냥 의뢰를 완료했습니다.</p>}</>}
+   <button autoFocus onClick={()=>setDialog(null)}>닫기</button></section></div>}
  </main>;
 }

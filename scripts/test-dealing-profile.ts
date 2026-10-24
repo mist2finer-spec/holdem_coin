@@ -35,18 +35,19 @@ test('no seat gets an advantage from input array order; invalid RNG/seats fail e
  // Constant RNG must terminate instead of repeatedly rejecting a premium pair.
  assert.equal(dealStartingHands(seats,0,()=>0).hands.size,6);
 });
-test('weighted features overlap by maximum, recognize wheel and preserve nonzero probabilities',()=>{
- assert.equal(startingHandWeight(...cards('A♠','A♥') as [Card,Card]),.8);
- assert.equal(startingHandWeight(...cards('7♠','8♠') as [Card,Card]),.85);
- assert.equal(startingHandWeight(...cards('7♠','9♥') as [Card,Card]),.9);
+test('all starting hands have equal weight and roles never change the deal',()=>{
+ assert.equal(startingHandWeight(...cards('A♠','A♥') as [Card,Card]),1);
+ assert.equal(startingHandWeight(...cards('7♠','8♠') as [Card,Card]),1);
+ assert.equal(startingHandWeight(...cards('7♠','9♥') as [Card,Card]),1);
  assert.equal(startingHandWeight(...cards('2♠','K♥') as [Card,Card]),1);
  assert.equal(startingHandFeatures(...cards('A♠','2♥') as [Card,Card]).connector,true);
  const seats=[0,1,2,3,4,5].map(seatId=>({seatId,isBot:false}));
  assert.deepEqual(dealStartingHands(seats,0,seeded(5)),dealStartingHands(seats.map(s=>({...s,isBot:true})),0,seeded(5)));
 });
-test('seeded 20k tables suppress textures for both roles and conserve every rank',()=>{
+test('seeded 20k tables match natural probabilities for both roles and every seat',()=>{
  const random=seeded(0x20261023),seats=Array.from({length:6},(_,seatId)=>({seatId,isBot:seatId>=3}));
  const counts={pair:0,suited:0,connector:0},first={pair:0,suited:0,connector:0};
+ const roles=[{pair:0,suited:0,connector:0},{pair:0,suited:0,connector:0}];
  const deck=makeDeck(seeded(1)),expected={pair:0,suited:0,connector:0};let weight=0;
  for(let a=0;a<52;a++)for(let b=a+1;b<52;b++){
   const w=startingHandWeight(deck[a],deck[b]),f=startingHandFeatures(deck[a],deck[b]);weight+=w;
@@ -58,12 +59,21 @@ test('seeded 20k tables suppress textures for both roles and conserve every rank
   const {hands}=dealStartingHands(seats,hand%6,random),firstId=(hand%6+1)%6;
   for(const [id,hole] of hands){const f=startingHandFeatures(hole[0],hole[1]);
    for(const c of hole)ranks.add(c.rank);
-   for(const k of Object.keys(counts) as (keyof typeof counts)[])if(f[k]){counts[k]++;if(id===firstId)first[k]++;}
+   for(const k of Object.keys(counts) as (keyof typeof counts)[])if(f[k]){counts[k]++;roles[id>=3?1:0][k]++;if(id===firstId)first[k]++;}
   }
  }
  for(const k of Object.keys(expected) as (keyof typeof expected)[])
   assert.ok(Math.abs(first[k]/20000-expected[k])<.012,`${k}: ${first[k]/20000} expected ${expected[k]}`);
- assert.ok(counts.pair/120000<78/1326);assert.ok(counts.suited/120000<312/1326);
+ assert.ok(Math.abs(counts.pair/120000-78/1326)<.006);assert.ok(Math.abs(counts.suited/120000-312/1326)<.006);
+ for(const k of Object.keys(expected) as (keyof typeof expected)[])assert.ok(Math.abs(roles[0][k]/60000-roles[1][k]/60000)<.01,`${k} role difference`);
  assert.equal(ranks.size,13);
  console.log(JSON.stringify({profile:DEALING_PROFILE.id,tables:20000,expectedFirstSeat:expected,observedFirstSeat:Object.fromEntries(Object.entries(first).map(([k,v])=>[k,v/20000])),observedAllSeats:Object.fromEntries(Object.entries(counts).map(([k,v])=>[k,v/120000]))}));
+});
+
+test('uniform deal follows two clockwise rounds from the same shuffled deck',()=>{
+ const seats=[0,1,2,3,4,5].map(seatId=>({seatId,isBot:seatId>0})),deck=makeDeck(seeded(543));
+ const expected=new Map(seats.map(s=>[s.seatId,[] as Card[]]));
+ for(let r=0;r<2;r++)for(const id of [1,2,3,4,5,0])expected.get(id)!.push(deck.pop()!);
+ const dealt=dealStartingHands(seats,0,seeded(543));assert.deepEqual(dealt.hands,expected);assert.deepEqual(dealt.deck,deck);
+ assert.equal(DEALING_PROFILE.pairRejection,0);assert.equal(DEALING_PROFILE.method,'fisher-yates-round-robin');
 });

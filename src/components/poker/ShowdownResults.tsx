@@ -17,7 +17,7 @@ export function ShowdownResults({players,board,winnerInfo}:{players:ShowdownPlay
     <div className="showdown-hand">
      <div className="showdown-card-groups">
       <div><small>홀카드 · {5-p.board.length}장 사용</small><div className="showdown-cards">{p.holeCards.map((c,j)=><PlayingCard key={j} card={c} size="xs" className={p.holeUsed[j]?'':'opacity-40'}/>)}</div></div>
-      <div><small>사용한 보드 {p.board.length}장</small><div className="showdown-cards">{p.board.map((c,j)=><PlayingCard key={j} card={c} size="xs"/>)}</div></div>
+      <div><small>커뮤니티 · {p.board.length}장 사용</small><div className="showdown-cards showdown-community" aria-label="플랍 3장, 턴, 리버 순서">{p.communityCards.map((c,j)=><PlayingCard key={`${c.rank}${c.suit}`} card={c} size="xs" className={`${p.boardUsed[j]?'':'opacity-40'} ${j===3||j===4?'showdown-street-start':''}`}/>)}</div></div>
      </div>
      <p>{won?'★ ':''}{p.category}<span> · 홀카드 {5-p.board.length} + 보드 {p.board.length} = 5장</span></p>
     </div>
