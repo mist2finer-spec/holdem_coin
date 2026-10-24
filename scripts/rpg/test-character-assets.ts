@@ -53,3 +53,21 @@ test('active character sheets stay unchanged and archived Spine skeletons retain
   assert.equal(createHash('sha256').update(fs.readFileSync(`${archived.path}/character.json`)).digest('hex'),archived.skeletonSha256);
  }
 });
+
+test('all nine characters have five independent four-frame attack sheets with unchanged base sprites',async()=>{
+ const {WEAPON_TYPES}=await import('../../src/components/rpg/hunt-weapons');
+ const {ATTACK_CELL}=await import('../../src/components/rpg/combat-attack-sprite');
+ const {createHash}=await import('node:crypto');
+ assert.equal(WEAPON_TYPES.length,5);
+ for(const c of COMBAT_CHARACTERS){const root=`public/rpg/characters/${c.id}/attacks`,m=JSON.parse(fs.readFileSync(`${root}/manifest.json`,'utf8')),hashes=[];
+  assert.equal(m.character,c.id);assert.deepEqual(m.cell,[ATTACK_CELL.width,ATTACK_CELL.height]);assert.deepEqual(m.footAnchor,[ATTACK_CELL.footX,ATTACK_CELL.footY]);
+  for(const type of WEAPON_TYPES){const a=m.animations[type],png=fs.readFileSync(`${root}/${a.sheet}`);assert.equal(a.frames,4);assert.ok([1,2].includes(a.impactFrame));assert.equal(png.readUInt32BE(16),ATTACK_CELL.width*4);assert.equal(png.readUInt32BE(20),ATTACK_CELL.height);assert.equal(createHash('sha256').update(png).digest('hex'),a.sha256);hashes.push(a.sha256);assert.equal(a.frameHashes.length,4);assert.ok(new Set(a.frameHashes).size>=3);}
+  assert.equal(new Set(hashes).size,5,'five real images, never five aliases of punching');
+ }
+});
+test('weapon attack frames reach contact at the server impact and stay bounded when mirrored',async()=>{
+ const {attackSpriteFrame,attackSpritePlacement,ATTACK_CELL}=await import('../../src/components/rpg/combat-attack-sprite');
+ for(const impact of [1,2]){assert.equal(attackSpriteFrame(0,.4,.15,impact),0);assert.equal(attackSpriteFrame(.15,.4,.15,impact),impact);assert.equal(attackSpriteFrame(.4,.4,.15,impact),3);}
+ for(let f=0;f<4;f++)for(const dir of [-1,1]){const p=attackSpritePlacement(f,100,240,.5,dir);assert.equal(p.x+(p.target[0]+ATTACK_CELL.footX)*p.scaleX,100);assert.equal(p.y+(p.target[1]+ATTACK_CELL.footY)*p.scaleY,240);}
+ assert.throws(()=>attackSpritePlacement(4,0,0,1,1));
+});

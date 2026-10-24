@@ -1,3 +1,5 @@
+import {ATTACK_CELL,attackSpriteFrame,attackSpritePlacement} from './combat-attack-sprite';
+import {WEAPON_TYPES} from './hunt-weapons';
 import {HUNT_MONSTER_ASSET,HUNT_STAGE} from './hunt-tables';
 import {drawHeldWeapon} from './hunt-weapon-renderer';
 import type {WeaponType} from './hunt-weapons';
@@ -44,6 +46,9 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
  if(!combatCharacter(characterId))throw Error('알 수 없는 캐릭터입니다.');
  const [sheet, enemy, forest, trees] = await Promise.all([image(base+`characters/${characterId}/sheet.png`,signal), actor(HUNT_MONSTER_ASSET.skeleton, signal, gl), image(base + 'BG_Forest01.png', signal), image(base + 'BG_Tree01.png', signal)]);
  if(sheet.naturalWidth!==1024||sheet.naturalHeight!==1024)throw Error('잘못된 캐릭터 스프라이트 크기');
+ const attackMeta=await fetch(base+`characters/${characterId}/attacks/manifest.json`,{signal}).then(r=>{if(!r.ok)throw Error('Missing attack manifest');return r.json();});
+ const attackSheets=Object.fromEntries(await Promise.all(WEAPON_TYPES.map(async type=>[type,await image(base+`characters/${characterId}/attacks/${type}.png`,signal)]))) as Record<WeaponType,HTMLImageElement>;
+ for(const sheet of Object.values(attackSheets))if(sheet.naturalWidth!==ATTACK_CELL.width*ATTACK_CELL.frames||sheet.naturalHeight!==ATTACK_CELL.height)throw Error('Invalid attack sheet');
  const spriteClock=new CombatSpriteClock();
  // Each slime owns its pose/animation state, while sharing immutable skeleton data and atlas textures.
  const enemies=Array.from({length:HUNT_STAGE.maxAlive},()=>{
@@ -97,17 +102,17 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
    }
    if(renderer){renderer.end();ctx.drawImage(layer,0,0,w,h);}
    const stage=game.combo.find(s=>s.animation===game.action);
-   let frame=spriteClock.frame(game.action,game.actionSerial,dt,game.animationSpeed,stage?.hitAt??.2);
+   const frame=spriteClock.frame(game.action,game.actionSerial,dt,game.animationSpeed,stage?.hitAt??.2);
    const attack=!!view&&/^attack/.test(game.action),age=view?Math.max(0,game.elapsed-view.motion.startedAt):0;
-   if(attack){const contact=age>=view!.motion.hitAt;frame=contact?(view!.weapon==='spear'||game.action==='attack2'?10:9):8;}
-   const pose=spritePlacement(frame,screenX(game.x),floor,scale,game.facing);
+   const attackFrame=attack?attackSpriteFrame(age,view!.motion.duration,view!.motion.hitAt,attackMeta.animations[view!.weapon].impactFrame):0;
+   const pose=attack?attackSpritePlacement(attackFrame,screenX(game.x),floor,scale,game.facing):spritePlacement(frame,screenX(game.x),floor,scale,game.facing);
    ctx.save();ctx.imageSmoothingEnabled=false;ctx.translate(pose.x,pose.y);ctx.scale(pose.scaleX,pose.scaleY);
    if(game.heroHitUntil>game.elapsed&&game.hp>0)ctx.globalAlpha=.55+Math.sin(game.elapsed*60)*.2;
-   ctx.drawImage(sheet,...pose.source,...pose.target);ctx.restore();
-   if(view&&game.hp>0&&!/avoid|die/.test(game.action))drawHeldWeapon(ctx,view.weapon,frame,screenX(game.x),floor,scale,game.facing,age,view.motion.duration,view.motion.hitAt,attack);
+   ctx.drawImage(attack?attackSheets[view!.weapon]:sheet,pose.source[0],pose.source[1],pose.source[2],pose.source[3],pose.target[0],pose.target[1],pose.target[2],pose.target[3]);ctx.restore();
+   if(view&&!attack&&game.hp>0&&!/avoid|die/.test(game.action))drawHeldWeapon(ctx,view.weapon,frame,screenX(game.x),floor,scale,game.facing,age,view.motion.duration,view.motion.hitAt,attack);
    canvas.dataset.weapon=view?.weapon??'none';
    canvas.dataset.character=characterId;
-   canvas.dataset.heroRig='sprite-16-v1';canvas.dataset.spriteFrame=String(frame);
+   canvas.dataset.heroRig=attack?'weapon-attack-v1':'sprite-16-v1';canvas.dataset.spriteFrame=String(attack?attackFrame:frame);
    canvas.dataset.groundY=String(floor);
    const bottoms=enemies.slice(0,game.enemies.length).map(e=>attachmentBottom(e.skeleton,e.groundSlots));
    canvas.dataset.groundError=String(Math.max(0,...bottoms.filter((b):b is number=>b!==null).map(b=>Math.abs(b-floor))));

@@ -1,0 +1,79 @@
+{
+  "version": 1,
+  "format": "weapon-attack-v1",
+  "character": "gold-dress",
+  "generator": "built-in image_gen",
+  "source": "source-v1.png",
+  "sourceSha256": "8d7cd75234ce6853b31e7a4923364e1396a88052583ce3cde35f030241fb71be",
+  "cell": [
+    512,
+    384
+  ],
+  "footAnchor": [
+    256,
+    352
+  ],
+  "facing": "right",
+  "animations": {
+    "unarmed": {
+      "sheet": "unarmed.png",
+      "frames": 4,
+      "impactFrame": 2,
+      "sha256": "28471bd8d379870a12d8144f493026b8d46a872efdc0adf2e9ad64752cc9dce0",
+      "frameHashes": [
+        "8a0d4624f4cca263de39daddc5450824d88af0b6782e90c4e7d17fa4eda55e5c",
+        "cad4a41ae7458738dad0c3ab24157294d413ba601da3c3878ada617735a68024",
+        "45c3e8f5347f39428cba1e0c89d9be5e49415b055fa45b14cf3d82a3e611316c",
+        "5bbed845984d35ad9de4a57e81b8b27379b6a32aebaf257fb500fd87ad439ce7"
+      ]
+    },
+    "sword": {
+      "sheet": "sword.png",
+      "frames": 4,
+      "impactFrame": 2,
+      "sha256": "414b69d1948ebdb9ad637425339b16e7a307a483fc1c5e5970f3900a177214c5",
+      "frameHashes": [
+        "b497e20abd192a41abba581d16d621c47a4f459bc520604dbf4acdc1b0f86b7f",
+        "712635d4530288e3b951e3ac1753ea3ac870f8571f3f34ce69d5440cac9e390e",
+        "802174bf96881b61b33d35b79c5585b7aef07d30e276d3cea9453c13a077be90",
+        "2ebf6fe10c815a2043f6675ec3f5be257b68b5a8ee464448b4e8d7bc372874e5"
+      ]
+    },
+    "axe": {
+      "sheet": "axe.png",
+      "frames": 4,
+      "impactFrame": 2,
+      "sha256": "d6805a6b419608755605d3b8c0ced19b9a574d62df3eaeead142e551eff013f8",
+      "frameHashes": [
+        "b10d6a9a92e9c6e6b2f2e3de292b6ae9328cc01d14d02f14b7f4cb17de9a94bc",
+        "ce896f98243decb8c59b011f72537a091dabbb3589e5a6a74a64e877918e83ac",
+        "b43f7d5ba1e37bfce9dae8dfc7325f9504c5fab90db1d40347c55817f5174e8c",
+        "31fe7b52b8a54a4b0cf3f54c84766303a547c47c50f582e92318a2a660a7e7d4"
+      ]
+    },
+    "dual": {
+      "sheet": "dual.png",
+      "frames": 4,
+      "impactFrame": 2,
+      "sha256": "c1ebb062a525093dee6ed58b56b1c372ea8da6c22dcd6dbdeb406e10ef9f9689",
+      "frameHashes": [
+        "8a5d41ac06e5bb700a556d41757a04808bca33e2afa71c1d804cbe18d791adf0",
+        "fd35a2a3bda80e7ce34274b54c8c4e61c89e348a7e9ddcb6fffba6be672efa1c",
+        "5a7d4fb15632a119e576610f6dcf4b962c76ad31f7107205683b3cd6d5ca4640",
+        "a2300dbb407e84977c685ae6e7460d0d1d034ffe854047ce087cbb198deaf487"
+      ]
+    },
+    "spear": {
+      "sheet": "spear.png",
+      "frames": 4,
+      "impactFrame": 2,
+      "sha256": "e03d2c21b230caae47c6303066c8b8d043e5da605f3f75616c7fa92704d48a43",
+      "frameHashes": [
+        "e8fb58063e3227a51e96c5cb23bc2e2acb7367982ab0206c398a5a1c5160aa55",
+        "751b393191d908d90295b72f98761b1ba4696d66c2f8a219450969edc011a890",
+        "ee9b1a287a3fe67a8adcad7c405150c38d3d2a845456814333468d073d9be27c",
+        "a414a7c0db673801f1f6fe695a2e71f6a70ef60168368a3d003aee98de5d2fdd"
+      ]
+    }
+  }
+}

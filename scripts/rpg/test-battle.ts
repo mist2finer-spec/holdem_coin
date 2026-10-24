@@ -110,7 +110,7 @@ test('legacy weapon level migrates to axe without losing previous upgrades or cu
 });
 test('faster weapons keep impact timing and never inherit a hit from a cancelled old swing',async()=>{
  const {weaponLoadout}=await import('../../src/components/rpg/hunt-weapons');
- for(const weapon of ['sword','axe','dual','spear'] as const){const l=weaponLoadout('hong',weapon),g=new HuntEngine(l.combo,1,{hostile:true,tempo:l.tempo,range:l.range,crit:0});g.enemyX=g.x+40;
+ for(const weapon of ['unarmed','sword','axe','dual','spear'] as const){const l=weaponLoadout('hong',weapon),g=new HuntEngine(l.combo,1,{hostile:true,tempo:l.tempo,range:l.range,crit:0});g.enemyX=g.x+40;
   assert.equal(g.attack(),true);const hit=g.visualTiming.hitAt;advance(g,Math.max(0,hit-.02));assert.equal(g.enemyHP,100);advance(g,.03);assert.ok(g.enemyHP<100);
  }
  const l=weaponLoadout('hong','dual'),g=new HuntEngine(l.combo,1,{hostile:true,tempo:l.tempo});g.enemyX=g.x+40;g.attack();
@@ -126,4 +126,9 @@ test('hunt tables have valid references, spawn bounds, real asset files and avai
   const skeleton=JSON.parse(readFileSync(`public/rpg/${asset.skeleton}.json`,'utf8'));for(const clip of Object.values(asset.clips))assert.ok(skeleton.animations[clip],clip);}
  const bad=structuredClone(HUNT_TABLES);bad.monsters[0].attackId='missing';assert.throws(()=>validateHuntTables(bad));
  const bounds=structuredClone(HUNT_TABLES);bounds.stages[0].spawns[0]=Infinity;assert.throws(()=>validateHuntTables(bounds));
+});
+
+test('old four-weapon saves add unarmed training without losing existing upgrades',()=>{
+ const store=new RpgStore(':memory:'),saved=store.load('four');const legacy=structuredClone(saved.progress);delete (legacy.weaponLevels as any).unarmed;legacy.weaponLevels.axe=4;legacy.weaponLevel=4;
+ store.db.prepare('UPDATE rpg_players SET progress=? WHERE id=?').run(JSON.stringify(legacy),'four');const p=store.load('four').progress;assert.equal(p.weaponLevels.unarmed,1);assert.equal(p.weaponLevels.axe,4);store.close();
 });

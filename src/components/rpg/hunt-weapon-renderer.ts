@@ -14,6 +14,7 @@ function weapon(ctx:CanvasRenderingContext2D,type:WeaponType){
  ctx.strokeStyle='#ffffffb0';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(0,-18);ctx.lineTo(0,spear?-92:type==='axe'?-54:dual?-48:-70);ctx.stroke();
 }
 export function drawHeldWeapon(ctx:CanvasRenderingContext2D,type:WeaponType,frame:number,x:number,floor:number,scale:number,facing:number,age:number,duration:number,hitAt:number,attacking:boolean){
+ if(type==='unarmed')return;
  const hand=hands[frame]??hands[0],t=duration>0?Math.min(1,age/duration):0;
  const contact=duration>0?Math.min(.8,hitAt/duration):.4;
  // Smooth wind-up / strike / recovery, never a random position jump per frame.

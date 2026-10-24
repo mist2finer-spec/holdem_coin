@@ -1,0 +1,79 @@
+{
+  "version": 1,
+  "format": "weapon-attack-v1",
+  "character": "boy-hoodie",
+  "generator": "built-in image_gen",
+  "source": "source-v1.png",
+  "sourceSha256": "64dc597393d418c36806d076ae25a9932daaf90ad662abeb215d8168fcfb08c6",
+  "cell": [
+    512,
+    384
+  ],
+  "footAnchor": [
+    256,
+    352
+  ],
+  "facing": "right",
+  "animations": {
+    "unarmed": {
+      "sheet": "unarmed.png",
+      "frames": 4,
+      "impactFrame": 2,
+      "sha256": "551d8c94554b79bce26ded1c373a27d57322dc37da65dfaf01f55389dc13d9f1",
+      "frameHashes": [
+        "00141076fe1842e14d4bfa6029f88b852a69e3fc111008b52ece0283e9f50563",
+        "e01dc58292093c2292cf4291adfc0a264d3e6ee5eba92ae33e88d6faa1d09a5a",
+        "473d65604fc9d14cea641379ec2469a4afa14d52a915d29695bdb281b987cc17",
+        "425d6e849e94165afa3e726571586120b2447838297f8ec2bab09e26875fea55"
+      ]
+    },
+    "sword": {
+      "sheet": "sword.png",
+      "frames": 4,
+      "impactFrame": 2,
+      "sha256": "65651e7a47feda83c8883b0cc14784565f647615e45d0e3c6d33db9923dc28a3",
+      "frameHashes": [
+        "aa74b365ad8917c0eca15cca05edad768dd41f9c4cca8753c22b695a1c176a58",
+        "62360c40bc8dbe7c3c8c85a921ff8948e9c65a65c159601b412d7708649137d1",
+        "3961ec70db9432307777719efaa4e5228ad9f1d734058e9cf3ef1c39ad6e2fe4",
+        "125285b10895e07a7272a7ba38733ad2b01143638ab656657e36bde0913332d7"
+      ]
+    },
+    "axe": {
+      "sheet": "axe.png",
+      "frames": 4,
+      "impactFrame": 2,
+      "sha256": "df301a82f48d240d7ed93113e869b542dcd227e68076f8ac700d8411836e93d9",
+      "frameHashes": [
+        "32626dd456b22486dec41be675c5e962090535c45bea2d9529aad8d7250d97ea",
+        "c439dbad617833034523c597d2b5d5d85fb371905581323789bfa4ba3c25d573",
+        "d65b5c0582813e239e4c9c052470e878f2ada7af1b1364e2fb2ffb2b9c8493e0",
+        "ee60b1e48b07a2bb535ae0b881fdba51b229e737a77d077047bfb3ae05cfb515"
+      ]
+    },
+    "dual": {
+      "sheet": "dual.png",
+      "frames": 4,
+      "impactFrame": 2,
+      "sha256": "94def339a017c3619891fed6b5cb7ea847d52852e62c6efa5b7369df252c5105",
+      "frameHashes": [
+        "4ff57c5efd94f4f0c6b4b3eba8b15e60f967bf179764a6854ac19c0e9f2e0d10",
+        "e80e9f478c626a05aa75a4c8966c844c62e0e45e754fd5259b0f78de050ffdc6",
+        "01a2a21cacbcb3ddbd85538b8e6df9bfef750a52b62b361aa13593075fd82af6",
+        "8e7bc4e52211352a40f36d5b3ac418c039306ec92e9076210fc823e1ae82c1b8"
+      ]
+    },
+    "spear": {
+      "sheet": "spear.png",
+      "frames": 4,
+      "impactFrame": 2,
+      "sha256": "23e216b6c2a8256c15b465835ae04383930df3dcc850b02dfc78c9750de208ef",
+      "frameHashes": [
+        "b0f5d24fc8bbafff07aa499f2d9ae39d0c61f2ca382265806ffa05b5ac1e0522",
+        "d1c308182c66f7578e0fd3a2100c06781bab6048866139b6ba5dc3c62782b5f2",
+        "16d088279265b9ffbbb91ef14322e68c8358d45bfc720641165dbfc7e4651d3b",
+        "fb53c48d3a2e9ef0fbcce4141afb7fb975360e779603de2d3b91938f43428d8f"
+      ]
+    }
+  }
+}

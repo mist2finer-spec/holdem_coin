@@ -17,7 +17,8 @@ export class RpgStore{
   if(progress.potions===undefined)progress.potions=3;
   if(progress.questTier===undefined)progress.questTier=0;
   if(progress.weaponType===undefined)progress.weaponType='axe';
-  if(progress.weaponLevels===undefined)progress.weaponLevels={sword:1,axe:progress.weaponLevel,dual:1,spear:1};
+  if(progress.weaponLevels===undefined)progress.weaponLevels={unarmed:1,sword:1,axe:progress.weaponLevel,dual:1,spear:1};
+  if(progress.weaponLevels.unarmed===undefined)progress.weaponLevels.unarmed=1;
   if(!isWeaponType(progress.weaponType)||!progress.weaponLevels||WEAPON_TYPES.some(w=>!Number.isSafeInteger(progress.weaponLevels[w])||progress.weaponLevels[w]<1||progress.weaponLevels[w]>1e12)||progress.weaponLevels[progress.weaponType]!==progress.weaponLevel)throw Error('Invalid saved weapons');
   for(const value of Object.entries(progress).filter(([key])=>key!=='weaponType'&&key!=='weaponLevels').map(([,value])=>value))if(typeof value!=='number'||!Number.isSafeInteger(value)||value<0||value>1e12)throw Error('Invalid saved progress');
   if(!progress.level||!progress.weaponLevel||!progress.armorLevel)throw Error('Invalid saved levels');

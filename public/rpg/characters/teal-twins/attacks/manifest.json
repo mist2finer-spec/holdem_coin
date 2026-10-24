@@ -1,0 +1,85 @@
+{
+  "version": 1,
+  "format": "weapon-attack-v1",
+  "character": "teal-twins",
+  "generator": "built-in image_gen",
+  "source": "source-v1.png",
+  "sourceSha256": "bbbe3884a61a4ea35525d119e8d3f81bb143e0550b0bc438d20766b198c1069a",
+  "overrides": {
+    "spear": {
+      "source": "source-spear-v1.png",
+      "sha256": "a6717de8bdf397aa41bd35d9de6152e3f1845a1a63133423fded8d9f76d09238"
+    }
+  },
+  "cell": [
+    512,
+    384
+  ],
+  "footAnchor": [
+    256,
+    352
+  ],
+  "facing": "right",
+  "animations": {
+    "unarmed": {
+      "sheet": "unarmed.png",
+      "frames": 4,
+      "impactFrame": 2,
+      "sha256": "5a6f138031b15a39c21169c9b0f49159f4487dbecddc58c01d8d7e83715a929d",
+      "frameHashes": [
+        "c889e15b75f59dbf2caaf35dc639ffda09578ce6c9405a7f14c601d23ce13e2e",
+        "2bd65f6926b98703846dd29e371857fc667fdf2ed5307ec4588d148711afab56",
+        "7e600379a118461dcd92e82e40dd356ca1c4611aef5ade04d306e566655c3cbe",
+        "07d253360a7581d4d44ff3b2e5c9376c791a4f27184412a04ac57eb251caf9f7"
+      ]
+    },
+    "sword": {
+      "sheet": "sword.png",
+      "frames": 4,
+      "impactFrame": 2,
+      "sha256": "ade5b5a85e67db8049b0a85382251dd6fb41843d44aa4eb1eeafa760884b7519",
+      "frameHashes": [
+        "ddb83ea1d67f129fbc7988176035879ae3f1b45277f6603e33fa940974942aaa",
+        "4e8a7c6826929d7d477a5dcfd269841abc0d9f347e0e700a863efd698305d23a",
+        "422c9e888cea1231225a6cab4a4a5e0e57781dcefab93a26d3938af605903b89",
+        "f518cea671062e5a5fbb312d7396e24962514d8358ec1393be91021fbb1224e4"
+      ]
+    },
+    "axe": {
+      "sheet": "axe.png",
+      "frames": 4,
+      "impactFrame": 2,
+      "sha256": "3af2a662c79f82f860b79a5468ab6b0cbe09b6f703086af7390ab7e06ba8180e",
+      "frameHashes": [
+        "deb03ba3429c21e5fb5939cfc9ec52e03e82ced69afc518b4605618862741c61",
+        "b651430dc17c0549f837363b4d18f36451a7b84d0d2856099e4b8801ac490ab8",
+        "b9538149c5ee45bdfee87b595eab5a69d054fca5ffebcc31184cd3e7c7bbbb56",
+        "140ecb11211e0f01a613eff44340bc19fcf255490c675a8bdeb14b2559360461"
+      ]
+    },
+    "dual": {
+      "sheet": "dual.png",
+      "frames": 4,
+      "impactFrame": 2,
+      "sha256": "9e5aca3080f720ef85fb4391f0c60de4ec0625a2aa3e08471a7ca31219a0448d",
+      "frameHashes": [
+        "fbc9ed9d451d2e5bab5966c9285751fdca9a0613bf8e70199ac4bb6743966556",
+        "25feb2985bc3d6dccf3e01fa49fe42032938cf02872c558d6dafd0aeaf85790b",
+        "f6553dd712249e864b87cb0f0d66af55f75abe061dea26155492eec50e8cffd9",
+        "cdf3f1f47e89da46f1f20940970116eefed2b4e7c4542da2d95c3ebd8aae1001"
+      ]
+    },
+    "spear": {
+      "sheet": "spear.png",
+      "frames": 4,
+      "impactFrame": 2,
+      "sha256": "3a1d3d44505cc331361f75d57b7a358b90f28a1667a35e0ecc957b56f4fad2cd",
+      "frameHashes": [
+        "cdc78aab7e20288adbf47a0f354b1ee5cae618b367d36605d16a665f09fa8a40",
+        "dcc558fe7181269a891f6f426d6a2e88c7a09a371848241c23142d7356020a29",
+        "9b2ad6d0b3db3877e5a83ddc6e08fdf4884eb0c98c602138b49c5d52d646f775",
+        "c1ed5a8a8a37c3f23983ea5aeeea2568d373e8c0be1c1bf8f9872974904be527"
+      ]
+    }
+  }
+}

@@ -8,7 +8,7 @@ export const DEFAULT_HUNT_BALANCE:HuntBalance={version:1,source:'web-adapter-wit
  weapon:[{min:1,max:50,base:40,inc:2,rate:420,scaler:1000}],
  armor:[{min:1,max:50,base:400,inc:5,rate:70,scaler:1000}],reward:{...HUNT_MONSTER.reward}};
 export type HuntProgress={level:number;xp:number;gold:number;soulGem:number;kills:number;weaponLevel:number;armorLevel:number;potions:number;questTier:number;weaponType:WeaponType;weaponLevels:Record<WeaponType,number>};
-export const newHuntProgress=():HuntProgress=>({level:1,xp:0,gold:0,soulGem:0,kills:0,weaponLevel:1,armorLevel:1,potions:3,questTier:0,weaponType:'axe',weaponLevels:{sword:1,axe:1,dual:1,spear:1}});
+export const newHuntProgress=():HuntProgress=>({level:1,xp:0,gold:0,soulGem:0,kills:0,weaponLevel:1,armorLevel:1,potions:3,questTier:0,weaponType:'axe',weaponLevels:{unarmed:1,sword:1,axe:1,dual:1,spear:1}});
 export const HUNT_QUESTS=[{name:'숲의 첫걸음',kills:5,gold:50,soulGem:10},{name:'슬라임 정리',kills:20,gold:150,soulGem:20},{name:'숲의 수호자',kills:50,gold:400,soulGem:40}] as const;
 export const POTION_PRICE=50;
 /** Prototype item economy: distinct from the recovered native cost curve. */
