@@ -195,3 +195,52 @@ The remaining input is a preserved matching-version native libil2cpp.so and
 global-metadata.dat pair. The uploaded runtime files are labeled version
 1.21.1; source labels alone do not prove native build identity. Keep old/new
 versions separate. No such native pair was found in the local input material.
+
+
+## Native recovery completed (supersedes missing-native notes)
+
+Uploaded libil2cpp.so SHA-256:
+`42784ff220ca0eec7a21f9eafb64ac89088ff7463193b25f76baa19536c484e5`.
+Metadata SHA-256:
+`fb3c0eb9ea7c067aa24fa8d7ce6a2f1433dbfe82f3dfc13b9dfc12933c567901`.
+Both uploaded hash records match. ARM64 ELF virtual-address mapping explains
+why previous Disassembly text disagreed with ISIL: the executable LOAD segment
+has different file and virtual offsets. Always map through PT_LOAD.
+
+`vardian_cost.py` reconstructs single-segment arithmetic at VA 0x6b5d82c.
+Runtime offsets min/max=0/4, base/inc/rate/scaler=8/16/24/32 are used with the
+corresponding serialized coefficient order. The reconstructed evaluator is
+an offline reference; live schema conversion and UI level conventions have
+not been exercised. Bounds are min <= level < max. No matching segment or
+zero scaler returns zero, which must NOT be treated as permission to upgrade
+for free. The list selector at 0x6b5d23c selects the first matching segment.
+`BigIntData` uses binary64 and floors at every constructor (FRINTM at
+0x6b5da78), not arbitrary-precision integer arithmetic. Level delta is converted
+to binary32 then binary64 (SCVTF/FCVT). Preserve intermediate floors:
+
+```
+n = float32(level - min)
+q = floor(floor(rate * n) * n)
+h = floor(scaler * 0.5)
+q = floor(floor(q + h) / scaler)
+linear = floor(inc * n)
+result = floor(linear + floor(base + q))
+```
+
+`verify_vardian_cost_native.py` executes supplied ARM64 instructions in Unicorn
+for 210 cases, with a constructor-floor hook after verifying the native FRINTM
+instruction. All 210 match. This is an arithmetic comparison, not a full-game
+or server validation. The offline unit suite has 16 passing tests.
+
+`--native PATH` on the DB decoder optionally uses Capstone/pyelftools to prove
+constant-return default branches. All 342 parsed non-vector floating accessors
+have proven defaults; slot setup must match independently parsed ISIL before a
+native constant is accepted. Evidence records method/default branch VAs and
+native hash. Other absent/unsupported fields remain unresolved. No raw binary,
+metadata, decompiled implementation or decoded game data is committed.
+
+```
+python -m pip install capstone pyelftools unicorn
+python scripts/rpg/verify_vardian_cost_native.py --native /private/libil2cpp.so
+python scripts/rpg/decode_vardian_db.py --balance /private/Data --schemas /private/Schemas --native /private/libil2cpp.so --output /private/new-recovery
+```

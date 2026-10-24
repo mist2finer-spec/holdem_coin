@@ -194,12 +194,16 @@ class Decoder:
         return out
 
 
-def recover(balance, schema_root, output):
+def recover(balance, schema_root, output, native=None):
     if output.exists():raise ValueError('Output exists; preserve previous evidence')
     schemas=load_schemas(schema_root)
+    native_proofs=None
+    if native is not None:
+        from vardian_native_defaults import enrich_defaults
+        native_proofs=enrich_defaults(schemas,schema_root,native)
     output.mkdir(parents=True)
     manifest={'status':'PRESENT_VALUES_RECOVERED_DEFAULTS_PARTIAL','schemas':len(schemas),
-              'files':[], 'limitations':['Only proven integer absent defaults are filled; float defaults remain unresolved.',
+              'files':[], 'limitations':['Only defaults with explicit ISIL or native constant-return proof are filled; others remain unresolved.',
               'Enum values remain numeric until the enum definitions are supplied.',
               'Accessor names do not prove server-side formula execution or source-build equality.']}
     for p in sorted(balance.glob('*.bytes')):
@@ -220,6 +224,8 @@ def recover(balance, schema_root, output):
         manifest['files'].append(item)
     (output/'manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding='utf-8')
     (output/'schema-evidence.json').write_text(json.dumps(schemas,ensure_ascii=False,indent=2),encoding='utf-8')
+    if native_proofs:
+        (output/'native-default-evidence.json').write_text(json.dumps(native_proofs,ensure_ascii=False,indent=2),encoding='utf-8')
     return manifest
 
 
@@ -260,10 +266,12 @@ def main():
     p.add_argument('--balance',required=True,type=Path)
     p.add_argument('--schemas',required=True,type=Path)
     p.add_argument('--output',required=True,type=Path)
+    p.add_argument('--native',type=Path,help='Optional matching-build ARM64 libil2cpp.so')
     a=p.parse_args()
-    result=recover(a.balance,a.schemas,a.output)
+    result=recover(a.balance,a.schemas,a.output,a.native)
     if (a.output/'StageData.json').exists() and (a.balance/'StageData.pack.bytes').exists():
-        result['stagePackRecovery']=recover_stages(a.balance,load_schemas(a.schemas),a.output)
+        stage_schemas=json.loads((a.output/'schema-evidence.json').read_text(encoding='utf-8'))
+        result['stagePackRecovery']=recover_stages(a.balance,stage_schemas,a.output)
         (a.output/'manifest.json').write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding='utf-8')
     counts={s:sum(f['status']==s for f in result['files']) for s in sorted({f['status'] for f in result['files']})}
     print(json.dumps(counts))
