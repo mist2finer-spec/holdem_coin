@@ -69,8 +69,9 @@ export function pricedCallGuard(c:{hole:Card[];board:Card[];seats:BettingSeat[];
   const call=Math.max(0,highest-actor.currentBet),cost=Math.min(call,actor.stack);
   if(cost<=0)return null;
   // Forced blind chips alone must not bypass rare-hand cold-entry caps.
+  const opponentsLocked=opponents.every(s=>s.allIn||s.stack===0);
   const committed=c.board.length===0?actor.currentBet>c.bigBlind
-    :actor.currentBet>0||(cost===actor.stack&&actor.totalBet>c.bigBlind);
+    :actor.currentBet>0||((cost===actor.stack||opponentsLocked)&&actor.totalBet>c.bigBlind);
   // A stack-capped call is final for this actor even when others can continue
   // betting a separate side pot. Their hypothetical future bets are excluded.
   const locked=committed&&(cost===actor.stack||opponents.every(s=>s.allIn||s.stack===0));

@@ -1,0 +1,215 @@
+[
+  {
+    "hand": 84,
+    "hole": [
+      "7♠",
+      "8♠"
+    ],
+    "board": [
+      "5♥",
+      "2♣",
+      "6♦"
+    ],
+    "seats": [
+      {
+        "seatId": 0,
+        "stack": 24516,
+        "totalBet": 0,
+        "currentBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 1,
+        "stack": 4650,
+        "totalBet": 100,
+        "currentBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 2,
+        "stack": 18490,
+        "totalBet": 400,
+        "currentBet": 0,
+        "inHand": true,
+        "folded": false,
+        "allIn": false
+      },
+      {
+        "seatId": 3,
+        "stack": 4180,
+        "totalBet": 0,
+        "currentBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 4,
+        "stack": 4808,
+        "totalBet": 625,
+        "currentBet": 225,
+        "inHand": true,
+        "folded": false,
+        "allIn": false
+      },
+      {
+        "seatId": 5,
+        "stack": 8130,
+        "totalBet": 0,
+        "currentBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      }
+    ],
+    "actorId": 2,
+    "isOOP": true,
+    "raiseLevel": 1
+  },
+  {
+    "hand": 192,
+    "hole": [
+      "J♣",
+      "T♠"
+    ],
+    "board": [
+      "J♦",
+      "Q♥",
+      "2♦"
+    ],
+    "seats": [
+      {
+        "seatId": 0,
+        "stack": 25924,
+        "totalBet": 0,
+        "currentBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 1,
+        "stack": 5717,
+        "totalBet": 550,
+        "currentBet": 0,
+        "inHand": true,
+        "folded": false,
+        "allIn": false
+      },
+      {
+        "seatId": 2,
+        "stack": 2016,
+        "totalBet": 200,
+        "currentBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 3,
+        "stack": 2567,
+        "totalBet": 0,
+        "currentBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 4,
+        "stack": 12490,
+        "totalBet": 0,
+        "currentBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 5,
+        "stack": 27092,
+        "totalBet": 875,
+        "currentBet": 325,
+        "inHand": true,
+        "folded": false,
+        "allIn": false
+      }
+    ],
+    "actorId": 1,
+    "isOOP": true,
+    "raiseLevel": 1
+  },
+  {
+    "hand": 271,
+    "hole": [
+      "J♣",
+      "3♣"
+    ],
+    "board": [
+      "4♣",
+      "5♣",
+      "7♠"
+    ],
+    "seats": [
+      {
+        "seatId": 0,
+        "stack": 11103,
+        "totalBet": 0,
+        "currentBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 1,
+        "stack": 19079,
+        "totalBet": 400,
+        "currentBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 2,
+        "stack": 9597,
+        "totalBet": 2720,
+        "currentBet": 2320,
+        "inHand": true,
+        "folded": false,
+        "allIn": false
+      },
+      {
+        "seatId": 3,
+        "stack": 27836,
+        "totalBet": 1560,
+        "currentBet": 1160,
+        "inHand": true,
+        "folded": false,
+        "allIn": false
+      },
+      {
+        "seatId": 4,
+        "stack": 15719,
+        "totalBet": 400,
+        "currentBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      },
+      {
+        "seatId": 5,
+        "stack": 18072,
+        "totalBet": 0,
+        "currentBet": 0,
+        "inHand": false,
+        "folded": true,
+        "allIn": false
+      }
+    ],
+    "actorId": 3,
+    "isOOP": false,
+    "raiseLevel": 2
+  }
+]

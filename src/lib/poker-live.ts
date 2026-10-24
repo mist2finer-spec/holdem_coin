@@ -131,7 +131,7 @@ export function decideLiveBot(trainer: SelfPlayTrainer, ctx: {
     const boardDefense=action.action==='fold'?boardDefenseDecision({hole:actor.holeCards,board,seats:context.seats,
       actorId:actor.seatId,base:actor.persona||RPG_BOT_POOL[0],persona,isOOP:context.position.isOOP,raiseLevel:ctx.raiseLevel}):null;
     if(boardDefense?.accepted){
-      decisionPath=boardDefense.kind==='cheap-river'?'priced-river-call':'draw-board-catch';
+      decisionPath=boardDefense.kind==='cheap-river'?'priced-river-call':boardDefense.kind==='small-bet-defense'?'small-bet-call':'draw-board-catch';
       action={action:boardDefense.cost>=actor.stack?'allin':'call',amount:boardDefense.cost};
     }
     // A declined draw mix cannot veto a deterministic positive-price river call.

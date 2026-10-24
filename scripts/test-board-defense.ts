@@ -69,11 +69,12 @@ test('a responder needs capacity above the price for a legal raise, not just rem
  seats[1].stack=5001;assert.equal(hasBettingOpponent(seats,0),true);
 });
 
-test('real own flush draws may defend a flop at the same single personality frequency',()=>{
+test('small heads-up flush-draw calls bypass mixing, while raises retain the single mix',()=>{
  const c=spot();c.board=cards(['Q♠','7♠','2♦']);c.hole=cards(['A♠','K♠']);
  c.seats=c.seats.slice(0,2).map((s:any,i:number)=>({...s,seatId:i,stack:4800,currentBet:i?100:0,totalBet:i?300:200,inHand:true,folded:false,allIn:false}));c.actorId=0;
- const g=boardDefenseDecision(c,()=>0)!;assert.equal(g.kind,'draw-board');assert.ok(g.eligible&&g.accepted);
- assert.equal(boardDefenseDecision(c,()=>.999)!.accepted,false);
+ const g=boardDefenseDecision(c,()=>0)!;assert.equal(g.kind,'small-bet-defense');assert.ok(g.eligible&&g.accepted);
+ assert.equal(boardDefenseDecision(c,()=>.999)!.accepted,true,'a well-priced heads-up draw no longer loses a random roll');
+ c.raiseLevel=2;const raised=boardDefenseDecision(c,()=>.999)!;assert.equal(raised.forced,false);assert.equal(raised.rangeModel,'board-value');
  c.hole=cards(['J♥','T♣']);assert.equal(boardDefenseDecision(c,()=>0),null,'mere backdoors must not unlock a call');
 });
 test('declined draw mix cannot veto a deterministic positive-EV call',(t)=>{
@@ -96,4 +97,16 @@ test('a short big blind still uses the full bring-in for responder capacity',()=
  {seatId:2,stack:0,currentBet:50,totalBet:50,inHand:true,folded:false,allIn:true}];
  assert.equal(hasBettingOpponent(seats,0,200),false);
  assert.deepEqual(normalizeLiveAction(seats,0,{action:'allin'},200,true,200),{action:'call',amount:200});
+});
+
+const history=JSON.parse(fs.readFileSync(new URL('./fixtures/small-bet-defense-spots.json',import.meta.url),'utf8'));
+for(const hand of [84,192])test(`history #${hand}: a profitable pair/draw facing a quarter-pot c-bet cannot randomly fold`,()=>{
+ const f=history.find((f:any)=>f.hand===hand),c={...f,hole:cards(f.hole),board:cards(f.board),base,persona:base};
+ const g=boardDefenseDecision(c,()=>.999)!;assert.equal(g.kind,'small-bet-defense');assert.equal(g.forced,true);assert.equal(g.accepted,true);assert.ok(g.callEV>g.margin);
+ for(const s of c.seats)Object.defineProperty(s,'holeCards',{enumerable:true,get(){throw Error('Private cards read');}});
+ assert.equal(boardDefenseDecision(c,()=>.999)!.accepted,true);
+});
+test('history #271: a flop check-raise uses board-conditioned value rather than a preflop opening range',()=>{
+ const f=history.find((f:any)=>f.hand===271),c={...f,hole:cards(f.hole),board:cards(f.board),base,persona:base};
+ const g=boardDefenseDecision(c,()=>.999)!;assert.equal(g.rangeModel,'board-value');assert.equal(g.forced,false);assert.equal(g.accepted,false);
 });

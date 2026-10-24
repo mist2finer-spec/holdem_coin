@@ -1,6 +1,7 @@
 import {evaluateBestHand,type Card} from './poker-engine';
 import {classifyHandTier,HandTier} from './equity-engine';
 import {estimateEquity} from './poker-ai';
+import {pricedCallEquity} from './poker-priced-call';
 import {contributionLayers,type BettingSeat} from './poker-rules';
 import {riverRangeEquity} from './poker-river-defense';
 import type {BotPersona} from './personas';
@@ -35,25 +36,33 @@ export function boardDefenseDecision(c:Context,random=Math.random) {
  // A board-only pair/straight/flush does not turn unrelated cards into a catcher.
  const playsBoard=river&&evaluateBestHand(c.hole,c.board)===evaluateBestHand(c.board.slice(0,2),c.board.slice(2));
  const hasHand=!playsBoard&&(tier>=HandTier.WEAK_PAIR||(!river&&tier===HandTier.DRAW));
- const projected=c.seats.map(s=>({...s,totalBet:s.totalBet+(s.seatId===actor.seatId?cost:0)}));
+ const projected=c.seats.map(s=>({seatId:s.seatId,stack:s.stack,currentBet:s.currentBet,inHand:s.inHand,folded:s.folded,allIn:s.allIn,totalBet:s.totalBet+(s.seatId===actor.seatId?cost:0)}));
  const layers=contributionLayers(projected).filter(p=>p.refundSeatId===undefined&&p.eligibleSeatIds.includes(actor.seatId));
  const pot=layers.reduce((n,p)=>n+p.amount,0),price=cost/Math.max(1,pot);
  const cheap=river&&price<=.08&&hasHand;
- if(!cheap&&(!scary||!hasHand))return null;
+ const ownPair=c.hole[0].rank===c.hole[1].rank||c.hole.some(h=>c.board.some(b=>b.rank===h.rank));
+ const smallCandidate=!river&&alive.length===2&&(c.raiseLevel||0)<=1&&price<=.18
+   &&(ownPair||tier===HandTier.DRAW);
+ if(!cheap&&!smallCandidate&&(!scary||!hasHand))return null;
  // On a river, catches need showdown value, not a missed draw classified as air.
  let expected=0;
  for(const layer of layers){
   const opponents=layer.eligibleSeatIds.length-1;
   const q=river
    ? Math.pow(riverRangeEquity(c.hole,c.board),Math.max(1,opponents))
-   :estimateEquity(c.hole,c.board,opponents,128,(c.raiseLevel||0)>=2?'three-bet':'open');
+   :(c.raiseLevel||0)>=2?pricedCallEquity(c.hole,c.board,opponents)
+   :estimateEquity(c.hole,c.board,opponents,192,'open');
   expected+=layer.amount*q;
  }
  const locked=cost===actor.stack||alive.every(s=>s.seatId===actor.seatId||s.allIn||s.stack===0);
  const realization=river||locked?1:c.isOOP?.82:.90;
  const equity=pot?expected/pot:0,callEV=expected*realization-cost,margin=Math.max(1,pot*.01);
- const frequency=cheap?1:drawCallFrequency(c.base,c.persona);
+ // Small heads-up first bets: keep profitable real pairs/draws out of random folds.
+ // Raises and multiway pots retain the personality mix with a value-aware range.
+ const smallBet=smallCandidate&&equity*realization>=price+.05;
+ const forced=cheap||smallBet;
+ const frequency=forced?1:drawCallFrequency(c.base,c.persona);
  const eligible=callEV>margin;
- return {kind:cheap?'cheap-river':'draw-board',frequency,cost,pot,price,equity,realization,callEV,margin,eligible,
-  accepted:eligible&&(cheap||random()<frequency)};
+ return {kind:cheap?'cheap-river':smallBet?'small-bet-defense':'draw-board',forced,rangeModel:!river&&(c.raiseLevel||0)>=2?'board-value':'open',frequency,cost,pot,price,equity,realization,callEV,margin,eligible,
+  accepted:eligible&&(forced||random()<frequency)};
 }

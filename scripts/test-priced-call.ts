@@ -88,3 +88,12 @@ test('forced blind chips do not unlock a rare low-connector cold call',()=>{
   {seatId:1,stack:0,currentBet:230,totalBet:230,inHand:true,folded:false,allIn:true}];
  assert.equal(pricedCallGuard({hole:cards(['2♠','3♥']),board:[],seats,actorId:0,bigBlindSeat:0,raiseLevel:1,bigBlind:200}),null);
 });
+
+test('history #92: previous-street investment still counts when the turn starts with a tiny all-in',()=>{
+ const c=JSON.parse(fs.readFileSync(new URL('./fixtures/cheap-locked-turn-92.json',import.meta.url),'utf8'));
+ const g=pricedCallGuard(c)!;assert.equal(g.kind,'committed-allin');assert.equal(g.cost,120);assert.equal(g.netPot,11035);assert.equal(g.realization,1);assert.equal(g.accepted,true);
+ assert.ok(g.requiredEquity<.011);assert.ok(g.callEV>g.margin);
+ // Removing the opponent lock must not turn unrelated king-high into an unconditional call.
+ c.seats.find((s:any)=>s.seatId===3).allIn=false;c.seats.find((s:any)=>s.seatId===3).stack=5000;
+ assert.equal(pricedCallGuard(c),null);
+});

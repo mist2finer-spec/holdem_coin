@@ -1,0 +1,90 @@
+{
+  "hole": [
+    {
+      "rank": "K",
+      "suit": "♦"
+    },
+    {
+      "rank": "Q",
+      "suit": "♥"
+    }
+  ],
+  "board": [
+    {
+      "rank": "7",
+      "suit": "♠"
+    },
+    {
+      "rank": "7",
+      "suit": "♥"
+    },
+    {
+      "rank": "6",
+      "suit": "♣"
+    },
+    {
+      "rank": "4",
+      "suit": "♠"
+    }
+  ],
+  "seats": [
+    {
+      "seatId": 0,
+      "stack": 0,
+      "totalBet": 2875,
+      "currentBet": 0,
+      "inHand": true,
+      "folded": false,
+      "allIn": true
+    },
+    {
+      "seatId": 1,
+      "stack": 6983,
+      "totalBet": 3860,
+      "currentBet": 0,
+      "inHand": true,
+      "folded": false,
+      "allIn": false
+    },
+    {
+      "seatId": 2,
+      "stack": 14189,
+      "totalBet": 0,
+      "currentBet": 0,
+      "inHand": false,
+      "folded": true,
+      "allIn": false
+    },
+    {
+      "seatId": 3,
+      "stack": 0,
+      "totalBet": 3980,
+      "currentBet": 120,
+      "inHand": true,
+      "folded": false,
+      "allIn": true
+    },
+    {
+      "seatId": 4,
+      "stack": 5088,
+      "totalBet": 200,
+      "currentBet": 0,
+      "inHand": false,
+      "folded": true,
+      "allIn": false
+    },
+    {
+      "seatId": 5,
+      "stack": 8730,
+      "totalBet": 0,
+      "currentBet": 0,
+      "inHand": false,
+      "folded": true,
+      "allIn": false
+    }
+  ],
+  "actorId": 1,
+  "bigBlindSeat": 4,
+  "raiseLevel": 0,
+  "bigBlind": 200
+}
