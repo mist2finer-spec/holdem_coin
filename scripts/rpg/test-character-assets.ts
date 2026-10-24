@@ -71,3 +71,7 @@ test('weapon attack frames reach contact at the server impact and stay bounded w
  for(let f=0;f<4;f++)for(const dir of [-1,1]){const p=attackSpritePlacement(f,100,240,.5,dir);assert.equal(p.x+(p.target[0]+ATTACK_CELL.footX)*p.scaleX,100);assert.equal(p.y+(p.target[1]+ATTACK_CELL.footY)*p.scaleY,240);}
  assert.throws(()=>attackSpritePlacement(4,0,0,1,1));
 });
+
+test('inventory icons exist as transparent square assets for all four weapons',()=>{
+ for(const type of ['sword','axe','spear','dual']){const png=fs.readFileSync(`public/rpg/weapons/${type}.png`);assert.equal(png.subarray(1,4).toString(),'PNG');assert.equal(png.readUInt32BE(16),384);assert.equal(png.readUInt32BE(20),384);assert.equal(png[25],6);}
+});
