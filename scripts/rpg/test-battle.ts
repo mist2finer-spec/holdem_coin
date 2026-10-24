@@ -31,7 +31,7 @@ test('native floors and half-open segments match known values; missing curve is 
  assert.equal(curveValue(balance.team,1),1000);assert.equal(curveValue(balance.team,2),1107);assert.equal(curveValue(balance.weapon,10),92);assert.equal(curveValue(balance.team,50),0);
  const p=newHuntProgress();p.xp=995;awardHuntKill(p,balance);assert.equal(p.level,2);assert.equal(p.xp,7);assert.equal(p.kills,1);
  p.soulGem=100;const cost=upgradeHunt(p,balance,'weapon');assert.equal(cost,40);assert.equal(p.weaponLevel,2);assert.equal(p.soulGem,60);
- p.weaponLevel=50;assert.throws(()=>upgradeHunt(p,balance,'weapon'));assert.equal(p.soulGem,60);
+ p.weaponLevel=50;p.weaponLevels[p.weaponType]=50;assert.throws(()=>upgradeHunt(p,balance,'weapon'));assert.equal(p.soulGem,60);
 });
 test('SQLite revision protects concurrent accounts and persists after closing/reopening',()=>{
  const dir=mkdtempSync(path.join(tmpdir(),'rpg-save-'));try{const file=path.join(dir,'save.sqlite'),store=new RpgStore(file),a=store.load('guest');a.progress.gold=99;
@@ -131,4 +131,13 @@ test('hunt tables have valid references, spawn bounds, real asset files and avai
 test('old four-weapon saves add unarmed training without losing existing upgrades',()=>{
  const store=new RpgStore(':memory:'),saved=store.load('four');const legacy=structuredClone(saved.progress);delete (legacy.weaponLevels as any).unarmed;legacy.weaponLevels.axe=4;legacy.weaponLevel=4;
  store.db.prepare('UPDATE rpg_players SET progress=? WHERE id=?').run(JSON.stringify(legacy),'four');const p=store.load('four').progress;assert.equal(p.weaponLevels.unarmed,1);assert.equal(p.weaponLevels.axe,4);store.close();
+});
+
+test('armory upgrades selected unequipped items without silently equipping them or charging retries twice',()=>{
+ const store=new RpgStore(':memory:'),saved=store.load('inventory');saved.progress.soulGem=100;store.save('inventory',saved.progress,saved.revision);
+ const service=new RpgService(store,balance,()=>0);const start=service.start('inventory','hong');
+ const upgraded=service.command('inventory',start.id,1,input,'upgrade-spear');assert.equal(upgraded.weapon,'axe');assert.equal(upgraded.progress.weaponLevel,1);assert.equal(upgraded.progress.weaponLevels.spear,2);assert.equal(upgraded.progress.soulGem,60);assert.equal(upgraded.weaponCosts.spear,42);
+ assert.deepEqual(service.command('inventory',start.id,1,input,'upgrade-spear'),upgraded);
+ const equipped=service.command('inventory',start.id,2,input,'equip-spear');assert.equal(equipped.weapon,'spear');assert.equal(equipped.progress.weaponLevel,2);
+ assert.equal(service.start('inventory','hong').progress.weaponLevels.spear,2);store.close();
 });

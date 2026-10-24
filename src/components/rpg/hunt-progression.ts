@@ -30,11 +30,16 @@ export function awardHuntKill(p:HuntProgress,balance:HuntBalance){
  while(p.level<balance.maxLevel){const required=curveValue(balance.team,p.level);if(required<=0||p.xp<required)break;p.xp-=required;p.level++;}
  if(p.level>=balance.maxLevel)p.xp=0;
 }
+export function upgradeHuntWeapon(p:HuntProgress,balance:HuntBalance,type:WeaponType){
+ if(!isWeaponType(type))throw Error('Invalid weapon');const cost=curveValue(balance.weapon,p.weaponLevels[type]);
+ if(cost<=0)throw Error('최대 강화 단계이거나 비용 설정이 없습니다.');if(p.soulGem<cost)throw Error('영혼석이 부족합니다.');
+ p.soulGem-=cost;p.weaponLevels[type]++;if(p.weaponType===type)p.weaponLevel=p.weaponLevels[type];return cost;
+}
 export function upgradeHunt(p:HuntProgress,balance:HuntBalance,slot:'weapon'|'armor'){
- const key=slot==='weapon'?'weaponLevel':'armorLevel',cost=curveValue(balance[slot],p[key]);
- if(cost<=0)throw Error('최대 강화 단계이거나 비용 설정이 없습니다.');
- if(p.soulGem<cost)throw Error('영혼석이 부족합니다.');
- p.soulGem-=cost;p[key]++;if(slot==='weapon')p.weaponLevels[p.weaponType]=p.weaponLevel;return cost;
+ if(slot==='weapon')return upgradeHuntWeapon(p,balance,p.weaponType);
+ const cost=curveValue(balance.armor,p.armorLevel);
+ if(cost<=0)throw Error('최대 강화 단계이거나 비용 설정이 없습니다.');if(p.soulGem<cost)throw Error('영혼석이 부족합니다.');
+ p.soulGem-=cost;p.armorLevel++;return cost;
 }
 export function heroStats(p:HuntProgress){return {maxHP:10_000,
  attack:20+(p.level-1)*1.5+(p.weaponLevel-1)*2,defense:2+(p.armorLevel-1)*1.5,crit:.1,critMultiplier:1.5};}

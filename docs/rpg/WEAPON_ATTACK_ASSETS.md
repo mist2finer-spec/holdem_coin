@@ -15,3 +15,10 @@ Built-in image_gen, identity-preserve mode, one character atlas per reference id
 Raw generated sources are kept as `attacks/source-v1.png`. `scripts/rpg/build_attack_assets.mjs` extracts disconnected sprites, preserves their RGBA pixels, normalizes scale and feet and writes manifests. It does not synthesize poses. The generator's first/last poses can differ slightly in anatomy/cloth; these are prototype art, not recovered original Vardian animations. Each four-pose style is reused for its combo strikes; unique artwork for every individual combo hit is a separate expansion.
 
 Unity: slice by 512×384 and use the common pivot (0.5, 0.083333). Assign five animation clips/override sets, and use the manifest contact index to align Animation Events with authoritative hit logic. This patch supplies sprites and web playback, not a new Unity animator controller.
+
+
+## Inventory panel update
+
+The weapon tab is a bottom equipment panel retaining the combat viewport, inspired by the supplied Vardian inventory screenshots. Four real starter weapon icons occupy a four-column grid; unarmed training is a separate selection. Selecting a card does not equip or spend. Explicit equip and upgrade actions apply to the selected type; upgrades may target unequipped weapons without changing the equipped attack style. Costs for each type come from the server's existing recovered first weapon-cost curve, paid with soul gems. Retries use the same authoritative sequence and persistence checks. This update does not implement native rarity tiers, duplicate quantities, summons or synthesis.
+
+Inventory icons: built-in image_gen, transparent 2×2 atlas based on reference item style, steel sword/axe/spear/dual blades with leather and antique-gold details; no labels or UI baked into images. Icons are sliced to four 384×384 PNGs under `public/rpg/weapons`.

@@ -1,10 +1,10 @@
 'use client';
+import {HuntArmory} from './HuntArmory';
 import {Shield} from 'lucide-react';
 import {useEffect,useRef,useState} from 'react';
 import {useRouter} from 'next/navigation';
 import {HuntEngine} from './hunt-engine';
 import {COMBAT_CHARACTERS} from './combat-characters';
-import {WEAPONS,WEAPON_TYPES} from './hunt-weapons';
 import {huntLoadout} from './hunt-loadouts';
 import {HUNT_QUESTS,POTION_PRICE} from './hunt-progression';
 import type {BattleView,HuntInput,HuntAction} from '../../lib/rpg-service';
@@ -78,7 +78,7 @@ export function HuntPrototype({onExit,character='hong'}:{onExit?:()=>void;charac
   <header className="hunt-header"><button className="hunt-back" onClick={exit}>← 캐릭터 선택</button><span className="hunt-prototype">사냥 프로토타입</span>
    <div className="hunt-currencies"><span><img src="/rpg/mat_gold.png" alt="골드"/>{(view?.progress.gold??0).toLocaleString()}</span><span title="영혼석">◆ {(view?.progress.soulGem??0).toLocaleString()}</span></div></header>
   <section className="hunt-stage" aria-label="달빛 숲 사냥터"><canvas ref={canvas} aria-label="전사와 최대 7마리 슬라임" data-status={status}/>
-   <div className="hunt-identity"><img src={`/rpg/characters/${character}/portrait.png`} alt="선택한 캐릭터 초상화"/><div><small>Lv. {view?.progress.level??1} · {view?.loadout??'여행자'}</small><strong>{COMBAT_CHARACTERS.find(c=>c.id===character)?.label}</strong><span>무기 +{(view?.progress.weaponLevel??1)-1} · 방어구 +{(view?.progress.armorLevel??1)-1}</span></div></div>
+   <div className="hunt-identity"><img src={`/rpg/characters/${character}/portrait.png`} alt="선택한 캐릭터 초상화"/><div><small>Lv. {view?.progress.level??1} · {view?.loadout??'여행자'}</small><strong>{COMBAT_CHARACTERS.find(c=>c.id===character)?.label}</strong><span>무기 +{(view?.progress.weaponLevel??1)-1} · 방어구 +{(view?.progress.armorLevel??1)-1}</span>{dialog==='weapons'&&<meter className="armory-stage-hp" aria-label="전투 체력" min="0" max={view?.maxHP??10000} value={view?.hp??10000}/>}</div></div>
    <div className="hunt-location"><small>CHAPTER 01</small><h1>달빛 숲 <span>1–1</span></h1><p><i/>{view?.dead?'복귀 대기':view?.auto?'자동 사냥 중':'자유 탐험'} · 처치 {view?.progress.kills??0}</p></div>
    <button className="hunt-menu-toggle" aria-label="메뉴" aria-expanded={menu} onClick={()=>setMenu(!menu)}>☰</button>
    {menu&&<nav className="hunt-drawer" aria-label="사냥 메뉴"><button onClick={()=>{setDialog('weapons');setMenu(false);}}>무기</button><button onClick={()=>setNotice('A/D 이동 · Space 공격 · Q/E 회피 · F 패링 · 숫자 1–6 스킬')}>조작 안내</button><button onClick={()=>{setDialog('bag');setMenu(false);}}>가방 · 물약</button><button onClick={()=>{setDialog('quest');setMenu(false);}}>사냥 의뢰</button><button onClick={exit}>캐릭터 선택으로</button></nav>}
@@ -87,7 +87,7 @@ export function HuntPrototype({onExit,character='hong'}:{onExit?:()=>void;charac
    {view?.dead&&<div className="hunt-loading" role="dialog" aria-modal="true" aria-label="전투 불능"><strong>전투 불능</strong><small>획득한 성장과 재화는 저장됐습니다.</small><button disabled={!view.reviveReady} onClick={()=>enqueue({action:'revive'})}>{view.reviveReady?'안전한 위치로 복귀':'복귀 준비 중…'}</button><button onClick={exit}>캐릭터 선택으로</button></div>}
    <div className="hunt-stage-caption"><span>✦ 시작의 숲</span></div>
   </section>
-  <section className="hunt-console" aria-label="전투 조작">
+  {dialog==='weapons'?<HuntArmory view={view} active={active} onCommand={action=>enqueue({action})} onClose={()=>setDialog(null)}/>:<section className="hunt-console" aria-label="전투 조작">
    {notice&&<p className="hunt-notice" role="status">{notice} <button onClick={()=>location.reload()}>다시 입장</button></p>}
    <div className="hunt-vitals"><div><span>HP</span><meter min="0" aria-label="체력" max={view?.maxHP??10000} value={view?.hp??10000}/></div><div><span>EXP</span><progress max={Math.max(1,view?.xpRequired??1000)} value={view?.progress.xp??0}/><small>{view?.xpRequired?`${Math.floor((view.progress.xp/view.xpRequired)*100)}%`:'MAX'}</small></div></div>
    <div className="hunt-skill-row">{skills.map(([name,icon],i)=><button className="hunt-skill" key={name} aria-label={`${name} 스킬`} disabled={!active||(view?.cooldowns[i]??0)>0} onClick={()=>enqueue({skill:i})}><img src={`/rpg/${icon}.png`} alt=""/><span>{(view?.cooldowns[i]??0)>0?Math.ceil(view!.cooldowns[i]):i+1}</span></button>)}</div>
@@ -97,10 +97,9 @@ export function HuntPrototype({onExit,character='hong'}:{onExit?:()=>void;charac
 
     <button className="hunt-parry" disabled={!active} onClick={()=>enqueue({parry:true})} aria-label="패링"><Shield/></button>
     <button className="hunt-dodge" disabled={!active} onClick={()=>enqueue({dodge:1})} aria-label="오른쪽 회피">↷</button></div>
-  </section>
+  </section>}
   <footer className="hunt-footer"><button onClick={()=>setDialog('weapons')}>무기</button><button onClick={()=>setDialog('growth')}>성장 · 장비</button><button onClick={()=>setDialog('bag')}>가방</button><strong>✦ 탐험</strong><button onClick={()=>setDialog('quest')}>사냥 의뢰</button></footer>
-  {dialog&&<div className="hunt-modal" onClick={()=>setDialog(null)}><section role="dialog" aria-modal="true" aria-labelledby="hunt-growth-title" onClick={e=>e.stopPropagation()}><h2 id="hunt-growth-title">{dialog==='weapons'?'무기고':dialog==='growth'?'성장 · 훈련 장비':dialog==='bag'?'가방 · 회복 물약':'사냥 의뢰'}</h2>{dialog==='growth'&&<><p>영혼석 {view?.progress.soulGem??0} · Lv. {view?.progress.level??1}</p><p>무기 강화는 공격력, 방어구 강화는 방어력을 높입니다.</p><button disabled={!active||!view?.weaponCost||view.progress.soulGem<view.weaponCost} onClick={()=>enqueue({action:'weapon'})}>무기 강화 · {view?.weaponCost||'MAX'} 영혼석</button><button disabled={!active||!view?.armorCost||view.progress.soulGem<view.armorCost} onClick={()=>enqueue({action:'armor'})}>방어구 강화 · {view?.armorCost||'MAX'} 영혼석</button><p>9종은 임시 훈련 특성을 사용합니다. 원작 전용 모션·밸런스와는 구분됩니다.</p></>}
-   {dialog==='weapons'&&<><p>영혼석 {view?.progress.soulGem??0} · 무기별 강화 유지</p><div className="hunt-weapon-grid">{WEAPON_TYPES.map(type=>{const w=WEAPONS[type],level=view?.progress.weaponLevels[type]??1;return <button key={type} className={view?.weapon===type?'is-equipped':''} disabled={!active||view?.weapon===type} onClick={()=>enqueue({action:`equip-${type}`})}><strong>{w.icon} {w.name} +{level-1}</strong><small>{w.description}</small><span>{view?.weapon===type?'장착 중':'장착'}</span></button>;})}</div><button disabled={!active||!view?.weaponCost||view.progress.soulGem<view.weaponCost} onClick={()=>enqueue({action:'weapon'})}>장착 무기 강화 · {view?.weaponCost||'MAX'} 영혼석</button><p>선택한 무기의 공격력만 증가합니다. 다른 무기의 강화 단계는 유지됩니다.</p></>}
+  {dialog&&dialog!=='weapons'&&<div className="hunt-modal" onClick={()=>setDialog(null)}><section role="dialog" aria-modal="true" aria-labelledby="hunt-growth-title" onClick={e=>e.stopPropagation()}><h2 id="hunt-growth-title">{dialog==='growth'?'성장 · 훈련 장비':dialog==='bag'?'가방 · 회복 물약':'사냥 의뢰'}</h2>{dialog==='growth'&&<><p>영혼석 {view?.progress.soulGem??0} · Lv. {view?.progress.level??1}</p><p>무기 강화는 공격력, 방어구 강화는 방어력을 높입니다.</p><button disabled={!active||!view?.weaponCost||view.progress.soulGem<view.weaponCost} onClick={()=>enqueue({action:'weapon'})}>무기 강화 · {view?.weaponCost||'MAX'} 영혼석</button><button disabled={!active||!view?.armorCost||view.progress.soulGem<view.armorCost} onClick={()=>enqueue({action:'armor'})}>방어구 강화 · {view?.armorCost||'MAX'} 영혼석</button><p>9종은 임시 훈련 특성을 사용합니다. 원작 전용 모션·밸런스와는 구분됩니다.</p></>}
    {dialog==='bag'&&<><p>골드 {view?.progress.gold??0} · 물약 {view?.progress.potions??0}개</p><p>회복 물약: 최대 HP의 40% 회복 · 재사용 2초</p><button disabled={!active||!view?.potionReady} onClick={()=>enqueue({action:'potion'})}>물약 사용</button><button disabled={!active||!view||view.progress.gold<POTION_PRICE||view.progress.potions>=99} onClick={()=>enqueue({action:'buy-potion'})}>물약 구매 · {POTION_PRICE} 골드</button><p>훈련 무기 +{(view?.progress.weaponLevel??1)-1} · 방어구 +{(view?.progress.armorLevel??1)-1}</p></>}
    {dialog==='quest'&&<>{quest?<><p>{quest.name}</p><p>슬라임 처치 {Math.min(view?.progress.kills??0,quest.kills)} / {quest.kills}</p><p>보상: {quest.gold} 골드 · {quest.soulGem} 영혼석</p><button disabled={!view||(view.progress.kills<quest.kills)} onClick={()=>enqueue({action:'quest'})}>의뢰 보상 받기</button></>:<p>모든 사냥 의뢰를 완료했습니다.</p>}</>}
    <button autoFocus onClick={()=>setDialog(null)}>닫기</button></section></div>}
