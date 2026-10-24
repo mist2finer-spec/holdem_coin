@@ -1,3 +1,5 @@
+import {drawHeldWeapon} from './hunt-weapon-renderer';
+import type {WeaponType} from './hunt-weapons';
 import {CanvasTexture, SkeletonRenderer as CanvasRenderer} from '@esotericsoftware/spine-canvas';
 import {AnimationState, AnimationStateData, AtlasAttachmentLoader, GLTexture, Physics, SceneRenderer, Skeleton, SkeletonJson, TextureAtlas} from '@esotericsoftware/spine-webgl';
 import {HuntEngine,WORLD_WIDTH} from './hunt-engine';
@@ -61,7 +63,7 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
   a.state.update(dt*speed); a.state.apply(a.skeleton); a.skeleton.update(dt); a.skeleton.updateWorldTransform(Physics.update); groundSkeleton(a.skeleton,y,a.groundSlots); if(renderer) renderer.drawSkeleton(a.skeleton, true); else fallback!.draw(a.skeleton);
  };
  return {
-  draw(game: HuntEngine, dt: number) {
+  draw(game: HuntEngine, dt: number, view?:{weapon:WeaponType;motion:{startedAt:number;duration:number;hitAt:number}}) {
    const w = canvas.clientWidth, h = canvas.clientHeight, dpr = Math.min(Math.max(devicePixelRatio || 1, renderer ? 1 : 2), 2);
    if (canvas.width !== Math.round(w*dpr) || canvas.height !== Math.round(h*dpr)) {canvas.width = Math.round(w*dpr); canvas.height = Math.round(h*dpr);}
    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, w, h);
@@ -93,11 +95,15 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
    }
    if(renderer){renderer.end();ctx.drawImage(layer,0,0,w,h);}
    const stage=game.combo.find(s=>s.animation===game.action);
-   const frame=spriteClock.frame(game.action,game.actionSerial,dt,game.animationSpeed,stage?.hitAt??.2);
+   let frame=spriteClock.frame(game.action,game.actionSerial,dt,game.animationSpeed,stage?.hitAt??.2);
+   const attack=!!view&&/^attack/.test(game.action),age=view?Math.max(0,game.elapsed-view.motion.startedAt):0;
+   if(attack){const contact=age>=view!.motion.hitAt;frame=contact?(view!.weapon==='spear'||game.action==='attack2'?10:9):8;}
    const pose=spritePlacement(frame,screenX(game.x),floor,scale,game.facing);
    ctx.save();ctx.imageSmoothingEnabled=false;ctx.translate(pose.x,pose.y);ctx.scale(pose.scaleX,pose.scaleY);
    if(game.heroHitUntil>game.elapsed&&game.hp>0)ctx.globalAlpha=.55+Math.sin(game.elapsed*60)*.2;
    ctx.drawImage(sheet,...pose.source,...pose.target);ctx.restore();
+   if(view&&game.hp>0&&!/avoid|die/.test(game.action))drawHeldWeapon(ctx,view.weapon,frame,screenX(game.x),floor,scale,game.facing,age,view.motion.duration,view.motion.hitAt,attack);
+   canvas.dataset.weapon=view?.weapon??'none';
    canvas.dataset.character=characterId;
    canvas.dataset.heroRig='sprite-16-v1';canvas.dataset.spriteFrame=String(frame);
    canvas.dataset.groundY=String(floor);

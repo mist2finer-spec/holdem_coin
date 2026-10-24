@@ -108,7 +108,19 @@ original loot rules. The full RPG suite now includes 44 tests.
 ## Belt-scroll test mode
 
 - Playable server characters use fixed 10,000 HP during this test. Equipment retains defense/attack growth; HP growth is temporarily disabled. HP numbers and incoming numeric damage are hidden; the energy bar remains live.
-- World width is 7,200 units. The orthographic viewport follows `heroX`, placing the hero at the horizontal center even at map edges. Scenery uses parallax and canvas clipping inside a fixed frame; map edges have visible ground markers.
+- World width is 6,000 units (reduced from 7,200 in the weapon update). The orthographic viewport follows `heroX`, placing the hero at the horizontal center even at map edges. Scenery uses parallax and canvas clipping inside a fixed frame; map edges have visible ground markers.
 - Seven active slimes are spread along the route (including behind the starting hero). Defeated slimes recycle ahead after two seconds, subject to body, dodge-path and landing checks. This is an endless hunting test, not a finite stage-clear system.
 - Entry enables AUTO attack; manual movement still takes priority. Space/manual keyboard attacks remain available. The separate touch attack button is removed. Two dodge controls flank the movement pad symmetrically, with parry centered underneath. Icons retain accessible labels without visible action captions.
 - Unity mapping: keep simulation/world x independent of screen coordinates; use an orthographic camera at `(heroX, fixedY, cameraZ)`, a viewport/RenderTexture for the battle window, and separate parallax layers. Reuse world distances and collision logic; this patch does not port the browser engine to C#.
+
+
+## Four-weapon motion update
+
+Reference: user-uploaded `1.mp4` (14.58 seconds). Its short approach dashes and quick chained impacts inform the web tempo; these values are adaptations, not recovered original class data.
+
+- All nine characters can equip sword, axe, dual blades or spear in the new **무기** tab. Hand-attached Canvas weapon silhouettes use the original 16-frame body sprites without modifying or stretching their source sheets. Existing archived Spine assets stay unused.
+- Sword: four strikes / 62 range / 1.458x tempo; axe: three strikes / 58 range / 1.2825x; dual: five strikes / 48 range / 1.728x; spear: four strikes / 105 range / 1.35x. Character power and critical traits still combine with the selected weapon. Movement, rush, strike duration, impact time and dodge animation use the same tempo scale; skill cooldowns and dodge cooldown stay bounded.
+- Attack rendering receives authoritative motion start/duration/impact times, so faster visuals do not land damage before the server. Armed poses avoid the unarmed kick frames. Continuous swing trails and interpolated enemy positions reduce visible stepping. Feet keep the same anchor.
+- Weapon-specific upgrade levels and equipped type live in the existing guest save, with the selected level mirrored to legacy `weaponLevel`. Legacy upgrades migrate to axe. Equipping is free in this test. Upgrading consumes the existing recovered **soul gem** cost curve, applies to the selected weapon only, and shares the server sequence/CAS protection used by other purchases. Switching cancels an unfinished strike and retains attack cooldown, preventing old-weapon hits after a switch.
+- The map is 6,000 units wide (16.7% narrower); camera framing and centered hero remain unchanged.
+- Unity port: preserve per-weapon range/power/tempo and equipment levels independently from animation/rendering. The hand anchors and trails here are browser sprite adapters, not native skeletal animation or a new C# combat implementation.

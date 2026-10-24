@@ -90,3 +90,30 @@ test('test characters share 10000 HP and distant slime respawns remain outside t
  const g=new HuntEngine(HUNT_RULES.combo,7,{hostile:true});g.x=3600;g.enemies[0].hp=0;g.enemies[0].respawnAt=0;g.step(.01,0);
  assert.equal(g.enemies[0].hp,100);assert.ok(g.enemies[0].x>g.x+900);assert.ok(g.enemies.every(e=>e.x>=65&&e.x<=7200-65));
 });
+
+test('four weapons equip with independent upgrade levels, deduct once and persist across reentry',()=>{
+ const store=new RpgStore(':memory:'),saved=store.load('armory');saved.progress.soulGem=100;store.save('armory',saved.progress,saved.revision);
+ const service=new RpgService(store,balance,()=>0);let v=service.start('armory','hong');let seq=0;
+ v=service.command('armory',v.id,++seq,input,'equip-sword');assert.equal(v.weapon,'sword');
+ v=service.command('armory',v.id,++seq,input,'weapon');assert.equal(v.progress.weaponLevels.sword,2);assert.equal(v.progress.soulGem,60);
+ assert.deepEqual(service.command('armory',v.id,seq,input,'weapon'),v);
+ v=service.command('armory',v.id,++seq,input,'equip-dual');assert.equal(v.progress.weaponLevel,1);assert.equal(v.progress.weaponLevels.sword,2);
+ v=service.command('armory',v.id,++seq,input,'equip-spear');assert.equal(v.weapon,'spear');
+ v=service.command('armory',v.id,++seq,input,'equip-sword');assert.equal(v.progress.weaponLevel,2);
+ v=service.start('armory','white-bob');assert.equal(v.weapon,'sword');assert.equal(v.progress.weaponLevels.sword,2);assert.equal(v.progress.soulGem,60);
+ // A previously returned snapshot cannot be changed by a subsequent equip/upgrade.
+ assert.equal(saved.progress.weaponLevels.sword,1);store.close();
+});
+test('legacy weapon level migrates to axe without losing previous upgrades or currency',()=>{
+ const store=new RpgStore(':memory:');store.load('legacy');store.db.prepare('UPDATE rpg_players SET progress=? WHERE id=?').run(JSON.stringify({level:1,xp:0,gold:100,soulGem:77,kills:9,weaponLevel:5,armorLevel:2}),'legacy');
+ const p=store.load('legacy').progress;assert.equal(p.weaponType,'axe');assert.equal(p.weaponLevels.axe,5);assert.equal(p.weaponLevels.spear,1);assert.equal(p.soulGem,77);store.close();
+});
+test('faster weapons keep impact timing and never inherit a hit from a cancelled old swing',async()=>{
+ const {weaponLoadout}=await import('../../src/components/rpg/hunt-weapons');
+ for(const weapon of ['sword','axe','dual','spear'] as const){const l=weaponLoadout('hong',weapon),g=new HuntEngine(l.combo,1,{hostile:true,tempo:l.tempo,range:l.range,crit:0});g.enemyX=g.x+40;
+  assert.equal(g.attack(),true);const hit=g.visualTiming.hitAt;advance(g,Math.max(0,hit-.02));assert.equal(g.enemyHP,100);advance(g,.03);assert.ok(g.enemyHP<100);
+ }
+ const l=weaponLoadout('hong','dual'),g=new HuntEngine(l.combo,1,{hostile:true,tempo:l.tempo});g.enemyX=g.x+40;g.attack();
+ const s=weaponLoadout('hong','spear');g.configureLoadout(s.combo,s.range,s.crit,s.tempo);advance(g,.5);assert.equal(g.enemyHP,100);
+ assert.equal(s.range,105);assert.equal(l.combo.length,5);
+});
