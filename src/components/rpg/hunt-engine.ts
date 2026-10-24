@@ -38,7 +38,7 @@ export class HuntEngine {
   this.hostile=options.hostile??false;this.rng=(options.seed??12345)>>>0;this.range=options.range??HUNT_RULES.attackRange;this.crit=options.crit??.1;
   this.hp=this.maxHP;this.coins=this.progress.gold;this.xp=this.progress.xp;this.kills=this.progress.kills;
   if(!Number.isInteger(enemyCount)||enemyCount<1||enemyCount>7)throw Error('Invalid monster count');
-  const positions=[780,700,860,540,940,460,1020];
+  const positions=this.hostile&&enemyCount===7?[780,300,1600,2700,3900,5100,6400]:[780,700,860,540,940,460,1020];
   this.enemies=positions.slice(0,enemyCount).map((x,slot)=>({slot,x,hp:100,maxHP:100,serial:slot+1,respawnAt:0,lastDamage:0,hitUntil:0,
    state:'idle',attackAt:0,nextAttack:1+slot*.15}));
   if(!combo.length||combo.some(s=>!motions.durations[s.animation]||!Number.isFinite(s.hitAt)
@@ -159,13 +159,17 @@ export class HuntEngine {
   this.elapsed+=dt;this.cooldowns=this.cooldowns.map(t=>Math.max(0,t-dt));
   if(this.hp<=0)return;
   for(const enemy of this.enemies)if(enemy.hp<=0&&this.elapsed>=enemy.respawnAt){
-   const spawnX=this.enemies.length===1?Math.min(WORLD_WIDTH-90,Math.max(90,this.x+this.facing*230)):enemy.x;
+   // Recycle defeated packs ahead of the hero, without spawning inside a body.
+   const spawnX=this.hostile&&this.enemies.length===7
+    ?Math.max(90,Math.min(WORLD_WIDTH-90,this.x+this.facing*(1000+enemy.slot*180)))
+    :this.enemies.length===1?Math.min(WORLD_WIDTH-90,Math.max(90,this.x+this.facing*230)):enemy.x;
+   if(this.hostile&&this.enemies.some(e=>e!==enemy&&e.hp>0&&Math.abs(e.x-spawnX)<48)){enemy.respawnAt=this.elapsed+.5;continue;}
    const roll=this.motion?.kind==='dodge'?this.motion:null;
    if(roll&&spawnX>Math.min(roll.origin??this.x,roll.destination??this.x)-bodySeparation&&spawnX<Math.max(roll.origin??this.x,roll.destination??this.x)+bodySeparation){enemy.respawnAt=this.elapsed+.25;continue;}
    // Never respawn a solid enemy around the player (including during a roll).
    if(Math.abs(spawnX-this.x)<bodySeparation){enemy.respawnAt=this.elapsed+.25;continue;}
    enemy.hp=enemy.maxHP;enemy.serial+=this.enemies.length;enemy.hitUntil=0;enemy.state='idle';enemy.nextAttack=this.elapsed+1;
-   if(this.enemies.length===1)enemy.x=Math.min(WORLD_WIDTH-90,Math.max(90,this.x+this.facing*230));
+   enemy.x=spawnX;
   }
   if(this.hostile)this.advanceEnemies(dt);
   if(this.hp<=0)return;

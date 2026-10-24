@@ -14,13 +14,13 @@ const input={move:0,attack:false,auto:false};
 const advance=(g:HuntEngine,seconds:number)=>{for(let t=0;t<seconds;t+=.01)g.step(.01,0);};
 test('hostile enemy telegraphs, deals delayed damage, kills hero and safe revival restores input',()=>{
  const g=new HuntEngine(HUNT_RULES.combo,1,{hostile:true});g.enemyX=g.x+40;
- g.step(.01,0);assert.equal(g.hp,100);advance(g,1.1);assert.equal(g.enemies[0].state,'windup');assert.equal(g.hp,100);
- advance(g,.6);assert.ok(g.hp<100);g.hp=1;advance(g,2.1);assert.equal(g.hp,0);assert.equal(g.action,'die1');
+ g.step(.01,0);assert.equal(g.hp,g.maxHP);advance(g,1.1);assert.equal(g.enemies[0].state,'windup');assert.equal(g.hp,g.maxHP);
+ advance(g,.6);assert.ok(g.hp<g.maxHP);g.hp=1;advance(g,2.1);assert.equal(g.hp,0);assert.equal(g.action,'die1');
  assert.equal(g.attack(),false);assert.equal(g.revive(),false);advance(g,2.1);assert.equal(g.revive(),true);assert.equal(g.hp,g.maxHP);
  assert.ok(g.enemies.every(e=>Math.abs(e.x-g.x)>=36));
 });
 test('dodge avoids a telegraphed hit; monster movement cannot pass through hero or occupy a roll origin',()=>{
- const g=new HuntEngine(HUNT_RULES.combo,1,{hostile:true});g.enemyX=g.x+40;advance(g,1.1);g.dodge(-1);advance(g,.5);assert.equal(g.hp,100);
+ const g=new HuntEngine(HUNT_RULES.combo,1,{hostile:true});g.enemyX=g.x+40;advance(g,1.1);g.dodge(-1);advance(g,.5);assert.equal(g.hp,g.maxHP);
  const h=new HuntEngine(HUNT_RULES.combo,1,{hostile:true});h.enemyX=h.x+200;advance(h,4);assert.ok(h.enemyX-h.x>=36-1e-6);
 });
 test('nine training loadouts reuse valid frames and retain 3/4/5 hit variation',()=>{
@@ -80,7 +80,13 @@ test('quest claims and potion purchases consume once, survive reentry and reject
  assert.deepEqual(service.command('g',v.id,2,input,'buy-potion'),purchase);assert.equal(service.start('g','hong').progress.potions,4);store.close();
 });
 test('healing potion cannot resurrect, exceed max HP, or bypass cooldown',()=>{
- const g=new HuntEngine(HUNT_RULES.combo,1,{hostile:true});assert.throws(()=>g.usePotion());g.hp=30;g.usePotion();assert.equal(g.hp,70);assert.equal(g.progress.potions,2);
- assert.throws(()=>g.usePotion());g.enemyHP=0;g.respawnAt=Infinity;advance(g,2.1);g.usePotion();assert.equal(g.hp,100);assert.equal(g.progress.potions,1);
+ const g=new HuntEngine(HUNT_RULES.combo,1,{hostile:true});assert.throws(()=>g.usePotion());g.hp=30;g.usePotion();assert.equal(g.hp,4030);assert.equal(g.progress.potions,2);
+ assert.throws(()=>g.usePotion());g.enemyHP=0;g.respawnAt=Infinity;advance(g,2.1);g.hp=g.maxHP-10;g.usePotion();assert.equal(g.hp,g.maxHP);assert.equal(g.progress.potions,1);
  g.hp=0;assert.throws(()=>g.usePotion());assert.equal(g.progress.potions,1);
+});
+
+test('test characters share 10000 HP and distant slime respawns remain outside the hero body',()=>{
+ for(const c of COMBAT_CHARACTERS){const g=new HuntEngine(huntLoadout(c.id).combo,7,{hostile:true});assert.equal(g.hp,10000);assert.equal(g.maxHP,10000);}
+ const g=new HuntEngine(HUNT_RULES.combo,7,{hostile:true});g.x=3600;g.enemies[0].hp=0;g.enemies[0].respawnAt=0;g.step(.01,0);
+ assert.equal(g.enemies[0].hp,100);assert.ok(g.enemies[0].x>g.x+900);assert.ok(g.enemies.every(e=>e.x>=65&&e.x<=7200-65));
 });

@@ -1,6 +1,6 @@
 import {CanvasTexture, SkeletonRenderer as CanvasRenderer} from '@esotericsoftware/spine-canvas';
 import {AnimationState, AnimationStateData, AtlasAttachmentLoader, GLTexture, Physics, SceneRenderer, Skeleton, SkeletonJson, TextureAtlas} from '@esotericsoftware/spine-webgl';
-import {HuntEngine} from './hunt-engine';
+import {HuntEngine,WORLD_WIDTH} from './hunt-engine';
 import {combatCharacter} from './combat-characters';
 import {CombatSpriteClock,COMBAT_SPRITE_SCALE,spritePlacement} from './combat-sprite';
 import {huntViewport} from './hunt-layout';
@@ -73,12 +73,15 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
    const floor=h*.76,{zoom,camera,screenX}=huntViewport(w,game.x);
    canvas.dataset.enemyCount=String(game.enemies.filter(e=>e.hp>0).length);
    canvas.dataset.visibleEnemies=String(game.enemies.filter(e=>e.hp>0&&screenX(e.x)>=0&&screenX(e.x)<=w).length);
-   const tile = Math.max(h*.8,230), offset = camera*zoom*.22 % tile;
+   canvas.dataset.cameraX=String(camera);canvas.dataset.heroScreenX=String(screenX(game.x));
+   canvas.dataset.worldWidth=String(WORLD_WIDTH);
+   const tile = Math.max(h*.8,230), offset = ((camera*zoom*.22 % tile)+tile)%tile;
    for(let x=-tile-offset; x<w; x+=tile) ctx.drawImage(forest, x, 0, tile, floor+45);
    const shade = ctx.createLinearGradient(0, 0, 0, h); shade.addColorStop(0, '#04191755'); shade.addColorStop(.55, '#091e1600'); shade.addColorStop(1, '#071b13'); ctx.fillStyle=shade;ctx.fillRect(0,0,w,h);
    ctx.fillStyle='#26372a';ctx.fillRect(0,floor+5,w,h-floor);
    ctx.fillStyle='#658150';ctx.fillRect(0,floor+5,w,4);
-   ctx.fillStyle='#192a20'; for(let i=0;i<20;i++) ctx.fillRect(i*90-camera%90,floor+28+(i%3)*12,46,3);
+   ctx.fillStyle='#192a20'; for(let i=-1;i<w/90+1;i++) ctx.fillRect(i*90-((camera*zoom%90)+90)%90,floor+28+(i%3)*12,46,3);
+   for(const edge of [65,WORLD_WIDTH-65]){const x=screenX(edge);if(x>=0&&x<w){ctx.fillStyle='#b4ba8777';ctx.fillRect(x,floor-18,3,25);}}
    const scale=COMBAT_SPRITE_SCALE*zoom;
    ctx.fillStyle='#0005';ctx.beginPath();ctx.ellipse(screenX(game.x),floor+4,25*zoom,5*zoom,0,0,Math.PI*2);ctx.fill();
    for(const mob of game.enemies){
@@ -109,9 +112,9 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
      ctx.strokeStyle='#ff644c';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(x,floor+3,24*zoom,6*zoom,0,0,Math.PI*2);ctx.stroke();}
     if(mob.hitUntil>game.elapsed){ctx.fillStyle='#ffdb8b';ctx.font=`bold ${Math.max(12,20*zoom)}px sans-serif`;ctx.textAlign='center';ctx.fillText(String(mob.lastDamage),x,y-8-(.75-(mob.hitUntil-game.elapsed))*25);}
    }
-   if(game.heroHitUntil>game.elapsed&&game.lastHeroDamage>0){ctx.fillStyle='#ff847c';ctx.font='bold 17px sans-serif';ctx.textAlign='center';ctx.fillText(`−${game.lastHeroDamage}`,screenX(game.x),floor-65*zoom);}
+
    // Foreground decoration follows the world more quickly than the distant forest.
-   ctx.globalAlpha=.7;ctx.drawImage(trees, -170-camera*.4%700, floor-165,145,190);ctx.globalAlpha=1;
+   ctx.globalAlpha=.7;for(let x=-170-((camera*zoom*.65%700)+700)%700;x<w;x+=700)ctx.drawImage(trees,x,floor-165,145,190);ctx.globalAlpha=1;
   },
   dispose() { enemy.atlas.dispose(); renderer?.dispose(); },
   animations: {hero: ['stay1','run1','dash','avoid1','attack1','attack2','attack3','attack4','attack5','damage1'], enemy: enemy.available},

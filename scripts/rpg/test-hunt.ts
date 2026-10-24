@@ -14,7 +14,7 @@ test('motion profile matches actual skeleton bytes and every requested attack/sk
   assert.ok(data.animations[name]&&motions.durations[name as keyof typeof motions.durations]>0);
 });
 test('manual movement remains bounded and invalid time/direction cannot poison state',()=>{
- const g=ready();g.enemyHP=0;g.respawnAt=Infinity;advance(g,20,-1);assert.equal(g.x,65);advance(g,20,1);assert.equal(g.x,WORLD_WIDTH-65);
+ const g=ready();g.enemyHP=0;g.respawnAt=Infinity;advance(g,60,-1);assert.equal(g.x,65);advance(g,60,1);assert.equal(g.x,WORLD_WIDTH-65);
  g.step(NaN,Infinity);g.step(-1,NaN);g.step(Infinity,1);
  assert.ok([g.x,g.elapsed,...g.cooldowns].every(Number.isFinite));
 });
@@ -123,14 +123,18 @@ test('seven independent slimes retarget only after an attack, never share health
  assert.throws(()=>new HuntEngine(HUNT_RULES.combo,8));
 });
 
-test('mobile and desktop cameras fit seven spawn positions without altering world positions',async()=>{
+test('follow camera keeps hero centered across the full map on mobile and desktop',async()=>{
  const {huntViewport}=await import('../../src/components/rpg/hunt-layout');
- const g=new HuntEngine();
- for(const width of [320,390,430,1280]){
-  const v=huntViewport(width,g.x);
-  assert.equal(g.enemies.filter(e=>v.screenX(e.x)>0&&v.screenX(e.x)<width).length,7);
+ for(const width of [320,390,430,1280])for(const x of [65,620,3600,WORLD_WIDTH-65]){
+  const v=huntViewport(width,x);
+  assert.ok(Math.abs(v.screenX(x)-width/2)<1e-6);
   assert.ok(v.zoom>0&&v.zoom<=1);
+  assert.ok(v.screenX(x+100)>v.screenX(x));
  }
+ const g=new HuntEngine(undefined,7,{hostile:true});
+ assert.ok(g.enemies.some(e=>e.x<g.x));assert.ok(g.enemies.some(e=>e.x>5000));
+ assert.ok(g.enemies.filter(e=>Math.abs(e.x-g.x)<450).length<7);
+ assert.equal(g.maxHP,10000);
 });
 
 test('walking cannot pass a live slime in either direction; dead bodies do not block',async()=>{

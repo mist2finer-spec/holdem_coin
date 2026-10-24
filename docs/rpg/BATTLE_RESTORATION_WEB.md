@@ -103,3 +103,12 @@ potions are granted to new guests. Existing saved JSON rows add potion/quest
 fields without resetting currency, levels or equipment. These item prices,
 quest targets/rewards and healing values are web design settings, not recovered
 original loot rules. The full RPG suite now includes 44 tests.
+
+
+## Belt-scroll test mode
+
+- Playable server characters use fixed 10,000 HP during this test. Equipment retains defense/attack growth; HP growth is temporarily disabled. HP numbers and incoming numeric damage are hidden; the energy bar remains live.
+- World width is 7,200 units. The orthographic viewport follows `heroX`, placing the hero at the horizontal center even at map edges. Scenery uses parallax and canvas clipping inside a fixed frame; map edges have visible ground markers.
+- Seven active slimes are spread along the route (including behind the starting hero). Defeated slimes recycle ahead after two seconds, subject to body, dodge-path and landing checks. This is an endless hunting test, not a finite stage-clear system.
+- Entry enables AUTO attack; manual movement still takes priority. Space/manual keyboard attacks remain available. The separate touch attack button is removed. Two dodge controls flank the movement pad symmetrically, with parry centered underneath. Icons retain accessible labels without visible action captions.
+- Unity mapping: keep simulation/world x independent of screen coordinates; use an orthographic camera at `(heroX, fixedY, cameraZ)`, a viewport/RenderTexture for the battle window, and separate parallax layers. Reuse world distances and collision logic; this patch does not port the browser engine to C#.

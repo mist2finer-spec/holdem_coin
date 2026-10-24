@@ -34,5 +34,5 @@ export function upgradeHunt(p:HuntProgress,balance:HuntBalance,slot:'weapon'|'ar
  if(p.soulGem<cost)throw Error('영혼석이 부족합니다.');
  p.soulGem-=cost;p[key]++;return cost;
 }
-export function heroStats(p:HuntProgress){return {maxHP:100+(p.level-1)*5+(p.armorLevel-1)*4,
+export function heroStats(p:HuntProgress){return {maxHP:10_000,
  attack:20+(p.level-1)*1.5+(p.weaponLevel-1)*2,defense:2+(p.armorLevel-1)*1.5,crit:.1,critMultiplier:1.5};}
