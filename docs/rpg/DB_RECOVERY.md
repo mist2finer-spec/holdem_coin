@@ -149,3 +149,21 @@ If these references still do not contain the implementation, the remaining
 requirement is the original matching-version `libil2cpp.so` and
 `global-metadata.dat`, preserved separately from newer builds. Source `.fbs`
 definitions, if available, also resolve serialized defaults directly.
+
+## Formula-reference upload findings
+
+`vardian-formula-20261023-203146.zip` contains 25 Assembly-CSharp source text
+files, without collection.json or README. Collection completeness/hashes cannot
+be verified. It proves calls to WeaponGradeData.CalcReqLevelUpMatCnt (weapon
+display and repeat-upgrade UI), ArmorData.CalcReqLevelUpMatCnt and
+QuadFuncData.CalcValue (multiple resource upgrade screens). It does not contain
+those methods' implementation definitions. CombatMath.GetAnimationCurve calls
+KeyFrameData.ToUnityKeyframe, assigns AnimationCurve.keys and subsequently
+evaluates the curve. This confirms the curve conversion path, not the missing
+converter's tangent-mode implementation or the cost formula.
+
+The collector now supports `-Targeted`: search by filename across the complete
+IsilDump for QuadFuncData, WeaponGradeData, ArmorData, TeamDataTable,
+KeyFrameData and BigInt. It includes those files even when their contents do
+not match the old keyword expression, and prints COLLECTION_COMPLETE only
+after creating the archive. Keep all source files outside the public repo.

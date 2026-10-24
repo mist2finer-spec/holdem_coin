@@ -1,6 +1,7 @@
 param(
   [string]$Root = "$env:USERPROFILE\VardianRE\reports\acheive\cpp2il_isil_v1211\IsilDump",
-  [string]$OutputParent = [Environment]::GetFolderPath('Desktop')
+  [string]$OutputParent = [Environment]::GetFolderPath('Desktop'),
+  [switch]$Targeted
 )
 $ErrorActionPreference = 'Stop'
 if (-not (Test-Path -LiteralPath $Root -PathType Container)) { throw "ISIL directory missing: $Root" }
@@ -14,11 +15,15 @@ $copiedBytes = 0L
 foreach ($path in [IO.Directory]::EnumerateFiles($Root, '*', [IO.SearchOption]::AllDirectories)) {
   $ext = [IO.Path]::GetExtension($path).ToLowerInvariant()
   if ($ext -notin @('.txt', '.cs', '.fbs')) { continue }
+  # Filename-only search crosses all assemblies quickly and avoids a limit
+  # reached while reading unrelated Assembly-CSharp callers first.
+  $isTarget = [IO.Path]::GetFileNameWithoutExtension($path) -match 'QuadFuncData|WeaponGradeData|ArmorData|TeamDataTable|KeyFrameData|BigInt'
+  if ($Targeted -and -not $isTarget) { continue }
   $scanned++
   if ($scanned -gt 50000) { $warnings.Add('Scan stopped after 50000 candidate files.'); break }
   $file = Get-Item -LiteralPath $path
   if ($file.Length -gt 16MB) { $warnings.Add("Oversized file skipped: $path"); continue }
-  if (($ext -ne '.fbs') -and -not (Select-String -LiteralPath $path -Pattern $pattern -Quiet)) { continue }
+  if (-not $isTarget -and ($ext -ne '.fbs') -and -not (Select-String -LiteralPath $path -Pattern $pattern -Quiet)) { continue }
   if (($copiedBytes + $file.Length) -gt 50MB) { $warnings.Add('50MB collection limit reached.'); break }
   $relative = $path.Substring($Root.TrimEnd('\').Length).TrimStart('\')
   $target = Join-Path (Join-Path $dest 'Sources') $relative
@@ -39,4 +44,4 @@ $zip = "$dest.zip"
 Compress-Archive -Path (Join-Path $dest '*') -DestinationPath $zip
 Write-Host "Collected $($items.Count) files; scanned $scanned candidates."
 foreach ($warning in $warnings) { Write-Warning $warning }
-Write-Host "Upload: $zip"
+Write-Host "COLLECTION_COMPLETE: $zip"
