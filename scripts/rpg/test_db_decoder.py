@@ -1,7 +1,7 @@
 import struct
 import unittest
 
-from decode_vardian_db import Decoder, RecoveryBuffer, parse_type
+from decode_vardian_db import Decoder, RecoveryBuffer, parse_type, integer_default
 
 
 def fixture(value=42):
@@ -43,6 +43,26 @@ class DecoderTests(unittest.TestCase):
         result = parse_type('Type: BalanceData.Example\nMethod: System.Double get_Value()\n'
             'Disassembly: GetInt\nISIL:\nMove W1, 4\nCall Table.__offset\nCall ByteBuffer.GetDouble\n')
         self.assertEqual(result[1]['fields'][0]['fmt'], 'd')
+
+    def test_integer_default_requires_proven_return_path(self):
+        text = '007 Compare W0, 0\n008 JumpIfEqual {20}\n020 Move X30, [X31+16]\n021 Return X0\n'
+        self.assertEqual(integer_default(text)['value'], 0)
+        self.assertIsNone(integer_default(text.replace('Move X30, [X31+16]', 'Call Unknown')))
+        self.assertIsNone(integer_default(text.replace('Move X30, [X31+16]', 'NotImplemented MOVI')))
+
+    def test_tangent_infinity_preserved_but_nan_rejected(self):
+        schema = {'KeyFrameData': {'fields': [dict(name='InTangent', slot=4,
+            kind='scalar', fmt='f', vector=False, boolean=False)]}}
+        d = Decoder(fixture(0x7f800000), schema).table(12, 'KeyFrameData')
+        self.assertEqual(d['InTangent']['rawLittleEndianHex'], '0000807f')
+        with self.assertRaises(ValueError):
+            Decoder(fixture(0x7fc00000), schema).table(12, 'KeyFrameData')
+
+    def test_proven_default_is_marked(self):
+        schema = self.schema(slot=6, provenDefault={'value':0})
+        d = Decoder(fixture(), schema).table(12, 'Example')
+        self.assertEqual(d['Value'], 0)
+        self.assertEqual(d['_resolvedAbsentDefaults'], ['Value'])
 
 
 if __name__ == '__main__':

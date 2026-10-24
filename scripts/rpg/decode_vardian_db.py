@@ -8,6 +8,7 @@ import hashlib
 import json
 import re
 import struct
+import math
 from pathlib import Path
 from trace_combat_chain import Buffer, MAX_FILE
 
@@ -31,6 +32,26 @@ class RecoveryBuffer(Buffer):
             self.read('B', target + 4 + count * stride - 1)
         positions = range(target + 4, target + 4 + count * stride, stride)
         return [self.read(fmt, p) if fmt else p + self.read('I', p) for p in positions]
+
+
+def integer_default(isil):
+    """Prove a zero-offset return path; reject unimplemented or complex paths."""
+    branch = re.search(r'Compare W0, 0\s+\d+ JumpIfEqual \{(\d+)\}', isil)
+    if not branch:
+        return None
+    instructions = dict(re.findall(r'^\s*(\d+) (.+)$', isil, re.M))
+    pc, value = int(branch[1]), 0  # __offset was compared equal to zero
+    for _ in range(12):
+        op = instructions.get(f'{pc:03}', '').strip()
+        if op == 'Return X0':
+            return {'value': value, 'evidence': 'ISIL_ZERO_OFFSET_INTEGER_RETURN', 'branch': int(branch[1])}
+        assignment = re.fullmatch(r'Move [WX]0, (-?\d+|[WX]31)', op)
+        if assignment:
+            value = 0 if assignment[1] in ('W31', 'X31') else int(assignment[1])
+        elif not re.fullmatch(r'Move X(?:19|20|21|22|23|24|25|26|27|28|29|30), \[X31\+\d+\]', op):
+            return None
+        pc += 1
+    return None
 
 
 def parse_type(text):
@@ -67,6 +88,10 @@ def parse_type(text):
             f.update(kind='string')
         elif len(set(readers)) == 1 and readers[0] in FORMATS:
             f.update(kind='scalar', fmt=FORMATS[readers[0]], boolean=return_type=='System.Boolean')
+            if f['fmt'] not in ('d', 'f') and not vector:
+                default = integer_default(isil)
+                if default is not None:
+                    f['provenDefault'] = default
         else:
             continue
         if f['slot'] in fields and fields[f['slot']] != f:
@@ -116,12 +141,18 @@ class Decoder:
         schema=self.schemas[name]
         out={'_schema':name,'_offset':at}
         absent=[]
+        resolved=[]
         known=set()
         for f in schema['fields']:
             known.add(f['slot'])
             pos=self.b.field(at,f['slot'])
             if pos is None:
-                absent.append(f['name'])
+                if 'provenDefault' in f:
+                    value = f['provenDefault']['value']
+                    out[f['name']] = bool(value) if f.get('boolean') else value
+                    resolved.append(f['name'])
+                else:
+                    absent.append(f['name'])
                 continue
             if f['vector']:
                 vec=pos+self.b.read('I',pos)
@@ -141,9 +172,19 @@ class Decoder:
             elif f['kind']=='string':
                 out[f['name']]=self.b.string(pos)
             else:
+                # Keep IEEE infinity bit patterns only for curve tangent fields.
+                # No conversion to zero and no permissive non-finite game stats.
+                if name == 'KeyFrameData' and f['name'] in ('InTangent','OutTangent') and f['fmt']=='f':
+                    self.b.read('I',pos)
+                    value=struct.unpack_from('<f',self.b.raw,pos)[0]
+                    if math.isinf(value):
+                        out[f['name']]={'_ieee754':'positiveInfinity' if value>0 else 'negativeInfinity',
+                                         'rawLittleEndianHex':self.b.raw[pos:pos+4].hex()}
+                        continue
                 value=self.b.read(f['fmt'],pos)
                 out[f['name']]=bool(value) if f['boolean'] else value
         if absent:out['_absentDefaultsUnresolved']=absent
+        if resolved:out['_resolvedAbsentDefaults']=resolved
         vt=at-self.b.read('i',at)
         length=self.b.read('H',vt)
         if length>2048 or length<4 or length%2:
@@ -158,7 +199,7 @@ def recover(balance, schema_root, output):
     schemas=load_schemas(schema_root)
     output.mkdir(parents=True)
     manifest={'status':'PRESENT_VALUES_RECOVERED_DEFAULTS_PARTIAL','schemas':len(schemas),
-              'files':[], 'limitations':['Absent scalar defaults are not filled.',
+              'files':[], 'limitations':['Only proven integer absent defaults are filled; float defaults remain unresolved.',
               'Enum values remain numeric until the enum definitions are supplied.',
               'Accessor names do not prove server-side formula execution or source-build equality.']}
     for p in sorted(balance.glob('*.bytes')):

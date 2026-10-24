@@ -116,3 +116,36 @@ python -m unittest discover -s scripts/rpg -p 'test_db_*.py'
 
 The output is a private reference artifact. Never commit original tables,
 decoded data or decompiled implementations into this public repository.
+
+## Follow-up recovery (supersedes the failure counts above)
+
+58 ordinary files now decode, including all 421 ActionDatas. The original
+failure is an IEEE positive-infinity bit pattern in curve InTangent/OutTangent,
+not an established corruption. Six such fields are preserved as tagged JSON
+objects with exact raw little-endian bytes. This is not numeric zero; consumers
+must explicitly interpret the tag. NaN and non-finite values in other fields
+remain errors. Playback semantics have not been verified in Unity.
+
+1,132 integer accessor definitions have a provable zero-offset default return
+path in ISIL. Defaults are filled only for those accessors and marked in
+`_resolvedAbsentDefaults`. Unsupported instructions, floating-point MOVI paths,
+unknown calls and complex control flow remain unresolved. This also proves the
+previously omitted stage ID zero; all 7,717 indexed stage records now match.
+
+No QuadFuncData evaluator or matching native library/metadata pair was found in
+the inspected material. The constants are configurations, not a proven formula.
+Run the new offline `collect_vardian_formula.ps1` on the existing full IsilDump
+directory, rather than only InHouse.Balance.Runtime, to collect evaluator
+references across assemblies. It collects matching text files with hashes,
+bounded scan/copy limits and visible warnings. It accesses no device/account.
+The PowerShell script was inspected but cannot be executed against the user's
+Windows machine from this environment. Python decoder tests: 12 passing.
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File "$env:USERPROFILE\Downloads\collect_vardian_formula.ps1"
+```
+
+If these references still do not contain the implementation, the remaining
+requirement is the original matching-version `libil2cpp.so` and
+`global-metadata.dat`, preserved separately from newer builds. Source `.fbs`
+definitions, if available, also resolve serialized defaults directly.
