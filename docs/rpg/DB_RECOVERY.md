@@ -167,3 +167,31 @@ IsilDump for QuadFuncData, WeaponGradeData, ArmorData, TeamDataTable,
 KeyFrameData and BigInt. It includes those files even when their contents do
 not match the old keyword expression, and prints COLLECTION_COMPLETE only
 after creating the archive. Keep all source files outside the public repo.
+
+## Completed targeted collection 20261023-203507
+
+29 files, collection manifest present, all sizes/hashes match, no collector
+warnings. Distinguish the generated `BalanceData.QuadFuncData` accessor from
+the runtime `QuadFuncData` implementation; both are now supplied. The runtime
+CalcValue includes a level-minus-min subtraction, repeated multiplication,
+a 0.5 constant, division, and additions. BigIntData's constructor includes
+FRINTM (round toward minus infinity), so rounding at constructor calls must
+not be replaced with a single final rounding or arbitrary-precision arithmetic.
+
+Exact evaluation is still unresolved: CalcValue lacks FCMP, CMP, SCVTF, FCVT
+and MOVI translations; the segment selector lacks compare/indirect-call
+instructions; ArmorData.CalcReqLevelUpMatCnt has only one ISIL instruction.
+The printed Disassembly is inconsistent with the method ISIL (for example,
+QuadFuncData.CalcValue's native snippet contains unrelated object/string-like
+operations), so it cannot fill the gaps safely. No guessed evaluator is added.
+
+WeaponGradeData.CalcReqLevelUpMatCnt demonstrably delegates its list field to
+QuadFuncDataExtenstion.CalcValue. KeyFrameData.ToUnityKeyframe explicitly sets
+time, value, in/out tangents, tangentMode, weightedMode and in/out weights:
+the tagged infinity fields are forwarded, not clamped away in this converter.
+This is static code evidence; Unity playback has not been run.
+
+The remaining input is a preserved matching-version native libil2cpp.so and
+global-metadata.dat pair. The uploaded runtime files are labeled version
+1.21.1; source labels alone do not prove native build identity. Keep old/new
+versions separate. No such native pair was found in the local input material.
