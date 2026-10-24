@@ -18,3 +18,9 @@
 .hunt-dodge{width:48px;height:48px;font-size:27px}
 @media(max-width:600px){.hunt-shell{min-height:0}.hunt-stage{min-height:150px}.hunt-console{min-height:284px;padding:10px 15px 28px}.hunt-controls{height:120px;grid-template-rows:42px 60px;gap:4px 8px}.hunt-dodge{width:42px;height:42px;font-size:23px}.hunt-parry{width:49px;height:49px}.hunt-parry svg{width:25px;height:25px}.hunt-mode-row{margin-top:21px}.hunt-mode-row button{font-size:8px;padding:3px 7px}.hunt-stage-caption small{display:none}}
 @media(max-height:650px){.hunt-console{min-height:230px;padding-bottom:16px}.hunt-controls{height:94px;grid-template-rows:36px 48px}.hunt-dodge{height:36px;width:36px;font-size:21px}.hunt-parry{height:42px;width:42px}.hunt-skill{max-height:42px}.hunt-skill-row{margin-bottom:10px}.hunt-mode-row{margin-top:20px}.hunt-stage{min-height:110px}}
+
+/* Combat loop additions retain the existing compact mobile layout. */
+.hunt-basic{grid-column:3;grid-row:2;width:60px;height:60px;border-radius:50%;border:1px solid #c1a362;background:radial-gradient(#70503c,#251f1b);color:#ffe0a2;display:grid;place-items:center;position:relative;touch-action:none}
+.hunt-basic small{position:absolute;bottom:-16px;font-size:9px;color:#b6ae8d}.hunt-basic svg{width:29px;height:29px}.hunt-notice{font-size:11px;color:#ffca8d;margin:0 0 5px;max-height:32px;overflow:auto}.hunt-notice button{font-size:10px;text-decoration:underline}.hunt-footer button{background:none;border:0;color:inherit;font:inherit}.hunt-modal section>button{margin:5px;padding:10px;min-height:40px}.hunt-loading{gap:12px}.hunt-loading button{padding:10px 16px;border:1px solid #ab965e;border-radius:7px;background:#20372e;color:#f0e9d6}
+@media(max-width:600px){.hunt-basic{width:49px;height:49px}.hunt-basic svg{width:25px;height:25px}.hunt-mode-row span{max-width:70%;font-size:8px;letter-spacing:0}}
+@media(max-height:650px){.hunt-basic{width:42px;height:42px}}

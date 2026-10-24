@@ -84,7 +84,7 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
    for(const mob of game.enemies){
     if(mob.hp<=0&&game.elapsed>=mob.respawnAt)continue;
     const visual=enemies[mob.slot],hurt=mob.hp>0&&mob.hitUntil>game.elapsed;
-    const anim=mob.hp<=0?'die1':hurt&&visual.available.includes('damage1')?'damage1':'stay1';
+    const anim=mob.hp<=0?'die1':hurt&&visual.available.includes('damage1')?'damage1':mob.state==='windup'?'attack1':mob.state==='walk'?'run1':'stay1';
     const shake=hurt?Math.sin(game.elapsed*90)*2*zoom:0,x=screenX(mob.x),y=floor;
     animate(visual,anim,x+shake,y,HUNT_VISUALS.slimeScale*zoom,mob.x>game.x?-1:1,dt,mob.serial);
    }
@@ -93,6 +93,7 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
    const frame=spriteClock.frame(game.action,game.actionSerial,dt,game.animationSpeed,stage?.hitAt??.2);
    const pose=spritePlacement(frame,screenX(game.x),floor,scale,game.facing);
    ctx.save();ctx.imageSmoothingEnabled=false;ctx.translate(pose.x,pose.y);ctx.scale(pose.scaleX,pose.scaleY);
+   if(game.heroHitUntil>game.elapsed&&game.hp>0)ctx.globalAlpha=.55+Math.sin(game.elapsed*60)*.2;
    ctx.drawImage(sheet,...pose.source,...pose.target);ctx.restore();
    canvas.dataset.character=characterId;
    canvas.dataset.heroRig='sprite-16-v1';canvas.dataset.spriteFrame=String(frame);
@@ -103,9 +104,12 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
    // UI overlays are painted after the WebGL layer so health and damage remain visible.
    for(const mob of game.enemies){
     const x=screenX(mob.x),bar=Math.max(20,36*zoom),y=floor-30*zoom;
-    if(mob.hp>0){ctx.fillStyle='#111c';ctx.fillRect(x-bar/2,y,bar,3);ctx.fillStyle='#e07b67';ctx.fillRect(x-bar/2,y,bar*mob.hp/100,3);}
+    if(mob.hp>0){ctx.fillStyle='#111c';ctx.fillRect(x-bar/2,y,bar,3);ctx.fillStyle='#e07b67';ctx.fillRect(x-bar/2,y,bar*mob.hp/mob.maxHP,3);}
+    if(mob.state==='windup'&&mob.hp>0){ctx.fillStyle='#ff9c72';ctx.font='bold 18px sans-serif';ctx.textAlign='center';ctx.fillText('!',x,y-10);
+     ctx.strokeStyle='#ff644c';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(x,floor+3,24*zoom,6*zoom,0,0,Math.PI*2);ctx.stroke();}
     if(mob.hitUntil>game.elapsed){ctx.fillStyle='#ffdb8b';ctx.font=`bold ${Math.max(12,20*zoom)}px sans-serif`;ctx.textAlign='center';ctx.fillText(String(mob.lastDamage),x,y-8-(.75-(mob.hitUntil-game.elapsed))*25);}
    }
+   if(game.heroHitUntil>game.elapsed&&game.lastHeroDamage>0){ctx.fillStyle='#ff847c';ctx.font='bold 17px sans-serif';ctx.textAlign='center';ctx.fillText(`−${game.lastHeroDamage}`,screenX(game.x),floor-65*zoom);}
    // Foreground decoration follows the world more quickly than the distant forest.
    ctx.globalAlpha=.7;ctx.drawImage(trees, -170-camera*.4%700, floor-165,145,190);ctx.globalAlpha=1;
   },
