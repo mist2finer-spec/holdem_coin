@@ -86,3 +86,33 @@ decode version-consistent values, then restore level/price/stat relationships.
 The Python inspector was run against the seven actual binaries and tested with
 valid/corrupt synthetic buffers. The PowerShell collector cannot be executed
 against the user's Windows/BlueStacks from this environment; run it locally.
+
+## Returned full collection: installed version 1.21.1
+
+The returned collection contains 61 binaries and 279 schema files. All recorded
+file sizes and SHA-256 hashes match. Matching installed version labels and intact
+hashes are evidence of provenance, not proof of identical source builds.
+
+`decode_vardian_db.py` uses explicit ISIL accessor readers, field offsets and
+child types. It recovered present fields from 57 ordinary tables. ActionData
+currently fails on a non-finite KeyFrameData value and is not silently repaired.
+ChatForbiddenWords and StringData_23 have no proven root mapping. StageData.pack
+is handled separately: 7,716 size-prefixed records pass structural reads and
+explicit StageId equality checks; the index entry with ID zero remains unresolved
+because its StageId field is absent. All failures remain in the output manifest.
+
+Confirmed configurations include Team MaxLevel 7800 and 118 level-cost segments,
+32 weapons, eight weapon grades, 26 armor definitions, 94 material definitions,
+48 gear grade records and nine hunting event definitions. Material icon keys
+identify IDs 1/2/3 as gold/crystal/exp. Stat enums remain numeric. QuadFuncData
+coefficients are recovered, but their evaluation formula is not yet established.
+Absent values are omitted and listed as unresolved defaults; missing never means
+zero, false or unlimited. No prototype rewards or live service are changed.
+
+```sh
+python scripts/rpg/decode_vardian_db.py --balance /path/to/Data --schemas /path/to/Schemas --output /path/to/new-recovery
+python -m unittest discover -s scripts/rpg -p 'test_db_*.py'
+```
+
+The output is a private reference artifact. Never commit original tables,
+decoded data or decompiled implementations into this public repository.
