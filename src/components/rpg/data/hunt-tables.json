@@ -1,0 +1,71 @@
+{
+  "version": 1,
+  "source": "web-prototype-existing-values",
+  "assets": [
+    {
+      "id": "slime-red",
+      "skeleton": "Enemy_Slime_01_R",
+      "groundSlots": [
+        "body"
+      ],
+      "clips": {
+        "idle": "stay1",
+        "move": "run1",
+        "attack": "attack1",
+        "hurt": "stay1",
+        "death": "die1"
+      }
+    }
+  ],
+  "attacks": [
+    {
+      "id": "slime-contact",
+      "damage": 12,
+      "defenseFactor": 0.5,
+      "reachBonus": 12,
+      "impactReachBonus": 20,
+      "windup": 0.55,
+      "recovery": 1.3,
+      "parriedRecovery": 2
+    }
+  ],
+  "monsters": [
+    {
+      "id": "slime-red",
+      "name": "빨간 슬라임",
+      "assetId": "slime-red",
+      "attackId": "slime-contact",
+      "maxHP": 100,
+      "moveSpeed": 45,
+      "aggroRange": 360,
+      "respawnSeconds": 2,
+      "reward": {
+        "gold": 25,
+        "xp": 12,
+        "soulGem": 2
+      },
+      "provenance": "WEB_ADAPTER_NOT_NATIVE_BALANCE"
+    }
+  ],
+  "stages": [
+    {
+      "id": "moon-forest-1",
+      "name": "달빛 숲 1–1",
+      "worldWidth": 6000,
+      "monsterId": "slime-red",
+      "maxAlive": 7,
+      "spawns": [
+        780,
+        300,
+        1500,
+        2400,
+        3400,
+        4400,
+        5500
+      ],
+      "recycleAhead": 1000,
+      "recycleSpacing": 180,
+      "mode": "endless"
+    }
+  ]
+}

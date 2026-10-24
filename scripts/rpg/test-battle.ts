@@ -117,3 +117,13 @@ test('faster weapons keep impact timing and never inherit a hit from a cancelled
  const s=weaponLoadout('hong','spear');g.configureLoadout(s.combo,s.range,s.crit,s.tempo);advance(g,.5);assert.equal(g.enemyHP,100);
  assert.equal(s.range,105);assert.equal(l.combo.length,5);
 });
+
+test('hunt tables have valid references, spawn bounds, real asset files and available clips',async()=>{
+ const {HUNT_TABLES,validateHuntTables}=await import('../../src/components/rpg/hunt-tables');
+ const {readFileSync,existsSync}=await import('node:fs');
+ assert.doesNotThrow(()=>validateHuntTables(HUNT_TABLES));
+ for(const asset of HUNT_TABLES.assets){for(const ext of ['json','atlas','png'])assert.ok(existsSync(`public/rpg/${asset.skeleton}.${ext}`));
+  const skeleton=JSON.parse(readFileSync(`public/rpg/${asset.skeleton}.json`,'utf8'));for(const clip of Object.values(asset.clips))assert.ok(skeleton.animations[clip],clip);}
+ const bad=structuredClone(HUNT_TABLES);bad.monsters[0].attackId='missing';assert.throws(()=>validateHuntTables(bad));
+ const bounds=structuredClone(HUNT_TABLES);bounds.stages[0].spawns[0]=Infinity;assert.throws(()=>validateHuntTables(bounds));
+});

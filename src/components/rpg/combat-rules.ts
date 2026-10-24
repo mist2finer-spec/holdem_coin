@@ -1,7 +1,8 @@
+import {HUNT_STAGE} from './hunt-tables';
 import {HUNT_BODIES} from './hunt-collision';
 import motions from './motion-profile.json';
 import combatProfile from './combat-profile.json';
-export const WORLD_WIDTH=6000;
+export const WORLD_WIDTH=HUNT_STAGE.worldWidth;
 export const SKILL_COOLDOWNS=[5,8,7,9,6,12];
 export type ComboStage={animation:keyof typeof motions.durations;hitAt:number;damage:number;duration?:number};
 // Native time values are recovered; pixel distances/damage and enum-to-clip names

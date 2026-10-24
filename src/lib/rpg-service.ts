@@ -1,3 +1,4 @@
+import {HUNT_STAGE} from '../components/rpg/hunt-tables';
 import {randomUUID} from 'node:crypto';
 import {HuntEngine,type HuntEnemy} from '../components/rpg/hunt-engine';
 import {weaponLoadout,isWeaponType,type WeaponType} from '../components/rpg/hunt-weapons';
@@ -24,7 +25,7 @@ export class RpgService{
   if(saved.progress.level>this.balance.maxLevel)throw Error('저장된 레벨보다 낮은 밸런스 설정입니다. 관리자 확인이 필요합니다.');
   for(const [key,b] of this.sessions)if(this.now()-b.seen>20*60*1000)this.sessions.delete(key);
   if(!this.sessions.has(account)&&this.sessions.size>=1000)throw Error('사냥터 접속자가 많습니다.');
-  const engine=new HuntEngine(loadout.combo,7,{hostile:true,progress:saved.progress,balance:this.balance,range:loadout.range,crit:loadout.crit,tempo:loadout.tempo,seed:Date.now()});
+  const engine=new HuntEngine(loadout.combo,HUNT_STAGE.maxAlive,{hostile:true,progress:saved.progress,balance:this.balance,range:loadout.range,crit:loadout.crit,tempo:loadout.tempo,seed:Date.now()});
   const b:Battle={id:randomUUID(),character,engine,revision:saved.revision,last:this.now(),input:{move:0,attack:false,auto:false},sequence:0,cached:null as unknown as BattleView,seen:this.now()};
   this.sessions.set(account,b);b.cached=this.view(b);return b.cached;
  }

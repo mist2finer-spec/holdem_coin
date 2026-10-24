@@ -1,3 +1,4 @@
+import {HUNT_MONSTER_ASSET,HUNT_STAGE} from './hunt-tables';
 import {drawHeldWeapon} from './hunt-weapon-renderer';
 import type {WeaponType} from './hunt-weapons';
 import {CanvasTexture, SkeletonRenderer as CanvasRenderer} from '@esotericsoftware/spine-canvas';
@@ -34,18 +35,18 @@ async function actor(name: string, signal: AbortSignal, gl: WebGLRenderingContex
  const idle = data.animations.find(a=>/stay1|idle/i.test(a.name));
  if(idle){state.setAnimation(0,idle.name,true);state.apply(skeleton);}
  skeleton.updateWorldTransform(Physics.update);
- return {skeleton, state, atlas,groundSlots:['body'], animation: '', serial:-1, available: data.animations.map(a => a.name)};
+ return {skeleton, state, atlas,groundSlots:HUNT_MONSTER_ASSET.groundSlots, animation: '', serial:-1, available: data.animations.map(a => a.name)};
 }
 export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: AbortSignal, characterId='hong') {
  Skeleton.yDown = true;
  const layer = document.createElement('canvas');
  const gl = layer.getContext('webgl', {alpha:true, premultipliedAlpha:true, antialias:true});
  if(!combatCharacter(characterId))throw Error('알 수 없는 캐릭터입니다.');
- const [sheet, enemy, forest, trees] = await Promise.all([image(base+`characters/${characterId}/sheet.png`,signal), actor('Enemy_Slime_01_R', signal, gl), image(base + 'BG_Forest01.png', signal), image(base + 'BG_Tree01.png', signal)]);
+ const [sheet, enemy, forest, trees] = await Promise.all([image(base+`characters/${characterId}/sheet.png`,signal), actor(HUNT_MONSTER_ASSET.skeleton, signal, gl), image(base + 'BG_Forest01.png', signal), image(base + 'BG_Tree01.png', signal)]);
  if(sheet.naturalWidth!==1024||sheet.naturalHeight!==1024)throw Error('잘못된 캐릭터 스프라이트 크기');
  const spriteClock=new CombatSpriteClock();
  // Each slime owns its pose/animation state, while sharing immutable skeleton data and atlas textures.
- const enemies=Array.from({length:7},()=>{
+ const enemies=Array.from({length:HUNT_STAGE.maxAlive},()=>{
   const skeleton=new Skeleton(enemy.skeleton.data);
   if(enemy.skeleton.skin)skeleton.setSkin(enemy.skeleton.skin);
   skeleton.setSlotsToSetupPose();
@@ -89,7 +90,8 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
    for(const mob of game.enemies){
     if(mob.hp<=0&&game.elapsed>=mob.respawnAt)continue;
     const visual=enemies[mob.slot],hurt=mob.hp>0&&mob.hitUntil>game.elapsed;
-    const anim=mob.hp<=0?'die1':hurt&&visual.available.includes('damage1')?'damage1':mob.state==='windup'?'attack1':mob.state==='walk'?'run1':'stay1';
+    const clips=HUNT_MONSTER_ASSET.clips;
+    const anim=mob.hp<=0?clips.death:hurt?clips.hurt:mob.state==='windup'?clips.attack:mob.state==='walk'?clips.move:clips.idle;
     const shake=hurt?Math.sin(game.elapsed*90)*2*zoom:0,x=screenX(mob.x),y=floor;
     animate(visual,anim,x+shake,y,HUNT_VISUALS.slimeScale*zoom,mob.x>game.x?-1:1,dt,mob.serial);
    }

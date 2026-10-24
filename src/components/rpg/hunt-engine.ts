@@ -1,3 +1,4 @@
+import {HUNT_STAGE,HUNT_MONSTER,HUNT_MONSTER_ATTACK} from './hunt-tables';
 import {HUNT_RULES,motions,SKILL_COOLDOWNS,WORLD_WIDTH,type ComboStage} from './combat-rules';
 import {bodySeparation,planDodge,sweepHero} from './hunt-collision';
 import {awardHuntKill,DEFAULT_HUNT_BALANCE,heroStats,newHuntProgress,type HuntBalance,type HuntProgress} from './hunt-progression';
@@ -39,14 +40,14 @@ export class HuntEngine {
   this.combo=combo.map(s=>({...s}));this.range=range;this.crit=crit;this.tempo=tempo;this.motion=null;this.clearInput();this.resetCombo();
   this.attackReady=Math.max(this.attackReady,this.elapsed+.12);this.pose('stay1',true);
  }
- constructor(combo:readonly ComboStage[]=HUNT_RULES.combo,enemyCount=7,options:HuntOptions={}){
+ constructor(combo:readonly ComboStage[]=HUNT_RULES.combo,enemyCount=HUNT_STAGE.maxAlive,options:HuntOptions={}){
   this.progress=options.progress??newHuntProgress();this.balance=options.balance??DEFAULT_HUNT_BALANCE;
   this.tempo=options.tempo??1;if(!Number.isFinite(this.tempo)||this.tempo<.5||this.tempo>2)throw Error('Invalid tempo');
   this.hostile=options.hostile??false;this.rng=(options.seed??12345)>>>0;this.range=options.range??HUNT_RULES.attackRange;this.crit=options.crit??.1;
   this.hp=this.maxHP;this.coins=this.progress.gold;this.xp=this.progress.xp;this.kills=this.progress.kills;
   if(!Number.isInteger(enemyCount)||enemyCount<1||enemyCount>7)throw Error('Invalid monster count');
-  const positions=this.hostile&&enemyCount===7?[780,300,1500,2400,3400,4400,5500]:[780,700,860,540,940,460,1020];
-  this.enemies=positions.slice(0,enemyCount).map((x,slot)=>({slot,x,hp:100,maxHP:100,serial:slot+1,respawnAt:0,lastDamage:0,hitUntil:0,
+  const positions=this.hostile&&enemyCount===HUNT_STAGE.maxAlive?HUNT_STAGE.spawns:[780,700,860,540,940,460,1020];
+  this.enemies=positions.slice(0,enemyCount).map((x,slot)=>({slot,x,hp:HUNT_MONSTER.maxHP,maxHP:HUNT_MONSTER.maxHP,serial:slot+1,respawnAt:0,lastDamage:0,hitUntil:0,
    state:'idle',attackAt:0,nextAttack:1+slot*.15}));
   if(!combo.length||combo.some(s=>!motions.durations[s.animation]||!Number.isFinite(s.hitAt)
    ||s.hitAt<0||s.hitAt>(s.duration??motions.durations[s.animation])
@@ -83,7 +84,7 @@ export class HuntEngine {
   if(this.enemyHP===0){this.target.state='dead';
    if(this.hostile){awardHuntKill(this.progress,this.balance);this.kills=this.progress.kills;this.coins=this.progress.gold;this.xp=this.progress.xp;}
    else {this.kills++;this.coins+=25;this.xp+=12;}
-   this.respawnAt=this.elapsed+2;
+   this.respawnAt=this.elapsed+HUNT_MONSTER.respawnSeconds;
    this.attackIntent=false;this.resetCombo();}
  }
  private advanceEnemies(dt:number){
@@ -92,11 +93,11 @@ export class HuntEngine {
    const distance=Math.abs(enemy.x-this.x);
    if(enemy.state==='windup'){
     if(this.elapsed>=enemy.attackAt){
-     enemy.state='recover';enemy.nextAttack=this.elapsed+1.3;
-     if(distance<=bodySeparation+20&&this.motion?.kind!=='dodge'){
-      if(this.parryUntil>=this.elapsed){enemy.nextAttack=this.elapsed+2;continue;}
+     enemy.state='recover';enemy.nextAttack=this.elapsed+HUNT_MONSTER_ATTACK.recovery;
+     if(distance<=bodySeparation+HUNT_MONSTER_ATTACK.impactReachBonus&&this.motion?.kind!=='dodge'){
+      if(this.parryUntil>=this.elapsed){enemy.nextAttack=this.elapsed+HUNT_MONSTER_ATTACK.parriedRecovery;continue;}
       if(this.heroHitUntil>this.elapsed)continue;
-      const damage=Math.max(1,Math.round(12-this.stats.defense*.5));
+      const damage=Math.max(1,Math.round(HUNT_MONSTER_ATTACK.damage-this.stats.defense*HUNT_MONSTER_ATTACK.defenseFactor));
       this.lastHeroDamage=Math.min(this.hp,damage);this.hp=Math.max(0,this.hp-damage);this.heroHitUntil=this.elapsed+.2;
       if(this.hp===0){this.deadAt=this.elapsed;this.motion=null;this.clearInput();this.resetCombo();this.auto=false;this.pose('die1',true);return;}
      }
@@ -104,12 +105,12 @@ export class HuntEngine {
     continue;
    }
    if(this.elapsed<enemy.nextAttack){enemy.state='recover';continue;}
-   if(distance<=bodySeparation+12){enemy.state='windup';enemy.attackAt=this.elapsed+.55;continue;}
-   if(distance>360){enemy.state='idle';continue;}
+   if(distance<=bodySeparation+HUNT_MONSTER_ATTACK.reachBonus){enemy.state='windup';enemy.attackAt=this.elapsed+HUNT_MONSTER_ATTACK.windup;continue;}
+   if(distance>HUNT_MONSTER.aggroRange){enemy.state='idle';continue;}
    enemy.state='walk';
    // Freeze translation during a roll, so neither its origin nor landing is occupied underneath it.
    if(this.motion?.kind==='dodge')continue;
-   const direction=Math.sign(this.x-enemy.x),travel=Math.min(45*this.tempo*dt,Math.max(0,distance-bodySeparation));
+   const direction=Math.sign(this.x-enemy.x),travel=Math.min(HUNT_MONSTER.moveSpeed*this.tempo*dt,Math.max(0,distance-bodySeparation));
    let next=enemy.x+direction*travel;
    for(const other of this.enemies){if(other===enemy||other.hp<=0)continue;
     if(direction>0&&other.x>enemy.x&&next>other.x-24)next=Math.min(next,other.x-24);
@@ -167,8 +168,8 @@ export class HuntEngine {
   if(this.hp<=0)return;
   for(const enemy of this.enemies)if(enemy.hp<=0&&this.elapsed>=enemy.respawnAt){
    // Recycle defeated packs ahead of the hero, without spawning inside a body.
-   const spawnX=this.hostile&&this.enemies.length===7
-    ?Math.max(90,Math.min(WORLD_WIDTH-90,this.x+this.facing*(1000+enemy.slot*180)))
+   const spawnX=this.hostile&&this.enemies.length===HUNT_STAGE.maxAlive
+    ?Math.max(90,Math.min(WORLD_WIDTH-90,this.x+this.facing*(HUNT_STAGE.recycleAhead+enemy.slot*HUNT_STAGE.recycleSpacing)))
     :this.enemies.length===1?Math.min(WORLD_WIDTH-90,Math.max(90,this.x+this.facing*230)):enemy.x;
    if(this.hostile&&this.enemies.some(e=>e!==enemy&&e.hp>0&&Math.abs(e.x-spawnX)<48)){enemy.respawnAt=this.elapsed+.5;continue;}
    const roll=this.motion?.kind==='dodge'?this.motion:null;
