@@ -76,9 +76,9 @@ export class HuntEngine {
   this.motion=m;this.actionUntil=this.elapsed+m.duration;
   this.pose(m.segments[0].animation,true,m.kind==='rush'?motions.durations.dash/m.duration:this.tempo);
  }
- private hurt(damage:number){
-  if(this.hostile){this.rng=(Math.imul(this.rng,1664525)+1013904223)>>>0;this.critical=this.rng/4294967296<this.crit;
-   damage=Math.max(1,Math.round(damage*this.stats.attack/20*(this.critical?this.stats.critMultiplier:1)));}
+ private hurt(damage:number,skill=false){
+  if(this.hostile){this.rng=(Math.imul(this.rng,1664525)+1013904223)>>>0;this.critical=this.rng/4294967296<Math.max(0,Math.min(.9,this.stats.crit+this.crit-.1));
+   damage=Math.max(1,Math.round(damage*this.stats.attack/6*(skill?this.stats.skillDamageMultiplier:this.stats.basicDamageMultiplier)*(this.critical?this.stats.critMultiplier:1)));}
   this.lastDamage=Math.min(damage,this.enemyHP);this.hitUntil=this.elapsed+.75;
   this.enemyHP=Math.max(0,this.enemyHP-damage);
   if(this.enemyHP===0){this.target.state='dead';
@@ -97,7 +97,7 @@ export class HuntEngine {
      if(distance<=bodySeparation+HUNT_MONSTER_ATTACK.impactReachBonus&&this.motion?.kind!=='dodge'){
       if(this.parryUntil>=this.elapsed){enemy.nextAttack=this.elapsed+HUNT_MONSTER_ATTACK.parriedRecovery;continue;}
       if(this.heroHitUntil>this.elapsed)continue;
-      const damage=Math.max(1,Math.round(HUNT_MONSTER_ATTACK.damage-this.stats.defense*HUNT_MONSTER_ATTACK.defenseFactor));
+      const damage=Math.max(1,Math.round(HUNT_MONSTER_ATTACK.damage*this.stats.incomingDamageScale));
       this.lastHeroDamage=Math.min(this.hp,damage);this.hp=Math.max(0,this.hp-damage);this.heroHitUntil=this.elapsed+.2;
       if(this.hp===0){this.deadAt=this.elapsed;this.motion=null;this.clearInput();this.resetCombo();this.auto=false;this.pose('die1',true);return;}
      }
@@ -145,7 +145,7 @@ export class HuntEngine {
    if(m.target===this.enemySerial&&this.enemyHP>0&&Math.abs(this.enemyX-this.x)<=hit.range
     &&(this.enemyX-this.x)*this.facing>=0
     &&!this.enemies.some(e=>e.hp>0&&e.serial!==m.target&&(e.x-this.x)*this.facing>0
-     &&Math.abs(e.x-this.x)<Math.abs(this.enemyX-this.x)))this.hurt(hit.damage);
+     &&Math.abs(e.x-this.x)<Math.abs(this.enemyX-this.x)))this.hurt(hit.damage,m.kind==='skill');
   }
   let end=0,phase=m.segments.length-1;
   for(let i=0;i<m.segments.length;i++){end+=m.segments[i].duration;if(age<end-1e-8){phase=i;break;}}

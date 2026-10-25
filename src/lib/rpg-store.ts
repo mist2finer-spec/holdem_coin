@@ -14,6 +14,9 @@ export class RpgStore{
    row=this.db.prepare('SELECT progress,revision FROM rpg_players WHERE id=?').get(id) as {progress:string;revision:number};}
   const progress=JSON.parse(row.progress) as HuntProgress;
   // Additive migration preserves balances in existing guest JSON rows.
+  if(progress.attackTraining===undefined)progress.attackTraining=0;
+  if(progress.healthTraining===undefined)progress.healthTraining=0;
+  if(!Number.isSafeInteger(progress.attackTraining)||!Number.isSafeInteger(progress.healthTraining)||progress.attackTraining<0||progress.healthTraining<0||progress.attackTraining>500||progress.healthTraining>500)throw Error('Invalid training');
   if(progress.potions===undefined)progress.potions=3;
   if(progress.questTier===undefined)progress.questTier=0;
   if(progress.weaponType===undefined)progress.weaponType='axe';

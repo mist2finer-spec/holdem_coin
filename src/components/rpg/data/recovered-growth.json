@@ -1,0 +1,198 @@
+{
+  "version": 1,
+  "source": "recovered-grade1-growth-web-adapter",
+  "maxEquipmentLevel": 50,
+  "teamMaxLevel": 200,
+  "teamCurves": [
+    {
+      "min": 1,
+      "max": 50,
+      "base": 1000.0,
+      "inc": 100.0,
+      "rate": 7000.0,
+      "scaler": 1000.0
+    },
+    {
+      "min": 50,
+      "max": 100,
+      "base": 22028.0,
+      "inc": 100.0,
+      "rate": 8000.0,
+      "scaler": 1000.0
+    },
+    {
+      "min": 100,
+      "max": 150,
+      "base": 46236.0,
+      "inc": 100.0,
+      "rate": 8500.0,
+      "scaler": 1000.0
+    },
+    {
+      "min": 150,
+      "max": 200,
+      "base": 71645.0,
+      "inc": 100.0,
+      "rate": 9000.0,
+      "scaler": 1000.0
+    }
+  ],
+  "weaponCurve": {
+    "min": 1,
+    "max": 50,
+    "base": 40.0,
+    "inc": 2.0,
+    "rate": 420.0,
+    "scaler": 1000.0
+  },
+  "armorCurve": {
+    "min": 1,
+    "max": 50,
+    "base": 400.0,
+    "inc": 5.0,
+    "rate": 70.0,
+    "scaler": 1000.0
+  },
+  "weapons": {
+    "sword": {
+      "type": 1101,
+      "grade": 1,
+      "equip": [
+        [
+          73,
+          10.2,
+          0.2
+        ],
+        [
+          7,
+          5.1,
+          0.1
+        ]
+      ],
+      "hold": [
+        [
+          20,
+          1.02,
+          0.02
+        ]
+      ]
+    },
+    "axe": {
+      "type": 1102,
+      "grade": 1,
+      "equip": [
+        [
+          73,
+          10.2,
+          0.2
+        ],
+        [
+          7,
+          5.1,
+          0.1
+        ]
+      ],
+      "hold": [
+        [
+          19,
+          1.02,
+          0.02
+        ]
+      ]
+    },
+    "spear": {
+      "type": 1103,
+      "grade": 1,
+      "equip": [
+        [
+          73,
+          10.2,
+          0.2
+        ],
+        [
+          7,
+          5.1,
+          0.1
+        ]
+      ],
+      "hold": [
+        [
+          18,
+          1.02,
+          0.02
+        ]
+      ]
+    },
+    "dual": {
+      "type": 1104,
+      "grade": 1,
+      "equip": [
+        [
+          73,
+          10.2,
+          0.2
+        ],
+        [
+          7,
+          5.1,
+          0.1
+        ]
+      ],
+      "hold": [
+        [
+          17,
+          1.02,
+          0.02
+        ]
+      ]
+    }
+  },
+  "armor": {
+    "type": 1104,
+    "grade": 1,
+    "equip": [
+      [
+        76,
+        5.1,
+        0.1
+      ],
+      [
+        75,
+        3.06,
+        0.06
+      ],
+      [
+        8,
+        12.75,
+        0.25
+      ]
+    ],
+    "hold": [
+      [
+        76,
+        0.51,
+        0.01
+      ]
+    ]
+  },
+  "training": {
+    "maxLevel": 500,
+    "attackPerLevel": 1,
+    "healthPerLevel": 5,
+    "cost": {
+      "min": 1,
+      "max": 501,
+      "base": 150,
+      "inc": 2,
+      "rate": 17,
+      "scaler": 1000
+    }
+  },
+  "webAdaptation": {
+    "testHP": 10000,
+    "damageReferenceAttack": 6,
+    "unarmedBaseAttack": 5,
+    "unarmedAttackPerLevel": 0.1,
+    "referenceNaturalHP": 119
+  }
+}

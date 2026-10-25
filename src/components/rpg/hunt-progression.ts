@@ -1,14 +1,13 @@
+import {recoveredStats,RECOVERED_GROWTH} from './hunt-growth';
 import {HUNT_MONSTER} from './hunt-tables';
 import {isWeaponType,type WeaponType} from './hunt-weapons';
 /** Web adaptation. Native curve arithmetic recovered; reward/stat balance is provisional. */
 export type Curve={min:number;max:number;base:number;inc:number;rate:number;scaler:number};
 export type HuntBalance={version:1;source:string;maxLevel:number;team:Curve[];weapon:Curve[];armor:Curve[];reward:{gold:number;xp:number;soulGem:number}};
-export const DEFAULT_HUNT_BALANCE:HuntBalance={version:1,source:'web-adapter-with-recovered-first-curve',maxLevel:50,
- team:[{min:1,max:50,base:1000,inc:100,rate:7000,scaler:1000}],
- weapon:[{min:1,max:50,base:40,inc:2,rate:420,scaler:1000}],
- armor:[{min:1,max:50,base:400,inc:5,rate:70,scaler:1000}],reward:{...HUNT_MONSTER.reward}};
-export type HuntProgress={level:number;xp:number;gold:number;soulGem:number;kills:number;weaponLevel:number;armorLevel:number;potions:number;questTier:number;weaponType:WeaponType;weaponLevels:Record<WeaponType,number>};
-export const newHuntProgress=():HuntProgress=>({level:1,xp:0,gold:0,soulGem:0,kills:0,weaponLevel:1,armorLevel:1,potions:3,questTier:0,weaponType:'axe',weaponLevels:{unarmed:1,sword:1,axe:1,dual:1,spear:1}});
+export const DEFAULT_HUNT_BALANCE:HuntBalance={version:1,source:RECOVERED_GROWTH.source,maxLevel:RECOVERED_GROWTH.teamMaxLevel,
+ team:RECOVERED_GROWTH.teamCurves,weapon:[RECOVERED_GROWTH.weaponCurve],armor:[RECOVERED_GROWTH.armorCurve],reward:{...HUNT_MONSTER.reward}};
+export type HuntProgress={level:number;attackTraining:number;healthTraining:number;xp:number;gold:number;soulGem:number;kills:number;weaponLevel:number;armorLevel:number;potions:number;questTier:number;weaponType:WeaponType;weaponLevels:Record<WeaponType,number>};
+export const newHuntProgress=():HuntProgress=>({level:1,attackTraining:0,healthTraining:0,xp:0,gold:0,soulGem:0,kills:0,weaponLevel:1,armorLevel:1,potions:3,questTier:0,weaponType:'axe',weaponLevels:{unarmed:1,sword:1,axe:1,dual:1,spear:1}});
 export const HUNT_QUESTS=[{name:'숲의 첫걸음',kills:5,gold:50,soulGem:10},{name:'슬라임 정리',kills:20,gold:150,soulGem:20},{name:'숲의 수호자',kills:50,gold:400,soulGem:40}] as const;
 export const POTION_PRICE=50;
 /** Prototype item economy: distinct from the recovered native cost curve. */
@@ -31,17 +30,18 @@ export function awardHuntKill(p:HuntProgress,balance:HuntBalance){
  if(p.level>=balance.maxLevel)p.xp=0;
 }
 export function upgradeHuntWeapon(p:HuntProgress,balance:HuntBalance,type:WeaponType){
- if(!isWeaponType(type))throw Error('Invalid weapon');const cost=curveValue(balance.weapon,p.weaponLevels[type]);
+ if(!isWeaponType(type))throw Error('Invalid weapon');if(p.weaponLevels[type]>=50)throw Error('최대 강화 단계입니다.');const cost=curveValue(balance.weapon,p.weaponLevels[type]);
  if(cost<=0)throw Error('최대 강화 단계이거나 비용 설정이 없습니다.');if(p.soulGem<cost)throw Error('영혼석이 부족합니다.');
  p.soulGem-=cost;p.weaponLevels[type]++;if(p.weaponType===type)p.weaponLevel=p.weaponLevels[type];return cost;
 }
 export function upgradeHunt(p:HuntProgress,balance:HuntBalance,slot:'weapon'|'armor'){
  if(slot==='weapon')return upgradeHuntWeapon(p,balance,p.weaponType);
- const cost=curveValue(balance.armor,p.armorLevel);
+ if(p.armorLevel>=50)throw Error('최대 강화 단계입니다.');const cost=curveValue(balance.armor,p.armorLevel);
  if(cost<=0)throw Error('최대 강화 단계이거나 비용 설정이 없습니다.');if(p.soulGem<cost)throw Error('영혼석이 부족합니다.');
  p.soulGem-=cost;p.armorLevel++;return cost;
 }
-export function heroStats(p:HuntProgress){return {maxHP:10_000,
- attack:20+(p.level-1)*1.5+(p.weaponLevel-1)*2,defense:2+(p.armorLevel-1)*1.5,crit:.1,critMultiplier:1.5};}
+export const heroStats=recoveredStats;
+export function trainingCost(p:HuntProgress,kind:'attack'|'health'){const level=kind==='attack'?p.attackTraining:p.healthTraining;return level>=500?0:curveValue([RECOVERED_GROWTH.training.cost],level+1);}
+export function trainHunt(p:HuntProgress,kind:'attack'|'health'){const cost=trainingCost(p,kind);if(!cost)throw Error('최대 수련 단계입니다.');if(p.gold<cost)throw Error('골드가 부족합니다.');p.gold-=cost;if(kind==='attack')p.attackTraining++;else p.healthTraining++;return cost;}
 
 export function equipHuntWeapon(p:HuntProgress,type:WeaponType){if(!isWeaponType(type))throw Error('Invalid weapon');p.weaponType=type;p.weaponLevel=p.weaponLevels[type];}

@@ -24,7 +24,10 @@
     "test:rpg:archive": "node --import ./mini-services/poker-server/node_modules/tsx/dist/loader.mjs --test scripts/rpg/test-spine-characters.ts",
     "test:audio": "node --import ./mini-services/poker-server/node_modules/tsx/dist/loader.mjs --test scripts/test-poker-audio.ts",
     "rpg:restore": "python scripts/rpg/restore_battle.py",
-    "check:rpg": "tsc -p tsconfig.rpg-check.json --pretty false"
+    "check:rpg": "tsc -p tsconfig.rpg-check.json --pretty false",
+    "rpg:restore:stats": "python3 scripts/rpg/restore_combat_stats.py",
+    "test:rpg:reference": "python3 -m unittest discover -s scripts/rpg -p \"test_reference*.py\"",
+    "rpg:restore:profile": "python3 scripts/rpg/restore_session_profile.py"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

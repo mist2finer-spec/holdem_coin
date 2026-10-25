@@ -28,7 +28,7 @@ test('nine training loadouts reuse valid frames and retain 3/4/5 hit variation',
  assert.deepEqual([...counts].sort(),[3,4,5]);assert.throws(()=>huntLoadout('../bad'));
 });
 test('native floors and half-open segments match known values; missing curve is never a free upgrade',()=>{
- assert.equal(curveValue(balance.team,1),1000);assert.equal(curveValue(balance.team,2),1107);assert.equal(curveValue(balance.weapon,10),92);assert.equal(curveValue(balance.team,50),0);
+ assert.equal(curveValue(balance.team,1),1000);assert.equal(curveValue(balance.team,2),1107);assert.equal(curveValue(balance.weapon,10),92);assert.equal(curveValue(balance.team,50),22028);assert.equal(curveValue(balance.team,balance.maxLevel),0);
  const p=newHuntProgress();p.xp=995;awardHuntKill(p,balance);assert.equal(p.level,2);assert.equal(p.xp,7);assert.equal(p.kills,1);
  p.soulGem=100;const cost=upgradeHunt(p,balance,'weapon');assert.equal(cost,40);assert.equal(p.weaponLevel,2);assert.equal(p.soulGem,60);
  p.weaponLevel=50;p.weaponLevels[p.weaponType]=50;assert.throws(()=>upgradeHunt(p,balance,'weapon'));assert.equal(p.soulGem,60);
@@ -140,4 +140,35 @@ test('armory upgrades selected unequipped items without silently equipping them 
  assert.deepEqual(service.command('inventory',start.id,1,input,'upgrade-spear'),upgraded);
  const equipped=service.command('inventory',start.id,2,input,'equip-spear');assert.equal(equipped.weapon,'spear');assert.equal(equipped.progress.weaponLevel,2);
  assert.equal(service.start('inventory','hong').progress.weaponLevels.spear,2);store.close();
+});
+
+test('recovered grade1 equipment uses original rounded contributions and keeps test HP',async()=>{
+ const {heroStats}=await import('../../src/components/rpg/hunt-progression');
+ const p=newHuntProgress();p.weaponType='sword';
+ let s=heroStats(p);assert.equal(s.attack,6);assert.equal(s.naturalHP,119);assert.equal(s.maxHP,10000);assert.equal(s.crit,.05);assert.equal(s.critMultiplier,1.2);
+ for(const id of [17,18,19,20])assert.equal(s.abilities[id],1.02); // Distinct owned types contribute different damage channels.
+ p.weaponLevel=50;p.weaponLevels.sword=50;p.armorLevel=50;s=heroStats(p);assert.ok(s.attack>6);assert.ok(s.naturalHP>119);assert.ok(s.incomingDamageScale<1);
+ const before=s.attack;p.level=100;assert.equal(heroStats(p).attack,before); // Level alone is not invented flat attack.
+});
+test('gold training charges exactly once, persists and cannot spend past cap',()=>{
+ const store=new RpgStore(':memory:');const saved=store.load('training');saved.progress.gold=1000;store.save('training',saved.progress,saved.revision);
+ const service=new RpgService(store,balance,()=>0),v=service.start('training','hong');
+ const a=service.command('training',v.id,1,input,'train-attack');assert.equal(a.progress.attackTraining,1);assert.equal(a.progress.gold,850);assert.ok(a.stats.attack>v.stats.attack);
+ assert.deepEqual(service.command('training',v.id,1,input,'train-attack'),a);
+ const b=service.command('training',v.id,2,input,'train-health');assert.equal(b.progress.healthTraining,1);assert.equal(b.progress.gold,700);assert.ok(b.stats.naturalHP>a.stats.naturalHP);assert.equal(b.maxHP,10000);
+ const c=service.start('training','white-bob');assert.equal(c.progress.attackTraining,1);assert.equal(c.progress.healthTraining,1);assert.equal(c.progress.gold,700);store.close();
+});
+test('training failure and maximum leave balances unchanged',async()=>{
+ const {trainHunt,trainingCost}=await import('../../src/components/rpg/hunt-progression');const p=newHuntProgress();
+ assert.throws(()=>trainHunt(p,'attack'));assert.equal(p.gold,0);assert.equal(p.attackTraining,0);
+ p.gold=100000;p.attackTraining=500;assert.equal(trainingCost(p,'attack'),0);assert.throws(()=>trainHunt(p,'attack'));assert.equal(p.gold,100000);
+});
+test('legacy saves add zero training and preserve all balances and equipment',()=>{
+ const store=new RpgStore(':memory:');const s=store.load('training-migration');const legacy:any={...s.progress};delete legacy.attackTraining;delete legacy.healthTraining;legacy.gold=777;legacy.armorLevel=7;
+ store.db.prepare('UPDATE rpg_players SET progress=? WHERE id=?').run(JSON.stringify(legacy),'training-migration');const p=store.load('training-migration').progress;assert.equal(p.attackTraining,0);assert.equal(p.healthTraining,0);assert.equal(p.gold,777);assert.equal(p.armorLevel,7);store.close();
+});
+test('unequipped owned weapons grant their specific damage channel while equipped attack stays separate',async()=>{
+ const {heroStats}=await import('../../src/components/rpg/hunt-progression');const p=newHuntProgress();p.weaponType='sword';
+ const a=heroStats(p);p.weaponLevels.dual=50;const b=heroStats(p);assert.equal(b.attack,a.attack);assert.ok(b.basicDamageMultiplier>a.basicDamageMultiplier);assert.equal(b.skillDamageMultiplier,a.skillDamageMultiplier);
+ p.weaponLevels.spear=50;assert.ok(heroStats(p).skillDamageMultiplier>b.skillDamageMultiplier);
 });

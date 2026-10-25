@@ -1,4 +1,5 @@
 'use client';
+import {HuntGrowth} from './HuntGrowth';
 import {HuntArmory} from './HuntArmory';
 import {Shield} from 'lucide-react';
 import {useEffect,useRef,useState} from 'react';
@@ -99,7 +100,7 @@ export function HuntPrototype({onExit,character='hong'}:{onExit?:()=>void;charac
     <button className="hunt-dodge" disabled={!active} onClick={()=>enqueue({dodge:1})} aria-label="오른쪽 회피">↷</button></div>
   </section>}
   <footer className="hunt-footer"><button onClick={()=>setDialog('weapons')}>무기</button><button onClick={()=>setDialog('growth')}>성장 · 장비</button><button onClick={()=>setDialog('bag')}>가방</button><strong>✦ 탐험</strong><button onClick={()=>setDialog('quest')}>사냥 의뢰</button></footer>
-  {dialog&&dialog!=='weapons'&&<div className="hunt-modal" onClick={()=>setDialog(null)}><section role="dialog" aria-modal="true" aria-labelledby="hunt-growth-title" onClick={e=>e.stopPropagation()}><h2 id="hunt-growth-title">{dialog==='growth'?'성장 · 훈련 장비':dialog==='bag'?'가방 · 회복 물약':'사냥 의뢰'}</h2>{dialog==='growth'&&<><p>영혼석 {view?.progress.soulGem??0} · Lv. {view?.progress.level??1}</p><p>무기 강화는 공격력, 방어구 강화는 방어력을 높입니다.</p><button disabled={!active||!view?.weaponCost||view.progress.soulGem<view.weaponCost} onClick={()=>enqueue({action:'weapon'})}>무기 강화 · {view?.weaponCost||'MAX'} 영혼석</button><button disabled={!active||!view?.armorCost||view.progress.soulGem<view.armorCost} onClick={()=>enqueue({action:'armor'})}>방어구 강화 · {view?.armorCost||'MAX'} 영혼석</button><p>9종은 임시 훈련 특성을 사용합니다. 원작 전용 모션·밸런스와는 구분됩니다.</p></>}
+  {dialog&&dialog!=='weapons'&&<div className="hunt-modal" onClick={()=>setDialog(null)}><section role="dialog" aria-modal="true" aria-labelledby="hunt-growth-title" onClick={e=>e.stopPropagation()}><h2 id="hunt-growth-title">{dialog==='growth'?'성장 · 장비':dialog==='bag'?'가방 · 회복 물약':'사냥 의뢰'}</h2>{dialog==='growth'&&<HuntGrowth view={view} active={active} onCommand={action=>enqueue({action})}/>}
    {dialog==='bag'&&<><p>골드 {view?.progress.gold??0} · 물약 {view?.progress.potions??0}개</p><p>회복 물약: 최대 HP의 40% 회복 · 재사용 2초</p><button disabled={!active||!view?.potionReady} onClick={()=>enqueue({action:'potion'})}>물약 사용</button><button disabled={!active||!view||view.progress.gold<POTION_PRICE||view.progress.potions>=99} onClick={()=>enqueue({action:'buy-potion'})}>물약 구매 · {POTION_PRICE} 골드</button><p>훈련 무기 +{(view?.progress.weaponLevel??1)-1} · 방어구 +{(view?.progress.armorLevel??1)-1}</p></>}
    {dialog==='quest'&&<>{quest?<><p>{quest.name}</p><p>슬라임 처치 {Math.min(view?.progress.kills??0,quest.kills)} / {quest.kills}</p><p>보상: {quest.gold} 골드 · {quest.soulGem} 영혼석</p><button disabled={!view||(view.progress.kills<quest.kills)} onClick={()=>enqueue({action:'quest'})}>의뢰 보상 받기</button></>:<p>모든 사냥 의뢰를 완료했습니다.</p>}</>}
    <button autoFocus onClick={()=>setDialog(null)}>닫기</button></section></div>}
