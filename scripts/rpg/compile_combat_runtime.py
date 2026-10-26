@@ -37,7 +37,7 @@ for i,line in enumerate(args.stages.open()):
  original=[v for v in s['slots'] if v['actorType'] and v['stats'] and str(v['actorType']) in r['monsters']]
  normal=[v for v in original if not v['boss']];boss=[v for v in original if v['boss']]
  for row,slot in zip(out['normal']+[out['boss']],normal+[boss[-1] if s['section']==5 else boss[0]]):
-  v=slot['definition'];row.extend([v['MonsterAIType'],v.get('SkillTypes',[]),[slot['stats'].get(str(k),0) for k in [9,10,11,12]]])
+  v=slot['definition'];row[3:]=[v['MonsterAIType'],v.get('SkillTypes',[]),[slot['stats'].get(str(k),0) for k in [9,10,11,12]]]
 r['actions']=actions;r['ai']={str(k):{'min':v['MoveMinDistance']*50,'max':v['MoveMaxDistance']*50,'waitMin':v['WaitMinSeconds'],'waitMax':v['WaitMaxSeconds']} for k,v in ai.items()}
 r['source']='recovered-action-stage-rules-20261026';runtime.write_text(json.dumps(r,separators=(',',':')))
 growth=args.repo/'src/components/rpg/data/recovered-growth.json';g=json.loads(growth.read_text());team=load('TeamData');g['teamMaxLevel']=team['MaxLevel'];g['teamCurves']=[{'min':v['MinLevel'],'max':v['MaxLevel'],**{key:v[name]['Value'] for key,name in [('base','BaseValue'),('inc','IncValue'),('rate','IncRate'),('scaler','Scaler')]}} for v in team['LevelUpQuadFuncDatas']];growth.write_text(json.dumps(g,indent=2)+'\n')
