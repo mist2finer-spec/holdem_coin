@@ -5,7 +5,7 @@ import {topShowdownPlayers,type ShowdownPlayer} from '@/lib/poker-showdown-view'
 import {CharacterPortrait} from './CharacterPortrait';
 import {HandAwards} from './HandAwards';
 import {PlayingCard} from './PlayingCard';
-export function ShowdownResults({players,board,winnerInfo}:{players:ShowdownPlayer[];board:Card[];winnerInfo:WinnerInfo|null}) {
+export function ShowdownResults({players,board,winnerInfo,formatMoney,tournament}:{formatMoney?:(n:number)=>string;tournament?:boolean;players:ShowdownPlayer[];board:Card[];winnerInfo:WinnerInfo|null}) {
  const rows=topShowdownPlayers(players,board);
  if(!rows.length)return null;
  return <section className="poker-showdown-results" aria-label="쇼다운 상위 3명">
@@ -23,6 +23,6 @@ export function ShowdownResults({players,board,winnerInfo}:{players:ShowdownPlay
     </div>
    </div>;
   })}
-  {winnerInfo&&<HandAwards winnerInfo={winnerInfo}/>}
+  {winnerInfo&&<HandAwards winnerInfo={winnerInfo} formatMoney={formatMoney} tournament={tournament}/>}
  </section>;
 }

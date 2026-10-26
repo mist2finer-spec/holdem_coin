@@ -1,3 +1,4 @@
+import {tournamentMoney} from '../../src/lib/poker-tournament';
 import {TournamentLifecycle} from './tournament';
 import {StreetBetting,recordedAction} from '../../src/lib/poker-betting';
 import {dealStartingHands,DEALING_PROFILE} from '../../src/lib/poker-deal';
@@ -244,7 +245,7 @@ export class HybridHoldemRoom {
     if(this.tournament){
       const baseName=(name||'용사').normalize('NFKC').trim().slice(0,8)||'용사',key=this.tournament.key(baseName);
       const deny=(message:string)=>socket.emit('ROOM_DENIED',{message});
-      if(this.tournament.finished)return deny('종료된 토너먼트입니다. 로비에서 새로 입장해 주세요.');
+      if(this.tournament.finished)return deny('토너먼트 종료 후 10분 대기 중입니다. 로비의 다음 대회 카운트다운을 확인해 주세요.');
       if(this.tournament.bannedNames.has(key))return deny('이미 탈락한 이름입니다. 이 대회에 재입장하거나 리바인할 수 없습니다.');
       if([...this.users.values()].some(u=>this.tournament!.key(u.baseName)===key))return deny('같은 이름이 이미 참가 중입니다.');
       const returning=this.state.seats.find(s=>!s.isBot&&this.tournament!.key(s.name)===key&&!this.tournament!.eliminated.has(s.seatId));
@@ -336,6 +337,10 @@ export class HybridHoldemRoom {
 
     if (user.seatId !== null) {
       if(!this.tournament)this.leaveSeats.add(user.seatId);
+      else if(this.tournament.startedAt===null){
+        const seat=this.state.seats[user.seatId],persona=RPG_BOT_POOL[user.seatId%RPG_BOT_POOL.length];
+        Object.assign(seat,{isBot:true,socketId:null,persona,name:persona.name});
+      }
       // 유저가 턴 중에 나갔다면 즉시 폴드 처리
       if (this.state.activeSeatId === user.seatId && this.pendingActionResolve) {
         this.actionSource="disconnect";
@@ -488,6 +493,14 @@ export class HybridHoldemRoom {
   private async startGameLoop() {
     if (this.isRunning) return;
     this.isRunning = true;
+    if(this.tournament&&this.tournament.startedAt===null){
+      this.processSeatSwaps();
+      this.tournament.requestStart(Date.now());
+      this.broadcastTableState();
+      this.broadcast('SYSTEM_NOTICE',{messages:['토너먼트가 10초 후 시작합니다.']});
+      await this.sleep(Math.max(0,this.tournament.startsAt!-Date.now()));
+      if(this.users.size===0){this.tournament.cancelStart();this.isRunning=false;this.broadcastTableState();return;}
+    }
     console.log("[GL] 하이브리드 홀덤 게임 루프 시작");
 
     let handCount = 0;
@@ -899,13 +912,14 @@ export class HybridHoldemRoom {
   }
 
   private labelAction(action: ActionType | "bet", amount: number, callAmt: number): string {
+    const display=this.tournament?tournamentMoney(amount,this.bigBlind):amount.toLocaleString();
     switch (action) {
       case "fold": return "FOLD";
       case "check": return "CHECK";
-      case "call": return `CALL ${amount.toLocaleString()}`;
-      case "bet": return `BET ${amount.toLocaleString()}`;
-      case "raise": return `RAISE ${amount.toLocaleString()}`;
-      case "allin": return `ALL-IN ${amount.toLocaleString()}`;
+      case "call": return `CALL ${display}`;
+      case "bet": return `BET ${display}`;
+      case "raise": return `RAISE ${display}`;
+      case "allin": return `ALL-IN ${display}`;
     }
   }
 
@@ -1005,8 +1019,8 @@ export class HybridHoldemRoom {
       rake: settlement.totalRake, results: settlement.results };
 
     this.broadcast("SYSTEM_NOTICE", { messages: [
-      ...winners.map(r => `★ ${r.name}: 순수익 ${r.netProfit >= 0 ? "+" : ""}${r.netProfit.toLocaleString()} 칩`),
-      `◆ 레이크 ${settlement.totalRake.toLocaleString()} 칩 (${this.tournament?0:5}%)`,
+      ...winners.map(r => `★ ${r.name}: 순수익 ${r.netProfit >= 0 ? "+" : ""}${this.tournament?tournamentMoney(r.netProfit,this.bigBlind):`${r.netProfit.toLocaleString()} 칩`}`),
+      `◆ 레이크 ${this.tournament?tournamentMoney(settlement.totalRake,this.bigBlind):`${settlement.totalRake.toLocaleString()} 칩`} (${this.tournament?0:5}%)`,
     ] });
     st.pot = 0;
     st.seats = st.seats.map(seat => ({ ...seat, currentBet: 0, totalBet: 0 }));
@@ -1104,6 +1118,7 @@ export class HybridHoldemRoom {
 
     return {
       tournament:this.tournament?.snapshot()??null,
+      serverNow:Date.now(),
       type: "TABLE_STATE",
       handNumber: Number(st.handNumber || 0),
       phase: String(st.phase || "PREFLOP"),
@@ -1180,6 +1195,9 @@ if (process.env.POKER_TEST_MODE !== "1") {
   const room6 = new HybridHoldemRoom(true,6);
   let tournamentRoom=new HybridHoldemRoom(false,8,'tournament');
 
+  const refreshTournament=()=>{
+    if(tournamentRoom.tournament?.readyForNext(Date.now()))tournamentRoom=new HybridHoldemRoom(false,8,'tournament');
+  };
   io.on("connection", (socket: Socket) => {
     let selectedRoom: HybridHoldemRoom | undefined;
     console.log(`[Socket] 연결: ${socket.id}`);
@@ -1198,10 +1216,14 @@ if (process.env.POKER_TEST_MODE !== "1") {
     socket.on('LOBBY_RENAME',(data:{name?:string},reply:unknown)=>{if(typeof reply==='function')reply(lobbyLedger.rename(socket.id,data?.name));});
     socket.on('LOBBY_STATUS',(reply:unknown)=>{if(typeof reply==='function')reply(lobbyLedger.view(socket.id));});
     socket.on('GET_LEADERBOARD',(reply:unknown)=>{if(typeof reply==='function')reply({players:lobbyLedger.leaderboard(),updatedAt:Date.now(),tableSize:6});});
+    socket.on('GET_TOURNAMENT_STATUS',(reply:unknown)=>{
+      if(typeof reply!=='function')return;
+      refreshTournament();reply({...tournamentRoom.tournament!.snapshot(),serverNow:Date.now(),handNumber:tournamentRoom.state.handNumber});
+    });
     socket.on("JOIN_ROOM", (data: { name: string; tableSize?: number; tournament?:boolean }) => {
       if(selectedRoom)return;
       if(data?.tournament===true){
-        if(tournamentRoom.tournament?.finished)tournamentRoom=new HybridHoldemRoom(false,8,'tournament');
+        refreshTournament();
         selectedRoom=tournamentRoom;selectedRoom.onUserConnect(socket,data.name);return;
       }
       if(data?.tableSize!==6){socket.emit("SYSTEM_NOTICE",{messages:["8인 서버: Under Repair — 6인 서버를 이용해 주세요."]});return;}

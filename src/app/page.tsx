@@ -4,6 +4,7 @@ import {setPokerAudioScene} from '@/lib/poker-audio';
 import {PokerAudioControl} from '@/components/poker/PokerAudioControl';
 import dynamic from 'next/dynamic';
 const HuntEntry = dynamic(()=>import('@/components/rpg/HuntEntry').then(m=>m.HuntEntry),{ssr:false});
+import {TournamentLobbyButton} from '@/components/poker/TournamentLobbyButton';
 import {LobbyPanel} from '@/components/poker/LobbyPanel';
 import {PokerTable} from '@/components/poker/PokerTable';
 import {PokerTableSocket} from '@/components/poker/PokerTableSocket';
@@ -48,7 +49,7 @@ function HomeContent() {
      <button onClick={()=>go('six')}><span>♣</span><strong>6인 서버</strong><small>실시간 멀티플레이</small><em>6 SEATS</em></button>
      <button aria-disabled="true" onClick={()=>setRepair(true)}><span>♦</span><strong>8인 서버</strong><small>Under Repair</small><em>이용 불가</em></button>
     </div>
-    <button className="island-tournament" onClick={()=>go('tournament')}><strong>8인 토너먼트</strong><span>100 BB · 5분 블라인드 · 리바인 불가</span></button>
+    <TournamentLobbyButton onEnter={()=>go('tournament')}/>
 
    </section>
   </div>

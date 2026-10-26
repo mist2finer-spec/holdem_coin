@@ -37,7 +37,8 @@ export interface SocketSeat {
 }
 
 export interface SocketTableState {
-  tournament?:{status:string;level:number;smallBlind:number;bigBlind:number;nextLevelAt:number|null;remaining:number;winner:{seatId:number;name:string;portrait:number}|null}|null;
+  serverNow?:number;
+  tournament?:import('@/lib/poker-tournament').TournamentStatus|null;
   type: "TABLE_STATE";
   dealStage?: "shuffle" | "cards" | null;
   handNumber: number;
@@ -82,6 +83,7 @@ interface UsePokerSocketOpts {
 
 export function usePokerSocket({ userName, onToast, tableSize=8, onExit, tournament=false }: UsePokerSocketOpts) {
   const socketRef = useRef<Socket | null>(null);
+  const clockOffset=useRef(0);
   const lastDealSound = useRef('');
   const [state, setState] = useState<SocketTableState | null>(null);
   const [connected, setConnected] = useState(false);
@@ -206,8 +208,9 @@ export function usePokerSocket({ userName, onToast, tableSize=8, onExit, tournam
         lastDealSound.current=dealKey;
         void playPokerSound(data.dealStage==='shuffle'?'shuffle_card':'taking_card',data.dealStage==='shuffle'?1.5:undefined);
       }
+      clockOffset.current=(data.serverNow??Date.now())-Date.now();
       setState(data);
-      setClock(Date.now());
+      setClock(Date.now()+clockOffset.current);
       setPreAction(data.preAction);
     });
 
@@ -257,8 +260,8 @@ export function usePokerSocket({ userName, onToast, tableSize=8, onExit, tournam
   }, []);
 
   useEffect(() => {
-    if (!state?.isUserTurn&&state?.tournament?.status!=='running') return;
-    const interval = setInterval(() => setClock(Date.now()), 200);
+    if (!state?.isUserTurn&&!state?.tournament) return;
+    const interval = setInterval(() => setClock(Date.now()+clockOffset.current), 200);
     return () => clearInterval(interval);
   }, [state?.isUserTurn, state?.actionDeadline,state?.tournament?.status]);
 

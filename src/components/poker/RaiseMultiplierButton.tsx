@@ -4,9 +4,10 @@ import {ActionSkinButton} from './ActionSkinButton';
 import {raiseSizing} from '@/lib/poker-sizing';
 import type {ActionType} from '@/lib/poker-engine';
 
-export function RaiseMultiplierButton({currentBet,call,stack,minRaise,maxRaise,onSubmit}:{
+export function RaiseMultiplierButton({currentBet,call,stack,minRaise,maxRaise,formatMoney=(n:number)=>n.toLocaleString(),onSubmit}:{
   currentBet:number;call:number;stack:number;minRaise:number;maxRaise:number;
-  onSubmit:(action:ActionType,amount:number)=>void;
+  formatMoney?:(n:number)=>string;
+ onSubmit:(action:ActionType,amount:number)=>void;
 }) {
   // Integer tenths avoid labels such as 3.3000000000000003X.
   const [tenths,setTenths]=useState(20);
@@ -21,9 +22,9 @@ export function RaiseMultiplierButton({currentBet,call,stack,minRaise,maxRaise,o
     </div>
     <ActionSkinButton skin="purple" disabled={!size.canRaise}
       onClick={()=>onSubmit(size.allIn?'allin':'raise',size.allIn?stack:size.target)}
-      title={`${size.label} · 총 ${size.target.toLocaleString()}칩${size.allIn?' · ALL-IN':''}`}
+      title={`${size.label} · 총 ${formatMoney(size.target)}${size.allIn?' · ALL-IN':''}`}
       className="h-9 sm:h-10"
-    ><span className="block leading-tight">RAISE {size.label}</span><span className="block text-[8px] sm:text-[10px] leading-tight opacity-90">{size.allIn?'ALL-IN · ':''}{size.target.toLocaleString()}</span></ActionSkinButton>
+    ><span className="block leading-tight">RAISE {size.label}</span><span className="block text-[8px] sm:text-[10px] leading-tight opacity-90">{size.allIn?'ALL-IN · ':''}{formatMoney(size.target)}</span></ActionSkinButton>
     <div className="grid grid-cols-2 gap-0.5">
       {[10,2].map(step=><button key={step} type="button" aria-label={`레이즈 배율 ${step/10} 감소`}
         disabled={!size.canRaise||size.selected<=20}

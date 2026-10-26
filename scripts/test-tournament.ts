@@ -20,7 +20,7 @@ test('elimination removes entrants permanently, rejects rebuys and only the surv
 });
 test('test names can take a surviving CPU seat, never an eliminated seat or fresh chips',()=>{
  const r=room();r.startGameLoop=async()=>{};
- r.state.seats[0].stack=0;r.tournament.settle(r.state.seats);r.state.seats[1].stack=12345;
+ r.tournament.beginHand(1000);r.state.seats[0].stack=0;r.tournament.settle(r.state.seats);r.state.seats[1].stack=12345;
  const a=socket('alice');r.onUserConnect(a,'Alice');r.processSeatSwaps();assert.equal(r.state.seats[0].isBot,true);assert.equal(r.state.seats[1].name,'Alice');assert.equal(r.state.seats[1].stack,12345);
  r.onUserRebuy('alice');r.processSeatSwaps();assert.equal(r.state.seats[1].stack,12345);
  r.onUserDisconnect('alice');const b=socket('return');r.onUserConnect(b,'Alice');assert.equal(r.users.get('return').seatId,1);assert.equal(r.state.seats[1].stack,12345);
@@ -58,3 +58,31 @@ test('a disconnected tournament entrant checks for free and folds only when faci
  assert.equal((await r.getDecision(actor,0,200,20000,true)).action,'check');
  assert.equal((await r.getDecision(actor,200,400,20000,true)).action,'fold');
 });
+
+test('entry countdown is single, cancellable and does not start the blind clock',()=>{
+ const t=new TournamentLifecycle();assert.equal(t.snapshot().status,'waiting');t.requestStart(1000);t.requestStart(4000);
+ assert.equal(t.snapshot().status,'countdown');assert.equal(t.startsAt,11000);assert.equal(t.startedAt,null);assert.equal(t.snapshot().nextLevelAt,null);
+ t.cancelStart();assert.equal(t.snapshot().status,'waiting');t.requestStart(20000);t.beginHand(30000);
+ assert.equal(t.snapshot().status,'running');assert.equal(t.startedAt,30000);assert.equal(t.snapshot().nextLevelAt,330000);
+});
+test('champion locks entry for exactly ten minutes; later settlement cannot extend it',t=>{
+ let now=10000;t.mock.method(Date,'now',()=>now);const life=new TournamentLifecycle();const seats=Array.from({length:8},(_,seatId)=>({seatId,name:`P${seatId}`,stack:seatId===0?160000:0}));
+ life.settle(seats);assert.equal(life.nextTournamentAt,610000);now+=1000;life.settle(seats);assert.equal(life.nextTournamentAt,610000);
+ assert.equal(life.readyForNext(609999),false);assert.equal(life.readyForNext(610000),true);
+ const r=room();r.tournament.settle(seats);const s=socket('cooldown');r.onUserConnect(s,'NewPlayer');assert.ok(s.events.some(e=>e.event==='ROOM_DENIED'));assert.equal(r.userCount,0);
+});
+test('room countdown prevents dealing before ten seconds and starts only one loop',async t=>{
+ let now=1000;t.mock.method(Date,'now',()=>now);const r:any=new HybridHoldemRoom(false,8,'tournament');let resume!:()=>void,wait=0,hands=0;
+ r.sleep=(ms:number)=>{wait=ms;return new Promise<void>(resolve=>{resume=resolve;});};
+ r.playOneHand=async()=>{hands++;r.tournament.beginHand(Date.now());r.isRunning=false;};
+ r.onUserConnect(socket('one'),'One');r.onUserConnect(socket('two'),'Two');assert.equal(wait,10000);assert.equal(hands,0);assert.equal(r.tournament.startsAt,11000);assert.equal(r.tournament.startedAt,null);
+ now=11000;resume();await new Promise(resolve=>setImmediate(resolve));assert.equal(hands,1);assert.equal(r.tournament.startedAt,11000);
+});
+test('empty countdown cancels without dealing or banning departed entrants',async()=>{
+ const r:any=new HybridHoldemRoom(false,8,'tournament');let resume!:()=>void;
+ r.sleep=()=>new Promise<void>(resolve=>{resume=resolve;});r.onUserConnect(socket('leave'),'Leave');r.onUserDisconnect('leave');resume();
+ await new Promise(resolve=>setImmediate(resolve));assert.equal(r.state.handNumber,0);assert.equal(r.isRunning,false);assert.equal(r.tournament.snapshot().status,'waiting');assert.equal(r.tournament.bannedNames.size,0);assert.ok(r.state.seats.every((s:any)=>s.isBot));
+});
+
+import {tournamentMoney} from '../src/lib/poker-tournament';
+test('BB amounts round to one decimal and do not modify chip accounting',()=>{assert.equal(tournamentMoney(246,200),'1.2 BB');assert.equal(tournamentMoney(250,200),'1.3 BB');assert.equal(tournamentMoney(20000,200),'100 BB');assert.equal(tournamentMoney(1,200),'0 BB');});

@@ -77,3 +77,5 @@
 .store-categories button[aria-pressed=true]{background:#79501f;color:#fff1c9;border-color:#edc57d}
 .store-item-scroll{padding:0 6% 6%;min-height:0;overflow:auto;overscroll-behavior:contain;flex:1}
 @media(max-width:639px){.island-entry-buttons{gap:8px;left:8%;width:84%}.island-entry-buttons>button{height:56px;font-size:16px}.store-categories{gap:4px}.store-categories button{font-size:12px}}
+
+.island-tournament{gap:12px;text-align:left}.island-tournament span{text-align:right;line-height:1.6}.island-tournament:disabled{opacity:.65;cursor:wait}

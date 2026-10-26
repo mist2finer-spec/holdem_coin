@@ -1,4 +1,5 @@
 "use client";
+import {tournamentMoney,tournamentTime} from "@/lib/poker-tournament";
 import {CharacterPortrait} from './CharacterPortrait';
 import "./poker-layout.css";
 import { useEffect, useRef, useState } from "react";
@@ -75,7 +76,8 @@ export function PokerTableSocket({ userName, onToast, tableSize=8, onMain,tourna
     myName,
   } = usePokerSocket({ userName, onToast, tableSize, onExit:onMain,tournament });
   const bb=tournamentState?.bigBlind??200;
-  const bbMoney=(n:number)=>`${Number((n/bb).toFixed(1))} BB`;
+  const bbMoney=(n:number)=>tournamentMoney(n,bb);
+  const money=(n:number)=>tournamentState?bbMoney(n):n.toLocaleString();
   const [watchEliminated,setWatchEliminated]=useState(false);
   const eliminated=!!tournamentState&&rotatedSeats.some(s=>s.isMe&&s.eliminated);
   const nextSeconds=tournamentState?.nextLevelAt?Math.max(0,Math.ceil((tournamentState.nextLevelAt-clock)/1000)):300;
@@ -128,7 +130,7 @@ export function PokerTableSocket({ userName, onToast, tableSize=8, onMain,tourna
       <span className="absolute bottom-1 right-2 z-30 text-[9px] text-slate-400" title="현재 화면 버전">
         서버 · {CLIENT_REVISION.slice(0, 7)}
       </span>
-      {tournamentState&&<div className="tournament-hud">8인 토너먼트 · Lv.{tournamentState.level} · SB/BB {tournamentState.smallBlind.toLocaleString()}/{bb.toLocaleString()} · {tournamentState.remaining}/8명<br/>{nextSeconds?`블라인드 인상 ${Math.floor(nextSeconds/60)}:${String(nextSeconds%60).padStart(2,'0')}`:'다음 핸드부터 블라인드 인상'} · 레이크 0 · 리바인 불가</div>}
+      {tournamentState&&<div className="tournament-hud">8인 토너먼트 · Round {tournamentState.level} · SB/BB {bbMoney(tournamentState.smallBlind)}/{bbMoney(bb)} · {tournamentState.remaining}/8명<br/>{tournamentState.status==='countdown'?`토너먼트 시작까지 ${Math.max(0,Math.ceil(((tournamentState.startsAt??clock)-clock)/1000))}초`:tournamentState.status==='waiting'?'플레이어 입장 대기':tournamentState.status==='finished'?`다음 대회까지 ${tournamentTime(Math.ceil(((tournamentState.nextTournamentAt??clock)-clock)/1000))}`:`진행 ${tournamentTime((clock-(tournamentState.startedAt??clock))/1000)} · ${nextSeconds?`블라인드 인상 ${tournamentTime(nextSeconds)}`:'다음 핸드부터 블라인드 인상'}`} · 레이크 0 · 리바인 불가</div>}
       {tournamentState?.winner&&<div className="tournament-finish" role="dialog" aria-modal="true" aria-label="토너먼트 우승"><section><span>TOURNAMENT CHAMPION</span><CharacterPortrait portrait={tournamentState.winner.portrait} name={tournamentState.winner.name}/><h1>{tournamentState.winner.name}</h1><h2>1위! 우승을 축하합니다!</h2><Button onClick={onMain}>로비로</Button></section></div>}
       {eliminated&&!watchEliminated&&!tournamentState?.winner&&<div className="tournament-finish" role="dialog" aria-modal="true" aria-label="토너먼트 탈락"><section><h2>토너먼트에서 탈락했습니다.</h2><p>리바인과 같은 이름의 재입장은 불가합니다.</p><Button onClick={()=>setWatchEliminated(true)}>계속 관전</Button><Button onClick={onMain}>로비로</Button></section></div>}
       {/* 배경 장식 */}
@@ -162,7 +164,7 @@ export function PokerTableSocket({ userName, onToast, tableSize=8, onMain,tourna
         </div>
         <div className="bg-rose-950/90 border border-rose-500 rounded-full px-2 py-0.5 backdrop-blur-sm shadow-lg">
           <span className="text-rose-200 text-[9px] font-bold">POT</span>
-          <span className="text-amber-200 text-[11px] font-bold ml-1 tabular-nums">{livePot.toLocaleString()}</span>
+          <span className="text-amber-200 text-[11px] font-bold ml-1 tabular-nums">{money(livePot)}</span>
         </div>
 
       </div>
@@ -197,21 +199,21 @@ export function PokerTableSocket({ userName, onToast, tableSize=8, onMain,tourna
             <div className="poker-pot absolute top-[50%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
               <div className="bg-slate-950/85 border-2 border-amber-500/70 rounded-full px-3 py-1 sm:px-5 sm:py-1.5 backdrop-blur-sm shadow-lg">
                 <span className="text-amber-400 text-[9px] sm:text-[10px] font-bold tracking-wider">◈ POT</span>
-                <span className="text-amber-100 text-sm sm:text-base font-bold ml-1 sm:ml-2 tabular-nums">{livePot.toLocaleString()}</span>
+                <span className="text-amber-100 text-sm sm:text-base font-bold ml-1 sm:ml-2 tabular-nums">{money(livePot)}</span>
               </div>
             </div>
           )}
 
-          {winnerInfo&&!showdownReveal&&<section className="poker-fold-result" aria-label="폴드 승리 결과"><HandAwards winnerInfo={winnerInfo}/></section>}
+          {winnerInfo&&!showdownReveal&&<section className="poker-fold-result" aria-label="폴드 승리 결과"><HandAwards winnerInfo={winnerInfo} formatMoney={tournamentState?bbMoney:undefined} tournament={!!tournamentState}/></section>}
 
-          {showdownReveal&&<ShowdownResults board={board} winnerInfo={winnerInfo} players={rotatedSeats.map(s=>({
+          {showdownReveal&&<ShowdownResults formatMoney={tournamentState?bbMoney:undefined} tournament={!!tournamentState} board={board} winnerInfo={winnerInfo} players={rotatedSeats.map(s=>({
             seatId:s.originalSeatId,name:s.name,portrait:s.isMe?4:s.portrait,
             holeCards:s.holeCards.filter(c=>c!=="??").map(c=>({rank:c[0] as Card["rank"],suit:c[1] as Card["suit"]})),
             inHand:s.inHand,folded:s.folded,
           }))}/>}
 
           {rotatedSeats.map(seat => (
-            <TableBet key={`bet-${seat.seatId}`} amount={seat.currentBet} name={seat.name} position={seat.position} />
+            <TableBet key={`bet-${seat.seatId}`} amount={seat.currentBet} formatMoney={money} name={seat.name} position={seat.position} />
           ))}
 
           {/* 8개 좌석 (시점 회전 적용) */}
@@ -262,15 +264,15 @@ export function PokerTableSocket({ userName, onToast, tableSize=8, onMain,tourna
                   )}
                 </div>
                 <div className="text-amber-300 text-[10px] sm:text-xs">
-                  콜: <span className="font-bold tabular-nums">{callAmount.toLocaleString()}</span>
+                  콜: <span className="font-bold tabular-nums">{money(callAmount)}</span>
                   {" / "}
                   잔고: <span className="font-bold tabular-nums">{tournamentState?bbMoney(userSeat?.stack??0):userSeat?.stack.toLocaleString()}</span>
                 </div>
               </div>
 
-              <PokerActionButtons currentBet={userSeat?.currentBet ?? 0} call={callAmount}
+              <PokerActionButtons key={tournamentState?bb:"cash"} currentBet={userSeat?.currentBet ?? 0} call={callAmount}
                 stack={userSeat?.stack ?? 0} minRaise={minRaise} maxRaise={maxRaise}
-                pot={livePot} onSubmit={submitUserAction} />
+                pot={livePot} formatMoney={money} bigBlind={tournamentState?bb:undefined} onSubmit={submitUserAction} />
 
               {/* 커스텀 레이즈 슬라이더 */}
 
@@ -299,7 +301,7 @@ export function PokerTableSocket({ userName, onToast, tableSize=8, onMain,tourna
                     <div className="flex items-center justify-center gap-2">
                       <span className="text-amber-300 text-[10px] sm:text-xs font-bold">
                         ✓ 사전 액션: <span className="text-amber-100">
-                          {preAction.type === "fold" ? "FOLD" : preAction.type === "call" ? `CALL ${preAction.amount.toLocaleString()}` : "CHECK"}
+                          {preAction.type === "fold" ? "FOLD" : preAction.type === "call" ? `CALL ${money(preAction.amount)}` : "CHECK"}
                         </span>
                       </span>
                       <Button
@@ -335,7 +337,7 @@ export function PokerTableSocket({ userName, onToast, tableSize=8, onMain,tourna
                             amount: Math.min(callAmount, userSeat?.stack ?? 0)
                           })}
                         >
-                          콜 예약 ({Math.min(callAmount, userSeat?.stack ?? 0).toLocaleString()})
+                          콜 예약 ({money(Math.min(callAmount, userSeat?.stack ?? 0))})
                         </Button>
                       ) : (
                         <Button
