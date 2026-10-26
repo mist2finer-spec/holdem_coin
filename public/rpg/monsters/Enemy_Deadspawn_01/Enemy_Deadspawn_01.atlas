@@ -1,0 +1,13 @@
+Enemy_Deadspawn_01.png
+size:64,32
+filter:MipMapNearestNearest,MipMapNearestNearest
+BLleg
+bounds:44,8,5,8
+BRleg
+bounds:34,4,8,10
+FLleg
+bounds:34,16,8,11
+FRleg
+bounds:44,18,7,9
+body
+bounds:2,2,30,25

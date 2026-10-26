@@ -16,7 +16,7 @@ export class RpgStore{
   const progress=JSON.parse(row.progress) as HuntProgress;
   // Additive migration
   const defaults=newHuntProgress();
-  for(const k of ['combatArts','traits','masteryLevel','masteryEssence','willLevel','soulOrb','skillLevels','skillCopies','skillEnabled'] as const)if(progress[k]===undefined)(progress as any)[k]=defaults[k];
+  for(const k of ['labyrinthStage','labyrinthCompleted','combatArts','traits','masteryLevel','masteryEssence','willLevel','soulOrb','skillLevels','skillCopies','skillEnabled'] as const)if(progress[k]===undefined)(progress as any)[k]=defaults[k];
   const record=(x:unknown)=>!!x&&typeof x==='object'&&!Array.isArray(x);
   if(!record(progress.combatArts)||Object.entries(progress.combatArts).some(([id,n])=>!DEVELOPMENT.arts.some(a=>a.id===Number(id)&&a.id!==101&&a.id!==102&&Number.isInteger(n)&&n>=0&&n<=a.max)))throw Error('Invalid combat arts');
   if(!record(progress.traits)||Object.entries(progress.traits).some(([id,n])=>!ABILITY_ORDER.includes(Number(id))||!Number.isInteger(n)||n<0||n>10))throw Error('Invalid traits');
@@ -34,6 +34,7 @@ export class RpgStore{
   if(progress.weaponLevels.unarmed===undefined)progress.weaponLevels.unarmed=1;
   if(!isWeaponType(progress.weaponType)||!progress.weaponLevels||WEAPON_TYPES.some(w=>!Number.isSafeInteger(progress.weaponLevels[w])||progress.weaponLevels[w]<1||progress.weaponLevels[w]>1e12)||progress.weaponLevels[progress.weaponType]!==progress.weaponLevel)throw Error('Invalid saved weapons');
   for(const value of Object.entries(progress).filter(([key])=>!['weaponType','weaponLevels','combatArts','traits','skillLevels','skillCopies','skillEnabled'].includes(key)).map(([,value])=>value))if(typeof value!=='number'||!Number.isSafeInteger(value)||value<0||value>1e12)throw Error('Invalid saved progress');
+  if(progress.labyrinthStage>=6000||progress.labyrinthCompleted>1)throw Error('Invalid labyrinth progress');
   if(!progress.level||!progress.weaponLevel||!progress.armorLevel)throw Error('Invalid saved levels');
   return {progress,revision:row.revision};
  }

@@ -1,3 +1,4 @@
+import {LABYRINTH} from './hunt-labyrinth';
 import {ATTACK_CELL,attackSpriteFrame,attackSpritePlacement} from './combat-attack-sprite';
 import {WEAPON_TYPES} from './hunt-weapons';
 import {HUNT_MONSTER_ASSET,HUNT_STAGE} from './hunt-tables';
@@ -20,7 +21,7 @@ const image = (url: string, signal: AbortSignal) => new Promise<HTMLImageElement
  img.onerror = () => { signal.removeEventListener('abort', abort); reject(new Error(`이미지 로드 실패: ${url}`)); };
  if (signal.aborted) abort(); else img.src = url;
 });
-async function actor(name: string, signal: AbortSignal, gl: WebGLRenderingContext | null) {
+async function actor(name: string, signal: AbortSignal, gl: WebGLRenderingContext | null, groundSlots:string[]=HUNT_MONSTER_ASSET.groundSlots) {
  const [json, atlasText] = await Promise.all([fetch(base + name + '.json', {signal}).then(r => {if (!r.ok) throw Error(name); return r.json();}), fetch(base + name + '.atlas', {signal}).then(r => {if (!r.ok) throw Error(name); return r.text();})]);
  const atlas = new TextureAtlas(atlasText);
  for (const page of atlas.pages) {
@@ -37,7 +38,7 @@ async function actor(name: string, signal: AbortSignal, gl: WebGLRenderingContex
  const idle = data.animations.find(a=>/stay1|idle/i.test(a.name));
  if(idle){state.setAnimation(0,idle.name,true);state.apply(skeleton);}
  skeleton.updateWorldTransform(Physics.update);
- return {skeleton, state, atlas,groundSlots:HUNT_MONSTER_ASSET.groundSlots, animation: '', serial:-1, available: data.animations.map(a => a.name)};
+ return {skeleton, state, atlas,groundSlots,setupHeight:Math.max(1,skeleton.getBoundsRect().height), animation: '', serial:-1, available: data.animations.map(a => a.name)};
 }
 export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: AbortSignal, characterId='hong') {
  Skeleton.yDown = true;
@@ -57,6 +58,18 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
   skeleton.setSlotsToSetupPose();
   return {...enemy,skeleton,state:new AnimationState(enemy.state.data),animation:'',serial:0};
  });
+ const assetCache=new Map<string,typeof enemy>();const pending=new Set<string>();const failed=new Set<string>();
+ const stageVisuals=new Map<number,typeof enemy>();let disposed=false;
+ const visualFor=(mob:HuntEngine['enemies'][number])=>{
+  if(!mob.asset)return enemies[mob.slot];
+  const meta=LABYRINTH.assets[mob.asset];if(!meta)return enemies[mob.slot];
+  const old=stageVisuals.get(mob.slot);if(old?.serial===mob.serial)return old;
+  const template=assetCache.get(mob.asset);
+  if(template){const skeleton=new Skeleton(template.skeleton.data);if(template.skeleton.skin)skeleton.setSkin(template.skeleton.skin);skeleton.setSlotsToSetupPose();
+   const value={...template,skeleton,state:new AnimationState(template.state.data),animation:'',serial:mob.serial};stageVisuals.set(mob.slot,value);return value;}
+  if(!pending.has(mob.asset)&&!failed.has(mob.asset)){pending.add(mob.asset);void actor(meta.skeleton,signal,gl,meta.groundSlots).then(value=>{if(disposed)value.atlas.dispose();else assetCache.set(mob.asset!,value);}).catch(()=>{failed.add(mob.asset!);canvas.dataset.assetError=mob.asset;}).finally(()=>pending.delete(mob.asset!));}
+  return enemies[mob.slot];
+ };
  const ctx = canvas.getContext('2d'); if (!ctx) throw Error('Canvas를 사용할 수 없습니다.');
  const renderer = gl ? new SceneRenderer(layer, gl) : null;
  const fallback = renderer ? null : new CanvasRenderer(ctx);
@@ -94,11 +107,11 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
    ctx.fillStyle='#0005';ctx.beginPath();ctx.ellipse(screenX(game.x),floor+4,25*zoom,5*zoom,0,0,Math.PI*2);ctx.fill();
    for(const mob of game.enemies){
     if(mob.hp<=0&&game.elapsed>=mob.respawnAt)continue;
-    const visual=enemies[mob.slot],hurt=mob.hp>0&&mob.hitUntil>game.elapsed;
-    const clips=HUNT_MONSTER_ASSET.clips;
+    const visual=visualFor(mob),hurt=mob.hp>0&&mob.hitUntil>game.elapsed;
+    const clips=(mob.asset?LABYRINTH.assets[mob.asset]:undefined)?.clips??HUNT_MONSTER_ASSET.clips;
     const anim=mob.hp<=0?clips.death:hurt?clips.hurt:mob.state==='windup'?clips.attack:mob.state==='walk'?clips.move:clips.idle;
     const shake=hurt?Math.sin(game.elapsed*90)*2*zoom:0,x=screenX(mob.x),y=floor;
-    animate(visual,anim,x+shake,y,HUNT_VISUALS.slimeScale*zoom,mob.x>game.x?-1:1,dt,mob.serial);
+    animate(visual,anim,x+shake,y,(mob.asset?(mob.boss?100:38)/visual.setupHeight:HUNT_VISUALS.slimeScale)*zoom,mob.x>game.x?-1:1,dt,mob.serial);
    }
    if(renderer){renderer.end();ctx.drawImage(layer,0,0,w,h);}
    const stage=game.combo.find(s=>s.animation===game.action);
@@ -129,7 +142,7 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
    // Foreground decoration follows the world more quickly than the distant forest.
    ctx.globalAlpha=.7;for(let x=-170-((camera*zoom*.65%700)+700)%700;x<w;x+=700)ctx.drawImage(trees,x,floor-165,145,190);ctx.globalAlpha=1;
   },
-  dispose() { enemy.atlas.dispose(); renderer?.dispose(); },
+  dispose() { disposed=true;assetCache.forEach(a=>a.atlas.dispose());enemy.atlas.dispose(); renderer?.dispose(); },
   animations: {hero: ['stay1','run1','dash','avoid1','attack1','attack2','attack3','attack4','attack5','damage1'], enemy: enemy.available},
  };
 }

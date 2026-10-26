@@ -1,10 +1,11 @@
+import {roundEven} from './hunt-math';
 import {extraAbilities} from './hunt-development';
 import data from './data/recovered-growth.json';
 import type {HuntProgress} from './hunt-progression';
 import type {WeaponType} from './hunt-weapons';
 export const RECOVERED_GROWTH=data;
 /** Original midpoint-to-even, including negative half ties. */
-export function roundEven(value:number){const floor=Math.floor(value),fraction=value-floor;return fraction===.5?(floor%2===0?floor:floor+1):Math.round(value);}
+export {roundEven} from './hunt-math';
 const normalize=(id:number,value:number)=>id>=7&&id<=12?roundEven(value):roundEven(value*100)/100;
 function add(target:Record<number,number>,rows:number[][],level:number){for(const [id,base,inc] of rows)target[id]=(target[id]??0)+normalize(id,base+inc*(level-1));}
 /** Curated grade-1 loadout. Each owned type contributes Hold once, not count times. */

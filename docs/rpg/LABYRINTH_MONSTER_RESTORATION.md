@@ -138,3 +138,35 @@ copying `monster-gallery.html` as gallery.html. Its bundle must include the
 Spine runtime license. The delivered private archive already includes these.
 Serve that directory with `python -m http.server 8766`, then open
 `http://localhost:8766/gallery.html`.
+
+
+## Web integration update
+
+The deployed adapter now uses all6,000 recovered stage stat rows. Each web
+section contains six ordinary enemies followed by one final encounter. This
+seven-slot layout and its fixed coordinates are a web adaptation, not a
+recovered native wave schedule. Sections1..4 select the first boss slot;
+section5 selects the last boss slot. Ordinary spawn slots repeat cyclically.
+
+The server opts into finite campaigns; older isolated engine fixtures keep
+legacy respawn behavior. Dead campaign enemies never respawn. A cleared boss
+awards chapter-based gold/EXP/soulgem once, advances the saved numeric checkpoint
+and opens the next section after two seconds. The final section remains complete.
+Requests cannot select stages or submit rewards. Existing guest rows receive an
+additive checkpoint migration. Full native acquisition/RNG is not asserted:
+chapter base rewards are paid per section as a web economy choice, alongside
+existing kill rewards; wallet values retain the existing1e12 storage ceiling.
+Existing native-derived player equipment/cost/EXP adapters remain in use.
+
+41 monster asset packs are included. Unresolved source visual mappings use
+explicitly marked thematic web substitutes (for example GuardianGoblin uses
+GoblinWarrior_Boss). They are not promoted to proven source mappings. The browser
+loads new monster rigs lazily and normalizes display height while preserving
+original pose data. Attack timing uses the first recovered impactor timeline;
+full projectile travel, alternate skills, phase AI and effect execution are not
+newly implemented by this integration. Class damage and defense substeps are
+connected to live combat; the overall web damage pipeline remains an adapter.
+
+Checkpoint persistence uses the existing RPG SQLite store. Deployment storage
+retention still depends on that store's configured filesystem; no disk plan or
+account system is changed here.

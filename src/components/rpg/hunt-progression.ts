@@ -6,8 +6,8 @@ export type Curve={min:number;max:number;base:number;inc:number;rate:number;scal
 export type HuntBalance={version:1;source:string;maxLevel:number;team:Curve[];weapon:Curve[];armor:Curve[];reward:{gold:number;xp:number;soulGem:number}};
 export const DEFAULT_HUNT_BALANCE:HuntBalance={version:1,source:RECOVERED_GROWTH.source,maxLevel:RECOVERED_GROWTH.teamMaxLevel,
  team:RECOVERED_GROWTH.teamCurves,weapon:[RECOVERED_GROWTH.weaponCurve],armor:[RECOVERED_GROWTH.armorCurve],reward:{...HUNT_MONSTER.reward}};
-export type HuntProgress={combatArts:Record<number,number>;traits:Record<number,number>;masteryLevel:number;masteryEssence:number;willLevel:number;soulOrb:number;skillLevels:number[];skillCopies:number[];skillEnabled:number[];level:number;attackTraining:number;healthTraining:number;xp:number;gold:number;soulGem:number;kills:number;weaponLevel:number;armorLevel:number;potions:number;questTier:number;weaponType:WeaponType;weaponLevels:Record<WeaponType,number>};
-export const newHuntProgress=():HuntProgress=>({combatArts:{},traits:{},masteryLevel:1,masteryEssence:0,willLevel:0,soulOrb:0,skillLevels:[1,1,1,1,1,1],skillCopies:[0,0,0,0,0,0],skillEnabled:[1,1,1,1,1,1],level:1,attackTraining:0,healthTraining:0,xp:0,gold:0,soulGem:0,kills:0,weaponLevel:1,armorLevel:1,potions:3,questTier:0,weaponType:'axe',weaponLevels:{unarmed:1,sword:1,axe:1,dual:1,spear:1}});
+export type HuntProgress={labyrinthStage:number;labyrinthCompleted:number;combatArts:Record<number,number>;traits:Record<number,number>;masteryLevel:number;masteryEssence:number;willLevel:number;soulOrb:number;skillLevels:number[];skillCopies:number[];skillEnabled:number[];level:number;attackTraining:number;healthTraining:number;xp:number;gold:number;soulGem:number;kills:number;weaponLevel:number;armorLevel:number;potions:number;questTier:number;weaponType:WeaponType;weaponLevels:Record<WeaponType,number>};
+export const newHuntProgress=():HuntProgress=>({labyrinthStage:0,labyrinthCompleted:0,combatArts:{},traits:{},masteryLevel:1,masteryEssence:0,willLevel:0,soulOrb:0,skillLevels:[1,1,1,1,1,1],skillCopies:[0,0,0,0,0,0],skillEnabled:[1,1,1,1,1,1],level:1,attackTraining:0,healthTraining:0,xp:0,gold:0,soulGem:0,kills:0,weaponLevel:1,armorLevel:1,potions:3,questTier:0,weaponType:'axe',weaponLevels:{unarmed:1,sword:1,axe:1,dual:1,spear:1}});
 export const HUNT_QUESTS=[{name:'숲의 첫걸음',kills:5,gold:50,soulGem:10},{name:'슬라임 정리',kills:20,gold:150,soulGem:20},{name:'숲의 수호자',kills:50,gold:400,soulGem:40}] as const;
 export const POTION_PRICE=50;
 /** Prototype item economy: distinct from the recovered native cost curve. */
@@ -29,6 +29,12 @@ export function awardHuntKill(p:HuntProgress,balance:HuntBalance){
  if((p.kills+1)%5===0){const i=Math.floor((p.kills+1)/5-1)%6;p.skillCopies[i]=Math.min(1e12,p.skillCopies[i]+1);}
  p.gold=Math.min(1e12,p.gold+gold);p.soulGem=Math.min(1e12,p.soulGem+soulGem);p.kills=Math.min(1e12,p.kills+1);
  p.xp=Math.min(1e12,p.xp+xp);
+ advanceHuntLevel(p,balance);
+}
+export function awardStageClear(p:HuntProgress,balance:HuntBalance,reward:number[]){
+ const [gold,xp,soulGem]=reward;p.gold=Math.min(1e12,p.gold+gold);p.xp=Math.min(1e12,p.xp+xp);p.soulGem=Math.min(1e12,p.soulGem+soulGem);advanceHuntLevel(p,balance);
+}
+function advanceHuntLevel(p:HuntProgress,balance:HuntBalance){
  while(p.level<balance.maxLevel){const required=curveValue(balance.team,p.level);if(required<=0||p.xp<required)break;p.xp-=required;p.level++;}
  if(p.level>=balance.maxLevel)p.xp=0;
 }
