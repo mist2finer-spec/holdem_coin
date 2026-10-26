@@ -1,4 +1,5 @@
 "use client";
+import {CharacterPortrait} from './CharacterPortrait';
 import "./poker-layout.css";
 import { useEffect, useRef, useState } from "react";
 import {PokerActionButtons} from "./PokerActionButtons";
@@ -16,6 +17,7 @@ import { Card } from "@/lib/poker-engine";
 import { SelfPlayTrainer, TrainingStats } from "@/lib/self-play-trainer";
 
 interface Props {
+  tournament?:boolean;
   onMain:()=>void;
   userName: string;
   tableSize?: 6 | 8;
@@ -38,9 +40,9 @@ const phaseLabel: Record<string, string> = {
   "SHOWDOWN": "SHOWDOWN",
 };
 
-export function PokerTableSocket({ userName, onToast, tableSize=8, onMain }: Props) {
+export function PokerTableSocket({ userName, onToast, tableSize=8, onMain,tournament=false }: Props) {
   const {
-    connected,
+    tournamentState,clock,connected,
     historyCount,historyBusy,exportHistory,
     playerBusted,
     rebuyPending,
@@ -71,7 +73,12 @@ export function PokerTableSocket({ userName, onToast, tableSize=8, onMain }: Pro
     mySeatId,
     myPlayerId,
     myName,
-  } = usePokerSocket({ userName, onToast, tableSize, onExit:onMain });
+  } = usePokerSocket({ userName, onToast, tableSize, onExit:onMain,tournament });
+  const bb=tournamentState?.bigBlind??200;
+  const bbMoney=(n:number)=>`${Number((n/bb).toFixed(1))} BB`;
+  const [watchEliminated,setWatchEliminated]=useState(false);
+  const eliminated=!!tournamentState&&rotatedSeats.some(s=>s.isMe&&s.eliminated);
+  const nextSeconds=tournamentState?.nextLevelAt?Math.max(0,Math.ceil((tournamentState.nextLevelAt-clock)/1000)):300;
   const updateAvailable = useReleaseUpdate(connected);
 
   const logScrollRef = useRef<HTMLDivElement>(null);
@@ -121,6 +128,9 @@ export function PokerTableSocket({ userName, onToast, tableSize=8, onMain }: Pro
       <span className="absolute bottom-1 right-2 z-30 text-[9px] text-slate-400" title="현재 화면 버전">
         서버 · {CLIENT_REVISION.slice(0, 7)}
       </span>
+      {tournamentState&&<div className="tournament-hud">8인 토너먼트 · Lv.{tournamentState.level} · SB/BB {tournamentState.smallBlind.toLocaleString()}/{bb.toLocaleString()} · {tournamentState.remaining}/8명<br/>{nextSeconds?`블라인드 인상 ${Math.floor(nextSeconds/60)}:${String(nextSeconds%60).padStart(2,'0')}`:'다음 핸드부터 블라인드 인상'} · 레이크 0 · 리바인 불가</div>}
+      {tournamentState?.winner&&<div className="tournament-finish" role="dialog" aria-modal="true" aria-label="토너먼트 우승"><section><span>TOURNAMENT CHAMPION</span><CharacterPortrait portrait={tournamentState.winner.portrait} name={tournamentState.winner.name}/><h1>{tournamentState.winner.name}</h1><h2>1위! 우승을 축하합니다!</h2><Button onClick={onMain}>로비로</Button></section></div>}
+      {eliminated&&!watchEliminated&&!tournamentState?.winner&&<div className="tournament-finish" role="dialog" aria-modal="true" aria-label="토너먼트 탈락"><section><h2>토너먼트에서 탈락했습니다.</h2><p>리바인과 같은 이름의 재입장은 불가합니다.</p><Button onClick={()=>setWatchEliminated(true)}>계속 관전</Button><Button onClick={onMain}>로비로</Button></section></div>}
       {/* 배경 장식 */}
       <div className="absolute inset-0 opacity-30 pointer-events-none"
         style={{
@@ -205,9 +215,10 @@ export function PokerTableSocket({ userName, onToast, tableSize=8, onMain }: Pro
           ))}
 
           {/* 8개 좌석 (시점 회전 적용) */}
-          {rotatedSeats.map((seat, i) => (
+          {rotatedSeats.map((seat, i) => seat.eliminated?null:(
             <SocketPlayerSeat
               key={i}
+              stackLabel={tournamentState?bbMoney(seat.stack):undefined}
               seat={seat}
               isActive={rotatedActiveSeatId === i}
               isDealer={rotatedButtonSeat === i}
@@ -253,7 +264,7 @@ export function PokerTableSocket({ userName, onToast, tableSize=8, onMain }: Pro
                 <div className="text-amber-300 text-[10px] sm:text-xs">
                   콜: <span className="font-bold tabular-nums">{callAmount.toLocaleString()}</span>
                   {" / "}
-                  잔고: <span className="font-bold tabular-nums">{userSeat?.stack.toLocaleString()}</span>
+                  잔고: <span className="font-bold tabular-nums">{tournamentState?bbMoney(userSeat?.stack??0):userSeat?.stack.toLocaleString()}</span>
                 </div>
               </div>
 
@@ -411,6 +422,7 @@ export function PokerTableSocket({ userName, onToast, tableSize=8, onMain }: Pro
 // 소켓 기반 PlayerSeat 래퍼
 // ============================================================
 interface SocketPlayerSeatProps {
+  stackLabel?:string;
   seat: {
     portrait?: number;
     seatId: number;
@@ -434,7 +446,7 @@ interface SocketPlayerSeatProps {
 }
 
 function SocketPlayerSeat({
-  seat,
+  seat,stackLabel,
   isActive,
   isDealer,
   isSmallBlind,
@@ -448,7 +460,7 @@ function SocketPlayerSeat({
   // ★ 카드 표시 로직:
   // - 본인(isMe): 폴드해도 카드 계속 보임 + 폴드 오버레이
   // - 다른 플레이어: 폴드 시 카드 숨김, 쇼다운 시 공개
-  return <IslandSeat name={seat.name} stack={seat.stack} holeCards={holeCards}
+  return <IslandSeat name={seat.name} stack={seat.stack} stackLabel={stackLabel} holeCards={holeCards}
     folded={seat.folded} isMe={seat.isMe} portrait={seat.isMe?4:seat.portrait}
     isActive={isActive} isDealer={isDealer} isSmallBlind={isSmallBlind} isBigBlind={isBigBlind}
     showCards={showCards} position={position}/>;

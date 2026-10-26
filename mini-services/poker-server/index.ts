@@ -1,3 +1,4 @@
+import {TournamentLifecycle} from './tournament';
 import {StreetBetting,recordedAction} from '../../src/lib/poker-betting';
 import {dealStartingHands,DEALING_PROFILE} from '../../src/lib/poker-deal';
 import {lobbyLedger} from './lobby-ledger';
@@ -107,6 +108,10 @@ interface ConnectedUser {
 // ============================================================
 
 export class HybridHoldemRoom {
+  readonly tournament:TournamentLifecycle|null;
+  private get smallBlind(){return this.tournament?.smallBlind??SMALL_BLIND;}
+  private get bigBlind(){return this.tournament?.bigBlind??BIG_BLIND;}
+  private get buyIn(){return this.tournament?.buyIn??DEFAULT_BUYIN;}
   public state: ServerGameState;
   public trainer: SelfPlayTrainer;
   private users: Map<string, ConnectedUser> = new Map();
@@ -132,10 +137,10 @@ export class HybridHoldemRoom {
       privatePlayerId:s.socketId ? this.users.get(s.socketId)?.playerId : undefined,
       position:(s.seatId===st.buttonSeat ? (s.seatId===st.smallBlindSeat?'BTN/SB':'BTN')
         :s.seatId===st.smallBlindSeat?'SB':s.seatId===st.bigBlindSeat?'BB':'OTHER') as HandHistory['players'][number]['position']}));
-    this.currentHistory={schemaVersion:1,id:`${this.history.sessionId}:${st.handNumber}`,sessionId:this.history.sessionId,
+    this.currentHistory={gameMode:this.tournament?'tournament':'cash',rakeRate:this.tournament?0:.05,schemaVersion:1,id:`${this.history.sessionId}:${st.handNumber}`,sessionId:this.history.sessionId,
       handNumber:st.handNumber,rulesVersion:LIVE_RULES.version,dealingProfile:DEALING_PROFILE,revision:process.env.RENDER_GIT_COMMIT||'local',
       startedAt:new Date().toISOString(),endedAt:'',status:'completed',humans:players.filter(p=>!p.isBot).length,
-      cpus:players.filter(p=>p.isBot).length,smallBlind:SMALL_BLIND,bigBlind:BIG_BLIND,
+      cpus:players.filter(p=>p.isBot).length,smallBlind:this.smallBlind,bigBlind:this.bigBlind,
       buttonSeat:st.buttonSeat,smallBlindSeat:st.smallBlindSeat,bigBlindSeat:st.bigBlindSeat,
       players,actions:[],board:[],streets:[{street:'PREFLOP',board:[],at:new Date().toISOString()}],results:[],pots:[],rake:0,
       forcedBets:[{seatId:st.smallBlindSeat,blind:'SB',paid:st.seats[st.smallBlindSeat].currentBet},
@@ -162,9 +167,11 @@ export class HybridHoldemRoom {
   }
 
 
-  constructor(autoStart = true, public readonly seatCount: 6 | 8 = 8) {
+  constructor(autoStart = true, public readonly seatCount: 6 | 8 = 8,mode:'cash'|'tournament'='cash') {
+    if(mode==='tournament'&&seatCount!==8)throw Error('Tournament requires eight seats');
+    this.tournament=mode==='tournament'?new TournamentLifecycle():null;
     this.history = new HandHistoryStore(process.env.POKER_TEST_MODE === "1" ? undefined
-      : path.resolve(process.env.HAND_HISTORY_DIR || "data/hand-history",seatCount===8?"hands.json":"hands-6.json"));
+      : path.resolve(process.env.HAND_HISTORY_DIR || "data/hand-history",this.tournament?"hands-tournament.json":seatCount===8?"hands.json":"hands-6.json"));
     this.trainer = new SelfPlayTrainer();
     this.state = this.createInitialState();
     if (autoStart) void this.startGameLoop();
@@ -184,7 +191,7 @@ export class HybridHoldemRoom {
         name: personas[i].name,
         isBot: true,
         socketId: null,
-        stack: DEFAULT_BUYIN,
+        stack: this.buyIn,
         currentBet: 0,
         totalBet: 0, peakStreetBet: 0,
         inHand: true,
@@ -215,11 +222,11 @@ export class HybridHoldemRoom {
       showdownHands: [],
       winnerInfo: null,
       callAmount: 0,
-      minRaise: BIG_BLIND,
+      minRaise: this.bigBlind,
       maxRaise: 0,
       preflopRaiseLevel: 0,
     raiseLevel: 0,
-      lastRaiseSize: BIG_BLIND, // ★ 초기값 BB
+      lastRaiseSize: this.bigBlind, // ★ 초기값 BB
     };
   }
 
@@ -234,6 +241,22 @@ export class HybridHoldemRoom {
       return;
     }
     if (typeof name !== "string") name = "용사";
+    if(this.tournament){
+      const baseName=(name||'용사').normalize('NFKC').trim().slice(0,8)||'용사',key=this.tournament.key(baseName);
+      const deny=(message:string)=>socket.emit('ROOM_DENIED',{message});
+      if(this.tournament.finished)return deny('종료된 토너먼트입니다. 로비에서 새로 입장해 주세요.');
+      if(this.tournament.bannedNames.has(key))return deny('이미 탈락한 이름입니다. 이 대회에 재입장하거나 리바인할 수 없습니다.');
+      if([...this.users.values()].some(u=>this.tournament!.key(u.baseName)===key))return deny('같은 이름이 이미 참가 중입니다.');
+      const returning=this.state.seats.find(s=>!s.isBot&&this.tournament!.key(s.name)===key&&!this.tournament!.eliminated.has(s.seatId));
+      const available=this.state.seats.filter(s=>s.isBot&&!this.tournament!.eliminated.has(s.seatId)&&s.stack>0).length;
+      if(!returning&&available<=this.pendingJoinQueue.length)return deny('참가 가능한 AI 좌석이 없습니다. 탈락 좌석에는 입장할 수 없습니다.');
+      const user:ConnectedUser={playerId:`T${Date.now().toString(36)}${Math.random().toString(36).slice(2,6)}`,socketId:socket.id,name:baseName,baseName,seatId:returning?.seatId??null,preAction:null};
+      this.users.set(socket.id,user);
+      if(returning)returning.socketId=socket.id;else this.pendingJoinQueue.push(user);
+      socket.emit('TABLE_STATE',this.createSafeSnapshot(socket.id));
+      if(!this.isRunning)void this.startGameLoop();
+      return;
+    }
     // ★ 고유 플레이어 ID 생성
     const playerId = `P${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`.toUpperCase();
     const baseName = (name || "용사").trim().slice(0, 8);
@@ -312,7 +335,7 @@ export class HybridHoldemRoom {
     if (idx >= 0) this.pendingJoinQueue.splice(idx, 1);
 
     if (user.seatId !== null) {
-      this.leaveSeats.add(user.seatId);
+      if(!this.tournament)this.leaveSeats.add(user.seatId);
       // 유저가 턴 중에 나갔다면 즉시 폴드 처리
       if (this.state.activeSeatId === user.seatId && this.pendingActionResolve) {
         this.actionSource="disconnect";
@@ -351,9 +374,10 @@ export class HybridHoldemRoom {
   }
 
   onUserRebuy(socketId: string) {
+    if(this.tournament)return;
     const user = this.users.get(socketId);
     const seat = user?.seatId != null ? this.state.seats[user.seatId] : null;
-    if (!seat || seat.stack >= BIG_BLIND || (seat.inHand && !this.state.winnerInfo)) return;
+    if (!seat || seat.stack >= this.bigBlind || (seat.inHand && !this.state.winnerInfo)) return;
     this.pendingRebuys.add(socketId);
     this.broadcastTableState();
   }
@@ -371,6 +395,15 @@ export class HybridHoldemRoom {
   // ============================================================
 
   private processSeatSwaps() {
+    if(this.tournament){
+      while(this.pendingJoinQueue.length){const user=this.pendingJoinQueue.shift()!;
+        if(this.users.get(user.socketId)!==user)continue;
+        const target=this.state.seats.find(s=>s.isBot&&s.stack>0&&!this.tournament!.eliminated.has(s.seatId));
+        if(!target){io.to(user.socketId).emit('ROOM_DENIED',{message:'생존 AI 좌석이 없습니다.'});continue;}
+        target.isBot=false;target.name=user.name;target.socketId=user.socketId;target.persona=undefined;user.seatId=target.seatId;
+      }
+      return;
+    }
     // Credits are applied between hands only, preserving current-hand stacks/pots.
     for(const seat of this.state.seats)if(!seat.isBot&&seat.socketId&&!this.leaveSeats.has(seat.seatId)) {
       seat.stack+=lobbyLedger.takeCredit(seat.socketId);
@@ -379,14 +412,14 @@ export class HybridHoldemRoom {
     for (const socketId of this.pendingRebuys) {
       const user = this.users.get(socketId);
       const seat = user?.seatId != null ? this.state.seats[user.seatId] : null;
-      if (seat && seat.stack < BIG_BLIND) seat.stack = DEFAULT_BUYIN;
+      if (seat && seat.stack < this.bigBlind) seat.stack = this.buyIn;
     }
     this.pendingRebuys.clear();
     // 0) ★ AI 100k 달성 시 퇴장 + 새 AI 입장
     // ★ AI 파산 시 퇴장 + 새 AI 입장
     for (const seat of this.state.seats) {
       if (!seat.isBot) continue;
-      const shouldReplace = seat.stack >= LIVE_RULES.botCashOut || seat.stack < BIG_BLIND * 2;
+      const shouldReplace = seat.stack >= LIVE_RULES.botCashOut || seat.stack < this.bigBlind * 2;
       if (!shouldReplace) continue;
 
       const isCashOut = seat.stack >= LIVE_RULES.botCashOut;
@@ -401,9 +434,9 @@ export class HybridHoldemRoom {
         : RPG_BOT_POOL[Math.floor(Math.random() * RPG_BOT_POOL.length)]);
       seat.name = newP.name;
       seat.persona = newP;
-      seat.stack = DEFAULT_BUYIN;
+      seat.stack = this.buyIn;
       this.broadcast("SYSTEM_NOTICE", {
-        messages: [`🔄 [${newP.name}]님이 새로 입장했습니다! (${DEFAULT_BUYIN.toLocaleString()} 칩)`],
+        messages: [`🔄 [${newP.name}]님이 새로 입장했습니다! (${this.buyIn.toLocaleString()} 칩)`],
       });
     }
 
@@ -420,7 +453,7 @@ export class HybridHoldemRoom {
       seat.name = persona.name;
       seat.socketId = null;
       seat.persona = persona;
-      if (seat.stack < BIG_BLIND * 2) seat.stack = DEFAULT_BUYIN;
+      if (seat.stack < this.bigBlind * 2) seat.stack = this.buyIn;
     }
     this.leaveSeats.clear();
 
@@ -486,6 +519,8 @@ export class HybridHoldemRoom {
     const st = this.state;
 
     try {
+      if(this.tournament?.finished)return;
+      this.tournament?.beginHand(Date.now());
       // 핸드 시작 전 Hot-Swap
       this.processSeatSwaps();
 
@@ -504,7 +539,7 @@ export class HybridHoldemRoom {
       st.winnerInfo = null;
       st.preflopRaiseLevel = 0;
       st.raiseLevel = 0;
-      st.lastRaiseSize = BIG_BLIND;
+      st.lastRaiseSize = this.bigBlind;
 
 
       // 좌석 리셋 (파산 봇 리필)
@@ -513,7 +548,7 @@ export class HybridHoldemRoom {
       st.seats = st.seats.map(s => {
         let persona = s.persona;
         let name = s.name;
-        if (s.isBot && s.stack < BIG_BLIND * 2) {
+        if (!this.tournament && s.isBot && s.stack < this.bigBlind * 2) {
           usedNames.delete(name);
           const avail = RPG_BOT_POOL.filter(p => !usedNames.has(p.name));
           const newP = assignBotStrategy(avail.length > 0
@@ -523,7 +558,7 @@ export class HybridHoldemRoom {
           name = newP.name;
           usedNames.add(name);
         }
-        const newStack = s.isBot && s.stack < BIG_BLIND * 2 ? DEFAULT_BUYIN : s.stack;
+        const newStack = !this.tournament && s.isBot && s.stack < this.bigBlind * 2 ? this.buyIn : s.stack;
         return {
           ...s,
           persona,
@@ -531,7 +566,7 @@ export class HybridHoldemRoom {
           stack: newStack,
           currentBet: 0,
           totalBet: 0, peakStreetBet: 0,
-          inHand: newStack >= BIG_BLIND,
+          inHand: this.tournament?newStack>0&&!this.tournament.eliminated.has(s.seatId):newStack >= this.bigBlind,
           folded: false,
           allIn: false,
           holeCards: [],
@@ -552,8 +587,8 @@ export class HybridHoldemRoom {
       st.bigBlindSeat = positions.bigBlind;
       st.preflopStart = positions.preflopStart;
       st.postflopStart = positions.postflopStart;
-      st.seats[positions.smallBlind] = postBlind(st.seats[positions.smallBlind], SMALL_BLIND);
-      st.seats[positions.bigBlind] = postBlind(st.seats[positions.bigBlind], BIG_BLIND);
+      st.seats[positions.smallBlind] = postBlind(st.seats[positions.smallBlind], this.smallBlind);
+      st.seats[positions.bigBlind] = postBlind(st.seats[positions.bigBlind], this.bigBlind);
 
       // Clients show an empty table and play the shuffle before any cards arrive.
       st.dealStage = "shuffle";
@@ -591,8 +626,8 @@ export class HybridHoldemRoom {
   private async runBettingRound(btnSeat: number, startOffset: number, deck: Card[]) {
     const st = this.state;
     st.raiseLevel = 0;
-    st.lastRaiseSize = BIG_BLIND;
-    const betting=this.bettingRound=new StreetBetting(BIG_BLIND);
+    st.lastRaiseSize = this.bigBlind;
+    const betting=this.bettingRound=new StreetBetting(this.bigBlind);
     st.seats = st.seats.map(s => ({ ...s, hasActed: false }));
     st.lastActions = {};
     this.broadcastTableState();
@@ -621,7 +656,7 @@ export class HybridHoldemRoom {
       if (notAllIn.length === 0) break;
 
       // ★ 생존자 중 올인이 아닌 사람이 1명이고 그 사람이 이미 콜한 상태면 종료
-      const maxBet = Math.max(st.board.length===0?BIG_BLIND:0,...alive.map(s => s.currentBet));
+      const maxBet = Math.max(st.board.length===0&&!this.tournament?this.bigBlind:0,...alive.map(s => s.currentBet));
       const needsAction = notAllIn.filter(s => !s.hasActed || s.currentBet < maxBet);
       if (needsAction.length === 0) break;
 
@@ -647,7 +682,7 @@ export class HybridHoldemRoom {
       const callAmt = Math.max(0, maxBet - actor.currentBet);
       st.callAmount = callAmt;
       // Standard increment and independent short-all-in reopening rights.
-      const minR = minimumRaiseTo(maxBet,BIG_BLIND,betting.lastFullRaise);
+      const minR = minimumRaiseTo(maxBet,this.bigBlind,betting.lastFullRaise);
       const raiseAllowed=betting.canRaise(actor.seatId,maxBet);
       const lastFullRaiseBefore=betting.lastFullRaise;
       const maxR = raiseAllowed&&hasBettingOpponent(st.seats, actor.seatId,maxBet) ? actor.stack + actor.currentBet : maxBet;
@@ -726,7 +761,7 @@ export class HybridHoldemRoom {
         raiseLevelBefore,activePlayersBefore,allInPlayersBefore,activePlayers:st.seats.filter(s=>s.inHand&&!s.folded).length,
         allInPlayers:st.seats.filter(s=>s.inHand&&!s.folded&&s.allIn).length,decisionMs:Date.now()-actionStart,
         privateAudit:before.isBot?{...(this.pendingAudit as Record<string,unknown>|undefined),proposedAction,validationFallback:!normalized}:undefined});
-      if(st.board.length===0&&decision.action==="call"&&maxBet<=BIG_BLIND&&st.raiseLevel===0)limpedPreflop.add(actor.seatId);
+      if(st.board.length===0&&decision.action==="call"&&maxBet<=this.bigBlind&&st.raiseLevel===0)limpedPreflop.add(actor.seatId);
       if (decision.action === "check") checkedThisStreet.add(actor.seatId);
       else checkedThisStreet.delete(actor.seatId);
       if (st.seats[actorIdx].currentBet > maxBet && raisesBet) {
@@ -788,6 +823,15 @@ export class HybridHoldemRoom {
       return action;
     } else {
       await this.sleep(LIVE_RULES.botThinkMin + Math.random() * LIVE_RULES.botThinkJitter);
+      if(this.tournament){
+        if(!actor.isBot&&!this.users.has(actor.socketId||'')){this.actionSource='disconnect';return {action:callAmt?'fold':'check',amount:0};}
+        const scale=this.bigBlind/200,n=(x:number)=>x>0?Math.max(1,Math.round(x/scale)):0;
+        const seats=this.state.seats.map(s=>({...s,stack:n(s.stack),currentBet:n(s.currentBet),totalBet:n(s.totalBet)}));
+        const scaled=seats.find(s=>s.seatId===actor.seatId)!;
+        const decision=decideLiveBot(this.trainer,{actor:scaled,seats,board:this.state.board,pot:n(this.state.pot),minRaise:n(minR),maxRaise:n(maxR),button:this.state.buttonSeat,smallBlind:this.state.smallBlindSeat,bigBlind:this.state.bigBlindSeat,hand:this.state.handNumber,preflopBringIn:0,raiseLevel:this.state.raiseLevel,checkedThisStreet,limpedPreflop,previousStreetAggressor,openedPreflop,
+          onAudit:audit=>{this.pendingAudit={...audit,tournament:true,blindScale:scale};}});
+        return {...decision,amount:decision.action==='call'?Math.min(callAmt,actor.stack):decision.action==='allin'?actor.stack:decision.action==='raise'?Math.max(minR,Math.min(maxR,Math.round(decision.amount*scale))):0};
+      }
       return decideLiveBot(this.trainer, {
         actor, seats: this.state.seats, board: this.state.board, pot: this.state.pot,
         minRaise: minR, maxRaise: maxR, button: this.state.buttonSeat,
@@ -841,9 +885,9 @@ export class HybridHoldemRoom {
   }
 
   private mapUserAction(act: unknown): { action: ActionType; amount: number } | null {
-    const highest=Math.max(this.state.board.length===0?BIG_BLIND:0,...this.state.seats.filter(s=>s.inHand&&!s.folded).map(s=>s.currentBet));
+    const highest=Math.max(this.state.board.length===0&&!this.tournament?this.bigBlind:0,...this.state.seats.filter(s=>s.inHand&&!s.folded).map(s=>s.currentBet));
     return normalizeLiveAction(this.state.seats, this.state.activeSeatId, act, this.state.lastRaiseSize,
-      this.bettingRound?.canRaise(this.state.activeSeatId,highest)??true,this.state.board.length===0?BIG_BLIND:0);
+      this.bettingRound?.canRaise(this.state.activeSeatId,highest)??true,this.state.board.length===0&&!this.tournament?this.bigBlind:0);
   }
 
   private mapNNAction(nn: {action: number; amount: number; isBluff?: boolean}, callAmt: number, myStack: number) {
@@ -922,7 +966,7 @@ export class HybridHoldemRoom {
     await this.sleep(1500);
 
     const contenders = st.seats.filter(s => s.inHand && !s.folded);
-    const winningSeatIds = new Set(settleHand(st.seats, st.board, st.buttonSeat,undefined,{bigBlind:BIG_BLIND,preflopRaiseLevel:st.preflopRaiseLevel}).pots.flatMap(p=>p.winnerSeatIds));
+    const winningSeatIds = new Set(settleHand(st.seats, st.board, st.buttonSeat,this.tournament?0:undefined,{bigBlind:this.bigBlind,preflopRaiseLevel:st.preflopRaiseLevel}).pots.flatMap(p=>p.winnerSeatIds));
 
     st.showdownHands = contenders.map((c, i) => {
       const score = evaluateBestHand(c.holeCards, st.board);
@@ -948,10 +992,11 @@ export class HybridHoldemRoom {
       this.broadcast("SYSTEM_NOTICE", { messages: [bluffTaunt(st.seats[st.bluffReveal].name)] });
     }
 
-    const settlement = settleHand(st.seats, st.board, st.buttonSeat,undefined,{bigBlind:BIG_BLIND,preflopRaiseLevel:st.preflopRaiseLevel});
+    const settlement = settleHand(st.seats, st.board, st.buttonSeat,this.tournament?0:undefined,{bigBlind:this.bigBlind,preflopRaiseLevel:st.preflopRaiseLevel});
     this.endHistory(settlement,isShowdown);
     st.seats = st.seats.map(seat => ({ ...seat, stack: seat.stack + settlement.results.find(r=>r.seatId===seat.seatId)!.payout }));
-    for(const seat of st.seats)if(!seat.isBot&&seat.socketId)lobbyLedger.sync(seat.socketId,seat.stack);
+    for(const seat of st.seats)if(!this.tournament&&!seat.isBot&&seat.socketId)lobbyLedger.sync(seat.socketId,seat.stack);
+    if(this.tournament){this.tournament.settle(st.seats);if(this.tournament.finished)this.isRunning=false;}
     const winners = settlement.results.filter(r=>r.award>0);
     const hand = isShowdown && winners[0]
       ? scoreToCategoryName(evaluateBestHand(st.seats[winners[0].seatId].holeCards, st.board))
@@ -961,7 +1006,7 @@ export class HybridHoldemRoom {
 
     this.broadcast("SYSTEM_NOTICE", { messages: [
       ...winners.map(r => `★ ${r.name}: 순수익 ${r.netProfit >= 0 ? "+" : ""}${r.netProfit.toLocaleString()} 칩`),
-      `◆ 레이크 ${settlement.totalRake.toLocaleString()} 칩 (5%)`,
+      `◆ 레이크 ${settlement.totalRake.toLocaleString()} 칩 (${this.tournament?0:5}%)`,
     ] });
     st.pot = 0;
     st.seats = st.seats.map(seat => ({ ...seat, currentBet: 0, totalBet: 0 }));
@@ -1023,6 +1068,7 @@ export class HybridHoldemRoom {
         seatId: Number(s.seatId),
         name: String(s.name || ""),
         portrait: Number(s.persona?.portrait || 4),
+        eliminated:this.tournament?.eliminated.has(s.seatId)??false,
         isBot: Boolean(s.isBot),
         isMe: Boolean(isMe),
         stack: Number(s.stack || 0),
@@ -1057,6 +1103,7 @@ export class HybridHoldemRoom {
       : null;
 
     return {
+      tournament:this.tournament?.snapshot()??null,
       type: "TABLE_STATE",
       handNumber: Number(st.handNumber || 0),
       phase: String(st.phase || "PREFLOP"),
@@ -1064,7 +1111,7 @@ export class HybridHoldemRoom {
       smallBlindSeat: st.smallBlindSeat,
       bigBlindSeat: st.bigBlindSeat,
       actionDeadline: this.actionDeadline,
-      playerBusted: Boolean(mySeat && mySeat.stack < BIG_BLIND && (!mySeat.inHand || st.winnerInfo)),
+      playerBusted: !this.tournament&&Boolean(mySeat && mySeat.stack < this.bigBlind && (!mySeat.inHand || st.winnerInfo)),
       rebuyPending: this.pendingRebuys.has(socketId || ""),
       activeSeatId: Number(st.activeSeatId ?? -1),
       totalPot: Number(totalPot),
@@ -1131,6 +1178,7 @@ const io = new Server(httpServer, {
 if (process.env.POKER_TEST_MODE !== "1") {
   const room = new HybridHoldemRoom(false); // Eight-seat mode temporarily under repair.
   const room6 = new HybridHoldemRoom(true,6);
+  let tournamentRoom=new HybridHoldemRoom(false,8,'tournament');
 
   io.on("connection", (socket: Socket) => {
     let selectedRoom: HybridHoldemRoom | undefined;
@@ -1150,8 +1198,12 @@ if (process.env.POKER_TEST_MODE !== "1") {
     socket.on('LOBBY_RENAME',(data:{name?:string},reply:unknown)=>{if(typeof reply==='function')reply(lobbyLedger.rename(socket.id,data?.name));});
     socket.on('LOBBY_STATUS',(reply:unknown)=>{if(typeof reply==='function')reply(lobbyLedger.view(socket.id));});
     socket.on('GET_LEADERBOARD',(reply:unknown)=>{if(typeof reply==='function')reply({players:lobbyLedger.leaderboard(),updatedAt:Date.now(),tableSize:6});});
-    socket.on("JOIN_ROOM", (data: { name: string; tableSize?: number }) => {
+    socket.on("JOIN_ROOM", (data: { name: string; tableSize?: number; tournament?:boolean }) => {
       if(selectedRoom)return;
+      if(data?.tournament===true){
+        if(tournamentRoom.tournament?.finished)tournamentRoom=new HybridHoldemRoom(false,8,'tournament');
+        selectedRoom=tournamentRoom;selectedRoom.onUserConnect(socket,data.name);return;
+      }
       if(data?.tableSize!==6){socket.emit("SYSTEM_NOTICE",{messages:["8인 서버: Under Repair — 6인 서버를 이용해 주세요."]});return;}
       // Older clients also receive an automatic unique tester identity.
       if(!registered){lobbyLedger.connect(socket.id,undefined);registered=true;}
@@ -1211,7 +1263,7 @@ if (process.env.POKER_TEST_MODE !== "1") {
       res.writeHead(401,{'Content-Type':'application/json'});res.end('{"error":"Admin token required"}');return;
     }
     res.writeHead(200,{'Content-Type':'application/json','Content-Disposition':'attachment; filename="holdem-analysis.json"'});
-    res.end(JSON.stringify({schemaVersion:1,scope:'admin',hands:[...room.history.all(),...room6.history.all()],limit:2000,writeError:room.history.writeError||room6.history.writeError}));
+    res.end(JSON.stringify({schemaVersion:1,scope:'admin',hands:[...room.history.all(),...room6.history.all(),...tournamentRoom.history.all()],limit:3000,writeError:room.history.writeError||room6.history.writeError||tournamentRoom.history.writeError}));
   });
 
   // Unexpected failures exit nonzero so the host can restart cleanly.
@@ -1234,19 +1286,19 @@ if (process.env.POKER_TEST_MODE !== "1") {
   // ★ SIGTERM/SIGINT 시 정상 종료
   process.on("SIGTERM", () => {
     console.log("[Server] SIGTERM 수신, 종료 중...");
-    void Promise.all([room.history.flush(),room6.history.flush()]).finally(()=>process.exit(0));
+    void Promise.all([room.history.flush(),room6.history.flush(),tournamentRoom.history.flush()]).finally(()=>process.exit(0));
   });
 
   process.on("SIGINT", () => {
     console.log("[Server] SIGINT 수신, 종료 중...");
-    void Promise.all([room.history.flush(),room6.history.flush()]).finally(()=>process.exit(0));
+    void Promise.all([room.history.flush(),room6.history.flush(),tournamentRoom.history.flush()]).finally(()=>process.exit(0));
   });
 
   // ★ 헬스체크 엔드포인트 (서버 살아있는지 확인용)
   httpServer.on("request", (req, res) => {
     if (new URL(req.url || "/", "http://localhost").pathname === "/health") {
       res.writeHead(200, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ status: "ok", users: room.userCount+room6.userCount, tables: [{seats:8,users:room.userCount,hand:room.state.handNumber},{seats:6,users:room6.userCount,hand:room6.state.handNumber}], hand: room6.state.handNumber, rulesVersion: LIVE_RULES.version, historyHands: room.history.count+room6.history.count, historyWriteOk: !room.history.writeError&&!room6.history.writeError }));
+      res.end(JSON.stringify({ status: "ok", users: room.userCount+room6.userCount+tournamentRoom.userCount,tournament:tournamentRoom.tournament?.snapshot(), tables: [{seats:8,users:room.userCount,hand:room.state.handNumber},{seats:6,users:room6.userCount,hand:room6.state.handNumber}], hand: room6.state.handNumber, rulesVersion: LIVE_RULES.version, historyHands: room.history.count+room6.history.count, historyWriteOk: !room.history.writeError&&!room6.history.writeError }));
     }
   });
 

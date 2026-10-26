@@ -22,6 +22,7 @@ import { rotateSeatView } from "@/lib/poker-seat-view";
 // ============================================================
 
 export interface SocketSeat {
+  eliminated?:boolean;
   portrait?: number;
   seatId: number;
   name: string;
@@ -36,6 +37,7 @@ export interface SocketSeat {
 }
 
 export interface SocketTableState {
+  tournament?:{status:string;level:number;smallBlind:number;bigBlind:number;nextLevelAt:number|null;remaining:number;winner:{seatId:number;name:string;portrait:number}|null}|null;
   type: "TABLE_STATE";
   dealStage?: "shuffle" | "cards" | null;
   handNumber: number;
@@ -71,13 +73,14 @@ export interface LogEntry {
 }
 
 interface UsePokerSocketOpts {
+  tournament?:boolean;
   onExit?:()=>void;
   tableSize?: 6 | 8;
   userName: string;
   onToast?: (msg: string, tone?: "info" | "win" | "lose") => void;
 }
 
-export function usePokerSocket({ userName, onToast, tableSize=8, onExit }: UsePokerSocketOpts) {
+export function usePokerSocket({ userName, onToast, tableSize=8, onExit, tournament=false }: UsePokerSocketOpts) {
   const socketRef = useRef<Socket | null>(null);
   const lastDealSound = useRef('');
   const [state, setState] = useState<SocketTableState | null>(null);
@@ -171,7 +174,7 @@ export function usePokerSocket({ userName, onToast, tableSize=8, onExit }: UsePo
       // 입장
       socket.emit('LOBBY_HELLO',{token:lobbyToken()},(account:{token?:string})=>{
         if(account.token)localStorage.setItem('holdem-lobby-token',account.token);
-        socket.emit("JOIN_ROOM", { name: userName, tableSize });
+        socket.emit("JOIN_ROOM", { name: userName, tableSize, tournament });
       });
       socket.timeout(20000).emitWithAck('GET_HAND_HISTORY')
         .then((result:{hands?:HandHistory[]})=>{if(result.hands)historyHandler.current(result.hands);})
@@ -193,6 +196,7 @@ export function usePokerSocket({ userName, onToast, tableSize=8, onExit }: UsePo
       onToast?.(data.message||'방에서 퇴장했습니다.','info');
       onExit?.();
     });
+    socket.on('ROOM_DENIED',(data:{message:string})=>{onToast?.(data.message,'info');onExit?.();});
     socket.on("ACTION_REJECTED", (data: { message: string }) => onToast?.(data.message, "info"));
 
     socket.on("TABLE_STATE", (data: SocketTableState) => {
@@ -233,7 +237,7 @@ export function usePokerSocket({ userName, onToast, tableSize=8, onExit }: UsePo
     return () => {
       socket.disconnect();
     };
-  }, [userName, tableSize, onExit]);
+  }, [userName, tableSize, onExit,tournament]);
 
   // 액션 전송
   const submitUserAction = useCallback((action: ActionType, amount: number) => {
@@ -253,10 +257,10 @@ export function usePokerSocket({ userName, onToast, tableSize=8, onExit }: UsePo
   }, []);
 
   useEffect(() => {
-    if (!state?.isUserTurn) return;
+    if (!state?.isUserTurn&&state?.tournament?.status!=='running') return;
     const interval = setInterval(() => setClock(Date.now()), 200);
     return () => clearInterval(interval);
-  }, [state?.isUserTurn, state?.actionDeadline]);
+  }, [state?.isUserTurn, state?.actionDeadline,state?.tournament?.status]);
 
   const requestRebuy = useCallback(() => socketRef.current?.emit("REBUY"), []);
 
@@ -294,6 +298,7 @@ export function usePokerSocket({ userName, onToast, tableSize=8, onExit }: UsePo
   const currentStrategy = state ? getStrategyForHand(state.handNumber) : "AGGRESSIVE";
 
   return {
+    tournamentState:state?.tournament??null,clock,
     connected,
     historyCount,historyBusy,exportHistory,
     requestRebuy,

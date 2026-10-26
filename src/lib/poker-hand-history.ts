@@ -19,6 +19,7 @@ export interface HandAction {
   privateAudit?: Record<string, unknown>;
 }
 export interface HandHistory {
+  gameMode?:'cash'|'tournament';rakeRate?:number;
   schemaVersion: 1; id: string; sessionId: string; handNumber: number;
   rulesVersion: string; revision: string; startedAt: string; endedAt: string;
   dealingProfile?: typeof DEALING_PROFILE;
@@ -35,6 +36,7 @@ export interface HandHistory {
 // Explicit public whitelist: never export server-only decision inputs or identifiers.
 export function publicHandHistory(h: HandHistory, viewerPlayerId?: string): HandHistory {
   return {
+    gameMode:h.gameMode,rakeRate:h.rakeRate,
     schemaVersion: h.schemaVersion, id: h.id, sessionId: h.sessionId, handNumber: h.handNumber,
     rulesVersion: h.rulesVersion, revision: h.revision, startedAt: h.startedAt, endedAt: h.endedAt,
     dealingProfile:h.dealingProfile?{...h.dealingProfile}:undefined,

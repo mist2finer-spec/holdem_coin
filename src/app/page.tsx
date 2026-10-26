@@ -12,18 +12,19 @@ import {toast} from 'sonner';
 import '@/components/poker/island.css';
 export default function Home() { return <><PokerAudioControl/><HomeContent/></>; }
 function HomeContent() {
- const [screen,setScreen]=useState<'start'|'lobby'|'single'|'six'|'eight'|'hunt'>('start');
+ const [screen,setScreen]=useState<'start'|'lobby'|'single'|'six'|'eight'|'hunt'|'tournament'>('start');
  const go=useCallback((next:typeof screen)=>{
-  setPokerAudioScene(next==='start'?'start':next==='lobby'?'lobby':['single','six','eight'].includes(next)?'table':null);
+  setPokerAudioScene(next==='start'?'start':next==='lobby'?'lobby':['single','six','eight','tournament'].includes(next)?'table':null);
   setScreen(next);
  },[]);
- useEffect(()=>{setPokerAudioScene(screen==='start'?'start':screen==='lobby'?'lobby':['single','six','eight'].includes(screen)?'table':null);},[screen]);
+ useEffect(()=>{setPokerAudioScene(screen==='start'?'start':screen==='lobby'?'lobby':['single','six','eight','tournament'].includes(screen)?'table':null);},[screen]);
  const [name,setName]=useState('테스터1');
  const [repair,setRepair]=useState(false);
  const returnToLobby=useCallback(()=>go('lobby'),[go]);
  const notice=(msg:string,tone?:'info'|'win'|'lose')=>tone==='win'?toast.success(msg):tone==='lose'?toast.error(msg):toast(msg);
  if(screen==='hunt')return <HuntEntry onExit={()=>go('start')}/>;
  if(screen==='single')return <PokerTable userName={name.trim()||'플레이어'} onToast={notice} onMain={returnToLobby}/>;
+ if(screen==='tournament')return <PokerTableSocket tournament tableSize={8} userName={name.trim()||'플레이어'} onToast={notice} onMain={returnToLobby}/>;
  if(screen==='six'||screen==='eight')return <PokerTableSocket tableSize={screen==='six'?6:8} userName={name.trim()||'플레이어'} onToast={notice} onMain={returnToLobby}/>;
  if(screen==='start')return <main className="island-start">
   <div className="island-sign-scene" aria-label="Island Hold’em">
@@ -47,7 +48,7 @@ function HomeContent() {
      <button onClick={()=>go('six')}><span>♣</span><strong>6인 서버</strong><small>실시간 멀티플레이</small><em>6 SEATS</em></button>
      <button aria-disabled="true" onClick={()=>setRepair(true)}><span>♦</span><strong>8인 서버</strong><small>Under Repair</small><em>이용 불가</em></button>
     </div>
-    <button className="island-tournament" onClick={()=>setRepair(true)}><strong>6인 토너먼트</strong><span>50 BB 시작 · 준비 중</span></button>
+    <button className="island-tournament" onClick={()=>go('tournament')}><strong>8인 토너먼트</strong><span>100 BB · 5분 블라인드 · 리바인 불가</span></button>
 
    </section>
   </div>

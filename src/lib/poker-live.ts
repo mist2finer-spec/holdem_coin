@@ -20,7 +20,7 @@ import type {PublicLineTracker} from './poker-public-line';
 import {marginalThreeBetFlat} from './poker-marginal-flat';
 
 export const LIVE_RULES = Object.freeze({
-  version: "1.25.1",
+  version: "1.26.0",
   seats: 8, smallBlind: 100, bigBlind: 200, buyIn: 5000,
   botCashOut: 100000, userSeconds: 10, maxActions: 256,
   botThinkMin: 700, botThinkJitter: 900, actionPause: 800, resultPause: 5000,
@@ -92,6 +92,7 @@ export function mapLiveDecision(nn: {action: number; amount: number; isBluff?: b
 }
 
 export function decideLiveBot(trainer: SelfPlayTrainer, ctx: {
+  preflopBringIn?:number;
   actor: BettingSeat & { holeCards: Card[]; persona?: BotPersona };
   seats: BettingSeat[]; board: Card[]; pot: number; minRaise: number; maxRaise: number;
   button: number; smallBlind: number; bigBlind: number; hand: number; raiseLevel: number;
@@ -105,7 +106,7 @@ export function decideLiveBot(trainer: SelfPlayTrainer, ctx: {
 }): LiveAction {
   const { actor, seats, board } = ctx;
   const persona = individualLivePersona(actor.persona || RPG_BOT_POOL[0], ctx.hand, actor.seatId, actor.stack + actor.totalBet);
-  const call = Math.max(board.length===0?LIVE_RULES.bigBlind:0, ...seats.filter(s => s.inHand && !s.folded).map(s => s.currentBet)) - actor.currentBet;
+  const call = Math.max(board.length===0?(ctx.preflopBringIn??LIVE_RULES.bigBlind):0, ...seats.filter(s => s.inHand && !s.folded).map(s => s.currentBet)) - actor.currentBet;
   const livePot = ctx.pot + seats.reduce((sum, s) => sum + s.currentBet, 0);
   const context={handNumber:ctx.hand,buttonSeat:ctx.button,bigBlindSeat:ctx.bigBlind,bigBlindAmount:LIVE_RULES.bigBlind,publicLine:ctx.publicLines?.read(ctx.hand,board.length,actor.seatId),boardLength:board.length,preflopPosition:preflopPosition(seats.map(s=>s.seatId),actor.seatId,ctx.button,ctx.bigBlind,ctx.lastRaiserSeat??seats.find(s=>s.seatId!==actor.seatId&&s.currentBet===actor.currentBet+call)?.seatId),actorId:actor.seatId,threeBetRead:ctx.threeBetRead,lastRaiserSeat:ctx.lastRaiserSeat,isBlind:[ctx.smallBlind,ctx.bigBlind].includes(actor.seatId),stack:stackContext(seats,actor.seatId),
     position:positionContext(seats,actor.seatId,ctx.button,ctx.checkedThisStreet),

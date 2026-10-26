@@ -45,7 +45,7 @@ def audit(hand):
     if version>=(1,25,0):
         preflop_level=max([a.get('raiseLevelBefore',0) for a in hand['actions'] if a.get('street')=='PREFLOP']+[hand.get('rakePolicy',{}).get('preflopRaiseLevel',0)])
         activated=len(hand['board'])>=3 or preflop_level>=2 or contested>=hand['bigBlind']*4
-    expected_rake=contested//20 if activated else 0
+    expected_rake=0 if hand.get('gameMode')=='tournament' else contested//20 if activated else 0
     if hand['rake']!=expected_rake:issue('rake',expected_rake,hand['rake'])
     for p in hand['pots']:
         if p.get('refundSeatId') is not None and p.get('rake',0)!=0:issue('refund_rake',0,p['rake'])
@@ -96,6 +96,12 @@ def audit(hand):
             else:raise ValueError('Unknown action '+act)
             if a['stackAfter']==0:allin.add(a['seatId'])
         else:
+            # A covering blind has no betting opponent after everyone else folds
+            # or is all-in. The engine automatically checks this zero-cost option
+            # before running the board; PokerKit exposes the trivial check explicitly.
+            actors=[i for i in range(len(order)) if state.statuses[i] and state.stacks[i]>0]
+            if len(actors)==1 and state.actor_index==actors[0] and state.checking_or_calling_amount==0 and not state.can_complete_bet_or_raise_to():
+                state.check_or_call()
             while dealt<len(hand['board']):
                 count=3 if dealt==0 else 1
                 state.burn_card('??');state.deal_board(cards(hand['board'][dealt:dealt+count]));dealt+=count
