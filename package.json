@@ -29,7 +29,9 @@
     "test:rpg:reference": "python3 -m unittest discover -s scripts/rpg -p \"test_reference*.py\"",
     "rpg:restore:profile": "python3 scripts/rpg/restore_session_profile.py",
     "rpg:restore:db": "python3 scripts/rpg/restore_detailed_db.py",
-    "rpg:db": "python3 scripts/rpg/rpg_db.py"
+    "rpg:db": "python3 scripts/rpg/rpg_db.py",
+    "rpg:restore:labyrinth": "python3 scripts/rpg/restore_labyrinth.py",
+    "rpg:audit:labyrinth": "python3 scripts/rpg/audit_labyrinth.py"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
