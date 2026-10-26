@@ -1,0 +1,8 @@
+{
+  "cases": 1024,
+  "nativeSha256": "42784ff220ca0eec7a21f9eafb64ac89088ff7463193b25f76baa19536c484e5",
+  "nativeAddress": "0x6b64a98",
+  "sourceBuildAddress": "0x6c64a98",
+  "hooks": [],
+  "scope": "ActionParamType selector, not full effect application"
+}

@@ -1,0 +1,36 @@
+{
+  "metadataSha256": "fb3c0eb9ea7c067aa24fa8d7ce6a2f1433dbfe82f3dfc13b9dfc12933c567901",
+  "correctedEnumCount": 10,
+  "correctedConstantCount": 109,
+  "actions": 421,
+  "actionsWithSkillData": 142,
+  "effectRecordsWithFilters": 6,
+  "symbolicParameterReferences": {
+    "2": 71,
+    "3": 8
+  },
+  "resolvedLevel1EffectRecords": 459,
+  "missingActorActions": [
+    {
+      "actorType": 1012,
+      "skillType": 2036
+    },
+    {
+      "actorType": 1011,
+      "skillType": 2016
+    },
+    {
+      "actorType": 535,
+      "skillType": 2430
+    },
+    {
+      "actorType": 1013,
+      "skillType": 2056
+    }
+  ],
+  "limitations": [
+    "Compressed metadata constants are decoded; no full native combat execution claimed.",
+    "Level1 effect parameters use the verified native selector. Chance, filters, marking and full damage-extra execution remain separate. Source skill levels must be supplied for live use.",
+    "Duplicate SkillType actions are retained; no silent overwrite. Native maps/NPC and reward event routing remain unresolved."
+  ]
+}

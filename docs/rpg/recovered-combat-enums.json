@@ -1,0 +1,1145 @@
+{
+  "metadataSha256": "fb3c0eb9ea7c067aa24fa8d7ce6a2f1433dbfe82f3dfc13b9dfc12933c567901",
+  "enums": {
+    "BalanceData.ActionCategory": {
+      "schemaFormat": "i",
+      "entries": [
+        {
+          "name": "None",
+          "value": 0,
+          "fieldIndex": 47886,
+          "fieldToken": "0x4000ef5",
+          "defaultDataOffset": 157053,
+          "previousValue": 100925952,
+          "encodedHex": "00",
+          "encodedWidth": 1
+        },
+        {
+          "name": "SkillAction",
+          "value": 1,
+          "fieldIndex": 47887,
+          "fieldToken": "0x4000ef6",
+          "defaultDataOffset": 157054,
+          "previousValue": 394242,
+          "encodedHex": "02",
+          "encodedWidth": 1
+        },
+        {
+          "name": "NormalAction",
+          "value": 2,
+          "fieldIndex": 47888,
+          "fieldToken": "0x4000ef7",
+          "defaultDataOffset": 157055,
+          "previousValue": 33555972,
+          "encodedHex": "04",
+          "encodedWidth": 1
+        },
+        {
+          "name": "PresetAction",
+          "value": 3,
+          "fieldIndex": 47889,
+          "fieldToken": "0x4000ef8",
+          "defaultDataOffset": 157056,
+          "previousValue": 131078,
+          "encodedHex": "06",
+          "encodedWidth": 1
+        }
+      ]
+    },
+    "BalanceData.ActionCooltimeMethod": {
+      "schemaFormat": "i",
+      "entries": [
+        {
+          "name": "Time",
+          "value": 0,
+          "fieldIndex": 47891,
+          "fieldToken": "0x4000efa",
+          "defaultDataOffset": 157057,
+          "previousValue": 16777728,
+          "encodedHex": "00",
+          "encodedWidth": 1
+        },
+        {
+          "name": "PerDefaultAttack",
+          "value": 1,
+          "fieldIndex": 47892,
+          "fieldToken": "0x4000efb",
+          "defaultDataOffset": 157058,
+          "previousValue": 33619970,
+          "encodedHex": "02",
+          "encodedWidth": 1
+        }
+      ]
+    },
+    "BalanceData.ValueSamplerType": {
+      "schemaFormat": "i",
+      "entries": [
+        {
+          "name": "Constant",
+          "value": 0,
+          "fieldIndex": 47904,
+          "fieldToken": "0x4000f07",
+          "defaultDataOffset": 157068,
+          "previousValue": 100925952,
+          "encodedHex": "00",
+          "encodedWidth": 1
+        },
+        {
+          "name": "Random",
+          "value": 1,
+          "fieldIndex": 47905,
+          "fieldToken": "0x4000f08",
+          "defaultDataOffset": 157069,
+          "previousValue": -2147089406,
+          "encodedHex": "02",
+          "encodedWidth": 1
+        },
+        {
+          "name": "Linear",
+          "value": 2,
+          "fieldIndex": 47906,
+          "fieldToken": "0x4000f09",
+          "defaultDataOffset": 157070,
+          "previousValue": -964688380,
+          "encodedHex": "04",
+          "encodedWidth": 1
+        },
+        {
+          "name": "Curve",
+          "value": 3,
+          "fieldIndex": 47907,
+          "fieldToken": "0x4000f0a",
+          "defaultDataOffset": 157071,
+          "previousValue": 13008902,
+          "encodedHex": "06",
+          "encodedWidth": 1
+        },
+        {
+          "name": "None",
+          "value": 99,
+          "fieldIndex": 47908,
+          "fieldToken": "0x4000f0b",
+          "defaultDataOffset": 157072,
+          "previousValue": 16828032,
+          "encodedHex": "80c6",
+          "encodedWidth": 2
+        }
+      ]
+    },
+    "BalanceData.DestinyEyeOpCategory": {
+      "schemaFormat": "i",
+      "entries": [
+        {
+          "name": "None",
+          "value": 0,
+          "fieldIndex": 48073,
+          "fieldToken": "0x4000fb0",
+          "defaultDataOffset": 157236,
+          "previousValue": 100925952,
+          "encodedHex": "00",
+          "encodedWidth": 1
+        },
+        {
+          "name": "Atk",
+          "value": 1,
+          "fieldIndex": 48074,
+          "fieldToken": "0x4000fb1",
+          "defaultDataOffset": 157237,
+          "previousValue": 394242,
+          "encodedHex": "02",
+          "encodedWidth": 1
+        },
+        {
+          "name": "Def",
+          "value": 2,
+          "fieldIndex": 48075,
+          "fieldToken": "0x4000fb2",
+          "defaultDataOffset": 157238,
+          "previousValue": 33555972,
+          "encodedHex": "04",
+          "encodedWidth": 1
+        },
+        {
+          "name": "Mid",
+          "value": 3,
+          "fieldIndex": 48076,
+          "fieldToken": "0x4000fb3",
+          "defaultDataOffset": 157239,
+          "previousValue": 67239942,
+          "encodedHex": "06",
+          "encodedWidth": 1
+        }
+      ]
+    },
+    "BalanceData.ExpeditionSpotType": {
+      "schemaFormat": "i",
+      "entries": [
+        {
+          "name": "None",
+          "value": 0,
+          "fieldIndex": 48078,
+          "fieldToken": "0x4000fb5",
+          "defaultDataOffset": 157240,
+          "previousValue": 262656,
+          "encodedHex": "00",
+          "encodedWidth": 1
+        },
+        {
+          "name": "Box",
+          "value": 1,
+          "fieldIndex": 48079,
+          "fieldToken": "0x4000fb6",
+          "defaultDataOffset": 157241,
+          "previousValue": 16778242,
+          "encodedHex": "02",
+          "encodedWidth": 1
+        },
+        {
+          "name": "Npc",
+          "value": 2,
+          "fieldIndex": 48080,
+          "fieldToken": "0x4000fb7",
+          "defaultDataOffset": 157242,
+          "previousValue": 33619972,
+          "encodedHex": "04",
+          "encodedWidth": 1
+        }
+      ]
+    },
+    "BalanceData.LumibirdType": {
+      "schemaFormat": "i",
+      "entries": [
+        {
+          "name": "None",
+          "value": 0,
+          "fieldIndex": 48146,
+          "fieldToken": "0x4000ff9",
+          "defaultDataOffset": 157301,
+          "previousValue": 100925952,
+          "encodedHex": "00",
+          "encodedWidth": 1
+        },
+        {
+          "name": "Lumibird01",
+          "value": 1,
+          "fieldIndex": 48147,
+          "fieldToken": "0x4000ffa",
+          "defaultDataOffset": 157302,
+          "previousValue": 134611970,
+          "encodedHex": "02",
+          "encodedWidth": 1
+        },
+        {
+          "name": "Lumibird02",
+          "value": 2,
+          "fieldIndex": 48148,
+          "fieldToken": "0x4000ffb",
+          "defaultDataOffset": 157303,
+          "previousValue": 168297988,
+          "encodedHex": "04",
+          "encodedWidth": 1
+        },
+        {
+          "name": "Lumibird03",
+          "value": 3,
+          "fieldIndex": 48149,
+          "fieldToken": "0x4000ffc",
+          "defaultDataOffset": 157304,
+          "previousValue": 201984006,
+          "encodedHex": "06",
+          "encodedWidth": 1
+        },
+        {
+          "name": "Lumibird04",
+          "value": 4,
+          "fieldIndex": 48150,
+          "fieldToken": "0x4000ffd",
+          "defaultDataOffset": 157305,
+          "previousValue": 235670024,
+          "encodedHex": "08",
+          "encodedWidth": 1
+        },
+        {
+          "name": "Lumibird05",
+          "value": 5,
+          "fieldIndex": 48151,
+          "fieldToken": "0x4000ffe",
+          "defaultDataOffset": 157306,
+          "previousValue": 269356042,
+          "encodedHex": "0a",
+          "encodedWidth": 1
+        },
+        {
+          "name": "Lumibird06",
+          "value": 6,
+          "fieldIndex": 48152,
+          "fieldToken": "0x4000fff",
+          "defaultDataOffset": 157307,
+          "previousValue": 303042060,
+          "encodedHex": "0c",
+          "encodedWidth": 1
+        },
+        {
+          "name": "Lumibird07",
+          "value": 7,
+          "fieldIndex": 48153,
+          "fieldToken": "0x4001000",
+          "defaultDataOffset": 157308,
+          "previousValue": 336728078,
+          "encodedHex": "0e",
+          "encodedWidth": 1
+        },
+        {
+          "name": "Lumibird08",
+          "value": 8,
+          "fieldIndex": 48154,
+          "fieldToken": "0x4001001",
+          "defaultDataOffset": 157309,
+          "previousValue": 370414096,
+          "encodedHex": "10",
+          "encodedWidth": 1
+        },
+        {
+          "name": "Lumibird09",
+          "value": 9,
+          "fieldIndex": 48155,
+          "fieldToken": "0x4001002",
+          "defaultDataOffset": 157310,
+          "previousValue": 404100114,
+          "encodedHex": "12",
+          "encodedWidth": 1
+        },
+        {
+          "name": "Lumibird10",
+          "value": 10,
+          "fieldIndex": 48156,
+          "fieldToken": "0x4001003",
+          "defaultDataOffset": 157311,
+          "previousValue": 437786132,
+          "encodedHex": "14",
+          "encodedWidth": 1
+        },
+        {
+          "name": "Lumibird11",
+          "value": 11,
+          "fieldIndex": 48157,
+          "fieldToken": "0x4001004",
+          "defaultDataOffset": 157312,
+          "previousValue": 471472150,
+          "encodedHex": "16",
+          "encodedWidth": 1
+        },
+        {
+          "name": "Lumibird12",
+          "value": 12,
+          "fieldIndex": 48158,
+          "fieldToken": "0x4001005",
+          "defaultDataOffset": 157313,
+          "previousValue": 505158168,
+          "encodedHex": "18",
+          "encodedWidth": 1
+        },
+        {
+          "name": "Lumibird13",
+          "value": 13,
+          "fieldIndex": 48159,
+          "fieldToken": "0x4001006",
+          "defaultDataOffset": 157314,
+          "previousValue": 538844186,
+          "encodedHex": "1a",
+          "encodedWidth": 1
+        },
+        {
+          "name": "Lumibird14",
+          "value": 14,
+          "fieldIndex": 48160,
+          "fieldToken": "0x4001007",
+          "defaultDataOffset": 157315,
+          "previousValue": 572530204,
+          "encodedHex": "1c",
+          "encodedWidth": 1
+        },
+        {
+          "name": "Lumibird15",
+          "value": 15,
+          "fieldIndex": 48161,
+          "fieldToken": "0x4001008",
+          "defaultDataOffset": 157316,
+          "previousValue": 606216222,
+          "encodedHex": "1e",
+          "encodedWidth": 1
+        },
+        {
+          "name": "Lumibird16",
+          "value": 16,
+          "fieldIndex": 48162,
+          "fieldToken": "0x4001009",
+          "defaultDataOffset": 157317,
+          "previousValue": 639902240,
+          "encodedHex": "20",
+          "encodedWidth": 1
+        },
+        {
+          "name": "Lumibird17",
+          "value": 17,
+          "fieldIndex": 48163,
+          "fieldToken": "0x400100a",
+          "defaultDataOffset": 157318,
+          "previousValue": 673588258,
+          "encodedHex": "22",
+          "encodedWidth": 1
+        },
+        {
+          "name": "Lumibird18",
+          "value": 18,
+          "fieldIndex": 48164,
+          "fieldToken": "0x400100b",
+          "defaultDataOffset": 157319,
+          "previousValue": 707274276,
+          "encodedHex": "24",
+          "encodedWidth": 1
+        },
+        {
+          "name": "Lumibird19",
+          "value": 19,
+          "fieldIndex": 48165,
+          "fieldToken": "0x400100c",
+          "defaultDataOffset": 157320,
+          "previousValue": 740960294,
+          "encodedHex": "26",
+          "encodedWidth": 1
+        },
+        {
+          "name": "Lumibird20",
+          "value": 20,
+          "fieldIndex": 48166,
+          "fieldToken": "0x400100d",
+          "defaultDataOffset": 157321,
+          "previousValue": 774646312,
+          "encodedHex": "28",
+          "encodedWidth": 1
+        },
+        {
+          "name": "Lumibird21",
+          "value": 21,
+          "fieldIndex": 48167,
+          "fieldToken": "0x400100e",
+          "defaultDataOffset": 157322,
+          "previousValue": 808332330,
+          "encodedHex": "2a",
+          "encodedWidth": 1
+        },
+        {
+          "name": "Lumibird22",
+          "value": 22,
+          "fieldIndex": 48168,
+          "fieldToken": "0x400100f",
+          "defaultDataOffset": 157323,
+          "previousValue": 3157548,
+          "encodedHex": "2c",
+          "encodedWidth": 1
+        },
+        {
+          "name": "Lumibird23",
+          "value": 23,
+          "fieldIndex": 48169,
+          "fieldToken": "0x4001010",
+          "defaultDataOffset": 157324,
+          "previousValue": 16789550,
+          "encodedHex": "2e",
+          "encodedWidth": 1
+        },
+        {
+          "name": "Lumibird24",
+          "value": 24,
+          "fieldIndex": 48170,
+          "fieldToken": "0x4001011",
+          "defaultDataOffset": 157325,
+          "previousValue": 33620016,
+          "encodedHex": "30",
+          "encodedWidth": 1
+        }
+      ]
+    },
+    "BalanceData.MonsterAIType": {
+      "schemaFormat": "i",
+      "entries": [
+        {
+          "name": "None",
+          "value": 0,
+          "fieldIndex": 48290,
+          "fieldToken": "0x4001089",
+          "defaultDataOffset": 157541,
+          "previousValue": 100925952,
+          "encodedHex": "00",
+          "encodedWidth": 1
+        },
+        {
+          "name": "Attacker",
+          "value": 1,
+          "fieldIndex": 48291,
+          "fieldToken": "0x400108a",
+          "defaultDataOffset": 157542,
+          "previousValue": 134611970,
+          "encodedHex": "02",
+          "encodedWidth": 1
+        },
+        {
+          "name": "Neutral",
+          "value": 2,
+          "fieldIndex": 48292,
+          "fieldToken": "0x400108b",
+          "defaultDataOffset": 157543,
+          "previousValue": 168297988,
+          "encodedHex": "04",
+          "encodedWidth": 1
+        },
+        {
+          "name": "Slow",
+          "value": 3,
+          "fieldIndex": 48293,
+          "fieldToken": "0x400108c",
+          "defaultDataOffset": 157544,
+          "previousValue": 657414,
+          "encodedHex": "06",
+          "encodedWidth": 1
+        },
+        {
+          "name": "Defender",
+          "value": 4,
+          "fieldIndex": 48294,
+          "fieldToken": "0x400108d",
+          "defaultDataOffset": 157545,
+          "previousValue": 16779784,
+          "encodedHex": "08",
+          "encodedWidth": 1
+        },
+        {
+          "name": "NpcAttacker",
+          "value": 5,
+          "fieldIndex": 48295,
+          "fieldToken": "0x400108e",
+          "defaultDataOffset": 157546,
+          "previousValue": 33619978,
+          "encodedHex": "0a",
+          "encodedWidth": 1
+        }
+      ]
+    },
+    "BalanceData.SkillFlag": {
+      "schemaFormat": "i",
+      "entries": [
+        {
+          "name": "None",
+          "value": 0,
+          "fieldIndex": 48419,
+          "fieldToken": "0x400110a",
+          "defaultDataOffset": 157656,
+          "previousValue": 134480384,
+          "encodedHex": "00",
+          "encodedWidth": 1
+        },
+        {
+          "name": "IsOvercharge",
+          "value": 1,
+          "fieldIndex": 48420,
+          "fieldToken": "0x400110b",
+          "defaultDataOffset": 157657,
+          "previousValue": 268960770,
+          "encodedHex": "02",
+          "encodedWidth": 1
+        },
+        {
+          "name": "IsActive",
+          "value": 2,
+          "fieldIndex": 48421,
+          "fieldToken": "0x400110c",
+          "defaultDataOffset": 157658,
+          "previousValue": 537921540,
+          "encodedHex": "04",
+          "encodedWidth": 1
+        },
+        {
+          "name": "IsPassive",
+          "value": 4,
+          "fieldIndex": 48422,
+          "fieldToken": "0x400110d",
+          "defaultDataOffset": 157659,
+          "previousValue": 1075843080,
+          "encodedHex": "08",
+          "encodedWidth": 1
+        },
+        {
+          "name": "IsArtifact",
+          "value": 8,
+          "fieldIndex": 48423,
+          "fieldToken": "0x400110e",
+          "defaultDataOffset": 157660,
+          "previousValue": -2143281136,
+          "encodedHex": "10",
+          "encodedWidth": 1
+        },
+        {
+          "name": "IsArena",
+          "value": 16,
+          "fieldIndex": 48424,
+          "fieldToken": "0x400110f",
+          "defaultDataOffset": 157661,
+          "previousValue": -2139078624,
+          "encodedHex": "20",
+          "encodedWidth": 1
+        },
+        {
+          "name": "IsWillCard",
+          "value": 32,
+          "fieldIndex": 48425,
+          "fieldToken": "0x4001110",
+          "defaultDataOffset": 157662,
+          "previousValue": -2122284992,
+          "encodedHex": "40",
+          "encodedWidth": 1
+        },
+        {
+          "name": "IsDemonEye",
+          "value": 64,
+          "fieldIndex": 48426,
+          "fieldToken": "0x4001111",
+          "defaultDataOffset": 157663,
+          "previousValue": 8487040,
+          "encodedHex": "8080",
+          "encodedWidth": 2
+        },
+        {
+          "name": "IsExpedition",
+          "value": 128,
+          "fieldIndex": 48427,
+          "fieldToken": "0x4001112",
+          "defaultDataOffset": 157665,
+          "previousValue": 8519809,
+          "encodedHex": "8100",
+          "encodedWidth": 2
+        },
+        {
+          "name": "IsWeapon",
+          "value": 256,
+          "fieldIndex": 48428,
+          "fieldToken": "0x4001113",
+          "defaultDataOffset": 157667,
+          "previousValue": 8650882,
+          "encodedHex": "8200",
+          "encodedWidth": 2
+        },
+        {
+          "name": "IsArmor",
+          "value": 512,
+          "fieldIndex": 48429,
+          "fieldToken": "0x4001114",
+          "defaultDataOffset": 157669,
+          "previousValue": 8913028,
+          "encodedHex": "8400",
+          "encodedWidth": 2
+        },
+        {
+          "name": "IsTranscend",
+          "value": 1024,
+          "fieldIndex": 48430,
+          "fieldToken": "0x4001115",
+          "defaultDataOffset": 157671,
+          "previousValue": 10485896,
+          "encodedHex": "8800",
+          "encodedWidth": 2
+        },
+        {
+          "name": "ActiveStep1",
+          "value": 4096,
+          "fieldIndex": 48431,
+          "fieldToken": "0x4001116",
+          "defaultDataOffset": 157673,
+          "previousValue": 12583072,
+          "encodedHex": "a000",
+          "encodedWidth": 2
+        },
+        {
+          "name": "ActiveStep2",
+          "value": 8192,
+          "fieldIndex": 48432,
+          "fieldToken": "0x4001117",
+          "defaultDataOffset": 157675,
+          "previousValue": 4194496,
+          "encodedHex": "c0004000",
+          "encodedWidth": 4
+        },
+        {
+          "name": "ActiveStep3",
+          "value": 16384,
+          "fieldIndex": 48433,
+          "fieldToken": "0x4001118",
+          "defaultDataOffset": 157679,
+          "previousValue": 8388800,
+          "encodedHex": "c0008000",
+          "encodedWidth": 4
+        },
+        {
+          "name": "CollectableBySummon",
+          "value": 65536,
+          "fieldIndex": 48434,
+          "fieldToken": "0x4001119",
+          "defaultDataOffset": 157683,
+          "previousValue": 704,
+          "encodedHex": "c0020000",
+          "encodedWidth": 4
+        },
+        {
+          "name": "CollectableByCombine",
+          "value": 131072,
+          "fieldIndex": 48435,
+          "fieldToken": "0x400111a",
+          "defaultDataOffset": 157687,
+          "previousValue": 1216,
+          "encodedHex": "c0040000",
+          "encodedWidth": 4
+        },
+        {
+          "name": "CollectableInShop",
+          "value": 262144,
+          "fieldIndex": 48436,
+          "fieldToken": "0x400111b",
+          "defaultDataOffset": 157691,
+          "previousValue": 2240,
+          "encodedHex": "c0080000",
+          "encodedWidth": 4
+        },
+        {
+          "name": "CollectableInTranscend",
+          "value": 524288,
+          "fieldIndex": 48437,
+          "fieldToken": "0x400111c",
+          "defaultDataOffset": 157695,
+          "previousValue": 4288,
+          "encodedHex": "c0100000",
+          "encodedWidth": 4
+        },
+        {
+          "name": "CanBeUsedForCombine",
+          "value": 1048576,
+          "fieldIndex": 48438,
+          "fieldToken": "0x400111d",
+          "defaultDataOffset": 157699,
+          "previousValue": 8384,
+          "encodedHex": "c0200000",
+          "encodedWidth": 4
+        },
+        {
+          "name": "CanAwaken",
+          "value": 2097152,
+          "fieldIndex": 48439,
+          "fieldToken": "0x400111e",
+          "defaultDataOffset": 157703,
+          "previousValue": 16576,
+          "encodedHex": "c0400000",
+          "encodedWidth": 4
+        },
+        {
+          "name": "AutoExecute",
+          "value": 4194304,
+          "fieldIndex": 48440,
+          "fieldToken": "0x400111f",
+          "defaultDataOffset": 157707,
+          "previousValue": 32960,
+          "encodedHex": "c0800000",
+          "encodedWidth": 4
+        },
+        {
+          "name": "AutoEquip",
+          "value": 8388608,
+          "fieldIndex": 48441,
+          "fieldToken": "0x4001120",
+          "defaultDataOffset": 157711,
+          "previousValue": 193,
+          "encodedHex": "c1000000",
+          "encodedWidth": 4
+        }
+      ]
+    },
+    "BalanceData.StageCategoryType": {
+      "schemaFormat": "I",
+      "entries": [
+        {
+          "name": "None",
+          "value": 0,
+          "fieldIndex": 48462,
+          "fieldToken": "0x4001135",
+          "defaultDataOffset": 157740,
+          "previousValue": 134480128,
+          "encodedHex": "00",
+          "encodedWidth": 1
+        },
+        {
+          "name": "Labyrinth",
+          "value": 1,
+          "fieldIndex": 48463,
+          "fieldToken": "0x4001136",
+          "defaultDataOffset": 157741,
+          "previousValue": 537396225,
+          "encodedHex": "01",
+          "encodedWidth": 1
+        },
+        {
+          "name": "Cutscene",
+          "value": 4,
+          "fieldIndex": 48464,
+          "fieldToken": "0x4001137",
+          "defaultDataOffset": 157742,
+          "previousValue": 1075841028,
+          "encodedHex": "04",
+          "encodedWidth": 1
+        },
+        {
+          "name": "Story",
+          "value": 8,
+          "fieldIndex": 48465,
+          "fieldToken": "0x4001138",
+          "defaultDataOffset": 157743,
+          "previousValue": 2151686152,
+          "encodedHex": "08",
+          "encodedWidth": 1
+        },
+        {
+          "name": "SpiritPower",
+          "value": 32,
+          "fieldIndex": 48466,
+          "fieldToken": "0x4001139",
+          "defaultDataOffset": 157744,
+          "previousValue": 2155888672,
+          "encodedHex": "20",
+          "encodedWidth": 1
+        },
+        {
+          "name": "Trial",
+          "value": 64,
+          "fieldIndex": 48467,
+          "fieldToken": "0x400113a",
+          "defaultDataOffset": 157745,
+          "previousValue": 2172682304,
+          "encodedHex": "40",
+          "encodedWidth": 1
+        },
+        {
+          "name": "Automaton",
+          "value": 128,
+          "fieldIndex": 48468,
+          "fieldToken": "0x400113b",
+          "defaultDataOffset": 157746,
+          "previousValue": 8487040,
+          "encodedHex": "8080",
+          "encodedWidth": 2
+        },
+        {
+          "name": "Dungeon",
+          "value": 256,
+          "fieldIndex": 48469,
+          "fieldToken": "0x400113c",
+          "defaultDataOffset": 157748,
+          "previousValue": 8519809,
+          "encodedHex": "8100",
+          "encodedWidth": 2
+        },
+        {
+          "name": "Arena",
+          "value": 512,
+          "fieldIndex": 48470,
+          "fieldToken": "0x400113d",
+          "defaultDataOffset": 157750,
+          "previousValue": 8650882,
+          "encodedHex": "8200",
+          "encodedWidth": 2
+        },
+        {
+          "name": "WorldBoss",
+          "value": 1024,
+          "fieldIndex": 48471,
+          "fieldToken": "0x400113e",
+          "defaultDataOffset": 157752,
+          "previousValue": 8913028,
+          "encodedHex": "8400",
+          "encodedWidth": 2
+        },
+        {
+          "name": "FieldBoss",
+          "value": 2048,
+          "fieldIndex": 48472,
+          "fieldToken": "0x400113f",
+          "defaultDataOffset": 157754,
+          "previousValue": 9437320,
+          "encodedHex": "8800",
+          "encodedWidth": 2
+        },
+        {
+          "name": "GuildRaid",
+          "value": 4096,
+          "fieldIndex": 48473,
+          "fieldToken": "0x4001140",
+          "defaultDataOffset": 157756,
+          "previousValue": 10485904,
+          "encodedHex": "9000",
+          "encodedWidth": 2
+        },
+        {
+          "name": "Black",
+          "value": 8192,
+          "fieldIndex": 48474,
+          "fieldToken": "0x4001141",
+          "defaultDataOffset": 157758,
+          "previousValue": 12583072,
+          "encodedHex": "a000",
+          "encodedWidth": 2
+        },
+        {
+          "name": "DemonEye",
+          "value": 16384,
+          "fieldIndex": 48475,
+          "fieldToken": "0x4001142",
+          "defaultDataOffset": 157760,
+          "previousValue": 4194496,
+          "encodedHex": "c0004000",
+          "encodedWidth": 4
+        },
+        {
+          "name": "LumibirdRace",
+          "value": 32768,
+          "fieldIndex": 48476,
+          "fieldToken": "0x4001143",
+          "defaultDataOffset": 157764,
+          "previousValue": 8388800,
+          "encodedHex": "c0008000",
+          "encodedWidth": 4
+        },
+        {
+          "name": "ExplorationExcluder",
+          "value": 536870912,
+          "fieldIndex": 48477,
+          "fieldToken": "0x4001144",
+          "defaultDataOffset": 157768,
+          "previousValue": 240,
+          "encodedHex": "f000000020",
+          "encodedWidth": 5
+        },
+        {
+          "name": "EditorCustom",
+          "value": 1073741824,
+          "fieldIndex": 48478,
+          "fieldToken": "0x4001145",
+          "defaultDataOffset": 157773,
+          "previousValue": 240,
+          "encodedHex": "f000000040",
+          "encodedWidth": 5
+        }
+      ]
+    },
+    "BalanceData.EffectTagType": {
+      "schemaFormat": "I",
+      "entries": [
+        {
+          "name": "None",
+          "value": 0,
+          "fieldIndex": 49187,
+          "fieldToken": "0x400140a",
+          "defaultDataOffset": 159060,
+          "previousValue": 67240192,
+          "encodedHex": "00",
+          "encodedWidth": 1
+        },
+        {
+          "name": "Cat_Uncategorized",
+          "value": 1,
+          "fieldIndex": 49188,
+          "fieldToken": "0x400140b",
+          "defaultDataOffset": 159061,
+          "previousValue": 134480385,
+          "encodedHex": "01",
+          "encodedWidth": 1
+        },
+        {
+          "name": "Cat_BuffDebuff",
+          "value": 2,
+          "fieldIndex": 49189,
+          "fieldToken": "0x400140c",
+          "defaultDataOffset": 159062,
+          "previousValue": 268960770,
+          "encodedHex": "02",
+          "encodedWidth": 1
+        },
+        {
+          "name": "Cat_Abnormal",
+          "value": 4,
+          "fieldIndex": 49190,
+          "fieldToken": "0x400140d",
+          "defaultDataOffset": 159063,
+          "previousValue": 2165311492,
+          "encodedHex": "04",
+          "encodedWidth": 1
+        },
+        {
+          "name": "Cat_Marking",
+          "value": 8,
+          "fieldIndex": 49191,
+          "fieldToken": "0x400140e",
+          "defaultDataOffset": 159064,
+          "previousValue": 8458248,
+          "encodedHex": "08",
+          "encodedWidth": 1
+        },
+        {
+          "name": "Cat_Shield",
+          "value": 16,
+          "fieldIndex": 49192,
+          "fieldToken": "0x400140f",
+          "defaultDataOffset": 159065,
+          "previousValue": 2181071120,
+          "encodedHex": "10",
+          "encodedWidth": 1
+        },
+        {
+          "name": "AtkRelated",
+          "value": 256,
+          "fieldIndex": 49193,
+          "fieldToken": "0x4001410",
+          "defaultDataOffset": 159066,
+          "previousValue": 8519809,
+          "encodedHex": "8100",
+          "encodedWidth": 2
+        },
+        {
+          "name": "DefRelated",
+          "value": 512,
+          "fieldIndex": 49194,
+          "fieldToken": "0x4001411",
+          "defaultDataOffset": 159068,
+          "previousValue": 8650882,
+          "encodedHex": "8200",
+          "encodedWidth": 2
+        },
+        {
+          "name": "HealRelated",
+          "value": 1024,
+          "fieldIndex": 49195,
+          "fieldToken": "0x4001412",
+          "defaultDataOffset": 159070,
+          "previousValue": 8913028,
+          "encodedHex": "8400",
+          "encodedWidth": 2
+        },
+        {
+          "name": "InvalidateHpMp",
+          "value": 2048,
+          "fieldIndex": 49196,
+          "fieldToken": "0x4001413",
+          "defaultDataOffset": 159072,
+          "previousValue": 9437320,
+          "encodedHex": "8800",
+          "encodedWidth": 2
+        },
+        {
+          "name": "InvalidateCooltime",
+          "value": 4096,
+          "fieldIndex": 49197,
+          "fieldToken": "0x4001414",
+          "defaultDataOffset": 159074,
+          "previousValue": 10485904,
+          "encodedHex": "9000",
+          "encodedWidth": 2
+        },
+        {
+          "name": "Dot",
+          "value": 8192,
+          "fieldIndex": 49198,
+          "fieldToken": "0x4001415",
+          "defaultDataOffset": 159076,
+          "previousValue": 12583072,
+          "encodedHex": "a000",
+          "encodedWidth": 2
+        },
+        {
+          "name": "Timer",
+          "value": 16384,
+          "fieldIndex": 49199,
+          "fieldToken": "0x4001416",
+          "defaultDataOffset": 159078,
+          "previousValue": 4194496,
+          "encodedHex": "c0004000",
+          "encodedWidth": 4
+        },
+        {
+          "name": "Immobility",
+          "value": 32768,
+          "fieldIndex": 49200,
+          "fieldToken": "0x4001417",
+          "defaultDataOffset": 159082,
+          "previousValue": 8388800,
+          "encodedHex": "c0008000",
+          "encodedWidth": 4
+        },
+        {
+          "name": "MotionStopper",
+          "value": 65536,
+          "fieldIndex": 49201,
+          "fieldToken": "0x4001418",
+          "defaultDataOffset": 159086,
+          "previousValue": 448,
+          "encodedHex": "c0010000",
+          "encodedWidth": 4
+        },
+        {
+          "name": "CC",
+          "value": 131072,
+          "fieldIndex": 49202,
+          "fieldToken": "0x4001419",
+          "defaultDataOffset": 159090,
+          "previousValue": 704,
+          "encodedHex": "c0020000",
+          "encodedWidth": 4
+        },
+        {
+          "name": "CancelHoldingActions",
+          "value": 262144,
+          "fieldIndex": 49203,
+          "fieldToken": "0x400141a",
+          "defaultDataOffset": 159094,
+          "previousValue": 1216,
+          "encodedHex": "c0040000",
+          "encodedWidth": 4
+        },
+        {
+          "name": "ApplyTenacity",
+          "value": 524288,
+          "fieldIndex": 49204,
+          "fieldToken": "0x400141b",
+          "defaultDataOffset": 159098,
+          "previousValue": 2240,
+          "encodedHex": "c0080000",
+          "encodedWidth": 4
+        },
+        {
+          "name": "CantExecuteSkill",
+          "value": 1048576,
+          "fieldIndex": 49205,
+          "fieldToken": "0x400141c",
+          "defaultDataOffset": 159102,
+          "previousValue": 4288,
+          "encodedHex": "c0100000",
+          "encodedWidth": 4
+        },
+        {
+          "name": "CheckEnemyCountInRange",
+          "value": 2097152,
+          "fieldIndex": 49206,
+          "fieldToken": "0x400141d",
+          "defaultDataOffset": 159106,
+          "previousValue": 8384,
+          "encodedHex": "c0200000",
+          "encodedWidth": 4
+        }
+      ]
+    }
+  }
+}
