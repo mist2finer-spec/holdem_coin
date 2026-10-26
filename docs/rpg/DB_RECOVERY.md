@@ -1,3 +1,5 @@
+> Latest detailed numeric/index restoration: [DB_DETAIL_RESTORATION.md](DB_DETAIL_RESTORATION.md). Earlier sections below are chronological evidence, not the current completion status.
+
 # Original Vardian database recovery
 
 This is tooling/reference work. It changes no game rules or production database.

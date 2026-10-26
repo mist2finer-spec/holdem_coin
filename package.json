@@ -27,7 +27,9 @@
     "check:rpg": "tsc -p tsconfig.rpg-check.json --pretty false",
     "rpg:restore:stats": "python3 scripts/rpg/restore_combat_stats.py",
     "test:rpg:reference": "python3 -m unittest discover -s scripts/rpg -p \"test_reference*.py\"",
-    "rpg:restore:profile": "python3 scripts/rpg/restore_session_profile.py"
+    "rpg:restore:profile": "python3 scripts/rpg/restore_session_profile.py",
+    "rpg:restore:db": "python3 scripts/rpg/restore_detailed_db.py",
+    "rpg:db": "python3 scripts/rpg/rpg_db.py"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
