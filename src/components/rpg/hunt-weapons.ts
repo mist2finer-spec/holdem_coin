@@ -14,6 +14,6 @@ export function weaponLoadout(character:string,weapon:WeaponType){
  const traits=huntLoadout(character),w=WEAPONS[weapon];
  // Reuse the verified clip names, but weapon-specific schedules are explicit web adaptations.
  const base=huntLoadout('hong').combo;
- return {name:w.name,range:w.range,crit:traits.crit,tempo:1.35*w.speed,
+ return {name:w.name,range:w.range,crit:traits.crit,tempo:1.35*.85*w.speed,
   combo:base.slice(0,w.stages).map(s=>({...s,damage:Math.max(1,Math.round(s.damage*w.power*traits.power))}))};
 }

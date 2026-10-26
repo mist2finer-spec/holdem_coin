@@ -1,3 +1,4 @@
+import {extraAbilities} from './hunt-development';
 import data from './data/recovered-growth.json';
 import type {HuntProgress} from './hunt-progression';
 import type {WeaponType} from './hunt-weapons';
@@ -13,11 +14,12 @@ export function recoveredStats(p:HuntProgress){
  if(p.weaponType==='unarmed')r[7]+=normalize(7,data.webAdaptation.unarmedBaseAttack+data.webAdaptation.unarmedAttackPerLevel*(Math.min(50,p.weaponLevels.unarmed)-1));
  else add(r,data.weapons[p.weaponType].equip,Math.min(50,p.weaponLevels[p.weaponType]));
  add(r,data.armor.equip,Math.min(50,p.armorLevel));add(r,data.armor.hold,Math.min(50,p.armorLevel));
- const attack=roundEven((r[7]??0)*(1+(r[73]??0)/100)*(1+(r[75]??0)/100));
- const naturalHP=roundEven((r[8]??0)*(1+(r[76]??0)/100));
+ for(const [id,n] of Object.entries(extraAbilities(p)))r[Number(id)]=(r[Number(id)]??0)+n;
+ const attack=roundEven((r[7]??0)*(1+(r[59]??0)/100)*(1+(r[63]??0)/100)*(1+(r[73]??0)/100)*(1+(r[75]??0)/100));
+ const naturalHP=roundEven((r[8]??0)*(1+(r[60]??0)/100)*(1+(r[64]??0)/100)*(1+(r[76]??0)/100));
  return {maxHP:data.webAdaptation.testHP,attack,naturalHP,crit:Math.min(90,r[26]??0)/100,critMultiplier:1+(r[27]??0)/100,
   basicDamageMultiplier:(1+(r[17]??0)/100)*(1+(r[19]??0)/100),skillDamageMultiplier:(1+(r[18]??0)/100)*(1+(r[20]??0)/100),
-  defense:0,incomingDamageScale:data.webAdaptation.referenceNaturalHP/Math.max(1,naturalHP),abilities:r};
+  attackSpeed:1+Math.min(100,r[25]??0)/100,valor:r[9]??0,mental:r[10]??0,focus:r[11]??0,tenacity:r[12]??0,defense:0,incomingDamageScale:data.webAdaptation.referenceNaturalHP/Math.max(1,naturalHP),abilities:r};
 }
 export function weaponGrowth(p:HuntProgress,type:WeaponType){
  const level=p.weaponLevels[type],copy={...p,weaponType:type,weaponLevel:level};const stats=recoveredStats(copy);

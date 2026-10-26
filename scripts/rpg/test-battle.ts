@@ -172,3 +172,43 @@ test('unequipped owned weapons grant their specific damage channel while equippe
  const a=heroStats(p);p.weaponLevels.dual=50;const b=heroStats(p);assert.equal(b.attack,a.attack);assert.ok(b.basicDamageMultiplier>a.basicDamageMultiplier);assert.equal(b.skillDamageMultiplier,a.skillDamageMultiplier);
  p.weaponLevels.spear=50;assert.ok(heroStats(p).skillDamageMultiplier>b.skillDamageMultiplier);
 });
+
+test('guide10 bulk art quote honors each price, unlock stop, caps and available gold',async()=>{
+ const {artQuote,buyArt}=await import('../../src/components/rpg/hunt-development');const p=newHuntProgress();p.gold=100000;
+ const q=artQuote(p,101,100);assert.equal(q.quantity,5);assert.equal(q.cost,[1,2,3,4,5].reduce((s,l)=>s+curveValue([{min:1,max:2147483647,base:150,inc:2,rate:17,scaler:1000}],l),0));
+ const before=p.gold;buyArt(p,101,100);assert.equal(p.attackTraining,5);assert.equal(p.gold,before-q.cost);
+ assert.throws(()=>buyArt(p,101,100));buyArt(p,102,100);assert.equal(p.healthTraining,5);
+ buyArt(p,101,10);assert.equal(p.attackTraining,10);
+ assert.equal(artQuote(p,201,10).quantity,0);assert.throws(()=>buyArt(p,201,10));
+ const low=newHuntProgress();low.gold=151;buyArt(low,101,100);assert.equal(low.attackTraining,1);assert.equal(low.gold,1);
+ assert.throws(()=>buyArt(low,101,100));assert.throws(()=>buyArt(low,999,1));assert.throws(()=>buyArt(low,101,10000));
+});
+test('guide10 traits spend only earned points, cap at ten and change stats',async()=>{
+ const {buyTrait,traitPoints}=await import('../../src/components/rpg/hunt-development');const {heroStats}=await import('../../src/components/rpg/hunt-progression');
+ const p=newHuntProgress();assert.throws(()=>buyTrait(p,7));p.level=15;const before=heroStats(p).attack;
+ for(let i=0;i<10;i++)buyTrait(p,7);assert.equal(p.traits[7],10);assert.equal(traitPoints(p),4);assert.ok(heroStats(p).attack>before);assert.throws(()=>buyTrait(p,7));assert.throws(()=>buyTrait(p,999));
+});
+test('guide10 skills, mastery and spirit use bounded server resources and survive restart',async()=>{
+ const {buySkill,buyMastery,buyWill,toggleSkill}=await import('../../src/components/rpg/hunt-development');const p=newHuntProgress();
+ assert.throws(()=>buySkill(p,0));p.skillCopies[0]=2;buySkill(p,0);assert.equal(p.skillLevels[0],2);assert.equal(p.skillCopies[0],1);assert.throws(()=>buySkill(p,6));
+ toggleSkill(p,0);assert.equal(p.skillEnabled[0],0);assert.throws(()=>buyMastery(p));p.masteryEssence=20000;buyMastery(p);assert.equal(p.masteryLevel,2);assert.equal(p.masteryEssence,0);
+ assert.throws(()=>buyWill(p));p.soulOrb=3000;buyWill(p);assert.equal(p.willLevel,1);assert.equal(p.soulOrb,0);
+ const store=new RpgStore(':memory:');const saved=store.load('guide10');store.save('guide10',p,saved.revision);assert.deepEqual(store.load('guide10').progress,p);store.close();
+});
+test('guide10 purchase retries do not double-charge or mutate earlier snapshots',()=>{
+ const store=new RpgStore(':memory:');const saved=store.load('bulk');saved.progress.gold=10000;saved.progress.level=10;store.save('bulk',saved.progress,saved.revision);
+ const service=new RpgService(store,balance,()=>0),v=service.start('bulk','hong');
+ const after=service.command('bulk',v.id,1,input,'art-101-10');assert.equal(after.progress.attackTraining,5);
+ assert.deepEqual(service.command('bulk',v.id,1,input,'art-101-10'),after);
+ const t=service.command('bulk',v.id,2,input,'trait-7');assert.equal(t.progress.traits[7],1);assert.equal(v.progress.traits[7],undefined);assert.equal(after.progress.traits[7],undefined);store.close();
+});
+test('guide10 movement is fifteen percent slower and attack speed keeps hit and animation synchronized',async()=>{
+ const {weaponLoadout}=await import('../../src/components/rpg/hunt-weapons');const l=weaponLoadout('hong','sword');assert.equal(l.tempo,1.35*.85*1.08);
+ const p=newHuntProgress();p.combatArts[103]=100;const g=new HuntEngine(l.combo,1,{hostile:true,progress:p,tempo:l.tempo,range:l.range});g.enemyX=g.x+40;g.attack();
+ assert.ok(Math.abs(g.animationSpeed-l.tempo*1.1)<1e-8);const duration=g.visualTiming.duration;assert.equal(g.visualTiming.hitAt,l.combo[0].hitAt/(l.tempo*1.1));
+ p.combatArts[103]=0;advance(g,duration*.4);assert.ok(Math.abs(g.animationSpeed-l.tempo*1.1)<1e-8);
+});
+test('guide10 disabled skills cannot run and deterministic drops are granted once per kill',()=>{
+ const p=newHuntProgress();p.skillEnabled[0]=0;const g=new HuntEngine(HUNT_RULES.combo,1,{hostile:true,progress:p});assert.equal(g.attack(0),false);assert.equal(g.cooldowns[0],0);
+ for(let i=0;i<30;i++)awardHuntKill(p,balance);assert.deepEqual(p.skillCopies,[1,1,1,1,1,1]);assert.equal(p.masteryEssence,3000);assert.equal(p.soulOrb,1500);
+});

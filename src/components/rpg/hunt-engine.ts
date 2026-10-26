@@ -4,7 +4,7 @@ import {bodySeparation,planDodge,sweepHero} from './hunt-collision';
 import {awardHuntKill,DEFAULT_HUNT_BALANCE,heroStats,newHuntProgress,type HuntBalance,type HuntProgress} from './hunt-progression';
 export {SKILL_COOLDOWNS,WORLD_WIDTH} from './combat-rules';
 type Motion={kind:'attack'|'skill'|'rush'|'dodge';start:number;duration:number;target:number;
- segments:{animation:string;duration:number}[];phase:number;hits:{at:number;damage:number;range:number;done:boolean;heal?:boolean}[];
+ segments:{animation:string;duration:number}[];phase:number;animationRate?:number;hits:{at:number;damage:number;range:number;done:boolean;heal?:boolean}[];
  destination?:number;speed?:number;origin?:number};
 const clampX=(x:number)=>Math.max(65,Math.min(WORLD_WIDTH-65,x));
 export type HuntEnemy={slot:number;x:number;hp:number;maxHP:number;serial:number;respawnAt:number;lastDamage:number;hitUntil:number;
@@ -28,6 +28,7 @@ export class HuntEngine {
  deadAt=-1;lastHeroDamage=0;heroHitUntil=0;parryUntil=0;parryReady=0;critical=false;
  potionReady=0;
  readonly progress:HuntProgress;readonly balance:HuntBalance;readonly hostile:boolean;
+ private get attackTempo(){return this.tempo*(this.hostile?this.stats.attackSpeed:1);}
  private rng:number;private range:number;private crit:number;private tempo:number;
  get stats(){return heroStats(this.progress);}
  get maxHP(){return this.hostile?this.stats.maxHP:100;}
@@ -73,12 +74,13 @@ export class HuntEngine {
    this.motion=null;this.actionUntil=this.elapsed;this.pose('stay1');}}
  }
  private start(m:Motion){
+  m.animationRate=m.kind==='attack'||m.kind==='skill'?this.attackTempo:this.tempo;
   this.motion=m;this.actionUntil=this.elapsed+m.duration;
-  this.pose(m.segments[0].animation,true,m.kind==='rush'?motions.durations.dash/m.duration:this.tempo);
+  this.pose(m.segments[0].animation,true,m.kind==='rush'?motions.durations.dash/m.duration:m.animationRate??this.tempo);
  }
  private hurt(damage:number,skill=false){
   if(this.hostile){this.rng=(Math.imul(this.rng,1664525)+1013904223)>>>0;this.critical=this.rng/4294967296<Math.max(0,Math.min(.9,this.stats.crit+this.crit-.1));
-   damage=Math.max(1,Math.round(damage*this.stats.attack/6*(skill?this.stats.skillDamageMultiplier:this.stats.basicDamageMultiplier)*(this.critical?this.stats.critMultiplier:1)));}
+   damage=Math.max(1,Math.round(damage*this.stats.attack/6*(1+Math.tanh((skill?this.stats.mental:this.stats.valor)/300)*.2)*(skill?this.stats.skillDamageMultiplier:this.stats.basicDamageMultiplier)*(this.critical?this.stats.critMultiplier:1)));}
   this.lastDamage=Math.min(damage,this.enemyHP);this.hitUntil=this.elapsed+.75;
   this.enemyHP=Math.max(0,this.enemyHP-damage);
   if(this.enemyHP===0){this.target.state='dead';
@@ -141,7 +143,7 @@ export class HuntEngine {
   const age=this.elapsed-m.start;
   for(const hit of m.hits){
    if(hit.done||age+1e-8<hit.at)continue;hit.done=true;
-   if(hit.heal){this.hp=Math.min(this.maxHP,this.hp+25);continue;}
+   if(hit.heal){this.hp=Math.min(this.maxHP,this.hp+25*(1+((this.progress.skillLevels[5]??1)-1)*.05));continue;}
    if(m.target===this.enemySerial&&this.enemyHP>0&&Math.abs(this.enemyX-this.x)<=hit.range
     &&(this.enemyX-this.x)*this.facing>=0
     &&!this.enemies.some(e=>e.hp>0&&e.serial!==m.target&&(e.x-this.x)*this.facing>0
@@ -149,7 +151,7 @@ export class HuntEngine {
   }
   let end=0,phase=m.segments.length-1;
   for(let i=0;i<m.segments.length;i++){end+=m.segments[i].duration;if(age<end-1e-8){phase=i;break;}}
-  if(m.phase!==phase){m.phase=phase;this.pose(m.segments[phase].animation,true,this.tempo);}
+  if(m.phase!==phase){m.phase=phase;this.pose(m.segments[phase].animation,true,m.animationRate??this.tempo);}
   if(age+1e-8>=m.duration){
    if(m.destination!==undefined){
     if(m.kind==='dodge'){
@@ -208,6 +210,7 @@ export class HuntEngine {
  }
  attack(skill=-1){
   if(this.paused||this.hp<=0||!Number.isInteger(skill)||skill< -1||skill>=6)return false;
+  if(skill>=0&&this.hostile&&!this.progress.skillEnabled[skill])return false;
   if(this.motion){
    if(skill===-1&&this.motion.kind==='attack'&&this.actionUntil-this.elapsed<=HUNT_RULES.inputBuffer){
     this.queuedUntil=this.actionUntil+HUNT_RULES.inputBuffer;return true;
@@ -221,19 +224,19 @@ export class HuntEngine {
   this.facing=Math.sign(this.enemyX-this.x)||this.facing;this.attackIntent=false;
   if(this.elapsed>this.comboExpires)this.resetCombo();
   if(skill===-1){
-   const stage=this.combo[this.comboIndex],duration=(stage.duration??motions.durations[stage.animation])/this.tempo;
+   const stage=this.combo[this.comboIndex],duration=(stage.duration??motions.durations[stage.animation])/this.attackTempo;
    this.comboStage=this.comboIndex+1;this.comboIndex=(this.comboIndex+1)%this.combo.length;
-   this.comboExpires=this.elapsed+duration+HUNT_RULES.comboReset;this.attackReady=this.elapsed+Math.max(duration,HUNT_RULES.minAttackDelay/this.tempo);
+   this.comboExpires=this.elapsed+duration+HUNT_RULES.comboReset;this.attackReady=this.elapsed+Math.max(duration,HUNT_RULES.minAttackDelay/this.attackTempo);
    this.start({kind:'attack',start:this.elapsed,duration,target:this.enemySerial,
     segments:[{animation:stage.animation,duration}],phase:0,
-    hits:[{at:stage.hitAt/this.tempo,damage:stage.damage,range:this.range,done:false}]});
+    hits:[{at:stage.hitAt/this.attackTempo,damage:stage.damage,range:this.range,done:false}]});
   }else{
    this.resetCombo();this.cooldowns[skill]=SKILL_COOLDOWNS[skill];
    const names=skill===4?['skill5','skill5_loop','skill5_end']:['skill1','skill2','skill3','skill4','skill5','rest1'].slice(skill,skill+1);
-   const segments=names.map(animation=>({animation,duration:motions.durations[animation as keyof typeof motions.durations]/this.tempo}));
+   const segments=names.map(animation=>({animation,duration:motions.durations[animation as keyof typeof motions.durations]/this.attackTempo}));
    const duration=segments.reduce((n,s)=>n+s.duration,0);this.attackReady=this.elapsed+duration;
    this.start({kind:'skill',start:this.elapsed,duration,target:this.enemySerial,segments,phase:0,
-    hits:[{at:duration*.55,damage:40,range:330,done:false,heal:skill===5}]});
+    hits:[{at:duration*.55,damage:40*(1+((this.progress.skillLevels[skill]??1)-1)*.05),range:330,done:false,heal:skill===5}]});
   }
   return true;
  }

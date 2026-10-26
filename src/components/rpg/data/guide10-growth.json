@@ -1,0 +1,748 @@
+{
+  "source": "recovered CombatArtData / TraitData / MasteryData / WillData / SkillData; web adapters documented in GUIDE10.md",
+  "arts": [
+    {
+      "id": 101,
+      "tier": 1,
+      "ability": 7,
+      "increment": 1.0,
+      "max": 500,
+      "requires": 0,
+      "requiresLevel": 0,
+      "previousTier": false,
+      "cost": {
+        "min": 1,
+        "max": 2147483647,
+        "base": 150.0,
+        "inc": 2.0,
+        "rate": 17.0,
+        "scaler": 1000.0
+      }
+    },
+    {
+      "id": 102,
+      "tier": 1,
+      "ability": 8,
+      "increment": 5.0,
+      "max": 500,
+      "requires": 0,
+      "requiresLevel": 0,
+      "previousTier": false,
+      "cost": {
+        "min": 1,
+        "max": 2147483647,
+        "base": 150.0,
+        "inc": 2.0,
+        "rate": 17.0,
+        "scaler": 1000.0
+      }
+    },
+    {
+      "id": 103,
+      "tier": 1,
+      "ability": 25,
+      "increment": 0.1,
+      "max": 100,
+      "requires": 101,
+      "requiresLevel": 100,
+      "previousTier": false,
+      "cost": {
+        "min": 1,
+        "max": 2147483647,
+        "base": 750.0,
+        "inc": 2.0,
+        "rate": 4500.0,
+        "scaler": 1000.0
+      }
+    },
+    {
+      "id": 104,
+      "tier": 1,
+      "ability": 9,
+      "increment": 2.0,
+      "max": 250,
+      "requires": 102,
+      "requiresLevel": 200,
+      "previousTier": false,
+      "cost": {
+        "min": 1,
+        "max": 2147483647,
+        "base": 300.0,
+        "inc": 2.0,
+        "rate": 212.0,
+        "scaler": 1000.0
+      }
+    },
+    {
+      "id": 105,
+      "tier": 1,
+      "ability": 10,
+      "increment": 2.0,
+      "max": 250,
+      "requires": 101,
+      "requiresLevel": 200,
+      "previousTier": false,
+      "cost": {
+        "min": 1,
+        "max": 2147483647,
+        "base": 300.0,
+        "inc": 2.0,
+        "rate": 212.0,
+        "scaler": 1000.0
+      }
+    },
+    {
+      "id": 106,
+      "tier": 1,
+      "ability": 11,
+      "increment": 2.0,
+      "max": 250,
+      "requires": 102,
+      "requiresLevel": 300,
+      "previousTier": false,
+      "cost": {
+        "min": 1,
+        "max": 2147483647,
+        "base": 300.0,
+        "inc": 2.0,
+        "rate": 212.0,
+        "scaler": 1000.0
+      }
+    },
+    {
+      "id": 107,
+      "tier": 1,
+      "ability": 12,
+      "increment": 2.0,
+      "max": 250,
+      "requires": 101,
+      "requiresLevel": 300,
+      "previousTier": false,
+      "cost": {
+        "min": 1,
+        "max": 2147483647,
+        "base": 300.0,
+        "inc": 2.0,
+        "rate": 212.0,
+        "scaler": 1000.0
+      }
+    },
+    {
+      "id": 108,
+      "tier": 1,
+      "ability": 26,
+      "increment": 0.05,
+      "max": 100,
+      "requires": 104,
+      "requiresLevel": 100,
+      "previousTier": false,
+      "cost": {
+        "min": 1,
+        "max": 2147483647,
+        "base": 750.0,
+        "inc": 2.0,
+        "rate": 4500.0,
+        "scaler": 1000.0
+      }
+    },
+    {
+      "id": 109,
+      "tier": 1,
+      "ability": 27,
+      "increment": 0.15,
+      "max": 100,
+      "requires": 107,
+      "requiresLevel": 100,
+      "previousTier": false,
+      "cost": {
+        "min": 1,
+        "max": 2147483647,
+        "base": 750.0,
+        "inc": 2.0,
+        "rate": 4500.0,
+        "scaler": 1000.0
+      }
+    },
+    {
+      "id": 201,
+      "tier": 2,
+      "ability": 59,
+      "increment": 0.3,
+      "max": 100,
+      "requires": 0,
+      "requiresLevel": 0,
+      "previousTier": true,
+      "cost": {
+        "min": 1,
+        "max": 2147483647,
+        "base": 18000.0,
+        "inc": 10.0,
+        "rate": 11400.0,
+        "scaler": 1000.0
+      }
+    },
+    {
+      "id": 202,
+      "tier": 2,
+      "ability": 60,
+      "increment": 0.3,
+      "max": 100,
+      "requires": 0,
+      "requiresLevel": 0,
+      "previousTier": true,
+      "cost": {
+        "min": 1,
+        "max": 2147483647,
+        "base": 18000.0,
+        "inc": 10.0,
+        "rate": 11400.0,
+        "scaler": 1000.0
+      }
+    },
+    {
+      "id": 203,
+      "tier": 2,
+      "ability": 7,
+      "increment": 1.0,
+      "max": 500,
+      "requires": 201,
+      "requiresLevel": 50,
+      "previousTier": false,
+      "cost": {
+        "min": 0,
+        "max": 2147483647,
+        "base": 2200.0,
+        "inc": 2.0,
+        "rate": 50.0,
+        "scaler": 1000.0
+      }
+    },
+    {
+      "id": 204,
+      "tier": 2,
+      "ability": 8,
+      "increment": 5.0,
+      "max": 500,
+      "requires": 202,
+      "requiresLevel": 50,
+      "previousTier": false,
+      "cost": {
+        "min": 0,
+        "max": 2147483647,
+        "base": 2200.0,
+        "inc": 2.0,
+        "rate": 50.0,
+        "scaler": 1000.0
+      }
+    },
+    {
+      "id": 205,
+      "tier": 2,
+      "ability": 9,
+      "increment": 2.0,
+      "max": 250,
+      "requires": 203,
+      "requiresLevel": 200,
+      "previousTier": false,
+      "cost": {
+        "min": 0,
+        "max": 2147483647,
+        "base": 5600.0,
+        "inc": 4.0,
+        "rate": 550.0,
+        "scaler": 1000.0
+      }
+    },
+    {
+      "id": 206,
+      "tier": 2,
+      "ability": 10,
+      "increment": 2.0,
+      "max": 250,
+      "requires": 204,
+      "requiresLevel": 200,
+      "previousTier": false,
+      "cost": {
+        "min": 0,
+        "max": 2147483647,
+        "base": 5600.0,
+        "inc": 4.0,
+        "rate": 550.0,
+        "scaler": 1000.0
+      }
+    },
+    {
+      "id": 207,
+      "tier": 2,
+      "ability": 11,
+      "increment": 2.0,
+      "max": 250,
+      "requires": 203,
+      "requiresLevel": 300,
+      "previousTier": false,
+      "cost": {
+        "min": 0,
+        "max": 2147483647,
+        "base": 5600.0,
+        "inc": 4.0,
+        "rate": 550.0,
+        "scaler": 1000.0
+      }
+    },
+    {
+      "id": 208,
+      "tier": 2,
+      "ability": 12,
+      "increment": 2.0,
+      "max": 250,
+      "requires": 204,
+      "requiresLevel": 300,
+      "previousTier": false,
+      "cost": {
+        "min": 0,
+        "max": 2147483647,
+        "base": 5600.0,
+        "inc": 4.0,
+        "rate": 550.0,
+        "scaler": 1000.0
+      }
+    },
+    {
+      "id": 209,
+      "tier": 2,
+      "ability": 17,
+      "increment": 0.14,
+      "max": 100,
+      "requires": 206,
+      "requiresLevel": 100,
+      "previousTier": false,
+      "cost": {
+        "min": 1,
+        "max": 2147483647,
+        "base": 18000.0,
+        "inc": 10.0,
+        "rate": 11400.0,
+        "scaler": 1000.0
+      }
+    },
+    {
+      "id": 210,
+      "tier": 2,
+      "ability": 18,
+      "increment": 0.14,
+      "max": 100,
+      "requires": 207,
+      "requiresLevel": 100,
+      "previousTier": false,
+      "cost": {
+        "min": 1,
+        "max": 2147483647,
+        "base": 18000.0,
+        "inc": 10.0,
+        "rate": 11400.0,
+        "scaler": 1000.0
+      }
+    }
+  ],
+  "artPrerequisites": [
+    {
+      "Type": 102,
+      "Level": 1,
+      "ReqType": 101,
+      "ReqLevel": 5
+    },
+    {
+      "Type": 101,
+      "Level": 5,
+      "ReqType": 102,
+      "ReqLevel": 5
+    },
+    {
+      "Type": 102,
+      "Level": 5,
+      "ReqType": 101,
+      "ReqLevel": 10
+    },
+    {
+      "Type": 101,
+      "Level": 10,
+      "ReqType": 102,
+      "ReqLevel": 10
+    },
+    {
+      "Type": 102,
+      "Level": 10,
+      "ReqType": 101,
+      "ReqLevel": 10
+    },
+    {
+      "Type": 101,
+      "Level": 20,
+      "ReqType": 102,
+      "ReqLevel": 20
+    },
+    {
+      "Type": 102,
+      "Level": 20,
+      "ReqType": 101,
+      "ReqLevel": 20
+    }
+  ],
+  "mastery": [
+    {
+      "level": 1,
+      "cost": 0.0,
+      "abilities": []
+    },
+    {
+      "level": 2,
+      "cost": 20000.0,
+      "abilities": [
+        [
+          63,
+          15.0
+        ],
+        [
+          64,
+          15.0
+        ]
+      ]
+    },
+    {
+      "level": 3,
+      "cost": 160000.0,
+      "abilities": [
+        [
+          63,
+          32.0
+        ],
+        [
+          64,
+          32.0
+        ],
+        [
+          26,
+          5.0
+        ]
+      ]
+    },
+    {
+      "level": 4,
+      "cost": 400000.0,
+      "abilities": [
+        [
+          63,
+          52.0
+        ],
+        [
+          64,
+          52.0
+        ],
+        [
+          26,
+          5.0
+        ],
+        [
+          27,
+          15.0
+        ]
+      ]
+    },
+    {
+      "level": 5,
+      "cost": 1200000.0,
+      "abilities": [
+        [
+          63,
+          75.0
+        ],
+        [
+          64,
+          75.0
+        ],
+        [
+          26,
+          5.0
+        ],
+        [
+          27,
+          15.0
+        ],
+        [
+          21,
+          10.0
+        ]
+      ]
+    },
+    {
+      "level": 6,
+      "cost": 3600000.0,
+      "abilities": [
+        [
+          63,
+          101.0
+        ],
+        [
+          64,
+          101.0
+        ],
+        [
+          26,
+          5.0
+        ],
+        [
+          27,
+          15.0
+        ],
+        [
+          21,
+          10.0
+        ],
+        [
+          23,
+          20.0
+        ]
+      ]
+    },
+    {
+      "level": 7,
+      "cost": 14400000.0,
+      "abilities": [
+        [
+          63,
+          131.0
+        ],
+        [
+          64,
+          131.0
+        ],
+        [
+          26,
+          5.0
+        ],
+        [
+          27,
+          15.0
+        ],
+        [
+          21,
+          10.0
+        ],
+        [
+          23,
+          20.0
+        ],
+        [
+          22,
+          10.0
+        ]
+      ]
+    },
+    {
+      "level": 8,
+      "cost": 28800000.0,
+      "abilities": [
+        [
+          63,
+          166.0
+        ],
+        [
+          64,
+          166.0
+        ],
+        [
+          26,
+          5.0
+        ],
+        [
+          27,
+          15.0
+        ],
+        [
+          21,
+          10.0
+        ],
+        [
+          23,
+          20.0
+        ],
+        [
+          22,
+          10.0
+        ],
+        [
+          24,
+          20.0
+        ]
+      ]
+    },
+    {
+      "level": 9,
+      "cost": 57600000.0,
+      "abilities": [
+        [
+          63,
+          206.0
+        ],
+        [
+          64,
+          206.0
+        ],
+        [
+          26,
+          5.0
+        ],
+        [
+          27,
+          15.0
+        ],
+        [
+          21,
+          10.0
+        ],
+        [
+          23,
+          20.0
+        ],
+        [
+          22,
+          10.0
+        ],
+        [
+          24,
+          20.0
+        ],
+        [
+          25,
+          10.0
+        ]
+      ]
+    },
+    {
+      "level": 10,
+      "cost": 115200000.0,
+      "abilities": [
+        [
+          63,
+          252.0
+        ],
+        [
+          64,
+          252.0
+        ],
+        [
+          26,
+          5.0
+        ],
+        [
+          27,
+          30.0
+        ],
+        [
+          21,
+          10.0
+        ],
+        [
+          23,
+          20.0
+        ],
+        [
+          22,
+          10.0
+        ],
+        [
+          24,
+          20.0
+        ],
+        [
+          25,
+          10.0
+        ]
+      ]
+    }
+  ],
+  "will": {
+    "max": 100,
+    "cost": {
+      "min": 1,
+      "max": 100,
+      "base": 3000.0,
+      "inc": 20.0,
+      "rate": 0.0,
+      "scaler": 1000.0
+    },
+    "abilities": [
+      [
+        7,
+        2.0
+      ],
+      [
+        8,
+        10.0
+      ],
+      [
+        9,
+        2.0
+      ],
+      [
+        11,
+        2.0
+      ]
+    ]
+  },
+  "skillMax": 50,
+  "skillCopyCosts": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    4,
+    4,
+    4,
+    4,
+    4,
+    6,
+    6,
+    6,
+    6,
+    6,
+    8,
+    8,
+    8,
+    8,
+    8,
+    10,
+    10,
+    10,
+    10,
+    10,
+    12,
+    14,
+    16,
+    18,
+    20,
+    22,
+    24,
+    26,
+    28,
+    30,
+    32,
+    34,
+    36,
+    38,
+    40,
+    42,
+    44,
+    46,
+    48,
+    0
+  ],
+  "traitMax": 10,
+  "traitPointsPerLevel": 1
+}

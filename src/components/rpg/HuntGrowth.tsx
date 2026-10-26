@@ -1,14 +1,31 @@
 'use client';
+import {useState} from 'react';
+import {X,Info,BookOpen,GitBranch,Sparkles,Swords,Flame} from 'lucide-react';
+import {ABILITY_INFO,ABILITY_ORDER,SKILL_INFO,DEVELOPMENT,artQuote,traitIncrement} from './hunt-development';
 import type {BattleView,HuntAction} from '../../lib/rpg-service';
-export function HuntGrowth({view,active,onCommand}:{view:BattleView|null;active:boolean;onCommand:(a:HuntAction)=>void}){
- const enough=(cost:number|undefined,kind:'gold'|'soulGem')=>!!view&&!!cost&&active&&view.progress[kind]>=cost;
- return <div className="growth-panel">
-  <div className="growth-summary"><strong>Lv. {view?.progress.level??1}</strong><span>골드 {(view?.progress.gold??0).toLocaleString()} · 영혼석 {(view?.progress.soulGem??0).toLocaleString()}</span></div>
-  <div className="growth-stats"><span>공격력<strong>{view?.stats.attack??'—'}</strong></span><span>성장 체력<strong>{view?.stats.naturalHP??'—'}</strong></span><span>치명타<strong>{Math.round((view?.stats.crit??0)*100)}%</strong></span></div>
-  <p className="growth-hint">무기의 장착 효과와 보유 효과가 함께 적용됩니다. 방어구와 체력 수련은 생존력을 높입니다.</p>
-  <article className="growth-card"><img src="/rpg/weapons/sword.png" alt=""/><div><h3>공격 수련 <small>Lv.{view?.progress.attackTraining??0} / 500</small></h3><p>기본 공격력 +1</p></div><button disabled={!enough(view?.trainingCosts.attack,'gold')} onClick={()=>onCommand('train-attack')}>수련<small>{view?.trainingCosts.attack?`${view.trainingCosts.attack.toLocaleString()} 골드`:'MAX'}</small></button></article>
-  <article className="growth-card"><span className="growth-emblem" aria-hidden="true">✦</span><div><h3>체력 수련 <small>Lv.{view?.progress.healthTraining??0} / 500</small></h3><p>기본 체력 +5</p></div><button disabled={!enough(view?.trainingCosts.health,'gold')} onClick={()=>onCommand('train-health')}>수련<small>{view?.trainingCosts.health?`${view.trainingCosts.health.toLocaleString()} 골드`:'MAX'}</small></button></article>
-  <article className="growth-card"><span className="growth-emblem" aria-hidden="true">🛡</span><div><h3>방어구 <small>등급 1 · Lv.{view?.progress.armorLevel??1} / 50</small></h3><p>성장 체력 {view?.armorPreview.naturalHP??'—'} {view?.armorPreview.nextHP!=null?`→ ${view.armorPreview.nextHP}`:''}</p></div><button disabled={!enough(view?.armorCost,'soulGem')} onClick={()=>onCommand('armor')}>강화<small>{view?.armorCost?`${view.armorCost.toLocaleString()} 영혼석`:'MAX'}</small></button></article>
-  <p className="growth-hint">전투 HP는 테스트용 10,000입니다. 성장 체력이 높아지면 받는 피해가 줄어듭니다. 수련과 강화 결과는 자동 저장됩니다.</p>
- </div>;
+import './hunt-development.css';
+const tabs=[['arts','전투술',Swords],['traits','특성',GitBranch],['skills','스킬',Sparkles],['mastery','숙련도',BookOpen],['will','투혼',Flame]] as const;
+const fmt=(n:number)=>new Intl.NumberFormat('en',{notation:n>=10000?'compact':'standard',maximumFractionDigits:1}).format(n);
+const value=(n:number)=>Number(n.toFixed(2)).toLocaleString();
+export function HuntGrowth({view,active,onCommand,onClose}:{view:BattleView|null;active:boolean;onCommand:(a:HuntAction)=>void;onClose:()=>void}){
+ const [tab,setTab]=useState<typeof tabs[number][0]>('arts'),[batch,setBatch]=useState(1),[info,setInfo]=useState(false);
+ const p=view?.progress,d=view?.development;
+ const summary=tab==='traits'?`특성 포인트 ${d?.traitPoints??0}`:tab==='mastery'?`숙련의 정수 ${fmt(p?.masteryEssence??0)}`:tab==='will'?`투혼의 오브 ${fmt(p?.soulOrb??0)}`:`골드 ${fmt(p?.gold??0)}`;
+ return <section className="hunt-development" aria-label="캐릭터 성장">
+  <header className="development-header"><div><small>CHARACTER GROWTH</small><strong>성장 <span>Lv. {p?.level??1}</span></strong></div><span>{summary}</span><button aria-label="성장 안내" aria-expanded={info} onClick={()=>setInfo(!info)}><Info size={19}/></button><button aria-label="성장창 닫기" onClick={onClose}><X size={21}/></button></header>
+  <nav className="development-tabs" aria-label="성장 분류">{tabs.map(([id,label,Icon])=><button key={id} aria-pressed={tab===id} onClick={()=>setTab(id)}><Icon size={17}/>{label}</button>)}</nav>
+  {info&&<div className="development-help">전투술은 골드로 훈련합니다. ×10·×100은 구매 가능한 단계까지만 합산 결제합니다. 특성은 캐릭터 레벨당 1포인트를 사용합니다. 현재 사냥 보상에는 웹 테스트용 숙련의 정수·투혼의 오브·스킬 재료가 포함됩니다. 고등급 합성·각인·투혼 카드는 아직 지원하지 않습니다.</div>}
+  <div className="development-body">
+   {tab==='arts'&&<><div className="development-batches" role="group" aria-label="훈련 횟수">{[1,10,100].map(n=><button key={n} aria-pressed={batch===n} onClick={()=>setBatch(n)}>×{n}</button>)}</div>
+   <div className="development-list">{ABILITY_ORDER.map(a=>{const meta=ABILITY_INFO[a],rows=DEVELOPMENT.arts.filter(r=>r.ability===a),row=rows.find(r=>(d?.arts.find(x=>x.id===r.id)?.level??0)<r.max)??rows[rows.length-1];const q=p?artQuote(p,row.id,batch):null;
+    const total=d?.arts.filter(r=>r.ability===a).reduce((n,r)=>n+r.level*r.increment,0)??0;
+    return <article className="development-row" key={a}><img src={`/rpg/SkillIcon_${meta.icon}.png`} alt=""/><div><small>단계 {row.tier} · Lv.{q?.level??0} / {row.max}</small><h3>{meta.name}</h3><p>+{value(total)}{meta.percent?'%':''}</p><span>{q?.lock||meta.hint}</span></div><button disabled={!active||!q?.quantity} onClick={()=>onCommand(`art-${row.id}-${batch}`)}>{q?.level===row.max?'MAX':q?.lock?'잠김':`+${q?.quantity||batch} 훈련`}<small>{q?.quantity?`${fmt(q.cost)} 골드`:q?.nextCost?`${fmt(q.nextCost)} 골드`:''}</small></button></article>;
+   })}</div></>}
+   {tab==='traits'&&<><p className="development-note">레벨업으로 포인트 획득 · 각 항목 최대 10레벨<br/>1포인트 = 해당 전투술 10레벨 효과 · 웹용 분배판</p><div className="development-traits">{ABILITY_ORDER.map(a=>{const meta=ABILITY_INFO[a],rank=p?.traits[a]??0;return <button key={a} disabled={!active||rank>=10||!d?.traitPoints} onClick={()=>onCommand(`trait-${a}`)}><img src={`/rpg/SkillIcon_${meta.icon}.png`} alt=""/><strong>{meta.name}</strong><span>Lv. {rank} / 10</span><small>+{value(rank*traitIncrement(a))}{meta.percent?'%':''}</small><i>{rank>=10?'MAX':'+ 1 포인트'}</i></button>;})}</div><p className="development-note">집중력은 저장·표시됩니다. 적 집중력과 원본 명중 판정 연결은 준비 중입니다.</p></>}
+   {tab==='skills'&&<><p className="development-note">6개 슬롯 · 같은 스킬 재료로 강화<br/>테스트 사냥에서 5마리마다 재료 1개를 순서대로 획득합니다.</p><div className="development-list">{SKILL_INFO.map(([name,icon],i)=><article className="development-row" key={icon}><img src={`/rpg/SkillIcon_${icon}.png`} alt=""/><div><small>슬롯 {i+1} · Lv.{p?.skillLevels[i]??1} / 50</small><h3>{name}</h3><p>재료 {fmt(p?.skillCopies[i]??0)} / {d?.skillCosts[i]??1}</p><span>레벨당 피해 +5% · 웹 전투 보정</span></div><div className="development-actions"><button disabled={!active} aria-pressed={!!p?.skillEnabled[i]} onClick={()=>onCommand(`skill-toggle-${i}`)}>{p?.skillEnabled[i]?'장착 중':'장착'}</button><button disabled={!active||!d?.skillCosts[i]||(p?.skillCopies[i]??0)<(d?.skillCosts[i]??1)} onClick={()=>onCommand(`skill-train-${i}`)}>강화</button></div></article>)}</div><p className="development-note">현재 6종 웹 스킬을 유지합니다. 원본 스킬 소환·합성·속성 조합·각성은 추가 연결이 필요합니다.</p></>}
+   {tab==='mastery'&&<div className="development-feature"><BookOpen size={48}/><small>MASTERY</small><h3>숙련도 {p?.masteryLevel??1}단계</h3><p>공격력·체력 보정 +{view?.stats.abilities[63]??0}%<br/>사냥 처치당 숙련의 정수 100 획득</p><div className="development-milestones">{DEVELOPMENT.mastery.map(r=><span key={r.level} className={r.level<=(p?.masteryLevel??1)?'is-earned':''}>{r.level}</span>)}</div><button disabled={!active||!d?.masteryNext||(p?.masteryEssence??0)<(d?.masteryNext?.cost??Infinity)} onClick={()=>onCommand('mastery')}>{d?.masteryNext?`${d.masteryNext.level}단계 승급 · ${fmt(d.masteryNext.cost)}`:'현재 구현 최대 단계'}</button><p className="development-note">복원 DB의 초기 10단계 비용·능력치 적용.<br/>강공격·마무리 공격의 추가 해금은 준비 중입니다.</p></div>}
+   {tab==='will'&&<div className="development-feature"><img className="development-will-icon" src="/rpg/SkillIcon_DarkHole.png" alt=""/><small>FIGHTING SPIRIT</small><h3>투혼 Lv. {p?.willLevel??0}</h3><progress max="100" value={p?.willLevel??0} aria-label="투혼 성장"/><p>공격력 +{(p?.willLevel??0)*2} · 체력 +{(p?.willLevel??0)*10}<br/>용기·집중력 +{(p?.willLevel??0)*2}</p><button disabled={!active||!d?.willCost||(p?.soulOrb??0)<(d?.willCost??Infinity)} onClick={()=>onCommand('will')}>{d?.willCost?`성장 · 오브 ${fmt(d.willCost)}`:'현재 구현 최대 레벨'}</button><p className="development-note">처치당 오브 50 획득 · 초기 Lv.100까지 적용<br/>투혼 진화와 카드는 준비 중입니다.</p></div>}
+  </div>
+  <footer className="development-stats"><span>공격력 <b>{fmt(view?.stats.attack??0)}</b></span><span>성장 체력 <b>{fmt(view?.stats.naturalHP??0)}</b></span><span>치명타 <b>{value((view?.stats.crit??0)*100)}%</b></span></footer>
+ </section>;
 }
