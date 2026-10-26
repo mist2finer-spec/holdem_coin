@@ -818,7 +818,7 @@ export class HybridHoldemRoom {
   ): Promise<{ action: ActionType; amount: number; isBluff?: boolean }> {
     if (isUser) {
       // Same decision window as single player.
-      if (!this.users.has(actor.socketId!)) {this.actionSource="disconnect";return { action: "fold", amount: 0 };}
+      if (!this.users.has(actor.socketId!)) {this.actionSource="disconnect";return { action: this.tournament&&callAmt===0?"check":"fold", amount: 0 };}
       const action = await this.waitForUserAction(actor.socketId!);
       return action;
     } else {

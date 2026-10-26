@@ -33,7 +33,7 @@ export function LobbyPanel({onName}:{onName:(name:string)=>void}){
   return ()=>{clearInterval(poll);s.disconnect();socket.current=null;};
  },[onName]);
  async function recharge(kind:'solo'|'multi'|'tournament'){
-  if(kind==='tournament'){setMessage('Under Repair — 토너먼트는 준비 중입니다.');return;}
+  if(kind==='tournament'){setMessage('토너먼트 입장 시 100BB가 배정됩니다. 리바인과 칩 충전은 불가합니다.');return;}
   if(kind==='solo'){const n=soloBalance()+5000;saveSoloBalance(n);setSolo(n);setMessage('싱글 재화 5,000이 충전되었습니다.');return;}
   if(busy||!socket.current?.connected){setMessage('서버 연결 후 다시 시도해 주세요.');return;}
   setBusy(true);try{const a:Account=await socket.current.timeout(12000).emitWithAck('LOBBY_RECHARGE');if(a.error)throw new Error(a.error);setAccount(a);setMessage('멀티플레이 재화 5,000이 충전되었습니다.');}catch{setMessage('충전하지 못했습니다. 잠시 후 다시 시도해 주세요.');}finally{setBusy(false);}

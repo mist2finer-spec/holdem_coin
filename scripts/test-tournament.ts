@@ -53,3 +53,8 @@ test('a short posted BB uses the actual public price; partial blinds never creat
  const call=r.mapUserAction({action:'call',amount:51200});assert.equal(call.action,'call');assert.equal(call.amount,25600);
  const allin=r.mapUserAction({action:'allin',amount:36800});assert.equal(allin.action,'allin');assert.equal(allin.amount,36800);
 });
+test('a disconnected tournament entrant checks for free and folds only when facing a price',async()=>{
+ const r=room(),actor={...r.state.seats[0],isBot:false,socketId:'offline'};
+ assert.equal((await r.getDecision(actor,0,200,20000,true)).action,'check');
+ assert.equal((await r.getDecision(actor,200,400,20000,true)).action,'fold');
+});
