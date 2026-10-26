@@ -4,6 +4,7 @@ Public histories with masked cards cannot verify showdown (reported as skipped).
 No network, account mutation, or pretend GTO/50% fallback.
 """
 import argparse,json,sys
+from collections import Counter
 from pokerkit import Automation,Mode,NoLimitTexasHoldem,StandardHighHand,Card
 
 SUITS={'♠':'s','♥':'h','♦':'d','♣':'c'}
@@ -16,6 +17,28 @@ def audit(hand):
     if hand.get('status')!='completed':return issues,['aborted hand: replay skipped']
     results=hand['results'];contributed=sum(r['contribution'] for r in results)
     if contributed!=sum(r['payout'] for r in results)+hand['rake']:issue('chip_conservation',contributed,sum(r['payout'] for r in results)+hand['rake'])
+    # Validate each seat, not just the table total: a wrong split can still conserve chips.
+    paid=Counter()
+    for forced in hand.get('forcedBets',[]):paid[forced['seatId']]+=forced['paid']
+    for action in hand['actions']:paid[action['seatId']]+=action['paid']
+    awards=Counter();refunds=Counter()
+    ring=max(p['seatId'] for p in hand['players'])+1
+    for pot in hand['pots']:
+        if pot.get('refundSeatId') is not None:
+            refunds[pot['refundSeatId']]+=pot['amount']
+            continue
+        winners=sorted(pot.get('winnerSeatIds',[]),key=lambda sid:(sid-hand['buttonSeat']-1+ring)%ring)
+        if not winners:
+            issue('pot_winners','at least one winner',[]);continue
+        share,odd=divmod(pot['amount']-pot.get('rake',0),len(winners))
+        for i,sid in enumerate(winners):awards[sid]+=share+(i<odd)
+    for result in results:
+        sid=result['seatId']
+        expected={'contribution':paid[sid],'award':awards[sid],'refund':refunds[sid],
+                  'payout':awards[sid]+refunds[sid]}
+        expected['netProfit']=expected['payout']-paid[sid]
+        for field,value in expected.items():
+            if result.get(field)!=value:issue('seat_'+str(sid)+'_'+field,value,result.get(field))
     contested=sum(p['amount'] for p in hand['pots'] if p.get('refundSeatId') is None)
     version=tuple(int(v) for v in hand.get('rulesVersion','0.0.0').split('.')[:3])
     activated=any(a.get('betAfter',0)>=hand['bigBlind']*4.5 for a in hand['actions']) if version>=(1,20,0) else len(hand['board'])>=3

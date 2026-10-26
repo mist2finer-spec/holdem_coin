@@ -171,3 +171,54 @@ test('premium sizing does not override postflop or <=5BB emergency decisions',()
   context:{...s.context,stack:{...s.context.stack!,ownStack:1000}}};
  assert.equal(planPreflop(short).decision,null);
 });
+
+test('overlimps need a genuine limper; the BB forced post does not trigger a social call',async()=>{
+ const {overlimpPlan}=await import('../src/lib/poker-preflop');const s=spot(cards('7','6',true));
+ s.raiseLevel=0;s.currentBet=0;s.call=200;s.context.actorId=0;s.context.bigBlindSeat=1;s.context.bigBlindAmount=200;
+ Object.assign(s.context.seats[0],{stack:5000,currentBet:0,totalBet:0});Object.assign(s.context.seats[1],{stack:4800,currentBet:200,totalBet:200});
+ assert.equal(overlimpPlan(s,()=>0),null);
+ s.context.seats.push({seatId:2,stack:4800,currentBet:200,totalBet:200,inHand:true,folded:false,allIn:false});
+ assert.equal(overlimpPlan(s,()=>0)!.accepted,true);assert.equal(overlimpPlan(s,()=>.999)!.accepted,false);
+ const d=planPreflop(s);assert.ok(d.overlimp);assert.equal(d.forbidLimp,true);
+});
+test('social overlimp is shared per hand, bounded, and still respects price, cards and premium raises',async()=>{
+ const {overlimpPlan,socialLimpHand,overlimpFrequency}=await import('../src/lib/poker-preflop');
+ let social=0;for(let h=1;h<=10000;h++){social+=Number(socialLimpHand(h,2,[0,1,2,3,4,5]));assert.equal(socialLimpHand(h,2,[0,1,2,3,4,5]),socialLimpHand(h,2,[5,4,3,2,1,0]));}
+ assert.ok(social>900&&social<1500,`${social}/10000`);
+ const s=spot(cards('7','6',true));s.raiseLevel=0;s.currentBet=0;s.call=200;
+ s.context.bigBlindSeat=1;s.context.handNumber=1;s.context.buttonSeat=2;Object.assign(s.context.seats[0],{stack:5000,currentBet:0,totalBet:0});Object.assign(s.context.seats[1],{stack:4800,currentBet:200,totalBet:200});s.context.seats.push({seatId:2,stack:4800,currentBet:200,totalBet:200,inHand:true,folded:false,allIn:false});
+ for(const kind of ['premium','trash','rare','short','allin','postflop','raised','expensive']){
+  const copy=structuredClone(s);
+  if(kind==='premium')copy.hole=cards('A','A');if(kind==='trash')copy.hole=cards('7','2');if(kind==='rare')copy.hole=cards('2','3',true);
+  if(kind==='short')copy.context.stack!.effectiveStack=1000;if(kind==='allin')copy.context.seats[2].allIn=true;
+  if(kind==='postflop')copy.board=cards('A','K').concat({rank:'9',suit:'♦'});if(kind==='raised')copy.raiseLevel=1;if(kind==='expensive')copy.call=600;
+  assert.ok(!overlimpPlan(copy,()=>0)?.accepted,kind);
+ }
+ for(const a of [.2,.8])for(const v of [.2,.65])for(const crowd of [false,true]){const rate=overlimpFrequency({vpip:v,aggression:a},2,true,crowd);assert.ok(rate>=.12&&rate<=.60);}
+ assert.ok(overlimpFrequency({vpip:.55,aggression:.3},1,false,false)>overlimpFrequency({vpip:.3,aggression:.85},1,false,false));
+});
+test('shared overlimp path emits only the call price and never inspects opponent cards',async(t)=>{
+ t.mock.method(Math,'random',()=>0);
+ const seats=[{seatId:0,stack:5000,totalBet:0,currentBet:0,inHand:true,folded:false,allIn:false},
+  {seatId:1,stack:4800,totalBet:200,currentBet:200,inHand:true,folded:false,allIn:false},
+  {seatId:2,stack:4800,totalBet:200,currentBet:200,inHand:true,folded:false,allIn:false}];
+ Object.defineProperty(seats[2],'holeCards',{get(){throw Error('hidden cards read');}});
+ const forbidden={decideActionForLive:()=>{throw Error('Accepted overlimp reached trainer');}} as unknown as SelfPlayTrainer;
+ let audit:any;const d=decideLiveBot(forbidden,{actor:{...seats[0],holeCards:cards('7','6',true),persona:RPG_BOT_POOL[0]},seats,board:[],pot:0,minRaise:400,maxRaise:5000,button:2,smallBlind:0,bigBlind:1,hand:1,raiseLevel:0,onAudit:a=>{audit=a;}});
+ assert.equal(d.action,'call');assert.equal(d.amount,200);assert.equal(audit.decisionPath,'preflop-overlimp');assert.equal(audit.overlimp.accepted,true);
+});
+
+test('a qualified six-seat limp-around stays legal, with SB completion and BB free check',()=>{
+ const old=Math.random;Math.random=()=>0;
+ try{
+  const seats=Array.from({length:6},(_,seatId)=>({seatId,stack:seatId===1?4900:seatId===2||seatId===3?4800:5000,totalBet:seatId===1?100:seatId===2||seatId===3?200:0,currentBet:seatId===1?100:seatId===2||seatId===3?200:0,inHand:true,folded:false,allIn:false}));
+  const hands:Record<number,Card[]>={4:cards('7','6',true),5:cards('4','4'),0:cards('K','J',true),1:cards('A','5',true),2:cards('7','3')};
+  const trainer={decideActionForLive:()=>({action:1,amount:0})} as unknown as SelfPlayTrainer;
+  for(const id of [4,5,0,1,2]){
+   const d=decideLiveBot(trainer,{actor:{...seats[id],holeCards:hands[id],persona:RPG_BOT_POOL[0]},seats,board:[],pot:0,minRaise:400,maxRaise:5000,button:0,smallBlind:1,bigBlind:2,hand:4,raiseLevel:0});
+   assert.equal(d.action,id===2?'check':'call');assert.equal(d.amount,id===2?0:id===1?100:200);
+   seats[id].stack-=d.amount;seats[id].currentBet+=d.amount;seats[id].totalBet+=d.amount;
+  }
+  assert.ok(seats.every(s=>s.currentBet===200));assert.equal(seats.reduce((n,s)=>n+s.totalBet,0),1200);
+ }finally{Math.random=old;}
+});

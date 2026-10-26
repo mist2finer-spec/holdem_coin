@@ -20,7 +20,7 @@ import type {PublicLineTracker} from './poker-public-line';
 import {marginalThreeBetFlat} from './poker-marginal-flat';
 
 export const LIVE_RULES = Object.freeze({
-  version: "1.25.0",
+  version: "1.25.1",
   seats: 8, smallBlind: 100, bigBlind: 200, buyIn: 5000,
   botCashOut: 100000, userSeconds: 10, maxActions: 256,
   botThinkMin: 700, botThinkJitter: 900, actionPause: 800, resultPause: 5000,
@@ -107,14 +107,14 @@ export function decideLiveBot(trainer: SelfPlayTrainer, ctx: {
   const persona = individualLivePersona(actor.persona || RPG_BOT_POOL[0], ctx.hand, actor.seatId, actor.stack + actor.totalBet);
   const call = Math.max(board.length===0?LIVE_RULES.bigBlind:0, ...seats.filter(s => s.inHand && !s.folded).map(s => s.currentBet)) - actor.currentBet;
   const livePot = ctx.pot + seats.reduce((sum, s) => sum + s.currentBet, 0);
-  const context={publicLine:ctx.publicLines?.read(ctx.hand,board.length,actor.seatId),boardLength:board.length,preflopPosition:preflopPosition(seats.map(s=>s.seatId),actor.seatId,ctx.button,ctx.bigBlind,ctx.lastRaiserSeat??seats.find(s=>s.seatId!==actor.seatId&&s.currentBet===actor.currentBet+call)?.seatId),actorId:actor.seatId,threeBetRead:ctx.threeBetRead,lastRaiserSeat:ctx.lastRaiserSeat,isBlind:[ctx.smallBlind,ctx.bigBlind].includes(actor.seatId),stack:stackContext(seats,actor.seatId),
+  const context={handNumber:ctx.hand,buttonSeat:ctx.button,bigBlindSeat:ctx.bigBlind,bigBlindAmount:LIVE_RULES.bigBlind,publicLine:ctx.publicLines?.read(ctx.hand,board.length,actor.seatId),boardLength:board.length,preflopPosition:preflopPosition(seats.map(s=>s.seatId),actor.seatId,ctx.button,ctx.bigBlind,ctx.lastRaiserSeat??seats.find(s=>s.seatId!==actor.seatId&&s.currentBet===actor.currentBet+call)?.seatId),actorId:actor.seatId,threeBetRead:ctx.threeBetRead,lastRaiserSeat:ctx.lastRaiserSeat,isBlind:[ctx.smallBlind,ctx.bigBlind].includes(actor.seatId),stack:stackContext(seats,actor.seatId),
     position:positionContext(seats,actor.seatId,ctx.button,ctx.checkedThisStreet),
     limpedPreflop:ctx.limpedPreflop,openedPreflop:ctx.openedPreflop,initiative:ctx.previousStreetAggressor===actor.seatId,
     seats:seats.map(({seatId,stack,currentBet,totalBet,inHand,folded,allIn})=>({seatId,stack,currentBet,totalBet,inHand,folded,allIn}))};
   const plan=planPreflop({hole:actor.holeCards,board,call,pot:livePot,stack:actor.stack,currentBet:actor.currentBet,
     minRaise:ctx.minRaise,maxRaise:ctx.maxRaise,raiseLevel:ctx.raiseLevel,smallBlind:ctx.smallBlind,persona,context});
   let decision=plan.decision;
-  let decisionPath=decision ? "preflop-plan" : "trainer";
+  let decisionPath=plan.overlimp?.accepted?"preflop-overlimp":decision ? "preflop-plan" : "trainer";
   let lineChoice:ReturnType<typeof selectLineDecision>=null;
   const finish=(action:LiveAction)=>{
     const entry=supportTightParticipation(trainer,{base:actor.persona||RPG_BOT_POOL[0],hand:ctx.hand,seat:actor.seatId,
@@ -163,7 +163,7 @@ export function decideLiveBot(trainer: SelfPlayTrainer, ctx: {
     if(marginalFlat?.accepted){decisionPath='marginal-three-bet-flat';
       action={action:'call',amount:marginalFlat.cost};}
     const callModel=board.length===0&&ctx.raiseLevel>0?preflopCallModel(context):null;
-    ctx.onAudit?.({participation:entry.participation,boardDefense,riverCatch,proCatch,pricedCall,preflopDefense,marginalFlat,decisionPath,
+    ctx.onAudit?.({overlimp:plan.overlimp??null,participation:entry.participation,boardDefense,riverCatch,proCatch,pricedCall,preflopDefense,marginalFlat,decisionPath,
       linePolicy:lineChoice?{path:lineChoice.path,equity:lineChoice.equity,ev:lineChoice.ev}:null,
       callModel:callModel?{committed:callModel.committed,pending:callModel.pending,overcallProbability:callModel.overcallProbability}:null,
       threeBetRead:ctx.threeBetRead,lastRaiserSeat:ctx.lastRaiserSeat,personaId:actor.persona?.id,vpip:persona.vpip,aggression:persona.aggression,

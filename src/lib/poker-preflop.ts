@@ -55,9 +55,42 @@ interface PreflopSpot {
 }
 type Decision={action:ActionType;amount:number;isBluff?:boolean};
 
+/** Shared hand mood, sampled without hidden cards or mutable table-wide state.
+ * A 12% social hand only increases conditional overlimps; it never forces entry.
+ */
+export function socialLimpHand(hand:number,button:number,seatIds:number[]) {
+  let hash=2166136261;
+  for(const ch of `limp:${hand}:${button}:${[...seatIds].sort((a,b)=>a-b).join(',')}`)hash=Math.imul(hash^ch.charCodeAt(0),16777619)>>>0;
+  return hash/4294967296<.12;
+}
+export function overlimpFrequency(persona:{vpip:number;aggression:number},limpers:number,late:boolean,social:boolean) {
+  const normal=Math.max(.12,Math.min(.35,.12+persona.vpip*.32-persona.aggression*.12+Math.min(2,Math.max(0,limpers-1))*.025+(late?.05:0)));
+  return social?Math.min(.60,normal+.25):normal;
+}
+/** Entertainment mix at a cheap, unraised public price. No equity/hidden-card oracle. */
+export function overlimpPlan(s:PreflopSpot,random=Math.random) {
+  const c=s.context,bb=c.bigBlindAmount??200;
+  if(s.board.length||s.raiseLevel!==0||c.bigBlindSeat===undefined)return null;
+  const limpers=c.seats.filter(p=>p.seatId!==c.actorId&&p.seatId!==c.bigBlindSeat&&p.inHand&&!p.folded&&p.currentBet===bb);
+  if(!limpers.length)return null;
+  const h=connectorInfo(s.hole),own=c.stack?.ownStack??s.stack+s.currentBet;
+  const effective=c.stack?.effectiveStack??Math.min(own,Math.max(0,...c.seats.filter(p=>p.seatId!==c.actorId&&p.inHand&&!p.folded).map(p=>p.stack+p.totalBet)));
+  const late=!!c.preflopPosition?.late;
+  const social=c.handNumber!==undefined&&c.buttonSeat!==undefined&&socialLimpHand(c.handNumber,c.buttonSeat,c.seats.map(p=>p.seatId));
+  const frequency=overlimpFrequency(s.persona,limpers.length,late,social);
+  const premium=h.pair&&h.low>=11||h.high===14&&h.low>=12;
+  const hand=!premium&&!h.rareLow&&((h.pair&&h.low<=10)||(h.suited&&h.high===14)
+    ||(h.suited&&h.low>=4&&h.gap>=0&&h.gap<=2)||(h.low>=10&&h.high>=11)
+    ||connectorAllowed(s.hole,s.persona)||(late&&s.persona.vpip>=.42&&h.high===14&&h.low>=8));
+  const priced=s.call>0&&s.call<s.stack&&s.currentBet+s.call===bb&&own>=20*bb&&effective>=20*bb
+    &&s.call<=own*.05&&s.call<=effective*.05&&!c.seats.some(p=>p.inHand&&!p.folded&&p.allIn);
+  const eligible=hand&&priced;
+  return {limpers:limpers.length,social,frequency,eligible,accepted:eligible&&random()<frequency,cost:Math.max(0,s.call)};
+}
+
 // One entry gate per decision. In particular, rejected low connectors must not
 // fall through to bluff/automatic blind-defense branches and inflate the 7% mix.
-export function planPreflop(spot:PreflopSpot):{decision:Decision|null;forbidLimp:boolean;allowBlindDefense?:boolean} {
+export function planPreflop(spot:PreflopSpot):{decision:Decision|null;forbidLimp:boolean;allowBlindDefense?:boolean;overlimp?:ReturnType<typeof overlimpPlan>} {
   if(spot.board.length)return {decision:null,forbidLimp:false};
   const {hole,call,stack,currentBet,raiseLevel,persona,context}=spot;
   const h=connectorInfo(hole), highest=currentBet+call;
@@ -65,7 +98,8 @@ export function planPreflop(spot:PreflopSpot):{decision:Decision|null;forbidLimp
   const opponents=context.seats.filter(s=>s.seatId!==context.actorId&&s.inHand&&!s.folded);
   const affordable=own>2500&&call>0&&call<stack&&call<=own*0.15;
   const unopened=raiseLevel===0&&highest<=200;
-  const result=(decision:Decision|null,allowBlindDefense=true)=>({decision,forbidLimp:unopened&&call>0,allowBlindDefense});
+  const crowd=overlimpPlan(spot);
+  const result=(decision:Decision|null,allowBlindDefense=true)=>({decision,forbidLimp:unopened&&call>0,allowBlindDefense,overlimp:crowd});
   const foldOrCheck=():Decision=>({action:call>0?'fold':'check',amount:0});
   const callDecision=():Decision=>({action:call>=stack?'allin':'call',amount:Math.min(call,stack)});
   const equity=()=>estimateCallEquity(hole,[],context,192,raiseLevel>=2?'three-bet':'open');
@@ -92,6 +126,7 @@ export function planPreflop(spot:PreflopSpot):{decision:Decision|null;forbidLimp
       return result(reraising??callDecision());
     }
   }
+  if(crowd?.accepted)return result(callDecision(),false);
   const trulyUnopened=unopened&&opponents.filter(s=>s.currentBet>=200).length<=1;
   if(trulyUnopened&&own>1000&&call<stack) {
     const late=context.preflopPosition?.late??(context.actorId===spot.smallBlind||(context.position?.relativePosition??0)>=.8);
@@ -144,7 +179,7 @@ export function planPreflop(spot:PreflopSpot):{decision:Decision|null;forbidLimp
   if(unopened&&call>0) {
     const late=(context.position?.relativePosition??0)>=0.40||context.actorId===spot.smallBlind;
     const limpable=(h.pair&&h.low<=9)||(allowed&&h.suited)||(h.suited&&h.high===14&&h.low<=11);
-    if(own>2500&&late&&limpable&&call<stack&&Math.random()<limpFrequency(persona.aggression))return result(callDecision());
+    if(!crowd&&own>2500&&late&&limpable&&call<stack&&Math.random()<limpFrequency(persona.aggression))return result(callDecision());
     if(connector) {
       if(allowed&&own>=4000&&hasBettingOpponent(context.seats,context.actorId)&&Math.random()<0.25+persona.vpip*0.35) {
         const target=Math.min(spot.maxRaise,Math.max(spot.minRaise,600));

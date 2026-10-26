@@ -78,7 +78,7 @@ export function estimateEquity(hole: Card[], board: Card[], opponents: number, s
   cache.set(key,result);return result;
 }
 
-export interface DecisionContext { publicLine?:PublicLine; boardLength?:number; preflopPosition?: {late?:boolean;early:boolean;inPositionVsRaiser:boolean}; seats: BettingSeat[]; actorId: number; position?: PositionContext; stack?: ReturnType<typeof stackContext>; forbidLimp?:boolean; limpedPreflop?:boolean; initiative?:boolean; openedPreflop?:boolean; isBlind?:boolean; threeBetRead?: {opportunities:number;rate:number;looseness:number}; lastRaiserSeat?:number }
+export interface DecisionContext { handNumber?:number;buttonSeat?:number;bigBlindSeat?:number;bigBlindAmount?:number;publicLine?:PublicLine; boardLength?:number; preflopPosition?: {late?:boolean;early:boolean;inPositionVsRaiser:boolean}; seats: BettingSeat[]; actorId: number; position?: PositionContext; stack?: ReturnType<typeof stackContext>; forbidLimp?:boolean; limpedPreflop?:boolean; initiative?:boolean; openedPreflop?:boolean; isBlind?:boolean; threeBetRead?: {opportunities:number;rate:number;looseness:number}; lastRaiserSeat?:number }
 export function publicLineEquity(hole:Card[],board:Card[],context:DecisionContext,samples=96) {
   const ids=context.seats.filter(s=>s.seatId!==context.actorId&&s.inHand&&!s.folded).map(s=>s.seatId);
   return estimateEquity(hole,board,ids.length,samples,undefined,undefined,
