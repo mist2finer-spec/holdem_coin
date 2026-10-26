@@ -1,3 +1,4 @@
+import {existsSync} from 'node:fs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {HuntEngine} from '../../src/components/rpg/hunt-engine';
@@ -11,6 +12,7 @@ test('all 6000 restored stages retain five sections and valid monster/asset/stat
  assert.equal(LABYRINTH.stages.length,6000);
  for(let i=0;i<6000;i++){const s=stageDefinition(i);assert.equal(s.id,Math.floor(i/5+1)*100+i%5+1);
   for(const row of [...s.normal,s.boss]){assert.ok(row[1]>0&&Number.isFinite(row[1])&&row[2]>0&&Number.isFinite(row[2]));assert.ok(LABYRINTH.assets[LABYRINTH.monsters[row[0]].asset]);}}
+ for(const asset of Object.values(LABYRINTH.assets))for(const ext of ['json','atlas','png'])assert.ok(existsSync('public/rpg/'+asset.skeleton+'.'+ext),'Missing monster asset '+asset.skeleton+'.'+ext);
  assert.throws(()=>stageDefinition(6000));assert.throws(()=>stageDefinition(-1));
 });
 test('defeated normal monsters stay defeated; final encounter activates only after all six are gone',()=>{
