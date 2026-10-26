@@ -89,7 +89,7 @@ failed section retains prior earned kill rewards under the existing web policy.
 
 ## Validation
 
-85 RPG tests cover existing gameplay plus projectile scheduling/contact,
+86 RPG tests cover existing gameplay plus projectile scheduling/contact,
 phase hit deduplication, multiple boss skills, large-body melee reach, endpoint/
 object objectives, exact finite kill quotas, timeout/retry, escort defeat,
 CC expiry, EXP persistence and relative-stat behavior. The existing66 Python

@@ -188,6 +188,7 @@ export class HuntEngine {
  }
  private advanceImpactors(dt:number){
   for(const p of this.impactors){
+   if(this.elapsed>=p.expires)continue;
    const source=this.enemies.find(e=>e.serial===p.source&&e.hp>0);if(!source){p.expires=0;continue;}
    if(p.command.tracking)p.targetX=this.x;
    const before=p.x,delta=p.targetX-p.x,travel=p.command.speed*dt;
@@ -213,7 +214,7 @@ export class HuntEngine {
      }
     }
    };
-   if(p.command.moving)apply('Moving');if(arrived){if(p.command.arrive)apply('Arrive');if(p.command.release)apply('Release');p.expires=Math.min(p.expires,this.elapsed+.05);}
+   if(p.command.moving)apply('Moving');if(arrived){if(p.command.arrive)apply('Arrive');if(p.command.release)apply('Release');if(p.command.speed>0||p.command.duration<=0)p.expires=Math.min(p.expires,this.elapsed+.05);}
    if(this.hp<=0)break;
   }
   this.impactors=this.impactors.filter(p=>p.expires>this.elapsed&&this.enemies.some(e=>e.serial===p.source&&e.hp>0));

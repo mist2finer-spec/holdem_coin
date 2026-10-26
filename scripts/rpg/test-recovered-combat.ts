@@ -81,3 +81,9 @@ test('a recovered stun interrupts attacks and expires without repeated-frame sta
  g.impactors.push({id:1,source:g.enemies[0].serial,x:g.x,targetX:g.x,direction:1,command,born:0,expires:1,hits:{}});
  g.step(.01,0);assert.equal(g.attack(),false);advance(g,.6);assert.equal(g.attack(),true);
 });
+
+test('stationary timed hit areas retain their duration and repeat interval',()=>{
+ const g=stage(101),command=structuredClone(LABYRINTH.actions[2010].commands[0]);command.duration=1;command.speed=0;command.repeat=.25;command.unique=false;command.width=80;
+ g.impactors.push({id:1,source:g.enemies[0].serial,x:g.x,targetX:g.x,direction:1,command,born:0,expires:1,hits:{}});
+ const hp=g.hp;advance(g,1.1);assert.ok(hp-g.hp>=3);assert.equal(g.impactors.length,0);
+});
