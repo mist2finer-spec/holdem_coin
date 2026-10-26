@@ -170,3 +170,11 @@ connected to live combat; the overall web damage pipeline remains an adapter.
 Checkpoint persistence uses the existing RPG SQLite store. Deployment storage
 retention still depends on that store's configured filesystem; no disk plan or
 account system is changed here.
+
+
+## Follow-up audit correction
+
+The172 unresolved command links above were an incomplete extractor map, not
+missing source payloads. Light/PinTarget/Dissolve/Fill child records have now
+been matched by ID/index. See COMBAT_GAP_AUDIT_20261026.md for this correction,
+the31 non-kill-all victory conditions, time limits and enum-map review warning.

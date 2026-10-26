@@ -80,7 +80,7 @@ def adjusted_monster_hp(hp,hero_abilities,actor_flags):
 
 
 def action_timeline(action):
-    child_keys={1:'MotionDatas',3:'DashDatas',4:'MoveDatas',5:'FxDatas',6:'CameraShakeDatas',8:'EffectDatas',9:'AudioDatas',33:'ImpactorDatas',36:'SummonDatas'}
+    child_keys={1:'MotionDatas',3:'DashDatas',4:'MoveDatas',5:'FxDatas',6:'CameraShakeDatas',8:'EffectDatas',9:'AudioDatas',12:'DissolveDatas',13:'FillDatas',14:'DestroyDatas',15:'ShakeDatas',17:'TimeScaleDatas',29:'ScaleDatas',30:'ShearDatas',31:'LightDatas',32:'AvoidDatas',33:'ImpactorDatas',34:'PinTargetDatas',35:'StopDatas',36:'SummonDatas',201:'PassiveEffectDatas'}
     events=[];pending=[]
     for order,basic in enumerate(action.get('BasicDatas',[])):
         if basic['Mute']:continue

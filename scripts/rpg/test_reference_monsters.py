@@ -45,6 +45,11 @@ class MonsterTests(unittest.TestCase):
  def test_child_identity_checked(self):
   a=action();a['ImpactorDatas'][0]['DataId']=1
   with self.assertRaises(ValueError):action_timeline(a)
+ def test_visual_and_target_commands_resolve_without_inventing_children(self):
+  for typ,key in [(12,'DissolveDatas'),(13,'FillDatas'),(31,'LightDatas'),(34,'PinTargetDatas')]:
+   a=action();a['BasicDatas'][0]['Type']=typ;a[key]=[{'DataId':8,'originalPayload':True}]
+   timeline=action_timeline(a);self.assertEqual(timeline['pending'],[])
+   self.assertTrue(timeline['events'][0]['child']['originalPayload'])
  def test_effect_identity_checked(self):
   a=action();a['EffectDatas'][0]['DataId']=1
   with self.assertRaises(ValueError):action_timeline(a)
