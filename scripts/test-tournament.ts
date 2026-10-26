@@ -86,3 +86,59 @@ test('empty countdown cancels without dealing or banning departed entrants',asyn
 
 import {tournamentMoney} from '../src/lib/poker-tournament';
 test('BB amounts round to one decimal and do not modify chip accounting',()=>{assert.equal(tournamentMoney(246,200),'1.2 BB');assert.equal(tournamentMoney(250,200),'1.3 BB');assert.equal(tournamentMoney(20000,200),'100 BB');assert.equal(tournamentMoney(1,200),'0 BB');});
+
+import {tournamentShortStack} from '../src/lib/poker-tournament-shortstack';
+import type {Card} from '../src/lib/poker-engine';
+const hole=(ranks:string):Card[]=>[{rank:ranks[0] as Card['rank'],suit:'♠'},{rank:ranks[1] as Card['rank'],suit:'♥'}];
+function shortSpot(bbStack=3,players=2,ranks='72',bb=200){
+ const seats=Array.from({length:8},(_,seatId)=>({seatId,stack:seatId===0?Math.round(bbStack*bb):seatId<players?bb*20:0,currentBet:seatId===1?bb:0,totalBet:seatId===1?bb:0,inHand:seatId<players,folded:seatId>=players,allIn:false}));
+ return {actor:{...seats[0],holeCards:hole(ranks)},seats,board:[] as Card[],bigBlind:bb,minRaise:bb*2,maxRaise:bbStack*bb,raiseLevel:0};
+}
+test('3BB heads-up open jams even the weakest hand, independently of character traits',()=>{
+ const s=shortSpot();assert.equal(tournamentShortStack(s)!.action.action,'allin');
+ const a={...s.actor,persona:{vpip:.01,aggression:0}},b={...s.actor,persona:{vpip:1,aggression:1}};
+ assert.deepEqual(tournamentShortStack({...s,actor:a}),tournamentShortStack({...s,actor:b}));
+});
+test('3/5/10BB policies widen short-handed opens, use chip-exact sizes, and stop above 10BB',()=>{
+ for(const players of [2,3,4])for(const chips of [3,5,10]){
+  const s=shortSpot(chips,players,'A7'),d=tournamentShortStack(s)!;
+  assert.equal(d.audit.band,chips);assert.equal(d.action.action,chips<=5?'allin':'raise');
+  assert.equal(d.action.amount,chips<=5?chips*200:500);
+ }
+ assert.equal(tournamentShortStack(shortSpot(10.01,2,'AA')),null);
+});
+test('no short CPU folds a free option or a sub-0.1BB preflop call at escalating blinds',()=>{
+ const free=shortSpot(10,4,'72');free.seats[1].currentBet=0;free.seats[1].totalBet=0;free.raiseLevel=1;
+ assert.equal(tournamentShortStack(free)!.action.action,'check');
+ for(const bb of [200,51200,819200]){
+  const s=shortSpot(3,2,'72',bb);s.raiseLevel=2;s.actor.currentBet=bb-1;s.actor.totalBet=bb-1;Object.assign(s.seats[0],s.actor);
+  const d=tournamentShortStack(s)!;assert.equal(d.action.action,'call');assert.equal(d.action.amount,1);
+ }
+});
+test('closed short-all-in raising rights and all-in opponents allow calls, never illegal raises',()=>{
+ const s=shortSpot(3,2,'AA');s.raiseLevel=2;s.maxRaise=200;
+ let d=tournamentShortStack(s)!;assert.equal(d.action.action,'call');
+ s.seats[1].stack=0;s.seats[1].allIn=true;s.maxRaise=600;d=tournamentShortStack(s)!;assert.equal(d.action.action,'call');
+ s.actor.stack=100;Object.assign(s.seats[0],s.actor);assert.deepEqual(tournamentShortStack(s)!.action,{action:'allin',amount:100});
+});
+test('short-stack calls price only their eligible pot, not deep opponents unmatched side pots',()=>{
+ const s=shortSpot(3,3,'72');s.raiseLevel=2;
+ Object.assign(s.seats[1],{currentBet:100000,totalBet:100000,stack:0,allIn:true});
+ Object.assign(s.seats[2],{currentBet:100000,totalBet:100000,stack:0,allIn:true});
+ const d=tournamentShortStack(s)!;assert.equal(d.audit.eligiblePot,1800);assert.equal(d.audit.requiredEquity,1/3);assert.equal(d.action.action,'fold');
+});
+test('postflop cheap call rescue never replaces a value raise or calls a dead river hand',()=>{
+ const s=shortSpot(5,2,'AA');s.board=[{rank:'A',suit:'♦'},{rank:'K',suit:'♦'},{rank:'Q',suit:'♣'},{rank:'J',suit:'♣'},{rank:'2',suit:'♣'}];s.raiseLevel=1;
+ s.seats[1].currentBet=20;s.seats[1].totalBet=1000;s.actor.totalBet=500;Object.assign(s.seats[0],s.actor);
+ assert.equal(tournamentShortStack(s),null);assert.equal(tournamentShortStack(s,{action:'raise',amount:200}),null);
+ assert.equal(tournamentShortStack(s,{action:'fold',amount:0})!.action.action,'call');
+ s.actor.holeCards=[{rank:'3',suit:'♥'},{rank:'2',suit:'♦'}];
+ s.board=[{rank:'A',suit:'♠'},{rank:'K',suit:'♠'},{rank:'Q',suit:'♠'},{rank:'J',suit:'♠'},{rank:'2',suit:'♣'}];
+ assert.equal(tournamentShortStack(s,{action:'fold',amount:0}),null);
+});
+test('room routes tournament short stacks through the native chip policy and records the audit',async()=>{
+ const r=room();for(const seat of r.state.seats)Object.assign(seat,{stack:0,currentBet:0,totalBet:0,inHand:false,folded:true,allIn:false});
+ Object.assign(r.state.seats[0],{stack:600,inHand:true,folded:false,holeCards:hole('72')});
+ Object.assign(r.state.seats[1],{stack:4000,currentBet:200,totalBet:200,inHand:true,folded:false});r.state.phase='PREFLOP';r.state.board=[];r.state.raiseLevel=0;
+ const d=await r.getDecision(r.state.seats[0],200,400,600,false);assert.equal(d.action,'allin');assert.equal(d.amount,600);assert.equal(r.pendingAudit.tournamentShortStack.band,3);
+});

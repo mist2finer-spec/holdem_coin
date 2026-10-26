@@ -1,3 +1,4 @@
+import {tournamentShortStack} from '../../src/lib/poker-tournament-shortstack';
 import {tournamentMoney} from '../../src/lib/poker-tournament';
 import {TournamentLifecycle} from './tournament';
 import {StreetBetting,recordedAction} from '../../src/lib/poker-betting';
@@ -838,11 +839,16 @@ export class HybridHoldemRoom {
       await this.sleep(LIVE_RULES.botThinkMin + Math.random() * LIVE_RULES.botThinkJitter);
       if(this.tournament){
         if(!actor.isBot&&!this.users.has(actor.socketId||'')){this.actionSource='disconnect';return {action:callAmt?'fold':'check',amount:0};}
+        const shortSpot={actor,seats:this.state.seats,board:this.state.board,bigBlind:this.bigBlind,minRaise:minR,maxRaise:maxR,raiseLevel:this.state.raiseLevel};
+        const shortPolicy=tournamentShortStack(shortSpot);
+        if(shortPolicy){this.pendingAudit={tournament:true,tournamentShortStack:shortPolicy.audit,decisionPath:shortPolicy.audit.path};return shortPolicy.action;}
         const scale=this.bigBlind/200,n=(x:number)=>x>0?Math.max(1,Math.round(x/scale)):0;
         const seats=this.state.seats.map(s=>({...s,stack:n(s.stack),currentBet:n(s.currentBet),totalBet:n(s.totalBet)}));
         const scaled=seats.find(s=>s.seatId===actor.seatId)!;
         const decision=decideLiveBot(this.trainer,{actor:scaled,seats,board:this.state.board,pot:n(this.state.pot),minRaise:n(minR),maxRaise:n(maxR),button:this.state.buttonSeat,smallBlind:this.state.smallBlindSeat,bigBlind:this.state.bigBlindSeat,hand:this.state.handNumber,preflopBringIn:0,raiseLevel:this.state.raiseLevel,checkedThisStreet,limpedPreflop,previousStreetAggressor,openedPreflop,
           onAudit:audit=>{this.pendingAudit={...audit,tournament:true,blindScale:scale};}});
+        const rescue=decision.action==='fold'?tournamentShortStack(shortSpot,decision):null;
+        if(rescue){this.pendingAudit={...this.pendingAudit,tournament:true,tournamentShortStack:rescue.audit,decisionPath:rescue.audit.path};return rescue.action;}
         return {...decision,amount:decision.action==='call'?Math.min(callAmt,actor.stack):decision.action==='allin'?actor.stack:decision.action==='raise'?Math.max(minR,Math.min(maxR,Math.round(decision.amount*scale))):0};
       }
       return decideLiveBot(this.trainer, {
