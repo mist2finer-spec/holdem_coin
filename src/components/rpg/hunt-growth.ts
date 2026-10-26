@@ -20,7 +20,7 @@ export function recoveredStats(p:HuntProgress){
  const naturalHP=roundEven((r[8]??0)*(1+(r[60]??0)/100)*(1+(r[64]??0)/100)*(1+(r[76]??0)/100));
  return {maxHP:data.webAdaptation.testHP,attack,naturalHP,crit:Math.min(90,r[26]??0)/100,critMultiplier:1+(r[27]??0)/100,
   basicDamageMultiplier:(1+(r[17]??0)/100)*(1+(r[19]??0)/100),skillDamageMultiplier:(1+(r[18]??0)/100)*(1+(r[20]??0)/100),
-  attackSpeed:1+Math.min(100,r[25]??0)/100,valor:r[9]??0,mental:r[10]??0,focus:r[11]??0,tenacity:r[12]??0,defense:0,incomingDamageScale:data.webAdaptation.referenceNaturalHP/Math.max(1,naturalHP),abilities:r};
+  attackSpeed:1+Math.min(100,r[25]??0)/100,valor:r[9]??0,mental:r[10]??0,focus:r[12]??0,tenacity:r[11]??0,defense:0,incomingDamageScale:data.webAdaptation.referenceNaturalHP/Math.max(1,naturalHP),abilities:r};
 }
 export function weaponGrowth(p:HuntProgress,type:WeaponType){
  const level=p.weaponLevels[type],copy={...p,weaponType:type,weaponLevel:level};const stats=recoveredStats(copy);

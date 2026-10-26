@@ -50,9 +50,9 @@ export function HuntPrototype({onExit,character='hong'}:{onExit?:()=>void;charac
   };
   const keydown=(e:KeyboardEvent)=>{
    if(e.target instanceof HTMLElement&&/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;
-   if(['ArrowLeft','ArrowRight',' ','a','d','q','e','f','1','2','3','4','5','6'].includes(e.key)){e.preventDefault();keys.current.add(e.key);}
+   if(['ArrowLeft','ArrowRight',' ','a','d','q','e','f','r','1','2','3','4','5','6'].includes(e.key)){e.preventDefault();keys.current.add(e.key);}
    if(e.repeat)return;
-   if(e.key===' ')enqueue({basic:true});else if(/^[1-6]$/.test(e.key))enqueue({skill:Number(e.key)-1});else if(e.key==='q'||e.key==='e')enqueue({dodge:e.key==='q'?-1:1});else if(e.key==='f')enqueue({parry:true});
+   if(e.key==='r')enqueue({action:'interact'});else if(e.key===' ')enqueue({basic:true});else if(/^[1-6]$/.test(e.key))enqueue({skill:Number(e.key)-1});else if(e.key==='q'||e.key==='e')enqueue({dodge:e.key==='q'?-1:1});else if(e.key==='f')enqueue({parry:true});
   };
   const keyup=(e:KeyboardEvent)=>keys.current.delete(e.key);
   const visibility=()=>{reset();last=0;};
@@ -81,11 +81,12 @@ export function HuntPrototype({onExit,character='hong'}:{onExit?:()=>void;charac
   <section className="hunt-stage" aria-label="달빛 숲 사냥터"><canvas ref={canvas} aria-label="전사와 미궁 몬스터" data-status={status}/>
    <div className="hunt-identity"><img src={`/rpg/characters/${character}/portrait.png`} alt="선택한 캐릭터 초상화"/><div><small>Lv. {view?.progress.level??1} · {view?.loadout??'여행자'}</small><strong>{COMBAT_CHARACTERS.find(c=>c.id===character)?.label}</strong><span>무기 +{(view?.progress.weaponLevel??1)-1} · 방어구 +{(view?.progress.armorLevel??1)-1}</span>{(dialog==='weapons'||dialog==='growth')&&<meter className="armory-stage-hp" aria-label="전투 체력" min="0" max={view?.maxHP??10000} value={view?.hp??10000}/>}</div></div>
    <div className="hunt-location"><small>CHAPTER {String(view?.stage.chapter??1).padStart(2,'0')}</small><h1>미궁 <span>{view?.stage.chapter??1}–{view?.stage.section??1}</span></h1><p><i/>{view?.dead?'복귀 대기':view?.stage.phase==='complete'?'미궁 완주':view?.stage.phase==='cleared'?'클리어 · 다음 구간 이동':view?.stage.phase==='boss'?(view.stage.section===5?'보스전':'중간보스전'):'일반 몬스터'} · 남은 적 {view?.stage.remaining??6}</p></div>
+   <div className="hunt-objective" style={{position:'absolute',left:12,top:112,zIndex:3,fontSize:12,color:'#ffedbd',background:'#071812cc',padding:'5px 9px',borderRadius:8}}>{view?.stage.objective} {view&&view.stage.goal>7?`${view.stage.done}/${view.stage.goal}`:''} {view?.stage.remainingTime!==null&&view?.stage.remainingTime!==undefined?`· ${Math.ceil(view.stage.remainingTime)}초`:''}{!!view?.stage.objects.length&&<button disabled={!active} onClick={()=>enqueue({action:'interact'})}>상호작용</button>}</div>
    <button className="hunt-menu-toggle" aria-label="메뉴" aria-expanded={menu} onClick={()=>setMenu(!menu)}>☰</button>
    {menu&&<nav className="hunt-drawer" aria-label="사냥 메뉴"><button onClick={()=>{setDialog('weapons');setMenu(false);}}>무기</button><button onClick={()=>setNotice('A/D 이동 · Space 공격 · Q/E 회피 · F 패링 · 숫자 1–6 스킬')}>조작 안내</button><button onClick={()=>{setDialog('bag');setMenu(false);}}>가방 · 물약</button><button onClick={()=>{setDialog('quest');setMenu(false);}}>사냥 의뢰</button><button onClick={exit}>캐릭터 선택으로</button></nav>}
    {status==='loading'&&<div className="hunt-loading" role="status"><span/><strong>숲으로 향하는 중…</strong></div>}
    {status==='error'&&<div className="hunt-loading" role="alert"><strong>사냥터에 연결하지 못했습니다.</strong><small>{error}</small><button onClick={()=>location.reload()}>다시 시도</button><button onClick={exit}>돌아가기</button></div>}
-   {view?.dead&&<div className="hunt-loading" role="dialog" aria-modal="true" aria-label="전투 불능"><strong>전투 불능</strong><small>획득한 성장과 재화는 저장됐습니다.</small><button disabled={!view.reviveReady} onClick={()=>enqueue({action:'revive'})}>{view.reviveReady?'안전한 위치로 복귀':'복귀 준비 중…'}</button><button onClick={exit}>캐릭터 선택으로</button></div>}
+   {view?.dead&&<div className="hunt-loading" role="dialog" aria-modal="true" aria-label="전투 불능"><strong>전투 불능</strong><small>{view.stage.failure||'획득한 성장과 재화는 저장됐습니다.'}</small><button disabled={!view.reviveReady} onClick={()=>enqueue({action:'revive'})}>{view.reviveReady?'현재 구간 재도전':'복귀 준비 중…'}</button><button onClick={exit}>캐릭터 선택으로</button></div>}
    <div className="hunt-stage-caption"><span>✦ 미궁 탐험</span></div>
   </section>
   {dialog==='weapons'?<HuntArmory view={view} active={active} onCommand={action=>enqueue({action})} onClose={()=>setDialog(null)}/>:dialog==='growth'?<HuntGrowth view={view} active={active} onCommand={action=>enqueue({action})} onClose={()=>setDialog(null)}/>:<section className="hunt-console" aria-label="전투 조작">

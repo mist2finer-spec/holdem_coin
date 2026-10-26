@@ -20,7 +20,7 @@ for line in (root/'labyrinth.jsonl').open():
  if not normal or not boss:break # Stop at unavailable data rather than silently skip a stage.
  def row(s):
   used.add(monsters[str(s['actorType'])]['asset']);return [s['actorType'],s['stats'].get('7',1),s['stats'].get('8',1)]
- b=rewards[r['chapter']-1]['baseRewards'];value=lambda key: min(1e12,round(b[key]['Value']))
+ b=rewards[r['chapter']-1]['baseRewards'];value=lambda key: min(9007199254740991 if key=='BaseExpsByChapter' else 1e12,round(b[key]['Value']))
  stages.append({'id':r['stageId'],'normal':[row(s) for s in normal],'boss':row(boss[-1] if r['section']==5 else boss[0]),'reward':[value('BaseGoldsByChapter'),value('BaseExpsByChapter'),value('BaseSoulgemsByChapter')]})
 assets={}
 for name in sorted(used):

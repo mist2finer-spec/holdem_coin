@@ -1,0 +1,15 @@
+{
+  "cases": 196,
+  "nativeSha256": "42784ff220ca0eec7a21f9eafb64ac89088ff7463193b25f76baa19536c484e5",
+  "helpers": [
+    "CalcTanHValor",
+    "CalcTanHMental",
+    "CalcTanHTenacity",
+    "CalcTanHFocus"
+  ],
+  "hooks": [
+    "combat config lookup",
+    "libc tanh"
+  ],
+  "scope": "named relative-stat substeps only, not complete damage/effect processing"
+}

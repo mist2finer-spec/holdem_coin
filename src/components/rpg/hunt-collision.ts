@@ -4,11 +4,12 @@
  */
 export const HUNT_BODIES={heroRadius:24,slimeRadius:12,maxDodgeSlimes:3} as const;
 export const HUNT_VISUALS={heroScale:.9*.75,slimeScale:1.2*.75} as const;
-export type Body={x:number;hp:number};
+export type Body={x:number;hp:number;radius?:number};
 const EPS=1e-6;
+export const separation=(e:Body)=>HUNT_BODIES.heroRadius+(e.radius??HUNT_BODIES.slimeRadius);
 export const bodySeparation=HUNT_BODIES.heroRadius+HUNT_BODIES.slimeRadius;
 export function isClearLanding(x:number,enemies:readonly Body[]){
- return enemies.every(e=>e.hp<=0||Math.abs(e.x-x)>=bodySeparation-EPS);
+ return enemies.every(e=>e.hp<=0||Math.abs(e.x-x)>=separation(e)-EPS);
 }
 /** Swept interval collision, so fast Rush and large frame steps cannot tunnel. */
 export function sweepHero(from:number,to:number,enemies:readonly Body[]){
@@ -16,7 +17,7 @@ export function sweepHero(from:number,to:number,enemies:readonly Body[]){
  let end=to;
  for(const e of enemies){
   if(e.hp<=0)continue;
-  const left=e.x-bodySeparation,right=e.x+bodySeparation;
+  const left=e.x-separation(e),right=e.x+separation(e);
   if(from>left+EPS&&from<right-EPS){
    // Recovery for externally moved overlapping bodies: only move outwards.
    if(dir*(from-e.x)<0)return from;
@@ -32,13 +33,13 @@ export function sweepHero(from:number,to:number,enemies:readonly Body[]){
  */
 export function planDodge(from:number,to:number,enemies:readonly Body[]){
  const dir=Math.sign(to-from),low=Math.min(from,to),high=Math.max(from,to);
- const crossed=enemies.filter(e=>e.hp>0&&e.x+bodySeparation>low+EPS&&e.x-bodySeparation<high-EPS);
+ const crossed=enemies.filter(e=>e.hp>0&&e.x+separation(e)>low+EPS&&e.x-separation(e)<high-EPS);
  if(crossed.length>HUNT_BODIES.maxDodgeSlimes)return {destination:from,crossed:crossed.length,inPlace:true};
  let destination=to;
  for(let i=0;i<enemies.length+1;i++){
-  const blocked=enemies.find(e=>e.hp>0&&Math.abs(e.x-destination)<bodySeparation-EPS);
+  const blocked=enemies.find(e=>e.hp>0&&Math.abs(e.x-destination)<separation(e)-EPS);
   if(!blocked)break;
-  destination=blocked.x-dir*bodySeparation;
+  destination=blocked.x-dir*separation(blocked);
   if(dir*(destination-from)<=EPS){destination=from;break;}
  }
  if(!isClearLanding(destination,enemies))destination=from;

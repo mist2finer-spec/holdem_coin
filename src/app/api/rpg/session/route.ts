@@ -17,7 +17,7 @@ export async function POST(req:NextRequest){
   const body=JSON.parse(Buffer.concat(chunks).toString('utf8'));
   let result;
   if(body.action==='start'&&typeof body.character==='string')result=service().start(account,body.character);
-  else {if((!['tick','revive','weapon','armor','potion','buy-potion','quest','train-attack','train-health','equip-unarmed','equip-sword','equip-axe','equip-dual','equip-spear','upgrade-unarmed','upgrade-sword','upgrade-axe','upgrade-dual','upgrade-spear','mastery','will'].includes(body.action)&&!(typeof body.action==='string'&&/^(art-\d{3}-(1|10|100)|trait-\d{1,2}|skill-(train|toggle)-[0-5])$/.test(body.action)))||typeof body.id!=='string')throw Error('Invalid command');
+  else {if((!['interact','tick','revive','weapon','armor','potion','buy-potion','quest','train-attack','train-health','equip-unarmed','equip-sword','equip-axe','equip-dual','equip-spear','upgrade-unarmed','upgrade-sword','upgrade-axe','upgrade-dual','upgrade-spear','mastery','will'].includes(body.action)&&!(typeof body.action==='string'&&/^(art-\d{3}-(1|10|100)|trait-\d{1,2}|skill-(train|toggle)-[0-5])$/.test(body.action)))||typeof body.id!=='string')throw Error('Invalid command');
    result=service().command(account,body.id,body.sequence,parseHuntInput(body.input),body.action);}
   const response=NextResponse.json(result,{headers:{'Cache-Control':'no-store'}});
   response.cookies.set('rpg_guest',account,{httpOnly:true,sameSite:'strict',secure:process.env.NODE_ENV==='production',maxAge:60*60*24*365,path:'/api/rpg'});

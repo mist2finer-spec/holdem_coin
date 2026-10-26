@@ -28,11 +28,11 @@ export function awardHuntKill(p:HuntProgress,balance:HuntBalance){
  p.masteryEssence=Math.min(1e12,(p.masteryEssence??0)+100);p.soulOrb=Math.min(1e12,(p.soulOrb??0)+50);
  if((p.kills+1)%5===0){const i=Math.floor((p.kills+1)/5-1)%6;p.skillCopies[i]=Math.min(1e12,p.skillCopies[i]+1);}
  p.gold=Math.min(1e12,p.gold+gold);p.soulGem=Math.min(1e12,p.soulGem+soulGem);p.kills=Math.min(1e12,p.kills+1);
- p.xp=Math.min(1e12,p.xp+xp);
+ p.xp=Math.min(Number.MAX_SAFE_INTEGER,p.xp+xp);
  advanceHuntLevel(p,balance);
 }
 export function awardStageClear(p:HuntProgress,balance:HuntBalance,reward:number[]){
- const [gold,xp,soulGem]=reward;p.gold=Math.min(1e12,p.gold+gold);p.xp=Math.min(1e12,p.xp+xp);p.soulGem=Math.min(1e12,p.soulGem+soulGem);advanceHuntLevel(p,balance);
+ const [gold,xp,soulGem]=reward;p.gold=Math.min(1e12,p.gold+gold);p.xp=Math.min(Number.MAX_SAFE_INTEGER,p.xp+xp);p.soulGem=Math.min(1e12,p.soulGem+soulGem);advanceHuntLevel(p,balance);
 }
 function advanceHuntLevel(p:HuntProgress,balance:HuntBalance){
  while(p.level<balance.maxLevel){const required=curveValue(balance.team,p.level);if(required<=0||p.xp<required)break;p.xp-=required;p.level++;}

@@ -1,3 +1,4 @@
+import type {LabyrinthView} from './hunt-labyrinth';
 import {LABYRINTH} from './hunt-labyrinth';
 import {ATTACK_CELL,attackSpriteFrame,attackSpritePlacement} from './combat-attack-sprite';
 import {WEAPON_TYPES} from './hunt-weapons';
@@ -59,14 +60,14 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
   return {...enemy,skeleton,state:new AnimationState(enemy.state.data),animation:'',serial:0};
  });
  const assetCache=new Map<string,typeof enemy>();const pending=new Set<string>();const failed=new Set<string>();
- const stageVisuals=new Map<number,typeof enemy>();let disposed=false;
+ const stageVisuals=new Map<number,typeof enemy & {keySerial:number}>();let disposed=false;
  const visualFor=(mob:HuntEngine['enemies'][number])=>{
   if(!mob.asset)return enemies[mob.slot];
   const meta=LABYRINTH.assets[mob.asset];if(!meta)return enemies[mob.slot];
-  const old=stageVisuals.get(mob.slot);if(old?.serial===mob.serial)return old;
+  const old=stageVisuals.get(mob.slot);if(old?.keySerial===mob.serial)return old;
   const template=assetCache.get(mob.asset);
   if(template){const skeleton=new Skeleton(template.skeleton.data);if(template.skeleton.skin)skeleton.setSkin(template.skeleton.skin);skeleton.setSlotsToSetupPose();
-   const value={...template,skeleton,state:new AnimationState(template.state.data),animation:'',serial:mob.serial};stageVisuals.set(mob.slot,value);return value;}
+   const value={...template,skeleton,state:new AnimationState(template.state.data),animation:'',serial:mob.serial,keySerial:mob.serial};stageVisuals.set(mob.slot,value);return value;}
   if(!pending.has(mob.asset)&&!failed.has(mob.asset)){pending.add(mob.asset);void actor(meta.skeleton,signal,gl,meta.groundSlots).then(value=>{if(disposed)value.atlas.dispose();else assetCache.set(mob.asset!,value);}).catch(()=>{failed.add(mob.asset!);canvas.dataset.assetError=mob.asset;}).finally(()=>pending.delete(mob.asset!));}
   return enemies[mob.slot];
  };
@@ -82,7 +83,7 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
   a.state.update(dt*speed); a.state.apply(a.skeleton); a.skeleton.update(dt); a.skeleton.updateWorldTransform(Physics.update); groundSkeleton(a.skeleton,y,a.groundSlots); if(renderer) renderer.drawSkeleton(a.skeleton, true); else fallback!.draw(a.skeleton);
  };
  return {
-  draw(game: HuntEngine, dt: number, view?:{weapon:WeaponType;motion:{startedAt:number;duration:number;hitAt:number}}) {
+  draw(game: HuntEngine, dt: number, view?:{weapon:WeaponType;motion:{startedAt:number;duration:number;hitAt:number};stage?:LabyrinthView;elapsed?:number;impactors?:{id:number;x:number;width:number;speed:number;targetX:number;expires:number}[]}) {
    const w = canvas.clientWidth, h = canvas.clientHeight, dpr = Math.min(Math.max(devicePixelRatio || 1, renderer ? 1 : 2), 2);
    if (canvas.width !== Math.round(w*dpr) || canvas.height !== Math.round(h*dpr)) {canvas.width = Math.round(w*dpr); canvas.height = Math.round(h*dpr);}
    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, w, h);
@@ -109,9 +110,9 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
     if(mob.hp<=0&&game.elapsed>=mob.respawnAt)continue;
     const visual=visualFor(mob),hurt=mob.hp>0&&mob.hitUntil>game.elapsed;
     const clips=(mob.asset?LABYRINTH.assets[mob.asset]:undefined)?.clips??HUNT_MONSTER_ASSET.clips;
-    const anim=mob.hp<=0?clips.death:hurt?clips.hurt:mob.state==='windup'?clips.attack:mob.state==='walk'?clips.move:clips.idle;
+    const anim=mob.hp<=0?clips.death:hurt?clips.hurt:mob.state==='windup'?(mob.clip??clips.attack):mob.state==='walk'?clips.move:clips.idle;
     const shake=hurt?Math.sin(game.elapsed*90)*2*zoom:0,x=screenX(mob.x),y=floor;
-    animate(visual,anim,x+shake,y,(mob.asset?(mob.boss?100:38)/visual.setupHeight:HUNT_VISUALS.slimeScale)*zoom,mob.x>game.x?-1:1,dt,mob.serial);
+    animate(visual,anim,x+shake,y,(mob.asset?(mob.boss?100:38)/visual.setupHeight:HUNT_VISUALS.slimeScale)*zoom,mob.x>game.x?-1:1,dt,mob.serial*10000+(mob.castSerial??0));
    }
    if(renderer){renderer.end();ctx.drawImage(layer,0,0,w,h);}
    const stage=game.combo.find(s=>s.animation===game.action);
@@ -139,6 +140,11 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
     if(mob.hitUntil>game.elapsed){ctx.fillStyle='#ffdb8b';ctx.font=`bold ${Math.max(12,20*zoom)}px sans-serif`;ctx.textAlign='center';ctx.fillText(String(mob.lastDamage),x,y-8-(.75-(mob.hitUntil-game.elapsed))*25);}
    }
 
+   for(const p of view?.impactors??[]){if(game.elapsed>p.expires)continue;const delta=p.targetX-p.x,lag=Math.min(.15,Math.max(0,game.elapsed-(view?.elapsed??game.elapsed))),px=p.x+Math.sign(delta)*Math.min(Math.abs(delta),p.speed*lag);ctx.fillStyle='#ffbb66';ctx.beginPath();ctx.ellipse(screenX(px),floor-20*zoom,Math.min(25,Math.max(5,p.width/4))*zoom,7*zoom,0,0,Math.PI*2);ctx.fill();}
+   const objective=view?.stage;
+   if(objective?.exitX){const x=screenX(objective.exitX);ctx.strokeStyle='#82ffe0';ctx.lineWidth=4;ctx.strokeRect(x-22*zoom,floor-70*zoom,44*zoom,70*zoom);ctx.fillStyle='#cefff1';ctx.font='bold 13px sans-serif';ctx.textAlign='center';ctx.fillText('출구',x,floor-80*zoom);}
+   for(const o of objective?.objects??[]){const x=screenX(o.x);ctx.fillStyle=o.done?'#80c7ad':'#e7bc62';ctx.fillRect(x-14*zoom,floor-35*zoom,28*zoom,35*zoom);ctx.font='12px sans-serif';ctx.textAlign='center';ctx.fillText(o.done?'완료':'장치',x,floor-43*zoom);}
+   if(objective?.escort){const a=objective.escort,x=screenX(a.x);ctx.fillStyle='#80d6ed';ctx.fillRect(x-10*zoom,floor-38*zoom,20*zoom,38*zoom);ctx.fillRect(x-20*zoom,floor-48*zoom,40*zoom*a.hp/a.maxHP,4);ctx.font='12px sans-serif';ctx.textAlign='center';ctx.fillText('동료',x,floor-55*zoom);}
    // Foreground decoration follows the world more quickly than the distant forest.
    ctx.globalAlpha=.7;for(let x=-170-((camera*zoom*.65%700)+700)%700;x<w;x+=700)ctx.drawImage(trees,x,floor-165,145,190);ctx.globalAlpha=1;
   },

@@ -33,7 +33,7 @@ export class RpgStore{
   if(progress.weaponLevels===undefined)progress.weaponLevels={unarmed:1,sword:1,axe:progress.weaponLevel,dual:1,spear:1};
   if(progress.weaponLevels.unarmed===undefined)progress.weaponLevels.unarmed=1;
   if(!isWeaponType(progress.weaponType)||!progress.weaponLevels||WEAPON_TYPES.some(w=>!Number.isSafeInteger(progress.weaponLevels[w])||progress.weaponLevels[w]<1||progress.weaponLevels[w]>1e12)||progress.weaponLevels[progress.weaponType]!==progress.weaponLevel)throw Error('Invalid saved weapons');
-  for(const value of Object.entries(progress).filter(([key])=>!['weaponType','weaponLevels','combatArts','traits','skillLevels','skillCopies','skillEnabled'].includes(key)).map(([,value])=>value))if(typeof value!=='number'||!Number.isSafeInteger(value)||value<0||value>1e12)throw Error('Invalid saved progress');
+  for(const value of Object.entries(progress).filter(([key])=>!['weaponType','weaponLevels','combatArts','traits','skillLevels','skillCopies','skillEnabled'].includes(key)))if(typeof value[1]!=='number'||!Number.isSafeInteger(value[1])||value[1]<0||value[1]>(value[0]==='xp'?Number.MAX_SAFE_INTEGER:1e12))throw Error('Invalid saved progress');
   if(progress.labyrinthStage>=6000||progress.labyrinthCompleted>1)throw Error('Invalid labyrinth progress');
   if(!progress.level||!progress.weaponLevel||!progress.armorLevel)throw Error('Invalid saved levels');
   return {progress,revision:row.revision};
