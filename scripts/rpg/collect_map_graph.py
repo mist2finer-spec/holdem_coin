@@ -18,10 +18,16 @@ def reference_key(source,ref,externals):
  bundle,serialized=externals[key];return identity(bundle,serialized,pid)
 
 def collect(bundle,output):
+ # UnityPy retains its input reader. Own the OS handle explicitly so Windows
+ # can remove an APK extraction directory even while readers are still referenced.
+ with bundle.open("rb") as stream:
+  return _collect_stream(bundle,output,stream)
+
+def _collect_stream(bundle,output,stream):
  import UnityPy
  if output.exists():raise FileExistsError('Choose a new output directory')
  output.mkdir(parents=True)
- env=UnityPy.load(str(bundle));records=[];errors=[];assets={};file_keys={}
+ env=UnityPy.load(stream);records=[];errors=[];assets={};file_keys={}
  for obj in env.objects:
   if obj.type.name not in ['MonoBehaviour','MonoScript','Transform','RectTransform','GameObject']:continue
   file_keys.setdefault(id(obj.assets_file),str(len(file_keys))+':'+obj.assets_file.name)
@@ -32,14 +38,14 @@ def collect(bundle,output):
    tree=obj.read_typetree();row={'identity':ident,'type':obj.type.name,'tree':tree}
    dest=output/'objects'/hashlib.sha256(ident['id'].encode()).hexdigest();dest=dest.with_suffix('.json');dest.parent.mkdir(exist_ok=True)
    if dest.exists():raise ValueError('Duplicate qualified Unity identity')
-   dest.write_text(json.dumps(row,ensure_ascii=False,default=str)+'\n');records.append({'identity':ident,'type':obj.type.name,'file':str(dest.relative_to(output))})
+   dest.write_text(json.dumps(row,ensure_ascii=False,default=str)+'\n',encoding='utf-8');records.append({'identity':ident,'type':obj.type.name,'file':str(dest.relative_to(output))})
   except Exception as e:errors.append({'identity':ident,'error':str(e)})
  containers=[]
  for asset_path,ref in env.container.items():
   try:containers.append({'assetPath':asset_path,'serializedFile':file_keys.get(id(ref.assets_file)), 'originalSerializedName':ref.assets_file.name,'pathId':str(ref.path_id)})
   except Exception as error:errors.append({'container':asset_path,'error':str(error)})
  manifest={'containers':containers,'bundle':bundle.name,'sha256':hashlib.sha256(bundle.read_bytes()).hexdigest(),'serializedFiles':assets,'objects':records,'errors':errors,'scope':'Raw graph evidence, not automatic original stage placement. Keep external file table; do not join by PathID alone.'}
- (output/'manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n');return {'objects':len(records),'errors':len(errors),'serializedFiles':len(assets),'output':str(output)}
+ (output/'manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n',encoding='utf-8');return {'objects':len(records),'errors':len(errors),'serializedFiles':len(assets),'output':str(output)}
 def collect_apk(apk,output):
  """Read the original map bundle directly from a split APK; never extract arbitrary paths."""
  with zipfile.ZipFile(apk) as archive:
@@ -51,9 +57,9 @@ def collect_apk(apk,output):
    bundle=Path(tmp)/Path(member.filename).name
    with archive.open(member) as src,bundle.open('wb') as dst:shutil.copyfileobj(src,dst)
    result=collect(bundle,output)
- manifest_path=output/'manifest.json';manifest=json.loads(manifest_path.read_text());
+ manifest_path=output/'manifest.json';manifest=json.loads(manifest_path.read_text(encoding='utf-8'));
  with apk.open('rb') as stream:apk_hash=hashlib.file_digest(stream,'sha256').hexdigest()
- manifest['sourceApk']={'name':apk.name,'sha256':apk_hash,'member':member.filename};manifest_path.write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n');return result
+ manifest['sourceApk']={'name':apk.name,'sha256':apk_hash,'member':member.filename};manifest_path.write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n',encoding='utf-8');return result
 
 if __name__=='__main__':
  p=argparse.ArgumentParser();source=p.add_mutually_exclusive_group(required=True);source.add_argument('--bundle',type=Path);source.add_argument('--apk',type=Path);p.add_argument('--output',type=Path,required=True);a=p.parse_args();print(json.dumps(collect(a.bundle,a.output) if a.bundle else collect_apk(a.apk,a.output)))

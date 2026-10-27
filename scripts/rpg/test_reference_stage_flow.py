@@ -45,6 +45,41 @@ class ApkCollectorTests(unittest.TestCase):
    with patch.dict('sys.modules',{'UnityPy':SimpleNamespace(load=lambda path:env)}):result=collect(bundle,root/'graph')
    self.assertEqual(result['objects'],2);self.assertEqual(result['errors'],0);self.assertEqual(result['serializedFiles'],2)
    manifest=json.loads((root/'graph/manifest.json').read_text());self.assertNotEqual(manifest['objects'][0]['identity']['id'],manifest['objects'][1]['identity']['id']);self.assertEqual({r['serializedFile'] for r in manifest['containers']},{'0:level0','1:level0'})
+ def test_retained_unity_reader_is_closed_before_apk_temp_cleanup(self):
+  from types import SimpleNamespace
+  import shutil
+  retained=[]
+  def load(stream):
+   self.assertFalse(stream.closed);self.assertEqual(stream.read(),b'original')
+   retained.append(stream)
+   file=SimpleNamespace(name='미궁',externals=[])
+   obj=SimpleNamespace(assets_file=file,type=SimpleNamespace(name='GameObject'),path_id=1,read_typetree=lambda:{'m_Name':'슬라임'})
+   return SimpleNamespace(objects=[obj],container={})
+  real_rmtree=shutil.rmtree
+  def windows_cleanup(path,*args,**kwargs):
+   # Simulate Windows refusing unlink while the UnityPy input handle is open.
+   if Path(path).name.startswith('vardian-map-bundle-'):
+    self.assertTrue(retained);self.assertTrue(all(s.closed for s in retained))
+   return real_rmtree(path,*args,**kwargs)
+  with tempfile.TemporaryDirectory() as tmp:
+   root=Path(tmp);apk=root/'input.apk';out=root/'graph'
+   with zipfile.ZipFile(apk,'w') as z:z.writestr('map_scenes_test.bundle',b'original')
+   with patch.dict('sys.modules',{'UnityPy':SimpleNamespace(load=load)}),patch('shutil.rmtree',side_effect=windows_cleanup):
+    result=collect_apk(apk,out)
+   self.assertEqual(result['errors'],0);self.assertFalse(Path(retained[0].name).exists())
+   manifest=json.loads((out/'manifest.json').read_text(encoding='utf-8'))
+   row=json.loads((out/manifest['objects'][0]['file']).read_text(encoding='utf-8'))
+   self.assertEqual(row['tree']['m_Name'],'슬라임');self.assertIn('sourceApk',manifest)
+ def test_reader_closes_on_export_failure(self):
+  from types import SimpleNamespace
+  from collect_map_graph import collect
+  retained=[]
+  def fail(stream):retained.append(stream);raise RuntimeError('broken bundle')
+  with tempfile.TemporaryDirectory() as tmp:
+   root=Path(tmp);bundle=root/'map_scenes_test.bundle';bundle.write_bytes(b'original')
+   with patch.dict('sys.modules',{'UnityPy':SimpleNamespace(load=fail)}):
+    with self.assertRaisesRegex(RuntimeError,'broken bundle'):collect(bundle,root/'graph')
+   self.assertTrue(retained[0].closed)
  def test_absent_or_multiple_versions_do_not_pick_arbitrary_map(self):
   for count in [0,2]:
    with tempfile.TemporaryDirectory() as tmp:

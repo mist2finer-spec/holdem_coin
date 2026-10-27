@@ -55,3 +55,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $tool 'collect_ma
 바탕화면의 `vardian-map-graph-날짜.zip`을 제공하면 원본 맵 타입·스폰 위치·웨이브 조건·보스 트리거를 연결하고 웹 전투 진행을 교체할 수 있다. 출력 manifest의 오류/외부 참조/스키마 버전까지 확인한 뒤 연결한다. 원본 좌표의 웹 단위 변환은 별도 어댑터이며 생성 순서와 조건은 보존한다.
 
 실행 코드가 새 자료 없이 고정 6+1을 다른 임의 마릿수로 바꾸지 않도록, 이번 브랜치는 조사/복원 도구만 담고 운영 main은 변경하지 않는다.
+
+## Windows 추출 종료 오류 수정
+
+UnityPy가 파일 경로로 연 입력을 계속 참조하여 TemporaryDirectory 삭제 시 WinError32가 발생한 사례를 수정했다. 수집기가 입력 스트림을 직접 열고 성공/실패 모두에서 닫도록 한다. 임시 폴더 정리 예외를 숨기지 않는다. JSON은 Windows 기본 코드페이지 대신 UTF-8로 저장한다. 열린 참조를 유지하는 UnityPy 모형과 Windows식 삭제 제한을 재현한 회귀 테스트를 포함해 reference 테스트 134개가 통과했다. 실제 Windows 전체 번들 재추출은 사용자 PC에서 확인해야 한다.
