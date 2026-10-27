@@ -1,0 +1,385 @@
+[
+  {
+    "actorType": 125,
+    "definition": {
+      "AssetGuid": "35ad0fa8729277d479d842f0f26b76ed",
+      "Size": 1.0,
+      "Height": 1.5,
+      "TagFlag": 0,
+      "StartAIType": 0,
+      "MainAttrType": 0
+    },
+    "skillTypes": null,
+    "stagePositionVerified": false,
+    "combatStatsVerified": false
+  },
+  {
+    "actorType": 113,
+    "definition": {
+      "AssetGuid": "91224a64ff8ad6248ab5dc22c0548f83",
+      "Size": 1.0,
+      "Height": 1.600000023841858,
+      "TagFlag": 0,
+      "StartAIType": 0,
+      "MainAttrType": 0
+    },
+    "skillTypes": [
+      8050,
+      8051,
+      8052,
+      8053,
+      8054
+    ],
+    "stagePositionVerified": false,
+    "combatStatsVerified": false
+  },
+  {
+    "actorType": 128,
+    "definition": {
+      "AssetGuid": "22dc567fe63ec8547a921c69e516a0dd",
+      "Size": 1.0,
+      "Height": 1.600000023841858,
+      "TagFlag": 0,
+      "StartAIType": 0,
+      "MainAttrType": 0
+    },
+    "skillTypes": null,
+    "stagePositionVerified": false,
+    "combatStatsVerified": false
+  },
+  {
+    "actorType": 114,
+    "definition": {
+      "AssetGuid": "df7665fec0713e04ab49e8f0ad771aa0",
+      "Size": 1.0,
+      "Height": 1.2000000476837158,
+      "TagFlag": 0,
+      "StartAIType": 0,
+      "MainAttrType": 0
+    },
+    "skillTypes": null,
+    "stagePositionVerified": false,
+    "combatStatsVerified": false
+  },
+  {
+    "actorType": 141,
+    "definition": {
+      "AssetGuid": "2c8651978bc250a46bdfc16be05baa40",
+      "Size": 1.0,
+      "Height": 1.7000000476837158,
+      "TagFlag": 0,
+      "StartAIType": 0,
+      "MainAttrType": 0
+    },
+    "skillTypes": null,
+    "stagePositionVerified": false,
+    "combatStatsVerified": false
+  },
+  {
+    "actorType": 112,
+    "definition": {
+      "AssetGuid": "62bb967548ce4ee45b33eb137b0bff26",
+      "Size": 1.0,
+      "Height": 1.600000023841858,
+      "TagFlag": 0,
+      "StartAIType": 0,
+      "MainAttrType": 0
+    },
+    "skillTypes": null,
+    "stagePositionVerified": false,
+    "combatStatsVerified": false
+  },
+  {
+    "actorType": 119,
+    "definition": {
+      "AssetGuid": "4c3b698a854add142a998089c92681fc",
+      "Size": 1.0,
+      "Height": 1.600000023841858,
+      "TagFlag": 0,
+      "StartAIType": 0,
+      "MainAttrType": 0
+    },
+    "skillTypes": [
+      8000,
+      8001,
+      8002,
+      8003,
+      8004
+    ],
+    "stagePositionVerified": false,
+    "combatStatsVerified": false
+  },
+  {
+    "actorType": 150,
+    "definition": {
+      "AssetGuid": "9d18826318e5e2842b0bfbb42f5038c1",
+      "Size": 1.2000000476837158,
+      "Height": 1.600000023841858,
+      "TagFlag": 0,
+      "StartAIType": 0,
+      "MainAttrType": 0
+    },
+    "skillTypes": null,
+    "stagePositionVerified": false,
+    "combatStatsVerified": false
+  },
+  {
+    "actorType": 120,
+    "definition": {
+      "AssetGuid": "fe20c5bb56c5bab45bad30222dfeb46b",
+      "Size": 1.0,
+      "Height": 1.600000023841858,
+      "TagFlag": 0,
+      "StartAIType": 0,
+      "MainAttrType": 0
+    },
+    "skillTypes": null,
+    "stagePositionVerified": false,
+    "combatStatsVerified": false
+  },
+  {
+    "actorType": 115,
+    "definition": {
+      "AssetGuid": "f478c5f1cb5b0c743a946bf286602a1c",
+      "Size": 1.0,
+      "Height": 1.600000023841858,
+      "TagFlag": 0,
+      "StartAIType": 0,
+      "MainAttrType": 0
+    },
+    "skillTypes": null,
+    "stagePositionVerified": false,
+    "combatStatsVerified": false
+  },
+  {
+    "actorType": 124,
+    "definition": {
+      "AssetGuid": "33ae3883e268f65429eee5731ea48bb3",
+      "Size": 1.0,
+      "Height": 1.600000023841858,
+      "TagFlag": 0,
+      "StartAIType": 0,
+      "MainAttrType": 0
+    },
+    "skillTypes": null,
+    "stagePositionVerified": false,
+    "combatStatsVerified": false
+  },
+  {
+    "actorType": 501,
+    "definition": {
+      "AssetGuid": "db8309f2ee60dc7408d4449208b8611b",
+      "Size": 1.0,
+      "Height": 1.0,
+      "TagFlag": 16,
+      "StartAIType": 0,
+      "MainAttrType": 0
+    },
+    "skillTypes": null,
+    "stagePositionVerified": false,
+    "combatStatsVerified": false
+  },
+  {
+    "actorType": 118,
+    "definition": {
+      "AssetGuid": "c37770668b59ec1428f104b70f9bcb58",
+      "Size": 1.0,
+      "Height": 1.600000023841858,
+      "TagFlag": 0,
+      "StartAIType": 0,
+      "MainAttrType": 0
+    },
+    "skillTypes": null,
+    "stagePositionVerified": false,
+    "combatStatsVerified": false
+  },
+  {
+    "actorType": 533,
+    "definition": {
+      "AssetGuid": "7ccbd5d5bdb22dd43a1e9d2972429589",
+      "Size": 1.0,
+      "Height": 2.200000047683716,
+      "TagFlag": 0,
+      "StartAIType": 0,
+      "MainAttrType": 0
+    },
+    "skillTypes": null,
+    "stagePositionVerified": false,
+    "combatStatsVerified": false
+  },
+  {
+    "actorType": 121,
+    "definition": {
+      "AssetGuid": "d9e31a39ba7d0eb4a980d02ad60ed8c9",
+      "Size": 1.0,
+      "Height": 1.600000023841858,
+      "TagFlag": 0,
+      "StartAIType": 0,
+      "MainAttrType": 0
+    },
+    "skillTypes": null,
+    "stagePositionVerified": false,
+    "combatStatsVerified": false
+  },
+  {
+    "actorType": 521,
+    "definition": {
+      "AssetGuid": "8c466f3b4f870184eba43b31e6d06c10",
+      "Size": 1.0,
+      "Height": 1.0,
+      "TagFlag": 0,
+      "StartAIType": 0,
+      "MainAttrType": 0
+    },
+    "skillTypes": null,
+    "stagePositionVerified": false,
+    "combatStatsVerified": false
+  },
+  {
+    "actorType": 142,
+    "definition": {
+      "AssetGuid": "bb44551281397aa438ceeb5b54f27a7a",
+      "Size": 1.0,
+      "Height": 1.7000000476837158,
+      "TagFlag": 0,
+      "StartAIType": 0,
+      "MainAttrType": 0
+    },
+    "skillTypes": null,
+    "stagePositionVerified": false,
+    "combatStatsVerified": false
+  },
+  {
+    "actorType": 111,
+    "definition": {
+      "AssetGuid": "f4c3cdc5ad2a38842a3d2eab9853737c",
+      "Size": 1.0,
+      "Height": 1.600000023841858,
+      "TagFlag": 0,
+      "StartAIType": 0,
+      "MainAttrType": 0
+    },
+    "skillTypes": null,
+    "stagePositionVerified": false,
+    "combatStatsVerified": false
+  },
+  {
+    "actorType": 117,
+    "definition": {
+      "AssetGuid": "eb846501b898ccd4fb340d6b47822a8b",
+      "Size": 1.0,
+      "Height": 1.600000023841858,
+      "TagFlag": 0,
+      "StartAIType": 0,
+      "MainAttrType": 0
+    },
+    "skillTypes": null,
+    "stagePositionVerified": false,
+    "combatStatsVerified": false
+  },
+  {
+    "actorType": 127,
+    "definition": {
+      "AssetGuid": "92243886025867546b86824945b8a29d",
+      "Size": 1.0,
+      "Height": 1.2999999523162842,
+      "TagFlag": 0,
+      "StartAIType": 0,
+      "MainAttrType": 0
+    },
+    "skillTypes": null,
+    "stagePositionVerified": false,
+    "combatStatsVerified": false
+  },
+  {
+    "actorType": 123,
+    "definition": {
+      "AssetGuid": "afa4958edef32f141b9af1efe2b43906",
+      "Size": 1.0,
+      "Height": 1.600000023841858,
+      "TagFlag": 0,
+      "StartAIType": 0,
+      "MainAttrType": 0
+    },
+    "skillTypes": null,
+    "stagePositionVerified": false,
+    "combatStatsVerified": false
+  },
+  {
+    "actorType": 116,
+    "definition": {
+      "AssetGuid": "7a6a8fbd69824164ca74b70fee676c66",
+      "Size": 1.0,
+      "Height": 1.600000023841858,
+      "TagFlag": 0,
+      "StartAIType": 0,
+      "MainAttrType": 0
+    },
+    "skillTypes": null,
+    "stagePositionVerified": false,
+    "combatStatsVerified": false
+  },
+  {
+    "actorType": 536,
+    "definition": {
+      "AssetGuid": "327386959cd7ff34cb6b8d12d15eb915",
+      "Size": 1.600000023841858,
+      "Height": 2.5999999046325684,
+      "TagFlag": 0,
+      "StartAIType": 0,
+      "MainAttrType": 0
+    },
+    "skillTypes": null,
+    "stagePositionVerified": false,
+    "combatStatsVerified": false
+  },
+  {
+    "actorType": 3003,
+    "definition": {
+      "AssetGuid": "5f4caf4c876fd7a499a48e453bf39347",
+      "Size": 2.799999952316284,
+      "Height": 2.5999999046325684,
+      "TagFlag": 0,
+      "StartAIType": 1,
+      "MainAttrType": 4
+    },
+    "skillTypes": [
+      4020,
+      4021,
+      4022,
+      4023
+    ],
+    "stagePositionVerified": false,
+    "combatStatsVerified": false
+  },
+  {
+    "actorType": 511,
+    "definition": {
+      "AssetGuid": "c815c837c91947845a5664c6450f1145",
+      "Size": 1.0,
+      "Height": 1.0,
+      "TagFlag": 0,
+      "StartAIType": 0,
+      "MainAttrType": 0
+    },
+    "skillTypes": null,
+    "stagePositionVerified": false,
+    "combatStatsVerified": false
+  },
+  {
+    "actorType": 534,
+    "definition": {
+      "AssetGuid": "498ad35c6609b464bbba03561abbc78a",
+      "Size": 1.399999976158142,
+      "Height": 2.200000047683716,
+      "TagFlag": 0,
+      "StartAIType": 0,
+      "MainAttrType": 0
+    },
+    "skillTypes": [
+      2420
+    ],
+    "stagePositionVerified": false,
+    "combatStatsVerified": false
+  }
+]

@@ -1,0 +1,10 @@
+{
+  "nativeSha256": "42784ff220ca0eec7a21f9eafb64ac89088ff7463193b25f76baa19536c484e5",
+  "cases": 4096,
+  "nativeAddress": "0x3bf4494",
+  "scope": "Always/Never/HP/MP/shield/unknown conditions; actor lookup and getters are fixtures; marking conversion not verified",
+  "hooks": [
+    "GetTargetActor",
+    "HP/MP/max/shield getters"
+  ]
+}

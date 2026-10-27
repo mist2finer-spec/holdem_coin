@@ -2,6 +2,7 @@
 import argparse,json,sys
 from pathlib import Path
 from reference_monsters import action_timeline
+from reference_conditions import unconditional_filter
 p=argparse.ArgumentParser();p.add_argument('--source',type=Path,required=True);p.add_argument('--stages',type=Path,required=True);p.add_argument('--repo',type=Path,default=Path('.'));args=p.parse_args()
 load=lambda name:json.loads((args.source/(name+'.json')).read_text())
 runtime=args.repo/'src/components/rpg/data/labyrinth-runtime.json';r=json.loads(runtime.read_text());actors={x['ActorType']:x for x in load('ActorData')['ActorDatas']};ai={x['Type']:x for x in load('MonsterData')['MonsterAIDatas']};actions={}
@@ -14,7 +15,8 @@ for a in load('ActionData')['ActionDatas']:
    animations.append({'at':e['at'],'clip':clip})
   if e['conditional']:pending.append({'kind':'action-condition-interpreter','dataId':d['DataId']})
   if e['type']==8:
-   if d['P1']==0 and d['P2']==0 and not d.get('FilterDatas'):
+   if unconditional_filter(d) is False:continue
+   if d['P1']==0 and d['P2']==0 and unconditional_filter(d) is True:
     commands.append({'at':e['at'],'condition':e['condition'],'count':1,'interval':0,'speed':0,'duration':0,'width':50,'moving':True,'arrive':False,'release':False,'repeat':0,'unique':True,'targetOrigin':11,'startOrigin':1 if d['ApplyTarget']==1 else 2,'tracking':False,'effects':[{'phase':'Moving','type':d['Type'],'value':d['V1'],'duration':d['V2'],'target':d['ApplyTarget']}]})
    else:pending.append({'kind':'direct-effect-parameter-or-filter','dataId':d['DataId']})
   if e['type']!=33:continue
@@ -22,7 +24,8 @@ for a in load('ActionData')['ActionDatas']:
   for v in e['effects']:
    x=v['effect']
    # Only literal parameters; symbolic values must not silently become zero.
-   if x['P1']!=0 or x['P2']!=0 or x.get('FilterDatas'):pending.append({'kind':'effect-parameter-or-filter','dataId':x['DataId']});continue
+   if unconditional_filter(x) is False:continue
+   if x['P1']!=0 or x['P2']!=0 or unconditional_filter(x) is not True:pending.append({'kind':'effect-parameter-or-filter','dataId':x['DataId']});continue
    effects.append({'phase':v['phase'],'type':x['Type'],'value':x['V1'],'duration':x['V2'],'target':x['ApplyTarget']})
   if any(d[k]!=0 for k in ['CountParam','SpeedParam','DurationParam']):pending.append({'kind':'impactor-parameter','dataId':d['DataId']});continue
   commands.append({'at':e['at'],'condition':e['condition'],'count':max(1,min(64,round(d['CountValue']))),'interval':d['Interval'],'speed':d['SpeedValue']*50,'duration':d['DurationValue'],'width':max(12,d['ColliderWidth']*50),'moving':d['UseMovingHit'],'arrive':d['UseArriveHit'],'release':d['UseReleaseHit'],'repeat':d['MovingHitInterval'],'unique':d['UseUniqueHit'],'targetOrigin':d['TargetOriginType'],'startOrigin':d['StartOriginType'],'tracking':d['TargetUseTrack'],'effects':effects})

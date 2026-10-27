@@ -1,0 +1,54 @@
+{
+  "status": "stable-with-blockers",
+  "elapsedSeconds": 17.521,
+  "budgetSeconds": 300,
+  "steps": [
+    {
+      "step": "round-1-compile",
+      "exitCode": 0,
+      "elapsedSeconds": 1.721
+    },
+    {
+      "step": "round-1-audit",
+      "exitCode": 0,
+      "elapsedSeconds": 0.315
+    },
+    {
+      "step": "round-1-scenes",
+      "exitCode": 0,
+      "elapsedSeconds": 1.319
+    },
+    {
+      "step": "round-1-reference-tests",
+      "exitCode": 0,
+      "elapsedSeconds": 0.115
+    },
+    {
+      "step": "round-1-verify_final_damage_native",
+      "exitCode": 0,
+      "elapsedSeconds": 6.736
+    },
+    {
+      "step": "round-1-verify_conditions_native",
+      "exitCode": 0,
+      "elapsedSeconds": 0.466
+    },
+    {
+      "step": "round-1-types",
+      "exitCode": 0,
+      "elapsedSeconds": 4.043
+    },
+    {
+      "step": "round-1-runtime-tests",
+      "exitCode": 0,
+      "elapsedSeconds": 1.123
+    },
+    {
+      "step": "round-2-compile",
+      "exitCode": 0,
+      "elapsedSeconds": 1.671
+    }
+  ],
+  "runtimeSha256": "213915c5c3abefe64b6b97077cb5266c8689d21c5c128fb27561a28bce154504",
+  "scope": "Deterministic extraction and validation only. Stable does not mean all original content restored. No LLM calls, push, or deployment."
+}

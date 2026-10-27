@@ -33,7 +33,8 @@
     "rpg:restore:labyrinth": "python3 scripts/rpg/restore_labyrinth.py",
     "rpg:audit:labyrinth": "python3 scripts/rpg/audit_labyrinth.py",
     "rpg:compile:labyrinth": "python3 scripts/rpg/compile_labyrinth_runtime.py",
-    "rpg:compile:combat": "python3 scripts/rpg/compile_combat_runtime.py"
+    "rpg:compile:combat": "python3 scripts/rpg/compile_combat_runtime.py",
+    "rpg:restore:loop": "python3 scripts/rpg/recovery_loop.py"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

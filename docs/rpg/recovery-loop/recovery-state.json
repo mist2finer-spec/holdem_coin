@@ -1,0 +1,118 @@
+{
+  "rawActionRecords": 421,
+  "uniqueSkillActions": 357,
+  "missingActorActions": [
+    {
+      "actorType": 1012,
+      "skillType": 2036
+    },
+    {
+      "actorType": 1011,
+      "skillType": 2016
+    },
+    {
+      "actorType": 535,
+      "skillType": 2430
+    },
+    {
+      "actorType": 1013,
+      "skillType": 2056
+    }
+  ],
+  "actionSourcesChecked": [
+    {
+      "source": "ActionData.json",
+      "sha256": "c64993edb621935ba61496942bb9e733d1b467283e17ba6cc4992ac919053d00",
+      "actionRows": 421,
+      "matchingMissingSkills": []
+    },
+    {
+      "source": "ActionData.json",
+      "sha256": "c64993edb621935ba61496942bb9e733d1b467283e17ba6cc4992ac919053d00",
+      "actionRows": 421,
+      "matchingMissingSkills": []
+    }
+  ],
+  "uniqueActionSourceHashes": 1,
+  "filteredEffects": [
+    {
+      "skillType": 1105,
+      "dataId": 17,
+      "filterOp": 0,
+      "constantResult": true,
+      "requiresSkillParameters": true
+    },
+    {
+      "skillType": 1108,
+      "dataId": 17,
+      "filterOp": 0,
+      "constantResult": true,
+      "requiresSkillParameters": true
+    },
+    {
+      "skillType": 1102,
+      "dataId": 17,
+      "filterOp": 0,
+      "constantResult": true,
+      "requiresSkillParameters": true
+    },
+    {
+      "skillType": 2391,
+      "dataId": 7,
+      "filterOp": 0,
+      "constantResult": true,
+      "requiresSkillParameters": false
+    },
+    {
+      "skillType": 2376,
+      "dataId": 7,
+      "filterOp": 0,
+      "constantResult": true,
+      "requiresSkillParameters": false
+    },
+    {
+      "skillType": 2361,
+      "dataId": 7,
+      "filterOp": 0,
+      "constantResult": true,
+      "requiresSkillParameters": false
+    }
+  ],
+  "filterCasesReduced": 6,
+  "filterCasesStillRequiringSkillLevel": 3,
+  "runtimePending": {
+    "effect-parameter-or-filter": 79
+  },
+  "effectTypes": {
+    "1": 307,
+    "106": 26,
+    "107": 59,
+    "222": 9,
+    "104": 13,
+    "6": 1,
+    "115": 5,
+    "103": 8,
+    "111": 4,
+    "224": 7,
+    "2": 10,
+    "3": 3,
+    "901": 4,
+    "0": 1,
+    "100": 2,
+    "229": 1,
+    "112": 1,
+    "116": 2,
+    "2001": 2,
+    "221": 1
+  },
+  "additionalRequired": [
+    "Active effect expiry, stacking, immunity and proc-state dispatcher before enabling complete final damage",
+    "Actual equipped skill levels, not hardcoded level one",
+    "Native shield absorption/backlash and groggy effect ordering",
+    "Per-scene qualified Unity identities plus Transform hierarchy and MapType-to-scene mapping",
+    "NPC ActorData profiles are not authoritative HP or growth profiles",
+    "Original reward event/drop routing and atomic stage settlement",
+    "Persistent in-progress battle state beyond the current checkpoint"
+  ],
+  "status": "partial-recovery-with-explicit-blockers"
+}

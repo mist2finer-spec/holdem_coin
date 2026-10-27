@@ -1,0 +1,13 @@
+{
+  "legacyMapIndexRows": 186373,
+  "legacyMapFiles": 5720,
+  "collidingBundlePathIds": 5498,
+  "maximumCollisionMultiplicity": 170,
+  "waveDefinitions": 128,
+  "spawnDefinitions": 995,
+  "npcDefinitions": 101,
+  "distinctNpcActors": 27,
+  "npcActorProfilesJoined": 100,
+  "runtimeReadyWaves": 0,
+  "blocker": "Legacy filenames omit serialized-file identity and overwrite scene-local PathIDs. References and transforms must be re-exported with (bundle,serialized_file,path_id). NPC ActorData join alone does not recover native NPC HP or stage placement."
+}

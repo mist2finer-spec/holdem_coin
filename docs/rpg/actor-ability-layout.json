@@ -1,0 +1,1570 @@
+{
+  "scope": "ActorAbilitySet value-type layout, 40 bytes per field; field index is NOT numeric ability ID",
+  "fields": [
+    {
+      "index": 0,
+      "offset": 0,
+      "name": "movSpdRate"
+    },
+    {
+      "index": 1,
+      "offset": 40,
+      "name": "movDistPerSec"
+    },
+    {
+      "index": 2,
+      "offset": 80,
+      "name": "labyrinthRewardIncRate"
+    },
+    {
+      "index": 3,
+      "offset": 120,
+      "name": "dungeonRewardIncRate"
+    },
+    {
+      "index": 4,
+      "offset": 160,
+      "name": "whiteEyeRewardIncRate"
+    },
+    {
+      "index": 5,
+      "offset": 200,
+      "name": "expeditionRewardIncRate"
+    },
+    {
+      "index": 6,
+      "offset": 240,
+      "name": "atk"
+    },
+    {
+      "index": 7,
+      "offset": 280,
+      "name": "hp"
+    },
+    {
+      "index": 8,
+      "offset": 320,
+      "name": "valor"
+    },
+    {
+      "index": 9,
+      "offset": 360,
+      "name": "mental"
+    },
+    {
+      "index": 10,
+      "offset": 400,
+      "name": "tenacity"
+    },
+    {
+      "index": 11,
+      "offset": 440,
+      "name": "focus"
+    },
+    {
+      "index": 12,
+      "offset": 480,
+      "name": "valorRate"
+    },
+    {
+      "index": 13,
+      "offset": 520,
+      "name": "mentalRate"
+    },
+    {
+      "index": 14,
+      "offset": 560,
+      "name": "tenacityRate"
+    },
+    {
+      "index": 15,
+      "offset": 600,
+      "name": "focusRate"
+    },
+    {
+      "index": 16,
+      "offset": 640,
+      "name": "defaultAtkDmgRate"
+    },
+    {
+      "index": 17,
+      "offset": 680,
+      "name": "skillDmgRate"
+    },
+    {
+      "index": 18,
+      "offset": 720,
+      "name": "artifactSkillDmgRate"
+    },
+    {
+      "index": 19,
+      "offset": 760,
+      "name": "overchargeSkillDmgRate"
+    },
+    {
+      "index": 20,
+      "offset": 800,
+      "name": "phyDmgRate"
+    },
+    {
+      "index": 21,
+      "offset": 840,
+      "name": "magDmgRate"
+    },
+    {
+      "index": 22,
+      "offset": 880,
+      "name": "vsMobDmgRate"
+    },
+    {
+      "index": 23,
+      "offset": 920,
+      "name": "vsBossDmgRate"
+    },
+    {
+      "index": 24,
+      "offset": 960,
+      "name": "powerBlowDmgRate"
+    },
+    {
+      "index": 25,
+      "offset": 1000,
+      "name": "finishBlowDmgRate"
+    },
+    {
+      "index": 26,
+      "offset": 1040,
+      "name": "atkSpdRate"
+    },
+    {
+      "index": 27,
+      "offset": 1080,
+      "name": "cri"
+    },
+    {
+      "index": 28,
+      "offset": 1120,
+      "name": "criDmg"
+    },
+    {
+      "index": 29,
+      "offset": 1160,
+      "name": "hyperCri"
+    },
+    {
+      "index": 30,
+      "offset": 1200,
+      "name": "hyperCriDmg"
+    },
+    {
+      "index": 31,
+      "offset": 1240,
+      "name": "cooltimeReductRate"
+    },
+    {
+      "index": 32,
+      "offset": 1280,
+      "name": "mp"
+    },
+    {
+      "index": 33,
+      "offset": 1320,
+      "name": "mpRegen"
+    },
+    {
+      "index": 34,
+      "offset": 1360,
+      "name": "vsFreezeDmgRate"
+    },
+    {
+      "index": 35,
+      "offset": 1400,
+      "name": "vsStunDmgRate"
+    },
+    {
+      "index": 36,
+      "offset": 1440,
+      "name": "vsGroggyDmgRate"
+    },
+    {
+      "index": 37,
+      "offset": 1480,
+      "name": "vsShieldDmgRate"
+    },
+    {
+      "index": 38,
+      "offset": 1520,
+      "name": "myShieldDmgRate"
+    },
+    {
+      "index": 39,
+      "offset": 1560,
+      "name": "fireMagDmgRate"
+    },
+    {
+      "index": 40,
+      "offset": 1600,
+      "name": "waterMagDmgRate"
+    },
+    {
+      "index": 41,
+      "offset": 1640,
+      "name": "earthMagDmgRate"
+    },
+    {
+      "index": 42,
+      "offset": 1680,
+      "name": "impactPhyDmgRate"
+    },
+    {
+      "index": 43,
+      "offset": 1720,
+      "name": "lightMagDmgRate"
+    },
+    {
+      "index": 44,
+      "offset": 1760,
+      "name": "darkMagDmgRate"
+    },
+    {
+      "index": 45,
+      "offset": 1800,
+      "name": "weaponTypeDmgRate"
+    },
+    {
+      "index": 46,
+      "offset": 1840,
+      "name": "weaponTypeAtkSpdRate"
+    },
+    {
+      "index": 47,
+      "offset": 1880,
+      "name": "mobHpDecRate"
+    },
+    {
+      "index": 48,
+      "offset": 1920,
+      "name": "bossHpDecRate"
+    },
+    {
+      "index": 49,
+      "offset": 1960,
+      "name": "criResist"
+    },
+    {
+      "index": 50,
+      "offset": 2000,
+      "name": "defaultAtkDefRate"
+    },
+    {
+      "index": 51,
+      "offset": 2040,
+      "name": "skillDefRate"
+    },
+    {
+      "index": 52,
+      "offset": 2080,
+      "name": "phyDefRate"
+    },
+    {
+      "index": 53,
+      "offset": 2120,
+      "name": "magDefRate"
+    },
+    {
+      "index": 54,
+      "offset": 2160,
+      "name": "vsMobDefRate"
+    },
+    {
+      "index": 55,
+      "offset": 2200,
+      "name": "vsBossDefRate"
+    },
+    {
+      "index": 56,
+      "offset": 2240,
+      "name": "impactPhyDefRate"
+    },
+    {
+      "index": 57,
+      "offset": 2280,
+      "name": "fireMagDefRate"
+    },
+    {
+      "index": 58,
+      "offset": 2320,
+      "name": "waterMagDefRate"
+    },
+    {
+      "index": 59,
+      "offset": 2360,
+      "name": "earthMagDefRate"
+    },
+    {
+      "index": 60,
+      "offset": 2400,
+      "name": "lightMagDefRate"
+    },
+    {
+      "index": 61,
+      "offset": 2440,
+      "name": "darkMagDefRate"
+    },
+    {
+      "index": 62,
+      "offset": 2480,
+      "name": "combatArtAtkRate"
+    },
+    {
+      "index": 63,
+      "offset": 2520,
+      "name": "combatArtHpRate"
+    },
+    {
+      "index": 64,
+      "offset": 2560,
+      "name": "traitAtkRate"
+    },
+    {
+      "index": 65,
+      "offset": 2600,
+      "name": "traitHpRate"
+    },
+    {
+      "index": 66,
+      "offset": 2640,
+      "name": "masteryAtkRate"
+    },
+    {
+      "index": 67,
+      "offset": 2680,
+      "name": "masteryHpRate"
+    },
+    {
+      "index": 68,
+      "offset": 2720,
+      "name": "willAtkRate"
+    },
+    {
+      "index": 69,
+      "offset": 2760,
+      "name": "willHpRate"
+    },
+    {
+      "index": 70,
+      "offset": 2800,
+      "name": "willCardAtkRate"
+    },
+    {
+      "index": 71,
+      "offset": 2840,
+      "name": "willCardHpRate"
+    },
+    {
+      "index": 72,
+      "offset": 2880,
+      "name": "willCardAwakenAtkRate"
+    },
+    {
+      "index": 73,
+      "offset": 2920,
+      "name": "willCardAwakenHpRate"
+    },
+    {
+      "index": 74,
+      "offset": 2960,
+      "name": "overchargeSkillAtkRate"
+    },
+    {
+      "index": 75,
+      "offset": 3000,
+      "name": "overchargeSkillHpRate"
+    },
+    {
+      "index": 76,
+      "offset": 3040,
+      "name": "arenaSkillAtkRate"
+    },
+    {
+      "index": 77,
+      "offset": 3080,
+      "name": "arenaSkillHpRate"
+    },
+    {
+      "index": 78,
+      "offset": 3120,
+      "name": "skillAwakenAtkRate"
+    },
+    {
+      "index": 79,
+      "offset": 3160,
+      "name": "skillAwakenHpRate"
+    },
+    {
+      "index": 80,
+      "offset": 3200,
+      "name": "overchargeSkillAwakenAtkRate"
+    },
+    {
+      "index": 81,
+      "offset": 3240,
+      "name": "overchargeSkillAwakenHpRate"
+    },
+    {
+      "index": 82,
+      "offset": 3280,
+      "name": "weaponAtkRate"
+    },
+    {
+      "index": 83,
+      "offset": 3320,
+      "name": "subWeaponAtkRate"
+    },
+    {
+      "index": 84,
+      "offset": 3360,
+      "name": "armorAtkRate"
+    },
+    {
+      "index": 85,
+      "offset": 3400,
+      "name": "armorHpRate"
+    },
+    {
+      "index": 86,
+      "offset": 3440,
+      "name": "ringAtkRate"
+    },
+    {
+      "index": 87,
+      "offset": 3480,
+      "name": "ringHpRate"
+    },
+    {
+      "index": 88,
+      "offset": 3520,
+      "name": "ringMobAtkRate"
+    },
+    {
+      "index": 89,
+      "offset": 3560,
+      "name": "ringBossAtkRate"
+    },
+    {
+      "index": 90,
+      "offset": 3600,
+      "name": "ringViability"
+    },
+    {
+      "index": 91,
+      "offset": 3640,
+      "name": "soulAtkRate"
+    },
+    {
+      "index": 92,
+      "offset": 3680,
+      "name": "soulHpRate"
+    },
+    {
+      "index": 93,
+      "offset": 3720,
+      "name": "engraveAtkRate"
+    },
+    {
+      "index": 94,
+      "offset": 3760,
+      "name": "engraveHpRate"
+    },
+    {
+      "index": 95,
+      "offset": 3800,
+      "name": "engraveEndurance"
+    },
+    {
+      "index": 96,
+      "offset": 3840,
+      "name": "engraveViability"
+    },
+    {
+      "index": 97,
+      "offset": 3880,
+      "name": "engraveVigor"
+    },
+    {
+      "index": 98,
+      "offset": 3920,
+      "name": "lREngraveAtkRate"
+    },
+    {
+      "index": 99,
+      "offset": 3960,
+      "name": "lREngraveHpRate"
+    },
+    {
+      "index": 100,
+      "offset": 4000,
+      "name": "zREngraveAtkRate"
+    },
+    {
+      "index": 101,
+      "offset": 4040,
+      "name": "zREngraveHpRate"
+    },
+    {
+      "index": 102,
+      "offset": 4080,
+      "name": "collectionAtkRate"
+    },
+    {
+      "index": 103,
+      "offset": 4120,
+      "name": "collectionHpRate"
+    },
+    {
+      "index": 104,
+      "offset": 4160,
+      "name": "arcaneAtkRate"
+    },
+    {
+      "index": 105,
+      "offset": 4200,
+      "name": "arcaneHpRate"
+    },
+    {
+      "index": 106,
+      "offset": 4240,
+      "name": "relicAtkRate"
+    },
+    {
+      "index": 107,
+      "offset": 4280,
+      "name": "relicHpRate"
+    },
+    {
+      "index": 108,
+      "offset": 4320,
+      "name": "runeAtkRate"
+    },
+    {
+      "index": 109,
+      "offset": 4360,
+      "name": "runeHpRate"
+    },
+    {
+      "index": 110,
+      "offset": 4400,
+      "name": "runeLabAtkRate"
+    },
+    {
+      "index": 111,
+      "offset": 4440,
+      "name": "runeLabHpRate"
+    },
+    {
+      "index": 112,
+      "offset": 4480,
+      "name": "trialAtkRate"
+    },
+    {
+      "index": 113,
+      "offset": 4520,
+      "name": "trialHpRate"
+    },
+    {
+      "index": 114,
+      "offset": 4560,
+      "name": "spiritPhyAtkRate"
+    },
+    {
+      "index": 115,
+      "offset": 4600,
+      "name": "spiritMagAtkRate"
+    },
+    {
+      "index": 116,
+      "offset": 4640,
+      "name": "spiritHpRate"
+    },
+    {
+      "index": 117,
+      "offset": 4680,
+      "name": "gearAtkRate"
+    },
+    {
+      "index": 118,
+      "offset": 4720,
+      "name": "gearHpRate"
+    },
+    {
+      "index": 119,
+      "offset": 4760,
+      "name": "treasureAtkRate"
+    },
+    {
+      "index": 120,
+      "offset": 4800,
+      "name": "treasureHpRate"
+    },
+    {
+      "index": 121,
+      "offset": 4840,
+      "name": "expeditionGearAtkRate"
+    },
+    {
+      "index": 122,
+      "offset": 4880,
+      "name": "expeditionGearHpRate"
+    },
+    {
+      "index": 123,
+      "offset": 4920,
+      "name": "expeditionGearPhyAtkRate"
+    },
+    {
+      "index": 124,
+      "offset": 4960,
+      "name": "expeditionGearMagAtkRate"
+    },
+    {
+      "index": 125,
+      "offset": 5000,
+      "name": "expeditionGearBossAtkRate"
+    },
+    {
+      "index": 126,
+      "offset": 5040,
+      "name": "expeditionGearMobAtkRate"
+    },
+    {
+      "index": 127,
+      "offset": 5080,
+      "name": "expeditionGearEndurance"
+    },
+    {
+      "index": 128,
+      "offset": 5120,
+      "name": "expeditionGearViability"
+    },
+    {
+      "index": 129,
+      "offset": 5160,
+      "name": "expeditionGearVigor"
+    },
+    {
+      "index": 130,
+      "offset": 5200,
+      "name": "expeditionArkAtkRate"
+    },
+    {
+      "index": 131,
+      "offset": 5240,
+      "name": "expeditionArkHpRate"
+    },
+    {
+      "index": 132,
+      "offset": 5280,
+      "name": "expeditionArkPhyAtkRate"
+    },
+    {
+      "index": 133,
+      "offset": 5320,
+      "name": "expeditionArkMagAtkRate"
+    },
+    {
+      "index": 134,
+      "offset": 5360,
+      "name": "expeditionArkBossAtkRate"
+    },
+    {
+      "index": 135,
+      "offset": 5400,
+      "name": "expeditionArkMobAtkRate"
+    },
+    {
+      "index": 136,
+      "offset": 5440,
+      "name": "expeditionArkEndurance"
+    },
+    {
+      "index": 137,
+      "offset": 5480,
+      "name": "expeditionArkViability"
+    },
+    {
+      "index": 138,
+      "offset": 5520,
+      "name": "expeditionArkVigor"
+    },
+    {
+      "index": 139,
+      "offset": 5560,
+      "name": "guildTrainAtkRate"
+    },
+    {
+      "index": 140,
+      "offset": 5600,
+      "name": "guildTrainHpRate"
+    },
+    {
+      "index": 141,
+      "offset": 5640,
+      "name": "guildTrainDesAtkRate"
+    },
+    {
+      "index": 142,
+      "offset": 5680,
+      "name": "guildTrainEndurance"
+    },
+    {
+      "index": 143,
+      "offset": 5720,
+      "name": "automatonAtkRate"
+    },
+    {
+      "index": 144,
+      "offset": 5760,
+      "name": "automatonHpRate"
+    },
+    {
+      "index": 145,
+      "offset": 5800,
+      "name": "guildTreasureAtkRate"
+    },
+    {
+      "index": 146,
+      "offset": 5840,
+      "name": "guildTreasureHpRate"
+    },
+    {
+      "index": 147,
+      "offset": 5880,
+      "name": "arcanaAtkRate"
+    },
+    {
+      "index": 148,
+      "offset": 5920,
+      "name": "arcanaHpRate"
+    },
+    {
+      "index": 149,
+      "offset": 5960,
+      "name": "guildRaidGearAtkRate"
+    },
+    {
+      "index": 150,
+      "offset": 6000,
+      "name": "guildRaidGearHpRate"
+    },
+    {
+      "index": 151,
+      "offset": 6040,
+      "name": "guildRaidGearPhyAtkRate"
+    },
+    {
+      "index": 152,
+      "offset": 6080,
+      "name": "guildRaidGearMagAtkRate"
+    },
+    {
+      "index": 153,
+      "offset": 6120,
+      "name": "guildRaidGearBossAtkRate"
+    },
+    {
+      "index": 154,
+      "offset": 6160,
+      "name": "guildRaidGearMobAtkRate"
+    },
+    {
+      "index": 155,
+      "offset": 6200,
+      "name": "guildRaidGearEndurance"
+    },
+    {
+      "index": 156,
+      "offset": 6240,
+      "name": "guildRaidGearViability"
+    },
+    {
+      "index": 157,
+      "offset": 6280,
+      "name": "guildRaidGearVigor"
+    },
+    {
+      "index": 158,
+      "offset": 6320,
+      "name": "guildRaidGearMpAmpAtkRate"
+    },
+    {
+      "index": 159,
+      "offset": 6360,
+      "name": "guildRaidGearArtifactSkillDmgRate"
+    },
+    {
+      "index": 160,
+      "offset": 6400,
+      "name": "guildRaidGearOverchargeSkillDmgRate"
+    },
+    {
+      "index": 161,
+      "offset": 6440,
+      "name": "guildRaidArkAtkRate"
+    },
+    {
+      "index": 162,
+      "offset": 6480,
+      "name": "guildRaidArkHpRate"
+    },
+    {
+      "index": 163,
+      "offset": 6520,
+      "name": "guildRaidArkPhyAtkRate"
+    },
+    {
+      "index": 164,
+      "offset": 6560,
+      "name": "guildRaidArkMagAtkRate"
+    },
+    {
+      "index": 165,
+      "offset": 6600,
+      "name": "guildRaidArkBossAtkRate"
+    },
+    {
+      "index": 166,
+      "offset": 6640,
+      "name": "guildRaidArkMobAtkRate"
+    },
+    {
+      "index": 167,
+      "offset": 6680,
+      "name": "guildRaidArkEndurance"
+    },
+    {
+      "index": 168,
+      "offset": 6720,
+      "name": "guildRaidArkViability"
+    },
+    {
+      "index": 169,
+      "offset": 6760,
+      "name": "guildRaidArkVigor"
+    },
+    {
+      "index": 170,
+      "offset": 6800,
+      "name": "affinityAtkRate"
+    },
+    {
+      "index": 171,
+      "offset": 6840,
+      "name": "affinityHpRate"
+    },
+    {
+      "index": 172,
+      "offset": 6880,
+      "name": "praiseAtkRate"
+    },
+    {
+      "index": 173,
+      "offset": 6920,
+      "name": "praiseHpRate"
+    },
+    {
+      "index": 174,
+      "offset": 6960,
+      "name": "heroBookAtkRate"
+    },
+    {
+      "index": 175,
+      "offset": 7000,
+      "name": "heroBookHpRate"
+    },
+    {
+      "index": 176,
+      "offset": 7040,
+      "name": "heroBookCollectionAtkRate"
+    },
+    {
+      "index": 177,
+      "offset": 7080,
+      "name": "heroBookCollectionHpRate"
+    },
+    {
+      "index": 178,
+      "offset": 7120,
+      "name": "monsterBookAtkRate"
+    },
+    {
+      "index": 179,
+      "offset": 7160,
+      "name": "monsterBookHpRate"
+    },
+    {
+      "index": 180,
+      "offset": 7200,
+      "name": "worldBossAtkRate"
+    },
+    {
+      "index": 181,
+      "offset": 7240,
+      "name": "worldBossHpRate"
+    },
+    {
+      "index": 182,
+      "offset": 7280,
+      "name": "fieldBossAtkRate"
+    },
+    {
+      "index": 183,
+      "offset": 7320,
+      "name": "fieldBossHpRate"
+    },
+    {
+      "index": 184,
+      "offset": 7360,
+      "name": "guildRaidAtkRate"
+    },
+    {
+      "index": 185,
+      "offset": 7400,
+      "name": "guildRaidHpRate"
+    },
+    {
+      "index": 186,
+      "offset": 7440,
+      "name": "guildRaidBossAtkRate"
+    },
+    {
+      "index": 187,
+      "offset": 7480,
+      "name": "desertRaidTreasureAtkRate"
+    },
+    {
+      "index": 188,
+      "offset": 7520,
+      "name": "desertRaidTreasureHpRate"
+    },
+    {
+      "index": 189,
+      "offset": 7560,
+      "name": "destinyEyeAtkRate"
+    },
+    {
+      "index": 190,
+      "offset": 7600,
+      "name": "destinyEyeHpRate"
+    },
+    {
+      "index": 191,
+      "offset": 7640,
+      "name": "demonEyeAtkRate"
+    },
+    {
+      "index": 192,
+      "offset": 7680,
+      "name": "demonEyeHpRate"
+    },
+    {
+      "index": 193,
+      "offset": 7720,
+      "name": "demonEyeAwakenDesAtkRate"
+    },
+    {
+      "index": 194,
+      "offset": 7760,
+      "name": "demonEyeAwakenViability"
+    },
+    {
+      "index": 195,
+      "offset": 7800,
+      "name": "umbraVisionAtkRate"
+    },
+    {
+      "index": 196,
+      "offset": 7840,
+      "name": "umbraVisionHpRate"
+    },
+    {
+      "index": 197,
+      "offset": 7880,
+      "name": "umbraCoreAtkRate"
+    },
+    {
+      "index": 198,
+      "offset": 7920,
+      "name": "umbraCorePhyAtkRate"
+    },
+    {
+      "index": 199,
+      "offset": 7960,
+      "name": "umbraCoreMagAtkRate"
+    },
+    {
+      "index": 200,
+      "offset": 8000,
+      "name": "umbraCoreMpAmpAtkRate"
+    },
+    {
+      "index": 201,
+      "offset": 8040,
+      "name": "umbraCoreDesAtkRate"
+    },
+    {
+      "index": 202,
+      "offset": 8080,
+      "name": "umbraCoreHpRate"
+    },
+    {
+      "index": 203,
+      "offset": 8120,
+      "name": "umbraCoreEndurance"
+    },
+    {
+      "index": 204,
+      "offset": 8160,
+      "name": "umbraCoreViability"
+    },
+    {
+      "index": 205,
+      "offset": 8200,
+      "name": "umbraCoreVigor"
+    },
+    {
+      "index": 206,
+      "offset": 8240,
+      "name": "costumeAtkRate"
+    },
+    {
+      "index": 207,
+      "offset": 8280,
+      "name": "costumeHpRate"
+    },
+    {
+      "index": 208,
+      "offset": 8320,
+      "name": "lumibirdTrainerAtkRate"
+    },
+    {
+      "index": 209,
+      "offset": 8360,
+      "name": "lumibirdTrainerHpRate"
+    },
+    {
+      "index": 210,
+      "offset": 8400,
+      "name": "eventAtkRate"
+    },
+    {
+      "index": 211,
+      "offset": 8440,
+      "name": "eventHpRate"
+    },
+    {
+      "index": 212,
+      "offset": 8480,
+      "name": "novaSkillAtkRate"
+    },
+    {
+      "index": 213,
+      "offset": 8520,
+      "name": "novaSkillHpRate"
+    },
+    {
+      "index": 214,
+      "offset": 8560,
+      "name": "pirateKingAtkRate"
+    },
+    {
+      "index": 215,
+      "offset": 8600,
+      "name": "pirateKingHpRate"
+    },
+    {
+      "index": 216,
+      "offset": 8640,
+      "name": "ironheartOfGronmarAtkRate"
+    },
+    {
+      "index": 217,
+      "offset": 8680,
+      "name": "ironheartOfGronmarHpRate"
+    },
+    {
+      "index": 218,
+      "offset": 8720,
+      "name": "artifactAwakenAtkRate"
+    },
+    {
+      "index": 219,
+      "offset": 8760,
+      "name": "artifactAwakenHpRate"
+    },
+    {
+      "index": 220,
+      "offset": 8800,
+      "name": "artifactBowOfAsteosAtkRate"
+    },
+    {
+      "index": 221,
+      "offset": 8840,
+      "name": "artifactBowOfAsteosHpRate"
+    },
+    {
+      "index": 222,
+      "offset": 8880,
+      "name": "artifactCrownOfLiriasAtkRate"
+    },
+    {
+      "index": 223,
+      "offset": 8920,
+      "name": "artifactCrownOfLiriasHpRate"
+    },
+    {
+      "index": 224,
+      "offset": 8960,
+      "name": "artifactAbyssReaverAtkRate"
+    },
+    {
+      "index": 225,
+      "offset": 9000,
+      "name": "artifactAbyssReaverHpRate"
+    },
+    {
+      "index": 226,
+      "offset": 9040,
+      "name": "artifactAegisOfTitanfallAtkRate"
+    },
+    {
+      "index": 227,
+      "offset": 9080,
+      "name": "artifactAegisOfTitanfallHpRate"
+    },
+    {
+      "index": 228,
+      "offset": 9120,
+      "name": "artifactEclipseSignetAtkRate"
+    },
+    {
+      "index": 229,
+      "offset": 9160,
+      "name": "artifactEclipseSignetHpRate"
+    },
+    {
+      "index": 230,
+      "offset": 9200,
+      "name": "artifactBroochOfNerissaAtkRate"
+    },
+    {
+      "index": 231,
+      "offset": 9240,
+      "name": "artifactBroochOfNerissaHpRate"
+    },
+    {
+      "index": 232,
+      "offset": 9280,
+      "name": "artifactBellOfEliasAtkRate"
+    },
+    {
+      "index": 233,
+      "offset": 9320,
+      "name": "artifactBellOfEliasHpRate"
+    },
+    {
+      "index": 234,
+      "offset": 9360,
+      "name": "artifactBraceletOfFrostAtkRate"
+    },
+    {
+      "index": 235,
+      "offset": 9400,
+      "name": "artifactBraceletOfFrostHpRate"
+    },
+    {
+      "index": 236,
+      "offset": 9440,
+      "name": "artifactAegisOfAetherAtkRate"
+    },
+    {
+      "index": 237,
+      "offset": 9480,
+      "name": "artifactAegisOfAetherHpRate"
+    },
+    {
+      "index": 238,
+      "offset": 9520,
+      "name": "artifactTyrantsStingerAtkRate"
+    },
+    {
+      "index": 239,
+      "offset": 9560,
+      "name": "artifactTyrantsStingerHpRate"
+    },
+    {
+      "index": 240,
+      "offset": 9600,
+      "name": "artifactAstralHolySwordAtkRate"
+    },
+    {
+      "index": 241,
+      "offset": 9640,
+      "name": "artifactAstralHolySwordHpRate"
+    },
+    {
+      "index": 242,
+      "offset": 9680,
+      "name": "artifactInsightOfElionAtkRate"
+    },
+    {
+      "index": 243,
+      "offset": 9720,
+      "name": "artifactInsightOfElionHpRate"
+    },
+    {
+      "index": 244,
+      "offset": 9760,
+      "name": "expBuffAtkRate"
+    },
+    {
+      "index": 245,
+      "offset": 9800,
+      "name": "expBuffHpRate"
+    },
+    {
+      "index": 246,
+      "offset": 9840,
+      "name": "expBuffAtkSpdRate"
+    },
+    {
+      "index": 247,
+      "offset": 9880,
+      "name": "expBuffSkillDmgRate"
+    },
+    {
+      "index": 248,
+      "offset": 9920,
+      "name": "expBuffPhyDmgRate"
+    },
+    {
+      "index": 249,
+      "offset": 9960,
+      "name": "expBuffMagDmgRate"
+    },
+    {
+      "index": 250,
+      "offset": 10000,
+      "name": "expBuffVsMobDmgRate"
+    },
+    {
+      "index": 251,
+      "offset": 10040,
+      "name": "expBuffVsBossDmgRate"
+    },
+    {
+      "index": 252,
+      "offset": 10080,
+      "name": "expBuffDefaultAtkDmgRate"
+    },
+    {
+      "index": 253,
+      "offset": 10120,
+      "name": "expBuffPhyDefRate"
+    },
+    {
+      "index": 254,
+      "offset": 10160,
+      "name": "expBuffMagDefRate"
+    },
+    {
+      "index": 255,
+      "offset": 10200,
+      "name": "expBuffVsMobDefRate"
+    },
+    {
+      "index": 256,
+      "offset": 10240,
+      "name": "expBuffVsBossDefRate"
+    },
+    {
+      "index": 257,
+      "offset": 10280,
+      "name": "expBuffAllDefRate"
+    },
+    {
+      "index": 258,
+      "offset": 10320,
+      "name": "skillAttrDmgRate"
+    },
+    {
+      "index": 259,
+      "offset": 10360,
+      "name": "skillAttrSkillDmgRate"
+    },
+    {
+      "index": 260,
+      "offset": 10400,
+      "name": "skillAttrDefaultAtkDmgRate"
+    },
+    {
+      "index": 261,
+      "offset": 10440,
+      "name": "skillAttrPhyDmgRate"
+    },
+    {
+      "index": 262,
+      "offset": 10480,
+      "name": "skillAttrMagDmgRate"
+    },
+    {
+      "index": 263,
+      "offset": 10520,
+      "name": "skillAttrAtkSpdRate"
+    },
+    {
+      "index": 264,
+      "offset": 10560,
+      "name": "skillAttrDefRate"
+    },
+    {
+      "index": 265,
+      "offset": 10600,
+      "name": "enemy_SmallMucklingDmgRate"
+    },
+    {
+      "index": 266,
+      "offset": 10640,
+      "name": "enemy_MediumMucklingDmgRate"
+    },
+    {
+      "index": 267,
+      "offset": 10680,
+      "name": "enemy_LargeMucklingDmgRate"
+    },
+    {
+      "index": 268,
+      "offset": 10720,
+      "name": "enemy_MagisterMucklingDmgRate"
+    },
+    {
+      "index": 269,
+      "offset": 10760,
+      "name": "enemy_MotherMucklingDmgRate"
+    },
+    {
+      "index": 270,
+      "offset": 10800,
+      "name": "enemy_SmallSlime_FireDmgRate"
+    },
+    {
+      "index": 271,
+      "offset": 10840,
+      "name": "enemy_MediumSlime_FireDmgRate"
+    },
+    {
+      "index": 272,
+      "offset": 10880,
+      "name": "enemy_BroodSlime_FireDmgRate"
+    },
+    {
+      "index": 273,
+      "offset": 10920,
+      "name": "enemy_OverlordSlime_FireDmgRate"
+    },
+    {
+      "index": 274,
+      "offset": 10960,
+      "name": "enemy_SmallSlime_WaterDmgRate"
+    },
+    {
+      "index": 275,
+      "offset": 11000,
+      "name": "enemy_MediumSlime_WaterDmgRate"
+    },
+    {
+      "index": 276,
+      "offset": 11040,
+      "name": "enemy_BroodSlime_WaterDmgRate"
+    },
+    {
+      "index": 277,
+      "offset": 11080,
+      "name": "enemy_OverlordSlime_WaterDmgRate"
+    },
+    {
+      "index": 278,
+      "offset": 11120,
+      "name": "enemy_SmallSlime_EarthDmgRate"
+    },
+    {
+      "index": 279,
+      "offset": 11160,
+      "name": "enemy_MediumSlime_EarthDmgRate"
+    },
+    {
+      "index": 280,
+      "offset": 11200,
+      "name": "enemy_BroodSlime_EarthDmgRate"
+    },
+    {
+      "index": 281,
+      "offset": 11240,
+      "name": "enemy_OverlordSlime_EarthDmgRate"
+    },
+    {
+      "index": 282,
+      "offset": 11280,
+      "name": "enemy_ScoutGoblinDmgRate"
+    },
+    {
+      "index": 283,
+      "offset": 11320,
+      "name": "enemy_BruteGoblinDmgRate"
+    },
+    {
+      "index": 284,
+      "offset": 11360,
+      "name": "enemy_ShamanGoblinDmgRate"
+    },
+    {
+      "index": 285,
+      "offset": 11400,
+      "name": "enemy_StrikerGoblinDmgRate"
+    },
+    {
+      "index": 286,
+      "offset": 11440,
+      "name": "enemy_GuardianGoblinDmgRate"
+    },
+    {
+      "index": 287,
+      "offset": 11480,
+      "name": "enemy_BoneArcherSkeletonDmgRate"
+    },
+    {
+      "index": 288,
+      "offset": 11520,
+      "name": "enemy_BoneSpearSkeletonDmgRate"
+    },
+    {
+      "index": 289,
+      "offset": 11560,
+      "name": "enemy_BoneWeaverSkeletonDmgRate"
+    },
+    {
+      "index": 290,
+      "offset": 11600,
+      "name": "enemy_GraveKnightSkeletonDmgRate"
+    },
+    {
+      "index": 291,
+      "offset": 11640,
+      "name": "enemy_AstrichSkeletonDmgRate"
+    },
+    {
+      "index": 292,
+      "offset": 11680,
+      "name": "enemy_StellaSpiderDmgRate"
+    },
+    {
+      "index": 293,
+      "offset": 11720,
+      "name": "enemy_ArmaSpiderDmgRate"
+    },
+    {
+      "index": 294,
+      "offset": 11760,
+      "name": "enemy_BabyBatDmgRate"
+    },
+    {
+      "index": 295,
+      "offset": 11800,
+      "name": "enemy_HammerBatDmgRate"
+    },
+    {
+      "index": 296,
+      "offset": 11840,
+      "name": "enemy_NightmawBatDmgRate"
+    },
+    {
+      "index": 297,
+      "offset": 11880,
+      "name": "enemy_ShardElemental_FireDmgRate"
+    },
+    {
+      "index": 298,
+      "offset": 11920,
+      "name": "enemy_CoreElemental_FireDmgRate"
+    },
+    {
+      "index": 299,
+      "offset": 11960,
+      "name": "enemy_PrimeElemental_FireDmgRate"
+    },
+    {
+      "index": 300,
+      "offset": 12000,
+      "name": "enemy_ShardElemental_WaterDmgRate"
+    },
+    {
+      "index": 301,
+      "offset": 12040,
+      "name": "enemy_CoreElemental_WaterDmgRate"
+    },
+    {
+      "index": 302,
+      "offset": 12080,
+      "name": "enemy_PrimeElemental_WaterDmgRate"
+    },
+    {
+      "index": 303,
+      "offset": 12120,
+      "name": "enemy_ShardElemental_EarthDmgRate"
+    },
+    {
+      "index": 304,
+      "offset": 12160,
+      "name": "enemy_CoreElemental_EarthDmgRate"
+    },
+    {
+      "index": 305,
+      "offset": 12200,
+      "name": "enemy_PrimeElemental_EarthDmgRate"
+    },
+    {
+      "index": 306,
+      "offset": 12240,
+      "name": "enemy_LatalianDmgRate"
+    },
+    {
+      "index": 307,
+      "offset": 12280,
+      "name": "enemy_EliasDmgRate"
+    },
+    {
+      "index": 308,
+      "offset": 12320,
+      "name": "enemy_GoldenGolemDmgRate"
+    },
+    {
+      "index": 309,
+      "offset": 12360,
+      "name": "enemy_GoldenGoblinDmgRate"
+    },
+    {
+      "index": 310,
+      "offset": 12400,
+      "name": "enemy_MimicDmgRate"
+    },
+    {
+      "index": 311,
+      "offset": 12440,
+      "name": "enemy_NerissaQueenSpiderDmgRate"
+    },
+    {
+      "index": 312,
+      "offset": 12480,
+      "name": "Null"
+    }
+  ]
+}

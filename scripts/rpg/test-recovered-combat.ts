@@ -87,3 +87,15 @@ test('stationary timed hit areas retain their duration and repeat interval',()=>
  g.impactors.push({id:1,source:g.enemies[0].serial,x:g.x,targetX:g.x,direction:1,command,born:0,expires:1,hits:{}});
  const hp=g.hp;advance(g,1.1);assert.ok(hp-g.hp>=3);assert.equal(g.impactors.length,0);
 });
+
+test('disabled original filter lists do not delete literal damage effects',()=>{
+ for(const id of [2361,2376,2391]){
+  const a=LABYRINTH.actions[id];
+  assert.ok(a.commands.some(c=>c.effects.some(e=>e.type===1&&e.value===100)),`missing original literal damage in skill ${id}`);
+ }
+});
+test('filter reduction never turns unresolved skill parameters into literal damage',()=>{
+ for(const id of [1102,1105,1108]){
+  assert.ok(LABYRINTH.actions[id].pending.some(p=>p.dataId===17),`symbolic skill ${id} needs equipped-level parameters`);
+ }
+});
