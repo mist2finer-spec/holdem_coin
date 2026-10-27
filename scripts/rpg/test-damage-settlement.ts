@@ -27,3 +27,24 @@ test('high damage flags survive settlement, and groggy is independent of HP armo
 test('bad numeric inputs cannot corrupt a battle state',()=>{
  assert.throws(()=>settleDamage(state,NaN));assert.throws(()=>settleDamage({...state,shield:-1},1));
 });
+
+test('player attacks spend the enemy shield before HP and cannot award a shield-only kill',async()=>{
+ const {HuntEngine}=await import('../../src/components/rpg/hunt-engine');
+ const g=new HuntEngine();g.enemyX=g.x+40;g.enemies[0].shield=1000;const hp=g.enemyHP,kills=g.kills;
+ assert.equal(g.attack(),true);for(let i=0;i<100;i++)g.step(.01,0);
+ assert.ok((g.enemies[0].shield??1000)<1000);assert.equal(g.enemyHP,hp);assert.equal(g.lastDamage,0);assert.equal(g.kills,kills);
+});
+test('fallback monster attacks honor the hero shield and report only HP damage',async()=>{
+ const {HuntEngine}=await import('../../src/components/rpg/hunt-engine');
+ const g=new HuntEngine(undefined,1,{hostile:true});g.enemyX=g.x+40;g.heroShield=1e6;
+ for(let i=0;i<170;i++)g.step(.01,0);
+ assert.ok(g.heroShield<1e6);assert.equal(g.hp,g.maxHP);assert.equal(g.lastHeroDamage,0);
+});
+test('recovered monster impactors use the same shield settlement',async()=>{
+ const {HuntEngine}=await import('../../src/components/rpg/hunt-engine');
+ const {LABYRINTH}=await import('../../src/components/rpg/hunt-labyrinth');
+ const g=new HuntEngine(undefined,7,{hostile:true,campaign:true});g.heroShield=1e6;
+ const command=structuredClone(LABYRINTH.actions[2010].commands[0]);command.speed=0;command.width=80;command.effects=[{phase:'Moving',type:1,value:100,duration:0,target:2}];command.moving=true;
+ g.impactors.push({id:1,source:g.enemies[0].serial,x:g.x,targetX:g.x,direction:1,command,born:0,expires:1,hits:{}});
+ g.step(.01,0);assert.ok(g.heroShield<1e6);assert.equal(g.hp,g.maxHP);assert.equal(g.lastHeroDamage,0);
+});
