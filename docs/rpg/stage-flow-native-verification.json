@@ -1,0 +1,7 @@
+{
+  "passed": true,
+  "cases": 2304,
+  "nativeSha256": "42784ff220ca0eec7a21f9eafb64ac89088ff7463193b25f76baa19536c484e5",
+  "nativeAddress": "0x3b95c7c",
+  "scope": "Wave OnAdvance scheduling only; Spawn and group-death checks are observed callbacks; scene layout not synthesized"
+}

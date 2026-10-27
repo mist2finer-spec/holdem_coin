@@ -1,0 +1,121 @@
+{
+  "webEncounterLayout": "WEB_ADAPTER_6_NORMAL_THEN_FINAL_BOSS",
+  "webStageCount": 6000,
+  "originalMapTypeCounts": {
+    "101": 2,
+    "102": 1,
+    "103": 1,
+    "104": 1,
+    "105": 1,
+    "2": 1487,
+    "3": 759,
+    "4": 763,
+    "5": 763,
+    "90": 3,
+    "1": 2210,
+    "6": 9
+  },
+  "stageExamples": {
+    "101": {
+      "mapType": 101,
+      "victoryCondition": 1,
+      "goal": 0,
+      "monsterDefinitionCount": 6
+    },
+    "102": {
+      "mapType": 102,
+      "victoryCondition": 1,
+      "goal": 0,
+      "monsterDefinitionCount": 6
+    },
+    "103": {
+      "mapType": 103,
+      "victoryCondition": 1,
+      "goal": 0,
+      "monsterDefinitionCount": 6
+    },
+    "104": {
+      "mapType": 104,
+      "victoryCondition": 1,
+      "goal": 0,
+      "monsterDefinitionCount": 6
+    },
+    "105": {
+      "mapType": 105,
+      "victoryCondition": 1,
+      "goal": 0,
+      "monsterDefinitionCount": 6
+    },
+    "201": {
+      "mapType": 101,
+      "victoryCondition": 1,
+      "goal": 0,
+      "monsterDefinitionCount": 6
+    },
+    "701": {
+      "mapType": 1,
+      "victoryCondition": 2,
+      "goal": 100,
+      "monsterDefinitionCount": 8
+    }
+  },
+  "legacyWaveCandidates": 128,
+  "reactorsPerWaveHistogram": {
+    "1": 18,
+    "2": 2,
+    "3": 9,
+    "4": 3,
+    "5": 6,
+    "6": 4,
+    "7": 32,
+    "8": 18,
+    "9": 1,
+    "10": 14,
+    "11": 3,
+    "12": 4,
+    "13": 2,
+    "14": 5,
+    "19": 3,
+    "20": 2,
+    "21": 1,
+    "25": 1
+  },
+  "trigger1Histogram": {
+    "10": 94,
+    "40": 23,
+    "0": 8,
+    "20": 3
+  },
+  "repeatCandidates": 16,
+  "spawnNameCounts": {
+    "소형": 412,
+    "브루드": 2,
+    "중형": 223,
+    "스트라이커": 1,
+    "가디언": 1,
+    "": 99,
+    "특수": 82,
+    "대형": 24,
+    "보스2": 2,
+    "중형2": 11,
+    "보스": 13,
+    "리치": 1,
+    "아처": 21,
+    "위버": 5,
+    "스피어": 19,
+    "나이트": 1,
+    "중간보스": 2,
+    "소형2": 44,
+    "소형3": 21,
+    "대형3": 4,
+    "중형3": 5,
+    "대형2": 2
+  },
+  "sourceHashes": {
+    "runtime": "03e18805f093ab4ab4999e2014634c9dbb8b2950a5ebac8586543b897a3fc2cc",
+    "stages": "ca40cfd758652e6e386d18b3f03b69e965467bc4a61e969219bd65473a9707d0"
+  },
+  "conclusion": "Fixed normal-count then boss is a WEB ADAPTER, not the original scene rule. MonsterDatas lists definitions, not counts or spawn order.",
+  "runtimeReady": false,
+  "blocker": "Legacy exports lost serialized-file identity; original map bundle/split APK required for scene-to-reactor/transform linkage."
+}
