@@ -130,7 +130,12 @@ export function PokerTableSocket({ userName, onToast, tableSize=8, onMain,tourna
       <span className="absolute bottom-1 right-2 z-30 text-[9px] text-slate-400" title="현재 화면 버전">
         서버 · {CLIENT_REVISION.slice(0, 7)}
       </span>
-      {tournamentState&&<div className="tournament-hud">8인 토너먼트 · Round {tournamentState.level} · SB/BB {bbMoney(tournamentState.smallBlind)}/{bbMoney(bb)} · {tournamentState.remaining}/8명<br/>{tournamentState.status==='countdown'?`토너먼트 시작까지 ${Math.max(0,Math.ceil(((tournamentState.startsAt??clock)-clock)/1000))}초`:tournamentState.status==='waiting'?'플레이어 입장 대기':tournamentState.status==='finished'?`다음 대회까지 ${tournamentTime(Math.ceil(((tournamentState.nextTournamentAt??clock)-clock)/1000))}`:`진행 ${tournamentTime((clock-(tournamentState.startedAt??clock))/1000)} · ${nextSeconds?`블라인드 인상 ${tournamentTime(nextSeconds)}`:'다음 핸드부터 블라인드 인상'}`} · 레이크 0 · 리바인 불가</div>}
+      {tournamentState&&<>
+        <div className="tournament-hud" aria-label="토너먼트 진행 시간과 블라인드">
+          <span>{tournamentState.status==='countdown'?`시작까지 ${Math.max(0,Math.ceil(((tournamentState.startsAt??clock)-clock)/1000))}초`:tournamentState.status==='waiting'?'입장 대기':tournamentState.status==='finished'?'대회 종료':`진행시간: ${tournamentTime((clock-(tournamentState.startedAt??clock))/1000)}`}</span>
+          <small>SB {tournamentState.smallBlind.toLocaleString()} / BB {bb.toLocaleString()}</small>
+        </div>
+      </>}
       {tournamentState?.winner&&<div className="tournament-finish" role="dialog" aria-modal="true" aria-label="토너먼트 우승"><section><span>TOURNAMENT CHAMPION</span><CharacterPortrait portrait={tournamentState.winner.portrait} name={tournamentState.winner.name}/><h1>{tournamentState.winner.name}</h1><h2>1위! 우승을 축하합니다!</h2><Button onClick={onMain}>로비로</Button></section></div>}
       {eliminated&&!watchEliminated&&!tournamentState?.winner&&<div className="tournament-finish" role="dialog" aria-modal="true" aria-label="토너먼트 탈락"><section><h2>토너먼트에서 탈락했습니다.</h2><p>리바인과 같은 이름의 재입장은 불가합니다.</p><Button onClick={()=>setWatchEliminated(true)}>계속 관전</Button><Button onClick={onMain}>로비로</Button></section></div>}
       {/* 배경 장식 */}
@@ -178,6 +183,8 @@ export function PokerTableSocket({ userName, onToast, tableSize=8, onMain,tourna
 
       {/* 테이블 */}
       <div className="poker-arena relative min-h-0 flex items-center justify-center pt-20 pb-20 sm:pt-24 sm:pb-24">
+      {tournamentState&&<div className="tournament-round" aria-label="토너먼트 라운드와 남은 시간"><span>Round {tournamentState.level}</span><span>Time left: {tournamentTime(nextSeconds)}</span></div>}
+
         <div className="poker-table-surface relative w-[min(98vw,1100px)] h-full max-h-[640px]">
           <div className="absolute inset-0 rounded-[50%] bg-gradient-to-br from-amber-950 via-amber-900 to-amber-950 shadow-[0_0_60px_rgba(0,0,0,0.8),inset_0_0_30px_rgba(0,0,0,0.6)]" />
           <div className="absolute inset-2 sm:inset-3 rounded-[50%] bg-gradient-to-br from-emerald-900 via-emerald-950 to-emerald-900 shadow-[inset_0_0_50px_rgba(0,0,0,0.7)] border-2 border-amber-700/40" />
@@ -236,11 +243,7 @@ export function PokerTableSocket({ userName, onToast, tableSize=8, onMain,tourna
       {/* ★ 핸드 진행 중 입장 메시지 (뒤에 들어온 플레이어에게만) */}
       {handInProgress && (
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-40 pointer-events-none">
-          <div className="bg-slate-950/95 border-2 border-amber-500 rounded-xl px-6 py-3 shadow-2xl backdrop-blur-md text-center">
-            <div className="text-amber-300 text-sm font-bold mb-1">⏳ 핸드 진행 중</div>
-            <div className="text-amber-200/80 text-xs">현재 핸드 #{handNumber}이(가) 진행 중입니다.</div>
-            <div className="text-amber-200/80 text-xs">다음 핸드부터 참여할 수 있습니다.</div>
-          </div>
+          <div className="poker-join-notice" role="status">⏳ 핸드 진행 중</div>
         </div>
       )}
 
