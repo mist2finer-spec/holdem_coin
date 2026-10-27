@@ -1,0 +1,22 @@
+{
+  "status": "PASSED",
+  "durationSeconds": 0.6,
+  "contactSeconds": 0.3,
+  "scalarBezierSegments": 128,
+  "vectorBezierSegments": 21,
+  "finitePoseSamples": 121,
+  "bodyChainBones": 23,
+  "bladeWorldAngles": [
+    110,
+    -70
+  ],
+  "holdWindow": [
+    0.3,
+    0.38
+  ],
+  "shakeAmplitude": 3,
+  "nativeSlashAttachmentAndAlpha": true,
+  "headlessRuntime": "Official Spine 4.2.120",
+  "unityEditorTested": false,
+  "productionChanged": false
+}

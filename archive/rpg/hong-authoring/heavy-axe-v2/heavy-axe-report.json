@@ -1,0 +1,45 @@
+{
+  "duration": 0.6,
+  "contact": 0.3,
+  "phases": {
+    "windup": [
+      0,
+      0.25
+    ],
+    "snap": [
+      0.25,
+      0.3
+    ],
+    "hold": [
+      0.3,
+      0.38
+    ],
+    "recovery": [
+      0.38,
+      0.6
+    ]
+  },
+  "angleConvention": "User chest screen-clockwise signs converted to Spine Y-up: windup +25deg, impact -35deg. Blade standard world angle +110 to -70 (art points +Y, so mount local compensates -90).",
+  "rotationHold": true,
+  "shakeBones": [
+    "torso",
+    "weapon-front"
+  ],
+  "shakeTranslationAmplitude": 3,
+  "secondaryDelaySeconds": {
+    "hair": 0.06,
+    "skirt": 0.05
+  },
+  "secondary": "Delayed windup + 0.44s release overshoot; all rotations freeze in .30-.38.",
+  "referencePose": {
+    "reliableSegments": 5,
+    "rejectedSegments": 141,
+    "lift": 20,
+    "used": true
+  },
+  "clampedIKTargets": 14,
+  "curves": "Spine 4.2 absolute time/value control points; 4 numbers per scalar, 8 per vector. Stepped constant/hold segments.",
+  "nativeSlashSlot": true,
+  "noFullBodyBackViewInvented": true,
+  "productionChanged": false
+}

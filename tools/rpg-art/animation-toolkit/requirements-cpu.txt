@@ -1,0 +1,7 @@
+# Install these first, then: pip install --no-deps rtmlib==0.0.16
+# Avoid installing three overlapping OpenCV wheels in the same environment.
+numpy==2.5.4
+onnxruntime==1.31.1
+opencv-python-headless==5.0.0.93
+tqdm==4.70.1
+Pillow>=10

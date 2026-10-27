@@ -1,0 +1,53 @@
+{
+  "repositories": [
+    {
+      "name": "spine-animation-ai",
+      "url": "https://github.com/GenielabsOpenSource/spine-animation-ai.git",
+      "commit": "702b71689cac826efee942ee4564fef9560d6ef8",
+      "license": "PolyForm Noncommercial 1.0.0",
+      "licenseSha256": "5c6dcda76cf9f56e9c8ef27e033d6da0d7f855fb10b4420b7d06e43976db2419",
+      "mode": "reference-only; no code copied into runtime"
+    },
+    {
+      "name": "rtmlib",
+      "url": "https://github.com/Tau-J/rtmlib.git",
+      "commit": "03a1693e59e4f7cd84582c0fb30459b3bf18ad42",
+      "license": "Apache-2.0",
+      "licenseSha256": "ec0a9c27a980866653f5a9901ea0e2458df074b1516e45c6842736ee5c5a4a1c",
+      "mode": "CPU RTMPose inference executed; low-confidence joints rejected"
+    },
+    {
+      "name": "AnimatedDrawings",
+      "url": "https://github.com/facebookresearch/AnimatedDrawings.git",
+      "commit": "b859684857519c7424da51a0b0862fbd1fd258f4",
+      "license": "MIT",
+      "licenseSha256": "155419f3d7fed7028e2302e296c7b35e704e305d87e3c0fc5fb02a115c03e0b4",
+      "mode": "projection/depth configuration reviewed; example BVH projection adapter tested"
+    },
+    {
+      "name": "2D-Motion-Retargeting",
+      "url": "https://github.com/rundiwu/2D-Motion-Retargeting.git",
+      "commit": "f3454a1972a98b3a572f83c1c9ea0b0e5d9e7d00",
+      "license": "MIT",
+      "licenseSha256": "eed07892ded746405c3557f9719180f4b15439f8738053f4a50437b8b329e719",
+      "mode": "source and FBX conversion workflow reviewed; trained neural checkpoint not run"
+    },
+    {
+      "name": "ToonCrafter",
+      "url": "https://github.com/ToonCrafter/ToonCrafter.git",
+      "commit": "b0c47ff339c5e5ec45b84d0c6587850f242d41ef",
+      "license": "Apache-2.0",
+      "licenseSha256": "9849d33ce88d14d755c8d71d7c8e6deecf7e9ff8d91a6ca0ee5cd9058120b830",
+      "mode": "optional adapter only; no weights downloaded/inference; 4GB user GPU insufficient per upstream requirements"
+    },
+    {
+      "name": "ai-game-spritesheets",
+      "url": "https://github.com/chongdashu/ai-game-spritesheets.git",
+      "commit": "82da6f8f8e29f859521cfe2c00730b028e93cfa7",
+      "license": "MIT",
+      "licenseSha256": "40863642f7315c14d1dc80aca87ae392d642f70a3a582dc1a6370755a0707359",
+      "mode": "anchor/normalization prompt workflow reviewed; no external paid API invoked"
+    }
+  ],
+  "policy": "External checkouts/models stay in ignored .tools; no third-party runtime added to hosted game."
+}

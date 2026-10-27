@@ -90,3 +90,8 @@ mini-services/poker-server/data/
 
 # Reproducible Hong motion-authoring source cutouts
 !/scripts/rpg/hong-motion/input-work/**/*.png
+
+# Reviewed non-runtime Hong authoring assets
+!/archive/rpg/hong-authoring/**/*.png
+
+/tools/rpg-art/animation-toolkit/__pycache__/
