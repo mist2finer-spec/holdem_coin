@@ -1,0 +1,12 @@
+{
+  "status": "experimental-not-approved",
+  "source": "User-provided ComfyUI generation reviewed 2026-10-26",
+  "sourceUpload": "20261026-220857-15bcf8.zip",
+  "graph": "LoadImage -> nearest 512 -> VAEEncode -> KSampler denoise 0.4 -> VAEDecode -> nearest 256",
+  "limitations": [
+    "RGB output on black, not clean alpha",
+    "Existing Hong combat sprite is the single image reference",
+    "Not validated as Vardian style or production Spine parts"
+  ],
+  "productionUI": "main commit 390f359; compact tournament status and hunt stage overlays"
+}
