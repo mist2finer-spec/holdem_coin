@@ -47,3 +47,7 @@ Read each `README_KO.txt`. Prompts and graph JSON are kept alongside scripts. Ru
 ## Safety and handoff
 
 No API keys, Git tokens, personal runtime dumps, or full user upload archives belong here. Test outputs/caches are excluded. Original source assets remain authoritative. Future AI should read this file, then the selected tool README, and distinguish archived experiments from production changes.
+
+## Resume entry (2026-10-27)
+
+`tools/rpg-art/resume_hong.ps1` downloads the four hash-checked runtime files into the local GPU PC. `-Action Check` is read-only; `-Action Generate` creates one combat-base candidate and refuses to resubmit into an already busy ComfyUI queue. `-Action Report -Work ...` inspects the preserved old draft. New six tests and existing four combat-base tests pass; actual GPU inference and Unity/Spine Editor QA still run on the user workstation. This branch does not update production art. See `tools/rpg-art/resume/README_KO.txt`.
