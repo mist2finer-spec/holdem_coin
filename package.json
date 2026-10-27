@@ -36,7 +36,9 @@
     "rpg:compile:combat": "python3 scripts/rpg/compile_combat_runtime.py",
     "rpg:restore:loop": "python3 scripts/rpg/recovery_loop.py",
     "rpg:restore:rewards": "python3 scripts/rpg/restore_reward_db.py",
-    "rpg:rewards": "python3 scripts/rpg/reward_db.py"
+    "rpg:rewards": "python3 scripts/rpg/reward_db.py",
+    "rpg:restore:reward-policy": "python3 scripts/rpg/restore_reward_policy.py",
+    "rpg:reward-policy": "python3 scripts/rpg/reward_policy_db.py"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

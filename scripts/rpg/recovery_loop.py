@@ -47,8 +47,10 @@ def main():
    if a.legacy_root:run(f'round-{iteration}-scenes',[py,'scripts/rpg/recover_scene_links.py','--legacy-root',str(a.legacy_root),'--actors',str(a.source/'ActorData.json'),'--output',str(a.output/'scenes')])
    run(f'round-{iteration}-reference-tests',[py,'-m','unittest','discover','-s','scripts/rpg','-p','test_reference*.py'])
    if a.native:
-    for script in ['verify_final_damage_native','verify_conditions_native']:
+    for script in ['verify_final_damage_native','verify_conditions_native','verify_critical_native','verify_damage_application_native','verify_shield_layers_native','verify_weighted_selection_native']:
      run(f'round-{iteration}-'+script,[py,'scripts/rpg/'+script+'.py','--native',str(a.native),'--output',str(a.output/(script+'.json'))])
+   if a.native:
+    run(f'round-{iteration}-reward-scaling',[py,'scripts/rpg/verify_reward_scaling_native.py','--native',str(a.native),'--source',str(a.source/'LabyrinthData.json'),'--output',str(a.output/'reward-scaling-native.json')])
    run(f'round-{iteration}-types',['npm','run','check:rpg'])
    run(f'round-{iteration}-runtime-tests',['npm','run','test:rpg'])
  except (TimeoutError,subprocess.TimeoutExpired) as e:status='budget-exhausted';print(str(e),file=sys.stderr)
