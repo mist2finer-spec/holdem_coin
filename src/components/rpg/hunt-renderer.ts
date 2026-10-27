@@ -61,15 +61,16 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
  });
  const assetCache=new Map<string,typeof enemy>();const pending=new Set<string>();const failed=new Set<string>();
  const stageVisuals=new Map<number,typeof enemy & {keySerial:number}>();let disposed=false;
+ const fallbackFor=(slot:number)=>{while(enemies.length<=slot){const skeleton=new Skeleton(enemy.skeleton.data);if(enemy.skeleton.skin)skeleton.setSkin(enemy.skeleton.skin);skeleton.setSlotsToSetupPose();enemies.push({...enemy,skeleton,state:new AnimationState(enemy.state.data),animation:'',serial:0});}return enemies[slot];};
  const visualFor=(mob:HuntEngine['enemies'][number])=>{
-  if(!mob.asset)return enemies[mob.slot];
-  const meta=LABYRINTH.assets[mob.asset];if(!meta)return enemies[mob.slot];
+  if(!mob.asset)return fallbackFor(mob.slot);
+  const meta=LABYRINTH.assets[mob.asset];if(!meta)return fallbackFor(mob.slot);
   const old=stageVisuals.get(mob.slot);if(old?.keySerial===mob.serial)return old;
   const template=assetCache.get(mob.asset);
   if(template){const skeleton=new Skeleton(template.skeleton.data);if(template.skeleton.skin)skeleton.setSkin(template.skeleton.skin);skeleton.setSlotsToSetupPose();
    const value={...template,skeleton,state:new AnimationState(template.state.data),animation:'',serial:mob.serial,keySerial:mob.serial};stageVisuals.set(mob.slot,value);return value;}
   if(!pending.has(mob.asset)&&!failed.has(mob.asset)){pending.add(mob.asset);void actor(meta.skeleton,signal,gl,meta.groundSlots).then(value=>{if(disposed)value.atlas.dispose();else assetCache.set(mob.asset!,value);}).catch(()=>{failed.add(mob.asset!);canvas.dataset.assetError=mob.asset;}).finally(()=>pending.delete(mob.asset!));}
-  return enemies[mob.slot];
+  return fallbackFor(mob.slot);
  };
  const ctx = canvas.getContext('2d'); if (!ctx) throw Error('Canvas를 사용할 수 없습니다.');
  const renderer = gl ? new SceneRenderer(layer, gl) : null;
@@ -106,8 +107,10 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
    for(const edge of [65,WORLD_WIDTH-65]){const x=screenX(edge);if(x>=0&&x<w){ctx.fillStyle='#b4ba8777';ctx.fillRect(x,floor-18,3,25);}}
    const scale=COMBAT_SPRITE_SCALE*zoom;
    ctx.fillStyle='#0005';ctx.beginPath();ctx.ellipse(screenX(game.x),floor+4,25*zoom,5*zoom,0,0,Math.PI*2);ctx.fill();
+   for(const [slot,visual] of stageVisuals)if(!game.enemies.some(e=>e.slot===slot&&e.serial===visual.keySerial))stageVisuals.delete(slot);
    for(const mob of game.enemies){
     if(mob.hp<=0&&game.elapsed>=mob.respawnAt)continue;
+    if(screenX(mob.x)<-150||screenX(mob.x)>w+150)continue;
     const visual=visualFor(mob),hurt=mob.hp>0&&mob.hitUntil>game.elapsed;
     const clips=(mob.asset?LABYRINTH.assets[mob.asset]:undefined)?.clips??HUNT_MONSTER_ASSET.clips;
     const anim=mob.hp<=0?clips.death:hurt?clips.hurt:mob.state==='windup'?(mob.clip??clips.attack):mob.state==='walk'?clips.move:clips.idle;

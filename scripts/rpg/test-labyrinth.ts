@@ -15,23 +15,27 @@ test('all 6000 restored stages retain five sections and valid monster/asset/stat
  for(const asset of Object.values(LABYRINTH.assets))for(const ext of ['json','atlas','png'])assert.ok(existsSync('public/rpg/'+asset.skeleton+'.'+ext),'Missing monster asset '+asset.skeleton+'.'+ext);
  assert.throws(()=>stageDefinition(6000));assert.throws(()=>stageDefinition(-1));
 });
-test('defeated normal monsters stay defeated; final encounter activates only after all six are gone',()=>{
- const g=new HuntEngine(HUNT_RULES.combo,7,{hostile:true,campaign:true});g.enemies[0].hp=0;step(g,80);
- assert.equal(g.enemies[0].hp,0);assert.equal(g.stage.phase,'normal');assert.equal(g.enemies[6].hp,0);
- for(const e of g.enemies)e.hp=0;step(g,1);assert.equal(g.stage.phase,'boss');assert.equal(g.stage.remaining,1);assert.ok(g.enemies[6].boss);
+function defeatStage(g:HuntEngine){
+ g.setAuto(true);
+ for(let i=0;i<12000&&g.stage.phase!=='cleared'&&g.stage.phase!=='complete';i++){g.enemies.forEach(e=>e.hp=0);g.step(.05,0);}
+ assert.ok(['cleared','complete'].includes(g.stage.phase));
+}
+test('scene monsters stay defeated and clearing 1-1 does not invent a midboss',()=>{
+ const g=new HuntEngine(HUNT_RULES.combo,7,{hostile:true,campaign:true});assert.equal(g.stage.remaining,19);const serial=g.enemies[0].serial;g.enemies[0].hp=0;step(g,20);
+ assert.equal(g.enemies.find(e=>e.serial===serial)!.hp,0);assert.equal(g.stage.phase,'normal');assert.equal(g.stage.remaining,18);
+ defeatStage(g);assert.equal(g.stage.phase,'cleared');assert.equal(g.enemies.some(e=>e.boss),false);
 });
-test('boss clear awards once, advances after delay and saves next checkpoint; section five uses stronger boss',()=>{
+test('scene clear awards once, persists checkpoint and section five starts at its spawn area',()=>{
  const p=newHuntProgress(),g=new HuntEngine(HUNT_RULES.combo,7,{hostile:true,campaign:true,progress:p});
- g.enemies.forEach(e=>e.hp=0);step(g,1);const mid=g.enemies[6].actorType;g.enemies[6].hp=0;step(g,1);
- const gold=p.gold;assert.equal(p.labyrinthStage,1);assert.equal(g.stage.phase,'cleared');step(g,10);assert.equal(p.gold,gold);
- step(g,35);assert.equal(g.stage.id,102);assert.equal(g.stage.phase,'normal');assert.equal(g.stage.remaining,6);
+ defeatStage(g);const gold=p.gold;assert.equal(p.labyrinthStage,1);step(g,10);assert.equal(p.gold,gold);
+ step(g,35);assert.equal(g.stage.id,102);assert.equal(g.stage.remaining,21);
  const restored=new HuntEngine(HUNT_RULES.combo,7,{hostile:true,campaign:true,progress:p});assert.equal(restored.stage.id,102);
- p.labyrinthStage=4;const boss=new HuntEngine(HUNT_RULES.combo,7,{hostile:true,campaign:true,progress:p});assert.equal(boss.stage.section,5);assert.notEqual(boss.enemies[6].actorType,mid);
+ p.labyrinthStage=4;const boss=new HuntEngine(HUNT_RULES.combo,7,{hostile:true,campaign:true,progress:p});assert.equal(boss.stage.section,5);assert.equal(boss.stage.remaining,0);
+ boss.setAuto(true);for(let i=0;i<2000&&!boss.stage.remaining;i++)boss.step(.05,0);assert.equal(boss.stage.remaining,1);assert.ok(boss.enemies.some(e=>e.boss));
 });
 test('final clear stays complete without out-of-bounds transition or repeated payout',()=>{
  const p=newHuntProgress();p.labyrinthStage=5999;const g=new HuntEngine(HUNT_RULES.combo,7,{hostile:true,campaign:true,progress:p});
- g.enemies.forEach(e=>e.hp=0);step(g,1);g.enemies[6].hp=0;step(g,1);const gold=p.gold;step(g,100);
- assert.equal(g.stage.phase,'complete');assert.equal(p.labyrinthCompleted,1);assert.equal(p.gold,gold);
+ defeatStage(g);const gold=p.gold;step(g,100);assert.equal(g.stage.phase,'complete');assert.equal(p.labyrinthCompleted,1);assert.equal(p.gold,gold);
  const reopened=new HuntEngine(HUNT_RULES.combo,7,{hostile:true,campaign:true,progress:p});assert.equal(reopened.stage.remaining,0);
 });
 test('normal and boss damage channels remain separate and defense cap applies',()=>{

@@ -1,3 +1,4 @@
+import {SceneFlow,sceneBinding,type SceneSpawn} from './hunt-scene-flow';
 import {settleDamage} from './hunt-damage';
 import {relativeStat,accuracy,effectDuration} from './hunt-formulas';
 import {canUseAttack,castCommands,sweptHit,markHit,type Cast,type Impactor,type MonsterAttack} from './hunt-actions';
@@ -13,20 +14,20 @@ type Motion={kind:'attack'|'skill'|'rush'|'dodge';start:number;duration:number;t
  destination?:number;speed?:number;origin?:number};
 const clampX=(x:number)=>Math.max(65,Math.min(WORLD_WIDTH-65,x));
 export type HuntEnemy={slot:number;x:number;hp:number;maxHP:number;serial:number;respawnAt:number;lastDamage:number;hitUntil:number;
- actorType?:number;boss?:boolean;asset?:string;damage?:number;windup?:number;recovery?:number;moveSpeed?:number;radius?:number;valor?:number;mental?:number;tenacity?:number;focus?:number;skills?:number[];aiType?:number;clip?:string;castSerial?:number;motionEvent?:number;shield?:number;
+ sceneWave?:number;actorType?:number;boss?:boolean;asset?:string;damage?:number;windup?:number;recovery?:number;moveSpeed?:number;radius?:number;valor?:number;mental?:number;tenacity?:number;focus?:number;skills?:number[];aiType?:number;clip?:string;castSerial?:number;motionEvent?:number;shield?:number;
  state:'idle'|'walk'|'windup'|'recover'|'dead';attackAt:number;nextAttack:number};
-export type HuntOptions={campaign?:boolean;hostile?:boolean;progress?:HuntProgress;balance?:HuntBalance;range?:number;crit?:number;seed?:number;tempo?:number};
+export type HuntOptions={sceneFlow?:boolean;campaign?:boolean;hostile?:boolean;progress?:HuntProgress;balance?:HuntBalance;range?:number;crit?:number;seed?:number;tempo?:number};
 /** Authoritative finite-stage combat; unverified native branches remain explicit adapters. */
 export class HuntEngine {
  x=620;facing=1;hp=100;
  readonly enemies:HuntEnemy[];private targetSlot=0;
- readonly campaign:boolean;private stageIndex=0;private stagePhase:LabyrinthView["phase"]="normal";private nextStageAt=0;
- private stageStarted=0;private stageKills=0;private spawnCounter=0;private objectiveObjects:{id:number;x:number;done:boolean}[]=[];
+ readonly campaign:boolean;private useSceneFlow:boolean;private sceneFlow:SceneFlow|null=null;private sceneInfo:ReturnType<typeof sceneBinding>=null;private stageIndex=0;private stagePhase:LabyrinthView["phase"]="normal";private nextStageAt=0;
+ private sceneStep=0;private stageStarted=0;private stageKills=0;private spawnCounter=0;private objectiveObjects:{id:number;x:number;done:boolean}[]=[];
  private escort:{x:number;hp:number;maxHP:number}|null=null;private failure='';
  private casts=new Map<number,Cast>();private ready=new Map<number,Record<number,number>>();private uses=new Map<number,Record<number,number>>();
  impactors:Impactor[]=[];private impactorId=0;heroShield=0;heroStunUntil=0;heroInvincibleUntil=0;
- get stage():LabyrinthView{const id=stageDefinition(this.stageIndex).id;const d=stageDefinition(this.stageIndex);return {id,chapter:Math.floor(id/100),section:id%100,phase:this.stagePhase,remaining:this.enemies.filter(e=>e.hp>0).length,total:this.stagePhase==='normal'?6:1,nextIn:Math.max(0,this.nextStageAt-this.elapsed),
- objective:({1:'모든 적 처치',2:'목표 수 처치',3:'보스 처치',4:'출구 도달',5:'오브젝트 완료',6:'장치 작동',7:'동료 보호 및 처치'} as Record<number,string>)[d.victory]??'전투',goal:d.goal||this.objectiveObjects.length||7,done:[5,6].includes(d.victory)?this.objectiveObjects.filter(o=>o.done).length:this.stageKills,remainingTime:d.timeLimit>0?Math.max(0,d.timeLimit-(this.elapsed-this.stageStarted)):null,failure:this.failure,objects:this.objectiveObjects.map(o=>({...o})),exitX:d.victory===4?WORLD_WIDTH-160:null,escort:this.escort?{...this.escort}:null};}
+ get stage():LabyrinthView{const id=stageDefinition(this.stageIndex).id;const d=stageDefinition(this.stageIndex);return {id,chapter:Math.floor(id/100),section:id%100,phase:this.stagePhase,remaining:this.enemies.filter(e=>e.hp>0).length,total:this.sceneFlow?this.sceneFlow.layout.waves.reduce((n,w)=>n+w.spawns.length*(w.repeat?w.count:1),0):this.stagePhase==='normal'?6:1,nextIn:Math.max(0,this.nextStageAt-this.elapsed),
+ objective:this.sceneFlow?.nextAreaX!==undefined&&!this.enemies.some(e=>e.hp>0)?'전방 구역으로 이동':({1:'모든 적 처치',2:'목표 수 처치',3:'보스 처치',4:'출구 도달',5:'오브젝트 완료',6:'장치 작동',7:'동료 보호 및 처치'} as Record<number,string>)[d.victory]??'전투',goal:d.goal||this.objectiveObjects.length||(this.sceneFlow?this.sceneFlow.layout.waves.reduce((n,w)=>n+w.spawns.length*(w.repeat?w.count:1),0):7),done:[5,6].includes(d.victory)?this.objectiveObjects.filter(o=>o.done).length:this.stageKills,remainingTime:d.timeLimit>0?Math.max(0,d.timeLimit-(this.elapsed-this.stageStarted)):null,failure:this.failure,objects:this.objectiveObjects.map(o=>({...o})),exitX:d.victory===4?WORLD_WIDTH-160:null,escort:this.escort?{...this.escort}:null};}
  private get targetRange(){return this.range+Math.max(0,(this.target.radius??12)-12);}
  private get target(){return this.enemies[this.targetSlot];}
  get enemyX(){return this.target.x;}set enemyX(v:number){this.target.x=v;}
@@ -56,7 +57,7 @@ export class HuntEngine {
   this.attackReady=Math.max(this.attackReady,this.elapsed+.12);this.pose('stay1',true);
  }
  constructor(combo:readonly ComboStage[]=HUNT_RULES.combo,enemyCount=HUNT_STAGE.maxAlive,options:HuntOptions={}){
-  this.campaign=options.campaign??false;
+  this.campaign=options.campaign??false;this.useSceneFlow=options.sceneFlow??true;
   this.progress=options.progress??newHuntProgress();this.balance=options.balance??DEFAULT_HUNT_BALANCE;
   this.tempo=options.tempo??1;if(!Number.isFinite(this.tempo)||this.tempo<.5||this.tempo>2)throw Error('Invalid tempo');
   this.hostile=options.hostile??false;this.rng=(options.seed??12345)>>>0;this.range=options.range??HUNT_RULES.attackRange;this.crit=options.crit??.1;
@@ -75,15 +76,39 @@ export class HuntEngine {
  private loadStage(){
   this.stageStarted=this.elapsed;this.stageKills=0;this.spawnCounter=0;this.failure='';this.casts.clear();this.ready.clear();this.uses.clear();this.impactors=[];this.heroShield=0;this.heroStunUntil=0;this.heroInvincibleUntil=0;
   const stage=stageDefinition(this.stageIndex);this.objectiveObjects=(stage.objectIds??[]).map((id,i,a)=>({id,x:1400+i*3000/Math.max(1,a.length-1),done:false}));this.escort=stage.victory===7?{x:500,hp:this.maxHP,maxHP:this.maxHP}:null;this.x=620;this.targetSlot=0;this.motion=null;this.clearInput();this.resetCombo();this.pose('stay1',true);
+  this.sceneInfo=this.useSceneFlow?sceneBinding(stage.id):null;this.sceneFlow=this.sceneInfo?new SceneFlow(this.sceneInfo.layout):null;
+  if(this.sceneFlow){
+   // Keep one inert target sentinel while an area-triggered encounter has not spawned.
+   this.enemies.splice(1);Object.assign(this.enemies[0],{hp:0,maxHP:1,state:'dead',respawnAt:0,sceneWave:-1,actorType:undefined,asset:undefined,boss:false,serial:0});
+   this.x=clampX(this.sceneFlow.layout.startX);if(this.stagePhase!=='complete')this.advanceScene(0);return;
+  }
+  this.enemies.splice(7);while(this.enemies.length<7)this.enemies.push({...this.enemies[0],slot:this.enemies.length});
   const boss=stage.boss;const positions=[850,1250,1750,2300,2950,3650,4550];
   for(let i=0;i<7;i++){
    const [actorType,attack,hp]=i===6?boss:stage.normal[i%stage.normal.length];const profile=LABYRINTH.monsters[actorType];
    const rate=this.stats.abilities[i===6?45:44]??0;const maxHP=Math.max(1,roundEven(hp*(1-Math.max(0,rate)/100)));
-   Object.assign(this.enemies[i],{actorType,boss:i===6,asset:profile.asset,damage:attack,radius:profile.radius,valor:((i===6?boss:stage.normal[i%stage.normal.length])[5]??[])[0]??0,mental:((i===6?boss:stage.normal[i%stage.normal.length])[5]??[])[1]??0,tenacity:((i===6?boss:stage.normal[i%stage.normal.length])[5]??[])[2]??0,focus:((i===6?boss:stage.normal[i%stage.normal.length])[5]??[])[3]??0,skills:(i===6?boss:stage.normal[i%stage.normal.length])[4]||profile.skills,aiType:((i===6?boss:stage.normal[i%stage.normal.length])[3] as number)||profile.aiType,shield:0,clip:undefined,castSerial:0,windup:profile.windup,recovery:profile.recovery,moveSpeed:profile.move,
+   Object.assign(this.enemies[i],{sceneWave:undefined,actorType,boss:i===6,asset:profile.asset,damage:attack,radius:profile.radius,valor:((i===6?boss:stage.normal[i%stage.normal.length])[5]??[])[0]??0,mental:((i===6?boss:stage.normal[i%stage.normal.length])[5]??[])[1]??0,tenacity:((i===6?boss:stage.normal[i%stage.normal.length])[5]??[])[2]??0,focus:((i===6?boss:stage.normal[i%stage.normal.length])[5]??[])[3]??0,skills:(i===6?boss:stage.normal[i%stage.normal.length])[4]||profile.skills,aiType:((i===6?boss:stage.normal[i%stage.normal.length])[3] as number)||profile.aiType,shield:0,clip:undefined,castSerial:0,windup:profile.windup,recovery:profile.recovery,moveSpeed:profile.move,
     x:positions[i],hp:i===6||this.stagePhase==='complete'?0:maxHP,maxHP,serial:(this.stageIndex+1)*100+i,respawnAt:0,lastDamage:0,hitUntil:0,state:i===6?'dead':'idle',nextAttack:this.elapsed+1});
   }
   for(const e of this.enemies)if(!e.skills?.length)e.skills=LABYRINTH.monsters[e.actorType!].skills;
   if([2,7].includes(stage.victory))this.spawnWave();
+ }
+ private spawnScene(point:SceneSpawn,waveId:number){
+  const entry=this.sceneInfo!.binding.roster[point.name];if(!entry)throw Error('Unknown scene monster');
+  const [actorType,attack,hp,aiType,skills,traits]=entry.row,profile=LABYRINTH.monsters[actorType];
+  const maxHP=Math.max(1,roundEven(hp*(1-Math.max(0,this.stats.abilities[entry.boss?45:44]??0)/100)));
+  let x=clampX(point.x);const radius=profile.radius;
+  // The original has lanes. Projecting to a belt-scroll line must not overlap solid bodies.
+  for(let n=0;n<128&&this.enemies.some(e=>e.hp>0&&Math.abs(e.x-x)<radius+(e.radius??12)+2);n++)x=clampX(point.x+(n%2?1:-1)*(Math.floor(n/2)+1)*(radius*2+4));
+  if(this.enemies.length===1&&this.enemies[0].serial===0)this.enemies.splice(0);
+  this.enemies.push({slot:this.enemies.length,sceneWave:waveId,actorType,boss:entry.boss,asset:profile.asset,damage:attack,maxHP,hp:maxHP,
+   valor:traits[0]??0,mental:traits[1]??0,tenacity:traits[2]??0,focus:traits[3]??0,skills:skills.length?skills:profile.skills,aiType:aiType||profile.aiType,
+   radius,windup:profile.windup,recovery:profile.recovery,moveSpeed:profile.move,shield:0,castSerial:0,x,
+   serial:10000000+this.stageIndex*1000+(++this.spawnCounter),respawnAt:0,lastDamage:0,hitUntil:0,state:'idle',attackAt:0,nextAttack:this.elapsed+1});
+ }
+ private advanceScene(dt:number){
+  this.sceneFlow!.step(dt,this.x,id=>this.enemies.some(e=>e.sceneWave===id&&e.hp>0),(p,id)=>this.spawnScene(p,id));
+  this.stagePhase=this.enemies.some(e=>e.hp>0&&e.boss)?'boss':'normal';
  }
  private spawnWave(){
   const d=stageDefinition(this.stageIndex),count=Math.min(6,Math.max(0,d.goal-this.stageKills)),dir=this.x<WORLD_WIDTH/2?1:-1;this.casts.clear();this.impactors=[];
@@ -106,6 +131,7 @@ export class HuntEngine {
   if(d.victory===7&&(!this.escort||this.escort.hp<=0)){this.failStage('동료 전투 불능');return;}
   if(d.timeLimit>0&&this.elapsed-this.stageStarted>=d.timeLimit){this.failStage('제한 시간 초과');return;}
   if(d.victory===4&&this.x>=WORLD_WIDTH-200||[5,6].includes(d.victory)&&this.objectiveObjects.length>0&&this.objectiveObjects.every(o=>o.done)||[2,7].includes(d.victory)&&this.stageKills>=d.goal){this.completeStage();return;}
+  if(this.sceneFlow){this.advanceScene(this.sceneStep);if(this.sceneFlow.complete&&!this.enemies.some(e=>e.hp>0))this.completeStage();return;}
   if(this.enemies.some(e=>e.hp>0))return;
   if([2,7].includes(d.victory)){this.spawnWave();return;}
   if([4,5,6].includes(d.victory))return;
@@ -303,6 +329,7 @@ export class HuntEngine {
   direction=Number.isFinite(direction)?Math.max(-1,Math.min(1,direction)):0;
   this.elapsed+=dt;this.cooldowns=this.cooldowns.map(t=>Math.max(0,t-dt));
   if(this.hp<=0)return;
+  this.sceneStep=dt;
   if(this.campaign){this.advanceStage();if(this.stagePhase==="cleared"||this.stagePhase==="complete"||this.hp<=0)return;}
   if(!this.campaign)for(const enemy of this.enemies)if(enemy.hp<=0&&this.elapsed>=enemy.respawnAt){
    // Recycle defeated packs ahead of the hero, without spawning inside a body.
@@ -322,7 +349,7 @@ export class HuntEngine {
   this.advanceMotion(dt,direction);
   if(this.motion)return;
   if(this.heroStunUntil>this.elapsed){this.pose('stay1');return;}
-  if(this.campaign&&this.auto&&!direction&&!this.enemies.some(e=>e.hp>0)){const d=stageDefinition(this.stageIndex),goal=d.victory===4?WORLD_WIDTH-160:this.objectiveObjects.find(o=>!o.done)?.x;if(goal!==undefined){if(Math.abs(goal-this.x)<=65)this.interact();else {this.facing=Math.sign(goal-this.x);this.moveTo(this.x+this.facing*HUNT_RULES.moveSpeed*this.tempo*dt);this.pose('run1');}return;}}
+  if(this.campaign&&this.auto&&!direction&&!this.enemies.some(e=>e.hp>0)){const d=stageDefinition(this.stageIndex),goal=this.sceneFlow?.nextAreaX??(d.victory===4?WORLD_WIDTH-160:this.objectiveObjects.find(o=>!o.done)?.x);if(goal!==undefined){if(Math.abs(goal-this.x)<= (this.sceneFlow?2:65))this.interact();else {this.facing=Math.sign(goal-this.x);this.moveTo(this.x+this.facing*HUNT_RULES.moveSpeed*this.tempo*dt);this.pose('run1');}return;}}
   this.selectTarget();
   if(this.elapsed>this.comboExpires)this.resetCombo();
   if(direction){

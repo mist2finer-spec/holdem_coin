@@ -1,0 +1,25 @@
+{
+  "layouts": 18,
+  "stages": 1193,
+  "rejectedLayouts": {
+    "inactive-spawn": 54,
+    "inactive-activator": 19,
+    "unreachable-wave": 10,
+    "duplicate-wave-group-number": 4,
+    "independent-spawn-trigger": 6,
+    "encounter-bound": 1,
+    "unbounded-or-large-repeat": 1
+  },
+  "rejectedStages": {
+    "unsupported-or-unresolved-layout": 4799,
+    "other-victory-condition": 8
+  },
+  "firstFive": {
+    "101": "1/101/MapEntityRoot",
+    "102": "1/102/MapEntityRoot",
+    "103": "1/103/MapEntityRoot",
+    "104": "1/104/MapEntityRoot",
+    "105": "1/105/MapEntityRoot"
+  },
+  "dataSha256": "d7c73e6693de4566369306b9af71f00abc4fdaab0fd76ea58e7a3905de25406f"
+}

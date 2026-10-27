@@ -35,7 +35,8 @@ export function HuntPrototype({onExit,character='hong'}:{onExit?:()=>void;charac
    const first=target===null;target=value;sequence=value.sequence;id=value.id;
    game.hp=value.hp;game.elapsed=value.elapsed;game.action=value.action;game.actionSerial=value.actionSerial;game.animationSpeed=value.animationSpeed;game.facing=value.facing;
    game.heroHitUntil=value.heroHitUntil;game.lastHeroDamage=value.lastHeroDamage;game.cooldowns=value.cooldowns;game.auto=value.auto;
-   value.enemies.forEach((e,i)=>{const mob=game.enemies[i],x=mob.x,same=mob.serial===e.serial;Object.assign(mob,e);if(!first&&same)mob.x=x;});
+   const previous=new Map(game.enemies.map(e=>[e.serial,e.x]));
+   game.enemies.splice(0,game.enemies.length,...value.enemies.map(e=>({...e,x:!first&&previous.has(e.serial)?previous.get(e.serial)!:e.x})));
    if(value.dead){held.current=false;auto.current=false;keys.current.clear();direction.current=0;setDialog(null);}
    setView(value);
   };
@@ -75,7 +76,7 @@ export function HuntPrototype({onExit,character='hong'}:{onExit?:()=>void;charac
    apply(value);auto.current=true;game.x=value.x;setStatus('ready');timer=setInterval(()=>void pump(),100);
    const loop=(now:number)=>{
     const dt=last?Math.min((now-last)/1000,.05):0;last=now;
-    if(target&&!document.hidden){game.x+=(target.x-game.x)*(1-Math.exp(-dt*35));game.elapsed+=dt;game.enemies.forEach((mob,i)=>{mob.x+=(target!.enemies[i].x-mob.x)*(1-Math.exp(-dt*35));});r.draw(game,dt,target);}
+    if(target&&!document.hidden){game.x+=(target.x-game.x)*(1-Math.exp(-dt*35));game.elapsed+=dt;game.enemies.forEach((mob,i)=>{mob.x+=((target!.enemies[i]?.x??mob.x)-mob.x)*(1-Math.exp(-dt*35));});r.draw(game,dt,target);}
     frame=requestAnimationFrame(loop);
    };frame=requestAnimationFrame(loop);
   })().catch(e=>{if(!controller.signal.aborted){setStatus('error');setError(String(e));}});

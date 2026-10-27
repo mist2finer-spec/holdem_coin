@@ -9,7 +9,9 @@ import {relativeStat,accuracy,effectDuration} from '../../src/components/rpg/hun
 import {sweepHero,planDodge} from '../../src/components/rpg/hunt-collision';
 import {RpgStore} from '../../src/lib/rpg-store';
 const advance=(g:HuntEngine,seconds:number)=>{for(let t=0;t<seconds-1e-7;t+=.01)g.step(.01,0);};
-function stage(id:number){const p=newHuntProgress();p.labyrinthStage=LABYRINTH.stages.findIndex(s=>s.id===id);return new HuntEngine(HUNT_RULES.combo,7,{hostile:true,campaign:true,progress:p});}
+// These combat-mechanic unit fixtures isolate the pre-existing seven-slot adapter.
+// Production scene progression is tested separately in test-scene-flow.ts.
+function stage(id:number){const p=newHuntProgress();p.labyrinthStage=LABYRINTH.stages.findIndex(s=>s.id===id);return new HuntEngine(HUNT_RULES.combo,7,{hostile:true,campaign:true,sceneFlow:false,progress:p});}
 test('original multi-impactor schedule emits once per occurrence, including final delayed command',()=>{
  const a=structuredClone(LABYRINTH.actions[2028]);assert.ok(a.commands[0].count>1);
  const c:Cast={skill:a,start:0,source:1,targetX:200,emitted:new Set()};assert.equal(castCommands(c,.1).length,0);
