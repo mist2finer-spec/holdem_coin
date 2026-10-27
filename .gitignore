@@ -87,3 +87,6 @@ mini-services/poker-server/data/
 
 # Runtime labyrinth monster atlases must ship with their skeletons.
 !/public/rpg/monsters/**/*.png
+
+# Reproducible Hong motion-authoring source cutouts
+!/scripts/rpg/hong-motion/input-work/**/*.png

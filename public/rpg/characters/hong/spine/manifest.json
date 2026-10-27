@@ -1,0 +1,544 @@
+{
+  "format": "Spine 4.2 JSON + atlas; region attachments",
+  "status": "RETARGETED_PROTOTYPE_REQUIRES_SPINE_UNITY_VISUAL_QA",
+  "originalAnimationSha256": "665127ea81721e5aaa1d1dddb5de768432532efb423302b01b4ebf1da13a8cb2",
+  "sourceVideo": "1.mp4, 1080x2340, 30fps, 14.577667s; visually reviewed overview. Effects obscure pose; no frame-exact motion capture claimed.",
+  "sourceVideoSha256": null,
+  "method": "Original runtime clip durations and restrained torso accents; authored compact-limb endpoint paths solved by analytical 2-bone IK at build time; baked to Spine local rotation keys at 60fps; evaluated foot contact correction. Not a literal full-body motion reconstruction.",
+  "roles": {
+    "pelvis": "center",
+    "torso": "bone2",
+    "head": "head",
+    "front-upper-arm": "Rarm",
+    "front-forearm": "Rarm2",
+    "back-upper-arm": "Larm",
+    "back-forearm": "Larm2",
+    "front-thigh": "Rleg",
+    "front-shin": "Rleg2",
+    "front-foot": "Rleg3",
+    "back-thigh": "Lleg",
+    "back-shin": "Lleg2",
+    "back-foot": "Lleg3"
+  },
+  "gains": {
+    "pelvis": 0.55,
+    "torso": 0.7,
+    "head": 0.75,
+    "front-upper-arm": 0.75,
+    "back-upper-arm": 0.75,
+    "front-forearm": 0.8,
+    "back-forearm": 0.8,
+    "front-thigh": 0.65,
+    "back-thigh": 0.65,
+    "front-shin": 0.65,
+    "back-shin": 0.65,
+    "front-foot": 0.5,
+    "back-foot": 0.5
+  },
+  "rootMotion": false,
+  "animations": {
+    "stay1": {
+      "duration": 1.333299994468689,
+      "frames": 81,
+      "sourceClip": "stay1",
+      "weapon": "unarmed",
+      "footCorrection": true
+    },
+    "run1": {
+      "duration": 0.53329998254776,
+      "frames": 33,
+      "sourceClip": "run1",
+      "weapon": "unarmed",
+      "footCorrection": true
+    },
+    "dash": {
+      "duration": 0.5,
+      "frames": 31,
+      "sourceClip": "dash",
+      "weapon": "unarmed",
+      "footCorrection": true
+    },
+    "avoid1": {
+      "duration": 0.5,
+      "frames": 31,
+      "sourceClip": "avoid1",
+      "weapon": "unarmed",
+      "footCorrection": true
+    },
+    "attack1": {
+      "duration": 0.3666999936103821,
+      "frames": 24,
+      "sourceClip": "attack1",
+      "weapon": "unarmed",
+      "footCorrection": true
+    },
+    "attack2": {
+      "duration": 0.3666999936103821,
+      "frames": 24,
+      "sourceClip": "attack2",
+      "weapon": "unarmed",
+      "footCorrection": true
+    },
+    "attack3": {
+      "duration": 0.3666999936103821,
+      "frames": 24,
+      "sourceClip": "attack3",
+      "weapon": "unarmed",
+      "footCorrection": true
+    },
+    "attack4": {
+      "duration": 0.3666999936103821,
+      "frames": 24,
+      "sourceClip": "attack4",
+      "weapon": "unarmed",
+      "footCorrection": true
+    },
+    "attack5": {
+      "duration": 0.666700005531311,
+      "frames": 42,
+      "sourceClip": "attack5",
+      "weapon": "unarmed",
+      "footCorrection": true
+    },
+    "defeat1": {
+      "duration": 2,
+      "frames": 121,
+      "sourceClip": "defeat1",
+      "weapon": "unarmed",
+      "footCorrection": true
+    },
+    "die1": {
+      "duration": 1.166700005531311,
+      "frames": 72,
+      "sourceClip": "die1",
+      "weapon": "unarmed",
+      "footCorrection": true
+    },
+    "victory1": {
+      "duration": 2.299999952316284,
+      "frames": 139,
+      "sourceClip": "victory1",
+      "weapon": "unarmed",
+      "footCorrection": true
+    },
+    "sword-stay1": {
+      "duration": 1.333299994468689,
+      "frames": 81,
+      "sourceClip": "stay1",
+      "weapon": "sword",
+      "footCorrection": true
+    },
+    "sword-run1": {
+      "duration": 0.53329998254776,
+      "frames": 33,
+      "sourceClip": "run1",
+      "weapon": "sword",
+      "footCorrection": true
+    },
+    "sword-dash": {
+      "duration": 0.5,
+      "frames": 31,
+      "sourceClip": "dash",
+      "weapon": "sword",
+      "footCorrection": true
+    },
+    "sword-avoid1": {
+      "duration": 0.5,
+      "frames": 31,
+      "sourceClip": "avoid1",
+      "weapon": "sword",
+      "footCorrection": true
+    },
+    "sword-attack1": {
+      "duration": 0.3666999936103821,
+      "frames": 24,
+      "sourceClip": "attack1",
+      "weapon": "sword",
+      "footCorrection": true
+    },
+    "sword-attack2": {
+      "duration": 0.3666999936103821,
+      "frames": 24,
+      "sourceClip": "attack2",
+      "weapon": "sword",
+      "footCorrection": true
+    },
+    "sword-attack3": {
+      "duration": 0.3666999936103821,
+      "frames": 24,
+      "sourceClip": "attack3",
+      "weapon": "sword",
+      "footCorrection": true
+    },
+    "sword-attack4": {
+      "duration": 0.3666999936103821,
+      "frames": 24,
+      "sourceClip": "attack4",
+      "weapon": "sword",
+      "footCorrection": true
+    },
+    "sword-attack5": {
+      "duration": 0.666700005531311,
+      "frames": 42,
+      "sourceClip": "attack5",
+      "weapon": "sword",
+      "footCorrection": true
+    },
+    "sword-defeat1": {
+      "duration": 2,
+      "frames": 121,
+      "sourceClip": "defeat1",
+      "weapon": "sword",
+      "footCorrection": true
+    },
+    "sword-die1": {
+      "duration": 1.166700005531311,
+      "frames": 72,
+      "sourceClip": "die1",
+      "weapon": "sword",
+      "footCorrection": true
+    },
+    "sword-victory1": {
+      "duration": 2.299999952316284,
+      "frames": 139,
+      "sourceClip": "victory1",
+      "weapon": "sword",
+      "footCorrection": true
+    },
+    "axe-stay1": {
+      "duration": 1.333299994468689,
+      "frames": 81,
+      "sourceClip": "stay1",
+      "weapon": "axe",
+      "footCorrection": true
+    },
+    "axe-run1": {
+      "duration": 0.53329998254776,
+      "frames": 33,
+      "sourceClip": "run1",
+      "weapon": "axe",
+      "footCorrection": true
+    },
+    "axe-dash": {
+      "duration": 0.5,
+      "frames": 31,
+      "sourceClip": "dash",
+      "weapon": "axe",
+      "footCorrection": true
+    },
+    "axe-avoid1": {
+      "duration": 0.5,
+      "frames": 31,
+      "sourceClip": "avoid1",
+      "weapon": "axe",
+      "footCorrection": true
+    },
+    "axe-attack1": {
+      "duration": 0.3666999936103821,
+      "frames": 24,
+      "sourceClip": "attack1",
+      "weapon": "axe",
+      "footCorrection": true
+    },
+    "axe-attack2": {
+      "duration": 0.3666999936103821,
+      "frames": 24,
+      "sourceClip": "attack2",
+      "weapon": "axe",
+      "footCorrection": true
+    },
+    "axe-attack3": {
+      "duration": 0.3666999936103821,
+      "frames": 24,
+      "sourceClip": "attack3",
+      "weapon": "axe",
+      "footCorrection": true
+    },
+    "axe-attack4": {
+      "duration": 0.3666999936103821,
+      "frames": 24,
+      "sourceClip": "attack4",
+      "weapon": "axe",
+      "footCorrection": true
+    },
+    "axe-attack5": {
+      "duration": 0.666700005531311,
+      "frames": 42,
+      "sourceClip": "attack5",
+      "weapon": "axe",
+      "footCorrection": true
+    },
+    "axe-defeat1": {
+      "duration": 2,
+      "frames": 121,
+      "sourceClip": "defeat1",
+      "weapon": "axe",
+      "footCorrection": true
+    },
+    "axe-die1": {
+      "duration": 1.166700005531311,
+      "frames": 72,
+      "sourceClip": "die1",
+      "weapon": "axe",
+      "footCorrection": true
+    },
+    "axe-victory1": {
+      "duration": 2.299999952316284,
+      "frames": 139,
+      "sourceClip": "victory1",
+      "weapon": "axe",
+      "footCorrection": true
+    },
+    "dual-stay1": {
+      "duration": 1.333299994468689,
+      "frames": 81,
+      "sourceClip": "stay1",
+      "weapon": "dual",
+      "footCorrection": true
+    },
+    "dual-run1": {
+      "duration": 0.53329998254776,
+      "frames": 33,
+      "sourceClip": "run1",
+      "weapon": "dual",
+      "footCorrection": true
+    },
+    "dual-dash": {
+      "duration": 0.5,
+      "frames": 31,
+      "sourceClip": "dash",
+      "weapon": "dual",
+      "footCorrection": true
+    },
+    "dual-avoid1": {
+      "duration": 0.5,
+      "frames": 31,
+      "sourceClip": "avoid1",
+      "weapon": "dual",
+      "footCorrection": true
+    },
+    "dual-attack1": {
+      "duration": 0.3666999936103821,
+      "frames": 24,
+      "sourceClip": "attack1",
+      "weapon": "dual",
+      "footCorrection": true
+    },
+    "dual-attack2": {
+      "duration": 0.3666999936103821,
+      "frames": 24,
+      "sourceClip": "attack2",
+      "weapon": "dual",
+      "footCorrection": true
+    },
+    "dual-attack3": {
+      "duration": 0.3666999936103821,
+      "frames": 24,
+      "sourceClip": "attack3",
+      "weapon": "dual",
+      "footCorrection": true
+    },
+    "dual-attack4": {
+      "duration": 0.3666999936103821,
+      "frames": 24,
+      "sourceClip": "attack4",
+      "weapon": "dual",
+      "footCorrection": true
+    },
+    "dual-attack5": {
+      "duration": 0.666700005531311,
+      "frames": 42,
+      "sourceClip": "attack5",
+      "weapon": "dual",
+      "footCorrection": true
+    },
+    "dual-defeat1": {
+      "duration": 2,
+      "frames": 121,
+      "sourceClip": "defeat1",
+      "weapon": "dual",
+      "footCorrection": true
+    },
+    "dual-die1": {
+      "duration": 1.166700005531311,
+      "frames": 72,
+      "sourceClip": "die1",
+      "weapon": "dual",
+      "footCorrection": true
+    },
+    "dual-victory1": {
+      "duration": 2.299999952316284,
+      "frames": 139,
+      "sourceClip": "victory1",
+      "weapon": "dual",
+      "footCorrection": true
+    },
+    "spear-stay1": {
+      "duration": 1.333299994468689,
+      "frames": 81,
+      "sourceClip": "stay1",
+      "weapon": "spear",
+      "footCorrection": true
+    },
+    "spear-run1": {
+      "duration": 0.53329998254776,
+      "frames": 33,
+      "sourceClip": "run1",
+      "weapon": "spear",
+      "footCorrection": true
+    },
+    "spear-dash": {
+      "duration": 0.5,
+      "frames": 31,
+      "sourceClip": "dash",
+      "weapon": "spear",
+      "footCorrection": true
+    },
+    "spear-avoid1": {
+      "duration": 0.5,
+      "frames": 31,
+      "sourceClip": "avoid1",
+      "weapon": "spear",
+      "footCorrection": true
+    },
+    "spear-attack1": {
+      "duration": 0.3666999936103821,
+      "frames": 24,
+      "sourceClip": "attack1",
+      "weapon": "spear",
+      "footCorrection": true
+    },
+    "spear-attack2": {
+      "duration": 0.3666999936103821,
+      "frames": 24,
+      "sourceClip": "attack2",
+      "weapon": "spear",
+      "footCorrection": true
+    },
+    "spear-attack3": {
+      "duration": 0.3666999936103821,
+      "frames": 24,
+      "sourceClip": "attack3",
+      "weapon": "spear",
+      "footCorrection": true
+    },
+    "spear-attack4": {
+      "duration": 0.3666999936103821,
+      "frames": 24,
+      "sourceClip": "attack4",
+      "weapon": "spear",
+      "footCorrection": true
+    },
+    "spear-attack5": {
+      "duration": 0.666700005531311,
+      "frames": 42,
+      "sourceClip": "attack5",
+      "weapon": "spear",
+      "footCorrection": true
+    },
+    "spear-defeat1": {
+      "duration": 2,
+      "frames": 121,
+      "sourceClip": "defeat1",
+      "weapon": "spear",
+      "footCorrection": true
+    },
+    "spear-die1": {
+      "duration": 1.166700005531311,
+      "frames": 72,
+      "sourceClip": "die1",
+      "weapon": "spear",
+      "footCorrection": true
+    },
+    "spear-victory1": {
+      "duration": 2.299999952316284,
+      "frames": 139,
+      "sourceClip": "victory1",
+      "weapon": "spear",
+      "footCorrection": true
+    }
+  },
+  "hitEvents": {
+    "status": "WEB_ADAPTER_TIMES_NOT_NATIVE_ANIMATION_EVENTS",
+    "times": {
+      "attack1": 0.2,
+      "attack2": 0.2,
+      "attack3": 0.2,
+      "attack4": 0.2,
+      "attack5": 0.3
+    }
+  },
+  "limitations": [
+    "Single-view cutout cannot reconstruct unseen artwork. Hidden surfaces/joint padding are explicit artistic approximations.",
+    "No mesh weights or IK; 2D region cutout hierarchy.",
+    "Forward-only facing: left-facing is mirrored.",
+    "Weapon-specific compact arm paths and wrist angle timelines are authored web adaptations, not recovered original weapon animations.",
+    "Spine Editor and spine-unity 4.2 import require user-side validation; no .spine editor project generated.",
+    "Compact arm/leg paths, dodge roll, secondary hair and torso damping are authored adaptations, not recovered original curves."
+  ],
+  "weapons": {
+    "sword": {
+      "attachment": "held-sword",
+      "type": "region",
+      "path": "held-sword",
+      "x": -2.24,
+      "y": 24.6246,
+      "width": 64,
+      "height": 79,
+      "sourceSha256": "0aa710046d1e267e66d6e5c042ee058df613e80ed36f4089d7ef79a719d277f8",
+      "sourceGrip": [
+        84,
+        300
+      ],
+      "source": "/rpg/weapons/sword.png"
+    },
+    "axe": {
+      "attachment": "held-axe",
+      "type": "region",
+      "path": "held-axe",
+      "x": -2.245,
+      "y": 23.327,
+      "width": 76,
+      "height": 85,
+      "sourceSha256": "7cce753e445b8ab50cb8f3636df789dd8df27f08afc02b5f767f926717803c1a",
+      "sourceGrip": [
+        89,
+        287
+      ],
+      "source": "/rpg/weapons/axe.png"
+    },
+    "spear": {
+      "attachment": "held-spear",
+      "type": "region",
+      "path": "held-spear",
+      "x": -5.0803,
+      "y": 11.1207,
+      "width": 86,
+      "height": 118,
+      "sourceSha256": "d0bc33e4aa62b61599d18bb6fbcc545070062579a792ba6305671e2646a50676",
+      "sourceGrip": [
+        160,
+        225
+      ],
+      "source": "/rpg/weapons/spear.png"
+    },
+    "dual": {
+      "attachment": "held-dual",
+      "type": "region",
+      "path": "held-dual",
+      "x": -1.645,
+      "y": 18.0788,
+      "width": 47,
+      "height": 58,
+      "sourceSha256": "0aa710046d1e267e66d6e5c042ee058df613e80ed36f4089d7ef79a719d277f8",
+      "sourceGrip": [
+        84,
+        300
+      ],
+      "source": "/rpg/weapons/sword.png"
+    }
+  },
+  "renderMode": "hong-spine-weapons-v1",
+  "runtimeHitAuthority": "Server HuntEngine remains authoritative; visual time remapped to server hitAt/duration; no damage from Spine events.",
+  "scope": "Hong only; other eight characters retain their sprite packs."
+}

@@ -1,0 +1,389 @@
+{
+  "skeleton": {
+    "spine": "4.2.43",
+    "images": "parts/",
+    "width": 256,
+    "height": 256
+  },
+  "bones": [
+    {
+      "name": "root"
+    },
+    {
+      "name": "pelvis",
+      "parent": "root",
+      "x": 9.0,
+      "y": 113.88
+    },
+    {
+      "name": "torso",
+      "parent": "pelvis",
+      "x": 4.0,
+      "y": 21.0
+    },
+    {
+      "name": "head",
+      "parent": "torso",
+      "x": 4.0,
+      "y": 40.0
+    },
+    {
+      "name": "hair-back",
+      "parent": "head",
+      "x": -15.0,
+      "y": 28.0
+    },
+    {
+      "name": "front-upper-arm",
+      "parent": "torso",
+      "x": -19.0,
+      "y": 30.0
+    },
+    {
+      "name": "front-forearm",
+      "parent": "front-upper-arm",
+      "x": -9.0,
+      "y": -21.0
+    },
+    {
+      "name": "front-hand",
+      "parent": "front-forearm",
+      "x": 23.0,
+      "y": 1.0
+    },
+    {
+      "name": "back-upper-arm",
+      "parent": "torso",
+      "x": 12.0,
+      "y": 32.0
+    },
+    {
+      "name": "back-forearm",
+      "parent": "back-upper-arm",
+      "x": 19.0,
+      "y": -24.0
+    },
+    {
+      "name": "back-hand",
+      "parent": "back-forearm",
+      "x": -4.0,
+      "y": 20.0
+    },
+    {
+      "name": "front-thigh",
+      "parent": "pelvis",
+      "x": 17.0,
+      "y": -11.0
+    },
+    {
+      "name": "front-shin",
+      "parent": "front-thigh",
+      "x": 13.0,
+      "y": -23.0
+    },
+    {
+      "name": "front-foot",
+      "parent": "front-shin",
+      "x": 0.0,
+      "y": -36.0
+    },
+    {
+      "name": "back-thigh",
+      "parent": "pelvis",
+      "x": -17.0,
+      "y": -14.0
+    },
+    {
+      "name": "back-shin",
+      "parent": "back-thigh",
+      "x": -14.0,
+      "y": -27.0
+    },
+    {
+      "name": "back-foot",
+      "parent": "back-shin",
+      "x": -18.0,
+      "y": -29.0
+    },
+    {
+      "name": "weapon-front",
+      "parent": "front-hand"
+    },
+    {
+      "name": "weapon-back",
+      "parent": "back-hand"
+    }
+  ],
+  "slots": [
+    {
+      "name": "hair-back",
+      "bone": "hair-back",
+      "attachment": "hair-back"
+    },
+    {
+      "name": "back-thigh",
+      "bone": "back-thigh",
+      "attachment": "back-thigh"
+    },
+    {
+      "name": "back-shin",
+      "bone": "back-shin",
+      "attachment": "back-shin"
+    },
+    {
+      "name": "back-foot",
+      "bone": "back-foot",
+      "attachment": "back-foot"
+    },
+    {
+      "name": "front-thigh",
+      "bone": "front-thigh",
+      "attachment": "front-thigh"
+    },
+    {
+      "name": "front-shin",
+      "bone": "front-shin",
+      "attachment": "front-shin"
+    },
+    {
+      "name": "front-foot",
+      "bone": "front-foot",
+      "attachment": "front-foot"
+    },
+    {
+      "name": "back-upper-arm",
+      "bone": "back-upper-arm"
+    },
+    {
+      "name": "back-forearm",
+      "bone": "back-forearm",
+      "attachment": "back-forearm"
+    },
+    {
+      "name": "back-hand",
+      "bone": "back-hand",
+      "attachment": "back-hand"
+    },
+    {
+      "name": "torso",
+      "bone": "torso",
+      "attachment": "torso"
+    },
+    {
+      "name": "pelvis",
+      "bone": "pelvis",
+      "attachment": "pelvis"
+    },
+    {
+      "name": "head",
+      "bone": "head",
+      "attachment": "head"
+    },
+    {
+      "name": "front-upper-arm",
+      "bone": "front-upper-arm",
+      "attachment": "front-upper-arm"
+    },
+    {
+      "name": "front-forearm",
+      "bone": "front-forearm",
+      "attachment": "front-forearm"
+    },
+    {
+      "name": "front-hand",
+      "bone": "front-hand",
+      "attachment": "front-hand"
+    },
+    {
+      "name": "weapon-back",
+      "bone": "weapon-back"
+    },
+    {
+      "name": "weapon-front",
+      "bone": "weapon-front"
+    }
+  ],
+  "skins": [
+    {
+      "name": "default",
+      "attachments": {
+        "hair-back": {
+          "hair-back": {
+            "type": "region",
+            "path": "hair-back",
+            "x": -25.5,
+            "y": -44.5,
+            "width": 81,
+            "height": 145
+          }
+        },
+        "back-thigh": {
+          "back-thigh": {
+            "type": "region",
+            "path": "back-thigh",
+            "x": -3.5,
+            "y": -13.0,
+            "width": 41,
+            "height": 42
+          }
+        },
+        "back-shin": {
+          "back-shin": {
+            "type": "region",
+            "path": "back-shin",
+            "x": -9.0,
+            "y": -13.0,
+            "width": 36,
+            "height": 40
+          }
+        },
+        "back-foot": {
+          "back-foot": {
+            "type": "region",
+            "path": "back-foot",
+            "x": 4.5,
+            "y": -6.0,
+            "width": 39,
+            "height": 26
+          }
+        },
+        "front-thigh": {
+          "front-thigh": {
+            "type": "region",
+            "path": "front-thigh",
+            "x": 8.0,
+            "y": -13.0,
+            "width": 34,
+            "height": 36
+          }
+        },
+        "front-shin": {
+          "front-shin": {
+            "type": "region",
+            "path": "front-shin",
+            "x": 1.5,
+            "y": -15.0,
+            "width": 23,
+            "height": 44
+          }
+        },
+        "front-foot": {
+          "front-foot": {
+            "type": "region",
+            "path": "front-foot",
+            "x": 5.5,
+            "y": -6.0,
+            "width": 39,
+            "height": 26
+          }
+        },
+        "back-forearm": {
+          "back-forearm": {
+            "type": "region",
+            "path": "back-forearm",
+            "x": 0.5,
+            "y": 7.5,
+            "width": 17,
+            "height": 35
+          }
+        },
+        "back-hand": {
+          "back-hand": {
+            "type": "region",
+            "path": "back-hand",
+            "x": -1.0,
+            "y": 5.0,
+            "width": 20,
+            "height": 20
+          }
+        },
+        "torso": {
+          "torso": {
+            "type": "region",
+            "path": "torso",
+            "x": -2.5,
+            "y": 15.5,
+            "width": 49,
+            "height": 57
+          }
+        },
+        "pelvis": {
+          "pelvis": {
+            "type": "region",
+            "path": "pelvis",
+            "x": -1.5,
+            "y": 1.0,
+            "width": 67,
+            "height": 40
+          }
+        },
+        "head": {
+          "head": {
+            "type": "region",
+            "path": "head",
+            "x": 0.0,
+            "y": 25.5,
+            "width": 54,
+            "height": 65
+          }
+        },
+        "front-upper-arm": {
+          "front-upper-arm": {
+            "type": "region",
+            "path": "front-upper-arm",
+            "x": -3.0,
+            "y": -7.5,
+            "width": 30,
+            "height": 37
+          }
+        },
+        "front-forearm": {
+          "front-forearm": {
+            "type": "region",
+            "path": "front-forearm",
+            "x": 11.5,
+            "y": -1.0,
+            "width": 39,
+            "height": 24
+          }
+        },
+        "front-hand": {
+          "front-hand": {
+            "type": "region",
+            "path": "front-hand",
+            "x": 4.5,
+            "y": 1.0,
+            "width": 21,
+            "height": 20
+          }
+        }
+      }
+    }
+  ],
+  "animations": {
+    "setup": {},
+    "idle-preview": {
+      "bones": {
+        "root": {
+          "translate": [
+            {
+              "time": 0,
+              "x": 0,
+              "y": 0
+            },
+            {
+              "time": 1,
+              "x": 0,
+              "y": 2
+            },
+            {
+              "time": 2,
+              "x": 0,
+              "y": 0
+            }
+          ]
+        }
+      }
+    }
+  }
+}
