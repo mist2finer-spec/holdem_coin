@@ -59,3 +59,11 @@ User re-uploaded `20261026-220857-15bcf8(1).zip` as the last completed work. Its
 ComfyUI history: success/completed; start 2026-10-26 22:08:57 EDT, finish 22:10:53 EDT. Seed42, denoise0.40, steps8, CFG1, res_multistep/simple, 512px processing -> 256px output. The resume tool's denoise0.35 is an optional variation, not an exact continuation/reproduction of this run.
 
 This is one RGB combat-pose image with a black background, not transparent separated parts or a finished Spine character. Next: assess this exact base and separate foreground/alpha; design new per-part contours and joints for these compact proportions; complete hidden back limbs and overlap; then build/edit the rig and weapon animations. The old long-body `hong_spine_work` polygons are not compatible. Do not claim hidden anatomy, alpha segmentation, a `.spine` editor project or production motions have already been created. Preserve the completed base and generation provenance unchanged.
+
+## Three-stage compact-character pipeline (2026-10-27)
+
+`tools/rpg-art/next_hong_spine.ps1` runs Prepare / Repair / Apply / Export / Report against a NEW `G:\AI\hong_combat_spine_work` directory. Source is the confirmed completed 256px result, hash-locked. No fresh full-character generation is needed.
+
+`combat-spine` adds an editable near-black border matte, alpha brush editor, compact-pose polygons/pivots, masked per-part ComfyUI repair, and a 19-bone Spine4.2 region draft. Face pixels remain locked. Hidden far upper arm remains empty until completed. Residual source pixels stay in review but are excluded from the exported rig to avoid ghost-body artifacts. Pixel repair resizes use Nearest when pixelArt is enabled; legacy illustration mode is unchanged.
+
+Tests: 7 new + 9 existing part-kit + 6 resume + 4 combat-base =26. The draft loads in the actual Spine4.2 runtime with 19bones/18slots and finite transforms for180 idle-preview frames. Windows PowerShell/GPU inference/Spine Editor/Unity visual validation are still local follow-up. Only setup/idle-preview exists; do not claim finished attack, dodge, walking, mesh, IK or native .spine editor assets. See `tools/rpg-art/combat-spine/README_KO.txt` for the exact user commands and editing loop.

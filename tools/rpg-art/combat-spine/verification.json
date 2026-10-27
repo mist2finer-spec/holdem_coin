@@ -1,0 +1,19 @@
+{
+  "referenceSha256": "233a3520b0f91eb95b8f742ddb5d640dcb0e95e0acc0003b99ff9f05eea3a540",
+  "tests": {
+    "combatSpine": 7,
+    "spineDraft": 9,
+    "resume": 6,
+    "combatBase": 4
+  },
+  "runtimeValidation": {
+    "format": "Spine4.2",
+    "bones": 19,
+    "slots": 18,
+    "idleFrames": 180,
+    "finiteTransforms": true
+  },
+  "gpuInferenceVerified": false,
+  "unityEditorVerified": false,
+  "status": "editable-draft-tooling; not production rig"
+}

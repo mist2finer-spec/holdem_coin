@@ -112,15 +112,16 @@ def repair(a):
     if p.get('locked'):raise ValueError('Head is locked to original art. Do not regenerate identity.')
     if not .1<=a.denoise<=1:raise ValueError('Denoise must be0.1..1')
     manifest=load(a.out/'parts_manifest.json');info=manifest['parts'][a.part]
+    resample=Image.Resampling.NEAREST if c.get('pixelArt') else Image.Resampling.LANCZOS
     art=Image.open(a.out/'parts'/f'{a.part}.png').convert('RGBA')
     if p.get('occluded') and not info.get('approved'):
         front=p.get('referencePart')
         if not front:raise ValueError('Occluded part needs referencePart or a manual sketch')
         art=Image.open(a.out/'parts'/f'{front}.png').convert('RGBA')
-        art=art.resize(tuple(info['size']),Image.Resampling.LANCZOS)
+        art=art.resize(tuple(info['size']),resample)
     mask=Image.open(a.out/'masks'/f'{a.part}.png').convert('L')
     w,h=info['size'];scale=min(440/w,440/h);pw,ph=max(1,round(w*scale)),max(1,round(h*scale));x,y=(512-pw)//2,(512-ph)//2
-    flat=Image.new('RGB',(512,512),(160,160,160));flat.paste(art.resize((pw,ph),Image.Resampling.LANCZOS),(x,y),art.resize((pw,ph),Image.Resampling.LANCZOS).getchannel('A'))
+    flat=Image.new('RGB',(512,512),(160,160,160));flat.paste(art.resize((pw,ph),resample),(x,y),art.resize((pw,ph),resample).getchannel('A'))
     noise=Image.new('L',(512,512));noise.paste(mask.resize((pw,ph),Image.Resampling.NEAREST),(x,y))
     job=a.out/'candidates'/(a.part+'-'+time.strftime('%Y%m%d-%H%M%S')+'-'+uuid.uuid4().hex[:5]);job.mkdir(parents=True)
     flat.save(job/'input.png');noise.convert('RGB').save(job/'repair_mask.png')
@@ -142,7 +143,7 @@ def repair(a):
             if images:
                 from urllib.parse import urlencode
                 with urllib.request.urlopen(a.server.rstrip('/')+'/view?'+urlencode(images[0]),timeout=60) as r:(job/'generated.png').write_bytes(r.read())
-                generated=Image.open(job/'generated.png').convert('RGBA').crop((x,y,x+pw,y+ph)).resize((w,h),Image.Resampling.LANCZOS)
+                generated=Image.open(job/'generated.png').convert('RGBA').crop((x,y,x+pw,y+ph)).resize((w,h),resample)
                 generated.putalpha(mask);generated.save(job/'candidate.png')
                 save(job/'candidate.json',{'part':a.part,'sourceSha256':manifest['sourceSha256'],'size':[w,h],'status':'unreviewed-ai-candidate','silhouette':'manual polygon, not AI segmentation'})
                 print('CANDIDATE: '+str(job/'candidate.png'));return
