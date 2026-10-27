@@ -51,3 +51,11 @@ No API keys, Git tokens, personal runtime dumps, or full user upload archives be
 ## Resume entry (2026-10-27)
 
 `tools/rpg-art/resume_hong.ps1` downloads the four hash-checked runtime files into the local GPU PC. `-Action Check` is read-only; `-Action Generate` creates one combat-base candidate and refuses to resubmit into an already busy ComfyUI queue. `-Action Report -Work ...` inspects the preserved old draft. New six tests and existing four combat-base tests pass; actual GPU inference and Unity/Spine Editor QA still run on the user workstation. This branch does not update production art. See `tools/rpg-art/resume/README_KO.txt`.
+
+## Confirmed last completed GPU work — 2026-10-27 correction
+
+User re-uploaded `20261026-220857-15bcf8(1).zip` as the last completed work. Its `result-1.png` is byte-identical to `tools/rpg-art/combat-base/review/hong-generated-review.png` (SHA256 `233a3520b0f91eb95b8f742ddb5d640dcb0e95e0acc0003b99ff9f05eea3a540`). Treat this existing output as the current review checkpoint; do not send the user back to generating the same combat base by default.
+
+ComfyUI history: success/completed; start 2026-10-26 22:08:57 EDT, finish 22:10:53 EDT. Seed42, denoise0.40, steps8, CFG1, res_multistep/simple, 512px processing -> 256px output. The resume tool's denoise0.35 is an optional variation, not an exact continuation/reproduction of this run.
+
+This is one RGB combat-pose image with a black background, not transparent separated parts or a finished Spine character. Next: assess this exact base and separate foreground/alpha; design new per-part contours and joints for these compact proportions; complete hidden back limbs and overlap; then build/edit the rig and weapon animations. The old long-body `hong_spine_work` polygons are not compatible. Do not claim hidden anatomy, alpha segmentation, a `.spine` editor project or production motions have already been created. Preserve the completed base and generation provenance unchanged.
