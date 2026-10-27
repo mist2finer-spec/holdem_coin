@@ -64,7 +64,11 @@ def create_oracle(native,layout):
       idx=8 if old==0x6c30840 else 9;value=struct.unpack('<d',u.mem_read(x(0)+idx*40,8))[0];rate=struct.unpack('<d',u.mem_read(x(0)+(idx+4)*40,8))[0];dout(round(value*(1+rate/100)))
      elif old==0x6c30d90:dout(context.get('actorBonus',0))
      elif old==0x3d54f34 or old==0x3d55020:dout(math.tanh((dget()-dget(1))/300*1.2)*.2)
-     elif old==0x6cf74c0:sin(.5)
+     elif old==0x6c4ca54:dout(context['criticalCap'])
+     elif old==0x6cf74c0:
+      if 'rolls' in context:
+       sin(context['rolls'][context['rollIndex']]);context['rollIndex']+=1
+      else:sin(.5)
      elif old==0x3d4f334:e.reg_write(UC_ARM64_REG_X0,0)
      elif old in [0x7c82bc0,0x7c82be0]:u.mem_write(x(0),bytes(u.mem_read(x(1),x(2))))
      elif old==0x7c82bd0:u.mem_write(x(0),bytes([x(1)&255])*x(2))
@@ -90,6 +94,19 @@ def create_oracle(native,layout):
      dout(percent);u.emu_start(0x3c553d0,ret,count=3000)
      if u.reg_read(UC_ARM64_REG_PC)!=ret:raise RuntimeError('Heal instruction budget')
      return dget()
+    def critical(damage,bits,attacker,defender,bonus,cap,rolls,hyper=False):
+     context.clear();context.update(criticalCap=cap,rolls=rolls,rollIndex=0)
+     for actor,values in [(att,attacker),(target,defender)]:
+      u.mem_write(actor+0x1000,bytes(0x30c0))
+      for name,value in values.items():u.mem_write(actor+0x1000+layout[name],struct.pack('<d',value))
+     u.mem_write(flags,struct.pack('<Q',bits))
+     for reg,value in [(UC_ARM64_REG_X0,att),(UC_ARM64_REG_X1,target),(UC_ARM64_REG_X2,dummy),(UC_ARM64_REG_X3,flags),(UC_ARM64_REG_X30,ret),(UC_ARM64_REG_SP,base+0xf0000),(UC_ARM64_REG_CPACR_EL1,3<<20)]:u.reg_write(reg,value)
+     dout(damage);u.reg_write(UC_ARM64_REG_S1,struct.unpack('<I',struct.pack('<f',bonus))[0])
+     u.emu_start(0x3c51420 if hyper else 0x3c51200,ret,count=10000)
+     if u.reg_read(UC_ARM64_REG_PC)!=ret:raise RuntimeError('Critical instruction budget')
+     result=dget(),struct.unpack('<Q',u.mem_read(flags,8))[0],context['rollIndex']
+     context.clear();return result
+    run.critical=critical
     run.heal=heal
     return run
 

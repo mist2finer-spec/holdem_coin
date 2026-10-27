@@ -1,3 +1,4 @@
+import {settleDamage} from './hunt-damage';
 import {relativeStat,accuracy,effectDuration} from './hunt-formulas';
 import {canUseAttack,castCommands,sweptHit,markHit,type Cast,type Impactor,type MonsterAttack} from './hunt-actions';
 import {roundEven} from './hunt-math';
@@ -140,9 +141,9 @@ export class HuntEngine {
   if(this.hostile){this.rng=(Math.imul(this.rng,1664525)+1013904223)>>>0;this.critical=this.rng/4294967296<Math.max(0,Math.min(.9,this.stats.crit+this.crit-.1));
    damage=Math.max(1,Math.round(damage*this.stats.attack/6*(1+relativeStat(skill?this.stats.mental:this.stats.valor,skill?(target.mental??0):(target.valor??0),skill?'Mental':'Valor'))*(skill?this.stats.skillDamageMultiplier:this.stats.basicDamageMultiplier)*(this.critical?this.stats.critMultiplier:1)));}
   if(this.campaign)damage=Math.max(1,Math.round(classDamage(damage,this.stats.abilities,!!target.boss)));
-  const absorbed=Math.min(target.shield??0,damage);target.shield=(target.shield??0)-absorbed;damage-=absorbed;
-  target.lastDamage=Math.min(damage,target.hp);target.hitUntil=this.elapsed+.75;
-  target.hp=Math.max(0,target.hp-damage);
+  const settlement=settleDamage({hp:target.hp,maxHP:target.maxHP,shield:target.shield??0},damage);
+  target.shield=settlement.shield;target.lastDamage=settlement.hpDamage;target.hitUntil=this.elapsed+.75;
+  target.hp=settlement.hp;
   if(target.hp===0){target.state='dead';this.stageKills++;this.casts.delete(target.serial);
    if(this.hostile){awardHuntKill(this.progress,this.balance);this.kills=this.progress.kills;this.coins=this.progress.gold;this.xp=this.progress.xp;}
    else {this.kills++;this.coins+=25;this.xp+=12;}
@@ -206,8 +207,8 @@ export class HuntEngine {
        if(this.heroHitUntil>this.elapsed)continue;
        this.rng=(Math.imul(this.rng,1664525)+1013904223)>>>0;if(this.rng/4294967296>=accuracy(source.focus??0,this.stats.focus))continue;
        let damage=Math.max(1,Math.round(classDamage((source.damage??1)*effect.value/100*(1+relativeStat(source.valor??0,this.stats.valor,'Valor')),this.stats.abilities,!!source.boss,true)*this.stats.incomingDamageScale));
-       const absorbed=Math.min(this.heroShield,damage);this.heroShield-=absorbed;damage-=absorbed;
-       this.lastHeroDamage=Math.min(this.hp,damage);this.hp=Math.max(0,this.hp-damage);this.heroHitUntil=this.elapsed+.2;
+       const settlement=settleDamage({hp:this.hp,maxHP:this.maxHP,shield:this.heroShield},damage);this.heroShield=settlement.shield;
+       this.lastHeroDamage=settlement.hpDamage;this.hp=settlement.hp;this.heroHitUntil=this.elapsed+.2;
        if(this.hp===0){this.failStage('전투 불능');return;}
       }else if([104,105,107,111].includes(effect.type)&&effect.value>0){this.heroStunUntil=Math.max(this.heroStunUntil,this.elapsed+effectDuration(effect.value,source.tenacity??0,this.stats.tenacity));this.motion=null;this.clearInput();this.pose('stay1');}
       else if(effect.type===106&&effect.value>0){this.moveTo(this.x+p.direction*Math.min(250,effect.value*50));}
@@ -232,7 +233,8 @@ export class HuntEngine {
       if(this.parryUntil>=this.elapsed){enemy.nextAttack=this.elapsed+HUNT_MONSTER_ATTACK.parriedRecovery;continue;}
       if(this.heroHitUntil>this.elapsed)continue;
       const damage=Math.max(1,Math.round(classDamage(enemy.damage??HUNT_MONSTER_ATTACK.damage,this.stats.abilities,!!enemy.boss,true)*this.stats.incomingDamageScale));
-      this.lastHeroDamage=Math.min(this.hp,damage);this.hp=Math.max(0,this.hp-damage);this.heroHitUntil=this.elapsed+.2;
+      const settlement=settleDamage({hp:this.hp,maxHP:this.maxHP,shield:this.heroShield},damage);this.heroShield=settlement.shield;
+      this.lastHeroDamage=settlement.hpDamage;this.hp=settlement.hp;this.heroHitUntil=this.elapsed+.2;
       if(this.hp===0){this.deadAt=this.elapsed;this.motion=null;this.clearInput();this.resetCombo();this.auto=false;this.pose('die1',true);return;}
      }
     }

@@ -30,10 +30,20 @@ CREATE TABLE evidence(name TEXT PRIMARY KEY,sha256 TEXT NOT NULL,bytes INTEGER N
 '''
 
 
-def build(source,output,equipment=None,profile=None):
+def build(source,output,equipment=None,profile=None,enum_corrections=None):
     if output.exists():raise ValueError('Choose a NEW output directory; existing recoveries are preserved')
     decoded=source/'decoded'
     if not decoded.is_dir():raise ValueError('Expected source/decoded directory')
+    enum_file=source/'evidence/metadata-enums.json';enum_doc=json.loads(enum_file.read_text())
+    corrections_applied={}
+    if enum_corrections:
+        correction=json.loads(enum_corrections.read_text())
+        if correction['metadataSha256']!=enum_doc['metadataSha256']:raise ValueError('Enum correction metadata hash mismatch')
+        for name,value in correction['enums'].items():
+            if name not in enum_doc['enums']:raise ValueError('Unknown corrected enum '+name)
+            previous={r['name']:r for r in enum_doc['enums'][name]['entries']}
+            if set(previous)!={r['name'] for r in value['entries']}:raise ValueError('Corrected enum member mismatch')
+            enum_doc['enums'][name]=value;corrections_applied[name]=len(value['entries'])
     output.mkdir(parents=True);con=sqlite3.connect(output/'vardian-reference.sqlite');con.execute('PRAGMA journal_mode=MEMORY');con.executescript(SCHEMA)
     tables={};ids={};manifest={};counts={};relations=[];row_docs={}
     def record(name,vector,i,row):
@@ -41,7 +51,6 @@ def build(source,output,equipment=None,profile=None):
         ident={k:row[k] for k in ['Type','ActorType','SkillType','StageId','Tier','Grade','Degree','Level','Star','Board','Group','Kind','Slot','MinLevel','MaxLevel','GrowthLevel','AwakenLevel'] if isinstance(row,dict) and k in row}
         con.execute('INSERT INTO records VALUES(?,?,?,?,?,?)',(rid,name,vector,i,js(ident),js(row)))
         return rid
-    enum_file=source/'evidence/metadata-enums.json';enum_doc=json.loads(enum_file.read_text())
     ability_names={r['value']:r['name'] for r in enum_doc['enums']['BalanceData.ActorAbilityType']['entries']}
     for enum,doc in enum_doc['enums'].items():
         con.executemany('INSERT INTO enums VALUES(?,?,?)',[(enum,r['value'],r['name']) for r in doc['entries']])
@@ -135,7 +144,7 @@ def build(source,output,equipment=None,profile=None):
     # Export issues as structured rows; unsupported values do not become zero/None.
     with (output/'reference-gaps.csv').open('w',newline='',encoding='utf-8-sig') as f:
         w=csv.writer(f);w.writerow(['owner','path','target_table','target_vector','target_field','target_value','matches']);w.writerows(con.execute('SELECT * FROM relations WHERE matches=0'))
-    result={'schemaVersion':1,'sourceBuild':'user supplied installed label1.21.1 / audited native hash','sourceHashes':manifest,'counts':counts,'stages':stage_count,'roundtripTables':roundtrips,
+    result={'schemaVersion':1,'enumCorrections':corrections_applied,'sourceBuild':'user supplied installed label1.21.1 / audited native hash','sourceHashes':manifest,'counts':counts,'stages':stage_count,'roundtripTables':roundtrips,
             'evaluatedGrowthRows':growth_rows,'evaluatedLearnableSkillRows':skill_rows,'unmatchedReferenceRows':con.execute('SELECT count(*) FROM relations WHERE matches=0').fetchone()[0],
             'status':'STATIC_DATA_INDEX_AND_NUMERIC_SUBSET_RESTORED','wholeGameRestored':False,
             'pending':['StringData_23 display strings','ChatForbiddenWords','full actor effect and HP damage pipeline','server purchase/combination RNG','original trait adjacency purchase rules','grade-zero skill owning-system mapping','web migration of all growth systems']}
@@ -154,5 +163,5 @@ def build(source,output,equipment=None,profile=None):
 if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__)
     for n in ['source','output']:p.add_argument('--'+n,required=True,type=Path)
-    p.add_argument('--equipment',type=Path);p.add_argument('--profile',type=Path)
-    a=p.parse_args();r=build(a.source,a.output,a.equipment,a.profile);print(js({k:v for k,v in r.items() if k!='sourceHashes'}))
+    p.add_argument('--enum-corrections',type=Path);p.add_argument('--equipment',type=Path);p.add_argument('--profile',type=Path)
+    a=p.parse_args();r=build(a.source,a.output,a.equipment,a.profile,a.enum_corrections);print(js({k:v for k,v in r.items() if k!='sourceHashes'}))

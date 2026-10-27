@@ -14,6 +14,15 @@ class DatabaseTests(unittest.TestCase):
         for name,doc in tables.items():(self.source/'decoded'/f'{name}.json').write_text(json.dumps(doc))
         enum={'enums':{'BalanceData.ActorAbilityType':{'entries':[{'name':'Atk','value':7}]}}}
         (self.source/'evidence/metadata-enums.json').write_text(json.dumps(enum));self.output=self.root/'output';self.result=build(self.source,self.output);self.db=ReferenceDB(self.output/'vardian-reference.sqlite')
+    def test_enum_corrections_require_matching_metadata_and_member_names(self):
+        enum_path=self.source/'evidence/metadata-enums.json';enum=json.loads(enum_path.read_text());enum['metadataSha256']='a';enum_path.write_text(json.dumps(enum))
+        fix=self.root/'fix.json';fix.write_text(json.dumps({'metadataSha256':'a','enums':{'BalanceData.ActorAbilityType':{'entries':[{'name':'Atk','value':8}]}}}))
+        output=self.root/'corrected';build(self.source,output,enum_corrections=fix)
+        with sqlite3.connect(output/'vardian-reference.sqlite') as db:self.assertEqual(db.execute("SELECT value FROM enums WHERE name='Atk'").fetchone()[0],8)
+        bad=json.loads(fix.read_text());bad['metadataSha256']='b';fix.write_text(json.dumps(bad))
+        with self.assertRaisesRegex(ValueError,'hash mismatch'):build(self.source,self.root/'bad-hash',enum_corrections=fix)
+        bad['metadataSha256']='a';bad['enums']['BalanceData.ActorAbilityType']['entries'][0]['name']='Wrong';fix.write_text(json.dumps(bad))
+        with self.assertRaisesRegex(ValueError,'member mismatch'):build(self.source,self.root/'bad-name',enum_corrections=fix)
     def tearDown(self):self.db.close();self.tmp.cleanup()
     def test_source_roundtrip_and_missing_are_distinct_from_zero(self):
         row=self.db.records('ActorData','ActorDatas')[0];self.assertEqual(row['Size'],0);self.assertNotIn('SkillTypes',row);self.assertEqual(row['_absentDefaultsUnresolved'],['SkillTypes'])
