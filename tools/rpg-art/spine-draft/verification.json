@@ -1,0 +1,14 @@
+{
+  "runtime": "@esotericsoftware/spine-canvas 4.2.120",
+  "spineVersion": "4.2.43",
+  "bones": 19,
+  "slots": 19,
+  "framesChecked": 180,
+  "animations": [
+    "setup",
+    "idle-preview"
+  ],
+  "scope": "JSON/atlas loading and finite transforms, not Spine Editor or Unity visual acceptance",
+  "pythonTests": 9,
+  "gpuGeneration": "not run; Comfy HTTP mocked in tests"
+}

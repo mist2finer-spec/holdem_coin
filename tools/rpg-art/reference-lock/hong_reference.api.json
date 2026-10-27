@@ -1,0 +1,221 @@
+{
+  "1": {
+    "class_type": "UNETLoader",
+    "inputs": {
+      "unet_name": "z_image_turbo_bf16.safetensors",
+      "weight_dtype": "default"
+    }
+  },
+  "2": {
+    "class_type": "ModelSamplingAuraFlow",
+    "inputs": {
+      "model": [
+        "1",
+        0
+      ],
+      "shift": 3.0
+    }
+  },
+  "3": {
+    "class_type": "CLIPLoader",
+    "inputs": {
+      "clip_name": "qwen_3_4b.safetensors",
+      "type": "lumina2",
+      "device": "default"
+    }
+  },
+  "4": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "clip": [
+        "3",
+        0
+      ],
+      "text": "Subtle cleanup of the input 2D anime game character illustration.\nKeep exactly the same character, pose, orientation, framing and silhouette.\nPreserve her original face, eyes, expression, very long straight dark hair,\nblack cold-shoulder crop top, detached sleeves, skirt, straps, stockings and boots.\nPreserve the original drawing style and colors. One adult woman only.\nNo new accessories, no weapons, no text. Do not redesign the face or outfit."
+    }
+  },
+  "5": {
+    "class_type": "ConditioningZeroOut",
+    "inputs": {
+      "conditioning": [
+        "4",
+        0
+      ]
+    }
+  },
+  "6": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "vae_name": "ae.safetensors"
+    }
+  },
+  "7": {
+    "class_type": "VAEEncode",
+    "inputs": {
+      "pixels": [
+        "12",
+        0
+      ],
+      "vae": [
+        "6",
+        0
+      ]
+    }
+  },
+  "8": {
+    "class_type": "KSampler",
+    "inputs": {
+      "model": [
+        "2",
+        0
+      ],
+      "positive": [
+        "4",
+        0
+      ],
+      "negative": [
+        "5",
+        0
+      ],
+      "latent_image": [
+        "18",
+        0
+      ],
+      "seed": 42,
+      "steps": 8,
+      "cfg": 1.0,
+      "sampler_name": "res_multistep",
+      "scheduler": "simple",
+      "denoise": 0.2
+    }
+  },
+  "9": {
+    "class_type": "VAEDecode",
+    "inputs": {
+      "samples": [
+        "8",
+        0
+      ],
+      "vae": [
+        "6",
+        0
+      ]
+    }
+  },
+  "10": {
+    "class_type": "SaveImage",
+    "inputs": {
+      "images": [
+        "19",
+        0
+      ],
+      "filename_prefix": "hong_reference_lock/hong"
+    }
+  },
+  "11": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "hong_reference.png"
+    }
+  },
+  "12": {
+    "class_type": "ImageScale",
+    "inputs": {
+      "image": [
+        "11",
+        0
+      ],
+      "upscale_method": "lanczos",
+      "width": 512,
+      "height": 768,
+      "crop": "disabled"
+    }
+  },
+  "13": {
+    "class_type": "SolidMask",
+    "inputs": {
+      "value": 0.0,
+      "width": 512,
+      "height": 768
+    }
+  },
+  "14": {
+    "class_type": "SolidMask",
+    "inputs": {
+      "value": 1.0,
+      "width": 143,
+      "height": 145
+    }
+  },
+  "15": {
+    "class_type": "FeatherMask",
+    "inputs": {
+      "mask": [
+        "14",
+        0
+      ],
+      "left": 4,
+      "top": 4,
+      "right": 4,
+      "bottom": 4
+    }
+  },
+  "16": {
+    "class_type": "MaskComposite",
+    "inputs": {
+      "destination": [
+        "13",
+        0
+      ],
+      "source": [
+        "15",
+        0
+      ],
+      "x": 204,
+      "y": 11,
+      "operation": "add"
+    }
+  },
+  "17": {
+    "class_type": "InvertMask",
+    "inputs": {
+      "mask": [
+        "16",
+        0
+      ]
+    }
+  },
+  "18": {
+    "class_type": "SetLatentNoiseMask",
+    "inputs": {
+      "samples": [
+        "7",
+        0
+      ],
+      "mask": [
+        "17",
+        0
+      ]
+    }
+  },
+  "19": {
+    "class_type": "ImageCompositeMasked",
+    "inputs": {
+      "destination": [
+        "9",
+        0
+      ],
+      "source": [
+        "12",
+        0
+      ],
+      "x": 0,
+      "y": 0,
+      "resize_source": false,
+      "mask": [
+        "16",
+        0
+      ]
+    }
+  }
+}

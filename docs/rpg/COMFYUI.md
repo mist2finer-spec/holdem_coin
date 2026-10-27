@@ -67,3 +67,7 @@ npm run test:comfy
 ```
 
 테스트는 로컬 모의 HTTP 서버를 이용해 참조 업로드, 큐 제출, 결과 다운로드, 오류 처리를 검증한다. 실제 GPU 추론 성공과는 별개다. 서버가 없을 때 `comfy:doctor`의 연결 실패는 정상이며 생성 가능한 상태로 보고하지 않는다.
+
+## Z-Image experiments and handoff
+
+See [ASSET_AUTHORING_HANDOFF.md](ASSET_AUTHORING_HANDOFF.md) and `tools/rpg-art/`. These archived experiments are separate from this SD/SDXL workflow.

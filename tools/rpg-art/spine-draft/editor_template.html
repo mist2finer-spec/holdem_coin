@@ -1,0 +1,18 @@
+<!doctype html><html lang="ko"><meta charset="utf-8"><title>Hong cutout editor</title>
+<style>body{background:#18202b;color:#eee;font:16px system-ui;margin:20px}main{display:flex;gap:20px;align-items:flex-start}aside{width:310px}canvas{max-width:70vw;max-height:90vh;object-fit:contain;background:#657080;touch-action:none}button,select{padding:10px;margin:5px 0;max-width:100%}p{line-height:1.6}.warn{color:#ffcb77}</style>
+<h2>홍 파츠 경계·관절 편집</h2><main><canvas id="cv"></canvas><aside>
+<select id="parts"></select><p id="desc"></p><select id="mode"><option value="edit">꼭짓점 드래그</option><option value="draw">새 폴리곤: 클릭으로 점 추가</option><option value="pivot">관절 위치: 클릭</option></select>
+<button id="clear">선택 파츠 경계 비우기</button><button id="undo">마지막 점 지우기</button><br><label><input id="all" type="checkbox">모든 경계 표시</label><br><button id="download">수정 JSON 다운로드</button>
+<p>빨간 점은 관절, 노란 점은 경계입니다. 실제 캐릭터 윤곽을 따라 수정하세요. 가려진 관절은 회전 시 틈이 나지 않을 여유를 남깁니다.</p>
+<p class="warn">가려진 뒤팔은 원본 픽셀이 없습니다. 경계만 지정한 뒤 AI 보완 또는 수작업이 필요합니다. 이 도구는 자동 분할 AI가 아닙니다.</p>
+<p>다운로드한 JSON을 prepare의 -Config 옵션으로 적용합니다. 이미 검수한 파츠가 있다면 새 출력 폴더를 사용하세요.</p></aside></main>
+<script>
+const data=__CONFIG__,image=new Image(),canvas=document.getElementById('cv'),ctx=canvas.getContext('2d'),sel=document.getElementById('parts'),mode=document.getElementById('mode');let drag=-1;
+for(const p of data.parts){let o=document.createElement('option');o.value=p.name;o.textContent=p.name+(p.occluded?' [가려짐]':'');sel.append(o)}
+function part(){return data.parts.find(p=>p.name===sel.value)}
+function redraw(){ctx.clearRect(0,0,canvas.width,canvas.height);ctx.drawImage(image,0,0,canvas.width,canvas.height);let ps=document.getElementById('all').checked?data.parts:[part()];for(const p of ps){ctx.beginPath();p.polygon.forEach(([x,y],i)=>{i?ctx.lineTo(x*canvas.width,y*canvas.height):ctx.moveTo(x*canvas.width,y*canvas.height)});ctx.closePath();ctx.fillStyle=p===part()?'#ffcc0025':'#00ccff12';ctx.fill();ctx.strokeStyle=p===part()?'#ffda55':'#66ccdd';ctx.lineWidth=2;ctx.stroke();if(p===part()){for(const [x,y] of p.polygon){ctx.beginPath();ctx.arc(x*canvas.width,y*canvas.height,5,0,7);ctx.fillStyle='#ffe16b';ctx.fill()}ctx.beginPath();ctx.arc(p.pivot[0]*canvas.width,p.pivot[1]*canvas.height,7,0,7);ctx.fillStyle='#ff4455';ctx.fill()}}document.getElementById('desc').textContent=part().description}
+function point(e){let r=canvas.getBoundingClientRect();return [Math.max(0,Math.min(1,(e.clientX-r.left)/r.width)),Math.max(0,Math.min(1,(e.clientY-r.top)/r.height))]}
+canvas.onpointerdown=e=>{let q=point(e),p=part();if(mode.value==='pivot')p.pivot=q;else if(mode.value==='draw')p.polygon.push(q);else{let best=.025;p.polygon.forEach((v,i)=>{let d=Math.hypot(v[0]-q[0],v[1]-q[1]);if(d<best){best=d;drag=i}});canvas.setPointerCapture(e.pointerId)}redraw()};canvas.onpointermove=e=>{if(drag>=0){part().polygon[drag]=point(e);redraw()}};canvas.onpointerup=()=>drag=-1;
+sel.onchange=redraw;document.getElementById('all').onchange=redraw;document.getElementById('clear').onclick=()=>{part().polygon=[];mode.value='draw';redraw()};document.getElementById('undo').onclick=()=>{part().polygon.pop();redraw()};document.getElementById('download').onclick=()=>{if(data.parts.some(p=>p.polygon.length<3)){alert('모든 파츠 경계에 점이 3개 이상 필요합니다.');return}let u=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'})),a=document.createElement('a');a.href=u;a.download='hong_parts.edited.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)};
+image.onload=()=>{canvas.width=data.width;canvas.height=Math.round(image.height*data.width/image.width);redraw()};image.src='__IMAGE__';
+</script></html>
