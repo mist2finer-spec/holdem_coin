@@ -1,0 +1,176 @@
+{
+  "sourceZipSha256": "0a8905ad3ccd5a6e32a2e49ff3b7d724616ce57c053dbc118439b90f1bd5fef2",
+  "sourceApk": {
+    "name": "split_UnityDataAssetPack.apk",
+    "sha256": "fb4d33bc24ecef42c42da8d412374335bb9f2a968c2c5318991b9de8f43bf861",
+    "member": "assets/aa/Android/map_scenes_all_4b458b9f2434e6d32bf59723a0ba1ae6.bundle"
+  },
+  "bundleSha256": "d6538186a5b57f3946ef5e15a715d47af6b22b1a48695964eb0410d8095f1d58",
+  "exportedObjects": 116487,
+  "serializedFiles": 134,
+  "sceneHelpers": 85,
+  "waves": 484,
+  "spawns": 3637,
+  "reactors": 6002,
+  "stageCandidates": {
+    "label-matched-graph-candidate": 5532,
+    "unresolved-scene-label": 468
+  },
+  "runtimeReady": false,
+  "limitations": [
+    "Legacy config names are corroborating labels, not repaired AssetBundle container mappings.",
+    "MapEntityRoot suffix is a candidate runtime group based on native SetScene string-prefix parsing; editor preview selection is not stage selection.",
+    "No forced wave ordering by waveNo or object order. OnStart waves can coexist; inactive dependency fields are not prerequisites.",
+    "Spawn definitions are not kill counts. Repetition, messages, cutscenes, deactivation, area and action triggers still require execution.",
+    "World matrices use original XYZ hierarchy. Projection into current web belt-scroll map is a separate adapter."
+  ],
+  "collectorErrorCount": 85,
+  "unresolvedReferenceCount": 85,
+  "firstChapter": [
+    {
+      "stageId": 101,
+      "mapKey": [
+        1,
+        101
+      ],
+      "waveCount": 2,
+      "spawnDefinitionCount": 19,
+      "monsterInfoNames": {
+        "소형": 19
+      },
+      "runtimeReady": false
+    },
+    {
+      "stageId": 102,
+      "mapKey": [
+        1,
+        102
+      ],
+      "waveCount": 3,
+      "spawnDefinitionCount": 21,
+      "monsterInfoNames": {
+        "소형": 18,
+        "중형": 3
+      },
+      "runtimeReady": false
+    },
+    {
+      "stageId": 103,
+      "mapKey": [
+        1,
+        103
+      ],
+      "waveCount": 3,
+      "spawnDefinitionCount": 13,
+      "monsterInfoNames": {
+        "소형": 9,
+        "중형": 3,
+        "대형": 1
+      },
+      "runtimeReady": false
+    },
+    {
+      "stageId": 104,
+      "mapKey": [
+        1,
+        104
+      ],
+      "waveCount": 5,
+      "spawnDefinitionCount": 24,
+      "monsterInfoNames": {
+        "소형": 19,
+        "중형": 4,
+        "대형": 1
+      },
+      "runtimeReady": false
+    },
+    {
+      "stageId": 105,
+      "mapKey": [
+        1,
+        105
+      ],
+      "waveCount": 1,
+      "spawnDefinitionCount": 1,
+      "monsterInfoNames": {
+        "보스": 1
+      },
+      "runtimeReady": false
+    }
+  ],
+  "bossAreaConnection": [
+    {
+      "hierarchy": "MapEntityRoot/SpawnArea",
+      "localPosition": {
+        "x": -4.0,
+        "y": -53.0,
+        "z": 8.0
+      },
+      "worldMatrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          -4.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          -53.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          8.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "triggers": [
+        {
+          "type": 20,
+          "once": false,
+          "selfMessageType": null,
+          "references": {
+            "_waveReactorsToCheck": [],
+            "_spawnReactorsToCheck": [],
+            "_npcChatReactorsToCheck": [],
+            "_npcBattleReactorsToCheck": []
+          },
+          "note": "Reference lists are inspector fields, not unconditional prerequisites."
+        },
+        {
+          "type": 0,
+          "once": false,
+          "selfMessageType": null,
+          "references": {
+            "_waveReactorsToCheck": [],
+            "_spawnReactorsToCheck": [],
+            "_npcChatReactorsToCheck": [],
+            "_npcBattleReactorsToCheck": []
+          },
+          "note": "Reference lists are inspector fields, not unconditional prerequisites."
+        }
+      ],
+      "qualifiedReferences": [
+        {
+          "field": "_targetsToOn1[0]",
+          "reference": {
+            "m_FileID": 0,
+            "m_PathID": 843
+          },
+          "target": [
+            "16:CAB-10a176de7ce15193e3587305aadcdc25",
+            "843"
+          ]
+        }
+      ]
+    }
+  ]
+}

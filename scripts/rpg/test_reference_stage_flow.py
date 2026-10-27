@@ -80,6 +80,22 @@ class ApkCollectorTests(unittest.TestCase):
    with patch.dict('sys.modules',{'UnityPy':SimpleNamespace(load=fail)}):
     with self.assertRaisesRegex(RuntimeError,'broken bundle'):collect(bundle,root/'graph')
    self.assertTrue(retained[0].closed)
+ def test_container_pptr_resolves_target_reader_instead_of_owner(self):
+  from types import SimpleNamespace
+  from collect_map_graph import collect
+  owner=SimpleNamespace(name='owner',externals=[]);target=SimpleNamespace(name='scene',externals=[])
+  reader=SimpleNamespace(assets_file=target,type=SimpleNamespace(name='GameObject'),path_id=4,read_typetree=lambda:{'m_Name':'root'})
+  class Pointer:
+   __slots__=('assetsfile',)
+   def __init__(self):self.assetsfile=owner
+   def deref(self):return reader
+  env=SimpleNamespace(objects=[reader],container={'Assets/Map001_101.unity':Pointer()})
+  with tempfile.TemporaryDirectory() as tmp:
+   root=Path(tmp);bundle=root/'map_scenes_test.bundle';bundle.write_bytes(b'original')
+   with patch.dict('sys.modules',{'UnityPy':SimpleNamespace(load=lambda stream:env)}):result=collect(bundle,root/'graph')
+   self.assertEqual(result['errors'],0)
+   manifest=json.loads((root/'graph/manifest.json').read_text(encoding='utf-8'));c=manifest['containers'][0]
+   self.assertEqual(c['originalSerializedName'],'scene');self.assertEqual(c['pathId'],'4');self.assertEqual(c['serializedFile'],'0:scene')
  def test_absent_or_multiple_versions_do_not_pick_arbitrary_map(self):
   for count in [0,2]:
    with tempfile.TemporaryDirectory() as tmp:

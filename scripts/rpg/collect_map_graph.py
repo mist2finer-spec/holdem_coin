@@ -42,7 +42,14 @@ def _collect_stream(bundle,output,stream):
   except Exception as e:errors.append({'identity':ident,'error':str(e)})
  containers=[]
  for asset_path,ref in env.container.items():
-  try:containers.append({'assetPath':asset_path,'serializedFile':file_keys.get(id(ref.assets_file)), 'originalSerializedName':ref.assets_file.name,'pathId':str(ref.path_id)})
+  try:
+   # env.container holds PPtr in current UnityPy; the target reader owns assets_file.
+   target=ref.deref() if callable(getattr(ref,'deref',None)) else ref
+   target_file=target.assets_file
+   file_keys.setdefault(id(target_file),str(len(file_keys))+':'+target_file.name)
+   serialized=file_keys[id(target_file)]
+   assets.setdefault(serialized,{'originalName':target_file.name,'externals':[{'path':getattr(e,'path',None),'guid':str(getattr(e,'guid',''))} for e in target_file.externals]})
+   containers.append({'assetPath':asset_path,'serializedFile':serialized,'originalSerializedName':target_file.name,'pathId':str(target.path_id)})
   except Exception as error:errors.append({'container':asset_path,'error':str(error)})
  manifest={'containers':containers,'bundle':bundle.name,'sha256':hashlib.sha256(bundle.read_bytes()).hexdigest(),'serializedFiles':assets,'objects':records,'errors':errors,'scope':'Raw graph evidence, not automatic original stage placement. Keep external file table; do not join by PathID alone.'}
  (output/'manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n',encoding='utf-8');return {'objects':len(records),'errors':len(errors),'serializedFiles':len(assets),'output':str(output)}
