@@ -11,9 +11,10 @@ above the growth panel. The viewport is a little taller than that panel example.
 - Fixed header/footer. Remaining space splits 47:53 between battle and lower UI.
 - Panels occupy lower UI without resizing or covering the battle canvas.
 - Styles are scoped under .hunt-device; poker is unaffected.
-- Camera shows at least 1125 world units instead of 900. At equal canvas width,
-  actors and their spacing are 80% of the previous size. Simulation coordinates,
-  hitboxes, movement and combat rules do not change.
+- Portrait camera gain is now 2x: the minimum visible span changes from 1125 to
+  562.5 world units. Heroes, monsters, projectiles and map objects share the
+  projection; background and foreground decorations scale around the floor.
+  Simulation coordinates, hitboxes, movement and combat rules do not change.
 - Authoring v8.x rigs are separate from this UI release.
 
 Validation: TypeScript, production build, 108 RPG tests.
@@ -35,3 +36,11 @@ CombatCameraConfig separately stores FOV 33/38 and distance16/height3.63.
 These are serialized values, not a restored implementation of adaptive
 scaling. The original exact battle-panel split is not proven by these files;
 47:53 is the web adjustment requested after comparing the gameplay video.
+
+## In-scene zoom
+
+User comparison screenshot showed a roughly half-sized hero relative to the
+original Vardian scene. HUNT_PORTRAIT_ZOOM=2 increases the rendered world scale
+inside the fixed portrait battle panel. The camera stays hero-centered; battle
+panel height and controls are not resized by this change. Backgrounds zoom
+around the ground line so the floor remains aligned with actor feet.

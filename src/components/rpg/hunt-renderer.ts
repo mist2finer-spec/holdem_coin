@@ -11,7 +11,7 @@ import {AnimationState, AnimationStateData, AtlasAttachmentLoader, GLTexture, Ph
 import {HuntEngine,WORLD_WIDTH} from './hunt-engine';
 import {combatCharacter} from './combat-characters';
 import {CombatSpriteClock,COMBAT_SPRITE_SCALE,spritePlacement} from './combat-sprite';
-import {huntViewport} from './hunt-layout';
+import {huntViewport,HUNT_PORTRAIT_ZOOM} from './hunt-layout';
 import {HUNT_VISUALS} from './hunt-collision';
 import {attachmentBottom,groundSkeleton} from './hunt-ground';
 const base = '/rpg/';
@@ -104,13 +104,15 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
    canvas.dataset.enemyCount=String(game.enemies.filter(e=>e.hp>0).length);
    canvas.dataset.visibleEnemies=String(game.enemies.filter(e=>e.hp>0&&screenX(e.x)>=0&&screenX(e.x)<=w).length);
    canvas.dataset.cameraX=String(camera);canvas.dataset.heroScreenX=String(screenX(game.x));
-   canvas.dataset.worldWidth=String(WORLD_WIDTH);
-   const tile = Math.max(h*.8,230), offset = ((camera*zoom*.22 % tile)+tile)%tile;
-   for(let x=-tile-offset; x<w; x+=tile) ctx.drawImage(forest, x, 0, tile, floor+45);
+   canvas.dataset.worldWidth=String(WORLD_WIDTH);canvas.dataset.cameraSpan=String(w/zoom);canvas.dataset.sceneZoom=String(HUNT_PORTRAIT_ZOOM);
+   const sceneScale=HUNT_PORTRAIT_ZOOM,backgroundHeight=(floor+45)*sceneScale;
+   const tile = Math.max(h*.8,230)*sceneScale, offset = ((camera*zoom*.22 % tile)+tile)%tile;
+   for(let x=-tile-offset; x<w; x+=tile) ctx.drawImage(forest, x, floor+45-backgroundHeight, tile, backgroundHeight);
    const shade = ctx.createLinearGradient(0, 0, 0, h); shade.addColorStop(0, '#04191755'); shade.addColorStop(.55, '#091e1600'); shade.addColorStop(1, '#071b13'); ctx.fillStyle=shade;ctx.fillRect(0,0,w,h);
    ctx.fillStyle='#26372a';ctx.fillRect(0,floor+5,w,h-floor);
    ctx.fillStyle='#658150';ctx.fillRect(0,floor+5,w,4);
-   ctx.fillStyle='#192a20'; for(let i=-1;i<w/90+1;i++) ctx.fillRect(i*90-((camera*zoom%90)+90)%90,floor+28+(i%3)*12,46,3);
+   const groundStep=90*sceneScale;
+   ctx.fillStyle='#192a20'; for(let i=-1;i<w/groundStep+1;i++) ctx.fillRect(i*groundStep-((camera*zoom%groundStep)+groundStep)%groundStep,floor+(28+(i%3)*12)*sceneScale,46*sceneScale,3*sceneScale);
    for(const edge of [65,WORLD_WIDTH-65]){const x=screenX(edge);if(x>=0&&x<w){ctx.fillStyle='#b4ba8777';ctx.fillRect(x,floor-18,3,25);}}
    const scale=COMBAT_SPRITE_SCALE*zoom;
    ctx.fillStyle='#0005';ctx.beginPath();ctx.ellipse(screenX(game.x),floor+4,25*zoom,5*zoom,0,0,Math.PI*2);ctx.fill();
@@ -181,7 +183,8 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
    for(const o of objective?.objects??[]){const x=screenX(o.x);ctx.fillStyle=o.done?'#80c7ad':'#e7bc62';ctx.fillRect(x-14*zoom,floor-35*zoom,28*zoom,35*zoom);ctx.font='12px sans-serif';ctx.textAlign='center';ctx.fillText(o.done?'완료':'장치',x,floor-43*zoom);}
    if(objective?.escort){const a=objective.escort,x=screenX(a.x);ctx.fillStyle='#80d6ed';ctx.fillRect(x-10*zoom,floor-38*zoom,20*zoom,38*zoom);ctx.fillRect(x-20*zoom,floor-48*zoom,40*zoom*a.hp/a.maxHP,4);ctx.font='12px sans-serif';ctx.textAlign='center';ctx.fillText('동료',x,floor-55*zoom);}
    // Foreground decoration follows the world more quickly than the distant forest.
-   ctx.globalAlpha=.7;for(let x=-170-((camera*zoom*.65%700)+700)%700;x<w;x+=700)ctx.drawImage(trees,x,floor-165,145,190);ctx.globalAlpha=1;
+   const foregroundStep=700*sceneScale;
+   ctx.globalAlpha=.7;for(let x=-170*sceneScale-((camera*zoom*.65%foregroundStep)+foregroundStep)%foregroundStep;x<w;x+=foregroundStep)ctx.drawImage(trees,x,floor-165*sceneScale,145*sceneScale,190*sceneScale);ctx.globalAlpha=1;
   },
   dispose() { disposed=true;assetCache.forEach(a=>a.atlas.dispose());enemy.atlas.dispose();hero?.atlas.dispose(); renderer?.dispose(); },
   animations: {hero: ['stay1','run1','dash','avoid1','attack1','attack2','attack3','attack4','attack5','damage1'], enemy: enemy.available},
