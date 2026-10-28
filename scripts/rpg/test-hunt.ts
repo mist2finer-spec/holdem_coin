@@ -206,8 +206,8 @@ test('AUTO scans skills in slot order, skips cooldown/disabled and repeats after
  const far=ready();far.enemyX=1800;far.setAuto(true);far.step(.01,0);assert.equal(far.cooldowns[0],0);
 });
 
-test('portrait framing narrows only the visual span and monsters shrink independently of hitboxes',async()=>{
- const {huntViewport,HUNT_PORTRAIT_ZOOM,HUNT_MONSTER_RENDER_SCALE}=await import('../../src/components/rpg/hunt-layout');
- const v=huntViewport(390,620);assert.equal(HUNT_PORTRAIT_ZOOM,2.16);assert.ok(v.worldWidth<562.5&&v.worldWidth>500);assert.equal(HUNT_MONSTER_RENDER_SCALE,.88);assert.equal(v.screenX(620),195);
+test('portrait framing widens the view while retaining readable actors independently of hitboxes',async()=>{
+ const {huntViewport,HUNT_MONSTER_RENDER_SCALE,HUNT_ACTOR_RENDER_GAIN}=await import('../../src/components/rpg/hunt-layout');
+ const v=huntViewport(390,620);assert.equal(v.worldWidth,625);assert.ok(Math.abs(v.zoom*HUNT_ACTOR_RENDER_GAIN-390/(1125/2.16))<1e-9);assert.equal(HUNT_MONSTER_RENDER_SCALE,.88);assert.equal(v.screenX(620),195);
  const {HUNT_BODIES}=await import('../../src/components/rpg/hunt-collision');assert.equal(HUNT_BODIES.slimeRadius,12);assert.equal(HUNT_BODIES.heroRadius,24);
 });

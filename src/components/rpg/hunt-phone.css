@@ -2,14 +2,14 @@
 .hunt-device-stage{width:100%;height:100dvh;min-height:0;display:grid;place-items:center;overflow:hidden;background:radial-gradient(ellipse at 50% 25%,#2c342d,#080e0c 75%)}
 .hunt-device{width:100%;height:100%;min-width:0;min-height:0;position:relative;box-sizing:border-box}
 .hunt-device-screen{width:100%;height:100%;overflow:hidden;position:relative;container-type:size;background:#101b16}
-.hunt-device .hunt-shell{width:100%;height:100%;max-width:none;min-height:0;padding:0 6px;margin:0;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:44px minmax(0,47fr) minmax(0,53fr) 44px;gap:0;background:radial-gradient(ellipse at 50% 85%,#524634,#17231a 70%)}
+.hunt-device .hunt-shell{width:100%;height:100%;max-width:none;min-height:0;padding:0 6px;margin:0;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:44px minmax(0,44fr) minmax(0,56fr) 44px;gap:0;background:radial-gradient(ellipse at 50% 85%,#524634,#17231a 70%)}
 .hunt-device .hunt-header{height:auto;min-width:0;margin:0 -6px;padding:5px 8px;gap:5px}
 .hunt-device .hunt-back{font-size:10px;padding:7px 6px}
 .hunt-device .hunt-prototype{display:none}
 .hunt-device .hunt-currencies{gap:5px;min-width:0}
 .hunt-device .hunt-currencies>span{min-width:0;font-size:11px;padding:3px 6px;gap:4px}
 .hunt-device .hunt-currencies img{width:20px;height:20px}
-.hunt-device .hunt-stage{min-height:0;height:auto;min-width:0;flex:none;margin:5px 0 7px;border:3px solid #75633e;border-radius:12px}
+.hunt-device .hunt-stage{min-height:0;height:auto;min-width:0;flex:none;margin:0 -6px 5px;border:0;border-bottom:1px solid #75633e;border-radius:0}
 .hunt-device .hunt-identity{top:9px;left:8px;gap:5px;padding:4px 6px 4px 4px;border-radius:6px}
 .hunt-device .hunt-identity>img{height:32px;width:28px;border-radius:5px}
 .hunt-device .hunt-identity strong{font-size:11px}
@@ -23,9 +23,9 @@
 .hunt-device .hunt-menu-toggle{top:12px;right:7px;width:29px;height:29px;font-size:17px}
 .hunt-device .hunt-drawer{top:47px;right:7px;z-index:10}
 .hunt-device .hunt-drawer button{font-size:11px;padding:9px 16px;min-height:32px}
-.hunt-device .hunt-objective{position:absolute;left:8px;bottom:31px;top:auto;z-index:3;font-size:10px;max-width:75%;color:#ffedbd;background:#071812bb;padding:4px 6px;border-radius:5px}
+.hunt-device .hunt-objective{position:absolute;left:8px;bottom:8px;top:auto;z-index:3;font-size:10px;max-width:75%;color:#ffedbd;background:#071812bb;padding:4px 6px;border-radius:5px}
 .hunt-device .hunt-objective button{margin-left:5px;border:1px solid #ab915a;border-radius:4px;padding:3px}
-.hunt-device .hunt-stage-caption{left:9px;right:9px;bottom:8px;font-size:8px}
+.hunt-device .hunt-stage-caption{display:none}
 .hunt-device .hunt-lower{position:relative;min-width:0;min-height:0;overflow:hidden}
 .hunt-device .hunt-console{width:100%;height:100%;min-height:0;padding:8px 6px 12px;border:0;border-top:1px solid #77603d;border-radius:0;box-sizing:border-box;display:flex;flex-direction:column;background:transparent}
 .hunt-device .hunt-vitals{flex:none;width:100%;min-width:0;margin:0 0 9px;gap:10px}
@@ -66,7 +66,7 @@
  .hunt-device:before{content:'';position:absolute;top:8px;left:50%;transform:translateX(-50%);width:44px;height:5px;border-radius:4px;background:#060909;z-index:80;pointer-events:none}
 }
 @container(max-height:650px){
- .hunt-device .hunt-shell{grid-template-rows:38px minmax(0,47fr) minmax(0,53fr) 36px}
+ .hunt-device .hunt-shell{grid-template-rows:38px minmax(0,44fr) minmax(0,56fr) 36px}
  .hunt-device .hunt-skill{max-height:36px}
  .hunt-device .hunt-console{padding-top:5px;padding-bottom:3px}
  .hunt-device .hunt-controls{min-height:70px;padding:0}

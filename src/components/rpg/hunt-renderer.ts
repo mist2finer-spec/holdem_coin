@@ -12,7 +12,7 @@ import {AnimationState, AnimationStateData, AtlasAttachmentLoader, GLTexture, Ph
 import {HuntEngine,WORLD_WIDTH} from './hunt-engine';
 import {combatCharacter} from './combat-characters';
 import {CombatSpriteClock,COMBAT_SPRITE_SCALE,spritePlacement} from './combat-sprite';
-import {huntViewport,HUNT_PORTRAIT_ZOOM,HUNT_MONSTER_RENDER_SCALE} from './hunt-layout';
+import {huntViewport,HUNT_PORTRAIT_ZOOM,HUNT_MONSTER_RENDER_SCALE,HUNT_ACTOR_RENDER_GAIN,HUNT_BACKGROUND_GAIN,HUNT_GROUND_RATIO} from './hunt-layout';
 import {HUNT_VISUALS} from './hunt-collision';
 import {attachmentBottom,groundSkeleton} from './hunt-ground';
 const base = '/rpg/';
@@ -106,12 +106,12 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
     gl.viewport(0,0,layer.width,layer.height);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);
     renderer.camera.position.set(w/2,h/2,0);renderer.camera.setViewport(w,-h);renderer.begin();
    }
-   const floor=h*.76,{zoom,camera,screenX}=huntViewport(w,game.x);
+   const floor=h*HUNT_GROUND_RATIO,{zoom,camera,screenX}=huntViewport(w,game.x);
    canvas.dataset.enemyCount=String(game.enemies.filter(e=>e.hp>0).length);
    canvas.dataset.visibleEnemies=String(game.enemies.filter(e=>e.hp>0&&screenX(e.x)>=0&&screenX(e.x)<=w).length);
    canvas.dataset.cameraX=String(camera);canvas.dataset.heroScreenX=String(screenX(game.x));
    canvas.dataset.worldWidth=String(WORLD_WIDTH);canvas.dataset.cameraSpan=String(w/zoom);canvas.dataset.sceneZoom=String(HUNT_PORTRAIT_ZOOM);
-   const sceneScale=HUNT_PORTRAIT_ZOOM,backgroundHeight=(floor+45)*sceneScale;
+   const sceneScale=HUNT_BACKGROUND_GAIN,backgroundHeight=(floor+45)*sceneScale;
    const tile = Math.max(h*.8,230)*sceneScale, offset = ((camera*zoom*.22 % tile)+tile)%tile;
    for(let x=-tile-offset; x<w; x+=tile) ctx.drawImage(forest, x, floor+45-backgroundHeight, tile, backgroundHeight);
    const shade = ctx.createLinearGradient(0, 0, 0, h); shade.addColorStop(0, '#04191755'); shade.addColorStop(.55, '#091e1600'); shade.addColorStop(1, '#071b13'); ctx.fillStyle=shade;ctx.fillRect(0,0,w,h);
@@ -120,7 +120,7 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
    const groundStep=90*sceneScale;
    ctx.fillStyle='#192a20'; for(let i=-1;i<w/groundStep+1;i++) ctx.fillRect(i*groundStep-((camera*zoom%groundStep)+groundStep)%groundStep,floor+(28+(i%3)*12)*sceneScale,46*sceneScale,3*sceneScale);
    for(const edge of [65,WORLD_WIDTH-65]){const x=screenX(edge);if(x>=0&&x<w){ctx.fillStyle='#b4ba8777';ctx.fillRect(x,floor-18,3,25);}}
-   const scale=COMBAT_SPRITE_SCALE*zoom;
+   const scale=COMBAT_SPRITE_SCALE*zoom*HUNT_ACTOR_RENDER_GAIN;
    ctx.fillStyle='#0005';ctx.beginPath();ctx.ellipse(screenX(game.x),floor+4,25*zoom,5*zoom,0,0,Math.PI*2);ctx.fill();
    for(const [slot,visual] of stageVisuals)if(!game.enemies.some(e=>e.slot===slot&&e.serial===visual.keySerial))stageVisuals.delete(slot);
    for(const mob of game.enemies){
@@ -130,7 +130,7 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
     const clips=(mob.asset?LABYRINTH.assets[mob.asset]:undefined)?.clips??HUNT_MONSTER_ASSET.clips;
     const anim=mob.hp<=0?clips.death:hurt?clips.hurt:mob.state==='windup'?(mob.clip??clips.attack):mob.state==='walk'?clips.move:clips.idle;
     const shake=hurt?Math.sin(game.elapsed*90)*2*zoom:0,x=screenX(mob.x),y=floor;
-    animate(visual,anim,x+shake,y,(mob.asset?(mob.boss?100:38)/visual.setupHeight:HUNT_VISUALS.slimeScale)*zoom*HUNT_MONSTER_RENDER_SCALE,mob.x>game.x?-1:1,dt,mob.serial*10000+(mob.castSerial??0));
+    animate(visual,anim,x+shake,y,(mob.asset?(mob.boss?100:38)/visual.setupHeight:HUNT_VISUALS.slimeScale)*zoom*HUNT_ACTOR_RENDER_GAIN*HUNT_MONSTER_RENDER_SCALE,mob.x>game.x?-1:1,dt,mob.serial*10000+(mob.castSerial??0));
    }
    if(renderer){renderer.end();ctx.drawImage(layer,0,0,w,h);}
    const stage=game.combo.find(s=>s.animation===game.action);
