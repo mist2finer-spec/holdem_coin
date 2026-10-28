@@ -38,6 +38,7 @@ export class HuntEngine {
  get hitUntil(){return this.target.hitUntil;}set hitUntil(v:number){this.target.hitUntil=v;}
  elapsed=0;kills=0;coins=0;xp=0;auto=false;paused=false;
  action='stay1';actionSerial=0;animationSpeed=1;actionUntil=0;
+ pendingSkill:number|null=null;
  cooldowns=[0,0,0,0,0,0];dodgeReady=0;attackReady=0;
  comboStage=0;attackHeld=false;
  deadAt=-1;lastHeroDamage=0;heroHitUntil=0;parryUntil=0;parryReady=0;critical=false;
@@ -151,7 +152,7 @@ export class HuntEngine {
   this.animationSpeed=speed;
  }
  private resetCombo(){this.comboIndex=0;this.comboStage=0;this.comboExpires=0;this.queuedUntil=0;}
- clearInput(){this.attackHeld=false;this.attackIntent=false;this.queuedUntil=0;}
+ clearInput(){this.pendingSkill=null;this.attackHeld=false;this.attackIntent=false;this.queuedUntil=0;}
  setAuto(value:boolean){
   this.auto=value;
   if(!value){this.clearInput();if(this.motion?.kind==='rush'){
@@ -356,6 +357,20 @@ export class HuntEngine {
    this.attackIntent=false;this.queuedUntil=0;this.facing=Math.sign(direction);
    this.moveTo(this.x+direction*HUNT_RULES.moveSpeed*this.tempo*dt);this.pose('run1',false,this.tempo);return;
   }
+  // Manual reservations win over AUTO; never interrupt a hit already in flight.
+  if(this.pendingSkill!==null){
+   const skill=this.pendingSkill;
+   if(!this.progress.skillEnabled[skill])this.pendingSkill=null;
+   else if(this.cooldowns[skill]<=1e-8&&this.attack(skill)){this.pendingSkill=null;return;}
+  }
+  if(this.auto&&this.enemyHP>0){
+   const distance=Math.abs(this.enemyX-this.x);
+   for(let skill=0;skill<6;skill++){
+    if(!this.progress.skillEnabled[skill]||this.cooldowns[skill]>1e-8)continue;
+    if(skill===5?this.hp>=this.maxHP:distance>330)continue;
+    if(this.attack(skill))return;
+   }
+  }
   if(this.enemyHP>0&&(this.auto||this.attackHeld||this.attackIntent||this.queuedUntil>this.elapsed)){
    this.queuedUntil=0;this.attackIntent=true;
    const distance=Math.abs(this.enemyX-this.x);this.facing=Math.sign(this.enemyX-this.x)||this.facing;
@@ -373,10 +388,17 @@ export class HuntEngine {
   }
   this.pose('stay1');
  }
+ /** Retain one manual skill across attack/roll/recovery and cooldown boundaries. */
+ requestSkill(skill:number){
+  if(!Number.isInteger(skill)||skill<0||skill>=6||!this.progress.skillEnabled[skill]||this.paused||this.hp<=0
+   ||this.campaign&&['cleared','complete','failed'].includes(this.stagePhase))return false;
+  if(this.attack(skill)){this.pendingSkill=null;return true;}
+  this.pendingSkill=skill;return true;
+ }
  attack(skill=-1){
   if(this.campaign&&(this.stagePhase==="cleared"||this.stagePhase==="complete"))return false;
   if(this.paused||this.hp<=0||this.heroStunUntil>this.elapsed||!Number.isInteger(skill)||skill< -1||skill>=6)return false;
-  if(skill>=0&&this.hostile&&!this.progress.skillEnabled[skill])return false;
+  if(skill>=0&&!this.progress.skillEnabled[skill])return false;
   if(this.motion){
    if(skill===-1&&this.motion.kind==='attack'&&this.actionUntil-this.elapsed<=HUNT_RULES.inputBuffer){
     this.queuedUntil=this.actionUntil+HUNT_RULES.inputBuffer;return true;
@@ -384,7 +406,7 @@ export class HuntEngine {
    return false;
   }
   this.selectTarget();
-  if(this.elapsed+1e-8<this.attackReady||skill>=0&&this.cooldowns[skill]>0)return false;
+  if(this.elapsed+1e-8<this.attackReady||skill>=0&&this.cooldowns[skill]>1e-8)return false;
   if(skill===-1&&this.enemyHP<=0)return false;
   if(skill===-1&&Math.abs(this.enemyX-this.x)>this.targetRange){this.attackIntent=true;return true;}
   this.facing=Math.sign(this.enemyX-this.x)||this.facing;this.attackIntent=false;

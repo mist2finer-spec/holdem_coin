@@ -50,7 +50,7 @@ test('held attack supports repeated swings and clearing input stops further queu
  g.clearInput();advance(g,.8);const hp=g.enemyHP;advance(g,1);assert.equal(g.enemyHP,hp);
 });
 test('automatic approach Rush advances over time, stops in range and inflicts no contact damage',()=>{
- const g=new HuntEngine(HUNT_RULES.combo,1);g.setAuto(true);g.step(.01,0);assert.equal(g.action,'dash');const start=g.x;
+ const g=new HuntEngine(HUNT_RULES.combo,1);g.progress.skillEnabled.fill(0);g.setAuto(true);g.step(.01,0);assert.equal(g.action,'dash');const start=g.x;
  g.step(.01,0);assert.ok(g.x>start&&g.x<g.enemyX-HUNT_RULES.stopRange);assert.equal(g.enemyHP,100);
  advance(g,.1);assert.ok(g.action.startsWith('attack'));assert.ok(g.x<=g.enemyX-HUNT_RULES.stopRange+1e-8);
  assert.equal(g.enemyHP,100);advance(g,.22);assert.equal(g.enemyHP,80);
@@ -113,7 +113,7 @@ test('native combo timer and avoid cooldown are independent of animation complet
 
 test('seven independent slimes retarget only after an attack, never share health or generation IDs',()=>{
  const g=new HuntEngine();g.enemies[1].x=g.x+40;assert.equal(g.enemies.length,7);assert.equal(new Set(g.enemies.map(e=>e.serial)).size,7);
- g.setAuto(true);advance(g,.02);const id=g.enemySerial;
+ g.progress.skillEnabled.fill(0);g.setAuto(true);advance(g,.02);const id=g.enemySerial;
  advance(g,.21);assert.equal(g.enemies.find(e=>e.serial===id)!.hp,80);
  assert.equal(g.enemies.filter(e=>e.hp===80).length,1);
  assert.equal(g.enemies.filter(e=>e.hp===100).length,6);
@@ -148,7 +148,7 @@ test('swept Rush movement cannot tunnel through a newly blocking monster',async(
  assert.equal(sweepHero(500,1500,[{x:580,hp:100}]),580-bodySeparation);
  assert.equal(sweepHero(1000,100,[{x:580,hp:100}]),580+bodySeparation);
  const g=new HuntEngine();g.x=500;g.enemies.forEach(e=>e.x=1500+e.slot*80);
- g.enemies[0].x=680;g.setAuto(true);g.step(.01,0);assert.equal(g.action,'dash');
+ g.enemies[0].x=680;g.progress.skillEnabled.fill(0);g.setAuto(true);g.step(.01,0);assert.equal(g.action,'dash');
  g.enemies[1].x=550;advance(g,.15);assert.ok(g.x<=550-bodySeparation);
 });
 test('dodge crosses at most three slimes, rolls in place against four, and never lands inside a body',async()=>{
@@ -182,4 +182,26 @@ test('medium hero and overlapping small slimes use half-size bodies and a two-sl
  assert.ok(HUNT_RULES.stopRange>=bodySeparation&&HUNT_RULES.stopRange<HUNT_RULES.attackRange);
  const g=new HuntEngine();g.enemies[0].x=g.x+40;g.enemies[1].x=g.enemies[0].x;
  g.setAuto(true);advance(g,8);assert.ok(g.kills>=2);assert.ok(Number.isFinite(g.x));
+});
+
+test('manual skill survives a busy basic swing and fires once at its first legal boundary',()=>{
+ const g=ready();g.enemyHP=100000;g.attack();advance(g,.1);
+ assert.ok(g.requestSkill(2));assert.equal(g.pendingSkill,2);assert.equal(g.cooldowns[2],0);
+ advance(g,.5);assert.equal(g.action,'skill3');assert.equal(g.pendingSkill,null);assert.ok(g.cooldowns[2]>0);
+ const serial=g.actionSerial;advance(g,.1);assert.equal(g.actionSerial,serial);
+});
+test('manual cooldown reservation fires again without another click and can be cancelled',()=>{
+ const g=ready();g.enemyHP=100000;g.requestSkill(0);advance(g,1);g.requestSkill(0);
+ assert.equal(g.pendingSkill,0);advance(g,4.1);assert.equal(g.pendingSkill,null);assert.ok(g.cooldowns[0]>4.8);
+ g.requestSkill(1);g.clearInput();assert.equal(g.pendingSkill,null);
+ g.progress.skillEnabled[3]=0;assert.equal(g.requestSkill(3),false);
+});
+test('AUTO scans skills in slot order, skips cooldown/disabled and repeats after cooldown',()=>{
+ const g=ready();g.enemyHP=100000;g.enemies[0].maxHP=100000;g.hp=50;g.setAuto(true);
+ const casts:number[]=[];let last=-1;
+ for(let t=0;t<16;t+=.01){const before=[...g.cooldowns];g.step(.01,0);
+  for(let i=0;i<6;i++)if(g.cooldowns[i]>before[i]+.1){casts.push(i);last=i;}}
+ assert.deepEqual(casts.slice(0,6),[0,1,2,3,4,5]);assert.ok(casts.filter(i=>i===0).length>=2);assert.ok(last>=0);
+ const off=ready();off.progress.skillEnabled.fill(0);off.setAuto(true);off.step(.01,0);assert.equal(off.action,'attack1');
+ const far=ready();far.enemyX=1800;far.setAuto(true);far.step(.01,0);assert.equal(far.cooldowns[0],0);
 });

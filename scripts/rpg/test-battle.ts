@@ -212,3 +212,12 @@ test('guide10 disabled skills cannot run and deterministic drops are granted onc
  const p=newHuntProgress();p.skillEnabled[0]=0;const g=new HuntEngine(HUNT_RULES.combo,1,{hostile:true,progress:p});assert.equal(g.attack(0),false);assert.equal(g.cooldowns[0],0);
  for(let i=0;i<30;i++)awardHuntKill(p,balance);assert.deepEqual(p.skillCopies,[1,1,1,1,1,1]);assert.equal(p.masteryEssence,3000);assert.equal(p.soulOrb,1500);
 });
+
+test('server reserves busy/cooling skill once and duplicate request does not restart cooldown',()=>{
+ const store=new RpgStore(':memory:');let now=0;const service=new RpgService(store,balance,()=>now);let v=service.start('skill-input','hong'),seq=0;
+ v=service.command('skill-input',v.id,++seq,{...input,skill:0});assert.ok(v.cooldowns[0]>0);
+ v=service.command('skill-input',v.id,++seq,{...input,skill:0});assert.equal(v.pendingSkill,0);
+ assert.deepEqual(service.command('skill-input',v.id,seq,{...input,skill:0}),v);
+ for(let i=0;i<55;i++){now+=100;v=service.command('skill-input',v.id,++seq,input);}
+ assert.equal(v.pendingSkill,null);assert.ok(v.cooldowns[0]>4);store.close();
+});
