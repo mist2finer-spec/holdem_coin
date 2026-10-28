@@ -145,7 +145,7 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
     const entry=hero.state.getCurrent(0)!;
     if(view&&(attack||game.action.startsWith('skill'))&&view.motion.duration>0){
      const contact=hongVisualContact(next);
-     entry.trackTime=hongMotionTime(age,view.motion.duration,view.motion.hitAt,entry.animation!.duration,contact);
+     entry.trackTime=hongMotionTime(age,view.motion.duration,view.motion.hitAt,entry.animation!.duration,contact,attack);
     }else entry.trackTime=heroTime;
     hero.state.apply(hero.skeleton);
     hero.skeleton.x=screenX(game.x);hero.skeleton.y=floor;hero.skeleton.scaleX=scale*1.25*game.facing;hero.skeleton.scaleY=scale*1.25;
@@ -154,7 +154,7 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
     ctx.save();ctx.imageSmoothingEnabled=false;
     hero.skeleton.color.a=game.heroHitUntil>game.elapsed&&game.hp>0?.55+Math.sin(game.elapsed*60)*.2:1;
     heroRenderer.draw(hero.skeleton);ctx.restore();
-    canvas.dataset.heroRig='hong-snappy-weapons-v10';canvas.dataset.heroMotion=next;canvas.dataset.weaponMount=weapon==='dual'||weapon==='spear'?'both-hands':weapon==='unarmed'?'none':'front-hand';
+    canvas.dataset.heroRig='hong-dynamic-weapons-v11';canvas.dataset.heroMotion=next;canvas.dataset.weaponMount=weapon==='dual'||weapon==='spear'?'both-hands':weapon==='unarmed'?'none':'front-hand';
    }else{
     const pose=attack?attackSpritePlacement(attackFrame,screenX(game.x),floor,scale,game.facing):spritePlacement(frame,screenX(game.x),floor,scale,game.facing);
     ctx.save();ctx.imageSmoothingEnabled=false;ctx.translate(pose.x,pose.y);ctx.scale(pose.scaleX,pose.scaleY);

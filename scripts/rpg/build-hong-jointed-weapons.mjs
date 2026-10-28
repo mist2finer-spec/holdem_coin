@@ -6,7 +6,7 @@ import * as R from '@esotericsoftware/spine-canvas';
 const input='archive/rpg/hong-authoring/jointed-parts-v8-3',out='public/rpg/characters/hong/spine';
 const base=JSON.parse(fs.readFileSync(input+'/rig/hong.json')),ref=JSON.parse(fs.readFileSync(input+'/knight-motion.json'));
 R.Skeleton.yDown=false;const raw=structuredClone(base),bodyNames=JSON.parse(fs.readFileSync(input+'/parts-manifest.json')).partNames;
-raw.skeleton.hash='hong-snappy-weapons-v10';delete raw.skeleton.images;
+raw.skeleton.hash='hong-dynamic-weapons-v11';delete raw.skeleton.images;
 raw.bones.push({name:'skirt-follow',parent:'pelvis'});
 raw.bones.find(b=>b.name==='weapon').name='weapon-front';raw.bones.push({name:'weapon-back',parent:'far-hand',x:7},{name:'spear-support-target',parent:'weapon-front',y:-19});
 raw.ik.push({name:'spear-support',order:2,bones:['far-upper-arm','far-forearm'],target:'spear-support-target',mix:0,bendPositive:true});
@@ -33,7 +33,7 @@ function basePose(n,u,type){const src=new R.Skeleton(baseData),a=baseData.findAn
  s.findSlot('weapon-front').setAttachment(type==='unarmed'?null:s.getAttachmentByName('weapon-front',gear[type][0]));
  s.findSlot('weapon-back').setAttachment(type==='dual'?s.getAttachmentByName('weapon-back','held-dual'):null);s.findSlot('shield').setAttachment(null);update(s);return s;
 }
-const contacts={},manifest={version:10,combatCurve:{anticipationEnd:.30,contact:.38,recoveryStart:.55,holdFrames:4,fps:60,overshootDegrees:6,hairSecondaryMotion:false},bodyParts:16,bones:raw.bones.length,base:'TRUE JOINT RIG v8.3',heroVisualScale:1.25,secondaryGripRange:[4,24],method:'Knight has one sword_attack, not a source combo. Four sword/three axe/five dual/four spear attacks are authored compact variants. Native buff_1/2/3 torso and arm deltas drive skills.',animations:{}};
+const contacts={},manifest={version:11,combatCurve:{contact:.38,anticipationEndRule:"contact - snapSeconds / duration",recoveryStartRule:"max(55%, holdEnd + 25ms)",holdFrames:6,snapSeconds:.04,holdSeconds:.10,fps:60,overshootDegrees:6,hairSecondaryMotion:false},bodyParts:16,bones:raw.bones.length,base:'TRUE JOINT RIG v8.3',heroVisualScale:1.25,secondaryGripRange:[4,24],method:'Knight has one sword_attack, not a source combo. Four sword/three axe/five dual/four spear attacks are authored compact variants. Native buff_1/2/3 torso and arm deltas drive skills.',animations:{}};
 raw.animations={};
 
 function cubic01(x,c){ // normalized cubic Bezier, solve time axis rather than assuming t=x
@@ -42,18 +42,18 @@ function cubic01(x,c){ // normalized cubic Bezier, solve time axis rather than a
 }
 const EASE_OUT=[.16,1,.30,1],EXPLOSIVE=[.80,0,1,1],EASE_BOTH=[.42,0,.58,1];
 function combatPhase(u,duration){
- const holdEnd=Math.min(.55,.38+4/60/duration);
- if(u<=.30)return{wind:cubic01(u/.30,EASE_OUT),weight:0,overshoot:0,holdEnd};
- if(u<.38){const t=cubic01((u-.30)/.08,EXPLOSIVE);return{wind:1-t,weight:t,overshoot:t,holdEnd};}
- if(u<=holdEnd)return{wind:0,weight:1,overshoot:1,holdEnd};
- if(u<.55)return{wind:0,weight:1,overshoot:1-cubic01((u-holdEnd)/(.55-holdEnd),EASE_OUT),holdEnd};
- return{wind:0,weight:1-cubic01((u-.55)/.45,EASE_BOTH),overshoot:0,holdEnd};
+ const snapStart=.38-.04/duration,holdEnd=.38+.10/duration,recoveryStart=Math.max(.55,holdEnd+.025/duration);
+ if(u<=snapStart)return{wind:cubic01(u/snapStart,EASE_OUT),weight:0,overshoot:0,holdEnd,snapStart,recoveryStart};
+ if(u<.38){const t=cubic01((u-snapStart)/(.38-snapStart),EXPLOSIVE);return{wind:1-t,weight:t,overshoot:t,holdEnd,snapStart,recoveryStart};}
+ if(u<=holdEnd)return{wind:0,weight:1,overshoot:1,holdEnd,snapStart,recoveryStart};
+ if(u<recoveryStart)return{wind:0,weight:1,overshoot:1-cubic01((u-holdEnd)/(recoveryStart-holdEnd),EASE_OUT),holdEnd,snapStart,recoveryStart};
+ return{wind:0,weight:1-cubic01((u-recoveryStart)/(1-recoveryStart),EASE_BOTH),overshoot:0,holdEnd,snapStart,recoveryStart};
 }
 function sourceAttackTime(stage,phase,u){
  const a=baseData.findAnimation('unarmed-attack'+stage),hit=[.20,.23,.28,.25,.31][stage-1]/a.duration,windEnd=hit-.055/a.duration;
- if(u<.30)return windEnd*phase.wind;
+ if(u<phase.snapStart)return windEnd*phase.wind;
  if(u<.38)return windEnd+(hit-windEnd)*phase.weight;
- if(u<=.55)return hit;
+ if(u<=phase.recoveryStart)return hit;
  return hit+(1-hit)*(1-phase.weight);
 }
 function plantedFoot(s,side,p){
@@ -68,25 +68,34 @@ function constrainLeg(s,side){
 
 function pose(d,u){
  const attack=d.action.startsWith('attack')||d.action==='shield-bash',skill=d.action.startsWith('skill'),stage=Number(d.action.replace(/\D/g,''))||1;
- const phase= combatPhase(u,d.duration);
+ // Freeze the complete pose, including both leg targets and skirt, for 100ms.
+ let phase=combatPhase(u,d.duration);
+ if(attack&&u>=.38&&u<=phase.holdEnd){u=.38;phase=combatPhase(u,d.duration);}
  const src=attack?(d.type==='unarmed'&&d.action!=='shield-bash'?'unarmed-attack'+stage:'idle'):['run1','dash'].includes(d.action)?'run':d.action==='walk'?'walk':'idle';
  const poseTime=attack?(d.type==='unarmed'&&d.action!=='shield-bash'?sourceAttackTime(stage,phase,u):0):u;
  const s=basePose(src,poseTime,d.type),footAngles=Object.fromEntries(['near','far'].map(side=>[side,axis(s.findBone(side+'-foot'))])),idle=basePose('idle',0,d.type),feet=Object.fromEntries(['near','far'].map(n=>{const b=idle.findBone(n+'-foot');return[n,{x:b.worldX,y:b.worldY}]})),hip=s.findBone('pelvis'),torso=s.findBone('torso');let near=[-105,10,0],far=[-65,35,0],weapon=-20,backWeapon=20;
  if(attack&&d.type!=='unarmed'){
   const w=phase.weight,wind=phase.wind;
-  const refTime=u<.30?.25*phase.wind:u<.38?.25+(.5667/1.4-.25)*phase.weight:u<.55?.5667/1.4:.5667/1.4+(1-.5667/1.4)*(1-phase.weight);
-  const b=sample('sword_attack',refTime),b0=sample('sword_attack',0);
-  hip.x+=(d.type==='spear'?10:stage===4?8:5)*w-2*wind;torso.rotation+=clamp(wrap(b.body2.axis-b0.body2.axis)*.18,-8,8)-6*w;update(s);
   if(d.type==='sword'){
-   const p=[[-12,-10],[-25,15],[-8,-8],[-38,-40],[-25,-20]][stage-1];
-   near=[-105+(105+p[0])*w-8*wind+clamp(wrap(b.shoulder_L.axis-b0.shoulder_L.axis)*.18,-15,15),10+(p[1]-10)*w+80*wind,0];
-   weapon=wrap(b.sword.axis-90)+(stage===2?55:stage===3?-20:stage===4?-40:0);if(stage===3)weapon=-90+15*wind;
+   // World axes in Y-up coordinates: lift behind the crown, cut down in front.
+   // Alternate diagonal cuts without reducing the overhead cleave's 200 degree arc.
+   const reverse=stage===2||stage===4;
+   near=[-100+230*wind+65*w, -5+120*wind-45*w,0];
+   far=[-135-15*w,-100-10*w,0];
+   weapon=130-80*wind-265*w+(reverse?12*w:0);
   }else if(d.type==='axe'){near=[-105+75*w-10*wind,10-65*w+100*wind,0];weapon=40+100*wind-190*w+(stage-1)*12;
   }else if(d.type==='dual'){
-   const lead=stage%2===1?near:far,other=stage%2===1?far:near;lead[0]=-105+90*w-12*wind;lead[1]=10-35*w+65*wind;other[0]=-65-25*w;other[1]=35+35*w;
-   if(stage===5){near=[-105+87*w,10-20*w,0];far=[-65+40*w,35-30*w,0];}
-   weapon=(stage%2?45:-130)+(stage%2?-180:165)*w+25*wind;backWeapon=(stage%2?-130:45)+(stage%2?165:-180)*w-25*wind;
-  }else if(d.type==='spear'){const h=stage===2?10:stage===3?-25:-5;near=[-105+(105+h)*w,10+(h-10)*w+25*wind,0];weapon=stage===4?-20-140*w:-90+h+12*wind;}
+   // The non-striking arm is parked behind the hip, never held in front of the face.
+   near=[-135,-105,0];far=[-140,-110,0];
+   const lead=stage%2===1?near:far;
+   lead[0]=-135+265*wind+100*w;lead[1]=-105+220*wind+60*w;
+   const swing=130-80*wind-265*w;
+   weapon=stage%2===1?swing:130;backWeapon=stage%2===0?swing:130;
+  }else if(d.type==='spear'){
+   // Straight thrust; torso/hip transfer adds reach while native off-hand IK stays on shaft.
+   near=[-105-40*wind+35*w, -10-130*wind-35*w,0];
+   weapon=-90+(stage===3?-8:stage===4?8:0)*w;
+  }
  }else if(skill){
   const n=['buff_1','buff_2','buff_3'][(stage-1)%3],b=sample(n,u),b0=sample(n,0);
   torso.rotation+=clamp(wrap(b.body2.axis-b0.body2.axis)*.35,-12,12);hip.y+=clamp((b.body.y-b0.body.y)*.10,-3,4);
@@ -96,18 +105,23 @@ function pose(d,u){
  }else if(d.action==='defeat1')torso.rotation+=12*Math.sin(Math.PI*u);
  else if(d.action==='die1'){hip.y-=25*Math.min(1,u*2);hip.rotation=-55*Math.min(1,u*2);
  }else if(d.action==='victory1'){near=[-120,-15+65*Math.sin(Math.PI*u),0];far=[-55,65,0];}
- if(d.type==='unarmed'&&attack&&d.action!=='shield-bash'||d.type!=='spear'&&['run1','dash','walk'].includes(d.action)){near=null;far=null;}
+ if(d.type==='unarmed'&&attack&&d.action!=='shield-bash'||d.type==='unarmed'&&['run1','dash','walk'].includes(d.action)){near=null;far=null;}
  if(d.type==='spear'&&!attack&&!skill){near=[-80,-10,0];far=[-65,35,0];weapon=-90;}
+ if(d.type==='dual'&&!attack&&!skill){near=[-135,-105,0];far=[-140,-110,0];weapon=backWeapon=130;}
+ if(d.type!=='unarmed'&&['run1','dash','walk'].includes(d.action)){
+  near=[-140,-125,0];far=[-140,-115,0];weapon=backWeapon=130;
+  if(d.type==='spear')weapon=-65;
+ }
 
  // Screen-forward lean is negative rotation in Spine's Y-up coordinates.
  if(attack){
   const w=phase.weight,wind=phase.wind,os=phase.overshoot;
   const restHip=idle.findBone('pelvis');s.findBone('root').y=idle.findBone('root').y;
-  hip.x=restHip.x+18*w-4*wind;hip.y=restHip.y-6*w+wind;
-  hip.rotation=0;torso.rotation=20*wind-22*w-6*os;torso.y=torso.data.y;
+  hip.x=restHip.x+(d.type==='spear'?25:22)*w-(d.type==='spear'?10:5)*wind;hip.y=restHip.y-10*w+wind;
+  hip.rotation=0;torso.rotation=18*wind-29*w-6*os+(d.type==='dual'?(stage%2?1:-1)*5*w:0);torso.y=torso.data.y;
   update(s);
-  const lift=u>.30&&u<.38?Math.sin(Math.PI*(u-.30)/.08)*4:0;
-  const nearTarget={x:feet.near.x+24*w,y:feet.near.y+lift};
+  const lift=u>phase.snapStart&&u<.38?Math.sin(Math.PI*(u-phase.snapStart)/(.38-phase.snapStart))*4:0;
+  const nearTarget={x:feet.near.x+28*w,y:feet.near.y+lift};
   if(d.type==='unarmed'&&stage===3&&d.action!=='shield-bash'){
    // Keep the kicking foot airborne; the rear foot remains the support.
    const kick=s.findBone('near-foot-target');nearTarget.x=kick.worldX+10*w;nearTarget.y=feet.near.y+18*w;
@@ -120,20 +134,20 @@ function pose(d,u){
   plantedFoot(s,'near',feet.near);plantedFoot(s,'far',feet.far);
   s.findBone('skirt-follow').rotation=Math.sin(2*Math.PI*(u-.08/d.duration))*.7;
  }else if(['walk','run1','dash'].includes(d.action)){
-  const run=d.action!=='walk',amplitude=run?6:4,wave=Math.cos(4*Math.PI*u);
-  hip.y+=amplitude*(wave-1);torso.rotation=- (run?16:12);
+  const run=d.action!=='walk',amplitude=run?6:5,wave=Math.cos(4*Math.PI*u);
+  hip.y+=amplitude*(wave-1);torso.rotation=- (run?20:15);
   s.findBone('skirt-follow').rotation=Math.sin(4*Math.PI*(u-.08/d.duration))*(run?2:1.2);
  }
  for(const side of ['near','far']){constrainLeg(s,side);world(s,side+'-foot',attack?0:footAngles[side]);}
  if(attack&&near){for(const a of [near,far]){a[0]+=6*phase.overshoot;a[1]+=6*phase.overshoot;}weapon-=6*phase.overshoot;backWeapon+=6*phase.overshoot;}
  if(d.action==='shield-bash'){far=[-65+60*phase.weight+6*phase.overshoot,35-35*phase.weight+6*phase.overshoot,0];}
- update(s);if(near)for(const[side,a]of[['near',near],['far',far]]){world(s,side+'-upper-arm',clamp(a[0],-150,5));world(s,side+'-forearm',a[1]);world(s,side+'-hand',a[2]);}
+ update(s);if(near)for(const[side,a]of[['near',near],['far',far]]){world(s,side+'-upper-arm',clamp(a[0],-160,145));world(s,side+'-forearm',a[1]);world(s,side+'-hand',a[2]);}
  if(attack&&!near&&d.type==='unarmed'){for(const side of ['near','far'])for(const n of ['upper-arm','forearm'])world(s,side+'-'+n,axis(s.findBone(side+'-'+n))+6*phase.overshoot);}
- world(s,'head',0);const hair=s.findBone('hair-back');hair.x=hair.data.x;hair.y=hair.data.y;hair.rotation=0;hair.scaleX=hair.scaleY=1;hair.shearX=hair.shearY=0;update(s);
+ world(s,'head',attack?-15*phase.weight:0);const hair=s.findBone('hair-back');hair.x=hair.data.x;hair.y=hair.data.y;hair.rotation=0;hair.scaleX=hair.scaleY=1;hair.shearX=hair.shearY=0;update(s);
  if(d.action==='shield-bash'){s.findSlot('shield').setAttachment(s.getAttachmentByName('shield','held-shield'));world(s,'shield',10);}
  if(d.type!=='unarmed'){world(s,'weapon-front',weapon);if(d.type==='dual')world(s,'weapon-back',backWeapon);}
  if(d.type==='spear'){
-  const originalFore=axis(s.findBone('near-forearm')),weaponAngle=axis(s.findBone('weapon-front'));
+  const originalUpper=axis(s.findBone('near-upper-arm')),originalFore=axis(s.findBone('near-forearm')),weaponAngle=axis(s.findBone('weapon-front'));
   function candidate(){
    const g=s.findBone('weapon-front'),shaft=rad(axis(g)+90),upper=s.findBone('far-upper-arm');let best={grip:12,score:Infinity,error:Infinity};
    for(let v=4;v<=24;v+=.25){const dx=g.worldX-Math.cos(shaft)*(v+7)-upper.worldX,dy=g.worldY-Math.sin(shaft)*(v+7)-upper.worldY,distance=Math.hypot(dx,dy),error=Math.max(0,distance-29.5)+Math.max(0,6-distance),score=error*1000+Math.abs(v-12);if(score<best.score)best={grip:v,score,error};}
@@ -147,6 +161,20 @@ function pose(d,u){
     const test=candidate();if(test.score<best.score){best=test;chosen=a;}if(test.error<.0001){best=test;chosen=a;break outer;}
    }
    world(s,'near-forearm',chosen);world(s,'near-hand',0);world(s,'weapon-front',weaponAngle);
+  }
+  if(best.error>.0001){
+   // An extreme rear carry can exceed the off-hand's reach. Retarget the shoulder
+   // as well as the elbow, preserving fixed segment lengths and the actual grip.
+   let solved=false;
+   for(let offset=4;offset<=120&&!solved;offset+=4)for(const sign of [-1,1]){
+    world(s,'near-upper-arm',originalUpper+offset*sign);
+    for(let delta=0;delta<=180&&!solved;delta+=8)for(const direction of [-1,1]){
+     world(s,'near-forearm',originalFore+delta*direction);world(s,'near-hand',0);world(s,'weapon-front',weaponAngle);
+     const test=candidate();if(test.error<.0001){best=test;solved=true;break;}
+    }
+    if(solved)break;
+   }
+   if(!solved)throw Error('Unreachable spear support: '+d.action+' '+u);
   }
   const grip=best.grip;
   s.findBone('spear-support-target').y=-grip-7;
@@ -179,8 +207,8 @@ function attackCurve(keys,props){
  return keys;
 }
 function bake(d){
- const name=d.type==='unarmed'?d.action:d.type+'-'+d.action,n=Math.ceil(d.duration*60),times=new Set(Array.from({length:n+1},(_,i)=>round(i*d.duration/n)));if(d.contact!==null)times.add(d.contact);
- const isAttack=d.action.startsWith('attack')||d.action==='shield-bash',pinned=isAttack?[0,.30*d.duration,.38*d.duration,Math.min(.55*d.duration,.38*d.duration+4/60),.55*d.duration,d.duration].map(round):[];
+ const name=d.type==='unarmed'?d.action:d.type+'-'+d.action,n=Math.ceil(d.duration*(d.type==='spear'&&d.action.startsWith('attack')?240:60)),times=new Set(Array.from({length:n+1},(_,i)=>round(i*d.duration/n)));if(d.contact!==null)times.add(d.contact);
+ const isAttack=d.action.startsWith('attack')||d.action==='shield-bash',pinned=isAttack?[0,combatPhase(0,d.duration).snapStart*d.duration,.38*d.duration,.38*d.duration+.10,combatPhase(0,d.duration).recoveryStart*d.duration,d.duration].map(round):[];
  for(const t of pinned)times.add(t);
  const samples=[...times].sort((a,b)=>a-b).map(t=>({t,s:pose(d,t/d.duration)})),a={bones:{},slots:{'weapon-front':{attachment:[{time:0,name:d.type==='unarmed'?null:gear[d.type][0]}]},'weapon-back':{attachment:[{time:0,name:d.type==='dual'?'held-dual':null}]},shield:{attachment:[{time:0,name:d.action==='shield-bash'?'held-shield':null}]}},ik:{'near-leg-ik':[{mix:1,bendPositive:false}],'far-leg-ik':[{mix:1,bendPositive:false}],'spear-support':[{mix:d.type==='spear'?1:0,bendPositive:true}]},transform:{'spear-palm-axis':[{mixRotate:d.type==='spear'?1:0,mixX:0,mixY:0,mixScaleX:0,mixScaleY:0,mixShearY:0}]}};
  for(const b of raw.bones){const k={rotate:[],translate:[],scale:[],shear:[]};for(const{t,s}of samples){const v=s.findBone(b.name),rest=v.data;k.rotate.push({time:t,value:round(v.rotation-rest.rotation)});k.translate.push({time:t,x:round(v.x-rest.x),y:round(v.y-rest.y)});k.scale.push({time:t,x:v.scaleX,y:v.scaleY});k.shear.push({time:t,x:v.shearX,y:v.shearY});}
@@ -194,7 +222,7 @@ function bake(d){
  }
  if(Object.keys(k).length)a.bones[b.name]=k;}
  if(d.contact!==null){a.events=[{time:d.contact,name:'hit-window',int:d.action.startsWith('skill')?0:Number(d.action.replace(/\D/g,''))}];contacts[name]=d.contact;}
- raw.animations[name]=a;manifest.animations[name]={...d,source:d.action.startsWith('skill')?['Knight buff_1','Knight buff_2','Knight buff_3'][(Number(d.action.slice(5))-1)%3]:d.type==='sword'?'Knight sword_attack with authored combo variation':d.type==='dual'?'Alternating hand chain':d.type==='spear'?'Live off-hand shaft IK plus palm-axis constraint':'v8.3 joint adaptation'};
+ raw.animations[name]=a;manifest.animations[name]={...d,...(isAttack?{snapStart:round(d.contact-.04),holdEnd:round(d.contact+.10)}:{}),source:d.action.startsWith('skill')?['Knight buff_1','Knight buff_2','Knight buff_3'][(Number(d.action.slice(5))-1)%3]:d.type==='sword'?'Knight sword_attack with authored combo variation':d.type==='dual'?'Alternating hand chain':d.type==='spear'?'Live off-hand shaft IK plus palm-axis constraint':'v8.3 joint adaptation'};
 }
 for(const type of ['unarmed','sword','axe','dual','spear']){
  for(const[action,duration]of[['stay1',1.2],['walk',1.2],['run1',.8],['dash',.55],['avoid1',.55],['defeat1',.45],['die1',.8],['victory1',1.2]])bake({type,action,duration,contact:null});
@@ -217,5 +245,5 @@ for(const [type,count]of [['unarmed',5],['sword',4],['axe',3],['dual',5],['spear
  }
  const name=type==='unarmed'?'combo':type+'-combo';previewCombos[name]=combo;manifest.previewCombos??={};manifest.previewCombos[name]={type,action:'combo',duration:round(offset-.04),contact:null,previewOnly:true,source:'Each gameplay strike keeps its own snappy phase and impact; aggregate does not apply damage'};
 }
-fs.writeFileSync('archive/rpg/hong-authoring/snappy-v10-combos.json',JSON.stringify({animations:previewCombos}));
-fs.writeFileSync(out+'/hong.json',JSON.stringify(raw));fs.writeFileSync(out+'/manifest.json',JSON.stringify(manifest,null,2));fs.writeFileSync('src/components/rpg/data/hong-runtime-motion.json',JSON.stringify(contacts,null,2));console.log('HONG_SNAPPY_V10',raw.bones.length,'bones',Object.keys(raw.animations).length,'clips');
+fs.writeFileSync('archive/rpg/hong-authoring/dynamic-v11-combos.json',JSON.stringify({animations:previewCombos}));
+fs.writeFileSync(out+'/hong.json',JSON.stringify(raw));fs.writeFileSync(out+'/manifest.json',JSON.stringify(manifest,null,2));fs.writeFileSync('src/components/rpg/data/hong-runtime-motion.json',JSON.stringify(contacts,null,2));console.log('HONG_DYNAMIC_V11',raw.bones.length,'bones',Object.keys(raw.animations).length,'clips');

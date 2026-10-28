@@ -110,5 +110,34 @@ test('Hong anticipates backward, lunges with bending legs, breathes and bounces 
   assert.ok(Math.max(...heights)-Math.min(...heights)>=(name==='stay1'?4.9:name==='walk'?7.9:11.9));
  }
  for(const anim of Object.values(raw.animations) as any[])assert.ok(!anim.bones['hair-back'],'Secondary hair animation must be disabled');
- const combos=JSON.parse(fs.readFileSync('archive/rpg/hong-authoring/snappy-v10-combos.json','utf8'));assert.equal(combos.animations['sword-combo'].events.length,4);
+ const combos=JSON.parse(fs.readFileSync('archive/rpg/hong-authoring/dynamic-v11-combos.json','utf8'));assert.equal(combos.animations['sword-combo'].events.length,4);
+});
+
+
+test('dynamic weapon attacks sweep over 160 degrees, freeze every joint and keep the face rigid',()=>{
+ const manifest=JSON.parse(fs.readFileSync(root+'manifest.json','utf8'));
+ const angle=(s:Skeleton,n:string)=>{const b=s.findBone(n)!;return Math.atan2(b.c,b.a)*180/Math.PI;};
+ for(const type of ['sword','dual','spear'])for(let stage=1;stage<=4;stage++){
+  const name=type+'-attack'+stage,d=manifest.animations[name];
+  const wind=snappyPose(name,d.contact-.04),hit=snappyPose(name,d.contact+.00001),hold=snappyPose(name,d.contact+.095);
+  for(const bone of hit.bones){const other=hold.findBone(bone.data.name)!;
+   assert.ok(Math.hypot(bone.worldX-other.worldX,bone.worldY-other.worldY)<.04,'Joint moved during freeze: '+name+' '+bone.data.name);
+  }
+  assert.ok(hit.findBone('torso')!.rotation<=-29);
+  assert.ok(Math.abs(angle(hit,'head')+15)<.05);
+  assert.equal(hit.findBone('head')!.scaleX,1);assert.equal(hit.findBone('head')!.scaleY,1);
+  if(type!=='spear'){
+   const side=type==='dual'&&stage%2===0?'weapon-back':'weapon-front';
+   let previous=angle(wind,side),arc=0;
+   for(let i=1;i<=20;i++){const current=angle(snappyPose(name,d.contact-.04+i*.04/20),side);arc+=((current-previous+540)%360)-180;previous=current;}
+   assert.ok(Math.abs(arc)>=160,'Small swing arc: '+name+' '+arc);
+  }
+ }
+ for(const type of ['sword','dual'])for(const action of ['walk','run1']){
+  const s=snappyPose(type+'-'+action,.2);
+  assert.ok(s.findBone('near-hand')!.worldX<s.findBone('pelvis')!.worldX,'Carried weapon must trail the hips');
+ }
+ // Contact remains on authoritative damage time, followed by a real-time 100ms pose hold.
+ assert.equal(hongMotionTime(.2,.6,.2,.7,.266,true),.266);
+ assert.ok(Math.abs(hongMotionTime(.3,.6,.2,.7,.266,true)-.366)<1e-8);
 });

@@ -1,10 +1,12 @@
 {
-  "version": 10,
+  "version": 11,
   "combatCurve": {
-    "anticipationEnd": 0.3,
     "contact": 0.38,
-    "recoveryStart": 0.55,
-    "holdFrames": 4,
+    "anticipationEndRule": "contact - snapSeconds / duration",
+    "recoveryStartRule": "max(55%, holdEnd + 25ms)",
+    "holdFrames": 6,
+    "snapSeconds": 0.04,
+    "holdSeconds": 0.1,
     "fps": 60,
     "overshootDegrees": 6,
     "hairSecondaryMotion": false
@@ -80,6 +82,8 @@
       "action": "attack1",
       "duration": 0.5,
       "contact": 0.19,
+      "snapStart": 0.15,
+      "holdEnd": 0.29,
       "source": "v8.3 joint adaptation"
     },
     "attack2": {
@@ -87,6 +91,8 @@
       "action": "attack2",
       "duration": 0.56,
       "contact": 0.2128,
+      "snapStart": 0.1728,
+      "holdEnd": 0.3128,
       "source": "v8.3 joint adaptation"
     },
     "attack3": {
@@ -94,6 +100,8 @@
       "action": "attack3",
       "duration": 0.66,
       "contact": 0.2508,
+      "snapStart": 0.2108,
+      "holdEnd": 0.3508,
       "source": "v8.3 joint adaptation"
     },
     "attack4": {
@@ -101,6 +109,8 @@
       "action": "attack4",
       "duration": 0.6,
       "contact": 0.228,
+      "snapStart": 0.188,
+      "holdEnd": 0.328,
       "source": "v8.3 joint adaptation"
     },
     "attack5": {
@@ -108,6 +118,8 @@
       "action": "attack5",
       "duration": 0.74,
       "contact": 0.2812,
+      "snapStart": 0.2412,
+      "holdEnd": 0.3812,
       "source": "v8.3 joint adaptation"
     },
     "skill1": {
@@ -213,6 +225,8 @@
       "action": "attack1",
       "duration": 0.655,
       "contact": 0.2489,
+      "snapStart": 0.2089,
+      "holdEnd": 0.3489,
       "source": "Knight sword_attack with authored combo variation"
     },
     "sword-attack2": {
@@ -220,6 +234,8 @@
       "action": "attack2",
       "duration": 0.69,
       "contact": 0.2622,
+      "snapStart": 0.2222,
+      "holdEnd": 0.3622,
       "source": "Knight sword_attack with authored combo variation"
     },
     "sword-attack3": {
@@ -227,6 +243,8 @@
       "action": "attack3",
       "duration": 0.725,
       "contact": 0.2755,
+      "snapStart": 0.2355,
+      "holdEnd": 0.3755,
       "source": "Knight sword_attack with authored combo variation"
     },
     "sword-attack4": {
@@ -234,6 +252,8 @@
       "action": "attack4",
       "duration": 0.76,
       "contact": 0.2888,
+      "snapStart": 0.2488,
+      "holdEnd": 0.3888,
       "source": "Knight sword_attack with authored combo variation"
     },
     "sword-attack5": {
@@ -241,6 +261,8 @@
       "action": "attack5",
       "duration": 0.795,
       "contact": 0.3021,
+      "snapStart": 0.2621,
+      "holdEnd": 0.4021,
       "source": "Knight sword_attack with authored combo variation"
     },
     "sword-skill1": {
@@ -346,6 +368,8 @@
       "action": "attack1",
       "duration": 0.77,
       "contact": 0.2926,
+      "snapStart": 0.2526,
+      "holdEnd": 0.3926,
       "source": "v8.3 joint adaptation"
     },
     "axe-attack2": {
@@ -353,6 +377,8 @@
       "action": "attack2",
       "duration": 0.82,
       "contact": 0.3116,
+      "snapStart": 0.2716,
+      "holdEnd": 0.4116,
       "source": "v8.3 joint adaptation"
     },
     "axe-attack3": {
@@ -360,6 +386,8 @@
       "action": "attack3",
       "duration": 0.87,
       "contact": 0.3306,
+      "snapStart": 0.2906,
+      "holdEnd": 0.4306,
       "source": "v8.3 joint adaptation"
     },
     "axe-attack4": {
@@ -367,6 +395,8 @@
       "action": "attack4",
       "duration": 0.9199999999999999,
       "contact": 0.3496,
+      "snapStart": 0.3096,
+      "holdEnd": 0.4496,
       "source": "v8.3 joint adaptation"
     },
     "axe-attack5": {
@@ -374,6 +404,8 @@
       "action": "attack5",
       "duration": 0.97,
       "contact": 0.3686,
+      "snapStart": 0.3286,
+      "holdEnd": 0.4686,
       "source": "v8.3 joint adaptation"
     },
     "axe-skill1": {
@@ -479,6 +511,8 @@
       "action": "attack1",
       "duration": 0.465,
       "contact": 0.1767,
+      "snapStart": 0.1367,
+      "holdEnd": 0.2767,
       "source": "Alternating hand chain"
     },
     "dual-attack2": {
@@ -486,6 +520,8 @@
       "action": "attack2",
       "duration": 0.49,
       "contact": 0.1862,
+      "snapStart": 0.1462,
+      "holdEnd": 0.2862,
       "source": "Alternating hand chain"
     },
     "dual-attack3": {
@@ -493,6 +529,8 @@
       "action": "attack3",
       "duration": 0.515,
       "contact": 0.1957,
+      "snapStart": 0.1557,
+      "holdEnd": 0.2957,
       "source": "Alternating hand chain"
     },
     "dual-attack4": {
@@ -500,6 +538,8 @@
       "action": "attack4",
       "duration": 0.54,
       "contact": 0.2052,
+      "snapStart": 0.1652,
+      "holdEnd": 0.3052,
       "source": "Alternating hand chain"
     },
     "dual-attack5": {
@@ -507,6 +547,8 @@
       "action": "attack5",
       "duration": 0.565,
       "contact": 0.2147,
+      "snapStart": 0.1747,
+      "holdEnd": 0.3147,
       "source": "Alternating hand chain"
     },
     "dual-skill1": {
@@ -612,6 +654,8 @@
       "action": "attack1",
       "duration": 0.635,
       "contact": 0.2413,
+      "snapStart": 0.2013,
+      "holdEnd": 0.3413,
       "source": "Live off-hand shaft IK plus palm-axis constraint"
     },
     "spear-attack2": {
@@ -619,6 +663,8 @@
       "action": "attack2",
       "duration": 0.6699999999999999,
       "contact": 0.2546,
+      "snapStart": 0.2146,
+      "holdEnd": 0.3546,
       "source": "Live off-hand shaft IK plus palm-axis constraint"
     },
     "spear-attack3": {
@@ -626,6 +672,8 @@
       "action": "attack3",
       "duration": 0.705,
       "contact": 0.2679,
+      "snapStart": 0.2279,
+      "holdEnd": 0.3679,
       "source": "Live off-hand shaft IK plus palm-axis constraint"
     },
     "spear-attack4": {
@@ -633,6 +681,8 @@
       "action": "attack4",
       "duration": 0.74,
       "contact": 0.2812,
+      "snapStart": 0.2412,
+      "holdEnd": 0.3812,
       "source": "Live off-hand shaft IK plus palm-axis constraint"
     },
     "spear-attack5": {
@@ -640,6 +690,8 @@
       "action": "attack5",
       "duration": 0.775,
       "contact": 0.2945,
+      "snapStart": 0.2545,
+      "holdEnd": 0.3945,
       "source": "Live off-hand shaft IK plus palm-axis constraint"
     },
     "spear-skill1": {
@@ -689,6 +741,8 @@
       "action": "shield-bash",
       "duration": 0.65,
       "contact": 0.247,
+      "snapStart": 0.207,
+      "holdEnd": 0.347,
       "source": "v8.3 joint adaptation"
     }
   },
