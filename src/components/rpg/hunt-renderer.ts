@@ -1,4 +1,4 @@
-import {hongMotionName,hongMotionTime,HONG_BODY_SLOTS,HONG_FOOT_SLOTS} from './hong-combat-motion';
+import {hongMotionName,hongMotionTime,hongVisualContact,HONG_BODY_SLOTS,HONG_FOOT_SLOTS} from './hong-combat-motion';
 import type {LabyrinthView} from './hunt-labyrinth';
 import {LABYRINTH} from './hunt-labyrinth';
 import {ATTACK_CELL,attackSpriteFrame,attackSpritePlacement} from './combat-attack-sprite';
@@ -142,17 +142,17 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
     hero.state.update(Math.max(0,dt)*Math.max(0,game.animationSpeed));
     const entry=hero.state.getCurrent(0)!;
     if(view&&(attack||game.action.startsWith('skill'))&&view.motion.duration>0){
-     const contact=next.endsWith('attack5')?.3:.2;
+     const contact=hongVisualContact(next);
      entry.trackTime=hongMotionTime(age,view.motion.duration,view.motion.hitAt,entry.animation!.duration,contact);
     }else entry.trackTime=heroTime;
     hero.state.apply(hero.skeleton);
-    hero.skeleton.x=screenX(game.x);hero.skeleton.y=floor;hero.skeleton.scaleX=scale*game.facing;hero.skeleton.scaleY=scale;
+    hero.skeleton.x=screenX(game.x);hero.skeleton.y=floor;hero.skeleton.scaleX=scale*1.25*game.facing;hero.skeleton.scaleY=scale*1.25;
     hero.skeleton.updateWorldTransform(Physics.update);
     groundSkeleton(hero.skeleton,floor,/avoid|die|defeat|damage/.test(game.action)?HONG_BODY_SLOTS:HONG_FOOT_SLOTS);
     ctx.save();ctx.imageSmoothingEnabled=false;
     hero.skeleton.color.a=game.heroHitUntil>game.elapsed&&game.hp>0?.55+Math.sin(game.elapsed*60)*.2:1;
     heroRenderer.draw(hero.skeleton);ctx.restore();
-    canvas.dataset.heroRig='hong-spine-weapons-v1';canvas.dataset.heroMotion=next;canvas.dataset.weaponMount=weapon==='dual'?'both-hands':weapon==='unarmed'?'none':'front-hand';
+    canvas.dataset.heroRig='hong-jointed-weapons-v9';canvas.dataset.heroMotion=next;canvas.dataset.weaponMount=weapon==='dual'||weapon==='spear'?'both-hands':weapon==='unarmed'?'none':'front-hand';
    }else{
     const pose=attack?attackSpritePlacement(attackFrame,screenX(game.x),floor,scale,game.facing):spritePlacement(frame,screenX(game.x),floor,scale,game.facing);
     ctx.save();ctx.imageSmoothingEnabled=false;ctx.translate(pose.x,pose.y);ctx.scale(pose.scaleX,pose.scaleY);

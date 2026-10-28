@@ -1,0 +1,20 @@
+{
+  "headIdentical": true,
+  "skinPixelsRemaining": {
+    "near-forearm": 0,
+    "far-forearm": 0,
+    "near-shin": 0,
+    "far-shin": 0
+  },
+  "roiVerified": [
+    "near-upper-arm",
+    "near-forearm",
+    "far-upper-arm",
+    "far-forearm",
+    "near-thigh",
+    "near-shin",
+    "far-thigh",
+    "far-shin"
+  ],
+  "roundedCapsAndOpaquePivots": true
+}

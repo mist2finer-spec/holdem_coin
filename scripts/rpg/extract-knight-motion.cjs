@@ -1,0 +1,9 @@
+/** Spine3.8 evaluated with its matching runtime; no handwritten Bezier approximation. */
+const fs=require('fs'),path=require('path'),args=process.argv.slice(2),arg=k=>path.resolve(args[args.indexOf(k)+1]),reference=arg('--reference'),runtime=arg('--runtime'),output=arg('--output');
+const R=require(runtime+'/node_modules/@pixi-spine/runtime-3.8');require(runtime+'/node_modules/@pixi-spine/base').settings.yDown=false;
+const raw=JSON.parse(fs.readFileSync(reference));const sourceSummary={version:raw.skeleton.spine,bones:raw.bones.length,ik:raw.ik,transform:raw.transform,clips:{}};
+// Only numeric motion goes into the intermediate output; source art stays private.
+raw.slots=[];raw.skins=[];for(const a of Object.values(raw.animations)){delete a.slots;delete a.deform;delete a.drawOrder;}
+const data=new R.SkeletonJson({}).readSkeletonData(raw),outputData={sourceSummary,clips:{}};
+for(const name of ['idle_1','walk','run','sword_attack','shield_attack','hit','dead','jump','buff_1','buff_2','buff_3']){const anim=data.findAnimation(name),count=Math.round(anim.duration*60),samples=[];for(let i=0;i<=count;i++){const sk=new R.Skeleton(data),st=new R.AnimationState(new R.AnimationStateData(data));st.setAnimation(0,name,false);st.update(anim.duration*i/count);st.apply(sk);sk.updateWorldTransform();const bones={};for(const b of sk.bones)bones[b.data.name]={x:b.worldX,y:b.worldY,axis:Math.atan2(b.matrix.b,b.matrix.a)*180/Math.PI,rotation:b.rotation,tipX:b.worldX+b.matrix.a*b.data.length,tipY:b.worldY+b.matrix.b*b.data.length};samples.push({time:anim.duration*i/count,bones});}outputData.clips[name]={duration:anim.duration,samples,events:raw.animations[name].events||[]};sourceSummary.clips[name]={duration:anim.duration,samples:samples.length,events:raw.animations[name].events||[]};}
+fs.writeFileSync(output,JSON.stringify(outputData));console.log('KNIGHT_MOTION_EVALUATED',Object.keys(outputData.clips));

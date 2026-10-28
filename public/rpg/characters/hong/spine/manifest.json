@@ -1,544 +1,679 @@
 {
-  "format": "Spine 4.2 JSON + atlas; region attachments",
-  "status": "RETARGETED_PROTOTYPE_REQUIRES_SPINE_UNITY_VISUAL_QA",
-  "originalAnimationSha256": "665127ea81721e5aaa1d1dddb5de768432532efb423302b01b4ebf1da13a8cb2",
-  "sourceVideo": "1.mp4, 1080x2340, 30fps, 14.577667s; visually reviewed overview. Effects obscure pose; no frame-exact motion capture claimed.",
-  "sourceVideoSha256": null,
-  "method": "Original runtime clip durations and restrained torso accents; authored compact-limb endpoint paths solved by analytical 2-bone IK at build time; baked to Spine local rotation keys at 60fps; evaluated foot contact correction. Not a literal full-body motion reconstruction.",
-  "roles": {
-    "pelvis": "center",
-    "torso": "bone2",
-    "head": "head",
-    "front-upper-arm": "Rarm",
-    "front-forearm": "Rarm2",
-    "back-upper-arm": "Larm",
-    "back-forearm": "Larm2",
-    "front-thigh": "Rleg",
-    "front-shin": "Rleg2",
-    "front-foot": "Rleg3",
-    "back-thigh": "Lleg",
-    "back-shin": "Lleg2",
-    "back-foot": "Lleg3"
-  },
-  "gains": {
-    "pelvis": 0.55,
-    "torso": 0.7,
-    "head": 0.75,
-    "front-upper-arm": 0.75,
-    "back-upper-arm": 0.75,
-    "front-forearm": 0.8,
-    "back-forearm": 0.8,
-    "front-thigh": 0.65,
-    "back-thigh": 0.65,
-    "front-shin": 0.65,
-    "back-shin": 0.65,
-    "front-foot": 0.5,
-    "back-foot": 0.5
-  },
-  "rootMotion": false,
+  "version": 9,
+  "bodyParts": 16,
+  "bones": 25,
+  "base": "TRUE JOINT RIG v8.3",
+  "heroVisualScale": 1.25,
+  "secondaryGripRange": [
+    4,
+    24
+  ],
+  "method": "Knight has one sword_attack, not a source combo. Four sword/three axe/five dual/four spear attacks are authored compact variants. Native buff_1/2/3 torso and arm deltas drive skills.",
   "animations": {
     "stay1": {
-      "duration": 1.333299994468689,
-      "frames": 81,
-      "sourceClip": "stay1",
-      "weapon": "unarmed",
-      "footCorrection": true
+      "type": "unarmed",
+      "action": "stay1",
+      "duration": 1.2,
+      "contact": null,
+      "source": "v8.3 joint adaptation"
+    },
+    "walk": {
+      "type": "unarmed",
+      "action": "walk",
+      "duration": 1.2,
+      "contact": null,
+      "source": "v8.3 joint adaptation"
     },
     "run1": {
-      "duration": 0.53329998254776,
-      "frames": 33,
-      "sourceClip": "run1",
-      "weapon": "unarmed",
-      "footCorrection": true
+      "type": "unarmed",
+      "action": "run1",
+      "duration": 0.8,
+      "contact": null,
+      "source": "v8.3 joint adaptation"
     },
     "dash": {
-      "duration": 0.5,
-      "frames": 31,
-      "sourceClip": "dash",
-      "weapon": "unarmed",
-      "footCorrection": true
+      "type": "unarmed",
+      "action": "dash",
+      "duration": 0.55,
+      "contact": null,
+      "source": "v8.3 joint adaptation"
     },
     "avoid1": {
-      "duration": 0.5,
-      "frames": 31,
-      "sourceClip": "avoid1",
-      "weapon": "unarmed",
-      "footCorrection": true
-    },
-    "attack1": {
-      "duration": 0.3666999936103821,
-      "frames": 24,
-      "sourceClip": "attack1",
-      "weapon": "unarmed",
-      "footCorrection": true
-    },
-    "attack2": {
-      "duration": 0.3666999936103821,
-      "frames": 24,
-      "sourceClip": "attack2",
-      "weapon": "unarmed",
-      "footCorrection": true
-    },
-    "attack3": {
-      "duration": 0.3666999936103821,
-      "frames": 24,
-      "sourceClip": "attack3",
-      "weapon": "unarmed",
-      "footCorrection": true
-    },
-    "attack4": {
-      "duration": 0.3666999936103821,
-      "frames": 24,
-      "sourceClip": "attack4",
-      "weapon": "unarmed",
-      "footCorrection": true
-    },
-    "attack5": {
-      "duration": 0.666700005531311,
-      "frames": 42,
-      "sourceClip": "attack5",
-      "weapon": "unarmed",
-      "footCorrection": true
+      "type": "unarmed",
+      "action": "avoid1",
+      "duration": 0.55,
+      "contact": null,
+      "source": "v8.3 joint adaptation"
     },
     "defeat1": {
-      "duration": 2,
-      "frames": 121,
-      "sourceClip": "defeat1",
-      "weapon": "unarmed",
-      "footCorrection": true
+      "type": "unarmed",
+      "action": "defeat1",
+      "duration": 0.45,
+      "contact": null,
+      "source": "v8.3 joint adaptation"
     },
     "die1": {
-      "duration": 1.166700005531311,
-      "frames": 72,
-      "sourceClip": "die1",
-      "weapon": "unarmed",
-      "footCorrection": true
+      "type": "unarmed",
+      "action": "die1",
+      "duration": 0.8,
+      "contact": null,
+      "source": "v8.3 joint adaptation"
     },
     "victory1": {
-      "duration": 2.299999952316284,
-      "frames": 139,
-      "sourceClip": "victory1",
-      "weapon": "unarmed",
-      "footCorrection": true
+      "type": "unarmed",
+      "action": "victory1",
+      "duration": 1.2,
+      "contact": null,
+      "source": "v8.3 joint adaptation"
+    },
+    "attack1": {
+      "type": "unarmed",
+      "action": "attack1",
+      "duration": 0.5,
+      "contact": 0.2,
+      "source": "v8.3 joint adaptation"
+    },
+    "attack2": {
+      "type": "unarmed",
+      "action": "attack2",
+      "duration": 0.56,
+      "contact": 0.23,
+      "source": "v8.3 joint adaptation"
+    },
+    "attack3": {
+      "type": "unarmed",
+      "action": "attack3",
+      "duration": 0.66,
+      "contact": 0.28,
+      "source": "v8.3 joint adaptation"
+    },
+    "attack4": {
+      "type": "unarmed",
+      "action": "attack4",
+      "duration": 0.6,
+      "contact": 0.25,
+      "source": "v8.3 joint adaptation"
+    },
+    "attack5": {
+      "type": "unarmed",
+      "action": "attack5",
+      "duration": 0.74,
+      "contact": 0.31,
+      "source": "v8.3 joint adaptation"
+    },
+    "skill1": {
+      "type": "unarmed",
+      "action": "skill1",
+      "duration": 1,
+      "contact": 0.45,
+      "source": "Knight buff_1"
+    },
+    "skill2": {
+      "type": "unarmed",
+      "action": "skill2",
+      "duration": 1.15,
+      "contact": 0.5175,
+      "source": "Knight buff_2"
+    },
+    "skill3": {
+      "type": "unarmed",
+      "action": "skill3",
+      "duration": 1.2,
+      "contact": 0.54,
+      "source": "Knight buff_3"
+    },
+    "skill4": {
+      "type": "unarmed",
+      "action": "skill4",
+      "duration": 1,
+      "contact": 0.45,
+      "source": "Knight buff_1"
+    },
+    "skill5": {
+      "type": "unarmed",
+      "action": "skill5",
+      "duration": 1.15,
+      "contact": 0.5175,
+      "source": "Knight buff_2"
+    },
+    "skill6": {
+      "type": "unarmed",
+      "action": "skill6",
+      "duration": 1.2,
+      "contact": 0.54,
+      "source": "Knight buff_3"
     },
     "sword-stay1": {
-      "duration": 1.333299994468689,
-      "frames": 81,
-      "sourceClip": "stay1",
-      "weapon": "sword",
-      "footCorrection": true
+      "type": "sword",
+      "action": "stay1",
+      "duration": 1.2,
+      "contact": null,
+      "source": "Knight sword_attack with authored combo variation"
+    },
+    "sword-walk": {
+      "type": "sword",
+      "action": "walk",
+      "duration": 1.2,
+      "contact": null,
+      "source": "Knight sword_attack with authored combo variation"
     },
     "sword-run1": {
-      "duration": 0.53329998254776,
-      "frames": 33,
-      "sourceClip": "run1",
-      "weapon": "sword",
-      "footCorrection": true
+      "type": "sword",
+      "action": "run1",
+      "duration": 0.8,
+      "contact": null,
+      "source": "Knight sword_attack with authored combo variation"
     },
     "sword-dash": {
-      "duration": 0.5,
-      "frames": 31,
-      "sourceClip": "dash",
-      "weapon": "sword",
-      "footCorrection": true
+      "type": "sword",
+      "action": "dash",
+      "duration": 0.55,
+      "contact": null,
+      "source": "Knight sword_attack with authored combo variation"
     },
     "sword-avoid1": {
-      "duration": 0.5,
-      "frames": 31,
-      "sourceClip": "avoid1",
-      "weapon": "sword",
-      "footCorrection": true
-    },
-    "sword-attack1": {
-      "duration": 0.3666999936103821,
-      "frames": 24,
-      "sourceClip": "attack1",
-      "weapon": "sword",
-      "footCorrection": true
-    },
-    "sword-attack2": {
-      "duration": 0.3666999936103821,
-      "frames": 24,
-      "sourceClip": "attack2",
-      "weapon": "sword",
-      "footCorrection": true
-    },
-    "sword-attack3": {
-      "duration": 0.3666999936103821,
-      "frames": 24,
-      "sourceClip": "attack3",
-      "weapon": "sword",
-      "footCorrection": true
-    },
-    "sword-attack4": {
-      "duration": 0.3666999936103821,
-      "frames": 24,
-      "sourceClip": "attack4",
-      "weapon": "sword",
-      "footCorrection": true
-    },
-    "sword-attack5": {
-      "duration": 0.666700005531311,
-      "frames": 42,
-      "sourceClip": "attack5",
-      "weapon": "sword",
-      "footCorrection": true
+      "type": "sword",
+      "action": "avoid1",
+      "duration": 0.55,
+      "contact": null,
+      "source": "Knight sword_attack with authored combo variation"
     },
     "sword-defeat1": {
-      "duration": 2,
-      "frames": 121,
-      "sourceClip": "defeat1",
-      "weapon": "sword",
-      "footCorrection": true
+      "type": "sword",
+      "action": "defeat1",
+      "duration": 0.45,
+      "contact": null,
+      "source": "Knight sword_attack with authored combo variation"
     },
     "sword-die1": {
-      "duration": 1.166700005531311,
-      "frames": 72,
-      "sourceClip": "die1",
-      "weapon": "sword",
-      "footCorrection": true
+      "type": "sword",
+      "action": "die1",
+      "duration": 0.8,
+      "contact": null,
+      "source": "Knight sword_attack with authored combo variation"
     },
     "sword-victory1": {
-      "duration": 2.299999952316284,
-      "frames": 139,
-      "sourceClip": "victory1",
-      "weapon": "sword",
-      "footCorrection": true
+      "type": "sword",
+      "action": "victory1",
+      "duration": 1.2,
+      "contact": null,
+      "source": "Knight sword_attack with authored combo variation"
+    },
+    "sword-attack1": {
+      "type": "sword",
+      "action": "attack1",
+      "duration": 0.655,
+      "contact": 0.265135,
+      "source": "Knight sword_attack with authored combo variation"
+    },
+    "sword-attack2": {
+      "type": "sword",
+      "action": "attack2",
+      "duration": 0.69,
+      "contact": 0.279302,
+      "source": "Knight sword_attack with authored combo variation"
+    },
+    "sword-attack3": {
+      "type": "sword",
+      "action": "attack3",
+      "duration": 0.725,
+      "contact": 0.29347,
+      "source": "Knight sword_attack with authored combo variation"
+    },
+    "sword-attack4": {
+      "type": "sword",
+      "action": "attack4",
+      "duration": 0.76,
+      "contact": 0.307637,
+      "source": "Knight sword_attack with authored combo variation"
+    },
+    "sword-attack5": {
+      "type": "sword",
+      "action": "attack5",
+      "duration": 0.795,
+      "contact": 0.321805,
+      "source": "Knight sword_attack with authored combo variation"
+    },
+    "sword-skill1": {
+      "type": "sword",
+      "action": "skill1",
+      "duration": 1,
+      "contact": 0.45,
+      "source": "Knight buff_1"
+    },
+    "sword-skill2": {
+      "type": "sword",
+      "action": "skill2",
+      "duration": 1.15,
+      "contact": 0.5175,
+      "source": "Knight buff_2"
+    },
+    "sword-skill3": {
+      "type": "sword",
+      "action": "skill3",
+      "duration": 1.2,
+      "contact": 0.54,
+      "source": "Knight buff_3"
+    },
+    "sword-skill4": {
+      "type": "sword",
+      "action": "skill4",
+      "duration": 1,
+      "contact": 0.45,
+      "source": "Knight buff_1"
+    },
+    "sword-skill5": {
+      "type": "sword",
+      "action": "skill5",
+      "duration": 1.15,
+      "contact": 0.5175,
+      "source": "Knight buff_2"
+    },
+    "sword-skill6": {
+      "type": "sword",
+      "action": "skill6",
+      "duration": 1.2,
+      "contact": 0.54,
+      "source": "Knight buff_3"
     },
     "axe-stay1": {
-      "duration": 1.333299994468689,
-      "frames": 81,
-      "sourceClip": "stay1",
-      "weapon": "axe",
-      "footCorrection": true
+      "type": "axe",
+      "action": "stay1",
+      "duration": 1.2,
+      "contact": null,
+      "source": "v8.3 joint adaptation"
+    },
+    "axe-walk": {
+      "type": "axe",
+      "action": "walk",
+      "duration": 1.2,
+      "contact": null,
+      "source": "v8.3 joint adaptation"
     },
     "axe-run1": {
-      "duration": 0.53329998254776,
-      "frames": 33,
-      "sourceClip": "run1",
-      "weapon": "axe",
-      "footCorrection": true
+      "type": "axe",
+      "action": "run1",
+      "duration": 0.8,
+      "contact": null,
+      "source": "v8.3 joint adaptation"
     },
     "axe-dash": {
-      "duration": 0.5,
-      "frames": 31,
-      "sourceClip": "dash",
-      "weapon": "axe",
-      "footCorrection": true
+      "type": "axe",
+      "action": "dash",
+      "duration": 0.55,
+      "contact": null,
+      "source": "v8.3 joint adaptation"
     },
     "axe-avoid1": {
-      "duration": 0.5,
-      "frames": 31,
-      "sourceClip": "avoid1",
-      "weapon": "axe",
-      "footCorrection": true
-    },
-    "axe-attack1": {
-      "duration": 0.3666999936103821,
-      "frames": 24,
-      "sourceClip": "attack1",
-      "weapon": "axe",
-      "footCorrection": true
-    },
-    "axe-attack2": {
-      "duration": 0.3666999936103821,
-      "frames": 24,
-      "sourceClip": "attack2",
-      "weapon": "axe",
-      "footCorrection": true
-    },
-    "axe-attack3": {
-      "duration": 0.3666999936103821,
-      "frames": 24,
-      "sourceClip": "attack3",
-      "weapon": "axe",
-      "footCorrection": true
-    },
-    "axe-attack4": {
-      "duration": 0.3666999936103821,
-      "frames": 24,
-      "sourceClip": "attack4",
-      "weapon": "axe",
-      "footCorrection": true
-    },
-    "axe-attack5": {
-      "duration": 0.666700005531311,
-      "frames": 42,
-      "sourceClip": "attack5",
-      "weapon": "axe",
-      "footCorrection": true
+      "type": "axe",
+      "action": "avoid1",
+      "duration": 0.55,
+      "contact": null,
+      "source": "v8.3 joint adaptation"
     },
     "axe-defeat1": {
-      "duration": 2,
-      "frames": 121,
-      "sourceClip": "defeat1",
-      "weapon": "axe",
-      "footCorrection": true
+      "type": "axe",
+      "action": "defeat1",
+      "duration": 0.45,
+      "contact": null,
+      "source": "v8.3 joint adaptation"
     },
     "axe-die1": {
-      "duration": 1.166700005531311,
-      "frames": 72,
-      "sourceClip": "die1",
-      "weapon": "axe",
-      "footCorrection": true
+      "type": "axe",
+      "action": "die1",
+      "duration": 0.8,
+      "contact": null,
+      "source": "v8.3 joint adaptation"
     },
     "axe-victory1": {
-      "duration": 2.299999952316284,
-      "frames": 139,
-      "sourceClip": "victory1",
-      "weapon": "axe",
-      "footCorrection": true
+      "type": "axe",
+      "action": "victory1",
+      "duration": 1.2,
+      "contact": null,
+      "source": "v8.3 joint adaptation"
+    },
+    "axe-attack1": {
+      "type": "axe",
+      "action": "attack1",
+      "duration": 0.77,
+      "contact": 0.311685,
+      "source": "v8.3 joint adaptation"
+    },
+    "axe-attack2": {
+      "type": "axe",
+      "action": "attack2",
+      "duration": 0.82,
+      "contact": 0.331924,
+      "source": "v8.3 joint adaptation"
+    },
+    "axe-attack3": {
+      "type": "axe",
+      "action": "attack3",
+      "duration": 0.87,
+      "contact": 0.352164,
+      "source": "v8.3 joint adaptation"
+    },
+    "axe-attack4": {
+      "type": "axe",
+      "action": "attack4",
+      "duration": 0.9199999999999999,
+      "contact": 0.372403,
+      "source": "v8.3 joint adaptation"
+    },
+    "axe-attack5": {
+      "type": "axe",
+      "action": "attack5",
+      "duration": 0.97,
+      "contact": 0.392642,
+      "source": "v8.3 joint adaptation"
+    },
+    "axe-skill1": {
+      "type": "axe",
+      "action": "skill1",
+      "duration": 1,
+      "contact": 0.45,
+      "source": "Knight buff_1"
+    },
+    "axe-skill2": {
+      "type": "axe",
+      "action": "skill2",
+      "duration": 1.15,
+      "contact": 0.5175,
+      "source": "Knight buff_2"
+    },
+    "axe-skill3": {
+      "type": "axe",
+      "action": "skill3",
+      "duration": 1.2,
+      "contact": 0.54,
+      "source": "Knight buff_3"
+    },
+    "axe-skill4": {
+      "type": "axe",
+      "action": "skill4",
+      "duration": 1,
+      "contact": 0.45,
+      "source": "Knight buff_1"
+    },
+    "axe-skill5": {
+      "type": "axe",
+      "action": "skill5",
+      "duration": 1.15,
+      "contact": 0.5175,
+      "source": "Knight buff_2"
+    },
+    "axe-skill6": {
+      "type": "axe",
+      "action": "skill6",
+      "duration": 1.2,
+      "contact": 0.54,
+      "source": "Knight buff_3"
     },
     "dual-stay1": {
-      "duration": 1.333299994468689,
-      "frames": 81,
-      "sourceClip": "stay1",
-      "weapon": "dual",
-      "footCorrection": true
+      "type": "dual",
+      "action": "stay1",
+      "duration": 1.2,
+      "contact": null,
+      "source": "Alternating hand chain"
+    },
+    "dual-walk": {
+      "type": "dual",
+      "action": "walk",
+      "duration": 1.2,
+      "contact": null,
+      "source": "Alternating hand chain"
     },
     "dual-run1": {
-      "duration": 0.53329998254776,
-      "frames": 33,
-      "sourceClip": "run1",
-      "weapon": "dual",
-      "footCorrection": true
+      "type": "dual",
+      "action": "run1",
+      "duration": 0.8,
+      "contact": null,
+      "source": "Alternating hand chain"
     },
     "dual-dash": {
-      "duration": 0.5,
-      "frames": 31,
-      "sourceClip": "dash",
-      "weapon": "dual",
-      "footCorrection": true
+      "type": "dual",
+      "action": "dash",
+      "duration": 0.55,
+      "contact": null,
+      "source": "Alternating hand chain"
     },
     "dual-avoid1": {
-      "duration": 0.5,
-      "frames": 31,
-      "sourceClip": "avoid1",
-      "weapon": "dual",
-      "footCorrection": true
-    },
-    "dual-attack1": {
-      "duration": 0.3666999936103821,
-      "frames": 24,
-      "sourceClip": "attack1",
-      "weapon": "dual",
-      "footCorrection": true
-    },
-    "dual-attack2": {
-      "duration": 0.3666999936103821,
-      "frames": 24,
-      "sourceClip": "attack2",
-      "weapon": "dual",
-      "footCorrection": true
-    },
-    "dual-attack3": {
-      "duration": 0.3666999936103821,
-      "frames": 24,
-      "sourceClip": "attack3",
-      "weapon": "dual",
-      "footCorrection": true
-    },
-    "dual-attack4": {
-      "duration": 0.3666999936103821,
-      "frames": 24,
-      "sourceClip": "attack4",
-      "weapon": "dual",
-      "footCorrection": true
-    },
-    "dual-attack5": {
-      "duration": 0.666700005531311,
-      "frames": 42,
-      "sourceClip": "attack5",
-      "weapon": "dual",
-      "footCorrection": true
+      "type": "dual",
+      "action": "avoid1",
+      "duration": 0.55,
+      "contact": null,
+      "source": "Alternating hand chain"
     },
     "dual-defeat1": {
-      "duration": 2,
-      "frames": 121,
-      "sourceClip": "defeat1",
-      "weapon": "dual",
-      "footCorrection": true
+      "type": "dual",
+      "action": "defeat1",
+      "duration": 0.45,
+      "contact": null,
+      "source": "Alternating hand chain"
     },
     "dual-die1": {
-      "duration": 1.166700005531311,
-      "frames": 72,
-      "sourceClip": "die1",
-      "weapon": "dual",
-      "footCorrection": true
+      "type": "dual",
+      "action": "die1",
+      "duration": 0.8,
+      "contact": null,
+      "source": "Alternating hand chain"
     },
     "dual-victory1": {
-      "duration": 2.299999952316284,
-      "frames": 139,
-      "sourceClip": "victory1",
-      "weapon": "dual",
-      "footCorrection": true
+      "type": "dual",
+      "action": "victory1",
+      "duration": 1.2,
+      "contact": null,
+      "source": "Alternating hand chain"
+    },
+    "dual-attack1": {
+      "type": "dual",
+      "action": "attack1",
+      "duration": 0.465,
+      "contact": 0.188225,
+      "source": "Alternating hand chain"
+    },
+    "dual-attack2": {
+      "type": "dual",
+      "action": "attack2",
+      "duration": 0.49,
+      "contact": 0.198345,
+      "source": "Alternating hand chain"
+    },
+    "dual-attack3": {
+      "type": "dual",
+      "action": "attack3",
+      "duration": 0.515,
+      "contact": 0.208465,
+      "source": "Alternating hand chain"
+    },
+    "dual-attack4": {
+      "type": "dual",
+      "action": "attack4",
+      "duration": 0.54,
+      "contact": 0.218584,
+      "source": "Alternating hand chain"
+    },
+    "dual-attack5": {
+      "type": "dual",
+      "action": "attack5",
+      "duration": 0.565,
+      "contact": 0.228704,
+      "source": "Alternating hand chain"
+    },
+    "dual-skill1": {
+      "type": "dual",
+      "action": "skill1",
+      "duration": 1,
+      "contact": 0.45,
+      "source": "Knight buff_1"
+    },
+    "dual-skill2": {
+      "type": "dual",
+      "action": "skill2",
+      "duration": 1.15,
+      "contact": 0.5175,
+      "source": "Knight buff_2"
+    },
+    "dual-skill3": {
+      "type": "dual",
+      "action": "skill3",
+      "duration": 1.2,
+      "contact": 0.54,
+      "source": "Knight buff_3"
+    },
+    "dual-skill4": {
+      "type": "dual",
+      "action": "skill4",
+      "duration": 1,
+      "contact": 0.45,
+      "source": "Knight buff_1"
+    },
+    "dual-skill5": {
+      "type": "dual",
+      "action": "skill5",
+      "duration": 1.15,
+      "contact": 0.5175,
+      "source": "Knight buff_2"
+    },
+    "dual-skill6": {
+      "type": "dual",
+      "action": "skill6",
+      "duration": 1.2,
+      "contact": 0.54,
+      "source": "Knight buff_3"
     },
     "spear-stay1": {
-      "duration": 1.333299994468689,
-      "frames": 81,
-      "sourceClip": "stay1",
-      "weapon": "spear",
-      "footCorrection": true
+      "type": "spear",
+      "action": "stay1",
+      "duration": 1.2,
+      "contact": null,
+      "source": "Live off-hand shaft IK plus palm-axis constraint"
+    },
+    "spear-walk": {
+      "type": "spear",
+      "action": "walk",
+      "duration": 1.2,
+      "contact": null,
+      "source": "Live off-hand shaft IK plus palm-axis constraint"
     },
     "spear-run1": {
-      "duration": 0.53329998254776,
-      "frames": 33,
-      "sourceClip": "run1",
-      "weapon": "spear",
-      "footCorrection": true
+      "type": "spear",
+      "action": "run1",
+      "duration": 0.8,
+      "contact": null,
+      "source": "Live off-hand shaft IK plus palm-axis constraint"
     },
     "spear-dash": {
-      "duration": 0.5,
-      "frames": 31,
-      "sourceClip": "dash",
-      "weapon": "spear",
-      "footCorrection": true
+      "type": "spear",
+      "action": "dash",
+      "duration": 0.55,
+      "contact": null,
+      "source": "Live off-hand shaft IK plus palm-axis constraint"
     },
     "spear-avoid1": {
-      "duration": 0.5,
-      "frames": 31,
-      "sourceClip": "avoid1",
-      "weapon": "spear",
-      "footCorrection": true
-    },
-    "spear-attack1": {
-      "duration": 0.3666999936103821,
-      "frames": 24,
-      "sourceClip": "attack1",
-      "weapon": "spear",
-      "footCorrection": true
-    },
-    "spear-attack2": {
-      "duration": 0.3666999936103821,
-      "frames": 24,
-      "sourceClip": "attack2",
-      "weapon": "spear",
-      "footCorrection": true
-    },
-    "spear-attack3": {
-      "duration": 0.3666999936103821,
-      "frames": 24,
-      "sourceClip": "attack3",
-      "weapon": "spear",
-      "footCorrection": true
-    },
-    "spear-attack4": {
-      "duration": 0.3666999936103821,
-      "frames": 24,
-      "sourceClip": "attack4",
-      "weapon": "spear",
-      "footCorrection": true
-    },
-    "spear-attack5": {
-      "duration": 0.666700005531311,
-      "frames": 42,
-      "sourceClip": "attack5",
-      "weapon": "spear",
-      "footCorrection": true
+      "type": "spear",
+      "action": "avoid1",
+      "duration": 0.55,
+      "contact": null,
+      "source": "Live off-hand shaft IK plus palm-axis constraint"
     },
     "spear-defeat1": {
-      "duration": 2,
-      "frames": 121,
-      "sourceClip": "defeat1",
-      "weapon": "spear",
-      "footCorrection": true
+      "type": "spear",
+      "action": "defeat1",
+      "duration": 0.45,
+      "contact": null,
+      "source": "Live off-hand shaft IK plus palm-axis constraint"
     },
     "spear-die1": {
-      "duration": 1.166700005531311,
-      "frames": 72,
-      "sourceClip": "die1",
-      "weapon": "spear",
-      "footCorrection": true
+      "type": "spear",
+      "action": "die1",
+      "duration": 0.8,
+      "contact": null,
+      "source": "Live off-hand shaft IK plus palm-axis constraint"
     },
     "spear-victory1": {
-      "duration": 2.299999952316284,
-      "frames": 139,
-      "sourceClip": "victory1",
-      "weapon": "spear",
-      "footCorrection": true
-    }
-  },
-  "hitEvents": {
-    "status": "WEB_ADAPTER_TIMES_NOT_NATIVE_ANIMATION_EVENTS",
-    "times": {
-      "attack1": 0.2,
-      "attack2": 0.2,
-      "attack3": 0.2,
-      "attack4": 0.2,
-      "attack5": 0.3
-    }
-  },
-  "limitations": [
-    "Single-view cutout cannot reconstruct unseen artwork. Hidden surfaces/joint padding are explicit artistic approximations.",
-    "No mesh weights or IK; 2D region cutout hierarchy.",
-    "Forward-only facing: left-facing is mirrored.",
-    "Weapon-specific compact arm paths and wrist angle timelines are authored web adaptations, not recovered original weapon animations.",
-    "Spine Editor and spine-unity 4.2 import require user-side validation; no .spine editor project generated.",
-    "Compact arm/leg paths, dodge roll, secondary hair and torso damping are authored adaptations, not recovered original curves."
-  ],
-  "weapons": {
-    "sword": {
-      "attachment": "held-sword",
-      "type": "region",
-      "path": "held-sword",
-      "x": -2.24,
-      "y": 24.6246,
-      "width": 64,
-      "height": 79,
-      "sourceSha256": "0aa710046d1e267e66d6e5c042ee058df613e80ed36f4089d7ef79a719d277f8",
-      "sourceGrip": [
-        84,
-        300
-      ],
-      "source": "/rpg/weapons/sword.png"
+      "type": "spear",
+      "action": "victory1",
+      "duration": 1.2,
+      "contact": null,
+      "source": "Live off-hand shaft IK plus palm-axis constraint"
     },
-    "axe": {
-      "attachment": "held-axe",
-      "type": "region",
-      "path": "held-axe",
-      "x": -2.245,
-      "y": 23.327,
-      "width": 76,
-      "height": 85,
-      "sourceSha256": "7cce753e445b8ab50cb8f3636df789dd8df27f08afc02b5f767f926717803c1a",
-      "sourceGrip": [
-        89,
-        287
-      ],
-      "source": "/rpg/weapons/axe.png"
+    "spear-attack1": {
+      "type": "spear",
+      "action": "attack1",
+      "duration": 0.635,
+      "contact": 0.257039,
+      "source": "Live off-hand shaft IK plus palm-axis constraint"
     },
-    "spear": {
-      "attachment": "held-spear",
-      "type": "region",
-      "path": "held-spear",
-      "x": -5.0803,
-      "y": 11.1207,
-      "width": 86,
-      "height": 118,
-      "sourceSha256": "d0bc33e4aa62b61599d18bb6fbcc545070062579a792ba6305671e2646a50676",
-      "sourceGrip": [
-        160,
-        225
-      ],
-      "source": "/rpg/weapons/spear.png"
+    "spear-attack2": {
+      "type": "spear",
+      "action": "attack2",
+      "duration": 0.6699999999999999,
+      "contact": 0.271206,
+      "source": "Live off-hand shaft IK plus palm-axis constraint"
     },
-    "dual": {
-      "attachment": "held-dual",
-      "type": "region",
-      "path": "held-dual",
-      "x": -1.645,
-      "y": 18.0788,
-      "width": 47,
-      "height": 58,
-      "sourceSha256": "0aa710046d1e267e66d6e5c042ee058df613e80ed36f4089d7ef79a719d277f8",
-      "sourceGrip": [
-        84,
-        300
-      ],
-      "source": "/rpg/weapons/sword.png"
+    "spear-attack3": {
+      "type": "spear",
+      "action": "attack3",
+      "duration": 0.705,
+      "contact": 0.285374,
+      "source": "Live off-hand shaft IK plus palm-axis constraint"
+    },
+    "spear-attack4": {
+      "type": "spear",
+      "action": "attack4",
+      "duration": 0.74,
+      "contact": 0.299541,
+      "source": "Live off-hand shaft IK plus palm-axis constraint"
+    },
+    "spear-attack5": {
+      "type": "spear",
+      "action": "attack5",
+      "duration": 0.775,
+      "contact": 0.313709,
+      "source": "Live off-hand shaft IK plus palm-axis constraint"
+    },
+    "spear-skill1": {
+      "type": "spear",
+      "action": "skill1",
+      "duration": 1,
+      "contact": 0.45,
+      "source": "Knight buff_1"
+    },
+    "spear-skill2": {
+      "type": "spear",
+      "action": "skill2",
+      "duration": 1.15,
+      "contact": 0.5175,
+      "source": "Knight buff_2"
+    },
+    "spear-skill3": {
+      "type": "spear",
+      "action": "skill3",
+      "duration": 1.2,
+      "contact": 0.54,
+      "source": "Knight buff_3"
+    },
+    "spear-skill4": {
+      "type": "spear",
+      "action": "skill4",
+      "duration": 1,
+      "contact": 0.45,
+      "source": "Knight buff_1"
+    },
+    "spear-skill5": {
+      "type": "spear",
+      "action": "skill5",
+      "duration": 1.15,
+      "contact": 0.5175,
+      "source": "Knight buff_2"
+    },
+    "spear-skill6": {
+      "type": "spear",
+      "action": "skill6",
+      "duration": 1.2,
+      "contact": 0.54,
+      "source": "Knight buff_3"
     }
-  },
-  "renderMode": "hong-spine-weapons-v1",
-  "runtimeHitAuthority": "Server HuntEngine remains authoritative; visual time remapped to server hitAt/duration; no damage from Spine events.",
-  "scope": "Hong only; other eight characters retain their sprite packs."
+  }
 }

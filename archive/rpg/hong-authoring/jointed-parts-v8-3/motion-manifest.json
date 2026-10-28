@@ -1,0 +1,133 @@
+{
+  "version": 8.3,
+  "strideScale": 0.6,
+  "upperArmDamping": 0.82,
+  "upperArmWorldClamp": [
+    -150,
+    5
+  ],
+  "construction": "Sixteen independent anatomical region attachments, no full-body image/pose swapping",
+  "head": "Original Hong source face, rigid region",
+  "references": [
+    "Knight37-bone two-leg-IK hierarchy",
+    "Noah evaluated walk/run/weapon/shield timing and joint trajectories"
+  ],
+  "clips": [
+    {
+      "name": "idle",
+      "reference": "idle_Simple",
+      "duration": 1.2,
+      "kind": "idle"
+    },
+    {
+      "name": "walk",
+      "reference": "walk",
+      "duration": 1.2,
+      "kind": "move"
+    },
+    {
+      "name": "run",
+      "reference": "run",
+      "duration": 0.8,
+      "kind": "move"
+    },
+    {
+      "name": "unarmed-attack1",
+      "reference": "shield_attack",
+      "duration": 0.5,
+      "contact": 0.2,
+      "stage": 1,
+      "kind": "unarmed"
+    },
+    {
+      "name": "unarmed-attack2",
+      "reference": "shield_attack",
+      "duration": 0.56,
+      "contact": 0.23,
+      "stage": 2,
+      "kind": "unarmed"
+    },
+    {
+      "name": "unarmed-attack3",
+      "reference": "shield_attack",
+      "duration": 0.66,
+      "contact": 0.28,
+      "stage": 3,
+      "kind": "unarmed"
+    },
+    {
+      "name": "unarmed-attack4",
+      "reference": "shield_attack",
+      "duration": 0.6,
+      "contact": 0.25,
+      "stage": 4,
+      "kind": "unarmed"
+    },
+    {
+      "name": "unarmed-attack5",
+      "reference": "shield_attack",
+      "duration": 0.74,
+      "contact": 0.31,
+      "stage": 5,
+      "kind": "unarmed"
+    },
+    {
+      "name": "sword-attack",
+      "reference": "sword_attack",
+      "duration": 0.9,
+      "contact": 0.364307,
+      "weapon": "sword",
+      "shield": false,
+      "kind": "weapon"
+    },
+    {
+      "name": "sword-shield-attack",
+      "reference": "sword_attack_shield",
+      "duration": 0.9,
+      "contact": 0.364307,
+      "weapon": "sword",
+      "shield": true,
+      "kind": "weapon"
+    },
+    {
+      "name": "axe-attack",
+      "reference": "Axe_attack2",
+      "duration": 0.95,
+      "contact": 0.384546,
+      "weapon": "axe",
+      "shield": false,
+      "kind": "weapon"
+    },
+    {
+      "name": "axe-shield-attack",
+      "reference": "Axe_attack2_shield",
+      "duration": 0.95,
+      "contact": 0.384546,
+      "weapon": "axe",
+      "shield": true,
+      "kind": "weapon"
+    },
+    {
+      "name": "shield-guard",
+      "reference": "idle_Simple",
+      "duration": 1.2,
+      "kind": "guard",
+      "shield": true
+    },
+    {
+      "name": "shield-bash",
+      "reference": "shield_attack",
+      "duration": 0.85,
+      "contact": 0.263075,
+      "kind": "bash",
+      "shield": true
+    },
+    {
+      "name": "unarmed-combo5",
+      "duration": 3.22,
+      "kind": "combo",
+      "reference": "Authored joint combo, not source frame swap"
+    }
+  ],
+  "productionChanged": false
+}

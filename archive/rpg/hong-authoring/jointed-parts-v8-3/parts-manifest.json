@@ -1,0 +1,656 @@
+{
+  "partNames": [
+    "head",
+    "hair-back",
+    "torso",
+    "pelvis",
+    "near-upper-arm",
+    "near-forearm",
+    "near-hand",
+    "far-upper-arm",
+    "far-forearm",
+    "far-hand",
+    "near-thigh",
+    "near-shin",
+    "near-foot",
+    "far-thigh",
+    "far-shin",
+    "far-foot"
+  ],
+  "sourceBounds": {
+    "9": [
+      411,
+      782,
+      528,
+      870
+    ],
+    "6": [
+      727,
+      488,
+      856,
+      579
+    ],
+    "8": [
+      112,
+      755,
+      194,
+      900
+    ],
+    "7": [
+      1068,
+      421,
+      1159,
+      615
+    ],
+    "14": [
+      737,
+      1013,
+      824,
+      1161
+    ],
+    "5": [
+      425,
+      452,
+      512,
+      611
+    ],
+    "12": [
+      83,
+      1027,
+      240,
+      1181
+    ],
+    "4": [
+      97,
+      419,
+      203,
+      619
+    ],
+    "11": [
+      1050,
+      732,
+      1146,
+      886
+    ],
+    "15": [
+      1021,
+      1028,
+      1195,
+      1188
+    ],
+    "13": [
+      417,
+      956,
+      524,
+      1128
+    ],
+    "10": [
+      727,
+      670,
+      852,
+      848
+    ],
+    "3": [
+      956,
+      167,
+      1221,
+      347
+    ],
+    "2": [
+      702,
+      142,
+      898,
+      353
+    ],
+    "0": [
+      48,
+      90,
+      311,
+      339
+    ],
+    "1": [
+      348,
+      39,
+      624,
+      365
+    ]
+  },
+  "originalSourceBounds": {
+    "9": [
+      411,
+      782,
+      528,
+      870
+    ],
+    "6": [
+      727,
+      488,
+      856,
+      579
+    ],
+    "8": [
+      112,
+      716,
+      194,
+      933
+    ],
+    "7": [
+      1068,
+      402,
+      1159,
+      644
+    ],
+    "14": [
+      737,
+      973,
+      824,
+      1197
+    ],
+    "5": [
+      425,
+      410,
+      512,
+      646
+    ],
+    "12": [
+      83,
+      1027,
+      240,
+      1181
+    ],
+    "4": [
+      97,
+      399,
+      203,
+      649
+    ],
+    "11": [
+      1050,
+      690,
+      1146,
+      923
+    ],
+    "15": [
+      1021,
+      1028,
+      1195,
+      1188
+    ],
+    "13": [
+      417,
+      948,
+      524,
+      1213
+    ],
+    "10": [
+      727,
+      662,
+      852,
+      936
+    ],
+    "3": [
+      956,
+      167,
+      1221,
+      347
+    ],
+    "2": [
+      702,
+      142,
+      898,
+      353
+    ],
+    "0": [
+      48,
+      90,
+      311,
+      339
+    ],
+    "1": [
+      348,
+      39,
+      624,
+      365
+    ]
+  },
+  "partSettings": {
+    "hair-back": {
+      "cell": 1,
+      "sourceBounds": [
+        348,
+        39,
+        624,
+        365
+      ],
+      "roiFraction": 1.0,
+      "topTrim": 0.0,
+      "bottomKeep": 1.0,
+      "skinPixelsRemoved": 0,
+      "roundedJointCaps": false,
+      "thicknessMultiplier": 1.0,
+      "size": [
+        60,
+        94
+      ],
+      "boneLength": null,
+      "proximalExtension": 0,
+      "distalExtension": 0
+    },
+    "torso": {
+      "cell": 2,
+      "sourceBounds": [
+        702,
+        142,
+        898,
+        353
+      ],
+      "roiFraction": 1.0,
+      "topTrim": 0.0,
+      "bottomKeep": 1.0,
+      "skinPixelsRemoved": 3351,
+      "roundedJointCaps": false,
+      "thicknessMultiplier": 1.22,
+      "size": [
+        39,
+        37
+      ],
+      "boneLength": null,
+      "proximalExtension": 0,
+      "distalExtension": 0
+    },
+    "pelvis": {
+      "cell": 3,
+      "sourceBounds": [
+        956,
+        167,
+        1221,
+        347
+      ],
+      "roiFraction": 1.0,
+      "topTrim": 0.0,
+      "bottomKeep": 1.0,
+      "skinPixelsRemoved": 0,
+      "roundedJointCaps": false,
+      "thicknessMultiplier": 1.22,
+      "size": [
+        45,
+        24
+      ],
+      "boneLength": null,
+      "proximalExtension": 0,
+      "distalExtension": 0
+    },
+    "near-upper-arm": {
+      "cell": 4,
+      "sourceBounds": [
+        97,
+        419,
+        203,
+        619
+      ],
+      "roiFraction": 0.8,
+      "topTrim": 0.08,
+      "bottomKeep": 0.88,
+      "skinPixelsRemoved": 0,
+      "roundedJointCaps": true,
+      "thicknessMultiplier": 1.1,
+      "size": [
+        12,
+        25
+      ],
+      "boneLength": 15,
+      "proximalExtension": 5,
+      "distalExtension": 5
+    },
+    "near-forearm": {
+      "cell": 5,
+      "sourceBounds": [
+        425,
+        452,
+        512,
+        611
+      ],
+      "roiFraction": 0.6699999999999999,
+      "topTrim": 0.18,
+      "bottomKeep": 0.85,
+      "skinPixelsRemoved": 11,
+      "roundedJointCaps": true,
+      "thicknessMultiplier": 1.1,
+      "size": [
+        12,
+        24
+      ],
+      "boneLength": 17,
+      "proximalExtension": 5,
+      "distalExtension": 2
+    },
+    "near-hand": {
+      "cell": 6,
+      "sourceBounds": [
+        727,
+        488,
+        856,
+        579
+      ],
+      "roiFraction": 1.0,
+      "topTrim": 0.0,
+      "bottomKeep": 1.0,
+      "skinPixelsRemoved": 0,
+      "roundedJointCaps": false,
+      "thicknessMultiplier": 1.0,
+      "size": [
+        15,
+        12
+      ],
+      "boneLength": null,
+      "proximalExtension": 0,
+      "distalExtension": 0
+    },
+    "far-upper-arm": {
+      "cell": 7,
+      "sourceBounds": [
+        1068,
+        421,
+        1159,
+        615
+      ],
+      "roiFraction": 0.8,
+      "topTrim": 0.08,
+      "bottomKeep": 0.88,
+      "skinPixelsRemoved": 0,
+      "roundedJointCaps": true,
+      "thicknessMultiplier": 1.1,
+      "size": [
+        11,
+        25
+      ],
+      "boneLength": 15,
+      "proximalExtension": 5,
+      "distalExtension": 5
+    },
+    "far-forearm": {
+      "cell": 8,
+      "sourceBounds": [
+        112,
+        755,
+        194,
+        900
+      ],
+      "roiFraction": 0.6699999999999999,
+      "topTrim": 0.18,
+      "bottomKeep": 0.85,
+      "skinPixelsRemoved": 0,
+      "roundedJointCaps": true,
+      "thicknessMultiplier": 1.1,
+      "size": [
+        11,
+        24
+      ],
+      "boneLength": 17,
+      "proximalExtension": 5,
+      "distalExtension": 2
+    },
+    "far-hand": {
+      "cell": 9,
+      "sourceBounds": [
+        411,
+        782,
+        528,
+        870
+      ],
+      "roiFraction": 1.0,
+      "topTrim": 0.0,
+      "bottomKeep": 1.0,
+      "skinPixelsRemoved": 0,
+      "roundedJointCaps": false,
+      "thicknessMultiplier": 1.0,
+      "size": [
+        14,
+        11
+      ],
+      "boneLength": null,
+      "proximalExtension": 0,
+      "distalExtension": 0
+    },
+    "near-thigh": {
+      "cell": 10,
+      "sourceBounds": [
+        727,
+        670,
+        852,
+        848
+      ],
+      "roiFraction": 0.65,
+      "topTrim": 0.03,
+      "bottomKeep": 0.68,
+      "skinPixelsRemoved": 0,
+      "roundedJointCaps": true,
+      "thicknessMultiplier": 1.15,
+      "size": [
+        17,
+        26
+      ],
+      "boneLength": 16,
+      "proximalExtension": 5,
+      "distalExtension": 5
+    },
+    "near-shin": {
+      "cell": 11,
+      "sourceBounds": [
+        1050,
+        732,
+        1146,
+        886
+      ],
+      "roiFraction": 0.6599999999999999,
+      "topTrim": 0.18,
+      "bottomKeep": 0.84,
+      "skinPixelsRemoved": 43,
+      "roundedJointCaps": true,
+      "thicknessMultiplier": 1.15,
+      "size": [
+        14,
+        24
+      ],
+      "boneLength": 17,
+      "proximalExtension": 5,
+      "distalExtension": 2
+    },
+    "near-foot": {
+      "cell": 12,
+      "sourceBounds": [
+        83,
+        1027,
+        240,
+        1181
+      ],
+      "roiFraction": 1.0,
+      "topTrim": 0.0,
+      "bottomKeep": 1.0,
+      "skinPixelsRemoved": 0,
+      "roundedJointCaps": false,
+      "thicknessMultiplier": 1.0,
+      "size": [
+        25,
+        23
+      ],
+      "boneLength": null,
+      "proximalExtension": 0,
+      "distalExtension": 0
+    },
+    "far-thigh": {
+      "cell": 13,
+      "sourceBounds": [
+        417,
+        956,
+        524,
+        1128
+      ],
+      "roiFraction": 0.65,
+      "topTrim": 0.03,
+      "bottomKeep": 0.68,
+      "skinPixelsRemoved": 0,
+      "roundedJointCaps": true,
+      "thicknessMultiplier": 1.15,
+      "size": [
+        15,
+        26
+      ],
+      "boneLength": 16,
+      "proximalExtension": 5,
+      "distalExtension": 5
+    },
+    "far-shin": {
+      "cell": 14,
+      "sourceBounds": [
+        737,
+        1013,
+        824,
+        1161
+      ],
+      "roiFraction": 0.6599999999999999,
+      "topTrim": 0.18,
+      "bottomKeep": 0.84,
+      "skinPixelsRemoved": 0,
+      "roundedJointCaps": true,
+      "thicknessMultiplier": 1.15,
+      "size": [
+        13,
+        24
+      ],
+      "boneLength": 17,
+      "proximalExtension": 5,
+      "distalExtension": 2
+    },
+    "far-foot": {
+      "cell": 15,
+      "sourceBounds": [
+        1021,
+        1028,
+        1195,
+        1188
+      ],
+      "roiFraction": 1.0,
+      "topTrim": 0.0,
+      "bottomKeep": 1.0,
+      "skinPixelsRemoved": 0,
+      "roundedJointCaps": false,
+      "thicknessMultiplier": 1.0,
+      "size": [
+        23,
+        22
+      ],
+      "boneLength": null,
+      "proximalExtension": 0,
+      "distalExtension": 0
+    }
+  },
+  "revision": "v8.3-rounded-sd",
+  "headOrigin": "Original Hong pose00 pixels, polygon isolated; no generated face used",
+  "limbOrigin": "Separate newly generated anatomical drawables, no full pose slot swaps",
+  "overlap": "Independent anatomical regions with asymmetric proximal/distal overlap extension; no bone scaling",
+  "bones": 23,
+  "ik": 2,
+  "footHulls": {
+    "near": [
+      [
+        7.75,
+        2.26
+      ],
+      [
+        -4.25,
+        2.26
+      ],
+      [
+        -7.25,
+        -6.74
+      ],
+      [
+        -8.25,
+        -11.74
+      ],
+      [
+        -8.25,
+        -16.740000000000002
+      ],
+      [
+        -7.25,
+        -17.740000000000002
+      ],
+      [
+        -5.25,
+        -18.740000000000002
+      ],
+      [
+        6.75,
+        -19.740000000000002
+      ],
+      [
+        11.75,
+        -19.740000000000002
+      ],
+      [
+        14.75,
+        -18.740000000000002
+      ],
+      [
+        15.75,
+        -17.740000000000002
+      ],
+      [
+        15.75,
+        -14.74
+      ],
+      [
+        14.75,
+        -11.74
+      ]
+    ],
+    "far": [
+      [
+        -6.549999999999999,
+        -4.86
+      ],
+      [
+        -7.549999999999999,
+        -9.86
+      ],
+      [
+        -7.549999999999999,
+        -15.86
+      ],
+      [
+        -6.549999999999999,
+        -16.86
+      ],
+      [
+        6.450000000000001,
+        -18.86
+      ],
+      [
+        12.450000000000001,
+        -17.86
+      ],
+      [
+        14.450000000000001,
+        -16.86
+      ],
+      [
+        14.450000000000001,
+        -12.86
+      ],
+      [
+        13.450000000000001,
+        -10.86
+      ],
+      [
+        6.450000000000001,
+        2.1399999999999997
+      ],
+      [
+        -4.549999999999999,
+        2.1399999999999997
+      ]
+    ]
+  }
+}
