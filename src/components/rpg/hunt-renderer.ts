@@ -57,7 +57,11 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
  const jointHero=characterId==='hong'?await actor('characters/hong/spine/hong',signal,null,[...HONG_FOOT_SLOTS]).catch(error=>{
   if(signal.aborted)throw error;canvas.dataset.heroAssetError='hong-spine-load-failed';return null;
  }):null;
- const nativeHero=characterId==='hong'?await actor('characters/hong/native-axe/hong',signal,null,[...HONG_NATIVE_FOOT_SLOTS]).catch(error=>{if(signal.aborted)throw error;canvas.dataset.nativeHeroAssetError='load-failed';return null;}):null;
+ const nativeHeroes:Partial<Record<WeaponType,Awaited<ReturnType<typeof actor>>>>={};
+ if(characterId==='hong')await Promise.all((['axe','sword','dual','spear'] as const).map(async weapon=>{
+  try{nativeHeroes[weapon]=await actor(`characters/hong/native-${weapon}/hong`,signal,null,[...HONG_NATIVE_FOOT_SLOTS]);}
+  catch(error){if(signal.aborted)throw error;canvas.dataset.nativeHeroAssetError='load-failed:'+weapon;}
+ }));
  let heroWeapon:WeaponType|undefined,heroKey='',heroTime=0;
  const spriteClock=new CombatSpriteClock();
  // Each slime owns its pose/animation state, while sharing immutable skeleton data and atlas textures.
@@ -81,7 +85,7 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
   return fallbackFor(mob.slot);
  };
  const ctx = canvas.getContext('2d'); if (!ctx) throw Error('Canvas를 사용할 수 없습니다.');
- const heroRenderer=jointHero||nativeHero?new CanvasRenderer(ctx):null;if(heroRenderer)heroRenderer.triangleRendering=true;
+ const heroRenderer=jointHero||Object.keys(nativeHeroes).length?new CanvasRenderer(ctx):null;if(heroRenderer)heroRenderer.triangleRendering=true;
  const renderer = gl ? new SceneRenderer(layer, gl) : null;
  const fallback = renderer ? null : new CanvasRenderer(ctx);
  if(fallback) fallback.triangleRendering=true;
@@ -133,7 +137,7 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
    const frame=spriteClock.frame(game.action,game.actionSerial,dt,game.animationSpeed,stage?.hitAt??.2);
    const attack=!!view&&/^attack/.test(game.action),age=view?Math.max(0,game.elapsed-view.motion.startedAt):0;
    const attackFrame=attack?attackSpriteFrame(age,view!.motion.duration,view!.motion.hitAt,attackMeta.animations[view!.weapon].impactFrame):0;
-   const weapon=view?.weapon??'unarmed',native=weapon==='axe'&&!!nativeHero,hero=native?nativeHero:jointHero;
+   const weapon=view?.weapon??'unarmed',native=!!nativeHeroes[weapon],hero=native?nativeHeroes[weapon]:jointHero;
    if(hero&&heroRenderer){
     const key=`${game.action}:${game.actionSerial}:${weapon}`;
     const requested=native?hongNativeName(game.action):hongMotionName(game.action,weapon),next=hero.available.includes(requested)?requested:native?'stay1':hongMotionName('stay1',weapon);
@@ -160,7 +164,7 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
     canvas.dataset.heroTexture=native?'2048x1024-linear':'original';
     hero.skeleton.color.a=game.heroHitUntil>game.elapsed&&game.hp>0?.55+Math.sin(game.elapsed*60)*.2:1;
     heroRenderer.draw(hero.skeleton);ctx.restore();
-    canvas.dataset.heroRig=native?'hong-native-axe-v2':'hong-eirika-weapons-v12';canvas.dataset.heroMotion=next;canvas.dataset.weaponMount=native?'native-hand':weapon==='dual'||weapon==='spear'?'both-hands':weapon==='unarmed'?'none':'front-hand';
+    canvas.dataset.heroRig=native?`hong-native-${weapon}-${weapon==='axe'?'v2':'v1'}`:'hong-eirika-weapons-v12';canvas.dataset.heroMotion=next;canvas.dataset.weaponMount=native?'native-hand':weapon==='dual'||weapon==='spear'?'both-hands':weapon==='unarmed'?'none':'front-hand';
    }else{
     const pose=attack?attackSpritePlacement(attackFrame,screenX(game.x),floor,scale,game.facing):spritePlacement(frame,screenX(game.x),floor,scale,game.facing);
     ctx.save();ctx.imageSmoothingEnabled=false;ctx.translate(pose.x,pose.y);ctx.scale(pose.scaleX,pose.scaleY);
@@ -192,7 +196,7 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
    const foregroundStep=700*sceneScale;
    ctx.globalAlpha=.7;for(let x=-170*sceneScale-((camera*zoom*.65%foregroundStep)+foregroundStep)%foregroundStep;x<w;x+=foregroundStep)ctx.drawImage(trees,x,floor-165*sceneScale,145*sceneScale,190*sceneScale);ctx.globalAlpha=1;
   },
-  dispose() { disposed=true;assetCache.forEach(a=>a.atlas.dispose());enemy.atlas.dispose();jointHero?.atlas.dispose();nativeHero?.atlas.dispose(); renderer?.dispose(); },
+  dispose() { disposed=true;assetCache.forEach(a=>a.atlas.dispose());enemy.atlas.dispose();jointHero?.atlas.dispose();Object.values(nativeHeroes).forEach(a=>a.atlas.dispose()); renderer?.dispose(); },
   animations: {hero: ['stay1','run1','dash','avoid1','attack1','attack2','attack3','attack4','attack5','damage1'], enemy: enemy.available},
  };
 }

@@ -1,0 +1,51 @@
+{
+  "bundle": "model_assets_all_4b7c1041d63a541f1599d6ee7559998f.bundle",
+  "bundleSha256": "892542ea0b03330f975199672ec8787cc974ed3f97efc53941f78287276324db",
+  "files": [
+    {
+      "file": "Hero_Spear01.atlas",
+      "pathId": "-7220340996499380456",
+      "sha256": "0105cdf2f85f96984f71a5a8437973c89c998296f3cfa639c66a66aeacd2fc69"
+    },
+    {
+      "file": "Hero_Dagger01.png",
+      "pathId": "-5661283050790069096",
+      "sha256": "601aa10a29d07293e9f8af661fddc012de2bfdc489fd2aa03c075a7009454ac5"
+    },
+    {
+      "file": "Hero_Sword01.png",
+      "pathId": "-5591466840740414153",
+      "sha256": "1a1e311e31c2a4440397e8054dfbb2639f74fae7964ac103718babe6dbd90379"
+    },
+    {
+      "file": "Hero_Sword01.atlas",
+      "pathId": "154513544496041146",
+      "sha256": "7b562117ec6ffe183ea7273f2e636122f82da1b680e469ec4fa7fdc8e4918cb4"
+    },
+    {
+      "file": "Hero_Spear01.json",
+      "pathId": "2997877151748522477",
+      "sha256": "0b41d633a88a77ce4e7a45baa37b42d44a8d11f47f4f971a9447ba01fc30736a"
+    },
+    {
+      "file": "Hero_Dagger01.atlas",
+      "pathId": "3921816285852392101",
+      "sha256": "5f30f76a194c380b6fed86c60a35bf3a9df2804d27fbea1a57891deb9592155b"
+    },
+    {
+      "file": "Hero_Spear01.png",
+      "pathId": "5135169919244512853",
+      "sha256": "7723f819c18428df0ed349f6a392fdfa84dd6a728c60b23db3c91a7237e6b716"
+    },
+    {
+      "file": "Hero_Dagger01.json",
+      "pathId": "8644499820888675323",
+      "sha256": "cfaae50b87ba8ce618e5dca88747ed78d7256075cfbdcddff8f15cf9c8c8cd72"
+    },
+    {
+      "file": "Hero_Sword01.json",
+      "pathId": "9034662186879608727",
+      "sha256": "4f31328b2c5fda92ce9c4b288e85e72214f7803d3d9c453779f8c29db67033f3"
+    }
+  ]
+}
