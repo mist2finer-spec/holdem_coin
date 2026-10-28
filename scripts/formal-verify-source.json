@@ -1,0 +1,6 @@
+{
+  "repository": "https://github.com/michael-denyer/agent-formal-verify.git",
+  "revision": "5bbc2eb852e39160f7b6d4e50cf738ac2f954b3e",
+  "directory": ".tools/agent-formal-verify",
+  "license": "GPL-3.0-only"
+}

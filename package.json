@@ -41,7 +41,9 @@
     "rpg:reward-policy": "python3 scripts/rpg/reward_policy_db.py",
     "rpg:build:hong": "node scripts/rpg/build-hong-jointed-weapons.mjs",
     "rpg:build:hong:legacy": "python3 scripts/rpg/build-hong-weapons.py",
-    "rpg:preview:hong": "node scripts/rpg/render-hong-jointed-weapons.mjs"
+    "rpg:preview:hong": "node scripts/rpg/render-hong-jointed-weapons.mjs",
+    "formal:setup": "node scripts/formal-verify.mjs setup",
+    "formal:doctor": "node scripts/formal-verify.mjs doctor"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
