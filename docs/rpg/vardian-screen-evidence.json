@@ -1,0 +1,53 @@
+{
+  "evidence": [
+    {
+      "source": "scene_scenes_all_f9371131995094d1b375887e51eb438b.bundle__238__mono.json",
+      "sha256": "09f22b9283a1e7ae729d6e57520c56df35beede799ee16c8a9097aaffade8b1f",
+      "values": {
+        "m_ReferenceResolution": {
+          "x": 1080.0,
+          "y": 2340.0
+        },
+        "m_UiScaleMode": 1,
+        "m_ScreenMatchMode": 0,
+        "m_MatchWidthOrHeight": 0.0
+      }
+    },
+    {
+      "source": "scene_scenes_all_f9371131995094d1b375887e51eb438b.bundle__49889__mono.json",
+      "sha256": "6f404c49edcaba67c12a7d7ebf8f722a1114e9938f04e30584425febc61c44f0",
+      "values": {
+        "_noPaddingReference": {
+          "m_FileID": 0,
+          "m_PathID": 34114
+        },
+        "_safePaddingReference": {
+          "m_FileID": 0,
+          "m_PathID": 24772
+        },
+        "_minSafePaddingAspectRatio": 1.3333330154418945
+      }
+    },
+    {
+      "source": "config_assets_all_cb1f2067f6690fa973f18bedca05d0ec.bundle__-2798783849852052752__mono.json",
+      "sha256": "70d3c6e01a858672dc8ec8ca0e5d0b74eb15b46f02ef2e6ab0816831c01f6aa8",
+      "values": {
+        "cameraFov1": 33.0,
+        "cameraFov2": 38.0,
+        "cameraDistance": 16.0,
+        "cameraHeight": 3.630000114440918
+      }
+    }
+  ],
+  "limitations": "Serialized scaler and camera config verified. Exact combat UI RectTransform split and adaptive scaler implementation not restored.",
+  "webSplit": {
+    "before": [
+      41,
+      59
+    ],
+    "after": [
+      47,
+      53
+    ]
+  }
+}
