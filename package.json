@@ -15,7 +15,7 @@
     "validate:holdem": "node scripts/validate_holdem.js",
     "ai-task": "node scripts/auto_pipeline.mjs",
     "ai-web": "node scripts/pipeline_web.mjs",
-    "test:rpg": "node scripts/rpg/check-spine.mjs && node --import ./mini-services/poker-server/node_modules/tsx/dist/loader.mjs --test scripts/rpg/test-hunt.ts scripts/rpg/test-ground.ts scripts/rpg/test-character-assets.ts scripts/rpg/test-battle.ts scripts/rpg/test-labyrinth.ts scripts/rpg/test-recovered-combat.ts scripts/rpg/test-damage-settlement.ts scripts/rpg/test-scene-flow.ts scripts/rpg/test-hong-motion.ts",
+    "test:rpg": "node scripts/rpg/check-spine.mjs && node --import ./mini-services/poker-server/node_modules/tsx/dist/loader.mjs --test scripts/rpg/test-hunt.ts scripts/rpg/test-ground.ts scripts/rpg/test-character-assets.ts scripts/rpg/test-battle.ts scripts/rpg/test-labyrinth.ts scripts/rpg/test-recovered-combat.ts scripts/rpg/test-damage-settlement.ts scripts/rpg/test-scene-flow.ts scripts/rpg/test-hong-motion.ts scripts/rpg/test-hong-native-fit.ts",
     "comfy:bootstrap": "python scripts/rpg/comfyui_assets.py bootstrap",
     "comfy:doctor": "python scripts/rpg/comfyui_assets.py doctor",
     "comfy:prepare": "python scripts/rpg/comfyui_assets.py prepare",
@@ -43,7 +43,8 @@
     "rpg:build:hong:legacy": "python3 scripts/rpg/build-hong-weapons.py",
     "rpg:preview:hong": "node scripts/rpg/render-hong-jointed-weapons.mjs",
     "formal:setup": "node scripts/formal-verify.mjs setup",
-    "formal:doctor": "node scripts/formal-verify.mjs doctor"
+    "formal:doctor": "node scripts/formal-verify.mjs doctor",
+    "rpg:build:hong:native": "python3 scripts/rpg/align-hong-native-parts.py && node scripts/rpg/build-hong-native-fixed.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
