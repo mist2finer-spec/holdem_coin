@@ -3,10 +3,12 @@
 import fs from 'node:fs';
 import {createCanvas,loadImage} from '@napi-rs/canvas';
 import * as R from '@esotericsoftware/spine-canvas';
+import {createEirikaRetarget,EIRIKA_BONE_MAP} from './hong-eirika-retarget.mjs';
+const eirikaReference=JSON.parse(fs.readFileSync('archive/rpg/hong-authoring/eirika/motion.json')),eirika=createEirikaRetarget(eirikaReference);
 const input='archive/rpg/hong-authoring/jointed-parts-v8-3',out='public/rpg/characters/hong/spine';
 const base=JSON.parse(fs.readFileSync(input+'/rig/hong.json')),ref=JSON.parse(fs.readFileSync(input+'/knight-motion.json'));
 R.Skeleton.yDown=false;const raw=structuredClone(base),bodyNames=JSON.parse(fs.readFileSync(input+'/parts-manifest.json')).partNames;
-raw.skeleton.hash='hong-dynamic-weapons-v11';delete raw.skeleton.images;
+raw.skeleton.hash='hong-eirika-weapons-v12';delete raw.skeleton.images;
 raw.bones.push({name:'skirt-follow',parent:'pelvis'});
 raw.bones.find(b=>b.name==='weapon').name='weapon-front';raw.bones.push({name:'weapon-back',parent:'far-hand',x:7},{name:'spear-support-target',parent:'weapon-front',y:-19});
 raw.ik.push({name:'spear-support',order:2,bones:['far-upper-arm','far-forearm'],target:'spear-support-target',mix:0,bendPositive:true});
@@ -33,7 +35,7 @@ function basePose(n,u,type){const src=new R.Skeleton(baseData),a=baseData.findAn
  s.findSlot('weapon-front').setAttachment(type==='unarmed'?null:s.getAttachmentByName('weapon-front',gear[type][0]));
  s.findSlot('weapon-back').setAttachment(type==='dual'?s.getAttachmentByName('weapon-back','held-dual'):null);s.findSlot('shield').setAttachment(null);update(s);return s;
 }
-const contacts={},manifest={version:11,combatCurve:{contact:.38,anticipationEndRule:"contact - snapSeconds / duration",recoveryStartRule:"max(55%, holdEnd + 25ms)",holdFrames:6,snapSeconds:.04,holdSeconds:.10,fps:60,overshootDegrees:6,hairSecondaryMotion:false},bodyParts:16,bones:raw.bones.length,base:'TRUE JOINT RIG v8.3',heroVisualScale:1.25,secondaryGripRange:[4,24],method:'Knight has one sword_attack, not a source combo. Four sword/three axe/five dual/four spear attacks are authored compact variants. Native buff_1/2/3 torso and arm deltas drive skills.',animations:{}};
+const contacts={},manifest={version:12,combatCurve:{contact:.38,anticipationEndRule:"contact - snapSeconds / duration",recoveryStartRule:"max(55%, holdEnd + 25ms)",holdFrames:6,snapSeconds:.04,holdSeconds:.10,fps:60,overshootDegrees:6,hairSecondaryMotion:false},reference:{name:'Eirika_01',spine:eirikaReference.source.spine,sha256:eirikaReference.source.sha256,boneMap:EIRIKA_BONE_MAP,sourceAttacks:2,retargetedSwordStrikes:4,artworkCopied:false},bodyParts:16,bones:raw.bones.length,base:'TRUE JOINT RIG v8.3',heroVisualScale:1.25,secondaryGripRange:[4,24],method:'Eirika provides two source attacks, idle01, move and aux. Four sword strikes are SD adaptations, including one reverse cut. Other loadouts retain v11; remaining skills use Knight buffs.',animations:{}};
 raw.animations={};
 
 function cubic01(x,c){ // normalized cubic Bezier, solve time axis rather than assuming t=x
@@ -77,12 +79,7 @@ function pose(d,u){
  if(attack&&d.type!=='unarmed'){
   const w=phase.weight,wind=phase.wind;
   if(d.type==='sword'){
-   // World axes in Y-up coordinates: lift behind the crown, cut down in front.
-   // Alternate diagonal cuts without reducing the overhead cleave's 200 degree arc.
-   const reverse=stage===2||stage===4;
-   near=[-100+230*wind+65*w, -5+120*wind-45*w,0];
-   far=[-135-15*w,-100-10*w,0];
-   weapon=130-80*wind-265*w+(reverse?12*w:0);
+   const p=eirika.attack(stage,phase,u);near=p.near;far=p.far;weapon=p.weapon;
   }else if(d.type==='axe'){near=[-105+75*w-10*wind,10-65*w+100*wind,0];weapon=40+100*wind-190*w+(stage-1)*12;
   }else if(d.type==='dual'){
    // The non-striking arm is parked behind the hip, never held in front of the face.
@@ -141,9 +138,17 @@ function pose(d,u){
  for(const side of ['near','far']){constrainLeg(s,side);world(s,side+'-foot',attack?0:footAngles[side]);}
  if(attack&&near){for(const a of [near,far]){a[0]+=6*phase.overshoot;a[1]+=6*phase.overshoot;}weapon-=6*phase.overshoot;backWeapon+=6*phase.overshoot;}
  if(d.action==='shield-bash'){far=[-65+60*phase.weight+6*phase.overshoot,35-35*phase.weight+6*phase.overshoot,0];}
- update(s);if(near)for(const[side,a]of[['near',near],['far',far]]){world(s,side+'-upper-arm',clamp(a[0],-160,145));world(s,side+'-forearm',a[1]);world(s,side+'-hand',a[2]);}
+ if(d.type==='sword'){
+  let p=null;
+  if(attack){p=eirika.attack(stage,phase,u);torso.rotation=p.torso;}
+  else if(d.action==='stay1'){p=eirika.idle(u);torso.rotation=p.torso;}
+  else if(['walk','run1','dash'].includes(d.action)){p=eirika.move(u);torso.rotation=p.torso;}
+  else if(d.action==='skill1'||d.action==='skill4'){p=eirika.aux(u);torso.rotation=clamp(p.torso,-15,8);}
+  if(p){near=p.near.map((v,i)=>v+(attack&&i<2?6*phase.overshoot:0));far=p.far.map((v,i)=>v+(attack&&i<2?6*phase.overshoot:0));weapon=p.weapon-(attack?6*phase.overshoot:0);}
+ }
+ update(s);if(near)for(const[side,a]of[['near',near],['far',far]]){world(s,side+'-upper-arm',d.type==='sword'?a[0]:clamp(a[0],-160,145));world(s,side+'-forearm',a[1]);world(s,side+'-hand',a[2]);}
  if(attack&&!near&&d.type==='unarmed'){for(const side of ['near','far'])for(const n of ['upper-arm','forearm'])world(s,side+'-'+n,axis(s.findBone(side+'-'+n))+6*phase.overshoot);}
- world(s,'head',attack?-15*phase.weight:0);const hair=s.findBone('hair-back');hair.x=hair.data.x;hair.y=hair.data.y;hair.rotation=0;hair.scaleX=hair.scaleY=1;hair.shearX=hair.shearY=0;update(s);
+ world(s,'head',attack?-15*phase.weight:d.type==='sword'&&d.action==='stay1'?eirika.idle(u).head:d.type==='sword'&&['walk','run1','dash'].includes(d.action)?-4:0);const hair=s.findBone('hair-back');hair.x=hair.data.x;hair.y=hair.data.y;hair.rotation=0;hair.scaleX=hair.scaleY=1;hair.shearX=hair.shearY=0;update(s);
  if(d.action==='shield-bash'){s.findSlot('shield').setAttachment(s.getAttachmentByName('shield','held-shield'));world(s,'shield',10);}
  if(d.type!=='unarmed'){world(s,'weapon-front',weapon);if(d.type==='dual')world(s,'weapon-back',backWeapon);}
  if(d.type==='spear'){
@@ -222,10 +227,10 @@ function bake(d){
  }
  if(Object.keys(k).length)a.bones[b.name]=k;}
  if(d.contact!==null){a.events=[{time:d.contact,name:'hit-window',int:d.action.startsWith('skill')?0:Number(d.action.replace(/\D/g,''))}];contacts[name]=d.contact;}
- raw.animations[name]=a;manifest.animations[name]={...d,...(isAttack?{snapStart:round(d.contact-.04),holdEnd:round(d.contact+.10)}:{}),source:d.action.startsWith('skill')?['Knight buff_1','Knight buff_2','Knight buff_3'][(Number(d.action.slice(5))-1)%3]:d.type==='sword'?'Knight sword_attack with authored combo variation':d.type==='dual'?'Alternating hand chain':d.type==='spear'?'Live off-hand shaft IK plus palm-axis constraint':'v8.3 joint adaptation'};
+ raw.animations[name]=a;manifest.animations[name]={...d,...(isAttack?{snapStart:round(d.contact-.04),holdEnd:round(d.contact+.10)}:{}),source:d.type==='sword'&&d.action.startsWith('attack')?'Eirika '+eirika.profiles[Number(d.action.slice(6))-1][0]+' joint retarget (authored SD adaptation)':d.type==='sword'&&d.action==='stay1'?'Eirika idle01 breathing guard':d.type==='sword'&&['walk','run1','dash'].includes(d.action)?'Eirika move rear weapon carry':d.type==='sword'&&['skill1','skill4'].includes(d.action)?'Eirika aux free-hand cast':d.action.startsWith('skill')?['Knight buff_1','Knight buff_2','Knight buff_3'][(Number(d.action.slice(5))-1)%3]:d.type==='sword'?'Knight sword_attack with authored combo variation':d.type==='dual'?'Alternating hand chain':d.type==='spear'?'Live off-hand shaft IK plus palm-axis constraint':'v8.3 joint adaptation'};
 }
 for(const type of ['unarmed','sword','axe','dual','spear']){
- for(const[action,duration]of[['stay1',1.2],['walk',1.2],['run1',.8],['dash',.55],['avoid1',.55],['defeat1',.45],['die1',.8],['victory1',1.2]])bake({type,action,duration,contact:null});
+ for(const[action,duration]of[['stay1',1.2],['walk',1.2],['run1',.8],['dash',.55],['avoid1',.55],['defeat1',.45],['die1',.8],['victory1',1.2]])bake({type,action,duration:type==='sword'&&action==='stay1'?2:duration,contact:null});
  for(let i=1;i<=5;i++){const duration=type==='dual'?.44+i*.025:type==='axe'?.72+i*.05:type==='spear'?.60+i*.035:type==='sword'?.62+i*.035:[.5,.56,.66,.60,.74][i-1];bake({type,action:'attack'+i,duration,contact:round(duration*.38)});}
  for(let i=1;i<=6;i++){const duration=[1,1.15,1.2][(i-1)%3];bake({type,action:'skill'+i,duration,contact:round(duration*.45)});}
 }
@@ -245,5 +250,5 @@ for(const [type,count]of [['unarmed',5],['sword',4],['axe',3],['dual',5],['spear
  }
  const name=type==='unarmed'?'combo':type+'-combo';previewCombos[name]=combo;manifest.previewCombos??={};manifest.previewCombos[name]={type,action:'combo',duration:round(offset-.04),contact:null,previewOnly:true,source:'Each gameplay strike keeps its own snappy phase and impact; aggregate does not apply damage'};
 }
-fs.writeFileSync('archive/rpg/hong-authoring/dynamic-v11-combos.json',JSON.stringify({animations:previewCombos}));
-fs.writeFileSync(out+'/hong.json',JSON.stringify(raw));fs.writeFileSync(out+'/manifest.json',JSON.stringify(manifest,null,2));fs.writeFileSync('src/components/rpg/data/hong-runtime-motion.json',JSON.stringify(contacts,null,2));console.log('HONG_DYNAMIC_V11',raw.bones.length,'bones',Object.keys(raw.animations).length,'clips');
+fs.writeFileSync('archive/rpg/hong-authoring/eirika-v12-combos.json',JSON.stringify({animations:previewCombos}));
+fs.writeFileSync(out+'/hong.json',JSON.stringify(raw));fs.writeFileSync(out+'/manifest.json',JSON.stringify(manifest,null,2));fs.writeFileSync('src/components/rpg/data/hong-runtime-motion.json',JSON.stringify(contacts,null,2));console.log('HONG_EIRIKA_V12',raw.bones.length,'bones',Object.keys(raw.animations).length,'clips');

@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import {createHash} from 'node:crypto';
 import {TextureAtlas,CanvasTexture,SkeletonJson,AtlasAttachmentLoader,Skeleton,AnimationState,AnimationStateData,Physics,MixBlend,MixDirection} from '@esotericsoftware/spine-canvas';
 import {hongMotionName,hongMotionTime,hongVisualContact,HONG_BODY_SLOTS,HONG_FOOT_SLOTS} from '../../src/components/rpg/hong-combat-motion';
 import {groundSkeleton,attachmentBottom} from '../../src/components/rpg/hunt-ground';
@@ -110,7 +111,7 @@ test('Hong anticipates backward, lunges with bending legs, breathes and bounces 
   assert.ok(Math.max(...heights)-Math.min(...heights)>=(name==='stay1'?4.9:name==='walk'?7.9:11.9));
  }
  for(const anim of Object.values(raw.animations) as any[])assert.ok(!anim.bones['hair-back'],'Secondary hair animation must be disabled');
- const combos=JSON.parse(fs.readFileSync('archive/rpg/hong-authoring/dynamic-v11-combos.json','utf8'));assert.equal(combos.animations['sword-combo'].events.length,4);
+ const combos=JSON.parse(fs.readFileSync('archive/rpg/hong-authoring/eirika-v12-combos.json','utf8'));assert.equal(combos.animations['sword-combo'].events.length,4);
 });
 
 
@@ -140,4 +141,32 @@ test('dynamic weapon attacks sweep over 160 degrees, freeze every joint and keep
  // Contact remains on authoritative damage time, followed by a real-time 100ms pose hold.
  assert.equal(hongMotionTime(.2,.6,.2,.7,.266,true),.266);
  assert.ok(Math.abs(hongMotionTime(.3,.6,.2,.7,.266,true)-.366)<1e-8);
+});
+
+
+test('Eirika reference changes only sword visuals, retains authoritative events and a seamless guard loop',()=>{
+ const manifest=JSON.parse(fs.readFileSync(root+'manifest.json','utf8'));
+ const reference=JSON.parse(fs.readFileSync('archive/rpg/hong-authoring/eirika/motion.json','utf8'));
+ assert.equal(manifest.version,12);assert.equal(manifest.reference.spine,'4.2.11');
+ assert.equal(manifest.reference.sha256,reference.source.sha256);assert.equal(manifest.reference.artworkCopied,false);
+ assert.equal(manifest.reference.boneMap['near-upper-arm'],'arm01');assert.equal(manifest.reference.sourceAttacks,2);
+ const other=Object.fromEntries(Object.entries(raw.animations).filter(([n])=>!n.startsWith('sword-')));
+ assert.equal(createHash('sha256').update(JSON.stringify(other)).digest('hex'),'8516390330d6786fc58429ff8de913952fd131ea76a08915e0063c31e5fbc1ab','Another loadout changed');
+ const idleStart=snappyPose('sword-stay1',0),idleEnd=snappyPose('sword-stay1',2),attackStart=snappyPose('sword-attack1',0);
+ const delta=(a:number,b:number)=>((a-b+540)%360)-180;
+ const angle=(s:Skeleton,n:string)=>{const b=s.findBone(n)!;return Math.atan2(b.c,b.a)*180/Math.PI;};
+ for(const n of ['near-upper-arm','near-forearm','far-upper-arm','far-forearm','weapon-front']){
+  assert.ok(Math.abs(delta(angle(idleStart,n),angle(idleEnd,n)))<.02,'Idle seam '+n);
+  assert.ok(Math.abs(delta(angle(idleStart,n),angle(attackStart,n)))<.02,'Guard-to-attack seam '+n);
+ }
+ // A planted, sword-up guard derived from Eirika's actual evaluated first idle pose.
+ assert.ok(Math.abs(delta(angle(idleStart,'near-upper-arm'),-119.21))<.1);
+ assert.ok(Math.abs(delta(angle(idleStart,'near-forearm'),-138.28))<.15);
+ for(let stage=1;stage<=5;stage++){
+  const name='sword-attack'+stage;
+  assert.match(manifest.animations[name].source,/Eirika/);
+  assert.deepEqual(raw.animations[name].events.map((e:any)=>e.name),['hit-window']);
+ }
+ assert.match(manifest.animations['sword-skill1'].source,/Eirika aux/);
+ assert.match(manifest.animations['sword-run1'].source,/Eirika move/);
 });

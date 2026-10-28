@@ -154,7 +154,7 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
     ctx.save();ctx.imageSmoothingEnabled=false;
     hero.skeleton.color.a=game.heroHitUntil>game.elapsed&&game.hp>0?.55+Math.sin(game.elapsed*60)*.2:1;
     heroRenderer.draw(hero.skeleton);ctx.restore();
-    canvas.dataset.heroRig='hong-dynamic-weapons-v11';canvas.dataset.heroMotion=next;canvas.dataset.weaponMount=weapon==='dual'||weapon==='spear'?'both-hands':weapon==='unarmed'?'none':'front-hand';
+    canvas.dataset.heroRig='hong-eirika-weapons-v12';canvas.dataset.heroMotion=next;canvas.dataset.weaponMount=weapon==='dual'||weapon==='spear'?'both-hands':weapon==='unarmed'?'none':'front-hand';
    }else{
     const pose=attack?attackSpritePlacement(attackFrame,screenX(game.x),floor,scale,game.facing):spritePlacement(frame,screenX(game.x),floor,scale,game.facing);
     ctx.save();ctx.imageSmoothingEnabled=false;ctx.translate(pose.x,pose.y);ctx.scale(pose.scaleX,pose.scaleY);

@@ -1,5 +1,5 @@
 {
-  "version": 11,
+  "version": 12,
   "combatCurve": {
     "contact": 0.38,
     "anticipationEndRule": "contact - snapSeconds / duration",
@@ -11,6 +11,24 @@
     "overshootDegrees": 6,
     "hairSecondaryMotion": false
   },
+  "reference": {
+    "name": "Eirika_01",
+    "spine": "4.2.11",
+    "sha256": "f6504b000fde88932a23dad6c911c87d929831a18cbb1ff3c87e8596b2591a4f",
+    "boneMap": {
+      "pelvis": "bone",
+      "torso": "body01",
+      "head": "head02",
+      "near-upper-arm": "arm01",
+      "near-forearm": "arm02",
+      "far-upper-arm": "arm04",
+      "far-forearm": "bone2",
+      "weapon-front": "wep_sw017"
+    },
+    "sourceAttacks": 2,
+    "retargetedSwordStrikes": 4,
+    "artworkCopied": false
+  },
   "bodyParts": 16,
   "bones": 26,
   "base": "TRUE JOINT RIG v8.3",
@@ -19,7 +37,7 @@
     4,
     24
   ],
-  "method": "Knight has one sword_attack, not a source combo. Four sword/three axe/five dual/four spear attacks are authored compact variants. Native buff_1/2/3 torso and arm deltas drive skills.",
+  "method": "Eirika provides two source attacks, idle01, move and aux. Four sword strikes are SD adaptations, including one reverse cut. Other loadouts retain v11; remaining skills use Knight buffs.",
   "animations": {
     "stay1": {
       "type": "unarmed",
@@ -167,30 +185,30 @@
     "sword-stay1": {
       "type": "sword",
       "action": "stay1",
-      "duration": 1.2,
+      "duration": 2,
       "contact": null,
-      "source": "Knight sword_attack with authored combo variation"
+      "source": "Eirika idle01 breathing guard"
     },
     "sword-walk": {
       "type": "sword",
       "action": "walk",
       "duration": 1.2,
       "contact": null,
-      "source": "Knight sword_attack with authored combo variation"
+      "source": "Eirika move rear weapon carry"
     },
     "sword-run1": {
       "type": "sword",
       "action": "run1",
       "duration": 0.8,
       "contact": null,
-      "source": "Knight sword_attack with authored combo variation"
+      "source": "Eirika move rear weapon carry"
     },
     "sword-dash": {
       "type": "sword",
       "action": "dash",
       "duration": 0.55,
       "contact": null,
-      "source": "Knight sword_attack with authored combo variation"
+      "source": "Eirika move rear weapon carry"
     },
     "sword-avoid1": {
       "type": "sword",
@@ -227,7 +245,7 @@
       "contact": 0.2489,
       "snapStart": 0.2089,
       "holdEnd": 0.3489,
-      "source": "Knight sword_attack with authored combo variation"
+      "source": "Eirika attack01 joint retarget (authored SD adaptation)"
     },
     "sword-attack2": {
       "type": "sword",
@@ -236,7 +254,7 @@
       "contact": 0.2622,
       "snapStart": 0.2222,
       "holdEnd": 0.3622,
-      "source": "Knight sword_attack with authored combo variation"
+      "source": "Eirika attack01 joint retarget (authored SD adaptation)"
     },
     "sword-attack3": {
       "type": "sword",
@@ -245,7 +263,7 @@
       "contact": 0.2755,
       "snapStart": 0.2355,
       "holdEnd": 0.3755,
-      "source": "Knight sword_attack with authored combo variation"
+      "source": "Eirika attack02 joint retarget (authored SD adaptation)"
     },
     "sword-attack4": {
       "type": "sword",
@@ -254,7 +272,7 @@
       "contact": 0.2888,
       "snapStart": 0.2488,
       "holdEnd": 0.3888,
-      "source": "Knight sword_attack with authored combo variation"
+      "source": "Eirika attack01 joint retarget (authored SD adaptation)"
     },
     "sword-attack5": {
       "type": "sword",
@@ -263,14 +281,14 @@
       "contact": 0.3021,
       "snapStart": 0.2621,
       "holdEnd": 0.4021,
-      "source": "Knight sword_attack with authored combo variation"
+      "source": "Eirika attack02 joint retarget (authored SD adaptation)"
     },
     "sword-skill1": {
       "type": "sword",
       "action": "skill1",
       "duration": 1,
       "contact": 0.45,
-      "source": "Knight buff_1"
+      "source": "Eirika aux free-hand cast"
     },
     "sword-skill2": {
       "type": "sword",
@@ -291,7 +309,7 @@
       "action": "skill4",
       "duration": 1,
       "contact": 0.45,
-      "source": "Knight buff_1"
+      "source": "Eirika aux free-hand cast"
     },
     "sword-skill5": {
       "type": "sword",
