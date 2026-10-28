@@ -3,7 +3,7 @@ import {TextureAtlas,CanvasTexture,SkeletonJson,AtlasAttachmentLoader,Skeleton,P
 import {groundSkeleton,attachmentBottom} from '../../src/components/rpg/hunt-ground';
 import {hongNativeName,hongNativeContact,HONG_NATIVE_FOOT_SLOTS,HONG_NATIVE_BODY_SLOTS} from '../../src/components/rpg/hong-native-motion';
 const root='public/rpg/characters/hong/native-axe/',raw=JSON.parse(fs.readFileSync(root+'hong.json','utf8')),original=JSON.parse(fs.readFileSync('archive/rpg/hong-native-v1/source.json','utf8'));
-function rig(){const atlas=new TextureAtlas(fs.readFileSync(root+'hong.atlas','utf8'));for(const p of atlas.pages)p.setTexture(new CanvasTexture({width:512,height:256} as HTMLImageElement));return new SkeletonJson(new AtlasAttachmentLoader(atlas)).readSkeletonData(raw);}
+function rig(){const atlas=new TextureAtlas(fs.readFileSync(root+'hong.atlas','utf8'));for(const p of atlas.pages)p.setTexture(new CanvasTexture({width:p.width,height:p.height} as HTMLImageElement));return new SkeletonJson(new AtlasAttachmentLoader(atlas)).readSkeletonData(raw);}
 test('native Hong fit changes bind dimensions while preserving all original animation channels and constraints',()=>{
  assert.equal(raw.bones.length,45);assert.deepEqual(raw.animations,original.animations);assert.deepEqual(raw.ik,original.ik);assert.deepEqual(raw.transform,original.transform);
  const b=(n:string)=>raw.bones.find((b:any)=>b.name===n);
@@ -23,4 +23,21 @@ test('all 32 fitted native clips ground and mirror, with finite weighted meshes 
  }
  assert.equal(hongNativeName('damage1'),'defeat1');assert.equal(hongNativeName('skill6'),'skill5');assert.equal(hongNativeName('walk'),'run1');
  for(let i=1;i<=5;i++){const name='attack'+i,a=data.findAnimation(name)!;assert.equal(hongNativeContact(name,a.duration),i===5?.3:.2);}
+});
+
+test('4x source atlas preserves JSON bytes, normalized UVs and posed mesh geometry',()=>{
+ const source='archive/rpg/hong-native-hd-source/';assert.deepEqual(fs.readFileSync(root+'hong.json'),fs.readFileSync(source+'geometry.json'));
+ const png=fs.readFileSync(root+'hong.png');assert.equal(png.readUInt32BE(16),2048);assert.equal(png.readUInt32BE(20),1024);
+ const previous=new TextureAtlas(fs.readFileSync(source+'layout-1x.atlas','utf8')),current=new TextureAtlas(fs.readFileSync(root+'hong.atlas','utf8'));
+ for(const p of [...previous.pages,...current.pages])p.setTexture(new CanvasTexture({width:p.width,height:p.height} as HTMLImageElement));
+ for(const r of previous.regions){const n=current.findRegion(r.name)!;assert.ok(n);for(const k of ['x','y','width','height'] as const)assert.equal(n[k],r[k]*4);for(const k of ['u','v','u2','v2'] as const)assert.equal(n[k],r[k]);}
+ assert.match(fs.readFileSync(root+'hong-nearest.atlas','utf8'),/filter:Nearest,Nearest/);assert.match(fs.readFileSync(root+'hong.atlas','utf8'),/filter:Linear,Linear/);
+ const oldData=new SkeletonJson(new AtlasAttachmentLoader(previous)).readSkeletonData(raw),newData=rig();
+ for(const clip of newData.animations)for(const t of [0,clip.duration*.38,clip.duration]){
+  const a=new Skeleton(oldData),b=new Skeleton(newData);for(const s of [a,b]){s.data.findAnimation(clip.name)!.apply(s,0,t,false,[],1,MixBlend.replace,MixDirection.mixIn);s.updateWorldTransform(Physics.pose);}
+  for(let i=0;i<a.slots.length;i++){
+   const aa=a.slots[i].getAttachment() as any,bb=b.slots[i].getAttachment() as any;if(!aa||!aa.worldVerticesLength)continue;
+   const av=new Float32Array(aa.worldVerticesLength),bv=new Float32Array(bb.worldVerticesLength);aa.computeWorldVertices(a.slots[i],0,av.length,av,0,2);bb.computeWorldVertices(b.slots[i],0,bv.length,bv,0,2);assert.deepEqual(av,bv);assert.deepEqual(aa.uvs,bb.uvs);
+  }
+ }
 });

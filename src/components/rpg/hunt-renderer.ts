@@ -12,7 +12,7 @@ import {AnimationState, AnimationStateData, AtlasAttachmentLoader, GLTexture, Ph
 import {HuntEngine,WORLD_WIDTH} from './hunt-engine';
 import {combatCharacter} from './combat-characters';
 import {CombatSpriteClock,COMBAT_SPRITE_SCALE,spritePlacement} from './combat-sprite';
-import {huntViewport,HUNT_PORTRAIT_ZOOM} from './hunt-layout';
+import {huntViewport,HUNT_PORTRAIT_ZOOM,HUNT_MONSTER_RENDER_SCALE} from './hunt-layout';
 import {HUNT_VISUALS} from './hunt-collision';
 import {attachmentBottom,groundSkeleton} from './hunt-ground';
 const base = '/rpg/';
@@ -126,7 +126,7 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
     const clips=(mob.asset?LABYRINTH.assets[mob.asset]:undefined)?.clips??HUNT_MONSTER_ASSET.clips;
     const anim=mob.hp<=0?clips.death:hurt?clips.hurt:mob.state==='windup'?(mob.clip??clips.attack):mob.state==='walk'?clips.move:clips.idle;
     const shake=hurt?Math.sin(game.elapsed*90)*2*zoom:0,x=screenX(mob.x),y=floor;
-    animate(visual,anim,x+shake,y,(mob.asset?(mob.boss?100:38)/visual.setupHeight:HUNT_VISUALS.slimeScale)*zoom,mob.x>game.x?-1:1,dt,mob.serial*10000+(mob.castSerial??0));
+    animate(visual,anim,x+shake,y,(mob.asset?(mob.boss?100:38)/visual.setupHeight:HUNT_VISUALS.slimeScale)*zoom*HUNT_MONSTER_RENDER_SCALE,mob.x>game.x?-1:1,dt,mob.serial*10000+(mob.castSerial??0));
    }
    if(renderer){renderer.end();ctx.drawImage(layer,0,0,w,h);}
    const stage=game.combo.find(s=>s.animation===game.action);
@@ -156,7 +156,8 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
     hero.skeleton.updateWorldTransform(Physics.update);
     groundSkeleton(hero.skeleton,floor,/avoid|die|defeat|damage/.test(game.action)?native?HONG_NATIVE_BODY_SLOTS:HONG_BODY_SLOTS:native?HONG_NATIVE_FOOT_SLOTS:HONG_FOOT_SLOTS);
     canvas.dataset.heroGroundError=String(Math.abs((attachmentBottom(hero.skeleton,native?HONG_NATIVE_FOOT_SLOTS:HONG_FOOT_SLOTS)??floor)-floor));
-    ctx.save();ctx.imageSmoothingEnabled=false;
+    ctx.save();ctx.imageSmoothingEnabled=native;ctx.imageSmoothingQuality='high';
+    canvas.dataset.heroTexture=native?'2048x1024-linear':'original';
     hero.skeleton.color.a=game.heroHitUntil>game.elapsed&&game.hp>0?.55+Math.sin(game.elapsed*60)*.2:1;
     heroRenderer.draw(hero.skeleton);ctx.restore();
     canvas.dataset.heroRig=native?'hong-native-axe-v2':'hong-eirika-weapons-v12';canvas.dataset.heroMotion=next;canvas.dataset.weaponMount=native?'native-hand':weapon==='dual'||weapon==='spear'?'both-hands':weapon==='unarmed'?'none':'front-hand';

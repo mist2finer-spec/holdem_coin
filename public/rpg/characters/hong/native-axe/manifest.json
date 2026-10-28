@@ -43,5 +43,177 @@
   "legWeightCap": 0.25,
   "skirtVertices": 41,
   "maxCombinedLegWeight": 0.24990249902499026,
-  "hairFlutter": false
+  "hairFlutter": false,
+  "textureUpgrade": {
+    "version": 1,
+    "size": [
+      2048,
+      1024
+    ],
+    "scale": 4,
+    "filter": "Linear",
+    "geometrySha256": "ff3b1c1eafcd0f4793a1fa311f8965259141fd54b4a73c6e0161cb382c09807b",
+    "parts": {
+      "axe07": {
+        "source": "original axe07",
+        "nativeSourceSize": [
+          82,
+          172
+        ],
+        "limit": "No higher-resolution original weapon exists; lossless nearest enlargement."
+      },
+      "hair_back": {
+        "source": "source-parts-1280.png",
+        "cell": 14,
+        "nativeSourceSize": [
+          276,
+          314
+        ]
+      },
+      "hair_front": {
+        "source": "source-parts-1280.png",
+        "cell": 12,
+        "nativeSourceSize": [
+          297,
+          309
+        ]
+      },
+      "hair_side": {
+        "source": "source-parts-1280.png",
+        "cell": 13,
+        "nativeSourceSize": [
+          215,
+          311
+        ]
+      },
+      "hong_B_Larm": {
+        "source": "source-parts-1280.png",
+        "cell": 5,
+        "nativeSourceSize": [
+          75,
+          282
+        ]
+      },
+      "hong_B_Lleg1": {
+        "source": "source-parts-1280.png",
+        "cell": 10,
+        "nativeSourceSize": [
+          110,
+          279
+        ]
+      },
+      "hong_B_Lleg2": {
+        "source": "source-parts-1280.png",
+        "cell": 11,
+        "nativeSourceSize": [
+          108,
+          279
+        ]
+      },
+      "hong_B_Rarm": {
+        "source": "source-parts-1280.png",
+        "cell": 7,
+        "nativeSourceSize": [
+          204,
+          170
+        ]
+      },
+      "hong_B_Rleg": {
+        "source": "source-parts-1280.png",
+        "cell": 11,
+        "nativeSourceSize": [
+          108,
+          279
+        ]
+      },
+      "hong_B_body": {
+        "source": "source-parts-1280.png",
+        "cell": 1,
+        "nativeSourceSize": [
+          220,
+          262
+        ]
+      },
+      "hong_B_head": {
+        "source": "source-parts-1280.png",
+        "cell": 3,
+        "nativeSourceSize": [
+          210,
+          234
+        ]
+      },
+      "hong_Larm": {
+        "source": "source-parts-1280.png",
+        "cell": 4,
+        "nativeSourceSize": [
+          79,
+          283
+        ]
+      },
+      "hong_Larm_S": {
+        "source": "source-parts-1280.png",
+        "cell": 4,
+        "nativeSourceSize": [
+          79,
+          283
+        ]
+      },
+      "hong_Lleg1": {
+        "source": "source-parts-1280.png",
+        "cell": 8,
+        "nativeSourceSize": [
+          118,
+          282
+        ]
+      },
+      "hong_Lleg2": {
+        "source": "source-parts-1280.png",
+        "cell": 9,
+        "nativeSourceSize": [
+          119,
+          282
+        ]
+      },
+      "hong_Rarm": {
+        "source": "source-parts-1280.png",
+        "cell": 6,
+        "nativeSourceSize": [
+          216,
+          171
+        ]
+      },
+      "hong_Rleg": {
+        "source": "source-parts-1280.png",
+        "cell": 9,
+        "nativeSourceSize": [
+          119,
+          282
+        ]
+      },
+      "hong_S_head": {
+        "source": "source-parts-1280.png",
+        "cell": 2,
+        "nativeSourceSize": [
+          230,
+          252
+        ]
+      },
+      "hong_body": {
+        "source": "source-parts-1280.png",
+        "cell": 0,
+        "nativeSourceSize": [
+          229,
+          266
+        ]
+      },
+      "hong_head": {
+        "source": "original-face.png",
+        "nativeSourceSize": [
+          53,
+          54
+        ],
+        "limit": "Original face has only 53x54 pixels; nearest preserves existing eye design, no invented detail."
+      }
+    }
+  }
 }

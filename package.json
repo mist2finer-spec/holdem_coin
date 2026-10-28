@@ -44,7 +44,7 @@
     "rpg:preview:hong": "node scripts/rpg/render-hong-jointed-weapons.mjs",
     "formal:setup": "node scripts/formal-verify.mjs setup",
     "formal:doctor": "node scripts/formal-verify.mjs doctor",
-    "rpg:build:hong:native": "python3 scripts/rpg/align-hong-native-parts.py && node scripts/rpg/build-hong-native-fixed.mjs"
+    "rpg:build:hong:native": "python3 scripts/rpg/align-hong-native-parts.py && node scripts/rpg/build-hong-native-fixed.mjs && python3 scripts/rpg/build-hong-native-hd.py"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

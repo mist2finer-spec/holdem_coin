@@ -3,7 +3,9 @@
  * Unity can use the same x coordinates and an orthographic follow camera.
  */
 /** Visual-only portrait camera gain; world coordinates and hitboxes are unchanged. */
-export const HUNT_PORTRAIT_ZOOM=2;
+export const HUNT_PORTRAIT_ZOOM=2.16;
+/** Visual only: actors retain their original collision radii and reach. */
+export const HUNT_MONSTER_RENDER_SCALE=.88;
 export function huntViewport(width:number,heroX:number){
  const worldWidth=Math.max(1125/HUNT_PORTRAIT_ZOOM,width*1.25);
  const zoom=width/worldWidth;
