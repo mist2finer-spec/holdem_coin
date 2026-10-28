@@ -10,7 +10,7 @@ const raw=JSON.parse(fs.readFileSync(root+'hong.json','utf8'));
 function rig(){const atlas=new TextureAtlas(fs.readFileSync(root+'hong.atlas','utf8'));for(const p of atlas.pages)p.setTexture(new CanvasTexture({width:512,height:512} as HTMLImageElement));return new SkeletonJson(new AtlasAttachmentLoader(atlas)).readSkeletonData(raw);}
 function equip(sk:Skeleton,type:string){sk.setSkinByName(type);sk.setSlotsToSetupPose();sk.findSlot('weapon-front')!.setAttachment(type==='unarmed'?null:sk.getAttachmentByName('weapon-front','held-'+type));sk.findSlot('weapon-back')!.setAttachment(type==='dual'?sk.getAttachmentByName('weapon-back','held-dual'):null);}
 test('all five Hong loadouts have complete, distinct motion families and hand-mounted weapons',()=>{
- const data=rig();assert.equal(data.bones.length,25);assert.ok(!data.slots.find(s=>s.name==='unassigned-source'));
+ const data=rig();assert.equal(data.bones.length,26);assert.ok(!data.slots.find(s=>s.name==='unassigned-source'));
  for(const type of WEAPON_TYPES){const sk=new Skeleton(data);equip(sk,type);
   assert.equal(!!sk.findSlot('weapon-front')!.getAttachment(),type!=='unarmed');assert.equal(!!sk.findSlot('weapon-back')!.getAttachment(),type==='dual');
   assert.equal(sk.findBone('weapon-front')!.parent!.parent!.data.name,'near-hand');assert.equal(sk.findBone('weapon-back')!.parent!.data.name,'far-hand');
@@ -79,4 +79,36 @@ test('spear support palm follows the shaft without disconnected joints, includin
   samples++;
  }
  assert.ok(samples>1000);assert.ok(maxPalmGap<.12);
+});
+
+function snappyPose(name:string,t:number){
+ const data=rig(),sk=new Skeleton(data),type=name.startsWith('sword-')?'sword':name.startsWith('axe-')?'axe':name.startsWith('dual-')?'dual':name.startsWith('spear-')?'spear':'unarmed';
+ Skeleton.yDown=false;equip(sk,type);data.findAnimation(name)!.apply(sk,0,t,false,[],1,MixBlend.replace,MixDirection.mixIn);sk.updateWorldTransform(Physics.pose);return sk;
+}
+test('snappy attacks use native curves, exact 38% contact and a held impact without stalling the game clock',()=>{
+ const manifest=JSON.parse(fs.readFileSync(root+'manifest.json','utf8'));
+ for(const [name,d] of Object.entries(manifest.animations) as [string,any][]){
+  if(!d.action?.startsWith('attack')&&name!=='shield-bash')continue;
+  assert.ok(Math.abs(d.contact/d.duration-.38)<.00001);
+  const anim=raw.animations[name];for(const channels of Object.values(anim.bones) as any[])for(const keys of Object.values(channels) as any[])for(const k of keys.slice(0,-1))assert.ok(k.curve,'Linear attack interpolation: '+name);
+  const a=snappyPose(name,d.contact+.00001),b=snappyPose(name,d.contact+Math.min(4/60,d.duration*.17)*.75);
+  for(const n of ['pelvis','torso','near-hand','weapon-front']){
+   const x=a.findBone(n)!,y=b.findBone(n)!;assert.ok(Math.hypot(x.worldX-y.worldX,x.worldY-y.worldY)<.03,'Impact is not held: '+name+' '+n);
+  }
+  assert.ok(!anim.bones['hair-back'],'Hair wobble returned');
+ }
+});
+test('Hong anticipates backward, lunges with bending legs, breathes and bounces with hair locked',()=>{
+ const manifest=JSON.parse(fs.readFileSync(root+'manifest.json','utf8')),d=manifest.animations['sword-attack1'];
+ const wind=snappyPose('sword-attack1',d.duration*.30),hit=snappyPose('sword-attack1',d.contact);
+ assert.ok(wind.findBone('pelvis')!.x<-3);assert.ok(hit.findBone('pelvis')!.x>=17.9);
+ assert.ok(wind.findBone('torso')!.rotation>15&&hit.findBone('torso')!.rotation<-20);
+ assert.ok(Math.abs(hit.findBone('pelvis')!.y-wind.findBone('pelvis')!.y)>=6);
+ for(const name of ['stay1','walk','run1']){
+  const duration=manifest.animations[name].duration,heights=[];
+  for(let i=0;i<=40;i++){const s=snappyPose(name,duration*i/40);heights.push(s.findBone('pelvis')!.y);for(const side of ['near','far']){const f=s.findBone(side+'-foot')!,t=s.findBone(side+'-foot-target')!;assert.ok(Math.hypot(f.worldX-t.worldX,f.worldY-t.worldY)<.01,'Foot lost IK target');}}
+  assert.ok(Math.max(...heights)-Math.min(...heights)>=(name==='stay1'?4.9:name==='walk'?7.9:11.9));
+ }
+ for(const anim of Object.values(raw.animations) as any[])assert.ok(!anim.bones['hair-back'],'Secondary hair animation must be disabled');
+ const combos=JSON.parse(fs.readFileSync('archive/rpg/hong-authoring/snappy-v10-combos.json','utf8'));assert.equal(combos.animations['sword-combo'].events.length,4);
 });

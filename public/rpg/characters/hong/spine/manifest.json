@@ -1,7 +1,16 @@
 {
-  "version": 9,
+  "version": 10,
+  "combatCurve": {
+    "anticipationEnd": 0.3,
+    "contact": 0.38,
+    "recoveryStart": 0.55,
+    "holdFrames": 4,
+    "fps": 60,
+    "overshootDegrees": 6,
+    "hairSecondaryMotion": false
+  },
   "bodyParts": 16,
-  "bones": 25,
+  "bones": 26,
   "base": "TRUE JOINT RIG v8.3",
   "heroVisualScale": 1.25,
   "secondaryGripRange": [
@@ -70,35 +79,35 @@
       "type": "unarmed",
       "action": "attack1",
       "duration": 0.5,
-      "contact": 0.2,
+      "contact": 0.19,
       "source": "v8.3 joint adaptation"
     },
     "attack2": {
       "type": "unarmed",
       "action": "attack2",
       "duration": 0.56,
-      "contact": 0.23,
+      "contact": 0.2128,
       "source": "v8.3 joint adaptation"
     },
     "attack3": {
       "type": "unarmed",
       "action": "attack3",
       "duration": 0.66,
-      "contact": 0.28,
+      "contact": 0.2508,
       "source": "v8.3 joint adaptation"
     },
     "attack4": {
       "type": "unarmed",
       "action": "attack4",
       "duration": 0.6,
-      "contact": 0.25,
+      "contact": 0.228,
       "source": "v8.3 joint adaptation"
     },
     "attack5": {
       "type": "unarmed",
       "action": "attack5",
       "duration": 0.74,
-      "contact": 0.31,
+      "contact": 0.2812,
       "source": "v8.3 joint adaptation"
     },
     "skill1": {
@@ -203,35 +212,35 @@
       "type": "sword",
       "action": "attack1",
       "duration": 0.655,
-      "contact": 0.265135,
+      "contact": 0.2489,
       "source": "Knight sword_attack with authored combo variation"
     },
     "sword-attack2": {
       "type": "sword",
       "action": "attack2",
       "duration": 0.69,
-      "contact": 0.279302,
+      "contact": 0.2622,
       "source": "Knight sword_attack with authored combo variation"
     },
     "sword-attack3": {
       "type": "sword",
       "action": "attack3",
       "duration": 0.725,
-      "contact": 0.29347,
+      "contact": 0.2755,
       "source": "Knight sword_attack with authored combo variation"
     },
     "sword-attack4": {
       "type": "sword",
       "action": "attack4",
       "duration": 0.76,
-      "contact": 0.307637,
+      "contact": 0.2888,
       "source": "Knight sword_attack with authored combo variation"
     },
     "sword-attack5": {
       "type": "sword",
       "action": "attack5",
       "duration": 0.795,
-      "contact": 0.321805,
+      "contact": 0.3021,
       "source": "Knight sword_attack with authored combo variation"
     },
     "sword-skill1": {
@@ -336,35 +345,35 @@
       "type": "axe",
       "action": "attack1",
       "duration": 0.77,
-      "contact": 0.311685,
+      "contact": 0.2926,
       "source": "v8.3 joint adaptation"
     },
     "axe-attack2": {
       "type": "axe",
       "action": "attack2",
       "duration": 0.82,
-      "contact": 0.331924,
+      "contact": 0.3116,
       "source": "v8.3 joint adaptation"
     },
     "axe-attack3": {
       "type": "axe",
       "action": "attack3",
       "duration": 0.87,
-      "contact": 0.352164,
+      "contact": 0.3306,
       "source": "v8.3 joint adaptation"
     },
     "axe-attack4": {
       "type": "axe",
       "action": "attack4",
       "duration": 0.9199999999999999,
-      "contact": 0.372403,
+      "contact": 0.3496,
       "source": "v8.3 joint adaptation"
     },
     "axe-attack5": {
       "type": "axe",
       "action": "attack5",
       "duration": 0.97,
-      "contact": 0.392642,
+      "contact": 0.3686,
       "source": "v8.3 joint adaptation"
     },
     "axe-skill1": {
@@ -469,35 +478,35 @@
       "type": "dual",
       "action": "attack1",
       "duration": 0.465,
-      "contact": 0.188225,
+      "contact": 0.1767,
       "source": "Alternating hand chain"
     },
     "dual-attack2": {
       "type": "dual",
       "action": "attack2",
       "duration": 0.49,
-      "contact": 0.198345,
+      "contact": 0.1862,
       "source": "Alternating hand chain"
     },
     "dual-attack3": {
       "type": "dual",
       "action": "attack3",
       "duration": 0.515,
-      "contact": 0.208465,
+      "contact": 0.1957,
       "source": "Alternating hand chain"
     },
     "dual-attack4": {
       "type": "dual",
       "action": "attack4",
       "duration": 0.54,
-      "contact": 0.218584,
+      "contact": 0.2052,
       "source": "Alternating hand chain"
     },
     "dual-attack5": {
       "type": "dual",
       "action": "attack5",
       "duration": 0.565,
-      "contact": 0.228704,
+      "contact": 0.2147,
       "source": "Alternating hand chain"
     },
     "dual-skill1": {
@@ -602,35 +611,35 @@
       "type": "spear",
       "action": "attack1",
       "duration": 0.635,
-      "contact": 0.257039,
+      "contact": 0.2413,
       "source": "Live off-hand shaft IK plus palm-axis constraint"
     },
     "spear-attack2": {
       "type": "spear",
       "action": "attack2",
       "duration": 0.6699999999999999,
-      "contact": 0.271206,
+      "contact": 0.2546,
       "source": "Live off-hand shaft IK plus palm-axis constraint"
     },
     "spear-attack3": {
       "type": "spear",
       "action": "attack3",
       "duration": 0.705,
-      "contact": 0.285374,
+      "contact": 0.2679,
       "source": "Live off-hand shaft IK plus palm-axis constraint"
     },
     "spear-attack4": {
       "type": "spear",
       "action": "attack4",
       "duration": 0.74,
-      "contact": 0.299541,
+      "contact": 0.2812,
       "source": "Live off-hand shaft IK plus palm-axis constraint"
     },
     "spear-attack5": {
       "type": "spear",
       "action": "attack5",
       "duration": 0.775,
-      "contact": 0.313709,
+      "contact": 0.2945,
       "source": "Live off-hand shaft IK plus palm-axis constraint"
     },
     "spear-skill1": {
@@ -674,6 +683,55 @@
       "duration": 1.2,
       "contact": 0.54,
       "source": "Knight buff_3"
+    },
+    "shield-bash": {
+      "type": "unarmed",
+      "action": "shield-bash",
+      "duration": 0.65,
+      "contact": 0.247,
+      "source": "v8.3 joint adaptation"
+    }
+  },
+  "previewCombos": {
+    "combo": {
+      "type": "unarmed",
+      "action": "combo",
+      "duration": 3.22,
+      "contact": null,
+      "previewOnly": true,
+      "source": "Each gameplay strike keeps its own snappy phase and impact; aggregate does not apply damage"
+    },
+    "sword-combo": {
+      "type": "sword",
+      "action": "combo",
+      "duration": 2.95,
+      "contact": null,
+      "previewOnly": true,
+      "source": "Each gameplay strike keeps its own snappy phase and impact; aggregate does not apply damage"
+    },
+    "axe-combo": {
+      "type": "axe",
+      "action": "combo",
+      "duration": 2.54,
+      "contact": null,
+      "previewOnly": true,
+      "source": "Each gameplay strike keeps its own snappy phase and impact; aggregate does not apply damage"
+    },
+    "dual-combo": {
+      "type": "dual",
+      "action": "combo",
+      "duration": 2.735,
+      "contact": null,
+      "previewOnly": true,
+      "source": "Each gameplay strike keeps its own snappy phase and impact; aggregate does not apply damage"
+    },
+    "spear-combo": {
+      "type": "spear",
+      "action": "combo",
+      "duration": 2.87,
+      "contact": null,
+      "previewOnly": true,
+      "source": "Each gameplay strike keeps its own snappy phase and impact; aggregate does not apply damage"
     }
   }
 }
