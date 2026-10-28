@@ -92,12 +92,15 @@ export function HuntPrototype({onExit,character='hong'}:{onExit?:()=>void;charac
   <section className="hunt-stage" aria-label="달빛 숲 사냥터"><canvas ref={canvas} aria-label="전사와 미궁 몬스터" data-status={status}/>
    <div className="hunt-identity"><img src={`/rpg/characters/${character}/portrait.png`} alt="선택한 캐릭터 초상화"/><div><small>Lv. {view?.progress.level??1} · {view?.loadout??'여행자'}</small><strong>{COMBAT_CHARACTERS.find(c=>c.id===character)?.label}</strong><span>무기 +{(view?.progress.weaponLevel??1)-1} · 방어구 +{(view?.progress.armorLevel??1)-1}</span>{(dialog==='weapons'||dialog==='growth')&&<meter className="armory-stage-hp" aria-label="전투 체력" min="0" max={view?.maxHP??10000} value={view?.hp??10000}/>}</div></div>
    <div className="hunt-location"><small>CHAPTER {String(view?.stage.chapter??1).padStart(2,'0')}</small><h1>미궁 <span>{view?.stage.chapter??1}–{view?.stage.section??1}</span></h1><p><i/>{view?.dead?'복귀 대기':view?.stage.phase==='complete'?'미궁 완주':view?.stage.phase==='cleared'?'클리어 · 다음 구간 이동':view?.stage.phase==='boss'?(view.stage.section===5?'보스전':'중간보스전'):'일반 몬스터'} · 남은 적 {view?.stage.remaining??6}</p></div>
-   <div className="hunt-objective" style={{position:'absolute',left:12,top:112,zIndex:3,fontSize:12,color:'#ffedbd',background:'#071812cc',padding:'5px 9px',borderRadius:8}}>{view?.stage.objective} {view&&view.stage.goal>7?`${view.stage.done}/${view.stage.goal}`:''} {view?.stage.remainingTime!==null&&view?.stage.remainingTime!==undefined?`· ${Math.ceil(view.stage.remainingTime)}초`:''}{!!view?.stage.objects.length&&<button disabled={!active} onClick={()=>enqueue({action:'interact'})}>상호작용</button>}</div>
+   <div className="hunt-objective" >{view?.stage.objective} {view&&view.stage.goal>7?`${view.stage.done}/${view.stage.goal}`:''} {view?.stage.remainingTime!==null&&view?.stage.remainingTime!==undefined?`· ${Math.ceil(view.stage.remainingTime)}초`:''}{!!view?.stage.objects.length&&<button disabled={!active} onClick={()=>enqueue({action:'interact'})}>상호작용</button>}</div>
    <button className="hunt-menu-toggle" aria-label="메뉴" aria-expanded={menu} onClick={()=>setMenu(!menu)}>☰</button>
    {menu&&<nav className="hunt-drawer" aria-label="사냥 메뉴"><button onClick={()=>{setDialog('weapons');setMenu(false);}}>무기</button><button onClick={()=>setNotice('A/D 이동 · Space 공격 · Q/E 회피 · F 패링 · 숫자 1–6 스킬')}>조작 안내</button><button onClick={()=>{setDialog('bag');setMenu(false);}}>가방 · 물약</button><button onClick={()=>{setDialog('quest');setMenu(false);}}>사냥 의뢰</button><button onClick={exit}>캐릭터 선택으로</button></nav>}
    {status==='loading'&&<div className="hunt-loading" role="status"><span/><strong>숲으로 향하는 중…</strong></div>}
    {status==='error'&&<div className="hunt-loading" role="alert"><strong>사냥터에 연결하지 못했습니다.</strong><small>{error}</small><button onClick={()=>location.reload()}>다시 시도</button><button onClick={exit}>돌아가기</button></div>}
    {view?.dead&&<div className="hunt-loading" role="dialog" aria-modal="true" aria-label="전투 불능"><strong>전투 불능</strong><small>{view.stage.failure||'획득한 성장과 재화는 저장됐습니다.'}</small><button disabled={!view.reviveReady} onClick={()=>enqueue({action:'revive'})}>{view.reviveReady?'현재 구간 재도전':'복귀 준비 중…'}</button><button onClick={exit}>캐릭터 선택으로</button></div>}
+   <div className="hunt-stage-caption"><span>✦ 미궁 탐험</span></div>
+  </section>
+  <div className="hunt-lower">
    {dialog&&<div ref={panel} className="hunt-window" role="dialog" aria-label={{growth:'캐릭터 성장',weapons:'무기',bag:'가방',quest:'사냥 의뢰'}[dialog]} onKeyDown={e=>{if(e.key==='Escape'){e.stopPropagation();setDialog(null);}}}>
     {dialog==='weapons'&&<HuntArmory view={view} active={active} onCommand={action=>enqueue({action})} onClose={()=>setDialog(null)}/>}
     {dialog==='growth'&&<HuntGrowth view={view} active={active} onCommand={action=>enqueue({action})} onClose={()=>setDialog(null)}/>}
@@ -107,8 +110,6 @@ export function HuntPrototype({onExit,character='hong'}:{onExit?:()=>void;charac
    <button autoFocus onClick={()=>setDialog(null)}>닫기</button></section>}
     {notice&&<p className="hunt-window-notice" role="status">{notice}</p>}
    </div>}
-   <div className="hunt-stage-caption"><span>✦ 미궁 탐험</span></div>
-  </section>
   <section className="hunt-console" aria-label="전투 조작" inert={!!dialog}>
    {notice&&<p className="hunt-notice" role="status">{notice} <button onClick={()=>location.reload()}>다시 입장</button></p>}
    <div className="hunt-vitals"><div><span>HP</span><meter min="0" aria-label="체력" max={view?.maxHP??10000} value={view?.hp??10000}/></div><div><span>EXP</span><progress max={Math.max(1,view?.xpRequired??1000)} value={view?.progress.xp??0}/><small>{view?.xpRequired?`${Math.floor((view.progress.xp/view.xpRequired)*100)}%`:'MAX'}</small></div></div>
@@ -120,6 +121,7 @@ export function HuntPrototype({onExit,character='hong'}:{onExit?:()=>void;charac
     <button className="hunt-parry" disabled={!active} onClick={()=>enqueue({parry:true})} aria-label="패링"><Shield/></button>
     <button className="hunt-dodge" disabled={!active} onClick={()=>enqueue({dodge:1})} aria-label="오른쪽 회피">↷</button></div>
   </section>
+  </div>
   <footer className="hunt-footer"><button aria-pressed={dialog==='weapons'} onClick={()=>setDialog(dialog==='weapons'?null:'weapons')}>무기</button><button aria-pressed={dialog==='growth'} onClick={()=>setDialog(dialog==='growth'?null:'growth')}>성장 · 장비</button><button aria-pressed={dialog==='bag'} onClick={()=>setDialog(dialog==='bag'?null:'bag')}>가방</button><button aria-pressed={!dialog} onClick={()=>setDialog(null)}>✦ 탐험</button><button aria-pressed={dialog==='quest'} onClick={()=>setDialog(dialog==='quest'?null:'quest')}>사냥 의뢰</button></footer>
 
  </main>;

@@ -1,0 +1,77 @@
+/* One portrait composition on every device. Only the outer handset changes on desktop. */
+.hunt-device-stage{width:100%;height:100dvh;min-height:0;display:grid;place-items:center;overflow:hidden;background:radial-gradient(ellipse at 50% 25%,#2c342d,#080e0c 75%)}
+.hunt-device{width:100%;height:100%;min-width:0;min-height:0;position:relative;box-sizing:border-box}
+.hunt-device-screen{width:100%;height:100%;overflow:hidden;position:relative;container-type:size;background:#101b16}
+.hunt-device .hunt-shell{width:100%;height:100%;max-width:none;min-height:0;padding:0 6px;margin:0;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:44px minmax(0,41fr) minmax(0,59fr) 44px;gap:0;background:radial-gradient(ellipse at 50% 85%,#524634,#17231a 70%)}
+.hunt-device .hunt-header{height:auto;min-width:0;margin:0 -6px;padding:5px 8px;gap:5px}
+.hunt-device .hunt-back{font-size:10px;padding:7px 6px}
+.hunt-device .hunt-prototype{display:none}
+.hunt-device .hunt-currencies{gap:5px;min-width:0}
+.hunt-device .hunt-currencies>span{min-width:0;font-size:11px;padding:3px 6px;gap:4px}
+.hunt-device .hunt-currencies img{width:20px;height:20px}
+.hunt-device .hunt-stage{min-height:0;height:auto;min-width:0;flex:none;margin:5px 0 7px;border:3px solid #75633e;border-radius:12px}
+.hunt-device .hunt-identity{top:9px;left:8px;gap:5px;padding:4px 6px 4px 4px;border-radius:6px}
+.hunt-device .hunt-identity>img{height:32px;width:28px;border-radius:5px}
+.hunt-device .hunt-identity strong{font-size:11px}
+.hunt-device .hunt-identity small{font-size:8px}
+.hunt-device .hunt-identity span{display:none}
+.hunt-device .hunt-location{top:12px;right:43px;left:auto;transform:none;max-width:46%;white-space:normal}
+.hunt-device .hunt-location>small{font-size:7px;letter-spacing:1px}
+.hunt-device .hunt-location h1{font-size:15px;margin:2px 0}
+.hunt-device .hunt-location h1 span{font-size:12px}
+.hunt-device .hunt-location p{font-size:8px;margin-top:3px}
+.hunt-device .hunt-menu-toggle{top:12px;right:7px;width:29px;height:29px;font-size:17px}
+.hunt-device .hunt-drawer{top:47px;right:7px;z-index:10}
+.hunt-device .hunt-drawer button{font-size:11px;padding:9px 16px;min-height:32px}
+.hunt-device .hunt-objective{position:absolute;left:8px;bottom:31px;top:auto;z-index:3;font-size:10px;max-width:75%;color:#ffedbd;background:#071812bb;padding:4px 6px;border-radius:5px}
+.hunt-device .hunt-objective button{margin-left:5px;border:1px solid #ab915a;border-radius:4px;padding:3px}
+.hunt-device .hunt-stage-caption{left:9px;right:9px;bottom:8px;font-size:8px}
+.hunt-device .hunt-lower{position:relative;min-width:0;min-height:0;overflow:hidden}
+.hunt-device .hunt-console{width:100%;height:100%;min-height:0;padding:8px 6px 12px;border:0;border-top:1px solid #77603d;border-radius:0;box-sizing:border-box;display:flex;flex-direction:column;background:transparent}
+.hunt-device .hunt-vitals{flex:none;width:100%;min-width:0;margin:0 0 9px;gap:10px}
+.hunt-device .hunt-vitals>div{min-width:0;font-size:8px;gap:5px}
+.hunt-device .hunt-vitals meter,.hunt-device .hunt-vitals progress{height:5px;min-width:0}
+.hunt-device .hunt-vitals small{font-size:8px;width:28px}
+.hunt-device .hunt-skill-row{flex:none;width:100%;gap:6px;margin:0}
+.hunt-device .hunt-skill{width:100%;height:auto;max-height:52px;min-width:0;aspect-ratio:1}
+.hunt-device .hunt-skill>span{font-size:10px;bottom:4px;right:4px}
+.hunt-device .hunt-mode-row{flex:none;width:100%;margin:8px 0 0;gap:6px}
+.hunt-device .hunt-mode-row>span{font-size:8px;letter-spacing:0}
+.hunt-device .hunt-mode-row button{font-size:9px;min-height:28px;padding:4px 8px}
+.hunt-device .hunt-controls{flex:1;min-height:100px;width:100%;max-width:none;height:auto;margin:0;display:grid;grid-template-columns:1fr 1.4fr 1fr;grid-template-rows:1fr 1.2fr;gap:0 10px;padding:4px 6px 8px;box-sizing:border-box}
+.hunt-device .hunt-controls>.hunt-dodge:first-child{grid-column:1;grid-row:1;align-self:end}
+.hunt-device .hunt-controls>.hunt-dodge:last-child{grid-column:3;grid-row:1;align-self:end}
+.hunt-device .hunt-dodge{width:43px;height:43px;font-size:27px}
+.hunt-device .hunt-joystick{grid-column:2;grid-row:2;align-self:center;width:84px;height:84px;max-width:none;border-radius:50%;background:#0c141322;border:2px solid #a5987655}
+.hunt-device .hunt-stick-rail{font-size:13px;letter-spacing:0;color:#b8af8866}
+.hunt-device .hunt-stick{width:35px;height:35px;border-width:2px;background:radial-gradient(at 35% 25%,#e5dfc9,#8a8a78)}
+.hunt-device .hunt-parry{grid-column:2;grid-row:1;align-self:start;margin-top:12px;width:36px;height:36px;border-radius:50%;opacity:.85}
+.hunt-device .hunt-parry svg{width:21px;height:21px}
+.hunt-device .hunt-controls small{display:none}
+.hunt-device .hunt-notice{flex:none;font-size:10px;max-height:25px;margin-bottom:4px}
+.hunt-device .hunt-footer{height:auto;margin:0 -6px;padding:3px 4px max(3px,env(safe-area-inset-bottom));gap:1px;font-size:9px;min-width:0}
+.hunt-device .hunt-footer button{flex:1;min-width:0;white-space:normal;padding:5px 1px;min-height:32px;border-radius:6px}
+.hunt-device .hunt-window{border-radius:0;z-index:25}
+.hunt-device .hunt-window-content{font-size:12px;padding:12px}
+.hunt-device .hunt-window-content h2{font-size:16px}
+.hunt-device .hunt-window>.hunt-development,.hunt-device .hunt-window>.hunt-armory{max-width:none}
+.hunt-device .hunt-selection{height:100%;min-height:0;overflow:auto;padding:12px;background-attachment:local}
+.hunt-device .hunt-selection-heading{margin:16px 0 12px}
+.hunt-device .hunt-selection-heading h1{font-size:20px}
+.hunt-device .hunt-roster{gap:7px}
+.hunt-device .hunt-selection-start{position:sticky;bottom:-12px}
+@media(min-width:700px){
+ .hunt-device{height:min(940px,calc(100dvh - 32px));width:min(450px,calc((100dvh - 32px) * 9 / 19.5));border:9px solid #161b1b;border-radius:37px;background:#080c0c;box-shadow:0 0 0 2px #616768,0 24px 70px #000b,4px 0 0 2px #0a0d0e}
+ .hunt-device-screen{border-radius:27px}
+ .hunt-device:before{content:'';position:absolute;top:8px;left:50%;transform:translateX(-50%);width:44px;height:5px;border-radius:4px;background:#060909;z-index:80;pointer-events:none}
+}
+@container(max-height:650px){
+ .hunt-device .hunt-shell{grid-template-rows:38px minmax(0,41fr) minmax(0,59fr) 36px}
+ .hunt-device .hunt-skill{max-height:36px}
+ .hunt-device .hunt-console{padding-top:5px;padding-bottom:3px}
+ .hunt-device .hunt-controls{min-height:70px;padding:0}
+ .hunt-device .hunt-joystick{width:60px;height:60px}
+ .hunt-device .hunt-dodge{width:36px;height:36px;font-size:23px}
+ .hunt-device .hunt-vitals{margin-bottom:5px}
+ .hunt-device .hunt-mode-row{margin-top:4px}
+}

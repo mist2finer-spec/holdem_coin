@@ -3,8 +3,12 @@ import {useState} from 'react';
 import {COMBAT_CHARACTERS,type CombatCharacterId} from './combat-characters';
 import {HuntPrototype} from './HuntPrototype';
 import './hunt-selection.css';
+import './hunt-phone.css';
 /** Entry selection is separate from the running engine: no hidden reset on outfit changes. */
 export function HuntEntry({onExit}:{onExit?:()=>void}){
+ return <div className="hunt-device-stage"><div className="hunt-device" aria-label="세로형 RPG 게임 화면"><div className="hunt-device-screen"><HuntEntryContent onExit={onExit}/></div></div></div>;
+}
+function HuntEntryContent({onExit}:{onExit?:()=>void}){
  const [selected,setSelected]=useState<CombatCharacterId|null>(null);
  const [entered,setEntered]=useState(false);
  if(entered&&selected)return <HuntPrototype key={selected} character={selected} onExit={()=>setEntered(false)}/>;
