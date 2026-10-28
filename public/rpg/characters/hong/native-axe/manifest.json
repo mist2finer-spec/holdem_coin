@@ -43,7 +43,7 @@
   "legWeightCap": 0.25,
   "skirtVertices": 41,
   "maxCombinedLegWeight": 0.24990249902499026,
-  "hairFlutter": false,
+  "hairFlutter": true,
   "textureUpgrade": {
     "version": 1,
     "size": [
@@ -52,7 +52,7 @@
     ],
     "scale": 4,
     "filter": "Linear",
-    "geometrySha256": "ff3b1c1eafcd0f4793a1fa311f8965259141fd54b4a73c6e0161cb382c09807b",
+    "geometrySha256": "ff322f8ab2a867ed8fe2a26a7b5ff5c2338e1c2215cfa1604e396e4c1dcff5a8",
     "parts": {
       "axe07": {
         "source": "original axe07",
@@ -212,9 +212,11 @@
           53,
           54
         ],
-        "limit": "Original face has only 53x54 pixels; nearest preserves existing eye design, no invented detail."
+        "limit": "Original face has only 53x54 pixels; nearest preserves existing eye design, no invented detail.",
+        "runtimeReplacement": "hong_head_joined: source-parts-1280.png cell 15"
       }
-    }
+    },
+    "baselineGeometrySha256": "ff3b1c1eafcd0f4793a1fa311f8965259141fd54b4a73c6e0161cb382c09807b"
   },
   "armOrientation": {
     "revision": 1,
@@ -287,5 +289,35 @@
         ]
       }
     }
+  },
+  "connections": {
+    "revision": 1,
+    "pinned": 28,
+    "skirt": 14,
+    "rigidChest": 29,
+    "hipRange": [
+      -2,
+      0.5
+    ],
+    "skirtLegWeight": 0.45,
+    "hairBones": [
+      "head",
+      "bone2",
+      "cloak1",
+      "cloak2",
+      "cloak3"
+    ],
+    "headSource": "source-parts-1280.png cells 2/3/15; 4x direct source sampling",
+    "roundedLegCaps": 6,
+    "openedShoulderPixels": 321,
+    "joinedHeadRegions": [
+      "hong_head_joined",
+      "hong_S_head_joined",
+      "hong_B_head_joined"
+    ],
+    "headSourceSize": [
+      1254,
+      1254
+    ]
   }
 }

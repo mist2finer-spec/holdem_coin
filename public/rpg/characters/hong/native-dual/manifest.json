@@ -46,7 +46,37 @@
     2048,
     1024
   ],
-  "hairFlutter": false,
+  "hairFlutter": true,
   "skirtVertices": 41,
-  "maxCombinedLegWeight": 0.24990249902499026
+  "maxCombinedLegWeight": 0.24990249902499026,
+  "connections": {
+    "revision": 1,
+    "pinned": 28,
+    "skirt": 14,
+    "rigidChest": 29,
+    "hipRange": [
+      -2,
+      0.5
+    ],
+    "skirtLegWeight": 0.45,
+    "hairBones": [
+      "head",
+      "bone2",
+      "cloak1",
+      "cloak2",
+      "cloak3"
+    ],
+    "headSource": "source-parts-1280.png cells 2/3/15; 4x direct source sampling",
+    "roundedLegCaps": 6,
+    "openedShoulderPixels": 340,
+    "joinedHeadRegions": [
+      "hong_head_joined",
+      "hong_S_head_joined",
+      "hong_B_head_joined"
+    ],
+    "headSourceSize": [
+      1254,
+      1254
+    ]
+  }
 }

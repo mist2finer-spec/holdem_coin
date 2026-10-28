@@ -157,6 +157,7 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
     }else entry.trackTime=heroTime;
     hero.state.apply(hero.skeleton);
     hero.skeleton.x=screenX(game.x);hero.skeleton.y=floor;hero.skeleton.scaleX=scale*(native?1.75:1.25)*game.facing;hero.skeleton.scaleY=scale*(native?1.75:1.25);
+    hero.skeleton.update(Math.min(.05,Math.max(0,dt)));
     hero.skeleton.updateWorldTransform(Physics.update);
     groundSkeleton(hero.skeleton,floor,/avoid|die|defeat|damage/.test(game.action)?native?HONG_NATIVE_BODY_SLOTS:HONG_BODY_SLOTS:native?HONG_NATIVE_FOOT_SLOTS:HONG_FOOT_SLOTS);
     canvas.dataset.heroGroundError=String(Math.abs((attachmentBottom(hero.skeleton,native?HONG_NATIVE_FOOT_SLOTS:HONG_FOOT_SLOTS)??floor)-floor));
