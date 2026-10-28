@@ -45,7 +45,7 @@
     "formal:setup": "node scripts/formal-verify.mjs setup",
     "formal:doctor": "node scripts/formal-verify.mjs doctor",
     "rpg:build:hong:native-weapons": "npm run rpg:build:hong:native && node scripts/rpg/build-hong-native-weapons.mjs",
-    "rpg:build:hong:native": "python3 scripts/rpg/align-hong-native-parts.py && node scripts/rpg/build-hong-native-fixed.mjs && python3 scripts/rpg/build-hong-native-hd.py"
+    "rpg:build:hong:native": "python3 scripts/rpg/align-hong-native-parts.py && node scripts/rpg/build-hong-native-fixed.mjs && python3 scripts/rpg/build-hong-native-hd.py && python3 scripts/rpg/fix-hong-axe-arm-orientation.py"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

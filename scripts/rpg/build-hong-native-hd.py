@@ -71,32 +71,35 @@ def leg(im,size):
         out.paste(im.crop((r[0],y,r[1],y+1)).resize((right-left,1),Image.Resampling.LANCZOS),(left,y))
     return clean(out)
 
-source=Image.open(SRC/'source-parts-1280.png').convert('RGBA');cells=[]
-for i in range(16):
-    x=i%4*source.width//4;y=i//4*source.height//4
-    cells.append(cut_component(source.crop((max(0,x-18),max(0,y-18),min(source.width,x+source.width//4+18),min(source.height,y+source.height//4+18)))))
-layout=(SRC/'layout-1x.atlas').read_text();regions={}
-for name,bounds in re.findall(r'([^\n]+)\nbounds:(\d+,\d+,\d+,\d+)',layout):regions[name]=tuple(map(int,bounds.split(',')))
-mapping={'hong_body':0,'hong_B_body':1,'hong_S_head':2,'hong_B_head':3,'hong_Larm':4,'hong_Larm_S':4,'hong_B_Larm':5,'hong_Rarm':6,'hong_B_Rarm':7,'hong_Lleg1':8,'hong_Lleg2':9,'hong_Rleg':9,'hong_B_Lleg1':10,'hong_B_Lleg2':11,'hong_B_Rleg':11,'hair_front':12,'hair_side':13,'hair_back':14}
-page=Image.new('RGBA',(2048,1024));parts=OUT/'parts-hd';parts.mkdir(exist_ok=True);provenance={}
-for name,(x,y,w,h) in regions.items():
-    size=(w*SCALE,h*SCALE)
-    if name=='hong_head':
-        im=Image.open(SRC/'original-face.png').convert('RGBA');im=im.crop(im.getbbox());provenance[name]={'source':'original-face.png','nativeSourceSize':im.size,'limit':'Original face has only 53x54 pixels; nearest preserves existing eye design, no invented detail.'};im=im.resize(size,Image.Resampling.NEAREST)
-    elif name=='axe07':
-        im=Image.open(ROOT/'archive/rpg/hong-native-v1/parts/axe07.png').convert('RGBA');provenance[name]={'source':'original axe07','nativeSourceSize':im.size,'limit':'No higher-resolution original weapon exists; lossless nearest enlargement.'};im=im.resize(size,Image.Resampling.NEAREST)
-    else:
-        im=cells[mapping[name]].copy();provenance[name]={'source':'source-parts-1280.png','cell':mapping[name],'nativeSourceSize':im.size}
-        if name in ['hong_Larm','hong_B_Larm','hong_Rarm','hong_B_Rarm','hong_Larm_S']:im=arm(im,name[5:] if name!='hong_Larm_S' else 'Larm',size)
-        elif 'leg' in name:im=leg(im,size)
-        else:im=clean(im.resize(size,Image.Resampling.LANCZOS))
-    im.save(parts/(name+'.png'));page.paste(im,(x*SCALE,y*SCALE))
-page.save(OUT/'hong.png')
-hd=re.sub(r'size:512,256','size:2048,1024',layout)
-hd=re.sub(r'bounds:(\d+,\d+,\d+,\d+)',lambda m:'bounds:'+','.join(str(int(n)*SCALE)for n in m[1].split(',')),hd)
-for label in ['Nearest','Linear']:(OUT/f'hong-{label.lower()}.atlas').write_text(hd.replace('filter:Linear,Linear',f'filter:{label},{label}'))
-(OUT/'hong.atlas').write_text((OUT/'hong-linear.atlas').read_text())
-assert (OUT/'hong.json').read_bytes()==(SRC/'geometry.json').read_bytes(),'Do not modify runtime geometry'
-manifest=json.loads((OUT/'manifest.json').read_text());manifest['textureUpgrade']={'version':1,'size':[2048,1024],'scale':4,'filter':'Linear','geometrySha256':hashlib.sha256((OUT/'hong.json').read_bytes()).hexdigest(),'parts':provenance}
-(OUT/'manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n')
-print('HONG_HD_REEXTRACTED',len(regions),'parts; JSON byte-identical')
+def main():
+    source=Image.open(SRC/'source-parts-1280.png').convert('RGBA');cells=[]
+    for i in range(16):
+        x=i%4*source.width//4;y=i//4*source.height//4
+        cells.append(cut_component(source.crop((max(0,x-18),max(0,y-18),min(source.width,x+source.width//4+18),min(source.height,y+source.height//4+18)))))
+    layout=(SRC/'layout-1x.atlas').read_text();regions={}
+    for name,bounds in re.findall(r'([^\n]+)\nbounds:(\d+,\d+,\d+,\d+)',layout):regions[name]=tuple(map(int,bounds.split(',')))
+    mapping={'hong_body':0,'hong_B_body':1,'hong_S_head':2,'hong_B_head':3,'hong_Larm':4,'hong_Larm_S':4,'hong_B_Larm':5,'hong_Rarm':6,'hong_B_Rarm':7,'hong_Lleg1':8,'hong_Lleg2':9,'hong_Rleg':9,'hong_B_Lleg1':10,'hong_B_Lleg2':11,'hong_B_Rleg':11,'hair_front':12,'hair_side':13,'hair_back':14}
+    page=Image.new('RGBA',(2048,1024));parts=OUT/'parts-hd';parts.mkdir(exist_ok=True);provenance={}
+    for name,(x,y,w,h) in regions.items():
+        size=(w*SCALE,h*SCALE)
+        if name=='hong_head':
+            im=Image.open(SRC/'original-face.png').convert('RGBA');im=im.crop(im.getbbox());provenance[name]={'source':'original-face.png','nativeSourceSize':im.size,'limit':'Original face has only 53x54 pixels; nearest preserves existing eye design, no invented detail.'};im=im.resize(size,Image.Resampling.NEAREST)
+        elif name=='axe07':
+            im=Image.open(ROOT/'archive/rpg/hong-native-v1/parts/axe07.png').convert('RGBA');provenance[name]={'source':'original axe07','nativeSourceSize':im.size,'limit':'No higher-resolution original weapon exists; lossless nearest enlargement.'};im=im.resize(size,Image.Resampling.NEAREST)
+        else:
+            im=cells[mapping[name]].copy();provenance[name]={'source':'source-parts-1280.png','cell':mapping[name],'nativeSourceSize':im.size}
+            if name in ['hong_Larm','hong_B_Larm','hong_Rarm','hong_B_Rarm','hong_Larm_S']:im=arm(im,name[5:] if name!='hong_Larm_S' else 'Larm',size)
+            elif 'leg' in name:im=leg(im,size)
+            else:im=clean(im.resize(size,Image.Resampling.LANCZOS))
+        im.save(parts/(name+'.png'));page.paste(im,(x*SCALE,y*SCALE))
+    page.save(OUT/'hong.png')
+    hd=re.sub(r'size:512,256','size:2048,1024',layout)
+    hd=re.sub(r'bounds:(\d+,\d+,\d+,\d+)',lambda m:'bounds:'+','.join(str(int(n)*SCALE)for n in m[1].split(',')),hd)
+    for label in ['Nearest','Linear']:(OUT/f'hong-{label.lower()}.atlas').write_text(hd.replace('filter:Linear,Linear',f'filter:{label},{label}'))
+    (OUT/'hong.atlas').write_text((OUT/'hong-linear.atlas').read_text())
+    assert (OUT/'hong.json').read_bytes()==(SRC/'geometry.json').read_bytes(),'Do not modify runtime geometry'
+    manifest=json.loads((OUT/'manifest.json').read_text());manifest['textureUpgrade']={'version':1,'size':[2048,1024],'scale':4,'filter':'Linear','geometrySha256':hashlib.sha256((OUT/'hong.json').read_bytes()).hexdigest(),'parts':provenance}
+    (OUT/'manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n')
+    print('HONG_HD_REEXTRACTED',len(regions),'parts; JSON byte-identical')
+
+if __name__=='__main__':main()

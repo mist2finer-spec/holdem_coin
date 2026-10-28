@@ -30,7 +30,11 @@ function addHong(raw){const original=structuredClone(raw),skin=raw.skins[0].atta
 }
 for(const [weapon,type,region]of variants){const source=archive+'/Hero_'+type+'01',original=JSON.parse(fs.readFileSync(source+'.json')),cat=selected(original),folder=archive+'/cat-'+weapon;await packCat(cat,source,folder);
  const {raw,notes}=fitHongNativeGeometry(addHong(structuredClone(cat))),out='public/rpg/characters/hong/native-'+weapon;fs.mkdirSync(out,{recursive:true});raw.skeleton.hash='hong-native-'+weapon+'-v1-hd';
- const page=await loadImage(hong+'/hong.png'),c=createCanvas(2048,1024),ctx=c.getContext('2d');ctx.drawImage(page,0,0);ctx.clearRect(8,8,328,688);
+ const page=await loadImage(hong+'/hong.png'),c=createCanvas(2048,1024),ctx=c.getContext('2d');ctx.drawImage(page,0,0);
+ // Axe-specific arm registration must never propagate into the other weapon skins.
+ const shared=regions(fs.readFileSync(hong+'/hong.atlas','utf8'));
+ for(const name of ['hong_Rarm','hong_B_Rarm']){const [x,y,w,h]=shared[name].bounds.split(',').map(Number);ctx.clearRect(x,y,w,h);ctx.drawImage(await loadImage(hong+'/parts-hd/'+name+'.png'),x,y);}
+ ctx.clearRect(8,8,328,688);
  const r=regions(fs.readFileSync(source+'.atlas','utf8'))[region];if(!r||r.rotate)throw Error('Unexpected weapon region');const [x,y,w,h]=r.bounds.split(',').map(Number);if(w!==82||h!==172)throw Error('Weapon dimensions differ');ctx.imageSmoothingEnabled=false;ctx.drawImage(await loadImage(source+'.png'),x,y,w,h,8,8,w*4,h*4);
  fs.writeFileSync(out+'/hong.png',c.toBuffer('image/png'));fs.writeFileSync(out+'/hong.json',JSON.stringify(raw));for(const suffix of ['', '-linear','-nearest'])fs.writeFileSync(out+'/hong'+suffix+'.atlas',fs.readFileSync(hong+'/hong'+suffix+'.atlas','utf8').replaceAll('axe07',region));
  fs.writeFileSync(out+'/manifest.json',JSON.stringify({version:1,rig:'hong-native-'+weapon+'-v1',source:'Hero_'+type+'01',sourceSha256:crypto.createHash('sha256').update(fs.readFileSync(source+'.json')).digest('hex'),spine:raw.skeleton.spine,costume:'cos/cos15',weapon:'weapon/grade7',weaponRegion:region,bones:raw.bones.length,clips:Object.keys(raw.animations),textureSize:[2048,1024],hairFlutter:false,...notes},null,2));console.log('NATIVE_WEAPON_RECOVERED',weapon,raw.bones.length,Object.keys(raw.animations).length);

@@ -41,3 +41,14 @@ test('4x source atlas preserves JSON bytes, normalized UVs and posed mesh geomet
   }
  }
 });
+
+test('axe arm direction fix changes only bent arm color registration, never alpha/thickness or rig',async()=>{
+ const {createCanvas,loadImage}=await import('@napi-rs/canvas');
+ const source='archive/rpg/hong-axe-arm-orientation/';assert.deepEqual(fs.readFileSync(root+'hong.json'),fs.readFileSync(source+'geometry.json'));assert.deepEqual(fs.readFileSync(root+'hong.atlas'),fs.readFileSync(source+'layout.atlas'));
+ const atlas=new TextureAtlas(fs.readFileSync(root+'hong.atlas','utf8')),boxes=['hong_Rarm','hong_B_Rarm'].map(n=>atlas.findRegion(n)!);
+ const pixels=async(file:string)=>{const im=await loadImage(file),c=createCanvas(im.width,im.height),ctx=c.getContext('2d');ctx.drawImage(im,0,0);return ctx.getImageData(0,0,im.width,im.height).data;};
+ const before=await pixels(source+'before.png'),after=await pixels(root+'hong.png');assert.equal(before.length,after.length);let changed=0;
+ for(let i=0;i<before.length;i+=4){const x=i/4%2048,y=Math.floor(i/4/2048);assert.equal(after[i+3],before[i+3],'Alpha silhouette/width must be identical');
+  const inside=boxes.some(b=>x>=b.x&&x<b.x+b.width&&y>=b.y&&y<b.y+b.height);const different=before[i]!==after[i]||before[i+1]!==after[i+1]||before[i+2]!==after[i+2];if(different){assert.ok(inside,'Unrelated texture changed');changed++;}}
+ assert.ok(changed>100);assert.equal(JSON.parse(fs.readFileSync(root+'manifest.json','utf8')).armOrientation.thicknessChanged,false);
+});

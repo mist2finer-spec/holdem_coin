@@ -215,5 +215,77 @@
         "limit": "Original face has only 53x54 pixels; nearest preserves existing eye design, no invented detail."
       }
     }
+  },
+  "armOrientation": {
+    "revision": 1,
+    "scope": "axe-only",
+    "method": "Cat UV shoulder/elbow/fist registration; frozen alpha silhouette",
+    "geometryChanged": false,
+    "thicknessChanged": false,
+    "parts": {
+      "Rarm": {
+        "cell": 6,
+        "source": [
+          [
+            0.16,
+            0.16
+          ],
+          [
+            0.4,
+            0.72
+          ],
+          [
+            0.89,
+            0.79
+          ]
+        ],
+        "target": [
+          [
+            0.2,
+            0.14
+          ],
+          [
+            0.48,
+            0.52
+          ],
+          [
+            0.78,
+            0.75
+          ]
+        ]
+      },
+      "B_Rarm": {
+        "cell": 7,
+        "mirror": true,
+        "source": [
+          [
+            0.16,
+            0.16
+          ],
+          [
+            0.4,
+            0.72
+          ],
+          [
+            0.89,
+            0.79
+          ]
+        ],
+        "target": [
+          [
+            0.18,
+            0.16
+          ],
+          [
+            0.46,
+            0.64
+          ],
+          [
+            0.81,
+            0.74
+          ]
+        ]
+      }
+    }
   }
 }
