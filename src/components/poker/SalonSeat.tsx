@@ -1,9 +1,9 @@
 'use client';
 import type {SeatState} from '@/lib/poker-engine';
 import {PlayingCard} from './PlayingCard';
-export const SALON_EIGHT_POSITIONS=[{top:'89%',left:'50%'},{top:'72%',left:'90%'},{top:'46%',left:'90%'},{top:'21%',left:'90%'},{top:'6%',left:'50%'},{top:'21%',left:'10%'},{top:'46%',left:'10%'},{top:'72%',left:'10%'}];
+export const SALON_EIGHT_POSITIONS=[{top:'89%',left:'50%'},{top:'72%',left:'90%'},{top:'46%',left:'90%'},{top:'21%',left:'90%'},{top:'9%',left:'50%'},{top:'21%',left:'10%'},{top:'46%',left:'10%'},{top:'72%',left:'10%'}];
 // Six guests: two on each side, one at either end. Presentation only.
-export const SALON_SIX_POSITIONS=[{top:'89%',left:'50%'},{top:'65%',left:'89%'},{top:'27%',left:'90%'},{top:'6%',left:'50%'},{top:'27%',left:'10%'},{top:'65%',left:'11%'}];
+export const SALON_SIX_POSITIONS=[{top:'89%',left:'50%'},{top:'65%',left:'89%'},{top:'27%',left:'90%'},{top:'9%',left:'50%'},{top:'27%',left:'10%'},{top:'65%',left:'11%'}];
 export function SalonSeat({seat,isActive,isDealer,isSmallBlind,isBigBlind,showCards,position}:{seat:SeatState;isActive:boolean;isDealer:boolean;isSmallBlind:boolean;isBigBlind:boolean;showCards:boolean;position:{top:string;left:string}}){
  const top=parseFloat(position.top),left=parseFloat(position.left),side=seat.isUser?'self':top<12?'north':left<50?'west':'east',pose=side==='self'?'back':side==='north'?'front':side==='west'?'right':'left';
  const visible=seat.isUser||(showCards&&!seat.folded);

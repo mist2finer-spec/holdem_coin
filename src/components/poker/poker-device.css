@@ -76,3 +76,23 @@
 .poker-salon .salon-seat-north .salon-position{left:-8px;top:2px}
 .poker-salon .salon-seat-north .salon-fold{top:40px}
 @container(max-height:700px){.poker-salon .salon-seat-north .salon-guest{height:52px}.poker-salon .salon-seat-north .salon-guest>img{height:64px}.poker-salon .salon-seat-north .salon-seat-info{top:17px}}
+/* Equal source scale for every view. North is cropped, never rescaled, behind rail. */
+.poker-salon .salon-seat{--seat-width:56px;--guest-height:78px;width:var(--seat-width)}
+.poker-salon .salon-guest,.poker-salon .salon-seat-north .salon-guest{height:var(--guest-height);width:var(--seat-width)}
+.poker-salon .salon-guest>img,.poker-salon .salon-seat-north .salon-guest>img{position:absolute;inset:0;width:100%;height:var(--guest-height);object-fit:contain;object-position:top;clip-path:none}
+.poker-salon .salon-seat-north .salon-guest>img{clip-path:inset(0 0 43% 0)}
+.poker-salon .salon-seat-north .salon-seat-info{top:12px;left:calc(100% + 4px)}
+.poker-salon .salon-seat-north .salon-fold{top:25px;font-size:9px}
+.poker-salon .salon-felt{inset:9% 11% 11%;width:78%;height:80%}
+.poker-salon .salon-seat-info strong{font-size:8px;padding:2px}
+.poker-salon .salon-seat-info span{font-size:9px;padding:2px}
+.poker-salon .salon-seat-self .salon-cards{top:-40px;gap:3px}
+.poker-salon .salon-seat-self .salon-cards>div{width:33px;height:47px}
+.poker-salon .poker-board{gap:3px}
+.poker-salon .poker-board>div>div{width:28px;height:40px}
+.poker-salon .poker-bet{min-width:42px;max-width:60px;padding:2px 3px}
+.poker-salon .poker-bet-owner{font-size:7px;max-width:54px}
+.poker-salon .poker-bet strong{font-size:11px}
+.poker-salon .poker-pot>div{padding:3px 7px}
+.poker-salon .poker-pot span{font-size:10px}
+@container(max-height:700px){.poker-salon .salon-seat{--seat-width:48px;--guest-height:64px}.poker-salon .salon-seat-north .salon-seat-info{top:10px}.poker-salon .salon-seat-self .salon-cards{top:-34px}.poker-salon .salon-seat-self .salon-cards>div{width:28px;height:40px}.poker-salon .poker-board>div>div{width:25px;height:36px}}
