@@ -52,7 +52,7 @@
     ],
     "scale": 4,
     "filter": "Linear",
-    "geometrySha256": "2e72634d7fd603c99cb84d05a97c2398e90734663596f8e0f36176f336f5245c",
+    "geometrySha256": "88dfad230d2fe6da175f41c264d6e9f43b9c292deb92dea5613f236b982c02ea",
     "parts": {
       "axe07": {
         "source": "original axe07",
@@ -291,7 +291,10 @@
     }
   },
   "connections": {
-    "revision": 1,
+    "revision": 2,
+    "hairStyle": "continuous-curtain",
+    "hairTipInfluence": 0.1,
+    "hairTopClearFraction": 0.4,
     "pinned": 28,
     "skirt": 14,
     "rigidChest": 29,
@@ -307,7 +310,7 @@
       "cloak2",
       "cloak3"
     ],
-    "headSource": "source-parts-1280.png cells 2/3/15; 4x direct source sampling",
+    "headSource": "source-parts-1280.png front/side cells 15/2; continuous rear curtain cell 14",
     "roundedLegCaps": 6,
     "openedShoulderPixels": 321,
     "joinedHeadRegions": [
@@ -326,7 +329,7 @@
     "legLength": 13.8,
     "legAxis": 0.92,
     "thighThickness": 1.08,
-    "shinThickness": 1.24,
+    "shinThickness": 1.04,
     "ankleThickness": 1.08,
     "armLength": 0.92,
     "armThickness": 0.85,

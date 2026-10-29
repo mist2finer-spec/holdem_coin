@@ -23,10 +23,11 @@ for weapon in sys.argv[1:]:
   canvas=Image.new('RGBA',(hw,128));longhair=page.crop((hx,hy,hx+hw,hy+hh));canvas.alpha_composite(longhair.crop((0,0,hw,128)))
   # Native head and its surrounding hair share their upper edge and head-bone coordinates.
   offset=round((skin_data['head'][key]['vertices'][5]-(14.19 if key=='head' else 15.19))*4)
-  canvas.alpha_composite(im,(max(0,offset),0))
+  # Rear crown and long curtain share one source, avoiding a short-bob outline seam.
+  if key!='B_head':canvas.alpha_composite(im,(max(0,offset),0))
   name=skin_data['head'][key]['name'];page.paste(canvas,(xnew,300));joined.append((name,xnew,300,hw,128));xnew+=hw+8
   # Only the shoulder-length portion is deformable; bangs/crown stay in rigid head.
-  alpha=longhair.getchannel('A');alpha.paste(0,(0,0,hw,round(hh*.50)));longhair.putalpha(alpha);page.paste(longhair,(hx,hy))
+  alpha=longhair.getchannel('A');alpha.paste(0,(0,0,hw,round(hh*.40)));longhair.putalpha(alpha);page.paste(longhair,(hx,hy))
  # Round the proximal skin into an overlap cap instead of exposing a flat cut edge.
  caps=0;seams=0
  for name,(x,y,w,h) in regions.items():

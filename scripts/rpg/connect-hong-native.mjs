@@ -59,13 +59,14 @@ for(const weapon of weapons){
   a.vertices=[bottom,right,bottom,left,top,left,top,right];a.width=Math.abs(left-right);a.height=32;
  }
  for(const slot of ['hong-hair-under','hong-hair-over'])for(const [key,a]of Object.entries(skin[slot])){
+  a.path='hair_back';
   const corners=a.vertices,point=(u,v)=>({x:corners[4]+u*(corners[6]-corners[4])+v*(corners[2]-corners[4]),y:corners[5]+u*(corners[7]-corners[5])+v*(corners[3]-corners[5])});
   const levels=[0,.32,.47,.60,.73,.86,1],uv=[],verts=[],tri=[];
   for(let j=0;j<levels.length;j++)for(const u of [0,1]){
    const v=levels[j],p=sk.findBone('head').localToWorld(point(u,v));uv.push(u,v);
    let weights;
    if(v<=.47)weights=[[names.bone2,1]];
-   else{const t=Math.max(0,Math.min(1,(v-.47)/.53)),chain=t*2,lo=Math.min(2,Math.floor(chain)),hi=Math.min(2,lo+1),f=chain-lo,gain=.15+.20*t;
+   else{const t=Math.max(0,Math.min(1,(v-.47)/.53)),chain=t*2,lo=Math.min(2,Math.floor(chain)),hi=Math.min(2,lo+1),f=chain-lo,gain=.04+.06*t;
     weights=[[names.bone2,1-gain],[names['cloak'+(lo+1)],gain*(1-f)],[names['cloak'+(hi+1)],gain*f]];
     const merged=new Map();for(const [b,w]of weights)merged.set(b,(merged.get(b)||0)+w);weights=[...merged];}
    verts.push(weighted(p,weights));
@@ -73,16 +74,16 @@ for(const weapon of weapons){
   for(let j=0;j<levels.length-1;j++){const n=j*2;tri.push(n,n+2,n+1,n+1,n+2,n+3);}
   a.uvs=uv;a.vertices=encode(verts);a.triangles=tri;a.hull=levels.length*2;delete a.edges;
  }
- // Both hair slots stay behind the body in every draw order. Cat arm ordering survives.
+ // Front/side hair stays behind the body; rear-view curtain covers the back below the head.
  const slots=raw.slots.map(s=>s.name),hairs=['hong-hair-under','hong-hair-over'];
  function order(offsets){const draw=Array(slots.length).fill(null),unchanged=[];let i=0;for(const o of offsets??[]){const dest=slots.indexOf(o.slot);while(i<dest)unchanged.push(slots[i++]);draw[i+o.offset]=slots[i++];}while(i<slots.length)unchanged.push(slots[i++]);for(let j=draw.length-1;j>=0;j--)if(draw[j]===null)draw[j]=unchanged.pop();return draw;}
  for(const a of Object.values(raw.animations)){
   // No deform channels exist on rebuilt hair meshes. Face/weapon channels are untouched.
-  for(const k of a.drawOrder??[]){const desired=order(k.offsets).filter(s=>!hairs.includes(s));const at=Math.min(desired.indexOf('Rarm'),desired.indexOf('body'));desired.splice(Math.max(0,at),0,...hairs);k.offsets=slots.map((slot,i)=>({slot,offset:desired.indexOf(slot)-i}));}
+  for(const k of a.drawOrder??[]){const desired=order(k.offsets).filter(s=>!hairs.includes(s));const at=Math.min(desired.indexOf('Rarm'),desired.indexOf('body'));desired.splice(Math.max(0,at),0,'hong-hair-under');desired.splice(desired.indexOf('head'),0,'hong-hair-over');k.offsets=slots.map((slot,i)=>({slot,offset:desired.indexOf(slot)-i}));}
  }
- for(const p of raw.physics??[])if(/^cloak[123]$/.test(p.name))Object.assign(p,{mix:.30,inertia:.2,damping:.9,strength:60,limit:8});
+ for(const p of raw.physics??[])if(/^cloak[123]$/.test(p.name))Object.assign(p,{mix:.12,inertia:.12,damping:.95,strength:70,limit:3});
  raw.skeleton.hash+='-seams1';fs.writeFileSync(root+'/hong.json',JSON.stringify(raw));
- const manifest=JSON.parse(fs.readFileSync(root+'/manifest.json'));manifest.connections={revision:1,pinned,skirt,rigidChest,hipRange:[-2,.5],skirtLegWeight:.45,hairBones:['head','bone2','cloak1','cloak2','cloak3'],headSource:'source-parts-1280.png cells 2/3/15; 4x direct source sampling'};manifest.hairFlutter=true;fs.writeFileSync(root+'/manifest.json',JSON.stringify(manifest,null,2)+'\n');
+ const manifest=JSON.parse(fs.readFileSync(root+'/manifest.json'));manifest.connections={revision:2,hairStyle:'continuous-curtain',hairTipInfluence:.10,hairTopClearFraction:.40,pinned,skirt,rigidChest,hipRange:[-2,.5],skirtLegWeight:.45,hairBones:['head','bone2','cloak1','cloak2','cloak3'],headSource:'source-parts-1280.png front/side cells 15/2; continuous rear curtain cell 14'};manifest.hairFlutter=true;fs.writeFileSync(root+'/manifest.json',JSON.stringify(manifest,null,2)+'\n');
  console.log('HONG_CONNECTIONS',weapon,{pinned,skirt,rigidChest});
 }
 execFileSync('python3',['scripts/rpg/connect-hong-native-textures.py',...weapons],{stdio:'inherit'});

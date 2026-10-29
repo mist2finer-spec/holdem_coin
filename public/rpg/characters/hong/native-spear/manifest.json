@@ -50,7 +50,10 @@
   "skirtVertices": 41,
   "maxCombinedLegWeight": 0.24990249902499026,
   "connections": {
-    "revision": 1,
+    "revision": 2,
+    "hairStyle": "continuous-curtain",
+    "hairTipInfluence": 0.1,
+    "hairTopClearFraction": 0.4,
     "pinned": 28,
     "skirt": 14,
     "rigidChest": 29,
@@ -66,7 +69,7 @@
       "cloak2",
       "cloak3"
     ],
-    "headSource": "source-parts-1280.png cells 2/3/15; 4x direct source sampling",
+    "headSource": "source-parts-1280.png front/side cells 15/2; continuous rear curtain cell 14",
     "roundedLegCaps": 6,
     "openedShoulderPixels": 340,
     "joinedHeadRegions": [
@@ -85,7 +88,7 @@
     "legLength": 13.8,
     "legAxis": 0.92,
     "thighThickness": 1.08,
-    "shinThickness": 1.24,
+    "shinThickness": 1.04,
     "ankleThickness": 1.08,
     "armLength": 0.92,
     "armThickness": 0.85,

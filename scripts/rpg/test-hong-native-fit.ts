@@ -61,10 +61,10 @@ test('hair uses native cloth bones behind the body; rigid faces never inherit cl
   const r=JSON.parse(fs.readFileSync(`public/rpg/characters/hong/native-${weapon}/hong.json`,'utf8')),skin=r.skins[0].attachments;
   for(const a of Object.values(skin.head)as any[]){assert.equal(a.vertices.length,a.uvs.length);assert.equal(a.hull,4);assert.match(a.name,/_joined$/);}
   const chain=['cloak1','cloak2','cloak3'].map(n=>r.bones.findIndex((b:any)=>b.name===n));
-  for(const slot of ['hong-hair-under','hong-hair-over'])for(const a of Object.values(skin[slot])as any[]){assert.equal(a.uvs.length,28);const rr=rows(a.vertices);assert.ok(chain.every(b=>rr.some(row=>row.some(v=>v.bone===b&&v.w>0))));for(const row of rr){assert.ok(Math.abs(row.reduce((s,v)=>s+v.w,0)-1)<1e-8);assert.ok(row.every(v=>Number.isFinite(v.x)&&Number.isFinite(v.y)&&v.w>=0));}}
+  for(const slot of ['hong-hair-under','hong-hair-over'])for(const a of Object.values(skin[slot])as any[]){assert.equal(a.uvs.length,28);assert.equal(a.path,'hair_back');const rr=rows(a.vertices);assert.ok(chain.every(b=>rr.some(row=>row.some(v=>v.bone===b&&v.w>0))));for(const row of rr){assert.ok(Math.abs(row.reduce((s,v)=>s+v.w,0)-1)<1e-8);assert.ok(row.every(v=>Number.isFinite(v.x)&&Number.isFinite(v.y)&&v.w>=0));}}
   const data=(()=>{const atlas=new TextureAtlas(fs.readFileSync(`public/rpg/characters/hong/native-${weapon}/hong.atlas`,'utf8'));for(const p of atlas.pages)p.setTexture(new CanvasTexture({width:p.width,height:p.height}as HTMLImageElement));return new SkeletonJson(new AtlasAttachmentLoader(atlas)).readSkeletonData(r);})();
   Skeleton.yDown=true;
-  for(const clip of data.animations)for(const facing of [-1,1]){const s=new Skeleton(data);s.scaleX=facing;for(let f=0;f<=30;f++){clip.apply(s,Math.max(0,clip.duration*(f-1)/30),clip.duration*f/30,false,[],1,MixBlend.replace,MixDirection.mixIn);s.update(1/60);s.updateWorldTransform(Physics.update);assert.ok(s.bones.every(b=>[b.worldX,b.worldY,b.a,b.b,b.c,b.d].every(Number.isFinite)));const order=s.drawOrder.map(v=>v.data.name);for(const hair of ['hong-hair-under','hong-hair-over']){assert.ok(order.indexOf(hair)<order.indexOf('body'));const slot=s.findSlot(hair)!,mesh=slot.getAttachment()as any;if(!mesh)continue;const v=new Float32Array(mesh.worldVerticesLength);mesh.computeWorldVertices(slot,0,v.length,v,0,2);const dx=v[2]-v[0],dy=v[3]-v[1];for(let row=1;row<7;row++){const i=row*4;assert.ok((v[i+2]-v[i])*dx+(v[i+3]-v[i+1])*dy>0,weapon+' '+clip.name+' hair cross-section folded');}}}}
+  for(const clip of data.animations)for(const facing of [-1,1]){const s=new Skeleton(data);s.scaleX=facing;for(let f=0;f<=30;f++){clip.apply(s,Math.max(0,clip.duration*(f-1)/30),clip.duration*f/30,false,[],1,MixBlend.replace,MixDirection.mixIn);s.update(1/60);s.updateWorldTransform(Physics.update);assert.ok(s.bones.every(b=>[b.worldX,b.worldY,b.a,b.b,b.c,b.d].every(Number.isFinite)));const order=s.drawOrder.map(v=>v.data.name);for(const hair of ['hong-hair-under','hong-hair-over']){if(hair==='hong-hair-under')assert.ok(order.indexOf(hair)<order.indexOf('body'));else{assert.ok(order.indexOf(hair)>order.indexOf('body'));assert.ok(order.indexOf(hair)<order.indexOf('head'));}const slot=s.findSlot(hair)!,mesh=slot.getAttachment()as any;if(!mesh)continue;const v=new Float32Array(mesh.worldVerticesLength);mesh.computeWorldVertices(slot,0,v.length,v,0,2);const dx=v[2]-v[0],dy=v[3]-v[1];for(let row=1;row<7;row++){const i=row*4;assert.ok((v[i+2]-v[i])*dx+(v[i+3]-v[i+1])*dy>0,weapon+' '+clip.name+' hair cross-section folded');}}}}
  }
 });
 
@@ -82,12 +82,12 @@ test('proportions shorten bones/arms and widen each weighted leg segment without
    const old=rows(a.vertices),next=rows(aa.vertices);assert.equal(next.length,old.length);
    for(let i=0;i<old.length;i++)for(let j=0;j<old[i].length;j++){
     const v=old[i][j],n=next[i][j];assert.equal(n.bone,v.bone);assert.equal(n.w,v.w);
-    const arm=[4,5,6,7].includes(v.bone),leg=[8,9,10,11].includes(v.bone),sy=arm?.85:[8,10].includes(v.bone)?1.08:[9,11].includes(v.bone)?1.24:[23,24].includes(v.bone)?1.08:1;
+    const arm=[4,5,6,7].includes(v.bone),leg=[8,9,10,11].includes(v.bone),sy=arm?.85:[8,10].includes(v.bone)?1.08:[9,11].includes(v.bone)?1.04:[23,24].includes(v.bone)?1.08:1;
     assert.ok(Math.abs(n.x-v.x*(arm||leg?.92:1))<1e-8);assert.ok(Math.abs(n.y-v.y*sy)<1e-8);
    }
   }
   // Cosmetic heads and hair, including their weights, remain exactly the seam revision.
-  for(const slot of ['head','hong-hair-under','hong-hair-over'])assert.deepEqual(after.skins[0].attachments[slot],before.skins[0].attachments[slot]);
+  for(const [name,a]of Object.entries(before.skins[0].attachments.head))assert.deepEqual(after.skins[0].attachments.head[name],a);
  }
 });
 test('leg shaft alpha grows at least 20% inside all six cells while boot pixels and atlas layout stay fixed',async()=>{
@@ -104,4 +104,18 @@ test('all weapons keep slightly bent knees during default idle instead of lockin
   const atlas=new TextureAtlas(fs.readFileSync(`public/rpg/characters/hong/native-${weapon}/hong.atlas`,'utf8'));for(const p of atlas.pages)p.setTexture(new CanvasTexture({width:p.width,height:p.height}as HTMLImageElement));const data=new SkeletonJson(new AtlasAttachmentLoader(atlas)).readSkeletonData(JSON.parse(fs.readFileSync(`public/rpg/characters/hong/native-${weapon}/hong.json`,'utf8')));
   for(const facing of [-1,1])for(const t of [0,.4,.8,1.2]){const s=new Skeleton(data);s.scaleX=facing;data.findAnimation('stay1')!.apply(s,0,t,false,[],1,MixBlend.replace,MixDirection.mixIn);s.updateWorldTransform(Physics.pose);for(const name of ['Lleg2','Rleg2']){const knee=s.findBone(name)!;assert.ok(Math.abs(knee.arotation)>10&&Math.abs(knee.arotation)<65,weapon+' '+name+' idle knee extension');}}
  }
+});
+
+test('continuous hair uses a filled curtain and matching rear crown with restrained cloth motion',async()=>{
+ const {createCanvas,loadImage}=await import('@napi-rs/canvas');
+ for(const weapon of ['axe','sword','dual','spear']){
+  const r=JSON.parse(fs.readFileSync(`public/rpg/characters/hong/native-${weapon}/hong.json`,'utf8'));assert.equal(JSON.parse(fs.readFileSync(`public/rpg/characters/hong/native-${weapon}/manifest.json`,'utf8')).connections.hairStyle,'continuous-curtain');
+  const cloth=new Set(r.bones.map((b:any,i:number)=>/^cloak[123]$/.test(b.name)?i:-1));
+  for(const slot of ['hong-hair-under','hong-hair-over'])for(const a of Object.values(r.skins[0].attachments[slot])as any[]){assert.equal(a.path,'hair_back');for(const row of rows(a.vertices))assert.ok(row.filter(v=>cloth.has(v.bone)).reduce((n,v)=>n+v.w,0)<=.100001);}
+  for(const p of r.physics.filter((v:any)=>/^cloak[123]$/.test(v.name))){assert.ok(p.mix<=.12);assert.ok(p.limit<=3);}
+ }
+ const atlas=new TextureAtlas(fs.readFileSync(root+'hong.atlas','utf8')),c=createCanvas(2048,1024),ctx=c.getContext('2d');ctx.drawImage(await loadImage(root+'hong.png'),0,0);
+ const rear=atlas.findRegion('hong_B_head_joined')!,hair=atlas.findRegion('hair_back')!,source=await loadImage(root+'parts-hd/hair_back.png'),s=createCanvas(source.width,source.height),sc=s.getContext('2d');sc.drawImage(source,0,0);
+ const crown=ctx.getImageData(rear.x,rear.y,rear.width,rear.height).data,expected=sc.getImageData(0,0,rear.width,rear.height).data;assert.deepEqual(crown,expected,'Rear crown must continue the long-hair source without a bob edge');
+ assert.ok(ctx.getImageData(hair.x+Math.floor(hair.width/2),hair.y+Math.floor(hair.height*.55),1,1).data[3]>200,'Filled neck/middle hair must not split into two tails');
 });

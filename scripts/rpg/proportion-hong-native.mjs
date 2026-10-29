@@ -31,7 +31,7 @@ for(const weapon of weapons){
   for(const row of rows)for(const v of row){
    if(['Lleg2','Rleg'].includes(slot)){
     if(thigh.has(v.bone)){v.x*=.92;v.y*=1.08;legVertices++;}
-    else if(shin.has(v.bone)){v.x*=.92;v.y*=1.24;legVertices++;}
+    else if(shin.has(v.bone)){v.x*=.92;v.y*=1.04;legVertices++;}
     else if(feet.has(v.bone)){v.y*=1.08;legVertices++;}
    }else if(arms.has(v.bone)){v.x*=ARM_LENGTH;v.y*=ARM_THICKNESS;armVertices++;}
   }a.vertices=encode(rows);
@@ -46,7 +46,7 @@ for(const weapon of weapons){
  }
  raw.skeleton.hash+='-proportions1';fs.writeFileSync(root+'/hong.json',JSON.stringify(raw));
  const manifest=JSON.parse(fs.readFileSync(root+'/manifest.json'));
- manifest.proportions={revision:1,centerHeight:31.5,legLength:13.8,legAxis:.92,thighThickness:1.08,shinThickness:1.24,ankleThickness:1.08,armLength:ARM_LENGTH,armThickness:ARM_THICKNESS,gripTranslations:ARM_TRANSLATE_BONES,kneeReach,legVertices,armVertices};
+ manifest.proportions={revision:1,centerHeight:31.5,legLength:13.8,legAxis:.92,thighThickness:1.08,shinThickness:1.04,ankleThickness:1.08,armLength:ARM_LENGTH,armThickness:ARM_THICKNESS,gripTranslations:ARM_TRANSLATE_BONES,kneeReach,legVertices,armVertices};
  if(manifest.textureUpgrade)manifest.textureUpgrade.geometrySha256=crypto.createHash('sha256').update(fs.readFileSync(root+'/hong.json')).digest('hex');
  manifest.centerHeight=31.5;manifest.legLengths=13.8;fs.writeFileSync(root+'/manifest.json',JSON.stringify(manifest,null,2)+'\n');console.log('HONG_PROPORTIONS',weapon,{legVertices,armVertices,kneeReach});
 }
