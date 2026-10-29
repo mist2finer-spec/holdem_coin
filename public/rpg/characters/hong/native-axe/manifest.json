@@ -52,7 +52,7 @@
     ],
     "scale": 4,
     "filter": "Linear",
-    "geometrySha256": "8fcf783583b0633b3f140b163acac0cdaa70c1089cedc1c90b082ee8b9b7daaf",
+    "geometrySha256": "2e72634d7fd603c99cb84d05a97c2398e90734663596f8e0f36176f336f5245c",
     "parts": {
       "axe07": {
         "source": "original axe07",
@@ -325,7 +325,7 @@
     "centerHeight": 31.5,
     "legLength": 13.8,
     "legAxis": 0.92,
-    "thighThickness": 1.2,
+    "thighThickness": 1.08,
     "shinThickness": 1.24,
     "ankleThickness": 1.08,
     "armLength": 0.92,
