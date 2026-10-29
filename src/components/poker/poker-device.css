@@ -52,3 +52,16 @@
 .poker-device .salon-seat-self .salon-cards>div.relative>div:first-child>span,
 .poker-device .salon-seat-self .salon-cards>div.relative>div:last-child>span{font-size:11px;line-height:1}
 @container(max-height:700px){.poker-salon .salon-seat-north .salon-seat-info{margin-top:-26px}.poker-salon .salon-seat-north .salon-cards{top:52px}}
+
+/* Consistent seat columns; crop the north portrait in a fixed upper-body frame,
+   never with a negative name margin that lets labels cover the face. */
+.poker-salon .salon-seat{--seat-width:64px;width:var(--seat-width)}
+.poker-salon .salon-guest{width:var(--seat-width);margin-inline:auto}
+.poker-salon .salon-seat-info{width:100%;gap:2px}
+.poker-salon .salon-seat-info strong,.poker-salon .salon-seat-info span{display:block;box-sizing:border-box;width:100%;max-width:none;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center;padding:2px 3px;border-radius:3px}
+.poker-salon .salon-seat-north .salon-guest{height:43px;overflow:hidden}
+.poker-salon .salon-seat-north .salon-guest>img{position:absolute;top:0;left:0;width:100%;height:80px;object-fit:contain;object-position:top;clip-path:none}
+.poker-salon .salon-seat-north .salon-seat-info{margin-top:0}
+.poker-salon .salon-seat:not(.salon-seat-self) .salon-cards{top:-29px;left:50%;right:auto;translate:-50% 0;z-index:3}
+.poker-salon .salon-seat-north .salon-fold{top:13px}
+@container(max-height:700px){.poker-salon .salon-seat{--seat-width:54px}.poker-salon .salon-seat-north .salon-guest{height:34px}.poker-salon .salon-seat-north .salon-guest>img{height:64px}.poker-salon .salon-seat-north .salon-seat-info{margin-top:0}}
