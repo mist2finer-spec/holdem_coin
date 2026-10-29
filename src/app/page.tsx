@@ -7,6 +7,7 @@ const HuntEntry = dynamic(()=>import('@/components/rpg/HuntEntry').then(m=>m.Hun
 import {TournamentLobbyButton} from '@/components/poker/TournamentLobbyButton';
 import {LobbyPanel} from '@/components/poker/LobbyPanel';
 import {PokerTable} from '@/components/poker/PokerTable';
+import {PokerDevice} from '@/components/poker/PokerDevice';
 import {PokerTableSocket} from '@/components/poker/PokerTableSocket';
 import {ActionSkinButton} from '@/components/poker/ActionSkinButton';
 import {toast} from 'sonner';
@@ -24,9 +25,9 @@ function HomeContent() {
  const returnToLobby=useCallback(()=>go('lobby'),[go]);
  const notice=(msg:string,tone?:'info'|'win'|'lose')=>tone==='win'?toast.success(msg):tone==='lose'?toast.error(msg):toast(msg);
  if(screen==='hunt')return <HuntEntry onExit={()=>go('start')}/>;
- if(screen==='single')return <PokerTable userName={name.trim()||'플레이어'} onToast={notice} onMain={returnToLobby}/>;
- if(screen==='tournament')return <PokerTableSocket tournament tableSize={8} userName={name.trim()||'플레이어'} onToast={notice} onMain={returnToLobby}/>;
- if(screen==='six'||screen==='eight')return <PokerTableSocket tableSize={screen==='six'?6:8} userName={name.trim()||'플레이어'} onToast={notice} onMain={returnToLobby}/>;
+ if(screen==='single')return <PokerDevice><PokerTable userName={name.trim()||'플레이어'} onToast={notice} onMain={returnToLobby}/></PokerDevice>;
+ if(screen==='tournament')return <PokerDevice><PokerTableSocket tournament tableSize={8} userName={name.trim()||'플레이어'} onToast={notice} onMain={returnToLobby}/></PokerDevice>;
+ if(screen==='six'||screen==='eight')return <PokerDevice><PokerTableSocket tableSize={screen==='six'?6:8} userName={name.trim()||'플레이어'} onToast={notice} onMain={returnToLobby}/></PokerDevice>;
  if(screen==='start')return <main className="island-start">
   <div className="island-sign-scene" aria-label="Island Hold’em">
    <div className="island-neon-glow" aria-hidden="true"/>

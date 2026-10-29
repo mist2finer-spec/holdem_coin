@@ -4,9 +4,9 @@ import { useState, useMemo } from "react";
 import {PokerActionButtons} from "./PokerActionButtons";
 import { LIVE_RULES } from "@/lib/poker-live";
 import { usePokerTable } from "./usePokerTable";
-import { PlayerSeat } from "./PlayerSeat";
+import {SalonSeat, SALON_EIGHT_POSITIONS, salonWagerPosition} from "./SalonSeat";
+import {SalonTableSurface} from "./SalonTableSurface";
 import { TableBet } from "./TableBet";
-import {SEAT_POSITIONS} from "@/lib/poker-seat-view";
 import { PlayingCard } from "./PlayingCard";
 import {HandAwards} from "./HandAwards";
 import {ShowdownResults} from "./ShowdownResults";
@@ -80,7 +80,7 @@ export function PokerTable({ userName, onToast, onMain }: Props) {
   };
 
   return (
-    <div className="poker-table-layout w-full relative overflow-hidden bg-gradient-to-b from-slate-950 via-emerald-950 to-slate-950">
+    <div className="poker-table-layout poker-salon w-full relative overflow-hidden bg-gradient-to-b from-slate-950 via-emerald-950 to-slate-950">
       <button className="poker-room-exit" onClick={()=>{leaveTable();onMain();}}>← 로비로</button>
       {/* 배경 장식: 돌벽 + 횃불 */}
       <div className="absolute inset-0 opacity-30 pointer-events-none"
@@ -116,19 +116,7 @@ export function PokerTable({ userName, onToast, onMain }: Props) {
       {/* 테이블 (타원형) */}
       <div className="poker-arena relative min-h-0 flex items-center justify-center pt-20 pb-20 sm:pt-24 sm:pb-24">
         <div className="poker-table-surface relative w-[min(98vw,1100px)] h-full max-h-[640px]">
-          {/* 테이블 외곽 (나무 테두리) */}
-          <div className="absolute inset-0 rounded-[50%] bg-gradient-to-br from-amber-950 via-amber-900 to-amber-950 shadow-[0_0_60px_rgba(0,0,0,0.8),inset_0_0_30px_rgba(0,0,0,0.6)]" />
-          <div className="absolute inset-2 sm:inset-3 rounded-[50%] bg-gradient-to-br from-emerald-900 via-emerald-950 to-emerald-900 shadow-[inset_0_0_50px_rgba(0,0,0,0.7)] border-2 border-amber-700/40" />
-
-          {/* 테이블 중앙 패턴 */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="text-amber-700/10 text-[100px] sm:text-[180px] font-bold">♠</div>
-          </div>
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none hidden sm:block">
-            <div className="absolute top-[35%] text-rose-800/10 text-[60px] sm:text-[100px] -translate-x-32">♥</div>
-            <div className="absolute top-[35%] text-rose-800/10 text-[60px] sm:text-[100px] translate-x-32">♦</div>
-            <div className="poker-pot absolute top-[50%] text-amber-700/10 text-[60px] sm:text-[100px]">♣</div>
-          </div>
+          <SalonTableSurface/>
 
           {/* 보드 카드 (중앙) */}
           <div className="poker-board absolute top-[40%] left-1/2 -translate-x-1/2 -translate-y-1/2 flex gap-1 sm:gap-2 z-10">
@@ -159,12 +147,12 @@ export function PokerTable({ userName, onToast, onMain }: Props) {
           }))}/>}
 
           {seats.map(seat => (
-            <TableBet key={`bet-${seat.seatId}`} amount={seat.currentBet} name={seat.name} position={SEAT_POSITIONS[seat.seatId]} />
+            <TableBet key={`bet-${seat.seatId}`} amount={seat.currentBet} name={seat.name} position={SALON_EIGHT_POSITIONS[seat.seatId]} lane={salonWagerPosition(SALON_EIGHT_POSITIONS[seat.seatId])} />
           ))}
 
           {/* 8개 좌석 */}
           {seats.map((seat) => (
-            <PlayerSeat
+            <SalonSeat
               key={seat.seatId}
               seat={seat}
               isActive={activeSeatId === seat.seatId}
@@ -172,7 +160,7 @@ export function PokerTable({ userName, onToast, onMain }: Props) {
               isSmallBlind={smallBlindSeat === seat.seatId}
               isBigBlind={bigBlindSeat === seat.seatId}
               showCards={showdownReveal || bluffReveal === seat.seatId}
-              position={SEAT_POSITIONS[seat.seatId]}
+              position={SALON_EIGHT_POSITIONS[seat.seatId]}
             />
           ))}
         </div>
