@@ -98,19 +98,10 @@ export function PokerTable({ userName, onToast, onMain }: Props) {
       />
 
       {/* 상단 HUD - 우측 상단 (training panel이 상단 중앙) */}
-      <div className="absolute top-1 right-2 z-30 flex items-center gap-1.5">
-        <div className="bg-amber-950/90 border border-amber-600 rounded-full px-2 py-0.5 backdrop-blur-sm shadow-lg">
-          <span className="text-amber-300 text-[9px] font-bold">H#</span>
-          <span className="text-amber-100 text-[11px] font-bold ml-1 tabular-nums">{handNumber}</span>
-        </div>
+      <div className="poker-phase-hud absolute top-1 right-2 z-30" aria-label="현재 라운드">
         <div className="bg-amber-950/90 border border-amber-600 rounded-full px-2 py-0.5 backdrop-blur-sm shadow-lg">
           <span className="text-amber-100 text-[11px] font-bold">{phaseLabel[phase]}</span>
         </div>
-        <div className="bg-rose-950/90 border border-rose-500 rounded-full px-2 py-0.5 backdrop-blur-sm shadow-lg">
-          <span className="text-rose-200 text-[9px] font-bold">POT</span>
-          <span className="text-amber-200 text-[11px] font-bold ml-1 tabular-nums">{livePot.toLocaleString()}</span>
-        </div>
-
       </div>
 
       {/* 테이블 (타원형) */}

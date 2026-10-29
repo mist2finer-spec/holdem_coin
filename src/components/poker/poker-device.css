@@ -96,3 +96,10 @@
 .poker-salon .poker-pot>div{padding:3px 7px}
 .poker-salon .poker-pot span{font-size:10px}
 @container(max-height:700px){.poker-salon .salon-seat{--seat-width:48px;--guest-height:64px}.poker-salon .salon-seat-north .salon-seat-info{top:10px}.poker-salon .salon-seat-self .salon-cards{top:-34px}.poker-salon .salon-seat-self .salon-cards>div{width:28px;height:40px}.poker-salon .poker-board>div>div{width:25px;height:36px}}
+
+/* Keep badge overflow visible; only the north sprite itself is cropped. */
+.poker-salon .salon-guest,.poker-salon .salon-seat-north .salon-guest{overflow:visible}
+.poker-salon .salon-seat-north .salon-guest>img{clip-path:inset(0 0 25% 0)}
+.poker-salon .salon-position{z-index:8;left:0;top:-5px}
+.poker-salon .salon-seat-north .salon-position{left:-5px;top:0}
+.poker-device .poker-phase-hud{top:8px;right:7px}

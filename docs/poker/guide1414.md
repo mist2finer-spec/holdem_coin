@@ -10,3 +10,6 @@ Presentation changes only; no engine or visibility data contract changes. Formal
 
 ## Equal-scale follow-up
 All four sprite views now share 56×78 rendering bounds (48×64 on short screens). North viewport retains that full scale but clips below the chest at the top rail; its anchor moves to 9%, aligned with the smaller table's upper edge. Table footprint is 78%×80%, cards and seat/wager labels are reduced. Action button geometry is unchanged. No AI/game rule edits.
+
+## Header / badge follow-up
+Both solo and socket headers now display only the street label at the right-hand edge. The central live pot remains. North sprite crop retains 75% of its height to include hands. All portrait wrappers permit badge overflow; cropping applies only to the sprite, so SB/BB/D circles are not clipped. Build and app TypeScript checked; browser visual verification remains unavailable.
