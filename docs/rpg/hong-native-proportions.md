@@ -1,0 +1,62 @@
+# Hong SOURCE 4x / LINEAR proportional retarget
+
+Applied after the seam/cloth pass to all four native Hong weapon rigs. The exact
+`hong_sheet_another_2.jpg` was not available in the current workspace or resolved
+file search; the preserved high-resolution source parts sheet and the deployed
+connection revision a4bcd7f are the visual references available for this pass.
+
+## Values and preservation
+
+- center.y: 34 -> 31.5. Both thigh and shin lengths: 15 -> 13.8. Lower-leg and
+  ankle start offsets: 13.8, including Rleg3 (previously 15.5).
+- Leg mesh axial coordinates on thigh/shin influences scale .92 from the prior
+  extended version. Hip rims remain inside the prior -2..0.5 pin range.
+- Weighted local y scales: thigh 1.32, shin 1.24, ankle/foot 1.08. Weights,
+  normalized UVs, mesh topology and the prior chest/skirt protections survive.
+  Foot local x and bone lengths retain their previous boot shape.
+- All upper/forearm bone lengths and arm mesh x scale .92; arm mesh y scales
+  .85. Child joint offsets and foreground wrist targets follow the shortened
+  segments. Rear weapon targets (authored under the torso) compress about the
+  corresponding shoulder rather than about the world origin.
+- Translate distances on forearms/grip targets scale .92, including Bezier
+  value handles, while times and easing types stay intact. The one native arm
+  deform timeline scales its coordinate deltas with the same arm factors.
+  Rotation/scale curves, combat events, IK definitions and weapon mesh shapes
+  are preserved. Attack durations, hit timing and gameplay range/damage are
+  unchanged.
+- IK target setup heights are adjusted to 97% reach: Ltarget.y=5.6720621770,
+  Rtarget.y=5.3840685946. Lowering the hip alone still left one knee at full
+  extension. The corrected idle poses have about 35 degrees of applied knee
+  bend; both orientations are tested across the idle loop.
+- Six leg atlas cells expand the visible thigh/shin alpha spans by 1.24 before
+  rounding to final 4x pixels (measured mean span ratios ~1.25). The expansion
+  fades out between 68% and 78% of cell height; pixels below 78%, including
+  boot toes, are byte-identical. Region bounds, page size 2048x1024, Linear
+  filtering, faces and long-hair textures are unchanged.
+
+The skeletal thickness and pixel volume gains combine; these are separate
+changes as requested. They are not a uniform scale of the whole character.
+
+## Build / review
+
+`npm run rpg:build:hong:native-weapons` runs source extraction/fit, seam assembly,
+and `proportion-hong-native.mjs` / `proportion-hong-textures.py` in that order.
+The proportion pass requires fresh `-seams1` input and refuses reapplication.
+Axe-only rebuilding is supported through `npm run rpg:build:hong:native`.
+
+Previous four JSON rigs and the previous Axe atlas/image are preserved in
+`archive/rpg/hong-native-proportions-v1`. `preview-hong-proportions.mjs` creates
+the immediate-before/after contact sheet. `preview-hong-cloth.mjs` can generate
+30fps frames using actual physics for GIF review.
+
+Validation: 134 RPG tests, TypeScript, production build and four-weapon browser
+load/equip/attack/foot-ground checks. Tests cover exact weighted scaling,
+unchanged weights, hip pins, visible shaft expansion, unchanged boot pixels,
+idle knee bend, retargeted translation/easing and mirrored cloth behavior.
+Formal verification is skipped: visual retargeting is covered by these checks
+and does not change gameplay state or concurrency.
+
+The full build pipeline was rerun and all 12 runtime JSON/atlas/PNG hashes matched
+its first output. The final four-weapon browser checks passed with maximum foot
+ground error below .00003 CSS pixels. Review files: hong-proportions.png and
+hong-proportions.gif. Previous connection previews remain as historical results.

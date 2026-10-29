@@ -1,3 +1,4 @@
+import {assertNativeBoneTimelines}from './assert-hong-retarget';
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
 import {TextureAtlas,CanvasTexture,SkeletonJson,AtlasAttachmentLoader,Skeleton,Physics,MixBlend,MixDirection} from '@esotericsoftware/spine-canvas';
 import {groundSkeleton,attachmentBottom} from '../../src/components/rpg/hunt-ground';
@@ -5,11 +6,11 @@ import {hongNativeName,hongNativeContact,HONG_NATIVE_FOOT_SLOTS,HONG_NATIVE_BODY
 const root='public/rpg/characters/hong/native-axe/',raw=JSON.parse(fs.readFileSync(root+'hong.json','utf8')),original=JSON.parse(fs.readFileSync('archive/rpg/hong-native-v1/source.json','utf8'));
 function rig(){const atlas=new TextureAtlas(fs.readFileSync(root+'hong.atlas','utf8'));for(const p of atlas.pages)p.setTexture(new CanvasTexture({width:p.width,height:p.height} as HTMLImageElement));return new SkeletonJson(new AtlasAttachmentLoader(atlas)).readSkeletonData(raw);}
 test('native Hong fit changes bind dimensions while preserving all original animation channels and constraints',()=>{
- assert.equal(raw.bones.length,45);for(const [name,clip]of Object.entries(raw.animations)as [string,any][])for(const key of ['bones','ik','transform','events','slots'])assert.deepEqual(clip[key],original.animations[name][key]);assert.deepEqual(raw.ik,original.ik);assert.deepEqual(raw.transform,original.transform);
+ assert.equal(raw.bones.length,45);for(const [name,clip]of Object.entries(raw.animations)as [string,any][]){assertNativeBoneTimelines(clip.bones,original.animations[name].bones);for(const key of ['ik','transform','events','slots'])assert.deepEqual(clip[key],original.animations[name][key]);}assert.deepEqual(raw.ik,original.ik);assert.deepEqual(raw.transform,original.transform);
  const b=(n:string)=>raw.bones.find((b:any)=>b.name===n);
- assert.equal(b('center').y,34);for(const n of ['Rleg','Lleg','Rleg2','Lleg2'])assert.equal(b(n).length,15);
+ assert.equal(b('center').y,31.5);for(const n of ['Rleg','Lleg','Rleg2','Lleg2'])assert.equal(b(n).length,13.8);
  assert.equal(b('Larm').y,8);assert.equal(b('LShoulder').y,8);assert.equal(b('Rarm').y,-3.5);
- for(const n of ['Rleg2','Lleg2','Lleg3'])assert.equal(b(n).x,15);assert.equal(b('Rleg3').x,15.5);
+ for(const n of ['Rleg2','Lleg2','Lleg3'])assert.equal(b(n).x,13.8);assert.equal(b('Rleg3').x,13.8);
  for(const a of Object.values(raw.skins[0].attachments.body) as any[]){let i=0,count=0;while(i<a.vertices.length){const n=a.vertices[i++];let sum=0,leg=0;for(let j=0;j<n;j++){const[bone,x,y,w]=a.vertices.slice(i,i+4);i+=4;assert.ok([x,y,w].every(Number.isFinite));sum+=w;if(bone===8||bone===10)leg+=w;}assert.ok(Math.abs(sum-1)<1e-8);assert.ok(leg<=.450001);count++;}assert.equal(count,a.uvs.length/2);}
 });
 test('all 32 fitted native clips ground and mirror, with finite weighted meshes and unchanged event counts',()=>{
@@ -64,5 +65,43 @@ test('hair uses native cloth bones behind the body; rigid faces never inherit cl
   const data=(()=>{const atlas=new TextureAtlas(fs.readFileSync(`public/rpg/characters/hong/native-${weapon}/hong.atlas`,'utf8'));for(const p of atlas.pages)p.setTexture(new CanvasTexture({width:p.width,height:p.height}as HTMLImageElement));return new SkeletonJson(new AtlasAttachmentLoader(atlas)).readSkeletonData(r);})();
   Skeleton.yDown=true;
   for(const clip of data.animations)for(const facing of [-1,1]){const s=new Skeleton(data);s.scaleX=facing;for(let f=0;f<=30;f++){clip.apply(s,Math.max(0,clip.duration*(f-1)/30),clip.duration*f/30,false,[],1,MixBlend.replace,MixDirection.mixIn);s.update(1/60);s.updateWorldTransform(Physics.update);assert.ok(s.bones.every(b=>[b.worldX,b.worldY,b.a,b.b,b.c,b.d].every(Number.isFinite)));const order=s.drawOrder.map(v=>v.data.name);for(const hair of ['hong-hair-under','hong-hair-over']){assert.ok(order.indexOf(hair)<order.indexOf('body'));const slot=s.findSlot(hair)!,mesh=slot.getAttachment()as any;if(!mesh)continue;const v=new Float32Array(mesh.worldVerticesLength);mesh.computeWorldVertices(slot,0,v.length,v,0,2);const dx=v[2]-v[0],dy=v[3]-v[1];for(let row=1;row<7;row++){const i=row*4;assert.ok((v[i+2]-v[i])*dx+(v[i+3]-v[i+1])*dy>0,weapon+' '+clip.name+' hair cross-section folded');}}}}
+ }
+});
+
+test('proportions shorten bones/arms and widen each weighted leg segment without changing weights or hip pins',()=>{
+ for(const weapon of ['axe','sword','dual','spear']){
+  const before=JSON.parse(fs.readFileSync(`archive/rpg/hong-native-proportions-v1/${weapon}.json`,'utf8')),after=JSON.parse(fs.readFileSync(`public/rpg/characters/hong/native-${weapon}/hong.json`,'utf8'));
+  const b=(r:any,n:string)=>r.bones.find((v:any)=>v.name===n);assert.equal(b(after,'center').y,31.5);
+  for(const n of ['Rleg','Rleg2','Lleg','Lleg2'])assert.equal(b(after,n).length,13.8);
+  for(const n of ['Rleg2','Lleg2','Lleg3','Rleg3'])assert.equal(b(after,n).x,13.8);
+  for(const n of ['Larm','Larm2','Rarm','Rarm2'])assert.ok(Math.abs(b(after,n).length-b(before,n).length*.92)<1e-8);
+  for(const n of ['Larm2','Rarm2','Rarm3','Rarm4'])assert.ok(Math.abs(b(after,n).x-b(before,n).x*.92)<1e-8);
+  for(const slot of ['Larm','Rarm','Lleg2','Rleg'])for(const [name,a]of Object.entries(before.skins[0].attachments[slot])as [string,any][]){
+   const aa=after.skins[0].attachments[slot][name];assert.deepEqual(aa.uvs,a.uvs);assert.deepEqual(aa.triangles,a.triangles);
+   if(a.vertices.length===a.uvs.length){for(let i=0;i<a.vertices.length;i++)assert.ok(Math.abs(aa.vertices[i]-a.vertices[i]*(i%2?.85:.92))<1e-8);continue;}
+   const old=rows(a.vertices),next=rows(aa.vertices);assert.equal(next.length,old.length);
+   for(let i=0;i<old.length;i++)for(let j=0;j<old[i].length;j++){
+    const v=old[i][j],n=next[i][j];assert.equal(n.bone,v.bone);assert.equal(n.w,v.w);
+    const arm=[4,5,6,7].includes(v.bone),leg=[8,9,10,11].includes(v.bone),sy=arm?.85:[8,10].includes(v.bone)?1.32:[9,11].includes(v.bone)?1.24:[23,24].includes(v.bone)?1.08:1;
+    assert.ok(Math.abs(n.x-v.x*(arm||leg?.92:1))<1e-8);assert.ok(Math.abs(n.y-v.y*sy)<1e-8);
+   }
+  }
+  // Cosmetic heads and hair, including their weights, remain exactly the seam revision.
+  for(const slot of ['head','hong-hair-under','hong-hair-over'])assert.deepEqual(after.skins[0].attachments[slot],before.skins[0].attachments[slot]);
+ }
+});
+test('leg shaft alpha grows at least 20% inside all six cells while boot pixels and atlas layout stay fixed',async()=>{
+ const {createCanvas,loadImage}=await import('@napi-rs/canvas');
+ const atlas=new TextureAtlas(fs.readFileSync(root+'hong.atlas','utf8'));assert.deepEqual(fs.readFileSync(root+'hong.atlas'),fs.readFileSync('archive/rpg/hong-native-proportions-v1/hong.atlas'));
+ const pix=async(p:string)=>{const im=await loadImage(p),c=createCanvas(im.width,im.height),ctx=c.getContext('2d');ctx.drawImage(im,0,0);return ctx.getImageData(0,0,im.width,im.height).data;};
+ const before=await pix('archive/rpg/hong-native-proportions-v1/hong.png'),after=await pix(root+'hong.png');
+ for(const name of ['hong_Lleg1','hong_Lleg2','hong_B_Lleg1','hong_B_Lleg2','hong_Rleg','hong_B_Rleg']){
+  const r=atlas.findRegion(name)!;let old=0,next=0;for(let y=0;y<r.height;y++)for(let x=0;x<r.width;x++){const i=((r.y+y)*2048+r.x+x)*4;if(y/r.height>=.15&&y/r.height<.68){if(before[i+3]>=128)old++;if(after[i+3]>=128)next++;}if(y>=Math.ceil(r.height*.78))for(let k=0;k<4;k++)assert.equal(after[i+k],before[i+k]);}assert.ok(next>=old*1.2,name+' leg shaft too narrow');
+ }
+});
+test('all weapons keep slightly bent knees during default idle instead of locking at full IK extension',()=>{
+ for(const weapon of ['axe','sword','dual','spear']){
+  const atlas=new TextureAtlas(fs.readFileSync(`public/rpg/characters/hong/native-${weapon}/hong.atlas`,'utf8'));for(const p of atlas.pages)p.setTexture(new CanvasTexture({width:p.width,height:p.height}as HTMLImageElement));const data=new SkeletonJson(new AtlasAttachmentLoader(atlas)).readSkeletonData(JSON.parse(fs.readFileSync(`public/rpg/characters/hong/native-${weapon}/hong.json`,'utf8')));
+  for(const facing of [-1,1])for(const t of [0,.4,.8,1.2]){const s=new Skeleton(data);s.scaleX=facing;data.findAnimation('stay1')!.apply(s,0,t,false,[],1,MixBlend.replace,MixDirection.mixIn);s.updateWorldTransform(Physics.pose);for(const name of ['Lleg2','Rleg2']){const knee=s.findBone(name)!;assert.ok(Math.abs(knee.arotation)>10&&Math.abs(knee.arotation)<65,weapon+' '+name+' idle knee extension');}}
  }
 });

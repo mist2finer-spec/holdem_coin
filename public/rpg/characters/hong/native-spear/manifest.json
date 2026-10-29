@@ -78,5 +78,71 @@
       1254,
       1254
     ]
-  }
+  },
+  "proportions": {
+    "revision": 1,
+    "centerHeight": 31.5,
+    "legLength": 13.8,
+    "legAxis": 0.92,
+    "thighThickness": 1.32,
+    "shinThickness": 1.24,
+    "ankleThickness": 1.08,
+    "armLength": 0.92,
+    "armThickness": 0.85,
+    "gripTranslations": [
+      "Larm2",
+      "Rarm2",
+      "Rarm3",
+      "Rarm4",
+      "bone3",
+      "bone4",
+      "B_wp3"
+    ],
+    "kneeReach": {
+      "Lleg": {
+        "targetY": 5.672062177014489,
+        "reachRatio": 0.97
+      },
+      "Rleg": {
+        "targetY": 5.3840685945734315,
+        "reachRatio": 0.97
+      }
+    },
+    "legVertices": 237,
+    "armVertices": 180,
+    "textureVolume": {
+      "hong_B_Lleg1": {
+        "shaftWidthRatio": 1.250655021834061,
+        "shaftGain": 1.24,
+        "bootStart": 91
+      },
+      "hong_B_Lleg2": {
+        "shaftWidthRatio": 1.2523645743766123,
+        "shaftGain": 1.24,
+        "bootStart": 91
+      },
+      "hong_B_Rleg": {
+        "shaftWidthRatio": 1.2547279042840602,
+        "shaftGain": 1.24,
+        "bootStart": 94
+      },
+      "hong_Lleg1": {
+        "shaftWidthRatio": 1.2523787947439964,
+        "shaftGain": 1.24,
+        "bootStart": 97
+      },
+      "hong_Lleg2": {
+        "shaftWidthRatio": 1.25,
+        "shaftGain": 1.24,
+        "bootStart": 97
+      },
+      "hong_Rleg": {
+        "shaftWidthRatio": 1.251892346509672,
+        "shaftGain": 1.24,
+        "bootStart": 100
+      }
+    }
+  },
+  "centerHeight": 31.5,
+  "legLengths": 13.8
 }

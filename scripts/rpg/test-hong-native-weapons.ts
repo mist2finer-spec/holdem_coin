@@ -1,3 +1,4 @@
+import {assertNativeBoneTimelines}from './assert-hong-retarget';
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
 import {TextureAtlas,CanvasTexture,SkeletonJson,AtlasAttachmentLoader,Skeleton,Skin,Physics,MixBlend,MixDirection}from '@esotericsoftware/spine-canvas';
 import {attachmentBottom,groundSkeleton}from '../../src/components/rpg/hunt-ground';
@@ -20,7 +21,7 @@ for(const [weapon,type,region]of variants){
  test(`${weapon}: Hong retains distinct native timelines, grip meshes and 4x atlas through all clips`,()=>{
   const raw=JSON.parse(fs.readFileSync(root+'/hong.json','utf8')),source=JSON.parse(fs.readFileSync(originalRoot+'/Hero_'+type+'01.json','utf8')),data=load(root,'hong');
   assert.deepEqual(raw.ik,source.ik);assert.deepEqual(raw.transform,source.transform);
-  for(const [name,clip]of Object.entries(raw.animations)as [string,any][]){for(const key of ['bones','ik','transform','events'])assert.deepEqual(clip[key],source.animations[name][key]);}
+  for(const [name,clip]of Object.entries(raw.animations)as [string,any][]){assertNativeBoneTimelines(clip.bones,source.animations[name].bones);for(const key of ['ik','transform','events'])assert.deepEqual(clip[key],source.animations[name][key]);}
   assert.equal(data.animations.length,32);assert.equal(data.bones.length,45);const atlas=fs.readFileSync(root+'/hong.atlas','utf8');assert.match(atlas,/size:2048,1024/);assert.ok(atlas.includes('\n'+region+'\n'));assert.ok(!atlas.includes('axe07'));
   const ws=source.skins.find((s:any)=>s.name==='weapon/grade7').attachments;for(const [slot,atts]of Object.entries(ws))assert.deepEqual(raw.skins[0].attachments[slot],atts);
   const loadout=weaponLoadout('hong',weapon);for(const stage of loadout.combo)assert.ok(data.findAnimation(stage.animation));
