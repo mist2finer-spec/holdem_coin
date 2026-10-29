@@ -103,3 +103,29 @@
 .poker-salon .salon-position{z-index:8;left:0;top:-5px}
 .poker-salon .salon-seat-north .salon-position{left:-5px;top:0}
 .poker-device .poker-phase-hud{top:8px;right:7px}
+
+/* 2.5D standing layout. Seat origins are hand/rail anchors, not sprite centres.
+   Keep the top and bottom anchors tied to the same table bounds. */
+.poker-salon .salon-felt{inset:14% 14% 16%;width:72%;height:70%;z-index:2;isolation:isolate;filter:drop-shadow(0 16px 9px #0009)}
+.salon-felt>svg{position:relative;display:block;width:100%;height:100%;z-index:1;overflow:visible}
+.salon-table-skirt{position:absolute;inset:0;translate:0 10px;border-radius:42% / 24%;background:linear-gradient(#11121c 55%,#3b2e2a 90%,#13101a);border:1px solid #0b0c13;box-shadow:0 5px 5px #0007}
+.poker-salon .salon-seat{--hand-reach:10px;top:var(--seat-top);height:0;translate:-50% 0;z-index:12}
+.poker-salon .salon-seat-west{left:calc(14% - var(--hand-reach))}
+.poker-salon .salon-seat-east{left:calc(86% + var(--hand-reach))}
+.poker-salon .salon-seat-north{top:14%;left:50%;z-index:4}
+.poker-salon .salon-seat-self{top:84%;left:50%;z-index:24}
+.poker-salon .salon-guest,.poker-salon .salon-seat-north .salon-guest{position:absolute;top:calc(var(--guest-height) * var(--hand-level) * -1);left:0;height:var(--guest-height);overflow:visible}
+.poker-salon .salon-guest>img,.poker-salon .salon-seat-north .salon-guest>img{clip-path:none}
+.poker-salon .salon-seat-north .salon-guest>img{clip-path:inset(0 0 calc(100% - var(--hand-cut) - 4%) 0)}
+.poker-salon .salon-guest::before{content:'';position:absolute;bottom:1px;left:24%;width:52%;height:5px;border-radius:50%;background:#0008;filter:blur(2px);z-index:-1}
+.poker-salon .salon-seat-north .salon-guest::before{display:none}
+.poker-salon .salon-seat-info,.poker-salon .salon-seat-north .salon-seat-info{position:absolute;top:calc(var(--guest-height) * (1 - var(--hand-level)) + 2px);left:0;margin:0;width:var(--seat-width)}
+.poker-salon .salon-seat-north .salon-seat-info{top:6px}
+.poker-salon .salon-position{position:absolute;top:-10px;z-index:30;margin:0}
+.poker-salon .salon-seat-west .salon-position{left:calc(100% + 6px)}
+.poker-salon .salon-seat-east .salon-position{left:-24px}
+.poker-salon .salon-seat-north .salon-position{top:3px;left:calc(100% + 6px)}
+.poker-salon .salon-seat-self .salon-position{top:-24px;left:calc(100% + 12px)}
+.poker-salon .salon-seat-self .salon-cards{top:calc(var(--guest-height) * var(--hand-level) * -1 - 52px);z-index:2}
+.poker-salon .salon-seat-north .salon-fold{top:12px}
+@container(max-height:700px){.poker-salon .salon-seat{--hand-reach:9px}.poker-salon .salon-seat-self .salon-cards{top:calc(var(--guest-height) * var(--hand-level) * -1 - 45px)}}
