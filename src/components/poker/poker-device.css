@@ -39,3 +39,16 @@
 .poker-salon .poker-bet::after{display:none}
 @container(max-height:700px){.poker-device .poker-table-layout{grid-template-rows:minmax(0,1fr) calc(146px + env(safe-area-inset-bottom,0px))}.poker-device .poker-arena{padding-top:42px}.salon-guest{height:62px;width:60px}.salon-seat{width:60px}.salon-seat-info strong{font-size:8px}.salon-seat-info span{font-size:9px}.salon-seat-self .salon-cards{top:-42px}.salon-seat-self .salon-cards>div{width:34px;height:47px}.salon-seat-west .salon-cards{left:50px}.salon-seat-east .salon-cards{right:50px}.salon-seat-north .salon-cards{top:62px}.poker-salon .poker-board>div>div{width:28px;height:40px}.poker-device .poker-action-row{min-height:68px}.poker-device .poker-main-action{height:41px}}
 @media(prefers-reduced-motion:reduce){.salon-seat-active .salon-guest{transition:none}}
+/* Guide 2: standing guests meet the rail; the north guest sits behind it. */
+.poker-salon .salon-felt{inset:5% 9% 7%;width:82%;height:88%}
+.poker-salon .salon-seat-north .salon-guest>img{clip-path:inset(0 0 44% 0)}
+.poker-salon .salon-seat-north .salon-seat-info{margin-top:-33px}
+.poker-salon .salon-seat-north .salon-cards{top:66px}
+.poker-salon .salon-seat-self .salon-cards{top:-43px}
+.poker-device .poker-fold-result{top:48%;transform:translate(-50%,-50%);max-height:20%;overflow:auto}
+/* Fixed corner anchors prevent flex compression clipping the bottom rank. */
+.poker-device .salon-cards>div.relative>div:first-child{position:absolute;left:2px;top:2px}
+.poker-device .salon-cards>div.relative>div:last-child{position:absolute;right:2px;bottom:2px;align-items:flex-start}
+.poker-device .salon-seat-self .salon-cards>div.relative>div:first-child>span,
+.poker-device .salon-seat-self .salon-cards>div.relative>div:last-child>span{font-size:11px;line-height:1}
+@container(max-height:700px){.poker-salon .salon-seat-north .salon-seat-info{margin-top:-26px}.poker-salon .salon-seat-north .salon-cards{top:52px}}
