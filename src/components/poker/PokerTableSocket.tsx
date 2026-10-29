@@ -7,7 +7,8 @@ import {PokerActionButtons} from "./PokerActionButtons";
 import { LIVE_RULES } from "@/lib/poker-live";
 import { usePokerSocket } from "./usePokerSocket";
 import { CLIENT_REVISION, useReleaseUpdate } from "./useReleaseUpdate";
-import { IslandSeat } from "./IslandSeat";
+import {SalonSeat, SALON_EIGHT_POSITIONS, SALON_SIX_POSITIONS, salonWagerPosition} from "./SalonSeat";
+import {SalonTableSurface} from "./SalonTableSurface";
 import { TableBet } from "./TableBet";
 import { PlayingCard } from "./PlayingCard";
 import {HandAwards} from "./HandAwards";
@@ -104,6 +105,7 @@ export function PokerTableSocket({ userName, onToast, tableSize=8, onMain,tourna
 
   // 유저 시트 찾기
   const userSeat = rotatedSeats.find(s => s.isMe);
+  const salonPositions=tableSize===6?SALON_SIX_POSITIONS:SALON_EIGHT_POSITIONS;
 
   // 연결 대기 화면
   if (!connected) {
@@ -119,7 +121,7 @@ export function PokerTableSocket({ userName, onToast, tableSize=8, onMain,tourna
   }
 
   return (
-    <div className="poker-table-layout w-full relative overflow-hidden bg-gradient-to-b from-slate-950 via-emerald-950 to-slate-950">
+    <div className="poker-table-layout poker-salon w-full relative overflow-hidden bg-gradient-to-b from-slate-950 via-emerald-950 to-slate-950">
       <button className="poker-room-exit" onClick={onMain}>← 로비로</button>
       {updateAvailable && (
         <div role="status" className="absolute top-10 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 rounded-lg border border-amber-500 bg-slate-950 px-4 py-2 text-sm text-amber-100 shadow-lg">
@@ -177,8 +179,7 @@ export function PokerTableSocket({ userName, onToast, tableSize=8, onMain,tourna
       {tournamentState&&<div className="tournament-round" aria-label="토너먼트 라운드와 남은 시간"><span>Round {tournamentState.level}</span><span>Time left: {tournamentTime(nextSeconds)}</span></div>}
 
         <div className="poker-table-surface relative w-[min(98vw,1100px)] h-full max-h-[640px]">
-          <div className="absolute inset-0 rounded-[50%] bg-gradient-to-br from-amber-950 via-amber-900 to-amber-950 shadow-[0_0_60px_rgba(0,0,0,0.8),inset_0_0_30px_rgba(0,0,0,0.6)]" />
-          <div className="absolute inset-2 sm:inset-3 rounded-[50%] bg-gradient-to-br from-emerald-900 via-emerald-950 to-emerald-900 shadow-[inset_0_0_50px_rgba(0,0,0,0.7)] border-2 border-amber-700/40" />
+          <SalonTableSurface/>
 
           {/* 보드 카드 */}
           <div className="poker-board absolute top-[40%] left-1/2 -translate-x-1/2 -translate-y-1/2 flex gap-1 sm:gap-2 z-10">
@@ -211,7 +212,7 @@ export function PokerTableSocket({ userName, onToast, tableSize=8, onMain,tourna
           }))}/>}
 
           {rotatedSeats.map(seat => (
-            <TableBet key={`bet-${seat.seatId}`} amount={seat.currentBet} formatMoney={money} name={seat.name} position={seat.position} />
+            <TableBet key={`bet-${seat.seatId}`} amount={seat.currentBet} formatMoney={money} name={seat.name} position={salonPositions[seat.seatId]} lane={salonWagerPosition(salonPositions[seat.seatId])} />
           ))}
 
           {/* 8개 좌석 (시점 회전 적용) */}
@@ -225,7 +226,7 @@ export function PokerTableSocket({ userName, onToast, tableSize=8, onMain,tourna
               isSmallBlind={rotatedSmallBlindSeat === i}
               isBigBlind={rotatedBigBlindSeat === i}
               showCards={showdownReveal || bluffReveal === seat.originalSeatId}
-              position={seat.position}
+              position={salonPositions[i]}
             />
           ))}
         </div>
@@ -456,8 +457,8 @@ function SocketPlayerSeat({
   // ★ 카드 표시 로직:
   // - 본인(isMe): 폴드해도 카드 계속 보임 + 폴드 오버레이
   // - 다른 플레이어: 폴드 시 카드 숨김, 쇼다운 시 공개
-  return <IslandSeat name={seat.name} stack={seat.stack} stackLabel={stackLabel} holeCards={holeCards}
-    folded={seat.folded} isMe={seat.isMe} portrait={seat.isMe?4:seat.portrait}
+  return <SalonSeat seat={{name:seat.name,stack:seat.stack,isUser:seat.isMe,folded:seat.folded,holeCards}}
+    stackLabel={stackLabel} portrait={seat.isMe?7:seat.portrait}
     isActive={isActive} isDealer={isDealer} isSmallBlind={isSmallBlind} isBigBlind={isBigBlind}
     showCards={showCards} position={position}/>;
 }

@@ -1,0 +1,12 @@
+{
+  "character": "teal-twins",
+  "source": "archive/poker/teal-twins-table-original.jpg",
+  "frontBack": "source crops; no regeneration",
+  "sides": "generated true profiles",
+  "canvas": [
+    256,
+    360
+  ],
+  "footY": 348,
+  "preservedPoses": "archive/poker/teal-twins-table-poses"
+}
