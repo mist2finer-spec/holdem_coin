@@ -129,3 +129,6 @@
 .poker-salon .salon-seat-self .salon-cards{top:calc(var(--guest-height) * var(--hand-level) * -1 - 52px);z-index:2}
 .poker-salon .salon-seat-north .salon-fold{top:12px}
 @container(max-height:700px){.poker-salon .salon-seat{--hand-reach:9px}.poker-salon .salon-seat-self .salon-cards{top:calc(var(--guest-height) * var(--hand-level) * -1 - 45px)}}
+/* Keep state labels above faces and position badges clear of named wager boxes. */
+.poker-salon .salon-fold,.poker-salon .salon-seat-north .salon-fold{top:-12px}
+.poker-salon .salon-seat-west .salon-position,.poker-salon .salon-seat-east .salon-position{top:-39px}
