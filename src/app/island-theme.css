@@ -1,0 +1,146 @@
+/* Visual language from island_holdem_rpg_ui.html. Game layout and rules stay local
+   to each feature. Selectors deliberately exclude the battle canvas / art. */
+:root {
+  --island-deep: #0a0e14;
+  --island-panel: #142028;
+  --island-elevated: #1c2e38;
+  --island-gold: #d4af37;
+  --island-gold-bright: #ffe27a;
+  --island-gold-dim: #8b6914;
+  --island-teal: #2dd4bf;
+  --island-teal-bright: #5eead4;
+  --island-muted: #94a3b8;
+}
+
+/* One CSS button skin also works inside portalled poker menus. */
+button.island-action {
+  --action-edge: var(--island-gold);
+  --action-text: var(--island-gold-bright);
+  color: var(--action-text);
+  background: linear-gradient(145deg, #243a48, #0a0e14);
+  border: 1px solid var(--action-edge);
+  border-radius: 5px;
+  box-shadow: inset 0 1px 0 #ffffff15, inset 0 -3px 8px #0005, 0 2px 5px #0005;
+  text-shadow: 0 1px 2px #000;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: .035em;
+}
+button.island-action-blue { --action-edge: #2dd4bf; --action-text: #a5fff0; }
+button.island-action-red { --action-edge: #f87171; --action-text: #ffb6b6; background: linear-gradient(145deg,#38232c,#130f18); }
+button.island-action:enabled:hover { filter: brightness(1.17); box-shadow: inset 0 1px 0 #ffffff20, 0 0 9px color-mix(in srgb,var(--action-edge) 28%,transparent); }
+button.island-action:enabled:active { filter: brightness(.9); }
+button.island-action:disabled { cursor: not-allowed; box-shadow: none; }
+button.island-action:focus-visible,
+:is(.hunt-device,.island-lobby,.island-start,.poker-device,.poker-pot-menu) :is(button,a,input):focus-visible {
+  outline: 2px solid var(--island-teal-bright); outline-offset: 3px;
+}
+
+/* Lobby keeps its illustration and background, with the same panel vocabulary. */
+.island-lobby .island-dialogue,
+.island-lobby .lobby-name-form,
+.island-lobby .lobby-overlay>section,
+.island-modal>section {
+  color: #e0e0e0;
+  background: linear-gradient(160deg,#142028f5,#1c2e38f5);
+  border: 1px solid var(--island-gold);
+  border-radius: 8px;
+  box-shadow: inset 0 0 20px #0005,0 0 15px #d4af3718;
+}
+.island-lobby .island-dialogue>span { color: var(--island-teal-bright); }
+.island-lobby .island-dialogue h1 { color: var(--island-gold-bright); }
+.island-lobby .island-modes button,
+.island-lobby .island-tournament,
+.island-lobby .lobby-shop-buttons button,
+.island-lobby .lobby-rank-button,
+.island-lobby .lobby-name-form button,
+.island-lobby .island-back,
+.island-start .island-entry-buttons button {
+  background: linear-gradient(145deg,#243a48ed,#0a0e14f5);
+  border: 1px solid var(--island-gold);
+  border-radius: 6px;
+  color: var(--island-gold-bright);
+  box-shadow: inset 0 1px 0 #ffffff12,0 3px 10px #0005;
+}
+.island-lobby .island-modes button:first-child { border-color: var(--island-teal); }
+.island-lobby .island-modes small,.island-lobby .island-tournament span { color: #acbfcd; }
+.island-lobby :is(.island-name-input,.lobby-name-form input) { background:#0a0e14; border-color:#8b6914; color:#ffe27a; border-radius:4px; }
+
+/* Poker: retain card / wager positions and the stable action row. */
+.poker-device-stage { background: radial-gradient(ellipse at top,#1a2832,#0a0e14 70%); }
+.poker-device .poker-table-layout.poker-salon { background: radial-gradient(ellipse at top,#1c2e38,#0a0e14 85%); }
+.poker-device .poker-action-area { background: linear-gradient(#142028,#0a0e14); border-top:1px solid #8b6914; }
+.poker-device .poker-action-area>div>div {
+  background: linear-gradient(160deg,#142028,#1c2e38);
+  border:1px solid #d4af3780; border-radius:7px; box-shadow:inset 0 0 20px #0003;
+}
+.poker-device .poker-room-exit,
+.poker-device .island-preaction { background:linear-gradient(145deg,#243a48,#0a0e14); border:1px solid #8b6914; border-radius:5px; color:#ffe27a; }
+.poker-device .poker-raise-control>div>button { color:#5eead4; }
+.poker-device .poker-raise-control>div>button:disabled { color:#64748b; }
+.poker-device .poker-pot>div { background:linear-gradient(#1c2e38,#0a0e14); border-color:#d4af37; box-shadow:0 0 10px #d4af3720; }
+.poker-device .poker-bet { background:#0a0e14ed; border-color:#d4af37; color:#ffe27a; font-variant-numeric:tabular-nums; }
+.poker-device .poker-bet-owner { color:#5eead4; }
+.poker-device .salon-seat-info strong { background:#142028ed; border-color:#2dd4bf70; color:#d4fff8; border-radius:3px; }
+.poker-device .salon-seat-info span { background:#0a0e14ed; border-color:#8b6914; color:#ffe27a; border-radius:3px; }
+.poker-pot-menu.poker-pot-menu { background:linear-gradient(#142028,#0a0e14); border:1px solid #d4af37; border-radius:6px; color:#e0e0e0; box-shadow:0 0 16px #0009; }
+
+/* RPG: the existing portrait viewport and responsive control geometry are kept. */
+.hunt-device-stage { background:radial-gradient(ellipse at top,#1a2832,#0a0e14 70%); }
+.hunt-device .hunt-shell { color:#e0e0e0; background:#0a0e14; }
+.hunt-device .hunt-header,
+.hunt-device .hunt-footer,
+.hunt-device .hunt-selection-start { background:linear-gradient(#142028,#0a0e14); border-color:#8b6914; }
+.hunt-device .hunt-console {
+  border-top:1px solid #d4af37;
+  background:linear-gradient(#142028,#1c2e38);
+  box-shadow:inset 0 0 28px #0004;
+}
+.hunt-device .hunt-lower { background:#142028; }
+.hunt-device .hunt-identity { background:#142028e8; border-color:#d4af37; }
+.hunt-device .hunt-identity>img { border-color:#d4af37; }
+.hunt-device .hunt-identity strong { color:#ffe27a; }
+.hunt-device .hunt-identity small,.hunt-device .hunt-location>small { color:#5eead4; }
+.hunt-device .hunt-currencies>span { background:#0a0e14; border-color:#8b6914; border-radius:4px; color:#ffe27a; font-variant-numeric:tabular-nums; }
+.hunt-device :is(.hunt-back,.hunt-menu-toggle,.hunt-drawer button,.hunt-mode-row button,.hunt-footer button,.hunt-window-content button,.armory-actions button,.armory-armor button,.development-row button,.development-feature>button,.development-traits>button,.hunt-selection-start button) {
+  color:#ffe27a; background:linear-gradient(145deg,#243a48,#0a0e14);
+  border:1px solid #8b6914; border-radius:5px; box-shadow:inset 0 1px 0 #ffffff12;
+}
+.hunt-device :is(.hunt-footer button[aria-pressed=true],.hunt-mode-row button.is-on,.development-tabs button[aria-pressed=true],.armory-categories button[aria-pressed=true],.development-batches button[aria-pressed=true]) {
+  color:#5eead4; border-color:#2dd4bf; background:#2dd4bf14; box-shadow:inset 0 -2px 0 #2dd4bf;
+}
+.hunt-device .hunt-footer button { border-color:transparent; }
+.hunt-device .hunt-skill { padding:3px; background:linear-gradient(#243a48,#0a0e14); border:1px solid #2dd4bf; border-radius:5px; box-shadow:0 0 7px #2dd4bf22; }
+.hunt-device .hunt-skill>img { border-radius:2px; }
+.hunt-device .hunt-skill>span { color:#ffe27a; background:#0a0e14dc; padding:1px 3px; border-radius:2px; font-family:var(--font-geist-mono),monospace; }
+.hunt-device .hunt-skill[aria-pressed=true] { outline-color:#ffe27a; border-color:#d4af37; }
+.hunt-device .hunt-skill-reserved { color:#5eead4; background:#0a0e14ed; }
+.hunt-device :is(.hunt-dodge,.hunt-parry) { color:#5eead4; border:1px solid #2dd4bf; background:radial-gradient(at 35% 20%,#243a48,#0a0e14); box-shadow:inset 0 0 10px #2dd4bf15,0 0 7px #2dd4bf15; }
+.hunt-device .hunt-joystick { background:#0a0e1460; border-color:#2dd4bf66; }
+.hunt-device .hunt-stick { border-color:#5eead4; background:radial-gradient(at 35% 25%,#5eead4,#142028); }
+.hunt-device .hunt-stick-rail { color:#5eead477; }
+.hunt-device .hunt-vitals span { color:#94a3b8; }
+.hunt-device .hunt-vitals meter { accent-color:#dc2626; }
+.hunt-device .hunt-vitals meter::-webkit-meter-bar { background:#0a0e14; border:0; }
+.hunt-device .hunt-vitals meter::-webkit-meter-optimum-value { background:linear-gradient(90deg,#dc2626,#f87171); }
+.hunt-device .hunt-vitals meter::-moz-meter-bar { background:linear-gradient(90deg,#dc2626,#f87171); }
+.hunt-device .hunt-vitals progress { accent-color:#a855f7; }
+.hunt-device .hunt-vitals progress::-webkit-progress-value { background:linear-gradient(90deg,#a855f7,#c084fc); }
+.hunt-device .hunt-vitals progress::-moz-progress-bar { background:linear-gradient(90deg,#a855f7,#c084fc); }
+.hunt-device :is(.hunt-window,.hunt-armory,.hunt-development) { background:linear-gradient(#142028,#1c2e38); color:#e0e0e0; border-color:#d4af37; }
+.hunt-device :is(.armory-toolbar,.development-header) { background:#0a0e14b0; border-color:#d4af3760; }
+.hunt-device :is(.armory-toolbar strong,.development-header strong,.hunt-window-content h2) { color:#5eead4; }
+.hunt-device :is(.armory-item,.armory-detail-icon,.development-row,.development-traits>button) { background:linear-gradient(#1c2e38,#0a0e14); border:1px solid #8b6914; border-radius:4px; }
+.hunt-device .armory-item.is-selected { outline:2px solid #2dd4bf; background:#2dd4bf15; }
+.hunt-device .armory-equipped { color:#a5fff0; background:#13534e; }
+.hunt-device .armory-upgrade { border-color:#d4af37; color:#ffe27a; }
+.hunt-device .development-batches { background:#0a0e14; }
+.hunt-device .hunt-selection { background:linear-gradient(#0a0e14c9,#142028e8),url('/island/main_bg.jpg') center/cover; }
+.hunt-device .hunt-roster-card { background:#142028; border:1px solid #8b6914; border-radius:6px; }
+.hunt-device .hunt-roster-card.is-selected { border-color:#2dd4bf; box-shadow:0 0 12px #2dd4bf40; }
+.hunt-device .hunt-selection-heading small { color:#5eead4; }
+.hunt-device .hunt-selection-heading h1 { color:#ffe27a; }
+:is(.hunt-device,.poker-device,.island-lobby) button:disabled { cursor:not-allowed; }
+@media(prefers-reduced-motion:no-preference) {
+  :is(.hunt-device,.island-lobby) button { transition:background-color .15s,border-color .15s,filter .15s; }
+  :is(.hunt-device,.island-lobby) button:enabled:hover { filter:brightness(1.12); }
+}
