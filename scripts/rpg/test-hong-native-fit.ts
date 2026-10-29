@@ -82,7 +82,7 @@ test('proportions shorten bones/arms and widen each weighted leg segment without
    const old=rows(a.vertices),next=rows(aa.vertices);assert.equal(next.length,old.length);
    for(let i=0;i<old.length;i++)for(let j=0;j<old[i].length;j++){
     const v=old[i][j],n=next[i][j];assert.equal(n.bone,v.bone);assert.equal(n.w,v.w);
-    const arm=[4,5,6,7].includes(v.bone),leg=[8,9,10,11].includes(v.bone),sy=arm?.85:[8,10].includes(v.bone)?1.32:[9,11].includes(v.bone)?1.24:[23,24].includes(v.bone)?1.08:1;
+    const arm=[4,5,6,7].includes(v.bone),leg=[8,9,10,11].includes(v.bone),sy=arm?.85:[8,10].includes(v.bone)?1.20:[9,11].includes(v.bone)?1.24:[23,24].includes(v.bone)?1.08:1;
     assert.ok(Math.abs(n.x-v.x*(arm||leg?.92:1))<1e-8);assert.ok(Math.abs(n.y-v.y*sy)<1e-8);
    }
   }

@@ -11,7 +11,7 @@ connection revision a4bcd7f are the visual references available for this pass.
   ankle start offsets: 13.8, including Rleg3 (previously 15.5).
 - Leg mesh axial coordinates on thigh/shin influences scale .92 from the prior
   extended version. Hip rims remain inside the prior -2..0.5 pin range.
-- Weighted local y scales: thigh 1.32, shin 1.24, ankle/foot 1.08. Weights,
+- Weighted local y scales: thigh 1.20, shin 1.24, ankle/foot 1.08. Weights,
   normalized UVs, mesh topology and the prior chest/skirt protections survive.
   Foot local x and bone lengths retain their previous boot shape.
 - All upper/forearm bone lengths and arm mesh x scale .92; arm mesh y scales
@@ -60,3 +60,8 @@ The full build pipeline was rerun and all 12 runtime JSON/atlas/PNG hashes match
 its first output. The final four-weapon browser checks passed with maximum foot
 ground error below .00003 CSS pixels. Review files: hong-proportions.png and
 hong-proportions.gif. Previous connection previews remain as historical results.
+
+Follow-up thickness tuning: thigh mesh gain reduced from 1.32 to 1.20
+(about 9.1% less than the first proportion patch). The 4x texture shaft
+volume, shin/ankle gains, arm proportions, leg lengths and knee targets are
+unchanged. This leaves thighs fuller than the earlier connection revision.
