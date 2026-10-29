@@ -65,3 +65,14 @@
 .poker-salon .salon-seat:not(.salon-seat-self) .salon-cards{top:-29px;left:50%;right:auto;translate:-50% 0;z-index:3}
 .poker-salon .salon-seat-north .salon-fold{top:13px}
 @container(max-height:700px){.poker-salon .salon-seat{--seat-width:54px}.poker-salon .salon-seat-north .salon-guest{height:34px}.poker-salon .salon-seat-north .salon-guest>img{height:64px}.poker-salon .salon-seat-north .salon-seat-info{margin-top:0}}
+
+/* Guide 1414: use one centering transform, not translate plus transform. */
+.poker-device .poker-fold-result{left:50%;top:48%;translate:-50% -50%;transform:none;width:min(72%,300px);max-height:24%;background:#0a0e1466;border-color:#d4af3799;box-shadow:0 3px 12px #0003}
+.poker-device .poker-fold-result .showdown-awards{background:#14202866;color:#fff2b5;border-color:#d4af3777;text-shadow:0 1px 3px #000}
+.poker-device .poker-fold-result .showdown-awards strong{font-size:12px}
+.poker-salon .salon-seat-north .salon-guest{height:64px;overflow:hidden}
+.poker-salon .salon-seat-north .salon-seat-info{position:absolute;left:calc(100% + 3px);top:22px;width:var(--seat-width);margin:0}
+.poker-salon .salon-seat-north .salon-guest>img{height:80px}
+.poker-salon .salon-seat-north .salon-position{left:-8px;top:2px}
+.poker-salon .salon-seat-north .salon-fold{top:40px}
+@container(max-height:700px){.poker-salon .salon-seat-north .salon-guest{height:52px}.poker-salon .salon-seat-north .salon-guest>img{height:64px}.poker-salon .salon-seat-north .salon-seat-info{top:17px}}

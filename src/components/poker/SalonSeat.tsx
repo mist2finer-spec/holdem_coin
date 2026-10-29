@@ -12,10 +12,10 @@ export function SalonSeat({seat,isActive,isDealer,isSmallBlind,isBigBlind,showCa
    {(isDealer||isSmallBlind||isBigBlind)&&<b className={`salon-position ${isBigBlind?'bb':isSmallBlind?'sb':''}`}>{isBigBlind?'BB':isSmallBlind?'SB':'D'}</b>}
   </div>
   <div className="salon-seat-info"><strong>{seat.name}</strong><span>◈ {seat.stack.toLocaleString()}</span></div>
-  <div className="salon-cards">{seat.holeCards.length>0&&(!seat.folded||seat.isUser)&&seat.holeCards.map((c,i)=><PlayingCard key={i} card={visible?c:undefined} hidden={!visible} size={seat.isUser?'md':'xs'}/>)}</div>
+  <div className="salon-cards">{seat.isUser&&seat.holeCards.length>0&&(!seat.folded||seat.isUser)&&seat.holeCards.map((c,i)=><PlayingCard key={i} card={visible?c:undefined} hidden={!visible} size={seat.isUser?'md':'xs'}/>)}</div>
  </section>;
 }
 export function salonWagerPosition(p:{top:string;left:string}){
  const top=parseFloat(p.top),left=parseFloat(p.left);
- return top>85?{top:'65%',left:'50%'}:top<12?{top:'17%',left:'50%'}:{top:`${top}%`,left:left<50?'31%':'69%'};
+ return top>85?{top:'65%',left:'50%'}:top<12?{top:'14%',left:'50%'}:{top:`${top}%`,left:left<50?'25%':'75%'};
 }
