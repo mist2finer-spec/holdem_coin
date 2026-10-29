@@ -5,7 +5,7 @@ portrait/name/chip column. Eight-seat side rows use 32/49/66%; six-seat rows use
 37/62%. Those rows meet the straight part of the rail, not its rounded corners.
 Table bounds are top14%, bottom84%, left14%, right86%. North/south seat origins
 share those vertical bounds. Preserved front/back art has per-identity hand
-height (Hong front68%/back62%, pink68%, twins60%); Hong profiles use65%,
+height (Hong front68%/back62%, pink62%, twins66%); Hong profiles use65%,
 new guest profiles52%. Anchors refer to the full PNG canvas including its padding. No sprite artwork changed.
 
 North image alone is clipped below the hand line, with four percent overlap for

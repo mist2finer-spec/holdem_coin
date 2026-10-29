@@ -13,7 +13,7 @@ export function SalonSeat({seat,portrait,stackLabel,isActive,isDealer,isSmallBli
  const visible=seat.isUser||(showCards&&!seat.folded);
  const character=salonCharacter(portrait??seat.persona?.portrait);
  // The image canvas is identical; hand height differs in preserved front/back art.
- const handLevel=side==='north'?(character==='pink-glasses'?.68:character==='teal-twins'?.60:.68):side==='self'?(character==='pink-glasses'?.68:character==='teal-twins'?.60:.62):character==='hong'?.65:.52;
+ const handLevel=side==='north'?(character==='pink-glasses'?.62:character==='teal-twins'?.66:.68):side==='self'?(character==='pink-glasses'?.62:character==='teal-twins'?.66:.62):character==='hong'?.65:.52;
  const anchorStyle={'--seat-top':position.top,'--hand-level':handLevel,'--hand-cut':`${handLevel*100}%`} as CSSProperties;
  return <section className={`salon-seat salon-seat-${side}${isActive?' salon-seat-active':''}${seat.folded?' salon-seat-folded':''}`} style={anchorStyle} aria-label={`${seat.name} 잔고 ${stackLabel??seat.stack}`}>
   <div className="salon-guest"><img src={`/poker/${character}-table/${pose}.png`} alt="" draggable={false}/>{seat.folded&&<span className="salon-fold">FOLD</span>}
