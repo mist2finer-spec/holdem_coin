@@ -117,7 +117,7 @@
 .poker-salon .salon-guest,.poker-salon .salon-seat-north .salon-guest{position:absolute;top:calc(var(--guest-height) * var(--hand-level) * -1);left:0;height:var(--guest-height);overflow:visible}
 .poker-salon .salon-guest>img,.poker-salon .salon-seat-north .salon-guest>img{clip-path:none}
 .poker-salon .salon-seat-north .salon-guest>img{clip-path:inset(0 0 calc(100% - var(--hand-cut) - 4%) 0)}
-.poker-salon .salon-guest::before{content:'';position:absolute;bottom:1px;left:24%;width:52%;height:5px;border-radius:50%;background:#0008;filter:blur(2px);z-index:-1}
+.poker-salon .salon-guest::before{content:'';position:absolute;bottom:4px;left:24%;width:52%;height:5px;border-radius:50%;background:#0008;filter:blur(2px);z-index:-1}
 .poker-salon .salon-seat-north .salon-guest::before{display:none}
 .poker-salon .salon-seat-info,.poker-salon .salon-seat-north .salon-seat-info{position:absolute;top:calc(var(--guest-height) * (1 - var(--hand-level)) + 2px);left:0;margin:0;width:var(--seat-width)}
 .poker-salon .salon-seat-north .salon-seat-info{top:6px}
