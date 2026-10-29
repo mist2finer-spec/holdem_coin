@@ -1,0 +1,12 @@
+{
+  "sampleOnly": true,
+  "sourceRevision": "d863179",
+  "weapon": "axe",
+  "thighGain": 1.08,
+  "previousShinGain": 1.24,
+  "sampleShinGain": 1.04,
+  "relativeReduction": 0.16129032258064513,
+  "changedInfluences": 96,
+  "footAndKneeLengthsUnchanged": true,
+  "textureUnchanged": true
+}
