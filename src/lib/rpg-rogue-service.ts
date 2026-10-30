@@ -5,9 +5,10 @@ export type RogueView=RogueSnapshot&{id:string;sequence:number;map?:RogueMap};
 export function parseRogueInput(raw:unknown):RogueInput{
  if(!raw||typeof raw!=='object')throw Error('Invalid input');const p=raw as Record<string,unknown>;
  if(typeof p.x!=='number'||typeof p.y!=='number'||!Number.isFinite(p.x)||!Number.isFinite(p.y)||Math.abs(p.x)>1||Math.abs(p.y)>1||typeof p.auto!=='boolean')throw Error('Invalid direction');
- for(const field of ['attack','jump','dodge'])if(p[field]!==undefined&&typeof p[field]!=='boolean')throw Error('Invalid action');
- if(p.skill!==undefined&&(!Number.isInteger(p.skill)||Number(p.skill)<0||Number(p.skill)>2))throw Error('Invalid skill');
- return {x:p.x,y:p.y,auto:p.auto,attack:p.attack as boolean|undefined,jump:p.jump as boolean|undefined,dodge:p.dodge as boolean|undefined,skill:p.skill as number|undefined};
+ for(const field of ['attack','jump','dodge','slide'])if(p[field]!==undefined&&typeof p[field]!=='boolean')throw Error('Invalid action');
+ if([p.jump,p.slide,p.dodge].filter(Boolean).length>1)throw Error('Invalid movement action');
+ if(p.skill!==undefined&&(!Number.isInteger(p.skill)||Number(p.skill)<0||Number(p.skill)>5))throw Error('Invalid skill');
+ return {x:p.x,y:p.y,auto:p.auto,attack:p.attack as boolean|undefined,jump:p.jump as boolean|undefined,dodge:p.dodge as boolean|undefined,slide:p.slide as boolean|undefined,skill:p.skill as number|undefined};
 }
 const idle:RogueInput={x:0,y:0,auto:false};
 type Session={id:string;game:RogueEngine;last:number;seen:number;input:RogueInput;sequence:number;cached:RogueView};

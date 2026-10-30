@@ -40,7 +40,7 @@ test('server sessions cap elapsed time, isolate users, deduplicate actions and r
  let now=0;const service=new RogueService(()=>now,()=>17),v=service.start('one','hong'),other=service.start('two','hong');assert.throws(()=>service.start('three','white-bob'));const a=service.command('one',v.id,1,{...idle,skill:0});assert.equal(a.cooldowns[0],5);assert.deepEqual(service.command('one',v.id,1,{...idle,skill:0}),a);
  assert.throws(()=>service.command('two',v.id,1,idle));assert.throws(()=>service.command('one',v.id,3,idle));assert.throws(()=>service.command('one',v.id,0,idle));
  now=100000;const b=service.command('one',v.id,2,idle);assert.ok(b.elapsed<=.250001);assert.equal(service.command('two',other.id,1,idle).kills,0);service.start('one','hong');assert.throws(()=>service.command('one',v.id,3,idle));
- for(const p of [{...idle,x:NaN},{...idle,y:2},{...idle,jump:1},{...idle,skill:3}])assert.throws(()=>parseRogueInput(p));
+ for(const p of [{...idle,x:NaN},{...idle,y:2},{...idle,jump:1},{...idle,skill:6}])assert.throws(()=>parseRogueInput(p));
 });
 test('seeded headless run can fight through rooms and reach the exit without stage transitions',async()=>{
  const {Path}=await import('rot-js');const g=new RogueEngine(33);let goal={...g.map.start},waypoint={...goal};
@@ -49,8 +49,29 @@ test('seeded headless run can fight through rooms and reach the exit without sta
   const nearest=living[0],close=nearest&&Math.hypot(nearest.x-g.hero.x,nearest.y-g.hero.y)<100&&lineClear(g.map,g.hero,nearest);
   const missing=g.map.rooms.find(r=>!g.visited.has(r.id));goal=nearest??missing?.center??g.map.exit;
   if(tick%10===0){const points:{x:number;y:number}[]=[];new Path.AStar(cell(goal.x),cell(goal.y),(x,y)=>x>=0&&y>=0&&x<g.map.width&&y<g.map.height&&g.map.tiles[y*g.map.width+x]===0,{topology:4}).compute(cell(g.hero.x),cell(g.hero.y),(x,y)=>points.push({x:(x+.5)*ROGUE_TILE,y:(y+.5)*ROGUE_TILE}));waypoint=points[1]??goal;}
-  const dx=waypoint.x-g.hero.x,dy=waypoint.y-g.hero.y,d=Math.hypot(dx,dy),input={x:close||d<3?0:dx/Math.max(d,1),y:close||d<3?0:dy/Math.max(d,1),auto:true};
+  const dx=waypoint.x-g.hero.x,dy=waypoint.y-g.hero.y,d=Math.hypot(dx,dy),input={x:close||d<3?0:dx/Math.max(d,1),y:close||d<3?0:dy/Math.max(d,1),auto:false};
   if(close&&g.cooldowns[0]===0)g.command({...input,skill:0});g.step(.02,input);
  }
  assert.equal(g.status,'won',JSON.stringify({kills:g.kills,remaining:g.mobs.filter(m=>m.hp>0).length,hp:g.hero.hp,rooms:g.visited.size,x:g.hero.x,y:g.hero.y}));assert.equal(g.cleared.size,10);assert.ok(g.kills>=27);
+});
+test('AUTO alone clears rooms 1 through 10 in order and then reaches the exit across thirty seeds',()=>{
+ for(let seed=1;seed<=30;seed++){
+  const g=new RogueEngine(seed),dead=new Set<number>();let lastRoom=-1;
+  for(let tick=0;tick<45000&&g.status==='playing';tick++){
+   g.step(.02,{...idle,auto:true});
+   for(const m of g.mobs)if(m.hp===0&&!dead.has(m.id)){assert.ok(m.room>=lastRoom,`kill order seed=${seed} room=${m.room} last=${lastRoom}`);lastRoom=m.room;dead.add(m.id);}
+  }
+  assert.equal(g.status,'won',JSON.stringify({seed,kills:g.kills,target:g.autoRoom,cleared:[...g.cleared],x:g.hero.x,y:g.hero.y,goal:g.mobs.filter(m=>m.room===g.autoRoom&&m.hp>0).map(m=>({x:m.x,y:m.y}))}));assert.deepEqual(g.autoOrder,[0,1,2,3,4,5,6,7,8,9]);
+ }
+});
+test('AUTO pauses for manual movement and resumes its ordered goal without resetting cleared rooms',()=>{
+ const g=new RogueEngine(29);step(g,25,{...idle,auto:true});const target=g.autoRoom;g.command({...idle});const before={x:g.hero.x,y:g.hero.y};step(g,10,{...idle,x:1,auto:false});assert.equal(g.autoRoom,target);assert.ok(g.hero.x>=before.x);step(g,50,{...idle,auto:true});assert.ok(g.autoRoom>=target);
+});
+test('native slide has its own two poses, respects walls/landing and shares evasion cooldown',()=>{
+ const g=new RogueEngine(4);g.mobs.forEach(m=>m.hp=0);assert.equal(g.command({...idle,x:1,slide:true}),true);assert.equal(g.hero.action,'sliding1');assert.equal(g.hero.motion?.kind,'slide');step(g,14);assert.equal(g.hero.action,'sliding2');step(g,8);assert.equal(g.hero.motion,null);assert.equal(g.command({...idle,slide:true}),false);assert.equal(g.command({...idle,dodge:true}),false);assert.ok(walkable(g.map,g.hero.x,g.hero.y));
+ for(let skill=0;skill<6;skill++){const h=new RogueEngine(4);h.command({...idle,skill});assert.ok(h.cooldowns[skill]>0);}
+});
+
+test('slide cannot be combined with jump to bypass either cooldown',()=>{
+ assert.throws(()=>parseRogueInput({...idle,jump:true,slide:true}));const g=new RogueEngine(1);assert.equal(g.command({...idle,jump:true,slide:true}),false);assert.equal(g.hero.motion,null);
 });
