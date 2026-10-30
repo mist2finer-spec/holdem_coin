@@ -13,13 +13,21 @@ try{
  const renderer=await createRogueRenderer(canvas,game.map,new AbortController().signal);
  for(let i=0;i<12;i++)renderer.draw(game.view(),1/60);
  fs.writeFileSync(output+'/entrance.png',canvas.toBuffer('image/png'));
- const room=game.map.rooms[3];game.hero.x=room.center.x;game.hero.y=room.center.y;game.visited.add(3);
- for(let i=0;i<120;i++)renderer.draw(game.view(),1/60);
- fs.writeFileSync(output+'/encounter.png',canvas.toBuffer('image/png'));
- const c=createCanvas(920,680),ctx=c.getContext('2d');ctx.fillStyle='#080d10';ctx.fillRect(0,0,920,680);
- for(let y=0;y<game.map.height;y++)for(let x=0;x<game.map.width;x++)if(game.map.tiles[y*game.map.width+x]===0){ctx.fillStyle='#716755';ctx.fillRect(x*10,y*10,10,10);}
+ // Drive the real server engine; do not synthesize impossible room/monster snapshots.
+ let foundJump=false,foundSlide=false;
+ for(let i=0;i<12000&&(!foundJump||!foundSlide);i++){
+  game.step(.02,{x:0,y:0,auto:true});const view=game.view();
+  if(view.phase==='traversing'&&((view.gate?.kind==='jump'&&!foundJump)||(view.gate?.kind==='slide'&&!foundSlide))){
+   const kind=view.gate.kind;
+   for(let j=0;j<120;j++)renderer.draw(view,1/60);
+   fs.writeFileSync(output+'/'+kind+'-passage.png',canvas.toBuffer('image/png'));
+   if(kind==='jump')foundJump=true;else foundSlide=true;
+  }
+ }
+ const c=createCanvas(1200,200),ctx=c.getContext('2d'),scale=Math.min(1200/game.map.width,200/game.map.height);ctx.fillStyle='#080d10';ctx.fillRect(0,0,1200,200);
+ for(let y=0;y<game.map.height;y++)for(let x=0;x<game.map.width;x++)if(game.map.tiles[y*game.map.width+x]===0){ctx.fillStyle='#716755';ctx.fillRect(x*scale,y*scale,scale,scale);}
  ctx.textAlign='center';ctx.font='bold 16px sans-serif';
- for(const r of game.map.rooms){ctx.fillStyle=r.id===0?'#97ccb1':'#d9c488';ctx.fillText(String(r.id+1),r.center.x/48*10,r.center.y/48*10+5);}
- for(const m of game.mobs){ctx.fillStyle=m.boss?'#f7c155':'#cb756b';ctx.beginPath();ctx.arc(m.x/48*10,m.y/48*10,m.boss?4:2,0,Math.PI*2);ctx.fill();}
+ for(const r of game.map.rooms){ctx.fillStyle='#d9c488';ctx.fillText(String(r.id+1),r.center.x/48*scale,r.center.y/48*scale+5);}
+ for(const g of game.map.gates){ctx.fillStyle=g.kind==='jump'?'#8cceeb':'#efcc83';ctx.fillText(g.kind==='jump'?'J':'S',(g.from.x+g.to.x)/2/48*scale,g.from.y/48*scale+5);}
  fs.writeFileSync(output+'/overview.png',c.toBuffer('image/png'));renderer.dispose();console.log('ROGUE_VISUAL_QA_READY',canvas.dataset);
 }finally{globalThis.fetch=nativeFetch;}

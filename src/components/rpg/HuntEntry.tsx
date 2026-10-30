@@ -26,8 +26,8 @@ function HuntEntryContent({onExit}:{onExit?:()=>void}){
    </button>)}
   </div>
   <label className="hunt-map-choice">사냥터<select aria-label="사냥 맵 선택" value={map} onChange={e=>setMap(e.target.value as HuntMapId)}>{HUNT_MAPS.map(m=><option value={m.id} key={m.id}>{m.label}</option>)}</select></label>
-  {map==='rogue-dungeon'&&<p className="hunt-map-note">근접 전투 · 10개 구역 탐험 · AUTO 순서대로 사냥 · 점프와 슬라이딩. 이번 탐험의 재화는 계정 저장과 분리됩니다.</p>}
+  {map==='rogue-dungeon'&&<p className="hunt-map-note">구역 진입 → 몬스터 전멸 → 점프·슬라이딩 통과. AUTO도 순서대로 진행합니다. 이번 탐험의 재화는 계정 저장과 분리됩니다.</p>}
   {map==='candle-dungeon'&&<p className="hunt-map-note">원본 Map002_001의 비주얼 복원 · 몬스터와 성장 진행은 현재 테스트 전투를 사용합니다.</p>}
-  <footer className="hunt-selection-start"><div><strong>{current?.label||'캐릭터를 선택해 주세요'}</strong><small>{map==='rogue-dungeon'?'촛불 미궁 · 10개 방':map==='forest'?'시작의 숲 · 1–1':'촛불 지하 회랑 · 1–1'}</small></div><button type="button" disabled={!selected} onClick={()=>{if(selected)setEntered(true);}}>사냥 시작 →</button></footer>
+  <footer className="hunt-selection-start"><div><strong>{current?.label||'캐릭터를 선택해 주세요'}</strong><small>{map==='rogue-dungeon'?'촛불 미궁 · 10개 전투 구역':map==='forest'?'시작의 숲 · 1–1':'촛불 지하 회랑 · 1–1'}</small></div><button type="button" disabled={!selected} onClick={()=>{if(selected)setEntered(true);}}>사냥 시작 →</button></footer>
  </main>;
 }

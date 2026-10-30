@@ -56,6 +56,23 @@ export async function createRogueRenderer(canvas:HTMLCanvasElement,map:RogueMap,
     if((x*3+y)%7===0&&visible.has(index)){const cx=px+tile/2,cy=py+tile*depth-height*.65;const glow=ctx.createRadialGradient(cx,cy,0,cx,cy,90*zoom);glow.addColorStop(0,'#ffb34e30');glow.addColorStop(1,'#ffb34e00');ctx.fillStyle=glow;ctx.fillRect(cx-90*zoom,cy-90*zoom,180*zoom,180*zoom);ctx.fillStyle='#443328';ctx.fillRect(cx-3*zoom,cy,6*zoom,18*zoom);const frame=(Math.floor(flameTime*16)+x*5+y*3)%16;ctx.save();ctx.globalCompositeOperation='lighter';ctx.drawImage(flame,(frame%4)*64,(3-Math.floor(frame/4))*64,64,64,cx-14*zoom,cy-25*zoom,28*zoom,34*zoom);ctx.restore();}
    }else{ctx.fillStyle='#14171a';ctx.fillRect(px,py,tile+.5,tile*depth+.5);}
   }ctx.globalAlpha=1;flameTime+=dt;
+  // Gate floor geometry is explicit: a broken floor for jump, a low arch for slide.
+  const drawGates=(overhead:boolean)=>{for(const gate of map.gates){
+   if(!view.visited.includes(gate.id))continue;
+   const left=sx(gate.from.x+ROGUE_TILE/2),right=sx(gate.to.x-ROGUE_TILE/2),top=sy(6*ROGUE_TILE),bottom=sy(9*ROGUE_TILE),middle=(left+right)/2;
+   if(right<0||left>w)continue;const open=view.cleared.includes(gate.id),passed=view.transitions.includes(gate.id),ink=open?'#dcca88':'#b57867';
+   ctx.save();ctx.globalAlpha=1;
+   if(!overhead){
+    if(gate.kind==='jump'){const pit=ctx.createLinearGradient(left,top,right,bottom);pit.addColorStop(0,'#030809');pit.addColorStop(1,'#1d2524');ctx.fillStyle=pit;ctx.fillRect(left,top,right-left,bottom-top);ctx.strokeStyle='#b8a477';ctx.lineWidth=3*zoom;ctx.beginPath();ctx.moveTo(left,top);ctx.lineTo(left,bottom);ctx.moveTo(right,top);ctx.lineTo(right,bottom);ctx.stroke();}
+    if(!open){ctx.fillStyle='#60251f55';ctx.fillRect(sx(gate.from.x+13),top,8*zoom,bottom-top);ctx.strokeStyle='#d58b70';ctx.lineWidth=2*zoom;for(let y=top;y<bottom;y+=15*zoom){ctx.beginPath();ctx.moveTo(sx(gate.from.x+9),y);ctx.lineTo(sx(gate.from.x+23),y+9*zoom);ctx.stroke();}}
+    ctx.fillStyle=ink;ctx.font=`bold ${Math.max(10,14*zoom)}px sans-serif`;ctx.textAlign='center';ctx.fillText(!open?'적 전멸 시 개방':gate.kind==='jump'?'점프 →':'슬라이드 →',middle,top-20*zoom);
+    if(open&&!passed){ctx.strokeStyle='#e0c77d';ctx.lineWidth=2*zoom;ctx.beginPath();ctx.ellipse(sx(gate.from.x),sy(gate.from.y),20*zoom,12*zoom,0,0,Math.PI*2);ctx.stroke();}
+   }else if(gate.kind==='slide'){
+    // Two masonry jambs and a lowered lintel sit in front of the crouched actor.
+    const beamY=sy(gate.from.y)-34*zoom,beamH=22*zoom;ctx.drawImage(wall,left-5*zoom,beamY-beamH,right-left+10*zoom,beamH);ctx.fillStyle='#dbc291';ctx.fillRect(left-5*zoom,beamY-beamH,right-left+10*zoom,3*zoom);
+    for(const x of [left-8*zoom,right]){ctx.drawImage(wall,x,top-35*zoom,8*zoom,bottom-top+35*zoom);ctx.fillStyle='#080e0e88';ctx.fillRect(x,top-35*zoom,2*zoom,bottom-top+35*zoom);}
+   }ctx.restore();
+  }};drawGates(false);
   const exitVisible=explored.has(cell(map.exit.y)*map.width+cell(map.exit.x));if(exitVisible){const x=sx(map.exit.x),y=sy(map.exit.y);ctx.fillStyle=view.cleared.length===10?'#61d7c9':'#91734c';ctx.beginPath();ctx.ellipse(x,y,24*zoom,15*zoom,0,0,Math.PI*2);ctx.fill();ctx.font=`${12*zoom}px sans-serif`;ctx.textAlign='center';ctx.fillStyle='#fff0cb';ctx.fillText(view.cleared.length===10?'탈출':'출구',x,y-28*zoom);}
   const shade=ctx.createRadialGradient(w/2,h*.58,25,w/2,h*.58,w*.8);shade.addColorStop(0,'#03080a08');shade.addColorStop(1,'#02060965');ctx.fillStyle=shade;ctx.fillRect(0,0,w,h);
   for(const room of map.rooms)for(const tx of [room.x1+1,room.x2-1]){const ty=room.y1;if(!visible.has(ty*map.width+tx))continue;const x=sx((tx+.5)*ROGUE_TILE),y=sy((ty+.65)*ROGUE_TILE),size=34*zoom;
@@ -83,6 +100,7 @@ export async function createRogueRenderer(canvas:HTMLCanvasElement,map:RogueMap,
     if(m.state==='windup'){ctx.strokeStyle='#ff8059';ctx.lineWidth=1.5;ctx.beginPath();ctx.ellipse(sx(m.target.x),sy(m.target.y),34*zoom,24*zoom,0,0,Math.PI*2);ctx.stroke();}
    }
   }
+  drawGates(true);
   for(const f of view.fx){
    if(f.kind==='damage'||f.kind==='gold'){
     if(!visible.has(cell(f.y)*map.width+cell(f.x)))continue;
@@ -92,11 +110,8 @@ export async function createRogueRenderer(canvas:HTMLCanvasElement,map:RogueMap,
     const text=f.kind==='gold'?`+${f.value} G`:String(f.value);ctx.strokeText(text,x,y);ctx.fillStyle=f.kind==='gold'?'#f0ce7c':f.target==='hero'?'#f79586':'#fff1c5';ctx.fillText(text,x,y);ctx.restore();continue;
    }
    const t=(view.elapsed-f.born)/.65;ctx.save();ctx.translate(sx(f.x),sy(f.y)-20*zoom);ctx.scale(zoom,zoom*depth);ctx.rotate(f.angle);ctx.globalAlpha=Math.max(0,1-t);ctx.strokeStyle=f.kind==='heal'?'#8de6a5':f.kind==='rift'?'#d6b47f':'#bce9ed';ctx.lineWidth=f.kind==='slash'?10:4;ctx.beginPath();if(f.kind==='slash')ctx.arc(0,0,70+t*35,-1.4,1.4);else ctx.ellipse(0,0,30+t*150,30+t*150,0,0,Math.PI*2);ctx.stroke();ctx.restore();}
-  // World overview: unexplored rooms stay dim; links remain visible to make this test navigable.
-  const mw=78,mh=58,mx=w-mw-9,my=10,ratio=Math.min(mw/map.width,mh/map.height);ctx.fillStyle='#081012e8';ctx.fillRect(mx-5,my-5,mw+10,mh+10);ctx.strokeStyle='#ad8b4d66';ctx.strokeRect(mx-5,my-5,mw+10,mh+10);ctx.strokeStyle='#726848';ctx.lineWidth=2;
-  for(const [a,b] of map.links){const p=map.rooms[a].center,q=map.rooms[b].center;ctx.beginPath();ctx.moveTo(mx+p.x/ROGUE_TILE*ratio,my+p.y/ROGUE_TILE*ratio);ctx.lineTo(mx+q.x/ROGUE_TILE*ratio,my+q.y/ROGUE_TILE*ratio);ctx.stroke();}
-  for(const room of map.rooms){ctx.fillStyle=view.cleared.includes(room.id)?'#6f9c80':view.visited.includes(room.id)?'#c4a05e':'#343b3b';ctx.fillRect(mx+room.x1*ratio,my+room.y1*ratio,(room.x2-room.x1+1)*ratio,(room.y2-room.y1+1)*ratio);}
-  ctx.fillStyle='#fff8d8';ctx.beginPath();ctx.arc(mx+view.hero.x/ROGUE_TILE*ratio,my+view.hero.y/ROGUE_TILE*ratio,2.5,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#74ddd1';ctx.strokeRect(mx+map.exit.x/ROGUE_TILE*ratio-2,my+map.exit.y/ROGUE_TILE*ratio-2,4,4);
-  canvas.dataset.heroAction=view.hero.action;canvas.dataset.autoTarget=String(Math.min(10,view.autoRoom+1));canvas.dataset.autoOrder=view.autoOrder.map(i=>i+1).join(',');canvas.dataset.mode='rogue';canvas.dataset.presentation='vardian-melee';canvas.dataset.rooms=String(map.rooms.length);canvas.dataset.visibleMonsters=String(mobs.filter(m=>m.hp>0).length);canvas.dataset.heroHeight=String(ROGUE_VISUAL.heroHeight);canvas.dataset.tileSize=String(ROGUE_TILE);canvas.dataset.worldX=String(view.hero.x);canvas.dataset.worldY=String(view.hero.y);canvas.dataset.status='ready';
+  // Compact route strip shows the local arena and its next movement requirement.
+  const gate=view.gate;ctx.fillStyle='#081012df';ctx.fillRect(w-105,10,96,43);ctx.strokeStyle='#ad8b4d66';ctx.strokeRect(w-105,10,96,43);ctx.textAlign='center';ctx.font='10px sans-serif';ctx.fillStyle='#cdbf98';ctx.fillText('NEXT PASSAGE',w-57,25);ctx.font='bold 12px sans-serif';ctx.fillStyle=gate?.ready?'#e7d48e':'#b8c2b7';ctx.fillText(gate?(gate.kind==='jump'?'점프 ↗':'슬라이드 →'):'최종 출구',w-57,43);
+  canvas.dataset.heroAction=view.hero.action;canvas.dataset.autoTarget=String(Math.min(10,view.autoRoom+1));canvas.dataset.autoOrder=view.autoOrder.map(i=>i+1).join(',');canvas.dataset.mode='rogue';canvas.dataset.presentation='vardian-zones';canvas.dataset.phase=view.phase;canvas.dataset.gate=String(view.gate?.kind??'exit');canvas.dataset.transitions=view.transitions.join(',');canvas.dataset.rooms=String(map.rooms.length);canvas.dataset.visibleMonsters=String(mobs.filter(m=>m.hp>0).length);canvas.dataset.heroHeight=String(ROGUE_VISUAL.heroHeight);canvas.dataset.tileSize=String(ROGUE_TILE);canvas.dataset.worldX=String(view.hero.x);canvas.dataset.worldY=String(view.hero.y);canvas.dataset.status='ready';
  },dispose(){hero.atlas.dispose();for(const s of sources.values())s.rig.atlas.dispose();actors.clear();positions.clear();}};
 }
