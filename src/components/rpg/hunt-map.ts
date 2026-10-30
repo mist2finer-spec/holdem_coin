@@ -1,5 +1,5 @@
 export type HuntMapId='forest'|'candle-dungeon'|'rogue-dungeon';
-export const HUNT_MAPS=[{id:'rogue-dungeon' as const,label:'10개 방 · 로그라이크 테스트'},{id:'forest' as const,label:'시작의 숲'},{id:'candle-dungeon' as const,label:'촛불 지하 회랑 · 복원 테스트'}];
+export const HUNT_MAPS=[{id:'rogue-dungeon' as const,label:'바르디안 회랑 · 횡스크롤 테스트'},{id:'forest' as const,label:'시작의 숲'},{id:'candle-dungeon' as const,label:'촛불 지하 회랑 · 복원 테스트'}];
 export type DungeonLayout={size:[number,number];groundY:number;startPixel:number;endPixel:number;image:string;background:string;foreground:string;flames:{pixel:number[];texture:string;tilesX:number;tilesY:number;duration:number;size:number;scale:number}[]};
 export function dungeonPlacement(layout:DungeonLayout,floor:number,zoom:number,worldWidth:number,screenX:(x:number)=>number){
  const span=layout.endPixel-layout.startPixel;

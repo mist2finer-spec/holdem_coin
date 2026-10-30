@@ -41,8 +41,12 @@ test('packs spawn once on entry, final zone owns the boss, and all native monste
  assert.ok(new Set(g.mobs.map(m=>m.species)).size>=7);assert.equal(g.mobs.filter(m=>m.boss).length,1);assert.equal(g.mobs.find(m=>m.boss)?.room,9);assert.equal(new Set(g.mobs.map(m=>m.id)).size,g.mobs.length);
  Object.assign(g.hero,g.map.exit);step(g,1);assert.equal(g.status,'won');
 });
-test('2D movement includes vertical/diagonal travel without diagonal speed boost',()=>{
- const a=new RogueEngine(9),b=new RogueEngine(9);a.mobs.forEach(m=>m.hp=0);b.mobs.forEach(m=>m.hp=0);const start={...a.hero};step(a,10,{...idle,y:1});step(b,10,{...idle,x:1,y:1});assert.ok(a.hero.y>start.y);assert.ok(Math.abs(Math.hypot(a.hero.x-start.x,a.hero.y-start.y)-Math.hypot(b.hero.x-start.x,b.hero.y-start.y))<.01);
+test('side-view movement ignores vertical input, keeps mobs on one lane, and allows horizontal travel',()=>{
+ const a=new RogueEngine(9),b=new RogueEngine(9);a.mobs.forEach(m=>m.hp=0);b.mobs.forEach(m=>m.hp=0);const start={...a.hero};
+ step(a,10,{...idle,y:1});assert.equal(a.hero.x,start.x);assert.equal(a.hero.y,start.y);
+ step(a,10,{...idle,x:1});step(b,10,{...idle,x:1,y:1});assert.equal(a.hero.x,b.hero.x);assert.equal(a.hero.y,start.y);assert.equal(b.hero.y,start.y);
+ const c=new RogueEngine(9);step(c,100);assert.ok(c.mobs.every(m=>m.y===c.map.start.y));
+ c.command({...idle,y:1,jump:true});assert.equal(c.hero.motion?.to.x,c.hero.x);
 });
 test('attacks award once, skills reserve across attacks, jump cannot pass walls or land inside a mob',()=>{
  const g=new RogueEngine(3);for(const m of g.mobs)m.hp=0;const m=g.mobs[0];m.x=g.hero.x+45;m.y=g.hero.y;m.hp=40;m.maxHP=40;m.state='idle';g.command({...idle,attack:true});g.command({...idle,skill:0});step(g,55);assert.equal(g.kills,1);assert.equal(g.gold,10);assert.ok(g.cooldowns[0]>0);step(g,100);assert.equal(g.gold,10);
