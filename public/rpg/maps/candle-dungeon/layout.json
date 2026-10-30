@@ -1,0 +1,2226 @@
+{
+  "version": 1,
+  "scene": "Map002_001",
+  "image": "panorama.webp",
+  "background": "background.webp",
+  "foreground": "foreground.webp",
+  "actorDepthPlaneX": -4,
+  "size": [
+    4096,
+    768
+  ],
+  "groundY": 580.2205311411092,
+  "groundWorldY": 10,
+  "actorOriginY": 11,
+  "pixelsPerNativeUnit": 54.857142857142854,
+  "startPixel": 128.00002038989373,
+  "endPixel": 3967.9999945401246,
+  "nativeTravelAxis": "Z",
+  "nativeTravelRange": [
+    -63,
+    7
+  ],
+  "projection": [
+    [
+      -1.8006656507401894e-10,
+      -9.43687965966129e-12,
+      0.026785714105400607,
+      0.7499999979703436
+    ],
+    [
+      -0.007476557906514153,
+      0.1426613624875359,
+      -5.0330024851526874e-11,
+      -1.9675108244239614
+    ],
+    [
+      -0.010001297253286457,
+      -0.0005241452713943237,
+      -6.732583972456685e-11,
+      -0.8353155073317655
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "flames": [
+    {
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1247",
+      "name": "Effect_FireSequence_01",
+      "pixel": [
+        541.5732978115907,
+        410.8711639289957
+      ],
+      "world": [
+        -8.213122434285191,
+        12.870534212943484,
+        -55.46090377356064
+      ],
+      "texture": "textures/2a5fa6602875c8d0.png",
+      "tilesX": 4,
+      "tilesY": 4,
+      "duration": 1.0,
+      "scale": 0.2627424756102022,
+      "size": 1.5
+    },
+    {
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1251",
+      "name": "Effect_FireSequence_01",
+      "pixel": [
+        1934.993616598064,
+        170.26723011097852
+      ],
+      "world": [
+        -8.548235794157135,
+        17.245000012752282,
+        -30.06001237540239
+      ],
+      "texture": "textures/2a5fa6602875c8d0.png",
+      "tilesX": 4,
+      "tilesY": 4,
+      "duration": 1.0,
+      "scale": 0.30000020294845753,
+      "size": 1.5
+    },
+    {
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1261",
+      "name": "Effect_FireSequence_01",
+      "pixel": [
+        1715.5649943307744,
+        170.2672300336716
+      ],
+      "world": [
+        -8.548235794157135,
+        17.245000012752282,
+        -34.0600133290767
+      ],
+      "texture": "textures/2a5fa6602875c8d0.png",
+      "tilesX": 4,
+      "tilesY": 4,
+      "duration": 1.0,
+      "scale": 0.30000020294845753,
+      "size": 1.5
+    },
+    {
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1264",
+      "name": "Effect_FireSequence_01 (1)",
+      "pixel": [
+        3803.3901131762887,
+        450.89363131328264
+      ],
+      "world": [
+        -7.013999999448657,
+        12.202800059103843,
+        3.9992989979530544
+      ],
+      "texture": "textures/2a5fa6602875c8d0.png",
+      "tilesX": 4,
+      "tilesY": 4,
+      "duration": 1.0,
+      "scale": 0.699999988079071,
+      "size": 2.5
+    },
+    {
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1272",
+      "name": "Effect_FireSequence_01",
+      "pixel": [
+        810.660782091948,
+        407.69381484570494
+      ],
+      "world": [
+        -8.213121775222756,
+        12.928534161921904,
+        -50.55566314165885
+      ],
+      "texture": "textures/2a5fa6602875c8d0.png",
+      "tilesX": 4,
+      "tilesY": 4,
+      "duration": 1.0,
+      "scale": 0.2627424756102022,
+      "size": 1.5
+    },
+    {
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1274",
+      "name": "Effect_FireSequence_01 (1)",
+      "pixel": [
+        4132.532968103451,
+        450.8936314292431
+      ],
+      "world": [
+        -7.013999999448657,
+        12.202800059103843,
+        9.999298997953055
+      ],
+      "texture": "textures/2a5fa6602875c8d0.png",
+      "tilesX": 4,
+      "tilesY": 4,
+      "duration": 1.0,
+      "scale": 0.699999988079071,
+      "size": 2.5
+    }
+  ],
+  "parts": [
+    {
+      "name": "Chunk_2_0",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#932",
+      "mesh": "Combined Mesh (root: scene)",
+      "staticBatch": true,
+      "bounds": [
+        2925.714285525097,
+        -175.24296033825019,
+        4681.142845561819,
+        1029.960230574908
+      ],
+      "texture": "textures/8fc6a24c9fa1201c.png",
+      "material": "ground_tile01",
+      "worldPosition": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "name": "Chunk_0_0",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#933",
+      "mesh": "Combined Mesh (root: scene)",
+      "staticBatch": true,
+      "bounds": [
+        -585.1428336979716,
+        -394.3708137762141,
+        1170.2857263387505,
+        1029.9602293379976
+      ],
+      "texture": "textures/8fc6a24c9fa1201c.png",
+      "material": "ground_tile01",
+      "worldPosition": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "name": "Chunk_1_0",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#934",
+      "mesh": "Combined Mesh (root: scene)",
+      "staticBatch": true,
+      "bounds": [
+        1170.2857258362556,
+        -394.3708137375607,
+        2925.7142859502846,
+        1029.960229956453
+      ],
+      "texture": "textures/8fc6a24c9fa1201c.png",
+      "material": "ground_tile01",
+      "worldPosition": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "name": "Kannan_pillar01_02 (15)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#935",
+      "mesh": "Kannan_pillar01_02",
+      "staticBatch": false,
+      "bounds": [
+        2172.626537402878,
+        456.89426953765246,
+        2252.5163351188385,
+        571.2472056320988
+      ],
+      "texture": "textures/3818887566c67f1f.png",
+      "material": "kaman_01",
+      "worldPosition": [
+        -7.7299957275390625,
+        10.0,
+        -25.0
+      ]
+    },
+    {
+      "name": "WallType1_4X4 (1)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#936",
+      "mesh": "4",
+      "staticBatch": false,
+      "bounds": [
+        1938.2856908510253,
+        346.7377112918109,
+        2157.714349847407,
+        565.865555982957
+      ],
+      "texture": "textures/7c8bd537db964e9d.png",
+      "material": "WallType1_01",
+      "worldPosition": [
+        -9.0,
+        10.0,
+        -30.0
+      ]
+    },
+    {
+      "name": "Kannan_Center_GuardRail_02 (11)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#937",
+      "mesh": "Kannan_Center_GuardRail_01-1",
+      "staticBatch": false,
+      "bounds": [
+        457.14291408998406,
+        562.804878119322,
+        621.7143238291253,
+        635.7043704732607
+      ],
+      "texture": "textures/63fd965e93603a62.png",
+      "material": "kaman_02",
+      "worldPosition": [
+        -0.5,
+        10.0,
+        -57.0
+      ]
+    },
+    {
+      "name": "Kannan_Chandelier_Candle (7)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#938",
+      "mesh": "Cave_Candle01",
+      "staticBatch": false,
+      "bounds": [
+        3214.369655325634,
+        338.0779172557078,
+        3222.934814480951,
+        345.5481517840716
+      ],
+      "texture": "textures/9da4fa96dfa3af8c.png",
+      "material": "candle",
+      "worldPosition": [
+        -4.128993683135419,
+        14.278671053197826,
+        -6.6633284711850225
+      ]
+    },
+    {
+      "name": "Kannan_pillar02 (12)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#939",
+      "mesh": "Kannan_pillar02",
+      "staticBatch": false,
+      "bounds": [
+        1906.414340619542,
+        337.11255872474607,
+        1933.9513958135926,
+        467.2280531192283
+      ],
+      "texture": "textures/3818887566c67f1f.png",
+      "material": "kaman_01",
+      "worldPosition": [
+        -0.2800002098083496,
+        13.430000305175781,
+        -30.329999923706055
+      ]
+    },
+    {
+      "name": "Kannan_Center_GuardRail_02 (10)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#940",
+      "mesh": "Kannan_Center_GuardRail_01-1",
+      "staticBatch": false,
+      "bounds": [
+        3529.1428934101687,
+        562.8048792016189,
+        3693.71430314931,
+        635.7043715555576
+      ],
+      "texture": "textures/63fd965e93603a62.png",
+      "material": "kaman_02",
+      "worldPosition": [
+        -0.5,
+        10.0,
+        -1.0
+      ]
+    },
+    {
+      "name": "Kannan_Center_GuardRail_02 (10)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#941",
+      "mesh": "Kannan_Center_GuardRail_01-1",
+      "staticBatch": false,
+      "bounds": [
+        1115.428623944309,
+        562.8048783512427,
+        1280.0000336834507,
+        635.7043707051814
+      ],
+      "texture": "textures/63fd965e93603a62.png",
+      "material": "kaman_02",
+      "worldPosition": [
+        -0.5,
+        10.0,
+        -45.0
+      ]
+    },
+    {
+      "name": "up",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#942",
+      "mesh": "up",
+      "staticBatch": false,
+      "bounds": [
+        402.28569398976356,
+        124.73922920879633,
+        950.8570572000451,
+        263.0127497414419
+      ],
+      "texture": "textures/8fc6a24c9fa1201c.png",
+      "material": "ground_tile01",
+      "worldPosition": [
+        0.0,
+        8.0,
+        -58.00000008225458
+      ]
+    },
+    {
+      "name": "Gate01",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#943",
+      "mesh": "Kannan_wall07",
+      "staticBatch": false,
+      "bounds": [
+        401.91256094181017,
+        200.94081499079363,
+        951.7541470546314,
+        567.2701006517028
+      ],
+      "texture": "textures/3818887566c67f1f.png",
+      "material": "kaman_01",
+      "worldPosition": [
+        -9.199999809265137,
+        10.0,
+        -58.0
+      ]
+    },
+    {
+      "name": "Cave_Candle03 (6)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#944",
+      "mesh": "Cave_Candle03",
+      "staticBatch": false,
+      "bounds": [
+        2248.4875722438283,
+        560.4120940307386,
+        2266.9656562784457,
+        572.1328687707662
+      ],
+      "texture": "textures/9da4fa96dfa3af8c.png",
+      "material": "candle",
+      "worldPosition": [
+        -7.005740116147657,
+        9.999999926994985,
+        -24.180382404426247
+      ]
+    },
+    {
+      "name": "up",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#945",
+      "mesh": "up",
+      "staticBatch": false,
+      "bounds": [
+        1280.0001101073613,
+        -94.38904173218552,
+        2377.14334006599,
+        263.0130331816261
+      ],
+      "texture": "textures/8fc6a24c9fa1201c.png",
+      "material": "ground_tile01",
+      "worldPosition": [
+        0.0,
+        16.000000953674316,
+        -39.999998331069946
+      ]
+    },
+    {
+      "name": "Kannan_Center_GuardRail_02 (10)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#946",
+      "mesh": "Kannan_Center_GuardRail_01-1",
+      "staticBatch": false,
+      "bounds": [
+        237.71434413854195,
+        562.804878042015,
+        402.28575387768365,
+        635.7043703959538
+      ],
+      "texture": "textures/63fd965e93603a62.png",
+      "material": "kaman_02",
+      "worldPosition": [
+        -0.5,
+        10.0,
+        -61.0
+      ]
+    },
+    {
+      "name": "up",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#947",
+      "mesh": "up",
+      "staticBatch": false,
+      "bounds": [
+        -256.00015791794567,
+        124.7389588453637,
+        73.14282768287558,
+        591.7048353844764
+      ],
+      "texture": "textures/8fc6a24c9fa1201c.png",
+      "material": "ground_tile01",
+      "worldPosition": [
+        -9.999979972839355,
+        7.999998779296902,
+        -64.00000095367432
+      ]
+    },
+    {
+      "name": "Kannan_Chandelier_Candle (3)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#948",
+      "mesh": "Cave_Candle01",
+      "staticBatch": false,
+      "bounds": [
+        3162.3075103192277,
+        293.933169694149,
+        3171.6299668496677,
+        309.8568991883286
+      ],
+      "texture": "textures/9da4fa96dfa3af8c.png",
+      "material": "candle",
+      "worldPosition": [
+        -4.398497017389648,
+        14.915191535758638,
+        -7.601952875464461
+      ]
+    },
+    {
+      "name": "Kannan_Center_GuardRail_02 (27)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#949",
+      "mesh": "Kannan_Center_GuardRail_01-1",
+      "staticBatch": false,
+      "bounds": [
+        1280.0000514078906,
+        562.8048784092229,
+        1444.5714611470319,
+        635.7043707631616
+      ],
+      "texture": "textures/63fd965e93603a62.png",
+      "material": "kaman_02",
+      "worldPosition": [
+        -0.5,
+        10.0,
+        -42.0
+      ]
+    },
+    {
+      "name": "Kannan_pillar_Broken (1)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#950",
+      "mesh": "Kannan_pillar_Broken",
+      "staticBatch": false,
+      "bounds": [
+        1620.7383713262243,
+        472.0032182977326,
+        1707.0026215771966,
+        571.0066942884183
+      ],
+      "texture": "textures/3818887566c67f1f.png",
+      "material": "kaman_01",
+      "worldPosition": [
+        -8.0,
+        10.0,
+        -35.0
+      ]
+    },
+    {
+      "name": "Kannan_Center_GuardRail_02 (8)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#951",
+      "mesh": "Kannan_Center_GuardRail_01-1",
+      "staticBatch": false,
+      "bounds": [
+        73.14291667496082,
+        562.8048779840349,
+        237.71432641410206,
+        635.7043703379736
+      ],
+      "texture": "textures/63fd965e93603a62.png",
+      "material": "kaman_02",
+      "worldPosition": [
+        -0.5,
+        10.0,
+        -64.0
+      ]
+    },
+    {
+      "name": "Kannan_Center_GuardRail_02 (9)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#952",
+      "mesh": "Kannan_Center_GuardRail_01-1",
+      "staticBatch": false,
+      "bounds": [
+        2541.714328628681,
+        562.8048788537376,
+        2706.285738367822,
+        635.7043712076764
+      ],
+      "texture": "textures/63fd965e93603a62.png",
+      "material": "kaman_02",
+      "worldPosition": [
+        -0.5,
+        10.0,
+        -19.0
+      ]
+    },
+    {
+      "name": "Kannan_Chandelier_Candle (9)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#953",
+      "mesh": "Cave_Candle01",
+      "staticBatch": false,
+      "bounds": [
+        3228.5740663556608,
+        296.14196254371325,
+        3237.1944681950404,
+        311.9928331546448
+      ],
+      "texture": "textures/9da4fa96dfa3af8c.png",
+      "material": "candle",
+      "worldPosition": [
+        -3.598538593133602,
+        14.915191535758638,
+        -6.400056803031841
+      ]
+    },
+    {
+      "name": "WallType1_6X (3)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#954",
+      "mesh": "6x6",
+      "staticBatch": false,
+      "bounds": [
+        3364.5713954194393,
+        237.17375950084215,
+        3693.7143281679614,
+        565.8655428548682
+      ],
+      "texture": "textures/7c8bd537db964e9d.png",
+      "material": "WallType1_01",
+      "worldPosition": [
+        -9.0,
+        10.0,
+        -4.0
+      ]
+    },
+    {
+      "name": "WallType1_6X (3)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#955",
+      "mesh": "6x6",
+      "staticBatch": false,
+      "bounds": [
+        950.8571259535797,
+        237.17375865046608,
+        1280.000058702102,
+        565.8655420044921
+      ],
+      "texture": "textures/7c8bd537db964e9d.png",
+      "material": "WallType1_01",
+      "worldPosition": [
+        -9.0,
+        10.0,
+        -48.0
+      ]
+    },
+    {
+      "name": "Kannan_pillar04_01 (5)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#956",
+      "mesh": "Kannan_pillar04_01",
+      "staticBatch": false,
+      "bounds": [
+        3773.0650360558675,
+        474.00351027558975,
+        3833.6108559978147,
+        610.0787477075538
+      ],
+      "texture": "textures/3818887566c67f1f.png",
+      "material": "kaman_01",
+      "worldPosition": [
+        -7.0,
+        8.0,
+        4.0
+      ]
+    },
+    {
+      "name": "Kannan_Torchlight_001 (4)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#957",
+      "mesh": "Kannan_Torchlight_001",
+      "staticBatch": false,
+      "bounds": [
+        1693.1899523185323,
+        115.27313759920035,
+        1737.7810584621227,
+        250.01098859068534
+      ],
+      "texture": "textures/63fd965e93603a62.png",
+      "material": "kaman_02",
+      "worldPosition": [
+        -8.829999923706055,
+        17.0,
+        -34.0
+      ]
+    },
+    {
+      "name": "Kannan_Center_GuardRail_02 (12)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#958",
+      "mesh": "Kannan_Center_GuardRail_01-1",
+      "staticBatch": false,
+      "bounds": [
+        621.7143415535652,
+        562.8048781773022,
+        786.2857512927069,
+        635.7043705312409
+      ],
+      "texture": "textures/63fd965e93603a62.png",
+      "material": "kaman_02",
+      "worldPosition": [
+        -0.5,
+        10.0,
+        -54.0
+      ]
+    },
+    {
+      "name": "Kannan_Center_GuardRail_02 (13)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#959",
+      "mesh": "Kannan_Center_GuardRail_01-1",
+      "staticBatch": false,
+      "bounds": [
+        3858.285748337332,
+        562.8048793175791,
+        4022.857158076473,
+        635.704371671518
+      ],
+      "texture": "textures/63fd965e93603a62.png",
+      "material": "kaman_02",
+      "worldPosition": [
+        -0.5,
+        10.0,
+        5.0
+      ]
+    },
+    {
+      "name": "Kannan_pillar04_01 (6)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#960",
+      "mesh": "Kannan_pillar04_01",
+      "staticBatch": false,
+      "bounds": [
+        4102.207890983031,
+        474.0035103915502,
+        4162.753710924977,
+        610.078747823514
+      ],
+      "texture": "textures/3818887566c67f1f.png",
+      "material": "kaman_01",
+      "worldPosition": [
+        -7.0,
+        8.0,
+        10.0
+      ]
+    },
+    {
+      "name": "WallType1_6X (3)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#961",
+      "mesh": "6x6",
+      "staticBatch": false,
+      "bounds": [
+        73.14284614781263,
+        237.17375834123837,
+        402.28577889633493,
+        565.8655416952644
+      ],
+      "texture": "textures/7c8bd537db964e9d.png",
+      "material": "WallType1_01",
+      "worldPosition": [
+        -9.0,
+        10.0,
+        -64.0
+      ]
+    },
+    {
+      "name": "down",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#962",
+      "mesh": "down",
+      "staticBatch": false,
+      "bounds": [
+        4022.8571355528798,
+        562.9945397981624,
+        4351.99999420646,
+        701.2684504114422
+      ],
+      "texture": "textures/8fc6a24c9fa1201c.png",
+      "material": "ground_tile01",
+      "worldPosition": [
+        0.0,
+        8.000000000001164,
+        8.0
+      ]
+    },
+    {
+      "name": "up",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#963",
+      "mesh": "up",
+      "staticBatch": false,
+      "bounds": [
+        3035.4285334070664,
+        124.73923013647935,
+        3364.5714182186284,
+        263.01270522381014
+      ],
+      "texture": "textures/8fc6a24c9fa1201c.png",
+      "material": "ground_tile01",
+      "worldPosition": [
+        0.0,
+        8.0,
+        -10.000000082254552
+      ]
+    },
+    {
+      "name": "Kannan_Center_GuardRail_02 (8)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#964",
+      "mesh": "Kannan_Center_GuardRail_01-1",
+      "staticBatch": false,
+      "bounds": [
+        3364.5714659465875,
+        562.8048791436386,
+        3529.1428756857285,
+        635.7043714975773
+      ],
+      "texture": "textures/63fd965e93603a62.png",
+      "material": "kaman_02",
+      "worldPosition": [
+        -0.5,
+        10.0,
+        -4.0
+      ]
+    },
+    {
+      "name": "Kannan_Center_GuardRail_02 (9)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#965",
+      "mesh": "Kannan_Center_GuardRail_01-1",
+      "staticBatch": false,
+      "bounds": [
+        2870.8571835558437,
+        562.8048789696979,
+        3035.4285932949847,
+        635.7043713236367
+      ],
+      "texture": "textures/63fd965e93603a62.png",
+      "material": "kaman_02",
+      "worldPosition": [
+        -0.5,
+        10.0,
+        -13.0
+      ]
+    },
+    {
+      "name": "Kannan_Center_GuardRail_02 (8)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#966",
+      "mesh": "Kannan_Center_GuardRail_01-1",
+      "staticBatch": false,
+      "bounds": [
+        950.8571964807279,
+        562.8048782932624,
+        1115.4286062198692,
+        635.7043706472011
+      ],
+      "texture": "textures/63fd965e93603a62.png",
+      "material": "kaman_02",
+      "worldPosition": [
+        -0.5,
+        10.0,
+        -48.0
+      ]
+    },
+    {
+      "name": "WallType1_6X (3)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#967",
+      "mesh": "6x6",
+      "staticBatch": false,
+      "bounds": [
+        2377.142830637951,
+        237.17375915296103,
+        2706.2857633864733,
+        565.865542506987
+      ],
+      "texture": "textures/7c8bd537db964e9d.png",
+      "material": "WallType1_01",
+      "worldPosition": [
+        -9.0,
+        10.0,
+        -22.0
+      ]
+    },
+    {
+      "name": "Kannan_Center_GuardRail_02 (9)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#968",
+      "mesh": "Kannan_Center_GuardRail_01-1",
+      "staticBatch": false,
+      "bounds": [
+        3529.1428934101687,
+        562.8048792016189,
+        3693.71430314931,
+        635.7043715555576
+      ],
+      "texture": "textures/63fd965e93603a62.png",
+      "material": "kaman_02",
+      "worldPosition": [
+        -0.5,
+        10.0,
+        -1.0
+      ]
+    },
+    {
+      "name": "up",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#969",
+      "mesh": "up",
+      "staticBatch": false,
+      "bounds": [
+        4022.857135398266,
+        124.73889184063736,
+        4351.999994167804,
+        591.7046076462175
+      ],
+      "texture": "textures/8fc6a24c9fa1201c.png",
+      "material": "ground_tile01",
+      "worldPosition": [
+        0.0,
+        8.000000000001164,
+        8.0
+      ]
+    },
+    {
+      "name": "Kannan_Center_GuardRail_02 (9)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#970",
+      "mesh": "Kannan_Center_GuardRail_01-1",
+      "staticBatch": false,
+      "bounds": [
+        1115.428623944309,
+        562.8048783512427,
+        1280.0000336834507,
+        635.7043707051814
+      ],
+      "texture": "textures/63fd965e93603a62.png",
+      "material": "kaman_02",
+      "worldPosition": [
+        -0.5,
+        10.0,
+        -45.0
+      ]
+    },
+    {
+      "name": "Kannan_Center_GuardRail_02 (8)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#971",
+      "mesh": "Kannan_Center_GuardRail_01-1",
+      "staticBatch": false,
+      "bounds": [
+        2706.285756092262,
+        562.8048789117179,
+        2870.8571658314036,
+        635.7043712656566
+      ],
+      "texture": "textures/63fd965e93603a62.png",
+      "material": "kaman_02",
+      "worldPosition": [
+        -0.5,
+        10.0,
+        -16.0
+      ]
+    },
+    {
+      "name": "down",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#972",
+      "mesh": "down",
+      "staticBatch": false,
+      "bounds": [
+        3035.428559719651,
+        562.9949203018389,
+        3364.5714445311987,
+        701.2684510903877
+      ],
+      "texture": "textures/8fc6a24c9fa1201c.png",
+      "material": "ground_tile01",
+      "worldPosition": [
+        0.0,
+        8.0,
+        -10.000000082254552
+      ]
+    },
+    {
+      "name": "Kannan_Center_GuardRail_02 (8)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#973",
+      "mesh": "Kannan_Center_GuardRail_01-1",
+      "staticBatch": false,
+      "bounds": [
+        2377.1429011651,
+        562.8048787957575,
+        2541.714310904241,
+        635.7043711496963
+      ],
+      "texture": "textures/63fd965e93603a62.png",
+      "material": "kaman_02",
+      "worldPosition": [
+        -0.5,
+        10.0,
+        -22.0
+      ]
+    },
+    {
+      "name": "Kannan_Center_GuardRail_02 (9)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#974",
+      "mesh": "Kannan_Center_GuardRail_01-1",
+      "staticBatch": false,
+      "bounds": [
+        237.71434413854195,
+        562.804878042015,
+        402.28575387768365,
+        635.7043703959538
+      ],
+      "texture": "textures/63fd965e93603a62.png",
+      "material": "kaman_02",
+      "worldPosition": [
+        -0.5,
+        10.0,
+        -61.0
+      ]
+    },
+    {
+      "name": "Kannan_Light (10)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#975",
+      "mesh": "Kannan_Light",
+      "staticBatch": false,
+      "bounds": [
+        3187.8276175533556,
+        224.62844466412318,
+        3212.1722626917194,
+        253.17155017861552
+      ],
+      "texture": "textures/63fd965e93603a62.png",
+      "material": "kaman_02",
+      "worldPosition": [
+        -4.0,
+        16.234000000715255,
+        -7.0
+      ]
+    },
+    {
+      "name": "Kannan_Center_GuardRail_02 (28)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#976",
+      "mesh": "Kannan_Center_GuardRail_01-1",
+      "staticBatch": false,
+      "bounds": [
+        -146.2856532764813,
+        562.8048779067279,
+        18.2857564626604,
+        635.7043702606667
+      ],
+      "texture": "textures/63fd965e93603a62.png",
+      "material": "kaman_02",
+      "worldPosition": [
+        -0.5,
+        10.0,
+        -68.0
+      ]
+    },
+    {
+      "name": "WallType1_6X (3)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#977",
+      "mesh": "6x6",
+      "staticBatch": false,
+      "bounds": [
+        2706.285685565114,
+        237.17375926892143,
+        3035.428618313636,
+        565.8655426229474
+      ],
+      "texture": "textures/7c8bd537db964e9d.png",
+      "material": "WallType1_01",
+      "worldPosition": [
+        -9.0,
+        10.0,
+        -16.0
+      ]
+    },
+    {
+      "name": "Kannan_Center_GuardRail_02 (12)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#978",
+      "mesh": "Kannan_Center_GuardRail_01-1",
+      "staticBatch": false,
+      "bounds": [
+        3858.285748337332,
+        562.8048793175791,
+        4022.857158076473,
+        635.704371671518
+      ],
+      "texture": "textures/63fd965e93603a62.png",
+      "material": "kaman_02",
+      "worldPosition": [
+        -0.5,
+        10.0,
+        5.0
+      ]
+    },
+    {
+      "name": "Kannan_Chandelier_Candle (5)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#979",
+      "mesh": "Cave_Candle01",
+      "staticBatch": false,
+      "bounds": [
+        3188.788953611116,
+        337.5820317058472,
+        3197.8974484081846,
+        344.8699848477128
+      ],
+      "texture": "textures/9da4fa96dfa3af8c.png",
+      "material": "candle",
+      "worldPosition": [
+        -4.336655308361754,
+        14.278671053197826,
+        -7.129036489368096
+      ]
+    },
+    {
+      "name": "Kannan_Center_GuardRail_02 (24)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#980",
+      "mesh": "Kannan_Center_GuardRail_01-1",
+      "staticBatch": false,
+      "bounds": [
+        1883.4286187743558,
+        562.8048786218169,
+        2048.0000285134965,
+        635.7043709757556
+      ],
+      "texture": "textures/63fd965e93603a62.png",
+      "material": "kaman_02",
+      "worldPosition": [
+        -0.5,
+        10.0,
+        -31.0
+      ]
+    },
+    {
+      "name": "Kannan_Center_GuardRail_02 (26)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#981",
+      "mesh": "Kannan_Center_GuardRail_01-1",
+      "staticBatch": false,
+      "bounds": [
+        1444.5714788714718,
+        562.804878467203,
+        1609.1428886106132,
+        635.7043708211418
+      ],
+      "texture": "textures/63fd965e93603a62.png",
+      "material": "kaman_02",
+      "worldPosition": [
+        -0.5,
+        10.0,
+        -39.0
+      ]
+    },
+    {
+      "name": "down",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#982",
+      "mesh": "down",
+      "staticBatch": false,
+      "bounds": [
+        402.2857203023484,
+        562.9949241314459,
+        950.8571881443177,
+        701.2684514567887
+      ],
+      "texture": "textures/8fc6a24c9fa1201c.png",
+      "material": "ground_tile01",
+      "worldPosition": [
+        0.0,
+        8.0,
+        -58.00000008225458
+      ]
+    },
+    {
+      "name": "Kannan_gargoyle_statue (6)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#983",
+      "mesh": "Kannan_gargoyle_statue",
+      "staticBatch": false,
+      "bounds": [
+        2151.913703396108,
+        340.0606591888485,
+        2275.9625074368655,
+        492.9099450352354
+      ],
+      "texture": "textures/d68aa7b98a7a2b26.png",
+      "material": "Kannan_gargoyle_statue",
+      "worldPosition": [
+        -7.729999424762349,
+        12.775001764297485,
+        -24.97499847089886
+      ]
+    },
+    {
+      "name": "down",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#984",
+      "mesh": "down",
+      "staticBatch": false,
+      "bounds": [
+        1280.0000781241376,
+        343.86667176758976,
+        2377.142931607765,
+        701.2684805166057
+      ],
+      "texture": "textures/8fc6a24c9fa1201c.png",
+      "material": "ground_tile01",
+      "worldPosition": [
+        -9.999990463256836,
+        18.0,
+        -41.9999987792969
+      ]
+    },
+    {
+      "name": "down",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#985",
+      "mesh": "down",
+      "staticBatch": false,
+      "bounds": [
+        -256.0000308160902,
+        562.994685750949,
+        73.14282783748945,
+        701.2685574325072
+      ],
+      "texture": "textures/8fc6a24c9fa1201c.png",
+      "material": "ground_tile01",
+      "worldPosition": [
+        -9.999979972839355,
+        7.999998779296902,
+        -64.00000095367432
+      ]
+    },
+    {
+      "name": "Cave_Candle02 (5)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#986",
+      "mesh": "Cave_Candle02",
+      "staticBatch": false,
+      "bounds": [
+        1611.076485716855,
+        556.098067612376,
+        1623.3135362838755,
+        571.9446633660889
+      ],
+      "texture": "textures/9da4fa96dfa3af8c.png",
+      "material": "candle",
+      "worldPosition": [
+        -7.072810467840187,
+        10.000000049438064,
+        -35.852766009865405
+      ]
+    },
+    {
+      "name": "Kannan_Center_GuardRail_02 (10)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#987",
+      "mesh": "Kannan_Center_GuardRail_01-1",
+      "staticBatch": false,
+      "bounds": [
+        2541.714328628681,
+        562.8048788537376,
+        2706.285738367822,
+        635.7043712076764
+      ],
+      "texture": "textures/63fd965e93603a62.png",
+      "material": "kaman_02",
+      "worldPosition": [
+        -0.5,
+        10.0,
+        -19.0
+      ]
+    },
+    {
+      "name": "Kannan_Center_GuardRail_02 (10)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#988",
+      "mesh": "Kannan_Center_GuardRail_01-1",
+      "staticBatch": false,
+      "bounds": [
+        2870.8571835558437,
+        562.8048789696979,
+        3035.4285932949847,
+        635.7043713236367
+      ],
+      "texture": "textures/63fd965e93603a62.png",
+      "material": "kaman_02",
+      "worldPosition": [
+        -0.5,
+        10.0,
+        -13.0
+      ]
+    },
+    {
+      "name": "Kannan_Torchlight_001 (5)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#990",
+      "mesh": "Kannan_Torchlight_001",
+      "staticBatch": false,
+      "bounds": [
+        1912.6185745858218,
+        115.2731376765073,
+        1957.2096807294124,
+        250.0109886679923
+      ],
+      "texture": "textures/63fd965e93603a62.png",
+      "material": "kaman_02",
+      "worldPosition": [
+        -8.829999923706055,
+        17.0,
+        -29.999999046325684
+      ]
+    },
+    {
+      "name": "WallType1_Window1_L",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#991",
+      "mesh": "Kannan_wall01",
+      "staticBatch": false,
+      "bounds": [
+        1718.8571541884812,
+        18.04974082835065,
+        1938.3051629063302,
+        346.73769218870655
+      ],
+      "texture": "textures/3818887566c67f1f.png",
+      "material": "kaman_01",
+      "worldPosition": [
+        -9.0,
+        14.0,
+        -34.0
+      ]
+    },
+    {
+      "name": "Kannan_kings_chair_Side_1 (1)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#992",
+      "mesh": "Kannan_kings_chair_Side",
+      "staticBatch": false,
+      "bounds": [
+        629.1627530159487,
+        303.550765619646,
+        727.6496459138382,
+        623.0678129075544
+      ],
+      "texture": "textures/3818887566c67f1f.png",
+      "material": "kaman_01",
+      "worldPosition": [
+        -10.420001353171207,
+        7.519999730669213,
+        -52.974798880604546
+      ]
+    },
+    {
+      "name": "Kannan_Chandelier_Candle (1)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#993",
+      "mesh": "Cave_Candle01",
+      "staticBatch": false,
+      "bounds": [
+        3185.4695004496366,
+        296.98776789074134,
+        3194.239252488862,
+        313.02834539444257
+      ],
+      "texture": "textures/9da4fa96dfa3af8c.png",
+      "material": "candle",
+      "worldPosition": [
+        -3.300785006364031,
+        14.915191535758638,
+        -7.179635909867114
+      ]
+    },
+    {
+      "name": "WallType1_4X4",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#994",
+      "mesh": "4",
+      "staticBatch": false,
+      "bounds": [
+        1499.4285509481417,
+        346.73771113719704,
+        1718.8572099445232,
+        565.8655558283431
+      ],
+      "texture": "textures/7c8bd537db964e9d.png",
+      "material": "WallType1_01",
+      "worldPosition": [
+        -9.0,
+        10.0,
+        -38.0
+      ]
+    },
+    {
+      "name": "down",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#995",
+      "mesh": "down",
+      "staticBatch": false,
+      "bounds": [
+        950.8571451809541,
+        562.9949195674232,
+        1280.0000299925018,
+        701.2684503559719
+      ],
+      "texture": "textures/8fc6a24c9fa1201c.png",
+      "material": "ground_tile01",
+      "worldPosition": [
+        0.0,
+        8.0,
+        -48.00000008225455
+      ]
+    },
+    {
+      "name": "down",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#996",
+      "mesh": "down",
+      "staticBatch": false,
+      "bounds": [
+        3364.5714146468135,
+        562.9949204177993,
+        3693.7142994583614,
+        701.2684512063481
+      ],
+      "texture": "textures/8fc6a24c9fa1201c.png",
+      "material": "ground_tile01",
+      "worldPosition": [
+        0.0,
+        8.0,
+        -4.000000082254552
+      ]
+    },
+    {
+      "name": "Cave_Candle02 (5)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#997",
+      "mesh": "Cave_Candle02",
+      "staticBatch": false,
+      "bounds": [
+        2269.3621955711806,
+        556.0980678442968,
+        2281.599246138201,
+        571.9446635980096
+      ],
+      "texture": "textures/9da4fa96dfa3af8c.png",
+      "material": "candle",
+      "worldPosition": [
+        -7.072810467840187,
+        10.000000049438064,
+        -23.8527660098654
+      ]
+    },
+    {
+      "name": "Kannan_Center_GuardRail_02 (9)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#998",
+      "mesh": "Kannan_Center_GuardRail_01-1",
+      "staticBatch": false,
+      "bounds": [
+        3200.0000384830064,
+        562.8048790856584,
+        3364.5714482221474,
+        635.7043714395971
+      ],
+      "texture": "textures/63fd965e93603a62.png",
+      "material": "kaman_02",
+      "worldPosition": [
+        -0.5,
+        10.0,
+        -7.0
+      ]
+    },
+    {
+      "name": "Kannan_Torchlight_001 (3)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#999",
+      "mesh": "Kannan_Torchlight_001",
+      "staticBatch": false,
+      "bounds": [
+        521.9983989349055,
+        362.80342393198765,
+        561.09131555404,
+        480.5668047390187
+      ],
+      "texture": "textures/63fd965e93603a62.png",
+      "material": "kaman_02",
+      "worldPosition": [
+        -8.459999352017832,
+        12.656400152301785,
+        -55.40779990077205
+      ]
+    },
+    {
+      "name": "up",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1000",
+      "mesh": "up",
+      "staticBatch": false,
+      "bounds": [
+        2706.2856784799037,
+        124.73923002051899,
+        3035.4285632914657,
+        263.0127051078498
+      ],
+      "texture": "textures/8fc6a24c9fa1201c.png",
+      "material": "ground_tile01",
+      "worldPosition": [
+        0.0,
+        8.0,
+        -16.00000008225455
+      ]
+    },
+    {
+      "name": "Kannan_Chandelier_Candle (6)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1001",
+      "mesh": "Cave_Candle01",
+      "staticBatch": false,
+      "bounds": [
+        3177.0651539006885,
+        338.9309551864066,
+        3185.63038116015,
+        346.336844994617
+      ],
+      "texture": "textures/9da4fa96dfa3af8c.png",
+      "material": "candle",
+      "worldPosition": [
+        -3.871006316864581,
+        14.278671053197826,
+        -7.3366715288149775
+      ]
+    },
+    {
+      "name": "WallType1_6X (4)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1002",
+      "mesh": "6x6",
+      "staticBatch": false,
+      "bounds": [
+        3693.714250346602,
+        237.17375961680256,
+        4022.857183095124,
+        565.8655429708285
+      ],
+      "texture": "textures/7c8bd537db964e9d.png",
+      "material": "WallType1_01",
+      "worldPosition": [
+        -9.0,
+        10.0,
+        2.0
+      ]
+    },
+    {
+      "name": "Kannan_Chandelier (15)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1003",
+      "mesh": "Kannan_Chandelier",
+      "staticBatch": false,
+      "bounds": [
+        3157.3323044295,
+        198.62840286250696,
+        3242.667695690009,
+        391.3977396913083
+      ],
+      "texture": "textures/16e48bb7221336dc.png",
+      "material": "kaman_03 1",
+      "worldPosition": [
+        -4.0,
+        16.0,
+        -7.0
+      ]
+    },
+    {
+      "name": "Gate01_Open_01 (3)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1004",
+      "mesh": "Kannan_gate03",
+      "staticBatch": false,
+      "bounds": [
+        3898.590340068662,
+        372.7699203627966,
+        4037.199604208099,
+        566.361107119101
+      ],
+      "texture": "textures/3818887566c67f1f.png",
+      "material": "kaman_01",
+      "worldPosition": [
+        -8.440000534057617,
+        10.0,
+        7.0
+      ]
+    },
+    {
+      "name": "Cave_Candle03 (6)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1005",
+      "mesh": "Cave_Candle03",
+      "staticBatch": false,
+      "bounds": [
+        3235.916136940498,
+        561.0724240276829,
+        3254.394220975115,
+        572.7931987677107
+      ],
+      "texture": "textures/9da4fa96dfa3af8c.png",
+      "material": "candle",
+      "worldPosition": [
+        -6.775740097074171,
+        9.999999926994985,
+        -6.180382404426246
+      ]
+    },
+    {
+      "name": "Gate01 (3)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1006",
+      "mesh": "Kannan_gate02",
+      "staticBatch": false,
+      "bounds": [
+        3867.248630619204,
+        336.40791479389736,
+        4068.5085737782338,
+        568.8179321252229
+      ],
+      "texture": "textures/3818887566c67f1f.png",
+      "material": "kaman_01",
+      "worldPosition": [
+        -8.440000534057617,
+        10.0,
+        7.0
+      ]
+    },
+    {
+      "name": "up",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1007",
+      "mesh": "up",
+      "staticBatch": false,
+      "bounds": [
+        2377.142823552741,
+        124.73922990455858,
+        2706.285708364303,
+        263.01270499188934
+      ],
+      "texture": "textures/8fc6a24c9fa1201c.png",
+      "material": "ground_tile01",
+      "worldPosition": [
+        0.0,
+        8.0,
+        -22.00000008225455
+      ]
+    },
+    {
+      "name": "down",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1008",
+      "mesh": "down",
+      "staticBatch": false,
+      "bounds": [
+        3693.7142695739763,
+        562.9949205337596,
+        4022.857154385524,
+        701.2684513223085
+      ],
+      "texture": "textures/8fc6a24c9fa1201c.png",
+      "material": "ground_tile01",
+      "worldPosition": [
+        0.0,
+        8.0,
+        1.9999999177454484
+      ]
+    },
+    {
+      "name": "down",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1009",
+      "mesh": "down",
+      "staticBatch": false,
+      "bounds": [
+        73.14286537518615,
+        562.9949192581955,
+        402.2857501867343,
+        701.2684500467442
+      ],
+      "texture": "textures/8fc6a24c9fa1201c.png",
+      "material": "ground_tile01",
+      "worldPosition": [
+        0.0,
+        8.0,
+        -64.00000008225456
+      ]
+    },
+    {
+      "name": "Kannan_Chandelier_Candle",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1010",
+      "mesh": "Cave_Candle01",
+      "staticBatch": false,
+      "bounds": [
+        3202.102558628562,
+        339.4112589681861,
+        3211.2110499361115,
+        346.9109120781849
+      ],
+      "texture": "textures/9da4fa96dfa3af8c.png",
+      "material": "candle",
+      "worldPosition": [
+        -3.6633446916382457,
+        14.278671053197826,
+        -6.870963510631904
+      ]
+    },
+    {
+      "name": "WallType1_Window1_L (2)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1011",
+      "mesh": "Kannan_wall01",
+      "staticBatch": false,
+      "bounds": [
+        1938.2857241399229,
+        18.049740905657558,
+        2157.733732857772,
+        346.7376922660135
+      ],
+      "texture": "textures/3818887566c67f1f.png",
+      "material": "kaman_01",
+      "worldPosition": [
+        -9.0,
+        14.0,
+        -30.0
+      ]
+    },
+    {
+      "name": "Kannan_Center_GuardRail_02 (13)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1012",
+      "mesh": "Kannan_Center_GuardRail_01-1",
+      "staticBatch": false,
+      "bounds": [
+        786.2857690171468,
+        562.8048782352823,
+        950.857178756288,
+        635.7043705892211
+      ],
+      "texture": "textures/63fd965e93603a62.png",
+      "material": "kaman_02",
+      "worldPosition": [
+        -0.5,
+        10.0,
+        -51.0
+      ]
+    },
+    {
+      "name": "WallType1_6X (3)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1013",
+      "mesh": "6x6",
+      "staticBatch": false,
+      "bounds": [
+        3035.4285404922766,
+        237.1737593848818,
+        3364.5714732407987,
+        565.8655427389078
+      ],
+      "texture": "textures/7c8bd537db964e9d.png",
+      "material": "WallType1_01",
+      "worldPosition": [
+        -9.0,
+        10.0,
+        -10.0
+      ]
+    },
+    {
+      "name": "up",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1014",
+      "mesh": "up",
+      "staticBatch": false,
+      "bounds": [
+        73.1428390626022,
+        124.73922909283597,
+        402.2857238741642,
+        263.0127041801667
+      ],
+      "texture": "textures/8fc6a24c9fa1201c.png",
+      "material": "ground_tile01",
+      "worldPosition": [
+        0.0,
+        8.0,
+        -64.00000008225456
+      ]
+    },
+    {
+      "name": "Kannan_Center_GuardRail_02 (22)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1015",
+      "mesh": "Kannan_Center_GuardRail_01-1",
+      "staticBatch": false,
+      "bounds": [
+        2212.5714737015182,
+        562.8048787377772,
+        2377.1428834406597,
+        635.704371091716
+      ],
+      "texture": "textures/63fd965e93603a62.png",
+      "material": "kaman_02",
+      "worldPosition": [
+        -0.5,
+        10.0,
+        -25.0
+      ]
+    },
+    {
+      "name": "down",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1016",
+      "mesh": "down",
+      "staticBatch": false,
+      "bounds": [
+        2377.142849865326,
+        562.9949200699182,
+        2706.2857346768733,
+        701.2684508584668
+      ],
+      "texture": "textures/8fc6a24c9fa1201c.png",
+      "material": "ground_tile01",
+      "worldPosition": [
+        0.0,
+        8.0,
+        -22.00000008225455
+      ]
+    },
+    {
+      "name": "up",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1017",
+      "mesh": "up",
+      "staticBatch": false,
+      "bounds": [
+        3693.714243261392,
+        124.73923036840011,
+        4022.857128072954,
+        263.0127054557309
+      ],
+      "texture": "textures/8fc6a24c9fa1201c.png",
+      "material": "ground_tile01",
+      "worldPosition": [
+        0.0,
+        8.0,
+        1.9999999177454484
+      ]
+    },
+    {
+      "name": "WallType1_6X (4)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1018",
+      "mesh": "6x6",
+      "staticBatch": false,
+      "bounds": [
+        4022.857105273765,
+        237.1737597327629,
+        4352.000038022286,
+        565.8655430867889
+      ],
+      "texture": "textures/7c8bd537db964e9d.png",
+      "material": "WallType1_01",
+      "worldPosition": [
+        -9.0,
+        10.0,
+        8.0
+      ]
+    },
+    {
+      "name": "WallType1_4X (3)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1019",
+      "mesh": "4",
+      "staticBatch": false,
+      "bounds": [
+        1279.9999808807443,
+        237.173758109307,
+        1499.4286139124586,
+        565.8655557510363
+      ],
+      "texture": "textures/7c8bd537db964e9d.png",
+      "material": "WallType1_01",
+      "worldPosition": [
+        -9.0,
+        10.0,
+        -42.0
+      ]
+    },
+    {
+      "name": "Kannan_Center_GuardRail_02 (23)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1020",
+      "mesh": "Kannan_Center_GuardRail_01-1",
+      "staticBatch": false,
+      "bounds": [
+        2048.0000462379367,
+        562.8048786797971,
+        2212.571455977078,
+        635.7043710337358
+      ],
+      "texture": "textures/63fd965e93603a62.png",
+      "material": "kaman_02",
+      "worldPosition": [
+        -0.5,
+        10.0,
+        -28.0
+      ]
+    },
+    {
+      "name": "Kannan_Center_GuardRail_02 (8)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1021",
+      "mesh": "Kannan_Center_GuardRail_01-1",
+      "staticBatch": false,
+      "bounds": [
+        3035.428611019425,
+        562.8048790276782,
+        3200.0000207585663,
+        635.704371381617
+      ],
+      "texture": "textures/63fd965e93603a62.png",
+      "material": "kaman_02",
+      "worldPosition": [
+        -0.5,
+        10.0,
+        -10.0
+      ]
+    },
+    {
+      "name": "down",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1022",
+      "mesh": "down",
+      "staticBatch": false,
+      "bounds": [
+        2706.285704792488,
+        562.9949201858785,
+        3035.428589604036,
+        701.2684509744272
+      ],
+      "texture": "textures/8fc6a24c9fa1201c.png",
+      "material": "ground_tile01",
+      "worldPosition": [
+        0.0,
+        8.0,
+        -16.00000008225455
+      ]
+    },
+    {
+      "name": "Kannan_Center_GuardRail_02 (25)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1023",
+      "mesh": "Kannan_Center_GuardRail_01-1",
+      "staticBatch": false,
+      "bounds": [
+        1609.1429063350533,
+        562.8048785251833,
+        1773.7143160741946,
+        635.704370879122
+      ],
+      "texture": "textures/63fd965e93603a62.png",
+      "material": "kaman_02",
+      "worldPosition": [
+        -0.5,
+        10.0,
+        -36.0
+      ]
+    },
+    {
+      "name": "up",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1024",
+      "mesh": "up",
+      "staticBatch": false,
+      "bounds": [
+        950.8571188683693,
+        124.73922940206364,
+        1280.0000036799313,
+        263.0127044893944
+      ],
+      "texture": "textures/8fc6a24c9fa1201c.png",
+      "material": "ground_tile01",
+      "worldPosition": [
+        0.0,
+        8.0,
+        -48.00000008225455
+      ]
+    },
+    {
+      "name": "Kannan_Chandelier_Candle (2)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1025",
+      "mesh": "Cave_Candle01",
+      "staticBatch": false,
+      "bounds": [
+        3158.6078619906243,
+        295.8011148199445,
+        3167.170187788851,
+        311.7786017426505
+      ],
+      "texture": "textures/9da4fa96dfa3af8c.png",
+      "material": "candle",
+      "worldPosition": [
+        -3.739195097581924,
+        14.915191535758638,
+        -7.673156562978981
+      ]
+    },
+    {
+      "name": "up",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1026",
+      "mesh": "up",
+      "staticBatch": false,
+      "bounds": [
+        3364.571388334229,
+        124.73923025243971,
+        3693.7142731457907,
+        263.0127053397705
+      ],
+      "texture": "textures/8fc6a24c9fa1201c.png",
+      "material": "ground_tile01",
+      "worldPosition": [
+        0.0,
+        8.0,
+        -4.000000082254552
+      ]
+    },
+    {
+      "name": "Kannan_Center_GuardRail_02 (14)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1027",
+      "mesh": "Kannan_Center_GuardRail_01-1",
+      "staticBatch": false,
+      "bounds": [
+        4077.7143182887735,
+        562.804879394886,
+        4242.285728027915,
+        635.7043717488248
+      ],
+      "texture": "textures/63fd965e93603a62.png",
+      "material": "kaman_02",
+      "worldPosition": [
+        -0.5,
+        10.0,
+        9.0
+      ]
+    },
+    {
+      "name": "WallType1_Window1_L (1)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1028",
+      "mesh": "Kannan_wall01",
+      "staticBatch": false,
+      "bounds": [
+        1499.4285842370393,
+        18.049740751043743,
+        1718.876592954888,
+        346.7376921113996
+      ],
+      "texture": "textures/3818887566c67f1f.png",
+      "material": "kaman_01",
+      "worldPosition": [
+        -9.0,
+        14.0,
+        -38.0
+      ]
+    },
+    {
+      "name": "WallType1_4X (7)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1029",
+      "mesh": "4",
+      "staticBatch": false,
+      "bounds": [
+        2157.7142606865114,
+        237.17375841853465,
+        2377.1428937182254,
+        565.8655560602638
+      ],
+      "texture": "textures/7c8bd537db964e9d.png",
+      "material": "WallType1_01",
+      "worldPosition": [
+        -9.0,
+        10.0,
+        -26.0
+      ]
+    },
+    {
+      "name": "Kannan_Torchlight_001 (2)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1030",
+      "mesh": "Kannan_Torchlight_001",
+      "staticBatch": false,
+      "bounds": [
+        791.0858832152637,
+        359.62607484869693,
+        830.1787998343982,
+        477.38945565572794
+      ],
+      "texture": "textures/63fd965e93603a62.png",
+      "material": "kaman_02",
+      "worldPosition": [
+        -8.459998692955397,
+        12.714400101280205,
+        -50.50255926887026
+      ]
+    },
+    {
+      "name": "Kannan_Chandelier_Candle (4)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1031",
+      "mesh": "Cave_Candle01",
+      "staticBatch": false,
+      "bounds": [
+        3232.8060176766458,
+        294.18804714120006,
+        3241.37117679915,
+        310.2225842596743
+      ],
+      "texture": "textures/9da4fa96dfa3af8c.png",
+      "material": "candle",
+      "worldPosition": [
+        -4.261875058235006,
+        14.915191535758638,
+        -6.3272489483515955
+      ]
+    },
+    {
+      "name": "Kannan_Center_GuardRail_02 (10)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1032",
+      "mesh": "Kannan_Center_GuardRail_01-1",
+      "staticBatch": false,
+      "bounds": [
+        3200.0000384830064,
+        562.8048790856584,
+        3364.5714482221474,
+        635.7043714395971
+      ],
+      "texture": "textures/63fd965e93603a62.png",
+      "material": "kaman_02",
+      "worldPosition": [
+        -0.5,
+        10.0,
+        -7.0
+      ]
+    },
+    {
+      "name": "Kannan_gate02 (2)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1033",
+      "mesh": "Kannan_gate02",
+      "staticBatch": false,
+      "bounds": [
+        506.42010693879365,
+        233.97193475516025,
+        844.6690770732041,
+        578.5555224225212
+      ],
+      "texture": "textures/3818887566c67f1f.png",
+      "material": "kaman_01",
+      "worldPosition": [
+        -8.227000270466373,
+        9.859996906888668,
+        -53.014999565856286
+      ]
+    },
+    {
+      "name": "Cave_Candle03 (6)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1034",
+      "mesh": "Cave_Candle03",
+      "staticBatch": false,
+      "bounds": [
+        1590.2018623895033,
+        560.4120937988178,
+        1608.6799464241203,
+        572.1328685388455
+      ],
+      "texture": "textures/9da4fa96dfa3af8c.png",
+      "material": "candle",
+      "worldPosition": [
+        -7.005740116147657,
+        9.999999926994985,
+        -36.18038240442625
+      ]
+    },
+    {
+      "name": "WallType1_6X (4)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1035",
+      "mesh": "6x6",
+      "staticBatch": false,
+      "bounds": [
+        -256.0000087793501,
+        237.173758225278,
+        73.14292396917222,
+        565.865541579304
+      ],
+      "texture": "textures/7c8bd537db964e9d.png",
+      "material": "WallType1_01",
+      "worldPosition": [
+        -9.0,
+        10.0,
+        -70.0
+      ]
+    },
+    {
+      "name": "Cave_Candle02 (5)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1036",
+      "mesh": "Cave_Candle02",
+      "staticBatch": false,
+      "bounds": [
+        3256.7907602678497,
+        556.7583978412412,
+        3269.0278108348703,
+        572.6049935949541
+      ],
+      "texture": "textures/9da4fa96dfa3af8c.png",
+      "material": "candle",
+      "worldPosition": [
+        -6.8428104487667,
+        10.000000049438064,
+        -5.8527660098654035
+      ]
+    },
+    {
+      "name": "Kannan_pillar02 (15)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1037",
+      "mesh": "Kannan_pillar02",
+      "staticBatch": false,
+      "bounds": [
+        1727.5800435533133,
+        337.11255866174093,
+        1755.117098747364,
+        467.2280530562232
+      ],
+      "texture": "textures/3818887566c67f1f.png",
+      "material": "kaman_01",
+      "worldPosition": [
+        -0.2800002098083496,
+        13.430000305175781,
+        -33.59000015258789
+      ]
+    },
+    {
+      "name": "Kannan_Chandelier_Candle (8)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1039",
+      "mesh": "Cave_Candle01",
+      "staticBatch": false,
+      "bounds": [
+        3205.309964143264,
+        292.99918898716635,
+        3214.0836449469753,
+        308.76416085664187
+      ],
+      "texture": "textures/9da4fa96dfa3af8c.png",
+      "material": "candle",
+      "worldPosition": [
+        -4.701360847621215,
+        14.915191535758638,
+        -6.82891172475042
+      ]
+    },
+    {
+      "name": "Kannan_Center_GuardRail_02 (11)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1040",
+      "mesh": "Kannan_Center_GuardRail_01-1",
+      "staticBatch": false,
+      "bounds": [
+        3693.7143208737502,
+        562.8048792595989,
+        3858.2857306128917,
+        635.7043716135378
+      ],
+      "texture": "textures/63fd965e93603a62.png",
+      "material": "kaman_02",
+      "worldPosition": [
+        -0.5,
+        10.0,
+        2.0
+      ]
+    },
+    {
+      "name": "Kannan_wall03 (10)",
+      "id": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1041",
+      "mesh": "Kannan_wall03",
+      "staticBatch": false,
+      "bounds": [
+        1746.834295593062,
+        346.2501765155466,
+        1911.4333563658324,
+        457.3600219086094
+      ],
+      "texture": "textures/3818887566c67f1f.png",
+      "material": "kaman_01",
+      "worldPosition": [
+        -0.2825336456298828,
+        13.609999656677246,
+        -33.489999771118164
+      ]
+    }
+  ],
+  "renderer": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "assumptions": [
+    "Orthographic belt-scroll projection; original scene uses a physical perspective camera.",
+    "RGBM decode multiplier 34.49324 / exponent 2.2 and exposure 1.6 are web renderer assumptions.",
+    "Unity vignette/dither post-process planes are unresolved; no substitute geometry was invented.",
+    "Foreground split is a 2.5D web adaptation at native actor start depth X=-4."
+  ]
+}

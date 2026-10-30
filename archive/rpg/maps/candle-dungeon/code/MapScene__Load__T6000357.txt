@@ -1,0 +1,80 @@
+Token: 0x6000357
+Class: MapScene
+Method: Load
+Address: 0x394108c
+Systems: map_world
+Selection: CORE_TYPE
+GhidraName: Vardian_MapScene__Load__TN_6000357
+
+DIRECT CALLS:
+037b92a8 thunk_FUN_0385f648
+037b9304 FUN_037b9304
+037b9484 thunk_FUN_03816a00
+037b95a0 thunk_FUN_037f5004
+037b95b0 FUN_037b95b0
+0550c1d4 FUN_0550c1d4
+05eedfec FUN_05eedfec
+06d3f85c FUN_06d3f85c
+06ee2f38 FUN_06ee2f38
+074206bc FUN_074206bc
+
+===== DECOMPILED CODE =====
+
+void Vardian_MapScene__Load__TN_6000357(long param_1,undefined8 param_2,undefined8 param_3)
+
+{
+  undefined *puVar1;
+  undefined *puVar2;
+  undefined *puVar3;
+  undefined *puVar4;
+  undefined *puVar5;
+  undefined *puVar6;
+  long lVar7;
+  undefined8 uVar8;
+  undefined8 local_78;
+  undefined8 uStack_70;
+  undefined8 local_68;
+
+  puVar1 = PTR_DAT_080dc7a0;
+  if ((DAT_084fbc83 & 1) == 0) {
+    FUN_037b9304(PTR_DAT_080dc7a8);
+    FUN_037b9304(PTR_DAT_080db050);
+    FUN_037b9304(PTR_DAT_080dc7b0);
+    FUN_037b9304(PTR_DAT_080dc7b8);
+    FUN_037b9304(PTR_DAT_080dc7a0);
+    FUN_037b9304(PTR_DAT_080dc7c0);
+    FUN_037b9304(PTR_DAT_080dc7c8);
+    DAT_084fbc83 = 1;
+  }
+  lVar7 = thunk_FUN_037f5004(*(undefined8 *)puVar1);
+  FUN_06ee2f38(lVar7,0);
+  puVar6 = PTR_DAT_080dc7c8;
+  puVar5 = PTR_DAT_080dc7c0;
+  puVar4 = PTR_DAT_080dc7b8;
+  puVar3 = PTR_DAT_080dc7b0;
+  puVar2 = PTR_DAT_080dc7a8;
+  puVar1 = PTR_DAT_080db050;
+  if (lVar7 != 0) {
+    *(long *)(lVar7 + 0x10) = param_1;
+    thunk_FUN_0385f648((long *)(lVar7 + 0x10),param_1);
+    *(undefined8 *)(lVar7 + 0x18) = param_3;
+    thunk_FUN_0385f648((undefined8 *)(lVar7 + 0x18),param_3);
+    *(undefined8 *)(param_1 + 0x10) = param_2;
+    thunk_FUN_0385f648((undefined8 *)(param_1 + 0x10),param_2);
+    uVar8 = FUN_06d3f85c(*(undefined8 *)puVar5,param_2,*(undefined8 *)puVar6,0);
+    if (*(int *)(*(long *)puVar1 + 0xe4) == 0) {
+      thunk_FUN_03816a00(*(long *)puVar1);
+    }
+    FUN_074206bc(&local_78,uVar8,1,1,100,0,0);
+    *(undefined8 *)(param_1 + 0x28) = uStack_70;
+    *(undefined8 *)(param_1 + 0x20) = local_78;
+    *(undefined8 *)(param_1 + 0x30) = local_68;
+    thunk_FUN_0385f648(param_1 + 0x20,0);
+    uVar8 = thunk_FUN_037f5004(*(undefined8 *)puVar2);
+    FUN_0550c1d4(uVar8,lVar7,*(undefined8 *)puVar4,0);
+    FUN_05eedfec(param_1 + 0x20,uVar8,*(undefined8 *)puVar3);
+    return;
+  }
+                    /* WARNING: Subroutine does not return */
+  FUN_037b95b0();
+}

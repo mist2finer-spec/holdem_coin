@@ -16,6 +16,7 @@ import {huntViewport,HUNT_PORTRAIT_ZOOM,HUNT_MONSTER_RENDER_SCALE,HUNT_ACTOR_REN
 import {HUNT_VISUALS} from './hunt-collision';
 import {attachmentBottom,groundSkeleton} from './hunt-ground';
 import {SKILL_VFX,vfxFrame,vfxPlacement,type HuntVfxEvent} from './hunt-vfx';
+import {loadDungeonMap,type HuntMapId} from './hunt-map';
 const base = '/rpg/';
 const image = (url: string, signal: AbortSignal) => new Promise<HTMLImageElement>((resolve, reject) => {
  const img = new Image();
@@ -44,7 +45,7 @@ async function actor(name: string, signal: AbortSignal, gl: WebGLRenderingContex
  skeleton.updateWorldTransform(Physics.update);
  return {skeleton, state, atlas,groundSlots,setupHeight:Math.max(1,skeleton.getBoundsRect().height), animation: '', serial:-1, available: data.animations.map(a => a.name)};
 }
-export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: AbortSignal, characterId='hong') {
+export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: AbortSignal, characterId='hong',mapId:HuntMapId='forest') {
  Skeleton.yDown = true;
  const layer = document.createElement('canvas');
  const gl = layer.getContext('webgl', {alpha:true, premultipliedAlpha:true, antialias:true});
@@ -65,6 +66,8 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
  }));
  let heroWeapon:WeaponType|undefined,heroKey='',heroTime=0;
  const spriteClock=new CombatSpriteClock();
+ const dungeon=mapId==='candle-dungeon'?await loadDungeonMap(signal,image):null;
+ canvas.dataset.map=mapId;
  // Optional, bounded sprite bakes: a failed VFX request must never prevent entering combat.
  const vfxSheets:Partial<Record<string,HTMLImageElement>>={};
  await Promise.all(SKILL_VFX.map(async id=>{try{vfxSheets[id]=await image(base+'vfx/runtime/'+id+'.webp',signal);}catch(error){if(signal.aborted)throw error;canvas.dataset.vfxAssetError=id;}}));
@@ -116,6 +119,7 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
    canvas.dataset.cameraX=String(camera);canvas.dataset.heroScreenX=String(screenX(game.x));
    canvas.dataset.worldWidth=String(WORLD_WIDTH);canvas.dataset.cameraSpan=String(w/zoom);canvas.dataset.sceneZoom=String(HUNT_PORTRAIT_ZOOM);
    const sceneScale=HUNT_BACKGROUND_GAIN,backgroundHeight=(floor+45)*sceneScale;
+   if(dungeon){dungeon.draw(ctx,w,h,floor,zoom,WORLD_WIDTH,screenX,game.elapsed);}else{
    const tile = Math.max(h*.8,230)*sceneScale, offset = ((camera*zoom*.22 % tile)+tile)%tile;
    for(let x=-tile-offset; x<w; x+=tile) ctx.drawImage(forest, x, floor+45-backgroundHeight, tile, backgroundHeight);
    const shade = ctx.createLinearGradient(0, 0, 0, h); shade.addColorStop(0, '#04191755'); shade.addColorStop(.55, '#091e1600'); shade.addColorStop(1, '#071b13'); ctx.fillStyle=shade;ctx.fillRect(0,0,w,h);
@@ -124,6 +128,7 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
    const groundStep=90*sceneScale;
    ctx.fillStyle='#192a20'; for(let i=-1;i<w/groundStep+1;i++) ctx.fillRect(i*groundStep-((camera*zoom%groundStep)+groundStep)%groundStep,floor+(28+(i%3)*12)*sceneScale,46*sceneScale,3*sceneScale);
    for(const edge of [65,WORLD_WIDTH-65]){const x=screenX(edge);if(x>=0&&x<w){ctx.fillStyle='#b4ba8777';ctx.fillRect(x,floor-18,3,25);}}
+   }
    const scale=COMBAT_SPRITE_SCALE*zoom*HUNT_ACTOR_RENDER_GAIN;
    ctx.fillStyle='#0005';ctx.beginPath();ctx.ellipse(screenX(game.x),floor+4,25*zoom,5*zoom,0,0,Math.PI*2);ctx.fill();
    for(const [slot,visual] of stageVisuals)if(!game.enemies.some(e=>e.slot===slot&&e.serial===visual.keySerial))stageVisuals.delete(slot);
@@ -192,6 +197,7 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
     ctx.drawImage(sheet,(frame%8)*256,Math.floor(frame/8)*256,256,256,-p.width/2,0,p.width,p.height);ctx.restore();visibleFx++;
    }
    canvas.dataset.skillVfx=String(visibleFx);
+   dungeon?.drawForeground(ctx,floor,zoom,WORLD_WIDTH,screenX);
    // UI overlays are painted after the WebGL layer so health and damage remain visible.
    for(const mob of game.enemies){
     const x=screenX(mob.x),bar=Math.max(20,36*zoom),y=floor-30*zoom;
@@ -208,7 +214,7 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
    if(objective?.escort){const a=objective.escort,x=screenX(a.x);ctx.fillStyle='#80d6ed';ctx.fillRect(x-10*zoom,floor-38*zoom,20*zoom,38*zoom);ctx.fillRect(x-20*zoom,floor-48*zoom,40*zoom*a.hp/a.maxHP,4);ctx.font='12px sans-serif';ctx.textAlign='center';ctx.fillText('동료',x,floor-55*zoom);}
    // Foreground decoration follows the world more quickly than the distant forest.
    const foregroundStep=700*sceneScale;
-   ctx.globalAlpha=.7;for(let x=-170*sceneScale-((camera*zoom*.65%foregroundStep)+foregroundStep)%foregroundStep;x<w;x+=foregroundStep)ctx.drawImage(trees,x,floor-165*sceneScale,145*sceneScale,190*sceneScale);ctx.globalAlpha=1;
+   if(!dungeon){ctx.globalAlpha=.7;for(let x=-170*sceneScale-((camera*zoom*.65%foregroundStep)+foregroundStep)%foregroundStep;x<w;x+=foregroundStep)ctx.drawImage(trees,x,floor-165*sceneScale,145*sceneScale,190*sceneScale);ctx.globalAlpha=1;}
   },
   dispose() { disposed=true;assetCache.forEach(a=>a.atlas.dispose());enemy.atlas.dispose();jointHero?.atlas.dispose();Object.values(nativeHeroes).forEach(a=>a.atlas.dispose()); renderer?.dispose(); },
   animations: {hero: ['stay1','run1','dash','avoid1','attack1','attack2','attack3','attack4','attack5','damage1'], enemy: enemy.available},

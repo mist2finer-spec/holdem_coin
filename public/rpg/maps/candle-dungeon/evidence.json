@@ -1,0 +1,223 @@
+{
+  "scene": "Map002_001",
+  "sourcePath": "Assets/InHouse/Maps/Scenes/Map002_001.unity",
+  "sceneFile": "CAB-df037f00af28a0305d7dbdf37be3f3c5",
+  "sourceSha256": {
+    "map_scenes_all_4b458b9f2434e6d32bf59723a0ba1ae6.bundle": "d6538186a5b57f3946ef5e15a715d47af6b22b1a48695964eb0410d8095f1d58",
+    "map_assets_all_9a2547367880a72516ddfb87af0076d5.bundle": "91c93cee16b63938e0fbd652812d4ffe0b3030747db94a7d7bef9fbd942f228f"
+  },
+  "nodes": 464,
+  "renderers": 108,
+  "meshes": 33,
+  "materials": 14,
+  "textures": 14,
+  "lights": 38,
+  "flames": 6,
+  "blocks": 10,
+  "unresolved": [
+    {
+      "name": "Vignette",
+      "kind": "external-mesh",
+      "reference": {
+        "m_FileID": 4,
+        "m_PathID": 10209
+      },
+      "reason": "File unity default resources not found in ../dungeon-source"
+    },
+    {
+      "name": "DitheredLightOverlay",
+      "kind": "external-mesh",
+      "reference": {
+        "m_FileID": 4,
+        "m_PathID": 10209
+      },
+      "reason": "File unity default resources not found in ../dungeon-source"
+    }
+  ],
+  "camera": {
+    "raw": {
+      "m_GameObject": {
+        "m_FileID": 0,
+        "m_PathID": 325
+      },
+      "m_Enabled": 1,
+      "m_ClearFlags": 1,
+      "m_BackGroundColor": {
+        "r": 0.0,
+        "g": 0.0,
+        "b": 0.0,
+        "a": 0.0
+      },
+      "m_projectionMatrixMode": 2,
+      "m_GateFitMode": 2,
+      "m_Iso": 200,
+      "m_ShutterSpeed": 0.004999999888241291,
+      "m_Aperture": 16.0,
+      "m_FocusDistance": 10.0,
+      "m_FocalLength": 36.93220138549805,
+      "m_BladeCount": 5,
+      "m_Curvature": {
+        "x": 2.0,
+        "y": 11.0
+      },
+      "m_BarrelClipping": 0.25,
+      "m_Anamorphism": 0.0,
+      "m_SensorSize": {
+        "x": 21.489999771118164,
+        "y": 24.0
+      },
+      "m_LensShift": {
+        "x": 0.0,
+        "y": -0.47999998927116394
+      },
+      "m_NormalizedViewPortRect": {
+        "x": 0.0,
+        "y": 0.0,
+        "width": 1.0,
+        "height": 1.0
+      },
+      "near clip plane": 0.30000001192092896,
+      "far clip plane": 200.0,
+      "field of view": 36.0,
+      "orthographic": false,
+      "orthographic size": 5.0,
+      "m_Depth": 0.0,
+      "m_CullingMask": {
+        "m_Bits": 4294967295
+      },
+      "m_RenderingPath": -1,
+      "m_TargetTexture": {
+        "m_FileID": 0,
+        "m_PathID": 0
+      },
+      "m_TargetDisplay": 0,
+      "m_TargetEye": 3,
+      "m_HDR": true,
+      "m_AllowMSAA": true,
+      "m_AllowDynamicResolution": false,
+      "m_ForceIntoRT": false,
+      "m_OcclusionCulling": true,
+      "m_StereoConvergence": 10.0,
+      "m_StereoSeparation": 0.02199999988079071
+    },
+    "world": [
+      [
+        -6.7317107443898294e-09,
+        -0.05233590569839208,
+        -0.9986295441444493,
+        16.0
+      ],
+      [
+        0.0,
+        0.9986295374127385,
+        -0.05233590569839208,
+        14.630000114440918
+      ],
+      [
+        1.0000000067317107,
+        0.0,
+        -6.7317107443898294e-09,
+        -61.79999923706055
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "name": "CombatCamera"
+  },
+  "blockPlacements": [
+    {
+      "id": 8,
+      "x": -35,
+      "y": 4,
+      "meta": {
+        "m_FileID": 2,
+        "m_PathID": 663
+      }
+    },
+    {
+      "id": 10,
+      "x": -11,
+      "y": 4,
+      "meta": {
+        "m_FileID": 2,
+        "m_PathID": 666
+      }
+    },
+    {
+      "id": 11,
+      "x": -8,
+      "y": 4,
+      "meta": {
+        "m_FileID": 2,
+        "m_PathID": 666
+      }
+    },
+    {
+      "id": 13,
+      "x": 1,
+      "y": 4,
+      "meta": {
+        "m_FileID": 2,
+        "m_PathID": 664
+      }
+    },
+    {
+      "id": 14,
+      "x": -29,
+      "y": 4,
+      "meta": {
+        "m_FileID": 2,
+        "m_PathID": 665
+      }
+    },
+    {
+      "id": 16,
+      "x": -32,
+      "y": 4,
+      "meta": {
+        "m_FileID": 2,
+        "m_PathID": 666
+      }
+    },
+    {
+      "id": 18,
+      "x": -24,
+      "y": 4,
+      "meta": {
+        "m_FileID": 2,
+        "m_PathID": 666
+      }
+    },
+    {
+      "id": 20,
+      "x": -2,
+      "y": 4,
+      "meta": {
+        "m_FileID": 2,
+        "m_PathID": 666
+      }
+    },
+    {
+      "id": 21,
+      "x": -21,
+      "y": 4,
+      "meta": {
+        "m_FileID": 2,
+        "m_PathID": 662
+      }
+    },
+    {
+      "id": 22,
+      "x": -5,
+      "y": 4,
+      "meta": {
+        "m_FileID": 2,
+        "m_PathID": 661
+      }
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+Token: 0x6000360
+Class: MapScene
+Method: OnLoad
+Address: 0x3942344
+Systems: map_world
+Selection: CORE_TYPE
+GhidraName: Vardian_MapScene__OnLoad__TN_6000360
+
+DIRECT CALLS:
+037b9304 FUN_037b9304
+037b9484 thunk_FUN_03816a00
+037b95b0 FUN_037b95b0
+03942400 Vardian_MapScene__SetScene__TN_6000361
+07945400 FUN_07945400
+07945eb8 FUN_07945eb8
+
+===== DECOMPILED CODE =====
+
+void Vardian_MapScene__OnLoad__TN_6000360(long param_1,long param_2)
+
+{
+  undefined *puVar1;
+  uint uVar2;
+  undefined8 uVar3;
+  undefined4 local_24;
+
+  puVar1 = PTR_DAT_080dbf88;
+  if ((DAT_084fbc8c & 1) == 0) {
+    FUN_037b9304(PTR_DAT_080dbf88);
+    DAT_084fbc8c = 1;
+  }
+  uVar3 = *(undefined8 *)(param_1 + 0x10);
+  local_24 = 0;
+  if (*(int *)(*(long *)puVar1 + 0xe4) == 0) {
+    thunk_FUN_03816a00();
+  }
+  local_24 = FUN_07945eb8(uVar3,0);
+  uVar2 = FUN_07945400(&local_24,0);
+  if ((uVar2 & 1) != 0) {
+    Vardian_MapScene__SetScene__TN_6000361(param_1,local_24);
+    *(undefined1 *)(param_1 + 0x18) = 1;
+  }
+  if (param_2 == 0) {
+                    /* WARNING: Subroutine does not return */
+    FUN_037b95b0();
+  }
+  (**(code **)(param_2 + 0x18))
+            (*(undefined8 *)(param_2 + 0x40),uVar2 & 1,*(undefined8 *)(param_2 + 0x28));
+  return;
+}

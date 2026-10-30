@@ -1,0 +1,91 @@
+Token: 0x6000351
+Class: MapLoopController
+Method: Update
+Address: 0x3940efc
+Systems: map_world
+Selection: CORE_TYPE
+GhidraName: Vardian_MapLoopController__Update__TN_6000351
+
+DIRECT CALLS:
+037b9304 FUN_037b9304
+037b95b0 FUN_037b95b0
+0558d7d8 FUN_0558d7d8
+079268d4 FUN_079268d4
+0792af18 FUN_0792af18
+0793c59c FUN_0793c59c
+0793c670 FUN_0793c670
+
+===== DECOMPILED CODE =====
+
+void Vardian_MapLoopController__Update__TN_6000351
+               (undefined1 param_1 [16],undefined1 param_2 [16],float param_3,long param_4)
+
+{
+  int iVar1;
+  int iVar2;
+  int iVar3;
+  int iVar4;
+  undefined *puVar5;
+  long lVar6;
+  long lVar7;
+  undefined4 uVar8;
+  int iVar9;
+  int iVar10;
+  undefined4 uVar11;
+  float fVar12;
+
+  if ((DAT_084fbc82 & 1) == 0) {
+    FUN_037b9304(PTR_DAT_080da328);
+    FUN_037b9304(PTR_DAT_080da330);
+    DAT_084fbc82 = 1;
+  }
+  if ((*(long *)(param_4 + 0x20) != 0) &&
+     (lVar6 = FUN_079268d4(*(long *)(param_4 + 0x20),0), lVar6 != 0)) {
+    FUN_0793c59c(lVar6,0);
+    puVar5 = PTR_DAT_080da330;
+    uVar8 = 0x7f800000;
+    param_3 = param_3 / *(float *)(param_4 + 0x28);
+    iVar1 = -0x80000000;
+    if (param_3 != INFINITY) {
+      iVar1 = (int)param_3;
+    }
+    iVar9 = iVar1 + -1;
+    if (iVar9 <= iVar1 + 1) {
+      iVar10 = 1 - iVar1;
+      do {
+        lVar6 = *(long *)(param_4 + 0x30);
+        if (iVar9 < 0) {
+          if (lVar6 == 0) goto LAB_0394105c;
+          iVar2 = *(int *)(lVar6 + 0x18);
+          iVar3 = 0;
+          if (iVar2 != 0) {
+            iVar3 = iVar10 / iVar2;
+          }
+          iVar2 = iVar2 + (iVar3 * iVar2 - iVar10);
+        }
+        else {
+          iVar2 = iVar9;
+          if (lVar6 == 0) goto LAB_0394105c;
+        }
+        iVar3 = *(int *)(lVar6 + 0x18);
+        iVar4 = 0;
+        if (iVar3 != 0) {
+          iVar4 = iVar2 / iVar3;
+        }
+        lVar6 = FUN_0558d7d8(lVar6,iVar2 - iVar4 * iVar3,*(undefined8 *)puVar5);
+        if ((lVar6 == 0) || (lVar7 = FUN_0792af18(lVar6,0), lVar7 == 0)) goto LAB_0394105c;
+        uVar11 = FUN_0793c59c(lVar7,0);
+        fVar12 = *(float *)(param_4 + 0x28);
+        lVar6 = FUN_0792af18(lVar6,0);
+        if (lVar6 == 0) goto LAB_0394105c;
+        FUN_0793c670(uVar11,uVar8,fVar12 * (float)iVar9,lVar6,0);
+        iVar9 = iVar9 + 1;
+        iVar10 = iVar10 + -1;
+      } while (iVar9 <= iVar1 + 1);
+    }
+    return;
+  }
+LAB_0394105c:
+                    /* WARNING: Subroutine does not return */
+  FUN_037b95b0();
+}

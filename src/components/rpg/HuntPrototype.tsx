@@ -7,12 +7,13 @@ import {useRouter} from 'next/navigation';
 import {HuntEngine} from './hunt-engine';
 import {COMBAT_CHARACTERS} from './combat-characters';
 import {huntLoadout} from './hunt-loadouts';
+import type {HuntMapId} from './hunt-map';
 import {HUNT_QUESTS,POTION_PRICE} from './hunt-progression';
 import type {BattleView,HuntInput,HuntAction} from '../../lib/rpg-service';
 import './hunt.css';
 const skills=[['대지 균열','SkillIcon_GroundRift'],['암흑 구체','SkillIcon_DarkHole'],['서리 폭풍','SkillIcon_Blizzard3'],['빛의 심판','SkillIcon_HolyWrath2'],['회오리','SkillIcon_Whirlwind'],['회복','SkillIcon_VitalRecovery']];
 type Queued=Partial<HuntInput>&{action?:HuntAction};
-export function HuntPrototype({onExit,character='hong'}:{onExit?:()=>void;character?:string}){
+export function HuntPrototype({onExit,character='hong',mapId='forest'}:{onExit?:()=>void;character?:string;mapId?:HuntMapId}){
  const router=useRouter();
  const canvas=useRef<HTMLCanvasElement>(null),keys=useRef(new Set<string>()),direction=useRef(0),held=useRef(false),auto=useRef(false),queue=useRef<Queued[]>([]);
  const [view,setView]=useState<BattleView|null>(null),[status,setStatus]=useState('loading'),[error,setError]=useState(''),[notice,setNotice]=useState(''),[menu,setMenu]=useState(false),[dialog,setDialog]=useState<'growth'|'bag'|'quest'|'weapons'|null>(null),[stick,setStick]=useState(0);
@@ -71,7 +72,7 @@ export function HuntPrototype({onExit,character='hong'}:{onExit?:()=>void;charac
   (async()=>{
    const {ok,value}=await request({action:'start',character});
    if(!ok)throw Error(value.error||'사냥터 입장 실패');
-   const r=await import('./hunt-renderer').then(m=>m.createHuntRenderer(canvas.current!,controller.signal,character));
+   const r=await import('./hunt-renderer').then(m=>m.createHuntRenderer(canvas.current!,controller.signal,character,mapId));
    renderer=r;if(controller.signal.aborted){r.dispose();return;}
    apply(value);auto.current=true;game.x=value.x;setStatus('ready');timer=setInterval(()=>void pump(),100);
    const loop=(now:number)=>{
@@ -81,7 +82,7 @@ export function HuntPrototype({onExit,character='hong'}:{onExit?:()=>void;charac
    };frame=requestAnimationFrame(loop);
   })().catch(e=>{if(!controller.signal.aborted){setStatus('error');setError(String(e));}});
   return()=>{controller.abort();if(timer)clearInterval(timer);cancelAnimationFrame(frame);renderer?.dispose();reset();window.removeEventListener('keydown',keydown);window.removeEventListener('keyup',keyup);window.removeEventListener('blur',reset);document.removeEventListener('visibilitychange',visibility);};
- },[character]);
+ },[character,mapId]);
  const active=status==='ready'&&!!view&&!view.dead;
  const quest=view?HUNT_QUESTS[view.progress.questTier]:null;
  const exit=()=>{if(onExit)onExit();else router.push('/');};
@@ -89,13 +90,13 @@ export function HuntPrototype({onExit,character='hong'}:{onExit?:()=>void;charac
  return <main className="hunt-shell">
   <header className="hunt-header"><button className="hunt-back" onClick={exit}>← 캐릭터 선택</button><span className="hunt-prototype">사냥 프로토타입</span>
    <div className="hunt-currencies"><span><img src="/rpg/mat_gold.png" alt="골드"/>{(view?.progress.gold??0).toLocaleString()}</span><span title="영혼석">◆ {(view?.progress.soulGem??0).toLocaleString()}</span></div></header>
-  <section className="hunt-stage" aria-label="달빛 숲 사냥터"><canvas ref={canvas} aria-label="전사와 미궁 몬스터" data-status={status}/>
+  <section className="hunt-stage" aria-label={mapId==='forest'?'시작의 숲 사냥터':'촛불 던전 복원 테스트'}><canvas ref={canvas} aria-label="전사와 미궁 몬스터" data-status={status}/>
    <div className="hunt-identity"><img src={`/rpg/characters/${character}/portrait.png`} alt="선택한 캐릭터 초상화"/><div><small>Lv. {view?.progress.level??1} · {view?.loadout??'여행자'}</small><strong>{COMBAT_CHARACTERS.find(c=>c.id===character)?.label}</strong><span>무기 +{(view?.progress.weaponLevel??1)-1} · 방어구 +{(view?.progress.armorLevel??1)-1}</span>{(dialog==='weapons'||dialog==='growth')&&<meter className="armory-stage-hp" aria-label="전투 체력" min="0" max={view?.maxHP??10000} value={view?.hp??10000}/>}</div></div>
    <div className="hunt-location"><small>CHAPTER {String(view?.stage.chapter??1).padStart(2,'0')}</small><h1>미궁 <span>{view?.stage.chapter??1}–{view?.stage.section??1}</span></h1><p><i/>{view?.dead?'복귀 대기':view?.stage.phase==='complete'?'미궁 완주':view?.stage.phase==='cleared'?'클리어 · 다음 구간 이동':view?.stage.phase==='boss'?(view.stage.section===5?'보스전':'중간보스전'):'일반 몬스터'} · 남은 적 {view?.stage.remaining??6}</p></div>
    <div className="hunt-objective" >{view?.stage.objective} {view&&view.stage.goal>7?`${view.stage.done}/${view.stage.goal}`:''} {view?.stage.remainingTime!==null&&view?.stage.remainingTime!==undefined?`· ${Math.ceil(view.stage.remainingTime)}초`:''}{!!view?.stage.objects.length&&<button disabled={!active} onClick={()=>enqueue({action:'interact'})}>상호작용</button>}</div>
    <button className="hunt-menu-toggle" aria-label="메뉴" aria-expanded={menu} onClick={()=>setMenu(!menu)}>☰</button>
    {menu&&<nav className="hunt-drawer" aria-label="사냥 메뉴"><button onClick={()=>{setDialog('weapons');setMenu(false);}}>무기</button><button onClick={()=>setNotice('A/D 이동 · Space 공격 · Q/E 회피 · F 패링 · 숫자 1–6 스킬')}>조작 안내</button><button onClick={()=>{setDialog('bag');setMenu(false);}}>가방 · 물약</button><button onClick={()=>{setDialog('quest');setMenu(false);}}>사냥 의뢰</button><button onClick={exit}>캐릭터 선택으로</button></nav>}
-   {status==='loading'&&<div className="hunt-loading" role="status"><span/><strong>숲으로 향하는 중…</strong></div>}
+   {status==='loading'&&<div className="hunt-loading" role="status"><span/><strong>{mapId==='forest'?'숲으로 향하는 중…':'던전으로 향하는 중…'}</strong></div>}
    {status==='error'&&<div className="hunt-loading" role="alert"><strong>사냥터에 연결하지 못했습니다.</strong><small>{error}</small><button onClick={()=>location.reload()}>다시 시도</button><button onClick={exit}>돌아가기</button></div>}
    {view?.dead&&<div className="hunt-loading" role="dialog" aria-modal="true" aria-label="전투 불능"><strong>전투 불능</strong><small>{view.stage.failure||'획득한 성장과 재화는 저장됐습니다.'}</small><button disabled={!view.reviveReady} onClick={()=>enqueue({action:'revive'})}>{view.reviveReady?'현재 구간 재도전':'복귀 준비 중…'}</button><button onClick={exit}>캐릭터 선택으로</button></div>}
    <div className="hunt-stage-caption"><span>✦ 미궁 탐험</span></div>
