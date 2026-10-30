@@ -28,28 +28,34 @@ export function RoguePrototype({onExit}:{onExit:()=>void}){
   })().catch(e=>{if(!controller.signal.aborted){setState('error');setError(String(e));}});
   return()=>{controller.abort();if(timer)clearInterval(timer);cancelAnimationFrame(frame);renderer?.dispose();reset();window.removeEventListener('keydown',down);window.removeEventListener('keyup',up);window.removeEventListener('blur',blur);document.removeEventListener('visibilitychange',blur);};
  },[run]);
+ useEffect(()=>{if(help||panel){keys.current.clear();stick.current={x:0,y:0};queue.current=[];setKnob({x:0,y:0});}},[help,panel]);
  const active=state==='ready'&&view?.status==='playing';
+ const clearedRoom=view?.cleared.filter(id=>id>0).at(-1);
+ const boss=view?.mobs.find(m=>m.boss&&m.hp>0&&m.room===view.room);
+ const statusText=view?.auto?view.autoRoom>=10?'출구로 이동 중':`${Math.min(10,view.autoRoom+1)}번 구역으로 자동 사냥`:'이동 스틱 · 전투 화면 터치로 기본 공격';
  const move=(e:React.PointerEvent<HTMLDivElement>)=>{const r=e.currentTarget.getBoundingClientRect(),x=(e.clientX-r.left-r.width/2)/(r.width*.32),y=(e.clientY-r.top-r.height/2)/(r.height*.32),length=Math.max(1,Math.hypot(x,y)),p={x:x/length,y:y/length};stick.current=Math.hypot(x,y)<.15?{x:0,y:0}:p;setKnob(stick.current);};
  const release=()=>{stick.current={x:0,y:0};setKnob(stick.current);};
- return <main className="rogue-shell">
-  <header className="rogue-header"><button onClick={onExit}>← 캐릭터 선택</button><strong>촛불 미궁</strong><button onClick={()=>setHelp(!help)} aria-expanded={help}>?</button></header>
-  <section className="rogue-stage" aria-label="상하좌우 로그라이크 던전"><canvas ref={canvas} aria-label="홍과 10개 방 던전" data-status={state}/>
-   <div className="rogue-room"><small>RANDOM DUNGEON</small><strong>방 {(view?.room??0)+1} <span>/ 10</span></strong><span>탐색 {view?.visited.length??1} · 정리 {view?.cleared.length??0}</span>{view?.auto&&<span>AUTO 목표 {Math.min(10,(view.autoRoom??0)+1)}번 방{view.autoRoom>=10?' → 출구':''}</span>}</div>
-   <div className="rogue-objective">{view?.mobs.every(m=>m.hp<=0)?'모든 방을 살핀 뒤 청록색 출구로':'방과 통로를 탐색하며 몬스터를 처치하세요'}</div>
+ return <main className="rogue-shell rogue-vardian">
+  <header className="rogue-header"><button onClick={onExit} aria-label="캐릭터 선택으로 돌아가기">‹</button><div><small>LABYRINTH · PROTOTYPE</small><strong>촛불 미궁</strong></div><span className="rogue-gold" title="이번 탐험의 테스트 골드">◈ {(view?.gold??0).toLocaleString()} <small>G</small></span><button onClick={()=>setHelp(!help)} aria-label="조작 도움말" aria-expanded={help}>?</button></header>
+  <section className="rogue-stage" aria-label="상하좌우 로그라이크 던전"><canvas ref={canvas} aria-label="홍과 10개 방 던전" data-status={state} onClick={()=>{if(active&&!help&&!panel)enqueue({attack:true});}}/>
+   <div className="rogue-room"><small>CHAMBER</small><strong>{String((view?.room??0)+1).padStart(2,'0')} <span>/ 10</span></strong><span>{boss?'슬라임 군주':(view?.room??0)===0?'입구 · 안전 구역':'촛불의 회랑'}</span></div>
+   {boss&&<div className="rogue-boss"><span>슬라임 군주</span><meter aria-label="슬라임 군주 체력" min={0} max={boss.maxHP} value={boss.hp}/></div>}
+   {clearedRoom!==undefined&&<div key={clearedRoom} className="rogue-clear" aria-live="polite"><small>CHAMBER CLEAR</small><strong>{clearedRoom+1}번 구역 정리</strong></div>}
+   <div className="rogue-objective"><span>{statusText}</span><div className="rogue-room-track" aria-label={`구역 정리 ${view?.cleared.length??0} / 10`}>{Array.from({length:10},(_,i)=><i key={i} className={view?.cleared.includes(i)?'cleared':view?.room===i?'current':''}>{i+1}</i>)}</div></div>
    {state==='loading'&&<div className="rogue-overlay" role="status"><strong>10개의 방을 연결하는 중…</strong><span>원본 캐릭터와 몬스터를 불러옵니다.</span></div>}
    {(state==='error'||view?.status==='dead'||view?.status==='won')&&<div className="rogue-overlay" role="dialog" aria-label="던전 결과"><h2>{state==='error'?'연결 오류':view?.status==='won'?'미궁 탈출 성공':'전투 불능'}</h2><p>{state==='error'?error:`${view?.kills}마리 처치 · 테스트 골드 ${view?.gold}`}</p><button onClick={()=>setRun(n=>n+1)}>새 던전 생성</button><button onClick={onExit}>캐릭터 선택</button></div>}
-   {help&&<div className="rogue-help"><strong>10개 방 자유 탐험</strong><p>WASD / 방향키 또는 원형 스틱으로 상하좌우 이동합니다. AUTO는 1~10번 방을 순서대로 이동하며 사냥합니다.</p><p>Space 공격 · Q/E 회피 · J 점프 · Shift 슬라이딩 · 1~6 스킬</p><p>몬스터는 다시 생성되지 않습니다. 10개 방을 정리하고 출구에 도착하면 완료됩니다.</p><button onClick={()=>setHelp(false)}>닫기</button></div>}
+   {help&&<div className="rogue-help"><strong>촛불 미궁 · 조작 안내</strong><p>WASD / 방향키 또는 원형 스틱으로 상하좌우 이동합니다. AUTO는 1~10번 방을 순서대로 이동하며 사냥합니다.</p><p>전투 화면 터치 / Space 기본 공격 · Q/E 좌우 회피 · J 점프 · Shift 슬라이딩 · 1~6 스킬</p><p>몬스터는 다시 생성되지 않습니다. 10개 방을 정리하고 출구에 도착하면 완료됩니다.</p><button onClick={()=>setHelp(false)}>닫기</button></div>}
   </section>
   <div className="rogue-lower hunt-lower">
   <section className="rogue-console hunt-console" aria-label="로그라이크 조작" inert={panel!==null}>
    <div className="hunt-vitals"><div><span>HP</span><meter aria-label="홍 체력" min={0} max={view?.hero.maxHP??10000} value={view?.hero.hp??10000}/></div><div><span>ROOM</span><progress aria-label="방 정리 진행" max={10} value={view?.cleared.length??0}/><small>{view?.cleared.length??0}/10</small></div></div>
    <div className="hunt-skill-row">{skills.map(([label,icon],i)=><button className="hunt-skill" key={label} aria-label={label} aria-pressed={view?.pendingSkill===i} disabled={!active} title="누르면 다음 시전 예약" onClick={()=>enqueue({skill:i})}><img src={'/rpg/'+icon+'.png'} alt=""/><span>{(view?.cooldowns[i]??0)>0?Math.ceil(view!.cooldowns[i]):i+1}</span>{view?.pendingSkill===i&&<b className="hunt-skill-reserved">예약</b>}</button>)}</div>
-   <div className="hunt-mode-row"><span>테스트 런 · 방 {view?.cleared.length??0}/10</span><button disabled={!active} aria-pressed={view?.auto??true} onClick={()=>{automatic.current=!automatic.current;}}>AUTO {view?.auto?'ON':'OFF'}</button><button onClick={()=>setRun(n=>n+1)}>새 미궁</button></div>
+   <div className="hunt-mode-row"><span>처치 <b>{view?.kills??0}</b> · 정리 <b>{view?.cleared.length??0}/10</b></span><button disabled={!active} aria-pressed={view?.auto??true} onClick={()=>{automatic.current=!automatic.current;}}>AUTO {view?.auto?'ON':'OFF'}</button></div>
    <div className="hunt-controls">
-    <button className="hunt-dodge" aria-label="왼쪽 회피" disabled={!active||!view?.dodgeReady} onClick={()=>enqueue({dodge:true,x:-1,y:0})}>↶</button>
-    <div className="rogue-mobility"><button aria-label="점프" title="점프 · J" disabled={!active||!view?.jumpReady} onClick={()=>enqueue({jump:true})}>↑</button><button aria-label="슬라이딩" title="슬라이딩 · Shift" disabled={!active||!view?.slideReady} onClick={()=>enqueue({slide:true})}>⇥</button></div>
+    <button className="hunt-dodge" aria-label="왼쪽 회피" disabled={!active||!view?.dodgeReady} onClick={()=>enqueue({dodge:true,x:-1,y:0})}>↶<small>회피</small></button>
+    <div className="rogue-mobility"><button aria-label="점프" title="점프 · J" disabled={!active||!view?.jumpReady} onClick={()=>enqueue({jump:true})}><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M6 26h20M16 22V7m-7 7 7-7 7 7"/></svg><small>점프</small></button><button aria-label="슬라이딩" title="슬라이딩 · Shift" disabled={!active||!view?.slideReady} onClick={()=>enqueue({slide:true})}><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M4 26h24M5 21h15l7-6-7-6m-11 6h17M5 9h6"/></svg><small>슬라이드</small></button></div>
     <div className="hunt-joystick" aria-label="상하좌우 이동" role="group" onPointerDown={e=>{if(!active)return;e.currentTarget.setPointerCapture(e.pointerId);move(e);}} onPointerMove={e=>{if(e.currentTarget.hasPointerCapture(e.pointerId))move(e);}} onPointerUp={release} onPointerCancel={release} onLostPointerCapture={release}><span className="hunt-stick-rail">✥</span><i className="hunt-stick" style={{transform:`translate(${knob.x*30}px,${knob.y*30}px)`}}/></div>
-    <button className="hunt-dodge" aria-label="오른쪽 회피" disabled={!active||!view?.dodgeReady} onClick={()=>enqueue({dodge:true,x:1,y:0})}>↷</button>
+    <button className="hunt-dodge" aria-label="오른쪽 회피" disabled={!active||!view?.dodgeReady} onClick={()=>enqueue({dodge:true,x:1,y:0})}>↷<small>회피</small></button>
    </div>
    {error&&state==='ready'&&<p className="rogue-error" role="status">{error}</p>}
   </section>

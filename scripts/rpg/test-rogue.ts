@@ -79,3 +79,11 @@ test('slide cannot be combined with jump to bypass either cooldown',()=>{
 test('manual cooldown reservation survives intervening AUTO skills',()=>{
  const g=new RogueEngine(8);g.mobs.forEach(m=>m.hp=0);g.autoRoom=1;const m=g.mobs.find(m=>m.room===1)!;m.hp=m.maxHP=100000;m.x=g.map.rooms[1].center.x+40;m.y=g.map.rooms[1].center.y;g.hero.x=m.x-40;g.hero.y=m.y;g.cooldowns[3]=2;g.command({...idle,auto:true,skill:3});step(g,50,{...idle,auto:true});assert.equal(g.view().pendingSkill,3);step(g,90,{...idle,auto:true});assert.equal(g.view().pendingSkill,null);assert.ok(g.cooldowns[3]>7);
 });
+
+test('combat feedback reports actual damage and one kill reward without changing settlement',()=>{
+ const g=new RogueEngine(3);g.mobs.forEach(m=>m.hp=0);const m=g.mobs[0];m.x=g.hero.x+45;m.y=g.hero.y;m.hp=m.maxHP=40;m.state='idle';
+ g.command({...idle,attack:true});step(g,14);
+ const damage=g.view().fx.filter(f=>f.kind==='damage'),gold=g.view().fx.filter(f=>f.kind==='gold');
+ assert.equal(damage.length,1);assert.equal(damage[0].value,40);assert.equal(gold.length,1);assert.equal(gold[0].value,10);assert.equal(g.gold,10);
+ step(g,20);g.command({...idle,attack:true});step(g,65);assert.equal(g.gold,10);assert.equal(g.kills,1);assert.equal(g.view().fx.filter(f=>f.kind==='gold'||f.kind==='damage').length,0);
+});

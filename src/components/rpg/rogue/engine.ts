@@ -5,7 +5,7 @@ export const ROGUE_SPECIES=[1001,1002,1003,1051,1101,1102,1103,1201] as const;
 export const ROGUE_LABELS:Record<number,string>={1001:'불 슬라임',1002:'물 슬라임',1003:'숲 슬라임',1051:'오염체',1101:'정찰 고블린',1102:'검 고블린',1103:'주술 고블린',1201:'별거미',1031:'슬라임 군주'};
 export type RogueInput={x:number;y:number;auto:boolean;attack?:boolean;skill?:number;jump?:boolean;dodge?:boolean;slide?:boolean};
 export type RogueMob=Point&{id:number;room:number;species:number;hp:number;maxHP:number;radius:number;state:'idle'|'walk'|'windup'|'recover'|'dead';until:number;hitUntil:number;target:Point;boss:boolean};
-export type RogueFx=Point&{id:number;kind:'slash'|'rift'|'dash'|'heal';born:number;angle:number};
+export type RogueFx=Point&{id:number;kind:'slash'|'rift'|'dash'|'heal'|'damage'|'gold';born:number;angle:number;value?:number;target?:'hero'|'mob'};
 export type RogueMotion={kind:'attack'|'jump'|'dodge'|'slide'|'skill';start:number;duration:number;hitAt:number;done:boolean;from:Point;to:Point;skill?:number};
 export type RogueSnapshot={elapsed:number;hero:Point&{hp:number;maxHP:number;action:string;serial:number;facing:number;direction:Point;motion:RogueMotion|null;hitUntil:number};mobs:RogueMob[];visited:number[];cleared:number[];room:number;status:'playing'|'dead'|'won';kills:number;gold:number;cooldowns:number[];pendingSkill:number|null;jumpReady:boolean;dodgeReady:boolean;slideReady:boolean;autoRoom:number;autoOrder:number[];auto:boolean;fx:RogueFx[]};
 const dist=(a:Point,b:Point)=>Math.hypot(a.x-b.x,a.y-b.y);
@@ -26,7 +26,12 @@ export class RogueEngine{
  private space(p:Point,ignore=-1){return walkable(this.map,p.x,p.y)&&this.mobs.every(m=>m.id===ignore||m.hp<=0||dist(p,m)>=12+m.radius-1);}
  private heroMove(dx:number,dy:number,airborne=false){const p=moveOnMap(this.map,this.hero,dx,dy);if(airborne||this.space(p)){this.hero.x=p.x;this.hero.y=p.y;}else{for(const v of [{x:p.x,y:this.hero.y},{x:this.hero.x,y:p.y}])if(this.space(v)){this.hero.x=v.x;this.hero.y=v.y;}}}
  private eligible(m:RogueMob){return !this.auto||m.room===this.autoRoom;}
- private hit(m:RogueMob,damage:number){if(!this.eligible(m))return;m.hp=Math.max(0,m.hp-damage);m.hitUntil=this.elapsed+.15;if(m.hp===0){m.state='dead';m.until=this.elapsed;this.kills++;this.gold+=m.boss?100:10;}}
+ private hit(m:RogueMob,damage:number){
+  if(!this.eligible(m)||m.hp<=0)return;const dealt=Math.min(m.hp,damage);m.hp=Math.max(0,m.hp-damage);m.hitUntil=this.elapsed+.15;
+  this.fx.push({id:++this.fxId,kind:'damage',born:this.elapsed,x:m.x,y:m.y,angle:0,value:dealt,target:'mob'});
+  if(m.hp===0){m.state='dead';m.until=this.elapsed;this.kills++;const reward=m.boss?100:10;this.gold+=reward;
+   this.fx.push({id:++this.fxId,kind:'gold',born:this.elapsed,x:m.x,y:m.y,angle:0,value:reward});}
+ }
  private effect(kind:RogueFx['kind']){this.fx.push({id:++this.fxId,kind,born:this.elapsed,x:this.hero.x,y:this.hero.y,angle:Math.atan2(this.hero.direction.y,this.hero.direction.x)});}
  private land(m:RogueMotion){if(this.space(this.hero))return;const span=dist(m.from,m.to),steps=Math.max(1,Math.ceil(span/4));for(let i=steps;i>=0;i--){const t=i/steps,p={x:m.from.x+(m.to.x-m.from.x)*t,y:m.from.y+(m.to.y-m.from.y)*t};if(this.space(p)){this.hero.x=p.x;this.hero.y=p.y;return;}}this.hero.x=m.from.x;this.hero.y=m.from.y;}
  command(input:RogueInput,automated=false){
@@ -69,7 +74,7 @@ export class RogueEngine{
   const direction=unit(next.x-this.hero.x,next.y-this.hero.y),travel=Math.min(distance,180*dt);this.hero.direction=direction;if(Math.abs(direction.x)>.1)this.hero.facing=Math.sign(direction.x);this.heroMove(direction.x*travel,direction.y*travel);this.pose('run1');
  }
  step(dt:number,input:RogueInput){
-  if(this.status!=='playing')return;this.auto=input.auto;dt=Math.max(0,Math.min(Number.isFinite(dt)?dt:0,.025));this.elapsed+=dt;this.cooldowns=this.cooldowns.map(c=>Math.max(0,c-dt));this.fx=this.fx.filter(f=>this.elapsed-f.born<.65);
+  if(this.status!=='playing')return;this.auto=input.auto;dt=Math.max(0,Math.min(Number.isFinite(dt)?dt:0,.025));this.elapsed+=dt;this.cooldowns=this.cooldowns.map(c=>Math.max(0,c-dt));this.fx=this.fx.filter(f=>this.elapsed-f.born<(f.kind==='damage'||f.kind==='gold'?1:.65)).slice(-96);
   const m=this.hero.motion;
   if(m){const age=this.elapsed-m.start;
    if(m.kind==='jump'||m.kind==='dodge'||m.kind==='slide'){const t=Math.min(1,age/m.duration);this.heroMove(m.from.x+(m.to.x-m.from.x)*t-this.hero.x,m.from.y+(m.to.y-m.from.y)*t-this.hero.y,true);if(m.kind==='jump')this.pose(t<.12?'jump1':t<.35?'jump2':t<.65?'jump3':t<.9?'jump4':'jump5');else if(m.kind==='slide')this.pose(t<.7?'sliding1':'sliding2');}
@@ -90,7 +95,7 @@ export class RogueEngine{
   if(this.elapsed>=this.navAt){this.navAt=this.elapsed+.4;this.nav=new RotPath.Dijkstra(cell(this.hero.x),cell(this.hero.y),(x,y)=>x>=0&&y>=0&&x<this.map.width&&y<this.map.height&&this.map.tiles[y*this.map.width+x]===0,{topology:4});}
   for(const enemy of this.mobs){if(enemy.hp<=0)continue;if(this.auto&&!this.eligible(enemy)){enemy.state='idle';continue;}const d=dist(enemy,this.hero),profile=LABYRINTH.monsters[enemy.species];
    if(enemy.state==='windup'){if(this.elapsed>=enemy.until){enemy.state='recover';enemy.until=this.elapsed+.8;
-     if(this.hero.motion?.kind!=='dodge'&&this.hero.motion?.kind!=='slide'&&d<enemy.radius+38&&dist(this.hero,enemy.target)<48&&lineClear(this.map,enemy,this.hero)){this.hero.hp=Math.max(0,this.hero.hp-(enemy.boss?350:65));this.hero.hitUntil=this.elapsed+.15;}
+     if(this.hero.motion?.kind!=='dodge'&&this.hero.motion?.kind!=='slide'&&d<enemy.radius+38&&dist(this.hero,enemy.target)<48&&lineClear(this.map,enemy,this.hero)){const damage=Math.min(this.hero.hp,enemy.boss?350:65);this.hero.hp=Math.max(0,this.hero.hp-damage);this.hero.hitUntil=this.elapsed+.15;this.fx.push({id:++this.fxId,kind:'damage',born:this.elapsed,x:this.hero.x,y:this.hero.y,angle:0,value:damage,target:'hero'});}
     }continue;}
    if(this.elapsed<enemy.until)continue;
    if(!this.visited.has(enemy.room)&&d>ROGUE_TILE*5){enemy.state='idle';continue;}
