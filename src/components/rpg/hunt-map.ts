@@ -10,6 +10,7 @@ export function dungeonPlacement(layout:DungeonLayout,floor:number,zoom:number,w
 export async function loadDungeonMap(signal:AbortSignal,loadImage:(url:string,signal:AbortSignal)=>Promise<HTMLImageElement>){
  const root='/rpg/maps/candle-dungeon/';const response=await fetch(root+'layout.json',{signal});if(!response.ok)throw Error('던전 배치 데이터를 읽지 못했습니다.');const layout=await response.json() as DungeonLayout;
  dungeonPlacement(layout,0,1,1,x=>x);
+ const occluder=document.createElement('canvas'),mask=occluder.getContext('2d')!;
  const [background,foreground]=await Promise.all([loadImage(root+layout.background,signal),loadImage(root+layout.foreground,signal)]);const flames=new Map<string,HTMLImageElement>();
  await Promise.all([...new Set(layout.flames.map(f=>f.texture))].map(async file=>{flames.set(file,await loadImage(root+file,signal));}));
  return {draw(ctx:CanvasRenderingContext2D,width:number,height:number,floor:number,zoom:number,worldWidth:number,screenX:(x:number)=>number,elapsed:number){
@@ -22,5 +23,16 @@ export async function loadDungeonMap(signal:AbortSignal,loadImage:(url:string,si
    // Unity flipbook rows start at the lower texture row. World placement comes from the real particle Transform.
    ctx.drawImage(texture,(frame%f.tilesX)*sw,(f.tilesY-1-Math.floor(frame/f.tilesX))*sh,sw,sh,x-side/2,y-side/2,side,side);
   }ctx.restore();
- },drawForeground(ctx:CanvasRenderingContext2D,floor:number,zoom:number,worldWidth:number,screenX:(x:number)=>number){const p=dungeonPlacement(layout,floor,zoom,worldWidth,screenX);ctx.drawImage(foreground,p.x,p.y,p.width,p.height);},layout};
+ },drawForeground(ctx:CanvasRenderingContext2D,floor:number,zoom:number,worldWidth:number,screenX:(x:number)=>number,width:number,height:number,actors:{x:number;y:number;radius:number}[]){
+  const p=dungeonPlacement(layout,floor,zoom,worldWidth,screenX);
+  if(occluder.width!==Math.ceil(width)||occluder.height!==Math.ceil(height)){occluder.width=Math.ceil(width);occluder.height=Math.ceil(height);}
+  mask.clearRect(0,0,width,height);mask.globalCompositeOperation='source-over';mask.drawImage(foreground,p.x,p.y,p.width,p.height);
+  // Original foreground depth is preserved except for soft visibility windows around actors.
+  // A 2D projection cannot correctly depth-test a moving actor against every 3D pillar.
+  mask.globalCompositeOperation='destination-out';
+  for(const actor of actors){const r=actor.radius*zoom,x=screenX(actor.x),y=actor.y;if(x+r<0||x-r>width)continue;
+   const gradient=mask.createRadialGradient(x,y,r*.6,x,y,r);gradient.addColorStop(0,'rgba(0,0,0,1)');gradient.addColorStop(1,'rgba(0,0,0,0)');mask.fillStyle=gradient;mask.fillRect(x-r,y-r,r*2,r*2);
+  }
+  mask.globalCompositeOperation='source-over';ctx.drawImage(occluder,0,0,width,height);
+ },layout};
 }

@@ -149,6 +149,7 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
    const attackFrame=attack?attackSpriteFrame(age,view!.motion.duration,view!.motion.hitAt,attackMeta.animations[view!.weapon].impactFrame):0;
    const jump=jumpVisual(view?.jump??null,game.elapsed),heroFloor=floor-jump.height*zoom;
    const weapon=view?.weapon??'unarmed',nativeActor=nativeHeroes[weapon]??(view?.jump?nativeHeroes.sword:undefined),native=!!nativeActor,hero=native?nativeActor:jointHero;
+   canvas.dataset.jumpPeakHeight=String(Math.max(Number(canvas.dataset.jumpPeakHeight)||0,jump.height));
    canvas.dataset.jumpHeight=String(jump.height);canvas.dataset.jumpPose=jump.pose;
    if(hero&&heroRenderer){
     const key=`${jump.pose||game.action}:${game.actionSerial}:${weapon}`;
@@ -201,7 +202,7 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
     ctx.drawImage(sheet,(frame%8)*256,Math.floor(frame/8)*256,256,256,-p.width/2,0,p.width,p.height);ctx.restore();visibleFx++;
    }
    canvas.dataset.skillVfx=String(visibleFx);
-   dungeon?.drawForeground(ctx,floor,zoom,WORLD_WIDTH,screenX);
+   dungeon?.drawForeground(ctx,floor,zoom,WORLD_WIDTH,screenX,w,h,[{x:game.x,y:heroFloor-45*zoom,radius:110},...game.enemies.filter(e=>e.hp>0).map(e=>({x:e.x,y:floor-(e.boss?45:18)*zoom,radius:e.boss?100:48}))]);
    // UI overlays are painted after the WebGL layer so health and damage remain visible.
    for(const mob of game.enemies){
     const x=screenX(mob.x),bar=Math.max(20,36*zoom),y=floor-30*zoom;
