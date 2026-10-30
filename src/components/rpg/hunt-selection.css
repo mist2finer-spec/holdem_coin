@@ -10,3 +10,5 @@
 @media(max-width:480px){.hunt-selection{padding:12px}.hunt-selection-heading{margin:16px 0 12px}.hunt-selection-heading p{font-size:11px}.hunt-roster{gap:7px}.hunt-roster-card{border-radius:9px}.hunt-roster-card img{height:clamp(76px,14svh,120px)}.hunt-selection-start{padding:10px;bottom:8px}.hunt-selection-start button{padding:11px 16px}}
 @media(prefers-reduced-motion:reduce){.hunt-roster-card{transition:none}}
 .hunt-map-choice{display:flex;gap:10px;align-items:center;max-width:720px;margin:12px auto;color:#d1c49c;font-size:12px}.hunt-map-choice select{min-width:0;flex:1;background:#10242a;border:1px solid #7f754f;border-radius:8px;color:#efdfb7;padding:10px;font:inherit}.hunt-map-note{max-width:720px;margin:6px auto 12px;color:#a9bbb8;font-size:11px;line-height:1.5}
+
+.hunt-roster-card:disabled{cursor:not-allowed;opacity:.65;border-color:#555}.hunt-roster-card:disabled img{filter:grayscale(1) brightness(.6)}.hunt-roster-card:disabled>span{color:#ff646b;font-weight:700}.hunt-roster-card:disabled:hover{transform:none}

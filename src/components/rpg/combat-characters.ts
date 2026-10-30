@@ -23,3 +23,6 @@ export function combatSpriteFrame(action:string,time:number,strikeAt=.2){
  if(/skill/i.test(action))return time<.12?8:12;
  return Math.floor(Math.max(0,time)/.18)%4;
 }
+
+/** Temporary live roster: preserve other assets while Hong jump testing is active. */
+export function isHuntPlayable(id:string){return id==='hong';}

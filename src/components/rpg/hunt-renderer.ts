@@ -1,3 +1,4 @@
+import {jumpVisual,type HuntJump} from './hunt-jump';
 import {hongNativeName,hongNativeContact,HONG_NATIVE_BODY_SLOTS,HONG_NATIVE_FOOT_SLOTS} from './hong-native-motion';
 import {hongMotionName,hongMotionTime,hongVisualContact,HONG_BODY_SLOTS,HONG_FOOT_SLOTS} from './hong-combat-motion';
 import type {LabyrinthView} from './hunt-labyrinth';
@@ -104,7 +105,7 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
   a.state.update(dt*speed); a.state.apply(a.skeleton); a.skeleton.update(dt); a.skeleton.updateWorldTransform(Physics.update); groundSkeleton(a.skeleton,y,a.groundSlots); if(renderer) renderer.drawSkeleton(a.skeleton, true); else fallback!.draw(a.skeleton);
  };
  return {
-  draw(game: HuntEngine, dt: number, view?:{weapon:WeaponType;motion:{startedAt:number;duration:number;hitAt:number};vfx?:HuntVfxEvent[];stage?:LabyrinthView;elapsed?:number;impactors?:{id:number;x:number;width:number;speed:number;targetX:number;expires:number}[]}) {
+  draw(game: HuntEngine, dt: number, view?:{jump?:HuntJump|null;weapon:WeaponType;motion:{startedAt:number;duration:number;hitAt:number};vfx?:HuntVfxEvent[];stage?:LabyrinthView;elapsed?:number;impactors?:{id:number;x:number;width:number;speed:number;targetX:number;expires:number}[]}) {
    const w = canvas.clientWidth, h = canvas.clientHeight, dpr = Math.min(Math.max(devicePixelRatio || 1, renderer ? 1 : 2), 2);
    if (canvas.width !== Math.round(w*dpr) || canvas.height !== Math.round(h*dpr)) {canvas.width = Math.round(w*dpr); canvas.height = Math.round(h*dpr);}
    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, w, h);
@@ -146,17 +147,19 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
    const frame=spriteClock.frame(game.action,game.actionSerial,dt,game.animationSpeed,stage?.hitAt??.2);
    const attack=!!view&&/^attack/.test(game.action),age=view?Math.max(0,game.elapsed-view.motion.startedAt):0;
    const attackFrame=attack?attackSpriteFrame(age,view!.motion.duration,view!.motion.hitAt,attackMeta.animations[view!.weapon].impactFrame):0;
-   const weapon=view?.weapon??'unarmed',native=!!nativeHeroes[weapon],hero=native?nativeHeroes[weapon]:jointHero;
+   const jump=jumpVisual(view?.jump??null,game.elapsed),heroFloor=floor-jump.height*zoom;
+   const weapon=view?.weapon??'unarmed',nativeActor=nativeHeroes[weapon]??(view?.jump?nativeHeroes.sword:undefined),native=!!nativeActor,hero=native?nativeActor:jointHero;
+   canvas.dataset.jumpHeight=String(jump.height);canvas.dataset.jumpPose=jump.pose;
    if(hero&&heroRenderer){
-    const key=`${game.action}:${game.actionSerial}:${weapon}`;
-    const requested=native?hongNativeName(game.action):hongMotionName(game.action,weapon),next=hero.available.includes(requested)?requested:native?'stay1':hongMotionName('stay1',weapon);
+    const key=`${jump.pose||game.action}:${game.actionSerial}:${weapon}`;
+    const requested=native?jump.pose||hongNativeName(game.action):hongMotionName(game.action,weapon),next=hero.available.includes(requested)?requested:native?'stay1':hongMotionName('stay1',weapon);
     if(heroWeapon!==weapon&&!native){
      hero.skeleton.setSkinByName(weapon);hero.skeleton.setSlotsToSetupPose();
      hero.skeleton.findSlot('weapon-front')!.setAttachment(weapon==='unarmed'?null:hero.skeleton.getAttachmentByName('weapon-front',`held-${weapon}`));
      hero.skeleton.findSlot('weapon-back')!.setAttachment(weapon==='dual'?hero.skeleton.getAttachmentByName('weapon-back','held-dual'):null);heroWeapon=weapon;
     }
     if(native)heroWeapon=weapon;
-    if(key!==heroKey){hero.state.setAnimation(0,next,/stay|run/.test(next));heroKey=key;heroTime=0;}
+    if(key!==heroKey){hero.skeleton.setSlotsToSetupPose();hero.state.setAnimation(0,next,/stay|run/.test(next));heroKey=key;heroTime=0;}
     heroTime+=Math.max(0,dt)*Math.max(0,game.animationSpeed);
     hero.state.update(Math.max(0,dt)*Math.max(0,game.animationSpeed));
     const entry=hero.state.getCurrent(0)!;
@@ -165,18 +168,19 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
      entry.trackTime=hongMotionTime(age,view.motion.duration,view.motion.hitAt,entry.animation!.duration,contact,attack&&!native);
     }else entry.trackTime=heroTime;
     hero.state.apply(hero.skeleton);
-    hero.skeleton.x=screenX(game.x);hero.skeleton.y=floor;hero.skeleton.scaleX=scale*(native?1.75:1.25)*game.facing;hero.skeleton.scaleY=scale*(native?1.75:1.25);
+    if(native&&weapon==='unarmed')for(const slot of hero.skeleton.slots)if(/_wp/.test(slot.data.name))slot.setAttachment(null);
+    hero.skeleton.x=screenX(game.x);hero.skeleton.y=heroFloor;hero.skeleton.scaleX=scale*(native?1.75:1.25)*game.facing;hero.skeleton.scaleY=scale*(native?1.75:1.25);
     hero.skeleton.update(Math.min(.05,Math.max(0,dt)));
     hero.skeleton.updateWorldTransform(Physics.update);
-    groundSkeleton(hero.skeleton,floor,/avoid|die|defeat|damage/.test(game.action)?native?HONG_NATIVE_BODY_SLOTS:HONG_BODY_SLOTS:native?HONG_NATIVE_FOOT_SLOTS:HONG_FOOT_SLOTS);
-    canvas.dataset.heroGroundError=String(Math.abs((attachmentBottom(hero.skeleton,native?HONG_NATIVE_FOOT_SLOTS:HONG_FOOT_SLOTS)??floor)-floor));
+    groundSkeleton(hero.skeleton,heroFloor,/avoid|die|defeat|damage/.test(game.action)?native?HONG_NATIVE_BODY_SLOTS:HONG_BODY_SLOTS:native?HONG_NATIVE_FOOT_SLOTS:HONG_FOOT_SLOTS);
+    canvas.dataset.heroGroundError=String(Math.abs((attachmentBottom(hero.skeleton,native?HONG_NATIVE_FOOT_SLOTS:HONG_FOOT_SLOTS)??heroFloor)-heroFloor));
     ctx.save();ctx.imageSmoothingEnabled=native;ctx.imageSmoothingQuality='high';
     canvas.dataset.heroTexture=native?'2048x1024-linear':'original';
     hero.skeleton.color.a=game.heroHitUntil>game.elapsed&&game.hp>0?.55+Math.sin(game.elapsed*60)*.2:1;
     heroRenderer.draw(hero.skeleton);ctx.restore();
     canvas.dataset.heroRig=native?`hong-native-${weapon}-${weapon==='axe'?'v2':'v1'}`:'hong-eirika-weapons-v12';canvas.dataset.heroMotion=next;canvas.dataset.weaponMount=native?'native-hand':weapon==='dual'||weapon==='spear'?'both-hands':weapon==='unarmed'?'none':'front-hand';
    }else{
-    const pose=attack?attackSpritePlacement(attackFrame,screenX(game.x),floor,scale,game.facing):spritePlacement(frame,screenX(game.x),floor,scale,game.facing);
+    const pose=attack?attackSpritePlacement(attackFrame,screenX(game.x),floor,scale,game.facing):spritePlacement(frame,screenX(game.x),heroFloor,scale,game.facing);
     ctx.save();ctx.imageSmoothingEnabled=false;ctx.translate(pose.x,pose.y);ctx.scale(pose.scaleX,pose.scaleY);
     if(game.heroHitUntil>game.elapsed&&game.hp>0)ctx.globalAlpha=.55+Math.sin(game.elapsed*60)*.2;
     ctx.drawImage(attack?attackSheets[view!.weapon]:sheet,pose.source[0],pose.source[1],pose.source[2],pose.source[3],pose.target[0],pose.target[1],pose.target[2],pose.target[3]);ctx.restore();

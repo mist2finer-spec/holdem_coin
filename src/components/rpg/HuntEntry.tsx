@@ -1,6 +1,6 @@
 'use client';
 import {useState} from 'react';
-import {COMBAT_CHARACTERS,type CombatCharacterId} from './combat-characters';
+import {COMBAT_CHARACTERS,isHuntPlayable,type CombatCharacterId} from './combat-characters';
 import {HuntPrototype} from './HuntPrototype';
 import {HUNT_MAPS,type HuntMapId} from './hunt-map';
 import './hunt-selection.css';
@@ -12,15 +12,15 @@ export function HuntEntry({onExit}:{onExit?:()=>void}){
 function HuntEntryContent({onExit}:{onExit?:()=>void}){
  const [selected,setSelected]=useState<CombatCharacterId|null>(null);
  const [entered,setEntered]=useState(false);
- const [map,setMap]=useState<HuntMapId>('forest');
+ const [map,setMap]=useState<HuntMapId>('candle-dungeon');
  if(entered&&selected)return <HuntPrototype key={selected+map} character={selected} mapId={map} onExit={()=>setEntered(false)}/>;
  const current=COMBAT_CHARACTERS.find(c=>c.id===selected);
  return <main className="hunt-selection">
   <header><a href="/" onClick={e=>{if(onExit){e.preventDefault();onExit();}}}>← 처음으로</a><span>ISLAND · ADVENTURE</span></header>
   <section className="hunt-selection-heading"><small>달빛 숲으로</small><h1>함께할 캐릭터를 선택하세요</h1><p>사냥으로 성장하고 장비를 강화하세요. 가방과 사냥 의뢰도 이용할 수 있습니다.</p></section>
   <div className="hunt-roster" role="group" aria-label="사냥 캐릭터 선택">
-   {COMBAT_CHARACTERS.map(c=><button type="button" className={`hunt-roster-card ${selected===c.id?'is-selected':''}`} key={c.id} aria-pressed={selected===c.id} aria-label={`${c.label} 선택`} onClick={()=>setSelected(c.id)}>
-    <img src={`/rpg/characters/${c.id}/illustration.jpg`} alt="" draggable={false}/><strong>{c.label}</strong><span>{selected===c.id?'선택됨':'선택'}</span>
+   {COMBAT_CHARACTERS.map(c=><button type="button" className={`hunt-roster-card ${selected===c.id?'is-selected':''}`} key={c.id} disabled={!isHuntPlayable(c.id)} aria-pressed={selected===c.id} aria-label={`${c.label} 선택`} onClick={()=>setSelected(c.id)}>
+    <img src={`/rpg/characters/${c.id}/illustration.jpg`} alt="" draggable={false}/><strong>{c.label}</strong><span>{!isHuntPlayable(c.id)?'선택 불가':selected===c.id?'선택됨':'선택'}</span>
    </button>)}
   </div>
   <label className="hunt-map-choice">테스트 맵<select aria-label="사냥 맵 선택" value={map} onChange={e=>setMap(e.target.value as HuntMapId)}>{HUNT_MAPS.map(m=><option value={m.id} key={m.id}>{m.label}</option>)}</select></label>

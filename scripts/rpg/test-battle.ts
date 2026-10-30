@@ -47,7 +47,7 @@ test('server controls time and rewards, rejects out-of-order requests and dedupl
  const elapsed=view.elapsed;view=service.command('guest',view.id,++seq,{...input,auto:true});assert.equal(view.elapsed,elapsed);
  now+=100000;view=service.command('guest',view.id,++seq,input);assert.ok(view.elapsed-elapsed<=.300001);
  assert.throws(()=>service.command('guest',view.id,seq+2,input));
- const old=view.id;service.start('guest','white-bob');assert.throws(()=>service.command('guest',old,seq+1,input));store.close();
+ const old=view.id;service.start('guest','hong');assert.throws(()=>service.command('guest',old,seq+1,input));store.close();
 });
 test('client cannot submit rewards or invalid movement/actions',()=>{
  assert.deepEqual(parseHuntInput({...input,gold:999,kills:999}),{...input,basic:undefined,skill:undefined,dodge:undefined,parry:undefined});
@@ -61,7 +61,7 @@ test('server upgrade charges once, raises combat stats and survives re-entry',()
  const store=new RpgStore(':memory:'),saved=store.load('guest');saved.progress.soulGem=100;store.save('guest',saved.progress,saved.revision);
  const service=new RpgService(store,balance,()=>0),v=service.start('guest','hong');
  const result=service.command('guest',v.id,1,input,'weapon');assert.equal(result.progress.weaponLevel,2);assert.equal(result.progress.soulGem,60);
- assert.deepEqual(service.command('guest',v.id,1,input,'weapon'),result);const next=service.start('guest','pink-glasses');assert.equal(next.progress.soulGem,60);assert.equal(next.progress.weaponLevel,2);store.close();
+ assert.deepEqual(service.command('guest',v.id,1,input,'weapon'),result);const next=service.start('guest','hong');assert.equal(next.progress.soulGem,60);assert.equal(next.progress.weaponLevel,2);store.close();
 });
 test('respawn cannot introduce a fourth blocker or occupy the origin during a dodge',()=>{
  const g=new HuntEngine(HUNT_RULES.combo,2,{hostile:true});g.x=500;g.enemies[0].x=540;g.enemies[1].x=500;g.enemies[1].hp=0;g.enemies[1].respawnAt=0;
@@ -100,7 +100,7 @@ test('four weapons equip with independent upgrade levels, deduct once and persis
  v=service.command('armory',v.id,++seq,input,'equip-dual');assert.equal(v.progress.weaponLevel,1);assert.equal(v.progress.weaponLevels.sword,2);
  v=service.command('armory',v.id,++seq,input,'equip-spear');assert.equal(v.weapon,'spear');
  v=service.command('armory',v.id,++seq,input,'equip-sword');assert.equal(v.progress.weaponLevel,2);
- v=service.start('armory','white-bob');assert.equal(v.weapon,'sword');assert.equal(v.progress.weaponLevels.sword,2);assert.equal(v.progress.soulGem,60);
+ v=service.start('armory','hong');assert.equal(v.weapon,'sword');assert.equal(v.progress.weaponLevels.sword,2);assert.equal(v.progress.soulGem,60);
  // A previously returned snapshot cannot be changed by a subsequent equip/upgrade.
  assert.equal(saved.progress.weaponLevels.sword,1);store.close();
 });
@@ -156,7 +156,7 @@ test('gold training charges exactly once, persists and cannot spend past cap',()
  const a=service.command('training',v.id,1,input,'train-attack');assert.equal(a.progress.attackTraining,1);assert.equal(a.progress.gold,850);assert.ok(a.stats.attack>v.stats.attack);
  assert.deepEqual(service.command('training',v.id,1,input,'train-attack'),a);
  const b=service.command('training',v.id,2,input,'train-health');assert.equal(b.progress.healthTraining,1);assert.equal(b.progress.gold,700);assert.ok(b.stats.naturalHP>a.stats.naturalHP);assert.equal(b.maxHP,10000);
- const c=service.start('training','white-bob');assert.equal(c.progress.attackTraining,1);assert.equal(c.progress.healthTraining,1);assert.equal(c.progress.gold,700);store.close();
+ const c=service.start('training','hong');assert.equal(c.progress.attackTraining,1);assert.equal(c.progress.healthTraining,1);assert.equal(c.progress.gold,700);store.close();
 });
 test('training failure and maximum leave balances unchanged',async()=>{
  const {trainHunt,trainingCost}=await import('../../src/components/rpg/hunt-progression');const p=newHuntProgress();

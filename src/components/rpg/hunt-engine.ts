@@ -1,3 +1,4 @@
+import {HUNT_JUMP,type HuntJump} from './hunt-jump';
 import {SceneFlow,sceneBinding,type SceneSpawn} from './hunt-scene-flow';
 import type {HuntVfxEvent} from './hunt-vfx';
 import {settleDamage} from './hunt-damage';
@@ -10,7 +11,7 @@ import {HUNT_RULES,motions,SKILL_COOLDOWNS,WORLD_WIDTH,type ComboStage} from './
 import {bodySeparation,separation,planDodge,sweepHero} from './hunt-collision';
 import {awardHuntKill,awardStageClear,DEFAULT_HUNT_BALANCE,heroStats,newHuntProgress,type HuntBalance,type HuntProgress} from './hunt-progression';
 export {SKILL_COOLDOWNS,WORLD_WIDTH} from './combat-rules';
-type Motion={kind:'attack'|'skill'|'rush'|'dodge';start:number;duration:number;target:number;skillIndex?:number;
+type Motion={kind:'attack'|'skill'|'rush'|'dodge'|'jump';start:number;duration:number;target:number;skillIndex?:number;
  segments:{animation:string;duration:number}[];phase:number;animationRate?:number;hits:{at:number;damage:number;range:number;done:boolean;heal?:boolean}[];
  destination?:number;speed?:number;origin?:number};
 const clampX=(x:number)=>Math.max(65,Math.min(WORLD_WIDTH-65,x));
@@ -41,7 +42,8 @@ export class HuntEngine {
  elapsed=0;kills=0;coins=0;xp=0;auto=false;paused=false;
  action='stay1';actionSerial=0;animationSpeed=1;actionUntil=0;
  pendingSkill:number|null=null;
- cooldowns=[0,0,0,0,0,0];dodgeReady=0;attackReady=0;
+ cooldowns=[0,0,0,0,0,0];dodgeReady=0;jumpReady=0;attackReady=0;
+ get jumpState():HuntJump|null{const m=this.motion;return m?.kind==='jump'?{startedAt:m.start,duration:m.duration,origin:m.origin!,destination:m.destination!}:null;}
  comboStage=0;attackHeld=false;
  deadAt=-1;lastHeroDamage=0;heroHitUntil=0;parryUntil=0;parryReady=0;critical=false;
  potionReady=0;
@@ -50,7 +52,7 @@ export class HuntEngine {
  private rng:number;private range:number;private crit:number;private tempo:number;
  get stats(){return heroStats(this.progress);}
  get maxHP(){return this.hostile?this.stats.maxHP:100;}
- private motion:Motion|null=null;
+ private motion:Motion|null=null;private pendingJump:{direction:number;expires:number}|null=null;
  private comboIndex=0;private comboExpires=0;private queuedUntil=0;private attackIntent=false;
  combo:readonly ComboStage[];
  get visualTiming(){const m=this.motion;return m?{startedAt:m.start,duration:m.duration,hitAt:m.hits[0]?.at??.2}:{startedAt:this.elapsed,duration:0,hitAt:.2};}
@@ -118,7 +120,8 @@ export class HuntEngine {
   const d=stageDefinition(this.stageIndex),count=Math.min(6,Math.max(0,d.goal-this.stageKills)),dir=this.x<WORLD_WIDTH/2?1:-1;this.casts.clear();this.impactors=[];
   for(const e of this.enemies){e.hp=0;e.state='dead';if(e.slot>=count)continue;e.boss=false;e.serial=1000000+(this.stageIndex*10000)+(++this.spawnCounter);e.hp=e.maxHP;e.state='idle';e.x=clampX(this.x+dir*(180+e.slot*100));e.nextAttack=this.elapsed+1;}
  }
- private failStage(reason:string){this.failure=reason;this.stagePhase='failed';this.hp=0;this.deadAt=this.elapsed;this.motion=null;this.casts.clear();this.impactors=[];this.clearInput();this.auto=false;this.pose('die1',true);}
+ private landJump(){const m=this.motion;if(m?.kind==='jump')this.x=planDodge(m.origin!,this.x,this.enemies).destination;}
+ private failStage(reason:string){this.landJump();this.failure=reason;this.stagePhase='failed';this.hp=0;this.deadAt=this.elapsed;this.motion=null;this.casts.clear();this.impactors=[];this.clearInput();this.auto=false;this.pose('die1',true);}
  private completeStage(){
   awardStageClear(this.progress,this.balance,stageDefinition(this.stageIndex).reward);this.coins=this.progress.gold;this.xp=this.progress.xp;
   if(this.stageIndex===LABYRINTH.stages.length-1){this.progress.labyrinthCompleted=1;this.stagePhase='complete';}
@@ -155,7 +158,7 @@ export class HuntEngine {
   this.animationSpeed=speed;
  }
  private resetCombo(){this.comboIndex=0;this.comboStage=0;this.comboExpires=0;this.queuedUntil=0;}
- clearInput(){this.pendingSkill=null;this.attackHeld=false;this.attackIntent=false;this.queuedUntil=0;}
+ clearInput(){this.pendingJump=null;this.pendingSkill=null;this.attackHeld=false;this.attackIntent=false;this.queuedUntil=0;}
  setAuto(value:boolean){
   this.auto=value;
   if(!value){this.clearInput();if(this.motion?.kind==='rush'){
@@ -209,7 +212,7 @@ export class HuntEngine {
     enemy.state='windup';enemy.motionEvent=-1;enemy.clip=attack.clip;enemy.castSerial=(enemy.castSerial??0)+1;enemy.attackAt=this.elapsed+(attack.commands[0]?.at??0);
     this.casts.set(enemy.serial,{skill:attack,start:this.elapsed,source:enemy.serial,targetX:target,emitted:new Set()});ready[attack.id]=this.elapsed+attack.cooldown;uses[attack.id]=(uses[attack.id]??0)+1;this.ready.set(enemy.serial,ready);this.uses.set(enemy.serial,uses);continue;
    }
-   enemy.state='walk';if(this.motion?.kind==='dodge')continue;
+   enemy.state='walk';if(this.motion?.kind==='dodge'||this.motion?.kind==='jump')continue;
    const direction=Math.sign(target-enemy.x),travel=Math.min((enemy.moveSpeed??45)*this.tempo*dt,Math.max(0,distance-separation(enemy)));
    let next=enemy.x+direction*travel;
    for(const other of this.enemies){if(other===enemy||other.hp<=0)continue;const gap=(enemy.radius??12)+(other.radius??12);if(direction>0&&other.x>enemy.x)next=Math.min(next,other.x-gap);if(direction<0&&other.x<enemy.x)next=Math.max(next,other.x+gap);}
@@ -240,7 +243,7 @@ export class HuntEngine {
        const settlement=settleDamage({hp:this.hp,maxHP:this.maxHP,shield:this.heroShield},damage);this.heroShield=settlement.shield;
        this.lastHeroDamage=settlement.hpDamage;this.hp=settlement.hp;this.heroHitUntil=this.elapsed+.2;
        if(this.hp===0){this.failStage('전투 불능');return;}
-      }else if([104,105,107,111].includes(effect.type)&&effect.value>0){this.heroStunUntil=Math.max(this.heroStunUntil,this.elapsed+effectDuration(effect.value,source.tenacity??0,this.stats.tenacity));this.motion=null;this.clearInput();this.pose('stay1');}
+      }else if([104,105,107,111].includes(effect.type)&&effect.value>0){this.landJump();this.heroStunUntil=Math.max(this.heroStunUntil,this.elapsed+effectDuration(effect.value,source.tenacity??0,this.stats.tenacity));this.motion=null;this.clearInput();this.pose('stay1');}
       else if(effect.type===106&&effect.value>0){this.moveTo(this.x+p.direction*Math.min(250,effect.value*50));}
      }
     }
@@ -275,7 +278,7 @@ export class HuntEngine {
    if(distance>HUNT_MONSTER.aggroRange){enemy.state='idle';continue;}
    enemy.state='walk';
    // Freeze translation during a roll, so neither its origin nor landing is occupied underneath it.
-   if(this.motion?.kind==='dodge')continue;
+   if(this.motion?.kind==='dodge'||this.motion?.kind==='jump')continue;
    const direction=Math.sign(this.x-enemy.x),travel=Math.min((enemy.moveSpeed??HUNT_MONSTER.moveSpeed)*this.tempo*dt,Math.max(0,distance-bodySeparation));
    let next=enemy.x+direction*travel;
    for(const other of this.enemies){if(other===enemy||other.hp<=0)continue;
@@ -302,7 +305,7 @@ export class HuntEngine {
   if(m.destination!==undefined&&m.speed!==undefined){
    const delta=m.destination-this.x;
    const next=clampX(this.x+Math.sign(delta)*Math.min(Math.abs(delta),m.speed*dt));
-   if(m.kind==='dodge')this.x=next;else this.moveTo(next);
+   if(m.kind==='dodge'||m.kind==='jump')this.x=next;else this.moveTo(next);
   }
   const age=this.elapsed-m.start;
   for(const hit of m.hits){
@@ -323,7 +326,7 @@ export class HuntEngine {
   if(m.phase!==phase){m.phase=phase;this.pose(m.segments[phase].animation,true,m.animationRate??this.tempo);}
   if(age+1e-8>=m.duration){
    if(m.destination!==undefined){
-    if(m.kind==='dodge'){
+    if(m.kind==='dodge'||m.kind==='jump'){
      // Recheck landing in case a target was repositioned while the roll played.
      this.x=planDodge(m.origin??this.x,clampX(m.destination),this.enemies).destination;
     }else this.moveTo(m.destination);
@@ -346,7 +349,7 @@ export class HuntEngine {
     ?Math.max(90,Math.min(WORLD_WIDTH-90,this.x+this.facing*(HUNT_STAGE.recycleAhead+enemy.slot*HUNT_STAGE.recycleSpacing)))
     :this.enemies.length===1?Math.min(WORLD_WIDTH-90,Math.max(90,this.x+this.facing*230)):enemy.x;
    if(this.hostile&&this.enemies.some(e=>e!==enemy&&e.hp>0&&Math.abs(e.x-spawnX)<48)){enemy.respawnAt=this.elapsed+.5;continue;}
-   const roll=this.motion?.kind==='dodge'?this.motion:null;
+   const roll=this.motion?.kind==='dodge'||this.motion?.kind==='jump'?this.motion:null;
    if(roll&&spawnX>Math.min(roll.origin??this.x,roll.destination??this.x)-bodySeparation&&spawnX<Math.max(roll.origin??this.x,roll.destination??this.x)+bodySeparation){enemy.respawnAt=this.elapsed+.25;continue;}
    // Never respawn a solid enemy around the player (including during a roll).
    if(Math.abs(spawnX-this.x)<bodySeparation){enemy.respawnAt=this.elapsed+.25;continue;}
@@ -358,6 +361,7 @@ export class HuntEngine {
   this.advanceMotion(dt,direction);
   if(this.motion)return;
   if(this.heroStunUntil>this.elapsed){this.pose('stay1');return;}
+  if(this.pendingJump){const request=this.pendingJump;this.pendingJump=null;if(this.elapsed<=request.expires&&this.jump(request.direction))return;}
   if(this.campaign&&this.auto&&!direction&&!this.enemies.some(e=>e.hp>0)){const d=stageDefinition(this.stageIndex),goal=this.sceneFlow?.nextAreaX??(d.victory===4?WORLD_WIDTH-160:this.objectiveObjects.find(o=>!o.done)?.x);if(goal!==undefined){if(Math.abs(goal-this.x)<= (this.sceneFlow?2:65))this.interact();else {this.facing=Math.sign(goal-this.x);this.moveTo(this.x+this.facing*HUNT_RULES.moveSpeed*this.tempo*dt);this.pose('run1');}return;}}
   this.selectTarget();
   if(this.elapsed>this.comboExpires)this.resetCombo();
@@ -435,6 +439,20 @@ export class HuntEngine {
     hits:[{at:duration*.55,damage:40*(1+((this.progress.skillLevels[skill]??1)-1)*.05),range:330,done:false,heal:skill===5}]});
   }
   return true;
+ }
+ requestJump(direction=0){
+  if(this.jump(direction))return true;
+  if(this.paused||this.hp<=0||!Number.isFinite(direction)||Math.abs(direction)>1||this.jumpState||this.elapsed<this.jumpReady||this.campaign&&['cleared','complete','failed'].includes(this.stagePhase))return false;
+  this.pendingJump={direction,expires:this.elapsed+1.5};return true;
+ }
+ jump(direction=0){
+  if(this.paused||this.hp<=0||this.heroStunUntil>this.elapsed||this.motion||this.elapsed<this.jumpReady
+   ||!Number.isFinite(direction)||Math.abs(direction)>1||this.campaign&&['cleared','complete','failed'].includes(this.stagePhase))return false;
+  this.clearInput();this.resetCombo();if(direction)this.facing=Math.sign(direction);
+  const destination=direction?planDodge(this.x,clampX(this.x+direction*HUNT_JUMP.distance),this.enemies).destination:this.x;
+  const duration=HUNT_JUMP.duration;
+  this.start({kind:'jump',start:this.elapsed,duration,target:this.enemySerial,segments:[{animation:'jump1',duration:duration*.12},{animation:'jump2',duration:duration*.23},{animation:'jump3',duration:duration*.3},{animation:'jump4',duration:duration*.25},{animation:'jump5',duration:duration*.1}],phase:0,hits:[],origin:this.x,destination,speed:Math.abs(destination-this.x)/duration});
+  this.jumpReady=this.elapsed+HUNT_JUMP.cooldown;return true;
  }
  dodge(direction:number){
   if(this.paused||this.hp<=0||this.heroStunUntil>this.elapsed||this.elapsed<this.dodgeReady||this.motion||!Number.isFinite(direction)||!direction)return false;
