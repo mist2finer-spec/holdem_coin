@@ -1,6 +1,7 @@
 'use client';
 import {useState} from 'react';
 import {COMBAT_CHARACTERS,isHuntPlayable,type CombatCharacterId} from './combat-characters';
+import {RoguePrototype} from './rogue/RoguePrototype';
 import {HuntPrototype} from './HuntPrototype';
 import {HUNT_MAPS,type HuntMapId} from './hunt-map';
 import './hunt-selection.css';
@@ -12,7 +13,8 @@ export function HuntEntry({onExit}:{onExit?:()=>void}){
 function HuntEntryContent({onExit}:{onExit?:()=>void}){
  const [selected,setSelected]=useState<CombatCharacterId|null>(null);
  const [entered,setEntered]=useState(false);
- const [map,setMap]=useState<HuntMapId>('candle-dungeon');
+ const [map,setMap]=useState<HuntMapId>('rogue-dungeon');
+ if(entered&&selected&&map==='rogue-dungeon')return <RoguePrototype onExit={()=>setEntered(false)}/>;
  if(entered&&selected)return <HuntPrototype key={selected+map} character={selected} mapId={map} onExit={()=>setEntered(false)}/>;
  const current=COMBAT_CHARACTERS.find(c=>c.id===selected);
  return <main className="hunt-selection">
@@ -24,7 +26,8 @@ function HuntEntryContent({onExit}:{onExit?:()=>void}){
    </button>)}
   </div>
   <label className="hunt-map-choice">테스트 맵<select aria-label="사냥 맵 선택" value={map} onChange={e=>setMap(e.target.value as HuntMapId)}>{HUNT_MAPS.map(m=><option value={m.id} key={m.id}>{m.label}</option>)}</select></label>
+  {map==='rogue-dungeon'&&<p className="hunt-map-note">상하좌우 자유 탐험 · 10개 방 무작위 생성 · 처치한 몬스터는 다시 나오지 않습니다. 테스트 재화는 기존 저장과 별도입니다.</p>}
   {map==='candle-dungeon'&&<p className="hunt-map-note">원본 Map002_001의 비주얼 복원 · 몬스터와 성장 진행은 현재 테스트 전투를 사용합니다.</p>}
-  <footer className="hunt-selection-start"><div><strong>{current?.label||'캐릭터를 선택해 주세요'}</strong><small>{map==='forest'?'시작의 숲':'촛불 지하 회랑'} · 1–1</small></div><button type="button" disabled={!selected} onClick={()=>{if(selected)setEntered(true);}}>사냥 시작 →</button></footer>
+  <footer className="hunt-selection-start"><div><strong>{current?.label||'캐릭터를 선택해 주세요'}</strong><small>{map==='rogue-dungeon'?'촛불 미궁 · 10개 방':map==='forest'?'시작의 숲 · 1–1':'촛불 지하 회랑 · 1–1'}</small></div><button type="button" disabled={!selected} onClick={()=>{if(selected)setEntered(true);}}>사냥 시작 →</button></footer>
  </main>;
 }
