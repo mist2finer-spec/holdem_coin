@@ -1,0 +1,548 @@
+{
+  "sourceZipSha256": "0a8905ad3ccd5a6e32a2e49ff3b7d724616ce57c053dbc118439b90f1bd5fef2",
+  "bundleSha256": "d6538186a5b57f3946ef5e15a715d47af6b22b1a48695964eb0410d8095f1d58",
+  "linkedDirections": 684,
+  "byType": {
+    "2": 457,
+    "3": 141,
+    "1": 86
+  },
+  "activeByType": {
+    "2": 145,
+    "3": 48,
+    "1": 32
+  },
+  "examples": {
+    "jump-gap": {
+      "type": 2,
+      "slot": 1,
+      "fromXYZ": [
+        -4.0,
+        -5.0,
+        9.0
+      ],
+      "toXYZ": [
+        -4.0,
+        -5.0,
+        15.0
+      ],
+      "delta": [
+        0.0,
+        0.0,
+        6.0
+      ],
+      "source": {
+        "identity": {
+          "bundle": "map_scenes_all_4b458b9f2434e6d32bf59723a0ba1ae6.bundle",
+          "serialized_file": "3:CAB-976247cd0b75410b7ad7c76cf47ede50",
+          "path_id": "1763",
+          "id": "[\"map_scenes_all_4b458b9f2434e6d32bf59723a0ba1ae6.bundle\",\"3:CAB-976247cd0b75410b7ad7c76cf47ede50\",\"1763\"]"
+        },
+        "hierarchy": "MapEntityRoot5/JumpStart2",
+        "rootName": "MapEntityRoot5",
+        "activeInHierarchy": true,
+        "deactivated": false,
+        "localPosition": {
+          "x": -4.0,
+          "y": -5.0,
+          "z": 9.0
+        },
+        "worldMatrix": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            -4.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            -5.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            9.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "target": {
+        "identity": {
+          "bundle": "map_scenes_all_4b458b9f2434e6d32bf59723a0ba1ae6.bundle",
+          "serialized_file": "3:CAB-976247cd0b75410b7ad7c76cf47ede50",
+          "path_id": "1722",
+          "id": "[\"map_scenes_all_4b458b9f2434e6d32bf59723a0ba1ae6.bundle\",\"3:CAB-976247cd0b75410b7ad7c76cf47ede50\",\"1722\"]"
+        },
+        "hierarchy": "MapEntityRoot5/JumpEnd2",
+        "rootName": "MapEntityRoot5",
+        "activeInHierarchy": true,
+        "deactivated": false,
+        "localPosition": {
+          "x": -4.0,
+          "y": -5.0,
+          "z": 15.0
+        },
+        "worldMatrix": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            -4.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            -5.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            15.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "sceneLabel": "Map002Config"
+    },
+    "jump-down": {
+      "type": 2,
+      "slot": 1,
+      "fromXYZ": [
+        -4.0,
+        3.0,
+        -5.0
+      ],
+      "toXYZ": [
+        -4.0,
+        -5.0,
+        -1.0
+      ],
+      "delta": [
+        0.0,
+        -8.0,
+        4.0
+      ],
+      "source": {
+        "identity": {
+          "bundle": "map_scenes_all_4b458b9f2434e6d32bf59723a0ba1ae6.bundle",
+          "serialized_file": "3:CAB-976247cd0b75410b7ad7c76cf47ede50",
+          "path_id": "1768",
+          "id": "[\"map_scenes_all_4b458b9f2434e6d32bf59723a0ba1ae6.bundle\",\"3:CAB-976247cd0b75410b7ad7c76cf47ede50\",\"1768\"]"
+        },
+        "hierarchy": "MapEntityRoot5/JumpStart1",
+        "rootName": "MapEntityRoot5",
+        "activeInHierarchy": true,
+        "deactivated": false,
+        "localPosition": {
+          "x": -4.0,
+          "y": 3.0,
+          "z": -5.0
+        },
+        "worldMatrix": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            -4.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            3.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            -5.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "target": {
+        "identity": {
+          "bundle": "map_scenes_all_4b458b9f2434e6d32bf59723a0ba1ae6.bundle",
+          "serialized_file": "3:CAB-976247cd0b75410b7ad7c76cf47ede50",
+          "path_id": "1786",
+          "id": "[\"map_scenes_all_4b458b9f2434e6d32bf59723a0ba1ae6.bundle\",\"3:CAB-976247cd0b75410b7ad7c76cf47ede50\",\"1786\"]"
+        },
+        "hierarchy": "MapEntityRoot5/JumpEnd1",
+        "rootName": "MapEntityRoot5",
+        "activeInHierarchy": true,
+        "deactivated": false,
+        "localPosition": {
+          "x": -4.0,
+          "y": -5.0,
+          "z": -1.0
+        },
+        "worldMatrix": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            -4.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            -5.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            -1.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "sceneLabel": "Map002Config"
+    },
+    "jump-up": {
+      "type": 2,
+      "slot": 1,
+      "fromXYZ": [
+        -4.0,
+        11.0,
+        -35.0
+      ],
+      "toXYZ": [
+        -4.0,
+        15.0,
+        -32.0
+      ],
+      "delta": [
+        0.0,
+        4.0,
+        3.0
+      ],
+      "source": {
+        "identity": {
+          "bundle": "map_scenes_all_4b458b9f2434e6d32bf59723a0ba1ae6.bundle",
+          "serialized_file": "1:CAB-df037f00af28a0305d7dbdf37be3f3c5",
+          "path_id": "1333",
+          "id": "[\"map_scenes_all_4b458b9f2434e6d32bf59723a0ba1ae6.bundle\",\"1:CAB-df037f00af28a0305d7dbdf37be3f3c5\",\"1333\"]"
+        },
+        "hierarchy": "MapEntityRoot5/Jump_Start1",
+        "rootName": "MapEntityRoot5",
+        "activeInHierarchy": true,
+        "deactivated": false,
+        "localPosition": {
+          "x": -4.0,
+          "y": 11.0,
+          "z": -35.0
+        },
+        "worldMatrix": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            -4.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            11.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            -35.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "target": {
+        "identity": {
+          "bundle": "map_scenes_all_4b458b9f2434e6d32bf59723a0ba1ae6.bundle",
+          "serialized_file": "1:CAB-df037f00af28a0305d7dbdf37be3f3c5",
+          "path_id": "1524",
+          "id": "[\"map_scenes_all_4b458b9f2434e6d32bf59723a0ba1ae6.bundle\",\"1:CAB-df037f00af28a0305d7dbdf37be3f3c5\",\"1524\"]"
+        },
+        "hierarchy": "MapEntityRoot5/Jump_End",
+        "rootName": "MapEntityRoot5",
+        "activeInHierarchy": true,
+        "deactivated": false,
+        "localPosition": {
+          "x": -4.0,
+          "y": 15.0,
+          "z": -32.0
+        },
+        "worldMatrix": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            -4.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            15.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            -32.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "sceneLabel": "Map001_001_Config"
+    },
+    "jump-climb": {
+      "type": 3,
+      "slot": 1,
+      "fromXYZ": [
+        -4.0,
+        21.0,
+        -29.0
+      ],
+      "toXYZ": [
+        -4.0,
+        29.0,
+        -25.0
+      ],
+      "delta": [
+        0.0,
+        8.0,
+        4.0
+      ],
+      "source": {
+        "identity": {
+          "bundle": "map_scenes_all_4b458b9f2434e6d32bf59723a0ba1ae6.bundle",
+          "serialized_file": "5:CAB-b273e2c48b8527c9893d4f9045f22e45",
+          "path_id": "1782",
+          "id": "[\"map_scenes_all_4b458b9f2434e6d32bf59723a0ba1ae6.bundle\",\"5:CAB-b273e2c48b8527c9893d4f9045f22e45\",\"1782\"]"
+        },
+        "hierarchy": "MapEntityRoot5/JumpStart",
+        "rootName": "MapEntityRoot5",
+        "activeInHierarchy": true,
+        "deactivated": false,
+        "localPosition": {
+          "x": -4.0,
+          "y": 21.0,
+          "z": -29.0
+        },
+        "worldMatrix": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            -4.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            21.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            -29.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "target": {
+        "identity": {
+          "bundle": "map_scenes_all_4b458b9f2434e6d32bf59723a0ba1ae6.bundle",
+          "serialized_file": "5:CAB-b273e2c48b8527c9893d4f9045f22e45",
+          "path_id": "1850",
+          "id": "[\"map_scenes_all_4b458b9f2434e6d32bf59723a0ba1ae6.bundle\",\"5:CAB-b273e2c48b8527c9893d4f9045f22e45\",\"1850\"]"
+        },
+        "hierarchy": "MapEntityRoot5/JumpEnd",
+        "rootName": "MapEntityRoot5",
+        "activeInHierarchy": true,
+        "deactivated": false,
+        "localPosition": {
+          "x": -4.0,
+          "y": 29.0,
+          "z": -25.0
+        },
+        "worldMatrix": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            -4.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            29.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            -25.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "sceneLabel": "Map003Config"
+    },
+    "slide": {
+      "type": 1,
+      "slot": 1,
+      "fromXYZ": [
+        -4.0,
+        21.0,
+        -45.0
+      ],
+      "toXYZ": [
+        -4.0,
+        21.0,
+        -39.0
+      ],
+      "delta": [
+        0.0,
+        0.0,
+        6.0
+      ],
+      "source": {
+        "identity": {
+          "bundle": "map_scenes_all_4b458b9f2434e6d32bf59723a0ba1ae6.bundle",
+          "serialized_file": "5:CAB-b273e2c48b8527c9893d4f9045f22e45",
+          "path_id": "1879",
+          "id": "[\"map_scenes_all_4b458b9f2434e6d32bf59723a0ba1ae6.bundle\",\"5:CAB-b273e2c48b8527c9893d4f9045f22e45\",\"1879\"]"
+        },
+        "hierarchy": "MapEntityRoot5/SlideStart",
+        "rootName": "MapEntityRoot5",
+        "activeInHierarchy": true,
+        "deactivated": false,
+        "localPosition": {
+          "x": -4.0,
+          "y": 21.0,
+          "z": -45.0
+        },
+        "worldMatrix": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            -4.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            21.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            -45.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "target": {
+        "identity": {
+          "bundle": "map_scenes_all_4b458b9f2434e6d32bf59723a0ba1ae6.bundle",
+          "serialized_file": "5:CAB-b273e2c48b8527c9893d4f9045f22e45",
+          "path_id": "1643",
+          "id": "[\"map_scenes_all_4b458b9f2434e6d32bf59723a0ba1ae6.bundle\",\"5:CAB-b273e2c48b8527c9893d4f9045f22e45\",\"1643\"]"
+        },
+        "hierarchy": "MapEntityRoot5/SlideEnd",
+        "rootName": "MapEntityRoot5",
+        "activeInHierarchy": true,
+        "deactivated": false,
+        "localPosition": {
+          "x": -4.0,
+          "y": 21.0,
+          "z": -39.0
+        },
+        "worldMatrix": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            -4.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            21.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            -39.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "sceneLabel": "Map003Config"
+    }
+  },
+  "scope": "Qualified serialized-file links and composed world transforms. Scene names use legacy config labels only. Active does not imply triggered in every stage. Web arena order, ledges, and corridor width are adapters, not a restored original scene."
+}

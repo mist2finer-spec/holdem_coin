@@ -1,17 +1,23 @@
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
 import {RNG} from 'rot-js';
 import {generateRogueMap,walkable,moveOnMap,lineClear,cell,ROGUE_TILE} from '../../src/components/rpg/rogue/map';
+import {sampleTraversal,traversalLeg,traversalDuration,TRAVERSAL} from '../../src/components/rpg/rogue/traversal';
 import {RogueEngine,ROGUE_SPECIES,type RogueInput} from '../../src/components/rpg/rogue/engine';
 import {LABYRINTH} from '../../src/components/rpg/hunt-labyrinth';
 import {RogueService,parseRogueInput} from '../../src/lib/rpg-rogue-service';
 const idle:RogueInput={x:0,y:0,auto:false};
 const step=(g:RogueEngine,n:number,input:RogueInput=idle)=>{for(let i=0;i<n;i++)g.step(.02,input);};
-test('100 seeds yield exactly ten connected rooms, sealed borders and reachable exits',()=>{
+test('100 seeds yield ten internally connected platforms, action-linked chasms and reachable exits',()=>{
  const hashes=new Set<string>();for(let seed=1;seed<=100;seed++){
-  const m=generateRogueMap(seed),q=[cell(m.start.y)*m.width+cell(m.start.x)],seen=new Set(q);hashes.add(m.rooms.map(r=>r.x1+','+r.y1).join('|'));assert.equal(m.rooms.length,10);
-  for(let i=0;i<q.length;i++)for(const n of [q[i]-1,q[i]+1,q[i]-m.width,q[i]+m.width])if(n>=0&&n<m.tiles.length&&!seen.has(n)&&m.tiles[n]===0){q.push(n);seen.add(n);}
-  for(const r of m.rooms){assert.equal(seen.has(cell(r.center.y)*m.width+cell(r.center.x)),true);assert.ok(walkable(m,r.center.x,r.center.y));}
-  assert.ok(seen.has(cell(m.exit.y)*m.width+cell(m.exit.x)));assert.ok(walkable(m,m.exit.x,m.exit.y));
+  const m=generateRogueMap(seed);hashes.add(m.rooms.map(r=>r.x1+','+r.y1).join('|'));assert.equal(m.rooms.length,10);
+  for(const r of m.rooms){
+   const q=[cell(r.center.y)*m.width+cell(r.center.x)],seen=new Set(q);
+   for(let i=0;i<q.length;i++)for(const n of [q[i]-1,q[i]+1,q[i]-m.width,q[i]+m.width])if(n>=0&&n<m.tiles.length&&!seen.has(n)&&m.tiles[n]===0){q.push(n);seen.add(n);}
+   assert.ok(walkable(m,r.center.x,r.center.y));
+   for(let y=r.y1;y<=r.y2;y++)for(let x=r.x1;x<=r.x2;x++)assert.ok(seen.has(y*m.width+x));
+  }
+  assert.ok(walkable(m,m.exit.x,m.exit.y));assert.equal(m.gates.length,9);
+  for(const g of m.gates){assert.equal(g.nextRoom,g.id+1);assert.ok(walkable(m,g.from.x,g.from.y));assert.ok(walkable(m,g.to.x,g.to.y));assert.equal(walkable(m,(g.from.x+g.to.x)/2,g.from.y),g.kind==='slide');}
   for(let x=0;x<m.width;x++){assert.equal(m.tiles[x],1);assert.equal(m.tiles[(m.height-1)*m.width+x],1);}for(let y=0;y<m.height;y++){assert.equal(m.tiles[y*m.width],1);assert.equal(m.tiles[y*m.width+m.width-1],1);}
  }assert.ok(hashes.size>90);
 });
@@ -30,7 +36,7 @@ test('packs spawn once on entry, final zone owns the boss, and all native monste
   assert.equal(g.room,zone);const pack=g.mobs.filter(m=>m.room===zone),count=g.mobs.length;
   assert.ok(pack.length>=3&&pack.length<=5);for(const m of pack){assert.ok(walkable(g.map,m.x,m.y,m.radius));m.hp=0;m.state='dead';}
   step(g,100);assert.equal(g.mobs.length,count);assert.equal(g.cleared.size,zone+1);
-  if(zone<9){const gate=g.map.gates[zone];Object.assign(g.hero,gate.from);g.command({...idle,[gate.kind]:true});assert.equal(g.hero.motion?.gateId,zone);step(g,60);}
+  if(zone<9){const gate=g.map.gates[zone];Object.assign(g.hero,gate.from);g.command({...idle,[gate.kind]:true});assert.equal(g.hero.motion?.gateId,zone);step(g,110);}
  }
  assert.ok(new Set(g.mobs.map(m=>m.species)).size>=7);assert.equal(g.mobs.filter(m=>m.boss).length,1);assert.equal(g.mobs.find(m=>m.boss)?.room,9);assert.equal(new Set(g.mobs.map(m=>m.id)).size,g.mobs.length);
  Object.assign(g.hero,g.map.exit);step(g,1);assert.equal(g.status,'won');
@@ -123,4 +129,43 @@ test('duplicate server ticks at passage completion replay the same zone spawn',(
  let now=0;const service=new RogueService(()=>now,()=>4);const started=service.start('gate-user','hong');let v=started,sequence=0;
  for(let i=0;i<4000&&v.room===0;i++){now+=100;v=service.command('gate-user',started.id,++sequence,{...idle,auto:true});}
  assert.equal(v.room,1);const same=service.command('gate-user',started.id,sequence,{...idle,jump:true});assert.deepEqual(same,v);assert.equal(new Set(same.mobs.map(m=>m.id)).size,same.mobs.length);assert.deepEqual(same.transitions,[0]);
+});
+
+test('all five source movement types preserve heights, hold on ledges, and land before spawning',()=>{
+ const g=new RogueEngine(22),seen=new Set<string>();let holds=0;
+ for(const gate of g.map.gates){
+  g.mobs.forEach(m=>{m.hp=0;m.state='dead';});step(g,80);Object.assign(g.hero,gate.from);
+  const count=g.mobs.length;assert.ok(g.command({...idle,[gate.kind]:true}));seen.add(gate.passage);
+  const motion=g.hero.motion!;assert.ok(motion.duration>0&&motion.duration<3);
+  assert.equal(motion.duration,traversalDuration(motion.legs!));
+  let previous=g.hero.elevation;
+  for(let tick=0;g.hero.motion&&tick<200;tick++){
+   const m=g.hero.motion;const age=g.elapsed-m.start;
+   const p=sampleTraversal(m.legs!,age);
+   if(p.holding&&p.index<m.legs!.length-1){holds++;assert.equal(p.airHeight,0);}
+   assert.ok(Number.isFinite(g.hero.elevation+g.hero.airHeight));assert.ok(Math.abs(g.hero.elevation-previous)<14);previous=g.hero.elevation;
+   assert.equal(g.room,gate.id);assert.equal(g.mobs.length,count);g.step(.02,idle);
+  }
+  assert.equal(g.room,gate.nextRoom);assert.equal(g.hero.elevation,gate.to.elevation);assert.equal(g.hero.airHeight,0);assert.ok(walkable(g.map,g.hero.x,g.hero.y));assert.ok(g.mobs.length>count);
+ }
+ assert.deepEqual([...seen].sort(),['jump-climb','jump-down','jump-gap','jump-up','slide']);assert.ok(holds>=10);
+});
+test('ballistic links start/end exactly, clear both rims, and use original gravity/time scale',()=>{
+ for(const dy of [-192,0,96]){
+  const from={x:0,y:0,elevation:0},to={x:144,y:0,elevation:dy},leg=traversalLeg(from,to);
+  assert.equal(sampleTraversal([leg],0).airHeight,0);const end=sampleTraversal([leg],100);assert.equal(end.x,144);assert.equal(end.elevation,dy);assert.equal(end.airHeight,0);
+  let peak=-Infinity;
+  for(let i=0;i<=100;i++){const p=sampleTraversal([leg],i*leg.duration/100);peak=Math.max(peak,p.elevation+p.airHeight);}
+  assert.ok(Math.abs(peak-(Math.max(0,dy)+TRAVERSAL.jumpHeight*TRAVERSAL.unit))<.05);
+ }
+ const leg=traversalLeg({x:0,y:0,elevation:0},{x:144,y:0,elevation:0},true);assert.equal(leg.duration,.4);
+});
+test('all elevated links reject walking and wrong buttons, no off-platform landing on interruption',()=>{
+ const g=new RogueEngine(4);
+ for(const gate of g.map.gates){
+  g.mobs.forEach(m=>m.hp=0);step(g,80);Object.assign(g.hero,gate.from);
+  step(g,60,{...idle,x:1});assert.equal(g.room,gate.id);assert.ok(walkable(g.map,g.hero.x,g.hero.y));
+  Object.assign(g.hero,gate.from);g.command({...idle,x:1,[gate.kind==='jump'?'slide':'jump']:true});step(g,80);assert.equal(g.room,gate.id);
+  Object.assign(g.hero,gate.from);g.command({...idle,[gate.kind]:true});step(g,150);assert.equal(g.room,gate.nextRoom);
+ }
 });

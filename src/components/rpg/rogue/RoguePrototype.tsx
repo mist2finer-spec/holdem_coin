@@ -3,6 +3,7 @@ import {useEffect,useRef,useState} from 'react';
 import type {RogueView} from '../../../lib/rpg-rogue-service';
 import type {RogueInput} from './engine';
 import type {RogueMap} from './map';
+import {PASSAGE_LABEL} from './traversal';
 import '../hunt.css';
 import './rogue.css';
 const skills=[['대지 균열','SkillIcon_GroundRift'],['암흑 구체','SkillIcon_DarkHole'],['서리 폭풍','SkillIcon_Blizzard3'],['빛의 심판','SkillIcon_HolyWrath2'],['회오리','SkillIcon_Whirlwind'],['회복','SkillIcon_VitalRecovery']];
@@ -33,7 +34,7 @@ export function RoguePrototype({onExit}:{onExit:()=>void}){
  const clearedRoom=view?.cleared.at(-1);
  const boss=view?.mobs.find(m=>m.boss&&m.hp>0&&m.room===view.room);
  const remaining=view?.mobs.filter(m=>m.room===view.room&&m.hp>0).length??0;
- const passage=view?.gate?.kind==='jump'?'점프':'슬라이딩';
+ const passage=view?.gate?PASSAGE_LABEL[view.gate.passage]:'이동';
  const statusText=view?.phase==='traversing'?`${passage} 통과 · 다음 구역으로 이동`:
   view?.phase==='exit-ready'?view.gate?`${view.auto?'AUTO · ':''}오른쪽 출구에서 ${passage}${view.gate.near?' 버튼을 누르세요':'로 통과'}`:'오른쪽 최종 출구로 이동':
   `${(view?.room??0)+1}번 구역 · 남은 적 ${remaining}${view?.auto?' · AUTO 전투':''}`;
@@ -49,7 +50,7 @@ export function RoguePrototype({onExit}:{onExit:()=>void}){
    <div className="rogue-objective"><span>{statusText}</span><div className="rogue-room-track" aria-label={`구역 정리 ${view?.cleared.length??0} / 10`}>{Array.from({length:10},(_,i)=><i key={i} className={view?.cleared.includes(i)?'cleared':view?.room===i?'current':''}>{i+1}</i>)}</div></div>
    {state==='loading'&&<div className="rogue-overlay" role="status"><strong>전투 구역과 통과로를 준비하는 중…</strong><span>원본 캐릭터와 몬스터를 불러옵니다.</span></div>}
    {(state==='error'||view?.status==='dead'||view?.status==='won')&&<div className="rogue-overlay" role="dialog" aria-label="던전 결과"><h2>{state==='error'?'연결 오류':view?.status==='won'?'미궁 탈출 성공':'전투 불능'}</h2><p>{state==='error'?error:`${view?.kills}마리 처치 · 테스트 골드 ${view?.gold}`}</p><button onClick={()=>setRun(n=>n+1)}>새 던전 생성</button><button onClick={onExit}>캐릭터 선택</button></div>}
-   {help&&<div className="rogue-help"><strong>촛불 미궁 · 조작 안내</strong><p>WASD / 방향키 또는 원형 스틱으로 상하좌우 이동합니다. AUTO는 구역별 전투 후 점프와 슬라이딩으로 다음 구역에 진입합니다.</p><p>전투 화면 터치 / Space 기본 공격 · Q/E 좌우 회피 · J 점프 · Shift 슬라이딩 · 1~6 스킬</p><p>구역에 들어가면 몬스터가 한 무리 생성됩니다. 모두 처치하면 오른쪽 출구가 열립니다. 출구의 원형 발판 가까이에서 표시된 점프/슬라이딩 버튼을 누르세요. 10구역 정리 후 탈출합니다.</p><button onClick={()=>setHelp(false)}>닫기</button></div>}
+   {help&&<div className="rogue-help"><strong>촛불 미궁 · 조작 안내</strong><p>WASD / 방향키 또는 원형 스틱으로 상하좌우 이동합니다. AUTO는 구역별 전투 후 틈 건너기·하강·상승 점프와 낮은 통로 슬라이딩으로 다음 구역에 진입합니다.</p><p>전투 화면 터치 / Space 기본 공격 · Q/E 좌우 회피 · J 점프 · Shift 슬라이딩 · 1~6 스킬</p><p>구역에 들어가면 몬스터가 한 무리 생성됩니다. 모두 처치하면 오른쪽 출구가 열립니다. 출구의 원형 발판 가까이에서 점프 또는 슬라이딩 버튼을 누르세요. 높은 구간에서는 중간 발판을 거쳐 연속으로 올라갑니다. 10구역 정리 후 탈출합니다.</p><button onClick={()=>setHelp(false)}>닫기</button></div>}
   </section>
   <div className="rogue-lower hunt-lower">
   <section className="rogue-console hunt-console" aria-label="로그라이크 조작" inert={panel!==null}>

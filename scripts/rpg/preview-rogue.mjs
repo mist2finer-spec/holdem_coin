@@ -14,16 +14,16 @@ try{
  for(let i=0;i<12;i++)renderer.draw(game.view(),1/60);
  fs.writeFileSync(output+'/entrance.png',canvas.toBuffer('image/png'));
  // Drive the real server engine; do not synthesize impossible room/monster snapshots.
- let foundJump=false,foundSlide=false;
- for(let i=0;i<12000&&(!foundJump||!foundSlide);i++){
-  game.step(.02,{x:0,y:0,auto:true});const view=game.view();
-  if(view.phase==='traversing'&&((view.gate?.kind==='jump'&&!foundJump)||(view.gate?.kind==='slide'&&!foundSlide))){
-   const kind=view.gate.kind;
+ const found=new Set();
+ for(let i=0;i<24000&&found.size<5;i++){
+  game.step(.02,{x:0,y:0,auto:true});const view=game.view(),motion=view.hero.motion;
+  if(view.phase==='traversing'&&motion&&view.elapsed-motion.start>motion.duration*.42&&!found.has(view.gate?.passage)){
+   const kind=view.gate.passage;
    for(let j=0;j<120;j++)renderer.draw(view,1/60);
-   fs.writeFileSync(output+'/'+kind+'-passage.png',canvas.toBuffer('image/png'));
-   if(kind==='jump')foundJump=true;else foundSlide=true;
+   fs.writeFileSync(output+'/'+kind+'-passage.png',canvas.toBuffer('image/png'));found.add(kind);
   }
  }
+ if(found.size!==5)throw Error('Missing traversal preview: '+[...found]);
  const c=createCanvas(1200,200),ctx=c.getContext('2d'),scale=Math.min(1200/game.map.width,200/game.map.height);ctx.fillStyle='#080d10';ctx.fillRect(0,0,1200,200);
  for(let y=0;y<game.map.height;y++)for(let x=0;x<game.map.width;x++)if(game.map.tiles[y*game.map.width+x]===0){ctx.fillStyle='#716755';ctx.fillRect(x*scale,y*scale,scale,scale);}
  ctx.textAlign='center';ctx.font='bold 16px sans-serif';
