@@ -29,12 +29,12 @@ export class RogueEngine{
  private hit(m:RogueMob,damage:number){if(!this.eligible(m))return;m.hp=Math.max(0,m.hp-damage);m.hitUntil=this.elapsed+.15;if(m.hp===0){m.state='dead';m.until=this.elapsed;this.kills++;this.gold+=m.boss?100:10;}}
  private effect(kind:RogueFx['kind']){this.fx.push({id:++this.fxId,kind,born:this.elapsed,x:this.hero.x,y:this.hero.y,angle:Math.atan2(this.hero.direction.y,this.hero.direction.x)});}
  private land(m:RogueMotion){if(this.space(this.hero))return;const span=dist(m.from,m.to),steps=Math.max(1,Math.ceil(span/4));for(let i=steps;i>=0;i--){const t=i/steps,p={x:m.from.x+(m.to.x-m.from.x)*t,y:m.from.y+(m.to.y-m.from.y)*t};if(this.space(p)){this.hero.x=p.x;this.hero.y=p.y;return;}}this.hero.x=m.from.x;this.hero.y=m.from.y;}
- command(input:RogueInput){
+ command(input:RogueInput,automated=false){
   if(this.status!=='playing')return false;this.auto=input.auto;
   if([input.jump,input.slide,input.dodge].filter(Boolean).length>1)return false;
   if(this.hero.motion){if(input.skill!==undefined){this.pendingSkill=input.skill;return true;}return false;}
   if(input.skill!==undefined&&this.cooldowns[input.skill]>0){this.pendingSkill=input.skill;return true;}
-  if(input.skill!==undefined&&this.cooldowns[input.skill]<=0){const skill=input.skill;this.pendingSkill=null;this.cooldowns[skill]=[5,8,7,9,6,12][skill];this.hero.motion={kind:'skill',skill,start:this.elapsed,duration:.7,hitAt:.25,done:false,from:{x:this.hero.x,y:this.hero.y},to:{x:this.hero.x,y:this.hero.y}};this.pose(['skill1','skill2','skill3','skill4','skill5','rest1'][skill]);return true;}
+  if(input.skill!==undefined&&this.cooldowns[input.skill]<=0){const skill=input.skill;if(!automated||this.pendingSkill===skill)this.pendingSkill=null;this.cooldowns[skill]=[5,8,7,9,6,12][skill];this.hero.motion={kind:'skill',skill,start:this.elapsed,duration:.7,hitAt:.25,done:false,from:{x:this.hero.x,y:this.hero.y},to:{x:this.hero.x,y:this.hero.y}};this.pose(['skill1','skill2','skill3','skill4','skill5','rest1'][skill]);return true;}
   if(input.jump&&this.elapsed>=this.jumpAt||(input.dodge||input.slide)&&this.elapsed>=this.dodgeAt){const jump=!!input.jump,dir=Math.hypot(input.x,input.y)>.1?unit(input.x,input.y):jump?{x:0,y:0}:this.hero.direction,duration=jump ? .86 : .36,distance=jump?150:120;
    let to=moveOnMap(this.map,this.hero,dir.x*distance,dir.y*distance);const touched=this.mobs.filter(m=>m.hp>0&&dist(m,this.hero)+dist(m,to)<=dist(this.hero,to)+m.radius*2+24);
    if(touched.length>3)to={x:this.hero.x,y:this.hero.y};
@@ -51,8 +51,8 @@ export class RogueEngine{
   while(this.autoRoom<10&&this.cleared.has(this.autoRoom)){this.autoOrder.push(this.autoRoom);this.autoRoom++;this.routeKey='';}
   const target=this.mobs.filter(m=>m.hp>0&&m.room===this.autoRoom).sort((a,b)=>dist(a,this.hero)-dist(b,this.hero))[0];
   if(target&&dist(target,this.hero)<100+target.radius&&lineClear(this.map,this.hero,target)){
-   if(this.hero.hp<this.hero.maxHP*.6&&this.cooldowns[5]<=0){this.command({...input,skill:5});return;}
-   const skill=this.cooldowns.slice(0,5).findIndex(c=>c<=0);if(skill>=0){this.hero.direction=unit(target.x-this.hero.x,target.y-this.hero.y);if(Math.abs(this.hero.direction.x)>.1)this.hero.facing=Math.sign(this.hero.direction.x);this.command({...input,skill});return;}
+   if(this.hero.hp<this.hero.maxHP*.6&&this.cooldowns[5]<=0){this.command({...input,skill:5},true);return;}
+   const skill=this.cooldowns.slice(0,5).findIndex(c=>c<=0);if(skill>=0){this.hero.direction=unit(target.x-this.hero.x,target.y-this.hero.y);if(Math.abs(this.hero.direction.x)>.1)this.hero.facing=Math.sign(this.hero.direction.x);this.command({...input,skill},true);return;}
    this.attack();return;
   }
   const goal=target??(this.autoRoom<10?this.map.rooms[this.autoRoom].center:this.map.exit),key=this.autoRoom+':'+(target?.id??'room')+':'+cell(goal.x)+','+cell(goal.y);
