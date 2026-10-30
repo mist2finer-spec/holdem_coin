@@ -1,0 +1,168 @@
+{
+  "version": 1,
+  "sourceSha256": "53d214852703cf536f383a876278ff9ba16a1ab8b611ba26733cca5db70b5360",
+  "effects": [
+    {
+      "id": "recovery",
+      "sourcePrefab": "FX_Buff_Heal",
+      "sourcePath": "Assets/InHouse/Fxs/Common/Prefab/FX_Buff_Heal.prefab",
+      "sheet": "/rpg/vfx/runtime/recovery.webp",
+      "cell": 256,
+      "columns": 8,
+      "frames": 32,
+      "duration": 2,
+      "anchor": [
+        0.5,
+        0.5
+      ],
+      "emitters": 5,
+      "visibleFrames": 17,
+      "unitsHalfSpan": 2.017811567731045,
+      "pixelsPerUnit": 53.28545128765531,
+      "crop": [
+        0,
+        0,
+        256,
+        256
+      ],
+      "meshEmitters": 0,
+      "mapping": "prefab-name-match",
+      "runtimeFocus": 1
+    },
+    {
+      "id": "ground-rift",
+      "sourcePrefab": "FX_GroundBreaking_01",
+      "sourcePath": "Assets/InHouse/Fxs/Common/Prefab/FX_GroundBreaking_01.prefab",
+      "sheet": "/rpg/vfx/runtime/ground-rift.webp",
+      "cell": 256,
+      "columns": 8,
+      "frames": 32,
+      "duration": 2,
+      "anchor": [
+        0.5,
+        0.5
+      ],
+      "emitters": 8,
+      "visibleFrames": 29,
+      "unitsHalfSpan": 20.0,
+      "pixelsPerUnit": 5.3759999999999994,
+      "crop": [
+        10,
+        8,
+        234,
+        232
+      ],
+      "meshEmitters": 5,
+      "mapping": "thematic-web-adaptation",
+      "runtimeFocus": 4.0
+    },
+    {
+      "id": "blizzard",
+      "sourcePrefab": "FX_Blizzard_Projectile_01",
+      "sourcePath": "Assets/InHouse/Fxs/Skill/Prefab/FX_Blizzard_Projectile_01.prefab",
+      "sheet": "/rpg/vfx/runtime/blizzard.webp",
+      "cell": 256,
+      "columns": 8,
+      "frames": 32,
+      "duration": 2,
+      "anchor": [
+        0.5,
+        0.5
+      ],
+      "emitters": 3,
+      "visibleFrames": 16,
+      "unitsHalfSpan": 2.4867167404451913,
+      "pixelsPerUnit": 43.23773522381602,
+      "crop": [
+        68,
+        72,
+        180,
+        184
+      ],
+      "meshEmitters": 1,
+      "mapping": "prefab-name-match",
+      "runtimeFocus": 1
+    },
+    {
+      "id": "dark-hole",
+      "sourcePrefab": "FX_DarkHole_01",
+      "sourcePath": "Assets/InHouse/Fxs/Skill/Prefab/FX_DarkHole_01.prefab",
+      "sheet": "/rpg/vfx/runtime/dark-hole.webp",
+      "cell": 256,
+      "columns": 8,
+      "frames": 32,
+      "duration": 2,
+      "anchor": [
+        0.5,
+        0.5
+      ],
+      "emitters": 7,
+      "visibleFrames": 18,
+      "unitsHalfSpan": 1.5,
+      "pixelsPerUnit": 71.67999999999999,
+      "crop": [
+        64,
+        64,
+        192,
+        192
+      ],
+      "meshEmitters": 0,
+      "mapping": "prefab-name-match",
+      "runtimeFocus": 1
+    },
+    {
+      "id": "holy-wrath",
+      "sourcePrefab": "FX_HolyWrath_01",
+      "sourcePath": "Assets/InHouse/Fxs/Skill/Prefab/FX_HolyWrath_01.prefab",
+      "sheet": "/rpg/vfx/runtime/holy-wrath.webp",
+      "cell": 256,
+      "columns": 8,
+      "frames": 32,
+      "duration": 2,
+      "anchor": [
+        0.5,
+        0.5
+      ],
+      "emitters": 6,
+      "visibleFrames": 32,
+      "unitsHalfSpan": 5.524222351075327,
+      "pixelsPerUnit": 19.46337297213797,
+      "crop": [
+        16,
+        30,
+        238,
+        252
+      ],
+      "meshEmitters": 1,
+      "mapping": "prefab-name-match",
+      "runtimeFocus": 1
+    },
+    {
+      "id": "whirlwind",
+      "sourcePrefab": "FX_Whirlwind_01_L",
+      "sourcePath": "Assets/InHouse/Fxs/Skill/Prefab/FX_Whirlwind_01_L.prefab",
+      "sheet": "/rpg/vfx/runtime/whirlwind.webp",
+      "cell": 256,
+      "columns": 8,
+      "frames": 32,
+      "duration": 2,
+      "anchor": [
+        0.5,
+        0.5
+      ],
+      "emitters": 18,
+      "visibleFrames": 32,
+      "unitsHalfSpan": 21.103458507622864,
+      "pixelsPerUnit": 5.09489949058171,
+      "crop": [
+        0,
+        0,
+        256,
+        256
+      ],
+      "meshEmitters": 11,
+      "mapping": "prefab-name-match",
+      "runtimeFocus": 3.0
+    }
+  ]
+}

@@ -1,5 +1,6 @@
 import {developmentView,buyArt,buyTrait,buyMastery,buyWill,buySkill,toggleSkill} from '../components/rpg/hunt-development';
 import {weaponGrowth} from '../components/rpg/hunt-growth';
+import type {HuntVfxEvent} from '../components/rpg/hunt-vfx';
 import type {LabyrinthView} from '../components/rpg/hunt-labyrinth';
 import {HUNT_STAGE} from '../components/rpg/hunt-tables';
 import {randomUUID} from 'node:crypto';
@@ -17,7 +18,7 @@ export function parseHuntInput(raw:unknown):HuntInput{
  return {move:x.move,attack:x.attack,auto:x.auto,basic:x.basic as boolean|undefined,skill:x.skill as number|undefined,dodge:x.dodge as number|undefined,parry:x.parry as boolean|undefined};
 }
 export type HuntAction='interact'|'tick'|'revive'|'weapon'|'armor'|'potion'|'buy-potion'|'quest'|'train-attack'|'train-health'|`art-${number}-${number}`|`trait-${number}`|'mastery'|'will'|`skill-train-${number}`|`skill-toggle-${number}`|`equip-${WeaponType}`|`upgrade-${WeaponType}`;
-export type BattleView={maxLevel:number;impactors:{id:number;x:number;width:number;born:number;expires:number;speed:number;targetX:number}[];stage:LabyrinthView;id:string;sequence:number;character:string;hp:number;maxHP:number;x:number;elapsed:number;action:string;actionSerial:number;animationSpeed:number;facing:number;
+export type BattleView={vfx:HuntVfxEvent[];maxLevel:number;impactors:{id:number;x:number;width:number;born:number;expires:number;speed:number;targetX:number}[];stage:LabyrinthView;id:string;sequence:number;character:string;hp:number;maxHP:number;x:number;elapsed:number;action:string;actionSerial:number;animationSpeed:number;facing:number;
  development:ReturnType<typeof developmentView>;stats:ReturnType<typeof heroStats>;weaponDetails:Record<WeaponType,ReturnType<typeof weaponGrowth>>;trainingCosts:{attack:number;health:number};armorPreview:{naturalHP:number;nextHP:number|null};enemies:HuntEnemy[];cooldowns:number[];pendingSkill:number|null;auto:boolean;progress:HuntProgress;xpRequired:number;weaponCost:number;weaponCosts:Record<WeaponType,number>;armorCost:number;loadout:string;dead:boolean;reviveReady:boolean;potionReady:boolean;heroHitUntil:number;lastHeroDamage:number;source:string;weapon:WeaponType;motion:{startedAt:number;duration:number;hitAt:number}};
 type Battle={id:string;character:string;engine:HuntEngine;revision:number;last:number;input:HuntInput;sequence:number;cached:BattleView;seen:number};
 export class RpgService{
@@ -33,7 +34,7 @@ export class RpgService{
   this.sessions.set(account,b);b.cached=this.view(b);return b.cached;
  }
  private view(b:Battle):BattleView{const g=b.engine;
-  return {maxLevel:this.balance.maxLevel,impactors:g.impactors.map(p=>({id:p.id,x:p.x,width:p.command.width,born:p.born,expires:p.expires,speed:p.command.speed,targetX:p.targetX})),stage:g.stage,id:b.id,sequence:b.sequence,character:b.character,hp:g.hp,maxHP:g.maxHP,x:g.x,elapsed:g.elapsed,action:g.action,actionSerial:g.actionSerial,animationSpeed:g.animationSpeed,facing:g.facing,
+  return {vfx:g.vfx.map(e=>({...e})),maxLevel:this.balance.maxLevel,impactors:g.impactors.map(p=>({id:p.id,x:p.x,width:p.command.width,born:p.born,expires:p.expires,speed:p.command.speed,targetX:p.targetX})),stage:g.stage,id:b.id,sequence:b.sequence,character:b.character,hp:g.hp,maxHP:g.maxHP,x:g.x,elapsed:g.elapsed,action:g.action,actionSerial:g.actionSerial,animationSpeed:g.animationSpeed,facing:g.facing,
    development:developmentView(g.progress),stats:g.stats,weaponDetails:Object.fromEntries(WEAPON_TYPES.map(type=>[type,weaponGrowth(g.progress,type)])) as Record<WeaponType,ReturnType<typeof weaponGrowth>>,trainingCosts:{attack:trainingCost(g.progress,'attack'),health:trainingCost(g.progress,'health')},armorPreview:{naturalHP:g.stats.naturalHP,nextHP:g.progress.armorLevel>=50?null:heroStats({...g.progress,armorLevel:g.progress.armorLevel+1}).naturalHP},
    enemies:g.enemies.map(e=>({...e})),cooldowns:[...g.cooldowns],pendingSkill:g.pendingSkill,auto:g.auto,progress:{...g.progress,weaponLevels:{...g.progress.weaponLevels},combatArts:{...g.progress.combatArts},traits:{...g.progress.traits},skillLevels:[...g.progress.skillLevels],skillCopies:[...g.progress.skillCopies],skillEnabled:[...g.progress.skillEnabled]},xpRequired:g.progress.level>=this.balance.maxLevel?0:curveValue(this.balance.team,g.progress.level),
    weaponCost:g.progress.weaponLevel>=50?0:curveValue(this.balance.weapon,g.progress.weaponLevel),weaponCosts:Object.fromEntries(WEAPON_TYPES.map(type=>[type,g.progress.weaponLevels[type]>=50?0:curveValue(this.balance.weapon,g.progress.weaponLevels[type])])) as Record<WeaponType,number>,armorCost:g.progress.armorLevel>=50?0:curveValue(this.balance.armor,g.progress.armorLevel),loadout:weaponLoadout(b.character,g.progress.weaponType).name,

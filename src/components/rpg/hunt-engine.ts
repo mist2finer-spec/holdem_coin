@@ -1,4 +1,5 @@
 import {SceneFlow,sceneBinding,type SceneSpawn} from './hunt-scene-flow';
+import type {HuntVfxEvent} from './hunt-vfx';
 import {settleDamage} from './hunt-damage';
 import {relativeStat,accuracy,effectDuration} from './hunt-formulas';
 import {canUseAttack,castCommands,sweptHit,markHit,type Cast,type Impactor,type MonsterAttack} from './hunt-actions';
@@ -9,7 +10,7 @@ import {HUNT_RULES,motions,SKILL_COOLDOWNS,WORLD_WIDTH,type ComboStage} from './
 import {bodySeparation,separation,planDodge,sweepHero} from './hunt-collision';
 import {awardHuntKill,awardStageClear,DEFAULT_HUNT_BALANCE,heroStats,newHuntProgress,type HuntBalance,type HuntProgress} from './hunt-progression';
 export {SKILL_COOLDOWNS,WORLD_WIDTH} from './combat-rules';
-type Motion={kind:'attack'|'skill'|'rush'|'dodge';start:number;duration:number;target:number;
+type Motion={kind:'attack'|'skill'|'rush'|'dodge';start:number;duration:number;target:number;skillIndex?:number;
  segments:{animation:string;duration:number}[];phase:number;animationRate?:number;hits:{at:number;damage:number;range:number;done:boolean;heal?:boolean}[];
  destination?:number;speed?:number;origin?:number};
 const clampX=(x:number)=>Math.max(65,Math.min(WORLD_WIDTH-65,x));
@@ -26,6 +27,7 @@ export class HuntEngine {
  private escort:{x:number;hp:number;maxHP:number}|null=null;private failure='';
  private casts=new Map<number,Cast>();private ready=new Map<number,Record<number,number>>();private uses=new Map<number,Record<number,number>>();
  impactors:Impactor[]=[];private impactorId=0;heroShield=0;heroStunUntil=0;heroInvincibleUntil=0;
+ vfx:HuntVfxEvent[]=[];private vfxId=0;
  get stage():LabyrinthView{const id=stageDefinition(this.stageIndex).id;const d=stageDefinition(this.stageIndex);return {id,chapter:Math.floor(id/100),section:id%100,phase:this.stagePhase,remaining:this.enemies.filter(e=>e.hp>0).length,total:this.sceneFlow?this.sceneFlow.layout.waves.reduce((n,w)=>n+w.spawns.length*(w.repeat?w.count:1),0):this.stagePhase==='normal'?6:1,nextIn:Math.max(0,this.nextStageAt-this.elapsed),
  objective:this.sceneFlow?.nextAreaX!==undefined&&!this.enemies.some(e=>e.hp>0)?'전방 구역으로 이동':({1:'모든 적 처치',2:'목표 수 처치',3:'보스 처치',4:'출구 도달',5:'오브젝트 완료',6:'장치 작동',7:'동료 보호 및 처치'} as Record<number,string>)[d.victory]??'전투',goal:d.goal||this.objectiveObjects.length||(this.sceneFlow?this.sceneFlow.layout.waves.reduce((n,w)=>n+w.spawns.length*(w.repeat?w.count:1),0):7),done:[5,6].includes(d.victory)?this.objectiveObjects.filter(o=>o.done).length:this.stageKills,remainingTime:d.timeLimit>0?Math.max(0,d.timeLimit-(this.elapsed-this.stageStarted)):null,failure:this.failure,objects:this.objectiveObjects.map(o=>({...o})),exitX:d.victory===4?WORLD_WIDTH-160:null,escort:this.escort?{...this.escort}:null};}
  private get targetRange(){return this.range+Math.max(0,(this.target.radius??12)-12);}
@@ -75,6 +77,7 @@ export class HuntEngine {
   if(this.campaign){if(enemyCount!==7)throw Error("Campaign requires seven slots");this.stageIndex=this.progress.labyrinthStage;if(this.progress.labyrinthCompleted)this.stagePhase="complete";this.loadStage();}
  }
  private loadStage(){
+  this.vfx=[];
   this.stageStarted=this.elapsed;this.stageKills=0;this.spawnCounter=0;this.failure='';this.casts.clear();this.ready.clear();this.uses.clear();this.impactors=[];this.heroShield=0;this.heroStunUntil=0;this.heroInvincibleUntil=0;
   const stage=stageDefinition(this.stageIndex);this.objectiveObjects=(stage.objectIds??[]).map((id,i,a)=>({id,x:1400+i*3000/Math.max(1,a.length-1),done:false}));this.escort=stage.victory===7?{x:500,hp:this.maxHP,maxHP:this.maxHP}:null;this.x=620;this.targetSlot=0;this.motion=null;this.clearInput();this.resetCombo();this.pose('stay1',true);
   this.sceneInfo=this.useSceneFlow?sceneBinding(stage.id):null;this.sceneFlow=this.sceneInfo?new SceneFlow(this.sceneInfo.layout):null;
@@ -304,6 +307,10 @@ export class HuntEngine {
   const age=this.elapsed-m.start;
   for(const hit of m.hits){
    if(hit.done||age+1e-8<hit.at)continue;hit.done=true;
+   if(m.kind==='skill'&&m.skillIndex!==undefined){
+    this.vfx.push({id:++this.vfxId,skill:m.skillIndex,x:this.x+(m.skillIndex===5?0:this.facing*65),facing:this.facing,born:this.elapsed,expires:this.elapsed+2});
+    this.vfx=this.vfx.slice(-24);
+   }
    if(hit.heal){this.hp=Math.min(this.maxHP,this.hp+25*(1+((this.progress.skillLevels[5]??1)-1)*.05));continue;}
    if(m.kind==='skill'){for(const enemy of this.enemies)if(enemy.hp>0&&Math.abs(enemy.x-this.x)<=hit.range)this.hurt(hit.damage,true,enemy);continue;}
    if(m.target===this.enemySerial&&this.enemyHP>0&&Math.abs(this.enemyX-this.x)<=hit.range
@@ -329,6 +336,7 @@ export class HuntEngine {
   dt=Math.max(0,Math.min(Number.isFinite(dt)?dt:0,.05));
   direction=Number.isFinite(direction)?Math.max(-1,Math.min(1,direction)):0;
   this.elapsed+=dt;this.cooldowns=this.cooldowns.map(t=>Math.max(0,t-dt));
+  this.vfx=this.vfx.filter(e=>e.expires>this.elapsed);
   if(this.hp<=0)return;
   this.sceneStep=dt;
   if(this.campaign){this.advanceStage();if(this.stagePhase==="cleared"||this.stagePhase==="complete"||this.hp<=0)return;}
@@ -423,7 +431,7 @@ export class HuntEngine {
    const names=skill===4?['skill5','skill5_loop','skill5_end']:['skill1','skill2','skill3','skill4','skill5','rest1'].slice(skill,skill+1);
    const segments=names.map(animation=>({animation,duration:motions.durations[animation as keyof typeof motions.durations]/this.attackTempo}));
    const duration=segments.reduce((n,s)=>n+s.duration,0);this.attackReady=this.elapsed+duration;
-   this.start({kind:'skill',start:this.elapsed,duration,target:this.enemySerial,segments,phase:0,
+   this.start({kind:'skill',skillIndex:skill,start:this.elapsed,duration,target:this.enemySerial,segments,phase:0,
     hits:[{at:duration*.55,damage:40*(1+((this.progress.skillLevels[skill]??1)-1)*.05),range:330,done:false,heal:skill===5}]});
   }
   return true;

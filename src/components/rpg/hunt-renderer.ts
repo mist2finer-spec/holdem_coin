@@ -15,6 +15,7 @@ import {CombatSpriteClock,COMBAT_SPRITE_SCALE,spritePlacement} from './combat-sp
 import {huntViewport,HUNT_PORTRAIT_ZOOM,HUNT_MONSTER_RENDER_SCALE,HUNT_ACTOR_RENDER_GAIN,HUNT_BACKGROUND_GAIN,HUNT_GROUND_RATIO} from './hunt-layout';
 import {HUNT_VISUALS} from './hunt-collision';
 import {attachmentBottom,groundSkeleton} from './hunt-ground';
+import {SKILL_VFX,vfxFrame,vfxPlacement,type HuntVfxEvent} from './hunt-vfx';
 const base = '/rpg/';
 const image = (url: string, signal: AbortSignal) => new Promise<HTMLImageElement>((resolve, reject) => {
  const img = new Image();
@@ -64,6 +65,9 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
  }));
  let heroWeapon:WeaponType|undefined,heroKey='',heroTime=0;
  const spriteClock=new CombatSpriteClock();
+ // Optional, bounded sprite bakes: a failed VFX request must never prevent entering combat.
+ const vfxSheets:Partial<Record<string,HTMLImageElement>>={};
+ await Promise.all(SKILL_VFX.map(async id=>{try{vfxSheets[id]=await image(base+'vfx/runtime/'+id+'.webp',signal);}catch(error){if(signal.aborted)throw error;canvas.dataset.vfxAssetError=id;}}));
  // Each slime owns its pose/animation state, while sharing immutable skeleton data and atlas textures.
  const enemies=Array.from({length:HUNT_STAGE.maxAlive},()=>{
   const skeleton=new Skeleton(enemy.skeleton.data);
@@ -97,7 +101,7 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
   a.state.update(dt*speed); a.state.apply(a.skeleton); a.skeleton.update(dt); a.skeleton.updateWorldTransform(Physics.update); groundSkeleton(a.skeleton,y,a.groundSlots); if(renderer) renderer.drawSkeleton(a.skeleton, true); else fallback!.draw(a.skeleton);
  };
  return {
-  draw(game: HuntEngine, dt: number, view?:{weapon:WeaponType;motion:{startedAt:number;duration:number;hitAt:number};stage?:LabyrinthView;elapsed?:number;impactors?:{id:number;x:number;width:number;speed:number;targetX:number;expires:number}[]}) {
+  draw(game: HuntEngine, dt: number, view?:{weapon:WeaponType;motion:{startedAt:number;duration:number;hitAt:number};vfx?:HuntVfxEvent[];stage?:LabyrinthView;elapsed?:number;impactors?:{id:number;x:number;width:number;speed:number;targetX:number;expires:number}[]}) {
    const w = canvas.clientWidth, h = canvas.clientHeight, dpr = Math.min(Math.max(devicePixelRatio || 1, renderer ? 1 : 2), 2);
    if (canvas.width !== Math.round(w*dpr) || canvas.height !== Math.round(h*dpr)) {canvas.width = Math.round(w*dpr); canvas.height = Math.round(h*dpr);}
    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, w, h);
@@ -179,6 +183,15 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
    const bottoms=enemies.slice(0,game.enemies.length).map(e=>attachmentBottom(e.skeleton,e.groundSlots));
    canvas.dataset.groundError=String(Math.max(0,...bottoms.filter((b):b is number=>b!==null).map(b=>Math.abs(b-floor))));
    canvas.dataset.slimeScale=String(HUNT_VISUALS.slimeScale);
+   let visibleFx=0;
+   for(const event of (view?.vfx??game.vfx).slice(-24)){
+    const frame=vfxFrame(event,game.elapsed),sheet=vfxSheets[SKILL_VFX[event.skill]];
+    if(frame===null||!sheet)continue;
+    const p=vfxPlacement(event,floor,zoom,screenX);if(p.x+p.width<0||p.x>w)continue;
+    ctx.save();ctx.imageSmoothingEnabled=true;ctx.translate(p.x+p.width/2,p.y);ctx.scale(event.facing<0?-1:1,1);
+    ctx.drawImage(sheet,(frame%8)*256,Math.floor(frame/8)*256,256,256,-p.width/2,0,p.width,p.height);ctx.restore();visibleFx++;
+   }
+   canvas.dataset.skillVfx=String(visibleFx);
    // UI overlays are painted after the WebGL layer so health and damage remain visible.
    for(const mob of game.enemies){
     const x=screenX(mob.x),bar=Math.max(20,36*zoom),y=floor-30*zoom;
