@@ -1,4 +1,5 @@
 'use client';
+import {GemCorePanel} from './GemCorePanel';
 import {HuntGrowth} from './HuntGrowth';
 import {HuntArmory} from './HuntArmory';
 import {Shield} from 'lucide-react';
@@ -16,7 +17,7 @@ type Queued=Partial<HuntInput>&{action?:HuntAction};
 export function HuntPrototype({onExit,character='hong',mapId='forest'}:{onExit?:()=>void;character?:string;mapId?:HuntMapId}){
  const router=useRouter();
  const canvas=useRef<HTMLCanvasElement>(null),keys=useRef(new Set<string>()),direction=useRef(0),held=useRef(false),auto=useRef(false),queue=useRef<Queued[]>([]);
- const [view,setView]=useState<BattleView|null>(null),[status,setStatus]=useState('loading'),[error,setError]=useState(''),[notice,setNotice]=useState(''),[menu,setMenu]=useState(false),[dialog,setDialog]=useState<'growth'|'bag'|'quest'|'weapons'|null>(null),[stick,setStick]=useState(0);
+ const [view,setView]=useState<BattleView|null>(null),[status,setStatus]=useState('loading'),[error,setError]=useState(''),[notice,setNotice]=useState(''),[menu,setMenu]=useState(false),[dialog,setDialog]=useState<'growth'|'bag'|'quest'|'weapons'|'build'|null>(null),[stick,setStick]=useState(0);
  const panel=useRef<HTMLDivElement>(null),openPanel=useRef(false);
  openPanel.current=dialog!==null;
  useEffect(()=>{
@@ -102,10 +103,12 @@ export function HuntPrototype({onExit,character='hong',mapId='forest'}:{onExit?:
    <div className="hunt-stage-caption"><span>✦ 미궁 탐험</span></div>
   </section>
   <div className="hunt-lower">
-   {dialog&&<div ref={panel} className="hunt-window" role="dialog" aria-label={{growth:'캐릭터 성장',weapons:'무기',bag:'가방',quest:'사냥 의뢰'}[dialog]} onKeyDown={e=>{if(e.key==='Escape'){e.stopPropagation();setDialog(null);}}}>
+   {dialog&&<div ref={panel} className={`hunt-window ${dialog==='build'?'gem-window':''}`} role="dialog" aria-label={{growth:'캐릭터 성장',weapons:'무기',bag:'가방',quest:'사냥 의뢰',build:'젬 · 코어'}[dialog]} onKeyDown={e=>{if(e.key==='Escape'){e.stopPropagation();setDialog(null);}}}>
     {dialog==='weapons'&&<HuntArmory view={view} active={active} onCommand={action=>enqueue({action})} onClose={()=>setDialog(null)}/>}
+    {dialog==='growth'&&<button className="gem-open" onClick={()=>setDialog('build')}>◆ 젬 링크 · 옴브라 코어</button>}
+    {dialog==='build'&&view&&<GemCorePanel view={view.build} error={notice} onCommand={action=>enqueue({action})} onClose={()=>setDialog('growth')}/>}
     {dialog==='growth'&&<HuntGrowth view={view} active={active} onCommand={action=>enqueue({action})} onClose={()=>setDialog(null)}/>}
-  {dialog&&dialog!=='weapons'&&dialog!=='growth'&&<section className="hunt-window-content" aria-labelledby="hunt-growth-title"><h2 id="hunt-growth-title">{dialog==='bag'?'가방 · 회복 물약':'사냥 의뢰'}</h2>
+  {dialog&&dialog!=='weapons'&&dialog!=='growth'&&dialog!=='build'&&<section className="hunt-window-content" aria-labelledby="hunt-growth-title"><h2 id="hunt-growth-title">{dialog==='bag'?'가방 · 회복 물약':'사냥 의뢰'}</h2>
    {dialog==='bag'&&<><p>골드 {view?.progress.gold??0} · 물약 {view?.progress.potions??0}개</p><p>회복 물약: 최대 HP의 40% 회복 · 재사용 2초</p><button disabled={!active||!view?.potionReady} onClick={()=>enqueue({action:'potion'})}>물약 사용</button><button disabled={!active||!view||view.progress.gold<POTION_PRICE||view.progress.potions>=99} onClick={()=>enqueue({action:'buy-potion'})}>물약 구매 · {POTION_PRICE} 골드</button><p>훈련 무기 +{(view?.progress.weaponLevel??1)-1} · 방어구 +{(view?.progress.armorLevel??1)-1}</p></>}
    {dialog==='quest'&&<>{quest?<><p>{quest.name}</p><p>슬라임 처치 {Math.min(view?.progress.kills??0,quest.kills)} / {quest.kills}</p><p>보상: {quest.gold} 골드 · {quest.soulGem} 영혼석</p><button disabled={!view||(view.progress.kills<quest.kills)} onClick={()=>enqueue({action:'quest'})}>의뢰 보상 받기</button></>:<p>모든 사냥 의뢰를 완료했습니다.</p>}</>}
    <button autoFocus onClick={()=>setDialog(null)}>닫기</button></section>}

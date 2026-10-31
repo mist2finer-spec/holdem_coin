@@ -1,3 +1,4 @@
+import {newBuild,validateBuild} from '../components/rpg/hunt-build';
 import {DEVELOPMENT,ABILITY_ORDER} from '../components/rpg/hunt-development';
 import {WEAPON_TYPES,isWeaponType} from '../components/rpg/hunt-weapons';
 import {DatabaseSync} from 'node:sqlite';
@@ -16,6 +17,8 @@ export class RpgStore{
   const progress=JSON.parse(row.progress) as HuntProgress;
   // Additive migration
   const defaults=newHuntProgress();
+  if(progress.build===undefined)progress.build=newBuild();
+  validateBuild(progress.build,progress.level);
   for(const k of ['labyrinthStage','labyrinthCompleted','combatArts','traits','masteryLevel','masteryEssence','willLevel','soulOrb','skillLevels','skillCopies','skillEnabled'] as const)if(progress[k]===undefined)(progress as any)[k]=defaults[k];
   const record=(x:unknown)=>!!x&&typeof x==='object'&&!Array.isArray(x);
   if(!record(progress.combatArts)||Object.entries(progress.combatArts).some(([id,n])=>!DEVELOPMENT.arts.some(a=>a.id===Number(id)&&a.id!==101&&a.id!==102&&Number.isInteger(n)&&n>=0&&n<=a.max)))throw Error('Invalid combat arts');
@@ -33,7 +36,7 @@ export class RpgStore{
   if(progress.weaponLevels===undefined)progress.weaponLevels={unarmed:1,sword:1,axe:progress.weaponLevel,dual:1,spear:1};
   if(progress.weaponLevels.unarmed===undefined)progress.weaponLevels.unarmed=1;
   if(!isWeaponType(progress.weaponType)||!progress.weaponLevels||WEAPON_TYPES.some(w=>!Number.isSafeInteger(progress.weaponLevels[w])||progress.weaponLevels[w]<1||progress.weaponLevels[w]>1e12)||progress.weaponLevels[progress.weaponType]!==progress.weaponLevel)throw Error('Invalid saved weapons');
-  for(const value of Object.entries(progress).filter(([key])=>!['weaponType','weaponLevels','combatArts','traits','skillLevels','skillCopies','skillEnabled'].includes(key)))if(typeof value[1]!=='number'||!Number.isSafeInteger(value[1])||value[1]<0||value[1]>(value[0]==='xp'?Number.MAX_SAFE_INTEGER:1e12))throw Error('Invalid saved progress');
+  for(const value of Object.entries(progress).filter(([key])=>!['build','weaponType','weaponLevels','combatArts','traits','skillLevels','skillCopies','skillEnabled'].includes(key)))if(typeof value[1]!=='number'||!Number.isSafeInteger(value[1])||value[1]<0||value[1]>(value[0]==='xp'?Number.MAX_SAFE_INTEGER:1e12))throw Error('Invalid saved progress');
   if(progress.labyrinthStage>=6000||progress.labyrinthCompleted>1)throw Error('Invalid labyrinth progress');
   if(!progress.level||!progress.weaponLevel||!progress.armorLevel)throw Error('Invalid saved levels');
   return {progress,revision:row.revision};

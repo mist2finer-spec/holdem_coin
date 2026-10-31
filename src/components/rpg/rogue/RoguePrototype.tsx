@@ -1,5 +1,7 @@
 'use client';
 import {useEffect,useRef,useState} from 'react';
+import {GemCorePanel} from '../GemCorePanel';
+import type {BuildAction} from '../hunt-build';
 import type {RogueView} from '../../../lib/rpg-rogue-service';
 import type {RogueInput} from './engine';
 import type {RogueMap} from './map';
@@ -8,18 +10,19 @@ import '../hunt.css';
 import './rogue.css';
 const skills=[['대지 균열','SkillIcon_GroundRift'],['암흑 구체','SkillIcon_DarkHole'],['서리 폭풍','SkillIcon_Blizzard3'],['빛의 심판','SkillIcon_HolyWrath2'],['회오리','SkillIcon_Whirlwind'],['회복','SkillIcon_VitalRecovery']];
 export function RoguePrototype({onExit}:{onExit:()=>void}){
- const canvas=useRef<HTMLCanvasElement>(null),keys=useRef(new Set<string>()),stick=useRef({x:0,y:0}),automatic=useRef(true),queue=useRef<Partial<RogueInput>[]>([]);
- const [view,setView]=useState<RogueView|null>(null),[map,setMap]=useState<RogueMap|null>(null),[state,setState]=useState('loading'),[error,setError]=useState(''),[run,setRun]=useState(0),[help,setHelp]=useState(false),[knob,setKnob]=useState({x:0,y:0}),[panel,setPanel]=useState<'weapons'|'growth'|'bag'|'quest'|null>(null);
+ const canvas=useRef<HTMLCanvasElement>(null),keys=useRef(new Set<string>()),stick=useRef({x:0,y:0}),automatic=useRef(true),queue=useRef<(Partial<RogueInput>&{action?:BuildAction})[]>([]);
+ const [view,setView]=useState<RogueView|null>(null),[map,setMap]=useState<RogueMap|null>(null),[state,setState]=useState('loading'),[error,setError]=useState(''),[notice,setNotice]=useState(''),[run,setRun]=useState(0),[help,setHelp]=useState(false),[knob,setKnob]=useState({x:0,y:0}),[panel,setPanel]=useState<'weapons'|'growth'|'bag'|'quest'|null>(null);
  const uiBlocked=useRef(false);uiBlocked.current=help||panel!==null;
  const enqueue=(command:Partial<RogueInput>)=>{if(queue.current.length<6)queue.current.push(command);};
  useEffect(()=>{
   const controller=new AbortController();let renderer:Awaited<ReturnType<typeof import('./renderer').createRogueRenderer>>|undefined,frame=0,timer:ReturnType<typeof setInterval>|undefined,inFlight=false,target:RogueView|null=null,last=0,sequence=0,id='',retry:Record<string,unknown>|null=null;
   const reset=()=>{keys.current.clear();stick.current={x:0,y:0};queue.current=[];setKnob({x:0,y:0});};reset();automatic.current=true;setState('loading');setError('');setView(null);setMap(null);
-  const request=async(body:Record<string,unknown>)=>{const r=await fetch('/api/rpg/rogue',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),signal:controller.signal});const data=await r.json();if(!r.ok)throw Error(data.error||'던전 연결 오류');return data as RogueView;};
+  const request=async(body:Record<string,unknown>)=>{const r=await fetch('/api/rpg/rogue',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),signal:controller.signal});const data=await r.json();if(!r.ok){const e=new Error(data.error||'던전 연결 오류') as Error&{terminal?:boolean};e.terminal=r.status<500;throw e;}return data as RogueView;};
   const apply=(v:RogueView)=>{target=v;sequence=v.sequence;id=v.id;setView(v);};
   const pump=async()=>{if(inFlight||!id||controller.signal.aborted||target&&target.status!=='playing')return;inFlight=true;const k=keys.current,x=(k.has('d')||k.has('ArrowRight')?1:0)-(k.has('a')||k.has('ArrowLeft')?1:0),y=0;
-   const body=retry||{action:'tick',id,sequence:sequence+1,input:{x:document.hidden?0:x||stick.current.x,y:0,auto:!document.hidden&&automatic.current,attack:!document.hidden&&k.has(' '),...queue.current.shift()}};
-   try{const v=await request(body);if(controller.signal.aborted)return;retry=null;apply(v);setError('');}catch(e){if(!controller.signal.aborted){retry=body;setError(e instanceof Error?e.message:'연결 재시도 중');}}finally{inFlight=false;}
+   const command=retry?{}:queue.current.shift()??{};
+   const body=retry||{action:command.action??'tick',id,sequence:sequence+1,input:{x:document.hidden?0:x||stick.current.x,y:0,auto:!document.hidden&&!uiBlocked.current&&automatic.current,attack:!document.hidden&&k.has(' '),...command}};
+   try{const v=await request(body);if(controller.signal.aborted)return;retry=null;apply(v);setError('');if(body.action!=='tick')setNotice('');}catch(e){if(!controller.signal.aborted){const terminal=(e as Error&{terminal?:boolean}).terminal;retry=terminal?null:body;const message=e instanceof Error?e.message:'연결 재시도 중';if(terminal&&/세션|다시 입장|다른 창/.test(message)){id='';setState('error');setError(message);}else if(terminal&&body.action!=='tick')setNotice(message);else setError(message);}}finally{inFlight=false;}
   };
   const down=(e:KeyboardEvent)=>{if(uiBlocked.current)return;if(e.target instanceof HTMLElement&&/INPUT|SELECT|TEXTAREA/.test(e.target.tagName))return;const key=e.key.toLowerCase().startsWith('arrow')?e.key:e.key.toLowerCase();if(['w','a','s','d','ArrowUp','ArrowLeft','ArrowDown','ArrowRight',' ','Shift','shift','j','q','e','1','2','3','4','5','6'].includes(key)){e.preventDefault();keys.current.add(key);}if(e.repeat)return;if(key==='j')enqueue({jump:true});else if(key==='shift')enqueue({slide:true});else if(key==='q'||key==='e')enqueue({dodge:true,x:key==='q'?-1:1,y:0});else if(/^[1-6]$/.test(key))enqueue({skill:Number(key)-1});};
   const up=(e:KeyboardEvent)=>keys.current.delete(e.key.toLowerCase().startsWith('arrow')?e.key:e.key.toLowerCase());
@@ -65,14 +68,14 @@ export function RoguePrototype({onExit}:{onExit:()=>void}){
    </div>
    {error&&state==='ready'&&<p className="rogue-error" role="status">{error}</p>}
   </section>
-  {panel&&<section className="hunt-window rogue-panel" role="dialog" aria-modal="true" aria-label={{weapons:'무기',growth:'성장 · 장비',bag:'가방',quest:'사냥 의뢰'}[panel]}><h2>{{weapons:'무기',growth:'성장 · 장비',bag:'가방',quest:'사냥 의뢰'}[panel]}</h2>
+  {panel&&<section className="hunt-window rogue-panel" role="dialog" aria-modal="true" aria-label={{weapons:'무기',growth:'성장 · 장비',bag:'가방',quest:'사냥 의뢰'}[panel]}>{panel!=='growth'&&<h2>{{weapons:'무기',growth:'성장 · 장비',bag:'가방',quest:'사냥 의뢰'}[panel]}</h2>}
    {panel==='weapons'&&<><p>현재 로그라이크 테스트 무기: 홍의 도끼</p><p>원본 5타 콤보와 점프·슬라이딩 모션을 사용합니다.</p></>}
-   {panel==='growth'&&<><p>테스트 HP 10,000 · 일반 공격 50</p><p>기존 성장·장비 저장은 유지됩니다. 이 테스트 런에는 영구 성장과 강화 구매를 연결하지 않았습니다.</p></>}
+   {panel==='growth'&&view&&<GemCorePanel view={view.build} error={notice||error} onCommand={action=>{if(queue.current.length<6)queue.current.push({action});}} onClose={()=>setPanel(null)}/>}
    {panel==='bag'&&<><p>이번 런 골드: {view?.gold??0}</p><p>던전 시드: {map?.seed??'—'}</p><p>몬스터 처치: {view?.kills??0}</p><p>기존 계정 재화와 분리된 테스트 기록입니다.</p></>}
    {panel==='quest'&&<><p>10개 전투 구역 정리 후 탈출</p><p>현재 정리: {view?.cleared.length??0}/10 · 현재 구역 남은 적: {remaining}</p><p>AUTO는 1~10구역 순서로 사냥하며 열린 출구를 점프·슬라이딩으로 통과합니다.</p></>}
-   <button autoFocus onClick={()=>setPanel(null)}>닫기</button>
+   {panel!=='growth'&&<button autoFocus onClick={()=>setPanel(null)}>닫기</button>}
   </section>}
   </div>
-  <footer className="rogue-footer hunt-footer"><button aria-pressed={panel==='weapons'} onClick={()=>setPanel(panel==='weapons'?null:'weapons')}>무기</button><button aria-pressed={panel==='growth'} onClick={()=>setPanel(panel==='growth'?null:'growth')}>성장 · 장비</button><button aria-pressed={panel==='bag'} onClick={()=>setPanel(panel==='bag'?null:'bag')}>가방</button><button aria-pressed={!panel} onClick={()=>setPanel(null)}>✦ 탐험</button><button aria-pressed={panel==='quest'} onClick={()=>setPanel(panel==='quest'?null:'quest')}>사냥 의뢰</button></footer>
+  <footer className="rogue-footer hunt-footer"><button aria-pressed={panel==='weapons'} onClick={()=>setPanel(panel==='weapons'?null:'weapons')}>무기</button><button aria-pressed={panel==='growth'} onClick={()=>setPanel(panel==='growth'?null:'growth')}>젬 · 코어</button><button aria-pressed={panel==='bag'} onClick={()=>setPanel(panel==='bag'?null:'bag')}>가방</button><button aria-pressed={!panel} onClick={()=>setPanel(null)}>✦ 탐험</button><button aria-pressed={panel==='quest'} onClick={()=>setPanel(panel==='quest'?null:'quest')}>사냥 의뢰</button></footer>
  </main>;
 }

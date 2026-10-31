@@ -1,3 +1,4 @@
+import {compileSkill,passiveBuild} from './hunt-build';
 import {HUNT_JUMP,type HuntJump} from './hunt-jump';
 import {SceneFlow,sceneBinding,type SceneSpawn} from './hunt-scene-flow';
 import type {HuntVfxEvent} from './hunt-vfx';
@@ -240,7 +241,7 @@ export class HuntEngine {
        if(this.heroHitUntil>this.elapsed)continue;
        this.rng=(Math.imul(this.rng,1664525)+1013904223)>>>0;if(this.rng/4294967296>=accuracy(source.focus??0,this.stats.focus))continue;
        let damage=Math.max(1,Math.round(classDamage((source.damage??1)*effect.value/100*(1+relativeStat(source.valor??0,this.stats.valor,'Valor')),this.stats.abilities,!!source.boss,true)*this.stats.incomingDamageScale));
-       const settlement=settleDamage({hp:this.hp,maxHP:this.maxHP,shield:this.heroShield},damage);this.heroShield=settlement.shield;
+       const settlement=settleDamage({hp:this.hp,maxHP:this.maxHP,shield:this.heroShield},damage*(1-passiveBuild(this.progress.build).reduction));this.heroShield=settlement.shield;
        this.lastHeroDamage=settlement.hpDamage;this.hp=settlement.hp;this.heroHitUntil=this.elapsed+.2;
        if(this.hp===0){this.failStage('전투 불능');return;}
       }else if([104,105,107,111].includes(effect.type)&&effect.value>0){this.landJump();this.heroStunUntil=Math.max(this.heroStunUntil,this.elapsed+effectDuration(effect.value,source.tenacity??0,this.stats.tenacity));this.motion=null;this.clearInput();this.pose('stay1');}
@@ -266,7 +267,7 @@ export class HuntEngine {
       if(this.parryUntil>=this.elapsed){enemy.nextAttack=this.elapsed+HUNT_MONSTER_ATTACK.parriedRecovery;continue;}
       if(this.heroHitUntil>this.elapsed)continue;
       const damage=Math.max(1,Math.round(classDamage(enemy.damage??HUNT_MONSTER_ATTACK.damage,this.stats.abilities,!!enemy.boss,true)*this.stats.incomingDamageScale));
-      const settlement=settleDamage({hp:this.hp,maxHP:this.maxHP,shield:this.heroShield},damage);this.heroShield=settlement.shield;
+      const settlement=settleDamage({hp:this.hp,maxHP:this.maxHP,shield:this.heroShield},damage*(1-passiveBuild(this.progress.build).reduction));this.heroShield=settlement.shield;
       this.lastHeroDamage=settlement.hpDamage;this.hp=settlement.hp;this.heroHitUntil=this.elapsed+.2;
       if(this.hp===0){this.deadAt=this.elapsed;this.motion=null;this.clearInput();this.resetCombo();this.auto=false;this.pose('die1',true);return;}
      }
@@ -314,12 +315,12 @@ export class HuntEngine {
     this.vfx.push({id:++this.vfxId,skill:m.skillIndex,x:this.x+(m.skillIndex===5?0:this.facing*65),facing:this.facing,born:this.elapsed,expires:this.elapsed+2});
     this.vfx=this.vfx.slice(-24);
    }
-   if(hit.heal){this.hp=Math.min(this.maxHP,this.hp+25*(1+((this.progress.skillLevels[5]??1)-1)*.05));continue;}
+   if(hit.heal){this.hp=Math.min(this.maxHP,this.hp+hit.damage);continue;}
    if(m.kind==='skill'){for(const enemy of this.enemies)if(enemy.hp>0&&Math.abs(enemy.x-this.x)<=hit.range)this.hurt(hit.damage,true,enemy);continue;}
    if(m.target===this.enemySerial&&this.enemyHP>0&&Math.abs(this.enemyX-this.x)<=hit.range
     &&(this.enemyX-this.x)*this.facing>=0
     &&!this.enemies.some(e=>e.hp>0&&e.serial!==m.target&&(e.x-this.x)*this.facing>0
-     &&Math.abs(e.x-this.x)<Math.abs(this.enemyX-this.x)))this.hurt(hit.damage,false);
+     &&Math.abs(e.x-this.x)<Math.abs(this.enemyX-this.x)))this.hurt(hit.damage*(1+passiveBuild(this.progress.build).damage),false);
   }
   let end=0,phase=m.segments.length-1;
   for(let i=0;i<m.segments.length;i++){end+=m.segments[i].duration;if(age<end-1e-8){phase=i;break;}}
@@ -431,12 +432,13 @@ export class HuntEngine {
     segments:[{animation:stage.animation,duration}],phase:0,
     hits:[{at:stage.hitAt/this.attackTempo,damage:stage.damage,range:this.targetRange,done:false}]});
   }else{
-   this.resetCombo();this.cooldowns[skill]=SKILL_COOLDOWNS[skill];
+   const build=compileSkill(this.progress.build,skill);
+   this.resetCombo();this.cooldowns[skill]=SKILL_COOLDOWNS[skill]*build.cooldown;
    const names=skill===4?['skill5','skill5_loop','skill5_end']:['skill1','skill2','skill3','skill4','skill5','rest1'].slice(skill,skill+1);
    const segments=names.map(animation=>({animation,duration:motions.durations[animation as keyof typeof motions.durations]/this.attackTempo}));
-   const duration=segments.reduce((n,s)=>n+s.duration,0);this.attackReady=this.elapsed+duration;
+   const baseDuration=segments.reduce((n,s)=>n+s.duration,0),duration=baseDuration+build.repeats*build.repeatDelay;segments[segments.length-1].duration+=build.repeats*build.repeatDelay;this.attackReady=this.elapsed+duration;
    this.start({kind:'skill',skillIndex:skill,start:this.elapsed,duration,target:this.enemySerial,segments,phase:0,
-    hits:[{at:duration*.55,damage:40*(1+((this.progress.skillLevels[skill]??1)-1)*.05),range:330,done:false,heal:skill===5}]});
+    hits:Array.from({length:1+build.repeats},(_,i)=>({at:baseDuration*.55+i*build.repeatDelay,damage:(skill===5?25:40)*(1+((this.progress.skillLevels[skill]??1)-1)*.05)*build.effect,range:330*build.range,done:false,heal:skill===5}))});
   }
   return true;
  }
