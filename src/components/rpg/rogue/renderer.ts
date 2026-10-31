@@ -1,7 +1,8 @@
 import {RogueVisualClock,projectRogueHero} from './presentation';
 import {ROGUE_PACE} from './pace';
 import type {RogueInput} from './engine';
-import {AnimationState,AnimationStateData,AtlasAttachmentLoader,CanvasTexture,Physics,Skeleton,SkeletonJson,SkeletonRenderer,TextureAtlas,MeshAttachment,RegionAttachment} from '@esotericsoftware/spine-canvas';
+import {CanvasTexture,SkeletonRenderer as CanvasRenderer} from '@esotericsoftware/spine-canvas';
+import {AnimationState,AnimationStateData,AtlasAttachmentLoader,GLTexture,Physics,SceneRenderer,Skeleton,SkeletonJson,TextureAtlas,MeshAttachment,RegionAttachment} from '@esotericsoftware/spine-webgl';
 import {FOV} from 'rot-js';
 import {LABYRINTH} from '../hunt-labyrinth';
 import {groundSkeleton} from '../hunt-ground';
@@ -14,10 +15,10 @@ import type {RogueSnapshot,RogueMob} from './engine';
 export const ROGUE_VISUAL={heroHeight:88,smallHeight:40,bossHeight:94,wallHeight:52,viewportWidth:640,depth:.72} as const;
 const root='/rpg/';
 const loadImage=(url:string,signal:AbortSignal)=>new Promise<HTMLImageElement>((resolve,reject)=>{const im=new Image();const abort=()=>{im.src='';reject(new DOMException('Aborted','AbortError'));};signal.addEventListener('abort',abort,{once:true});im.onload=()=>{signal.removeEventListener('abort',abort);resolve(im);};im.onerror=()=>{signal.removeEventListener('abort',abort);reject(Error('에셋 로딩 실패: '+url));};im.src=url;});
-async function rig(path:string,signal:AbortSignal,feet:readonly string[]){
+async function rig(path:string,signal:AbortSignal,feet:readonly string[],gl:WebGLRenderingContext|null){
  const [data,text]=await Promise.all([fetch(root+path+'.json',{signal}).then(r=>{if(!r.ok)throw Error(path);return r.json();}),fetch(root+path+'.atlas',{signal}).then(r=>{if(!r.ok)throw Error(path);return r.text();})]);
  const atlas=new TextureAtlas(text),folder=path.slice(0,path.lastIndexOf('/')+1);
- for(const page of atlas.pages)page.setTexture(new CanvasTexture(await loadImage(root+folder+page.name,signal)));
+ for(const page of atlas.pages){const image=await loadImage(root+folder+page.name,signal);page.setTexture(gl?new GLTexture(gl,image,true):new CanvasTexture(image));}
  const skeletonData=new SkeletonJson(new AtlasAttachmentLoader(atlas)).readSkeletonData(data),s=new Skeleton(skeletonData);if(skeletonData.skins.length)s.setSkin(skeletonData.skins[0]);
  const state=new AnimationState(new AnimationStateData(skeletonData));state.data.defaultMix=.06;
  const clips=skeletonData.animations.map(a=>a.name),idle=clips.includes('stay1')?'stay1':clips[0];state.setAnimation(0,idle,true);state.apply(s);s.updateWorldTransform(Physics.pose);
@@ -28,19 +29,29 @@ async function rig(path:string,signal:AbortSignal,feet:readonly string[]){
  return {atlas,s,state,clips,height,feet,clone(){const cs=new Skeleton(skeletonData);if(skeletonData.skins.length)cs.setSkin(skeletonData.skins[0]);return {s:cs,state:new AnimationState(new AnimationStateData(skeletonData)),key:''};}};
 }
 export async function createRogueRenderer(canvas:HTMLCanvasElement,map:RogueMap,signal:AbortSignal){
- Skeleton.yDown=true;const ctx=canvas.getContext('2d')!,skeletonRenderer=new SkeletonRenderer(ctx);skeletonRenderer.triangleRendering=true;
+ if(signal.aborted)throw new DOMException('Aborted','AbortError');
+ Skeleton.yDown=true;const ctx=canvas.getContext('2d')!,layer=document.createElement('canvas');
+ let gl:WebGLRenderingContext|null=null,renderer:SceneRenderer|null=null;
+ try{gl=layer.getContext('webgl',{alpha:true,premultipliedAlpha:true,antialias:true});if(gl)renderer=new SceneRenderer(layer,gl);}catch{gl=null;}
+ const fallback=renderer?null:new CanvasRenderer(ctx);if(fallback)fallback.triangleRendering=true;
+ let released=false;const releaseGL=()=>{if(released)return;released=true;renderer?.dispose();gl?.getExtension('WEBGL_lose_context')?.loseContext();};
+ signal.addEventListener('abort',releaseGL,{once:true});
+ canvas.dataset.renderer=renderer?'webgl':'canvas';
  const species=[...new Set([1001,1002,1003,1051,1101,1102,1103,1201,1031])];
  const [hero,floor,wall,flame,monsters,nativeBackground,nativeForeground,layout]=await Promise.all([
-  rig('characters/hong/native-axe/hong',signal,HONG_NATIVE_FOOT_SLOTS),loadImage(root+'maps/candle-dungeon/textures/8fc6a24c9fa1201c.png',signal),loadImage(root+'maps/candle-dungeon/textures/7c8bd537db964e9d.png',signal),loadImage(root+'maps/candle-dungeon/textures/2a5fa6602875c8d0.png',signal),
-  Promise.all(species.map(async id=>{const profile=LABYRINTH.monsters[id],a=LABYRINTH.assets[profile.asset];return [id,{rig:await rig(a.skeleton,signal,a.groundSlots),clips:a.clips}] as const;})),loadImage(root+'maps/candle-dungeon/background.webp',signal),loadImage(root+'maps/candle-dungeon/foreground.webp',signal),fetch(root+'maps/candle-dungeon/layout.json',{signal}).then(r=>{if(!r.ok)throw Error('원본 맵 로드 실패');return r.json();})]);
+  rig('characters/hong/native-axe/hong',signal,HONG_NATIVE_FOOT_SLOTS,gl),loadImage(root+'maps/candle-dungeon/textures/8fc6a24c9fa1201c.png',signal),loadImage(root+'maps/candle-dungeon/textures/7c8bd537db964e9d.png',signal),loadImage(root+'maps/candle-dungeon/textures/2a5fa6602875c8d0.png',signal),
+  Promise.all(species.map(async id=>{const profile=LABYRINTH.monsters[id],a=LABYRINTH.assets[profile.asset];return [id,{rig:await rig(a.skeleton,signal,a.groundSlots,gl),clips:a.clips}] as const;})),loadImage(root+'maps/candle-dungeon/background.webp',signal),loadImage(root+'maps/candle-dungeon/foreground.webp',signal),fetch(root+'maps/candle-dungeon/layout.json',{signal}).then(r=>{if(!r.ok)throw Error('원본 맵 로드 실패');return r.json();})]);
  const sources=new Map(monsters),actors=new Map<number,ReturnType<typeof hero.clone>>();let heroKey='',visible=new Set<number>(),explored=new Set<number>(),lastCell=-1,flameTime=0;
  const fov=new FOV.PreciseShadowcasting((x,y)=>x>=0&&y>=0&&x<map.width&&y<map.height&&map.tiles[y*map.width+x]===0,{topology:8});
  let hx=map.start.x,hy=map.start.y,hz=map.rooms[0].elevation,heroZ=hz;const positions=new Map<number,{x:number;y:number}>();
- const clock=new RogueVisualClock();let latest:RogueSnapshot|undefined;
+ const clock=new RogueVisualClock();let latest:RogueSnapshot|undefined,lastFrame=0,frameInterval=1/60,drawCost=0;
  return {draw(view:RogueSnapshot,dt:number,input?:RogueInput){
-  const authority=view,now=performance.now()/1000;if(latest!==view){latest=view;clock.receive(view.elapsed,now,view.status==='playing');}
+  const frameStart=performance.now(),authority=view,now=frameStart/1000;if(lastFrame)frameInterval=frameInterval*.9+Math.min(1,now-lastFrame)*.1;lastFrame=now;if(latest!==view){latest=view;clock.receive(view.elapsed,now,view.status==='playing');}
   const visualTime=clock.sample(now);view={...view,hero:projectRogueHero(view,map,visualTime,input)};
   const w=canvas.clientWidth,h=canvas.clientHeight,dpr=Math.min(2,devicePixelRatio||1);if(canvas.width!==Math.round(w*dpr)||canvas.height!==Math.round(h*dpr)){canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);}ctx.setTransform(dpr,0,0,dpr,0,0);ctx.fillStyle='#141917';ctx.fillRect(0,0,w,h);
+  if(layer.width!==canvas.width||layer.height!==canvas.height){layer.width=canvas.width;layer.height=canvas.height;}
+  if(gl&&renderer){gl.viewport(0,0,layer.width,layer.height);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);renderer.camera.position.set(w/2,h/2,0);renderer.camera.setViewport(w,-h);renderer.begin();}
+  const overlays:(()=>void)[]=[];
   const zoom=w/ROGUE_VISUAL.viewportWidth,depth=ROGUE_VISUAL.depth;hx+=(view.hero.x-hx)*(1-Math.exp(-dt*24));hy+=(view.hero.y-hy)*(1-Math.exp(-dt*24));
   heroZ+=(view.hero.elevation-heroZ)*(1-Math.exp(-dt*24));hz+=(view.hero.elevation-hz)*(1-Math.exp(-dt*5));
   const sx=(x:number)=>(x-hx)*zoom+w/2,sy=(y:number,z=0)=>(y-hy)*zoom*depth+h*.72-(z-hz)*zoom;
@@ -103,7 +114,7 @@ export async function createRogueRenderer(canvas:HTMLCanvasElement,map:RogueMap,
   const exitVisible=explored.has(cell(map.exit.y)*map.width+cell(map.exit.x));if(exitVisible){const x=sx(map.exit.x),y=groundY(map.exit.x,map.exit.y);ctx.fillStyle=view.cleared.length===10?'#61d7c9':'#91734c';ctx.beginPath();ctx.ellipse(x,y,24*zoom,15*zoom,0,0,Math.PI*2);ctx.fill();ctx.font=`${12*zoom}px sans-serif`;ctx.textAlign='center';ctx.fillStyle='#fff0cb';ctx.fillText(view.cleared.length===10?'탈출':'출구',x,y-28*zoom);}
   const shade=ctx.createRadialGradient(w/2,h*.58,25,w/2,h*.58,w*.8);shade.addColorStop(0,'#03080a08');shade.addColorStop(1,'#02060965');ctx.fillStyle=shade;ctx.fillRect(0,0,w,h);
   const drawActor=(s:typeof hero.s,state:typeof hero.state,feet:readonly string[],baseHeight:number,action:string,x:number,y:number,height:number,facing:number,time:number,key:string,oldKey:string,trackTime?:number,elevation=terrainElevation(map,x))=>{
-   if(key!==oldKey){s.setSlotsToSetupPose();state.setAnimation(0,action,/stay|run/.test(action));}state.timeScale=s===hero.s&&/run/.test(action)?ROGUE_PACE.moveSpeed/180:1;state.update(Math.min(.05,dt));if(trackTime!==undefined)state.getCurrent(0)!.trackTime=trackTime;state.apply(s);s.x=sx(x);s.y=sy(y,elevation);s.scaleX=height/baseHeight*zoom*facing;s.scaleY=height/baseHeight*zoom;s.update(Math.min(.05,dt));s.updateWorldTransform(Physics.update);groundSkeleton(s,sy(y,elevation)-time,feet);skeletonRenderer.draw(s);
+   if(key!==oldKey){s.setSlotsToSetupPose();state.setAnimation(0,action,/stay|run/.test(action));}state.timeScale=s===hero.s&&/run/.test(action)?ROGUE_PACE.moveSpeed/180:1;state.update(Math.min(.05,dt));if(trackTime!==undefined)state.getCurrent(0)!.trackTime=trackTime;state.apply(s);s.x=sx(x);s.y=sy(y,elevation);s.scaleX=height/baseHeight*zoom*facing;s.scaleY=height/baseHeight*zoom;s.update(Math.min(.05,dt));s.updateWorldTransform(Physics.update);groundSkeleton(s,sy(y,elevation)-time,feet);if(renderer)renderer.drawSkeleton(s,true);else fallback!.draw(s);
   };
   const mobs=view.mobs.filter(m=>explored.has(cell(m.y)*map.width+cell(m.x))&&visible.has(cell(m.y)*map.width+cell(m.x))&&(m.hp>0||view.elapsed-m.until<.5));
   const ordered:({kind:'mob';mob:RogueMob}|{kind:'hero';y:number})[]=[...mobs.map(m=>({kind:'mob' as const,mob:m})),{kind:'hero',y:hy}];ordered.sort((a,b)=>(a.kind==='mob'?a.mob.y:a.y)-(b.kind==='mob'?b.mob.y:b.y));
@@ -118,10 +129,13 @@ export async function createRogueRenderer(canvas:HTMLCanvasElement,map:RogueMap,
     const clip=m.hp<=0?source.clips.death:m.state==='windup'?source.clips.attack:m.state==='walk'?source.clips.move:source.clips.idle,action=source.rig.clips.includes(clip)?clip:source.rig.clips[0],key=action+':'+(m.state==='windup'?m.until:0),height=m.boss?ROGUE_VISUAL.bossHeight:m.species===1102?68:ROGUE_VISUAL.smallHeight;
     ctx.fillStyle='#0006';ctx.beginPath();ctx.ellipse(sx(p.x),sy(p.y,map.rooms[m.room].elevation),m.radius*zoom,5*zoom,0,0,Math.PI*2);ctx.fill();a.s.color.a=m.hp<=0?Math.max(0,1-(view.elapsed-m.until)*2):1;
     drawActor(a.s,a.state,source.rig.feet,source.rig.height,action,p.x,p.y,height,m.x>view.hero.x?-1:1,0,key,a.key);a.key=key;
+    const overlay=()=>{
     if(m.hp>0){const width=(m.boss?58:30)*zoom,x=sx(p.x),y=sy(p.y,map.rooms[m.room].elevation)-height*zoom-8*zoom;ctx.fillStyle='#160d0d';ctx.fillRect(x-width/2,y,width,3);ctx.fillStyle=m.boss?'#d6ac60':'#d56f61';ctx.fillRect(x-width/2,y,width*m.hp/m.maxHP,3);}
     if(m.state==='windup'){ctx.strokeStyle='#ff8059';ctx.lineWidth=1.5;ctx.beginPath();ctx.ellipse(sx(m.target.x),sy(m.target.y,map.rooms[m.room].elevation),34*zoom,24*zoom,0,0,Math.PI*2);ctx.stroke();}
+    };if(renderer)overlays.push(overlay);else overlay();
    }
   }
+  if(renderer){renderer.end();ctx.drawImage(layer,0,0,w,h);for(const overlay of overlays)overlay();}
   drawNative(true);drawGates(true);
   for(const f of view.fx){
    if(f.kind==='damage'||f.kind==='gold'){
@@ -134,6 +148,7 @@ export async function createRogueRenderer(canvas:HTMLCanvasElement,map:RogueMap,
    const t=(visualTime-f.born)/.65;ctx.save();ctx.translate(sx(f.x),groundY(f.x,f.y)-20*zoom);ctx.scale(zoom*(f.scale??1),zoom*depth*(f.scale??1));ctx.rotate(f.angle);ctx.globalAlpha=Math.max(0,1-t);ctx.strokeStyle=f.kind==='heal'?'#8de6a5':f.kind==='rift'?'#d6b47f':'#bce9ed';ctx.lineWidth=f.kind==='slash'?10:4;ctx.beginPath();if(f.kind==='slash')ctx.arc(0,0,70+t*35,-1.4,1.4);else ctx.ellipse(0,0,30+t*150,30+t*150,0,0,Math.PI*2);ctx.stroke();ctx.restore();}
   // Compact route strip shows the local arena and its next movement requirement.
   const gate=view.gate;ctx.fillStyle='#081012df';ctx.fillRect(w-105,10,96,43);ctx.strokeStyle='#ad8b4d66';ctx.strokeRect(w-105,10,96,43);ctx.textAlign='center';ctx.font='10px sans-serif';ctx.fillStyle='#cdbf98';ctx.fillText('NEXT PASSAGE',w-57,25);ctx.font='bold 12px sans-serif';ctx.fillStyle=gate?.ready?'#e7d48e':'#b8c2b7';ctx.fillText(gate?PASSAGE_LABEL[gate.passage]:'최종 출구',w-57,43);
+  drawCost=drawCost*.9+(performance.now()-frameStart)*.1;canvas.dataset.drawMs=drawCost.toFixed(2);canvas.dataset.frameMs=(frameInterval*1000).toFixed(2);
   canvas.dataset.visualTime=String(visualTime);canvas.dataset.serverTime=String(authority.elapsed);canvas.dataset.authoritativeWorldX=String(authority.hero.x);canvas.dataset.heroAction=view.hero.action;canvas.dataset.autoTarget=String(Math.min(10,view.autoRoom+1));canvas.dataset.autoOrder=view.autoOrder.map(i=>i+1).join(',');canvas.dataset.mode='rogue';canvas.dataset.presentation='vardian-native-sideview';canvas.dataset.mapSource='Map002_001';canvas.dataset.movementAxis='x';canvas.dataset.elevation=String(view.hero.elevation);canvas.dataset.passage=view.gate?.passage??'exit';canvas.dataset.phase=view.phase;canvas.dataset.gate=String(view.gate?.kind??'exit');canvas.dataset.transitions=view.transitions.join(',');canvas.dataset.rooms=String(map.rooms.length);canvas.dataset.visibleMonsters=String(mobs.filter(m=>m.hp>0).length);canvas.dataset.heroHeight=String(ROGUE_VISUAL.heroHeight);canvas.dataset.tileSize=String(ROGUE_TILE);canvas.dataset.worldX=String(view.hero.x);canvas.dataset.worldY=String(view.hero.y);canvas.dataset.status='ready';
- },dispose(){hero.atlas.dispose();for(const s of sources.values())s.rig.atlas.dispose();actors.clear();positions.clear();}};
+ },dispose(){signal.removeEventListener('abort',releaseGL);releaseGL();hero.atlas.dispose();for(const s of sources.values())s.rig.atlas.dispose();actors.clear();positions.clear();}};
 }
