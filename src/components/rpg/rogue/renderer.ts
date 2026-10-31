@@ -1,6 +1,6 @@
 import {RogueVisualClock,projectRogueHero} from './presentation';
 import {ROGUE_PACE} from './pace';
-import type {RogueInput} from './engine';
+import {ROGUE_SPECIES,type RogueInput} from './engine';
 import {CanvasTexture,SkeletonRenderer as CanvasRenderer} from '@esotericsoftware/spine-canvas';
 import {AnimationState,AnimationStateData,AtlasAttachmentLoader,GLTexture,Physics,SceneRenderer,Skeleton,SkeletonJson,TextureAtlas,MeshAttachment,RegionAttachment} from '@esotericsoftware/spine-webgl';
 import {FOV} from 'rot-js';
@@ -37,13 +37,16 @@ export async function createRogueRenderer(canvas:HTMLCanvasElement,map:RogueMap,
  let released=false;const releaseGL=()=>{if(released)return;released=true;renderer?.dispose();gl?.getExtension('WEBGL_lose_context')?.loseContext();};
  signal.addEventListener('abort',releaseGL,{once:true});
  canvas.dataset.renderer=renderer?'webgl':'canvas';
- const species=[...new Set([1001,1002,1003,1051,1101,1102,1103,1201,1031])];
+ const species=[...ROGUE_SPECIES,1031];
  const [hero,floor,wall,flame,monsters,nativeBackground,nativeForeground,layout]=await Promise.all([
   rig('characters/hong/native-axe/hong',signal,HONG_NATIVE_FOOT_SLOTS,gl),loadImage(root+'maps/candle-dungeon/textures/8fc6a24c9fa1201c.png',signal),loadImage(root+'maps/candle-dungeon/textures/7c8bd537db964e9d.png',signal),loadImage(root+'maps/candle-dungeon/textures/2a5fa6602875c8d0.png',signal),
   Promise.all(species.map(async id=>{const profile=LABYRINTH.monsters[id],a=LABYRINTH.assets[profile.asset];return [id,{rig:await rig(a.skeleton,signal,a.groundSlots,gl),clips:a.clips}] as const;})),loadImage(root+'maps/candle-dungeon/background.webp',signal),loadImage(root+'maps/candle-dungeon/foreground.webp',signal),fetch(root+'maps/candle-dungeon/layout.json',{signal}).then(r=>{if(!r.ok)throw Error('원본 맵 로드 실패');return r.json();})]);
  const sources=new Map(monsters),actors=new Map<number,ReturnType<typeof hero.clone>>();let heroKey='',visible=new Set<number>(),explored=new Set<number>(),lastCell=-1,flameTime=0;
  const fov=new FOV.PreciseShadowcasting((x,y)=>x>=0&&y>=0&&x<map.width&&y<map.height&&map.tiles[y*map.width+x]===0,{topology:8});
  let hx=map.start.x,hy=map.start.y,hz=map.rooms[0].elevation,heroZ=hz;const positions=new Map<number,{x:number;y:number}>();
+ const crowdFrames=new Map<string,HTMLCanvasElement[]>();
+ const baked=(species:number,action:string)=>{const key=species+':'+action;let frames=crowdFrames.get(key);if(frames)return frames;const source=sources.get(species)!.rig,actor=source.clone();frames=[];const duration=source.s.data.findAnimation(action)?.duration??1;
+  for(let i=0;i<8;i++){const c=document.createElement('canvas');c.width=128;c.height=128;const context=c.getContext('2d')!,r=new CanvasRenderer(context);r.triangleRendering=true;actor.s.setToSetupPose();actor.state.setAnimation(0,action,true);actor.state.getCurrent(0)!.trackTime=duration*i/8;actor.state.apply(actor.s);actor.s.x=64;actor.s.y=116;actor.s.scaleX=actor.s.scaleY=80/source.height;actor.s.updateWorldTransform(Physics.pose);groundSkeleton(actor.s,116,source.feet);r.draw(actor.s);frames.push(c);}crowdFrames.set(key,frames);return frames;};
  const clock=new RogueVisualClock();let latest:RogueSnapshot|undefined,lastFrame=0,frameInterval=1/60,drawCost=0;
  return {draw(view:RogueSnapshot,dt:number,input?:RogueInput){
   const frameStart=performance.now(),authority=view,now=frameStart/1000;if(lastFrame)frameInterval=frameInterval*.9+Math.min(1,now-lastFrame)*.1;lastFrame=now;if(latest!==view){latest=view;clock.receive(view.elapsed,now,view.status==='playing');}
@@ -55,13 +58,13 @@ export async function createRogueRenderer(canvas:HTMLCanvasElement,map:RogueMap,
   const zoom=w/ROGUE_VISUAL.viewportWidth,depth=ROGUE_VISUAL.depth;hx+=(view.hero.x-hx)*(1-Math.exp(-dt*24));hy+=(view.hero.y-hy)*(1-Math.exp(-dt*24));
   heroZ+=(view.hero.elevation-heroZ)*(1-Math.exp(-dt*24));hz+=(view.hero.elevation-hz)*(1-Math.exp(-dt*5));
   const sx=(x:number)=>(x-hx)*zoom+w/2,sy=(y:number,z=0)=>(y-hy)*zoom*depth+h*.72-(z-hz)*zoom;
-  const groundY=(x:number,y:number)=>sy(y,terrainElevation(map,x));
+  const groundY=(x:number,y:number,room=view.room)=>sy(y,terrainElevation(map,x,room));
   const currentCell=cell(view.hero.y)*map.width+cell(view.hero.x);if(currentCell!==lastCell){lastCell=currentCell;visible=new Set();fov.compute(cell(view.hero.x),cell(view.hero.y),12,(x,y)=>{if(x>=0&&y>=0&&x<map.width&&y<map.height){const k=y*map.width+x;visible.add(k);explored.add(k);}});}
   const xmin=Math.max(0,cell(hx-w/zoom/2)-2),xmax=Math.min(map.width-1,cell(hx+w/zoom/2)+2),ymin=Math.max(0,cell(hy-h/(zoom*depth))-2),ymax=Math.min(map.height-1,cell(hy+h/(zoom*depth))+2);
   ctx.imageSmoothingEnabled=true;const tile=ROGUE_TILE*zoom;
   // Original Map002_001 mesh/UV bake, not the former top-down stone tile arenas.
   const revealed=[map.rooms[view.room]];
-  if(view.gate?.ready)revealed.push(map.rooms[view.gate.nextRoom]);
+  for(const g of view.choices)if(g.ready)revealed.push(map.rooms[g.nextRoom]);
   for(const chamber of revealed)if(chamber)for(let y=chamber.y1;y<=chamber.y2;y++)for(let x=chamber.x1;x<=chamber.x2;x++){const k=y*map.width+x;visible.add(k);explored.add(k);}
   const drawNative=(front:boolean)=>{
    const span=70*24,scale=span/(layout.endPixel-layout.startPixel)*zoom;
@@ -69,7 +72,7 @@ export async function createRogueRenderer(canvas:HTMLCanvasElement,map:RogueMap,
     const left=room.id===0?0:sx(room.x1*ROGUE_TILE),right=room.id===9?w:sx((room.x2+1)*ROGUE_TILE);
     if(right<0||left>w)continue;
     const floorY=sy(map.start.y,room.elevation),phase=(room.x1*ROGUE_TILE)%span;
-    ctx.save();ctx.beginPath();ctx.rect(left,0,right-left,h);ctx.clip();
+    ctx.save();ctx.beginPath();ctx.rect(left,room.branch==='common'?0:floorY-175*zoom,right-left,room.branch==='common'?h:220*zoom);ctx.clip();
     for(let repeat=-1;repeat<=1;repeat++){
      const x=sx(room.x1*ROGUE_TILE-phase+repeat*span)-layout.startPixel*scale,y=floorY-layout.groundY*scale;
      ctx.globalAlpha=front?.7:1;ctx.drawImage(front?nativeForeground:nativeBackground,x,y,layout.size[0]*scale,layout.size[1]*scale);
@@ -83,11 +86,11 @@ export async function createRogueRenderer(canvas:HTMLCanvasElement,map:RogueMap,
   };drawNative(false);flameTime+=dt;
   // Source-style action links: elevation changes, open chasms, climbing ledges and low lintels.
   const drawGates=(overhead:boolean)=>{for(const gate of map.gates){
-   if(!view.visited.includes(gate.id))continue;
+   if(!view.visited.includes(gate.fromRoom))continue;
    const left=sx(gate.from.x+ROGUE_TILE/2),right=sx(gate.to.x-ROGUE_TILE/2),middle=(left+right)/2;
    const nearTop=sy(6*ROGUE_TILE,gate.from.elevation),nearBottom=sy(9*ROGUE_TILE,gate.from.elevation);
    const farTop=sy(6*ROGUE_TILE,gate.to.elevation),farBottom=sy(9*ROGUE_TILE,gate.to.elevation);
-   if(right<0||left>w)continue;const open=view.cleared.includes(gate.id),passed=view.transitions.includes(gate.id),ink=open?'#dcca88':'#b57867';
+   if(right<0||left>w)continue;const open=view.cleared.includes(gate.fromRoom),passed=view.transitions.includes(gate.id),ink=open?'#dcca88':'#b57867';
    ctx.save();ctx.globalAlpha=1;
    if(!overhead){
     if(gate.kind==='jump'){
@@ -111,12 +114,14 @@ export async function createRogueRenderer(canvas:HTMLCanvasElement,map:RogueMap,
     for(const x of [left-8*zoom,right]){ctx.drawImage(wall,x,nearTop-35*zoom,8*zoom,nearBottom-nearTop+35*zoom);ctx.fillStyle='#080e0e88';ctx.fillRect(x,nearTop-35*zoom,2*zoom,nearBottom-nearTop+35*zoom);}
    }ctx.restore();
   }};drawGates(false);
-  const exitVisible=explored.has(cell(map.exit.y)*map.width+cell(map.exit.x));if(exitVisible){const x=sx(map.exit.x),y=groundY(map.exit.x,map.exit.y);ctx.fillStyle=view.cleared.length===10?'#61d7c9':'#91734c';ctx.beginPath();ctx.ellipse(x,y,24*zoom,15*zoom,0,0,Math.PI*2);ctx.fill();ctx.font=`${12*zoom}px sans-serif`;ctx.textAlign='center';ctx.fillStyle='#fff0cb';ctx.fillText(view.cleared.length===10?'탈출':'출구',x,y-28*zoom);}
+  const exitVisible=explored.has(cell(map.exit.y)*map.width+cell(map.exit.x));if(exitVisible){const x=sx(map.exit.x),y=groundY(map.exit.x,map.exit.y);ctx.fillStyle=view.cleared.includes(9)?'#61d7c9':'#91734c';ctx.beginPath();ctx.ellipse(x,y,24*zoom,15*zoom,0,0,Math.PI*2);ctx.fill();ctx.font=`${12*zoom}px sans-serif`;ctx.textAlign='center';ctx.fillStyle='#fff0cb';ctx.fillText(view.cleared.includes(9)?'탈출':'출구',x,y-28*zoom);}
   const shade=ctx.createRadialGradient(w/2,h*.58,25,w/2,h*.58,w*.8);shade.addColorStop(0,'#03080a08');shade.addColorStop(1,'#02060965');ctx.fillStyle=shade;ctx.fillRect(0,0,w,h);
   const drawActor=(s:typeof hero.s,state:typeof hero.state,feet:readonly string[],baseHeight:number,action:string,x:number,y:number,height:number,facing:number,time:number,key:string,oldKey:string,trackTime?:number,elevation=terrainElevation(map,x))=>{
    if(key!==oldKey){s.setSlotsToSetupPose();state.setAnimation(0,action,/stay|run/.test(action));}state.timeScale=s===hero.s&&/run/.test(action)?ROGUE_PACE.moveSpeed/180:1;state.update(Math.min(.05,dt));if(trackTime!==undefined)state.getCurrent(0)!.trackTime=trackTime;state.apply(s);s.x=sx(x);s.y=sy(y,elevation);s.scaleX=height/baseHeight*zoom*facing;s.scaleY=height/baseHeight*zoom;s.update(Math.min(.05,dt));s.updateWorldTransform(Physics.update);groundSkeleton(s,sy(y,elevation)-time,feet);if(renderer)renderer.drawSkeleton(s,true);else fallback!.draw(s);
   };
-  const mobs=view.mobs.filter(m=>explored.has(cell(m.y)*map.width+cell(m.x))&&visible.has(cell(m.y)*map.width+cell(m.x))&&(m.hp>0||view.elapsed-m.until<.5));
+  const liveIds=new Set(view.mobs.map(m=>m.id));for(const id of actors.keys())if(!liveIds.has(id)){actors.delete(id);positions.delete(id);}for(const id of positions.keys())if(!liveIds.has(id))positions.delete(id);
+  const mobs=view.mobs.filter(m=>m.room===view.room&&Math.abs(sx(m.x)-w/2)<w/2+100*zoom&&explored.has(cell(m.y)*map.width+cell(m.x))&&visible.has(cell(m.y)*map.width+cell(m.x))&&(m.hp>0||view.elapsed-m.until<.5));
+  const detailed=new Set([...mobs].sort((a,b)=>Number(b.boss)-Number(a.boss)||Math.abs(a.x-view.hero.x)-Math.abs(b.x-view.hero.x)).slice(0,24).map(m=>m.id));for(const id of actors.keys())if(!detailed.has(id))actors.delete(id);
   const ordered:({kind:'mob';mob:RogueMob}|{kind:'hero';y:number})[]=[...mobs.map(m=>({kind:'mob' as const,mob:m})),{kind:'hero',y:hy}];ordered.sort((a,b)=>(a.kind==='mob'?a.mob.y:a.y)-(b.kind==='mob'?b.mob.y:b.y));
   for(const actor of ordered){
    if(actor.kind==='hero'){
@@ -125,10 +130,10 @@ export async function createRogueRenderer(canvas:HTMLCanvasElement,map:RogueMap,
     const clipDuration=hero.s.data.findAnimation(action)!.duration,trackTime=m&&(m.kind==='attack'||m.kind==='skill')?hongMotionTime(age,m.duration,m.hitAt,clipDuration,hongNativeContact(action,clipDuration),true):m?.kind==='rush'?t*clipDuration:undefined;
     drawActor(hero.s,hero.state,hero.feet,hero.height,action,hx,hy,ROGUE_VISUAL.heroHeight,view.hero.facing,air,key,heroKey,trackTime,heroZ);heroKey=key;canvas.dataset.jumpHeight=String(air/zoom);
    }else{
-    const m=actor.mob,source=sources.get(m.species)!;let a=actors.get(m.id);if(!a){a=source.rig.clone();actors.set(m.id,a);}let p=positions.get(m.id);if(!p){p={x:m.x,y:m.y};positions.set(m.id,p);}p.x+=(m.x-p.x)*(1-Math.exp(-dt*24));p.y+=(m.y-p.y)*(1-Math.exp(-dt*24));
+    const m=actor.mob,source=sources.get(m.species)!;let a=actors.get(m.id);if(!a&&detailed.has(m.id)){a=source.rig.clone();actors.set(m.id,a);}let p=positions.get(m.id);if(!p){p={x:m.x,y:m.y};positions.set(m.id,p);}p.x+=(m.x-p.x)*(1-Math.exp(-dt*24));p.y+=(m.y-p.y)*(1-Math.exp(-dt*24));
     const clip=m.hp<=0?source.clips.death:m.state==='windup'?source.clips.attack:m.state==='walk'?source.clips.move:source.clips.idle,action=source.rig.clips.includes(clip)?clip:source.rig.clips[0],key=action+':'+(m.state==='windup'?m.until:0),height=m.boss?ROGUE_VISUAL.bossHeight:m.species===1102?68:ROGUE_VISUAL.smallHeight;
-    ctx.fillStyle='#0006';ctx.beginPath();ctx.ellipse(sx(p.x),sy(p.y,map.rooms[m.room].elevation),m.radius*zoom,5*zoom,0,0,Math.PI*2);ctx.fill();a.s.color.a=m.hp<=0?Math.max(0,1-(view.elapsed-m.until)*2):1;
-    drawActor(a.s,a.state,source.rig.feet,source.rig.height,action,p.x,p.y,height,m.x>view.hero.x?-1:1,0,key,a.key);a.key=key;
+    ctx.fillStyle='#0006';ctx.beginPath();ctx.ellipse(sx(p.x),sy(p.y,map.rooms[m.room].elevation),m.radius*zoom,5*zoom,0,0,Math.PI*2);ctx.fill();if(a)a.s.color.a=m.hp<=0?Math.max(0,1-(view.elapsed-m.until)*2):1;
+    if(a){drawActor(a.s,a.state,source.rig.feet,source.rig.height,action,p.x,p.y,height,m.x>view.hero.x?-1:1,0,key,a.key,undefined,map.rooms[m.room].elevation);a.key=key;}else{const frames=baked(m.species,action),duration=source.rig.s.data.findAnimation(action)?.duration||1,index=Math.floor((visualTime%duration)/duration*8),scale=height/80*zoom;ctx.save();ctx.translate(sx(p.x),sy(p.y,map.rooms[m.room].elevation));ctx.scale((m.x>view.hero.x?-1:1)*scale,scale);ctx.globalAlpha=m.hp<=0?Math.max(0,1-(view.elapsed-m.until)*2):1;ctx.drawImage(frames[index],-64,-116);ctx.restore();}
     const overlay=()=>{
     if(m.hp>0){const width=(m.boss?58:30)*zoom,x=sx(p.x),y=sy(p.y,map.rooms[m.room].elevation)-height*zoom-8*zoom;ctx.fillStyle='#160d0d';ctx.fillRect(x-width/2,y,width,3);ctx.fillStyle=m.boss?'#d6ac60':'#d56f61';ctx.fillRect(x-width/2,y,width*m.hp/m.maxHP,3);}
     if(m.state==='windup'){ctx.strokeStyle='#ff8059';ctx.lineWidth=1.5;ctx.beginPath();ctx.ellipse(sx(m.target.x),sy(m.target.y,map.rooms[m.room].elevation),34*zoom,24*zoom,0,0,Math.PI*2);ctx.stroke();}
@@ -141,14 +146,14 @@ export async function createRogueRenderer(canvas:HTMLCanvasElement,map:RogueMap,
    if(f.kind==='damage'||f.kind==='gold'){
     if(!visible.has(cell(f.y)*map.width+cell(f.x)))continue;
     const t=Math.max(0,Math.min(1,view.elapsed-f.born)),drift=((f.id%3)-1)*18*zoom;
-    const x=sx(f.x)+drift*t,y=groundY(f.x,f.y)-(f.kind==='gold'?30:65)*zoom-45*zoom*t+18*zoom*t*t;
+    const x=sx(f.x)+drift*t,y=groundY(f.x,f.y,f.room??view.room)-(f.kind==='gold'?30:65)*zoom-45*zoom*t+18*zoom*t*t;
     ctx.save();ctx.globalAlpha=Math.min(1,(1-t)*4);ctx.textAlign='center';ctx.font=`bold ${Math.max(11,(f.kind==='gold'?15:22)*zoom)}px sans-serif`;ctx.lineWidth=3;ctx.strokeStyle='#101414';
     const text=f.kind==='gold'?`+${f.value} G`:String(f.value);ctx.strokeText(text,x,y);ctx.fillStyle=f.kind==='gold'?'#f0ce7c':f.target==='hero'?'#f79586':'#fff1c5';ctx.fillText(text,x,y);ctx.restore();continue;
    }
-   const t=(visualTime-f.born)/.65;ctx.save();ctx.translate(sx(f.x),groundY(f.x,f.y)-20*zoom);ctx.scale(zoom*(f.scale??1),zoom*depth*(f.scale??1));ctx.rotate(f.angle);ctx.globalAlpha=Math.max(0,1-t);ctx.strokeStyle=f.kind==='heal'?'#8de6a5':f.kind==='rift'?'#d6b47f':'#bce9ed';ctx.lineWidth=f.kind==='slash'?10:4;ctx.beginPath();if(f.kind==='slash')ctx.arc(0,0,70+t*35,-1.4,1.4);else ctx.ellipse(0,0,30+t*150,30+t*150,0,0,Math.PI*2);ctx.stroke();ctx.restore();}
+   const t=(visualTime-f.born)/.65;ctx.save();ctx.translate(sx(f.x),groundY(f.x,f.y,f.room??view.room)-20*zoom);ctx.scale(zoom*(f.scale??1),zoom*depth*(f.scale??1));ctx.rotate(f.angle);ctx.globalAlpha=Math.max(0,1-t);ctx.strokeStyle=f.kind==='heal'?'#8de6a5':f.kind==='rift'?'#d6b47f':'#bce9ed';ctx.lineWidth=f.kind==='slash'?10:4;ctx.beginPath();if(f.kind==='slash')ctx.arc(0,0,70+t*35,-1.4,1.4);else ctx.ellipse(0,0,30+t*150,30+t*150,0,0,Math.PI*2);ctx.stroke();ctx.restore();}
   // Compact route strip shows the local arena and its next movement requirement.
-  const gate=view.gate;ctx.fillStyle='#081012df';ctx.fillRect(w-105,10,96,43);ctx.strokeStyle='#ad8b4d66';ctx.strokeRect(w-105,10,96,43);ctx.textAlign='center';ctx.font='10px sans-serif';ctx.fillStyle='#cdbf98';ctx.fillText('NEXT PASSAGE',w-57,25);ctx.font='bold 12px sans-serif';ctx.fillStyle=gate?.ready?'#e7d48e':'#b8c2b7';ctx.fillText(gate?PASSAGE_LABEL[gate.passage]:'최종 출구',w-57,43);
-  drawCost=drawCost*.9+(performance.now()-frameStart)*.1;canvas.dataset.drawMs=drawCost.toFixed(2);canvas.dataset.frameMs=(frameInterval*1000).toFixed(2);
+  const gate=view.gate;ctx.fillStyle='#081012df';ctx.fillRect(w-105,10,96,43);ctx.strokeStyle='#ad8b4d66';ctx.strokeRect(w-105,10,96,43);ctx.textAlign='center';ctx.font='10px sans-serif';ctx.fillStyle='#cdbf98';ctx.fillText('NEXT PASSAGE',w-57,25);ctx.font='bold 12px sans-serif';ctx.fillStyle=gate?.ready?'#e7d48e':'#b8c2b7';ctx.fillText(view.choices.length>1?'↑ / ↓ 갈림길':gate?PASSAGE_LABEL[gate.passage]:'최종 출구',w-57,43);
+  drawCost=drawCost*.9+(performance.now()-frameStart)*.1;canvas.dataset.detailedActors=String(actors.size);canvas.dataset.spawned=String(view.wave.spawned);canvas.dataset.waveTarget=String(view.wave.target);canvas.dataset.drawMs=drawCost.toFixed(2);canvas.dataset.frameMs=(frameInterval*1000).toFixed(2);
   canvas.dataset.visualTime=String(visualTime);canvas.dataset.serverTime=String(authority.elapsed);canvas.dataset.authoritativeWorldX=String(authority.hero.x);canvas.dataset.heroAction=view.hero.action;canvas.dataset.autoTarget=String(Math.min(10,view.autoRoom+1));canvas.dataset.autoOrder=view.autoOrder.map(i=>i+1).join(',');canvas.dataset.mode='rogue';canvas.dataset.presentation='vardian-native-sideview';canvas.dataset.mapSource='Map002_001';canvas.dataset.movementAxis='x';canvas.dataset.elevation=String(view.hero.elevation);canvas.dataset.passage=view.gate?.passage??'exit';canvas.dataset.phase=view.phase;canvas.dataset.gate=String(view.gate?.kind??'exit');canvas.dataset.transitions=view.transitions.join(',');canvas.dataset.rooms=String(map.rooms.length);canvas.dataset.visibleMonsters=String(mobs.filter(m=>m.hp>0).length);canvas.dataset.heroHeight=String(ROGUE_VISUAL.heroHeight);canvas.dataset.tileSize=String(ROGUE_TILE);canvas.dataset.worldX=String(view.hero.x);canvas.dataset.worldY=String(view.hero.y);canvas.dataset.status='ready';
  },dispose(){signal.removeEventListener('abort',releaseGL);releaseGL();hero.atlas.dispose();for(const s of sources.values())s.rig.atlas.dispose();actors.clear();positions.clear();}};
 }

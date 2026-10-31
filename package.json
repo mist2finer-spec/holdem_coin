@@ -50,7 +50,7 @@
     "test:rpg:vfx": "node --import ./mini-services/poker-server/node_modules/tsx/dist/loader.mjs --test scripts/rpg/test-vfx.ts",
     "test:rpg:dungeon": "node --import ./mini-services/poker-server/node_modules/tsx/dist/loader.mjs --test scripts/rpg/test-dungeon.ts",
     "test:rpg:jump": "node --import ./mini-services/poker-server/node_modules/tsx/dist/loader.mjs --test scripts/rpg/test-jump.ts",
-    "test:rpg:rogue": "node --import ./mini-services/poker-server/node_modules/tsx/dist/loader.mjs --test scripts/rpg/test-rogue.ts scripts/rpg/test-pace.ts",
+    "test:rpg:rogue": "node --import ./mini-services/poker-server/node_modules/tsx/dist/loader.mjs --test scripts/rpg/test-rogue.ts scripts/rpg/test-pace.ts scripts/rpg/test-horde.ts",
     "test:rpg:build": "node --import ./mini-services/poker-server/node_modules/tsx/dist/loader.mjs --test scripts/rpg/test-build.ts"
   },
   "dependencies": {

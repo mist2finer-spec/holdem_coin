@@ -33,3 +33,16 @@
 @media(prefers-reduced-motion:reduce){.rogue-clear{animation-duration:1.8s}@keyframes rogue-clear{0%,75%{opacity:1;transform:none}100%{opacity:0;transform:none}}}
 
 .rogue-mobility button.gate-ready{border-color:#f3d987;box-shadow:0 0 0 2px #f3d98755,0 0 16px #e4b95655;color:#fff1b7}
+
+/* Guide 123456: legacy teal console, high mobility row and lower central stick. */
+.rogue-shell{grid-template-rows:48px minmax(0,2.7fr) minmax(292px,2.3fr) 48px}
+.rogue-shell .rogue-lower{background:radial-gradient(ellipse at top,#264e53,#12333c 64%,#0d252e)}
+.hunt-device .rogue-shell .hunt-console{padding-top:14px}
+.hunt-device .rogue-shell .hunt-controls{min-height:175px;max-height:245px}
+.hunt-device .rogue-shell .rogue-mobility{bottom:auto;top:8px;gap:20px}
+.hunt-device .rogue-shell .hunt-dodge{bottom:67px;background:radial-gradient(at 35% 25%,#49666a,#183e49)}
+.hunt-device .rogue-shell .hunt-joystick{bottom:8px;background:radial-gradient(#23434d,#102934);border-color:#86b2b777}
+.hunt-device .rogue-shell .rogue-mobility button{background:radial-gradient(at 30% 20%,#56757a,#244952)}
+.rogue-branches{position:absolute;bottom:65px;left:0;right:0;display:flex;justify-content:center;gap:12px;z-index:3}
+.rogue-branches button{min-height:44px;padding:8px 14px;background:#17373af5;border-color:#c6b67c}
+@container(max-height:700px){.rogue-shell{grid-template-rows:42px minmax(0,1fr) 277px 44px}.hunt-device .rogue-shell .hunt-console{padding-top:8px}.hunt-device .rogue-shell .hunt-controls{min-height:165px}.hunt-device .rogue-shell .hunt-dodge{bottom:58px}.hunt-device .rogue-shell .rogue-mobility{top:4px;bottom:auto}}

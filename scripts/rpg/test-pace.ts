@@ -29,7 +29,7 @@ test('manual preview cannot tunnel through an intervening monster',()=>{
  const v=g.view(),p=projectRogueHero(v,g.map,.15,{...idle,x:1});assert.ok(m.x-p.x>=12+m.radius-1);assert.equal(v.mobs[0].hp,100);
 });
 test('jump presentation samples the real traversal but cannot spawn the next room or grant rewards',()=>{
- const g=new RogueEngine(5);g.mobs.forEach(m=>m.hp=0);g.step(.01,idle);const gate=g.map.gates[0];Object.assign(g.hero,gate.from);g.command({...idle,jump:true});const view=g.view(),before=JSON.stringify(view),m=view.hero.motion!;
+ const g=new RogueEngine(5,{initial:3,min:3,max:3,seconds:0,batch:3});g.mobs.forEach(m=>m.hp=0);g.step(.01,idle);const gate=g.map.gates[0];Object.assign(g.hero,gate.from);g.command({...idle,jump:true});const view=g.view(),before=JSON.stringify(view),m=view.hero.motion!;
  const p=projectRogueHero(view,g.map,m.start+m.duration*.5,idle);assert.ok(p.x>m.from.x&&p.x<m.to.x);assert.ok(p.airHeight>0);assert.equal(JSON.stringify(view),before);assert.equal(g.room,0);assert.deepEqual(g.transitions,[]);
 });
 test('server catches up 50–1000ms jitter, duplicates do not manufacture time, reconnects stay bounded',()=>{
