@@ -1,0 +1,1077 @@
+[
+  {
+    "source": "public/audio/poker/all_in_chip.mp3",
+    "destination": "WebAssets/audio/poker/all_in_chip.mp3",
+    "sha256": "b15026601fe9f632cc1a6deb7f8ffae7f0b875cf8e1c76fca3f8744769392b18"
+  },
+  {
+    "source": "public/audio/poker/chip_raise.mp3",
+    "destination": "WebAssets/audio/poker/chip_raise.mp3",
+    "sha256": "9c4dab3c4a66e63d8902ca3b73a88a077f56c7a7de395c9a137807f829363f3b"
+  },
+  {
+    "source": "public/audio/poker/choose_map.mp3",
+    "destination": "WebAssets/audio/poker/choose_map.mp3",
+    "sha256": "23f01109c67bc14faa317812fb5028d96e7b20bc69875285bc437f78a34f7467"
+  },
+  {
+    "source": "public/audio/poker/game_room.mp3",
+    "destination": "WebAssets/audio/poker/game_room.mp3",
+    "sha256": "15f7d797a5b67300449a7c04e41162071b5eef38bd6b7da3d154b5219867efa7"
+  },
+  {
+    "source": "public/audio/poker/poker_room.mp3",
+    "destination": "WebAssets/audio/poker/poker_room.mp3",
+    "sha256": "70bd25e2227469655d4aba098859b05933aca1dea28766d4e3a8b7082c6cface"
+  },
+  {
+    "source": "public/audio/poker/shuffle_card.mp3",
+    "destination": "WebAssets/audio/poker/shuffle_card.mp3",
+    "sha256": "48320fb89f9d5bd21bbc02e848f1e8af9fc8733c0eaf58ecd9d5b99511fe5032"
+  },
+  {
+    "source": "public/audio/poker/taking_card.mp3",
+    "destination": "WebAssets/audio/poker/taking_card.mp3",
+    "sha256": "7742533ef676609d40bebb1cab9170d845fdff9a7e0390d511136b095fcea564"
+  },
+  {
+    "source": "public/audio/poker/tv_sound.mp3",
+    "destination": "WebAssets/audio/poker/tv_sound.mp3",
+    "sha256": "d84a7e5adab68399f792e9ac27e07189d157d8c604e8270c9b28f225f617f1d0"
+  },
+  {
+    "source": "public/poker/hong-table/back.png",
+    "destination": "WebAssets/poker/hong-table/back.png",
+    "sha256": "f4499542f0615c87e3a065be4f87d32f34036f1ac3a49fad077369b1831fa9d5"
+  },
+  {
+    "source": "public/poker/hong-table/front.png",
+    "destination": "WebAssets/poker/hong-table/front.png",
+    "sha256": "b94c6b0d8d05d47833b22c866def6d6448c440d9332e59ffbb648d085ba64d9e"
+  },
+  {
+    "source": "public/poker/hong-table/left.png",
+    "destination": "WebAssets/poker/hong-table/left.png",
+    "sha256": "e8581c2a97826dfd5d56a2418b97b097ad566b3c7922f191dbe7928c948373d3"
+  },
+  {
+    "source": "public/poker/hong-table/manifest.json",
+    "destination": "WebAssets/poker/hong-table/manifest.json",
+    "sha256": "af1c63f55b4fa3391ceb7adc9228e02170fbcfee3a2dfc9b457c3391a1bcef5f"
+  },
+  {
+    "source": "public/poker/hong-table/right.png",
+    "destination": "WebAssets/poker/hong-table/right.png",
+    "sha256": "b44485d2e9d4897d19eda8a66eb9c4dd746f0d223860e2209a5416162ad2fde4"
+  },
+  {
+    "source": "public/poker/pink-glasses-table/back.png",
+    "destination": "WebAssets/poker/pink-glasses-table/back.png",
+    "sha256": "7d4ed07243e100ddc4e5a0b8f35f15b027babe8ffc5426aed4e0d4c2ec27b1b9"
+  },
+  {
+    "source": "public/poker/pink-glasses-table/front.png",
+    "destination": "WebAssets/poker/pink-glasses-table/front.png",
+    "sha256": "9c7273943e4ca1e212267da42dfa62027818fde53d888fde5b00ee9ba61b1f1a"
+  },
+  {
+    "source": "public/poker/pink-glasses-table/left.png",
+    "destination": "WebAssets/poker/pink-glasses-table/left.png",
+    "sha256": "2bbfce3bd4b9814bc9c4a6259a031a831cc0b63ec51d9aa707348665b59701dd"
+  },
+  {
+    "source": "public/poker/pink-glasses-table/manifest.json",
+    "destination": "WebAssets/poker/pink-glasses-table/manifest.json",
+    "sha256": "3ef805d52ab32fa8f100f63b25eecc6dab1169a1e388b74b175ef2b1dec2c4c4"
+  },
+  {
+    "source": "public/poker/pink-glasses-table/right.png",
+    "destination": "WebAssets/poker/pink-glasses-table/right.png",
+    "sha256": "6c3ffd899cbf1f4e5d80df619ebef3d2ffbef8247cbf618f3e35549870e6a4c3"
+  },
+  {
+    "source": "public/poker/teal-twins-table/back.png",
+    "destination": "WebAssets/poker/teal-twins-table/back.png",
+    "sha256": "be53992246a411f883f719cf8b96f93102d42bcc851662f65803eacd58248ae0"
+  },
+  {
+    "source": "public/poker/teal-twins-table/front.png",
+    "destination": "WebAssets/poker/teal-twins-table/front.png",
+    "sha256": "d1b1a4936d750ace3c1d0bdcc13bfb167cf93e605e71e8b1ea4ee9d67e117bad"
+  },
+  {
+    "source": "public/poker/teal-twins-table/left.png",
+    "destination": "WebAssets/poker/teal-twins-table/left.png",
+    "sha256": "327a009e0c8aa4a611948d95bdc9721768dd7ab0418621440f3f34032cef7061"
+  },
+  {
+    "source": "public/poker/teal-twins-table/manifest.json",
+    "destination": "WebAssets/poker/teal-twins-table/manifest.json",
+    "sha256": "4b51f8314f57727247dae24b8659cfb0138a07d244395588acdba8a2ef198d7b"
+  },
+  {
+    "source": "public/poker/teal-twins-table/right.png",
+    "destination": "WebAssets/poker/teal-twins-table/right.png",
+    "sha256": "eec02f7f3dd70e9f92aa2164a4d065ab5326b5bce0f7f861a202a2bd870cb274"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-axe/hong-linear.atlas",
+    "destination": "WebAssets/rpg/characters/hong/native-axe/hong-linear.atlas.txt",
+    "sha256": "545258f7b5de3ea2c7922d5b7b7741335d9589982bc4e66ad6622e82e7897a2b"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-axe/hong-nearest.atlas",
+    "destination": "WebAssets/rpg/characters/hong/native-axe/hong-nearest.atlas.txt",
+    "sha256": "43983b75739172afc0f7b6e8e7d5e7f9a002aab43469e0be4c9fd975b14fa01f"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-axe/hong.atlas",
+    "destination": "WebAssets/rpg/characters/hong/native-axe/hong.atlas.txt",
+    "sha256": "545258f7b5de3ea2c7922d5b7b7741335d9589982bc4e66ad6622e82e7897a2b"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-axe/hong.json",
+    "destination": "WebAssets/rpg/characters/hong/native-axe/hong.json",
+    "sha256": "88dfad230d2fe6da175f41c264d6e9f43b9c292deb92dea5613f236b982c02ea"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-axe/hong.png",
+    "destination": "WebAssets/rpg/characters/hong/native-axe/hong.png",
+    "sha256": "694a535dd9f04cbda67416c8c16312f8cc2759ea14427294f3b5cb9bcca143cb"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-axe/manifest.json",
+    "destination": "WebAssets/rpg/characters/hong/native-axe/manifest.json",
+    "sha256": "6686915d90af045619ca31894b84b04ab3da11b612001f63657a2ddc68a39e0d"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-axe/parts-hd/axe07.png",
+    "destination": "WebAssets/rpg/characters/hong/native-axe/parts-hd/axe07.png",
+    "sha256": "b9b7b0fd375e076acd4d196d7a424149b466342e7b4b74a315bd823f20b8cf6e"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-axe/parts-hd/hair_back.png",
+    "destination": "WebAssets/rpg/characters/hong/native-axe/parts-hd/hair_back.png",
+    "sha256": "f026125727eee7966def49363d3582f9a3d4676a065b611004896f7be0a134e1"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-axe/parts-hd/hair_front.png",
+    "destination": "WebAssets/rpg/characters/hong/native-axe/parts-hd/hair_front.png",
+    "sha256": "3c2b1fad0f22c34e51b965c70e8cec498ab03f6c5f086547caed7b1e7036c55b"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-axe/parts-hd/hair_side.png",
+    "destination": "WebAssets/rpg/characters/hong/native-axe/parts-hd/hair_side.png",
+    "sha256": "8f6951ac4f8a4b9e9b35d61ab9c8d6d8619748d2cb2fd3e4120b2cb124ae542f"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-axe/parts-hd/hong_B_Larm.png",
+    "destination": "WebAssets/rpg/characters/hong/native-axe/parts-hd/hong_B_Larm.png",
+    "sha256": "82e9571fabce3aa49b730d5aad7581ff8b256536d2416ac194b95608f12cb63d"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-axe/parts-hd/hong_B_Lleg1.png",
+    "destination": "WebAssets/rpg/characters/hong/native-axe/parts-hd/hong_B_Lleg1.png",
+    "sha256": "ac9ea29f49ab510d953e535a82dbf09bb90bf5643618eded4f2270f135fd522e"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-axe/parts-hd/hong_B_Lleg2.png",
+    "destination": "WebAssets/rpg/characters/hong/native-axe/parts-hd/hong_B_Lleg2.png",
+    "sha256": "3a18ff74c59ab412e91c40bae04a4b181ee2724a5a55bdd4446f31334e56d840"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-axe/parts-hd/hong_B_Rarm.png",
+    "destination": "WebAssets/rpg/characters/hong/native-axe/parts-hd/hong_B_Rarm.png",
+    "sha256": "44693be0447db693ca808a1e976f5c1eab9a79288edde5db61af29ae32313ba2"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-axe/parts-hd/hong_B_Rleg.png",
+    "destination": "WebAssets/rpg/characters/hong/native-axe/parts-hd/hong_B_Rleg.png",
+    "sha256": "988cacb34dc349d015fc3885e3c258ea07ec0614427803d5fe2bb275c38b4b9b"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-axe/parts-hd/hong_B_body.png",
+    "destination": "WebAssets/rpg/characters/hong/native-axe/parts-hd/hong_B_body.png",
+    "sha256": "85bdbf0847658550d4e988a9886c6ba97d8d7b21d0e70342c8450795c2c1f2c6"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-axe/parts-hd/hong_B_head.png",
+    "destination": "WebAssets/rpg/characters/hong/native-axe/parts-hd/hong_B_head.png",
+    "sha256": "d323e664e903e914cf44a9b0a348fbba8e5699afd15c72096982643717f3ce82"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-axe/parts-hd/hong_Larm.png",
+    "destination": "WebAssets/rpg/characters/hong/native-axe/parts-hd/hong_Larm.png",
+    "sha256": "3adb511974379fca2fec64e04581ea126ee2034a9d2eed09228e78b546ddf150"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-axe/parts-hd/hong_Larm_S.png",
+    "destination": "WebAssets/rpg/characters/hong/native-axe/parts-hd/hong_Larm_S.png",
+    "sha256": "8f1c17606eaca8b9f2bd401838bd4e3a4ee1d4204cc2cea3bfb42db2842c54c7"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-axe/parts-hd/hong_Lleg1.png",
+    "destination": "WebAssets/rpg/characters/hong/native-axe/parts-hd/hong_Lleg1.png",
+    "sha256": "a0a2bf8d8640be9c6e3982dd99cd887615666e8ceb94a94b4f34c7acb35a48d1"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-axe/parts-hd/hong_Lleg2.png",
+    "destination": "WebAssets/rpg/characters/hong/native-axe/parts-hd/hong_Lleg2.png",
+    "sha256": "c6157dd4be0fe8e01c597b3fcbb5f3a77408b25e5929d878d6a6fc65b4f68940"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-axe/parts-hd/hong_Rarm.png",
+    "destination": "WebAssets/rpg/characters/hong/native-axe/parts-hd/hong_Rarm.png",
+    "sha256": "900af711be88d794d2f7bcaddb1276d35beacdbe75caf7e4c164b5d7d6aab968"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-axe/parts-hd/hong_Rleg.png",
+    "destination": "WebAssets/rpg/characters/hong/native-axe/parts-hd/hong_Rleg.png",
+    "sha256": "94a8dca24f7081dabb41b8c40a4a14aa7fb2aa012193851bbd33400bc392bc7b"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-axe/parts-hd/hong_S_head.png",
+    "destination": "WebAssets/rpg/characters/hong/native-axe/parts-hd/hong_S_head.png",
+    "sha256": "483d04994f7082e0015e69faac0c520e0d586c41be9d5275bfee0e8e5186f4f4"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-axe/parts-hd/hong_body.png",
+    "destination": "WebAssets/rpg/characters/hong/native-axe/parts-hd/hong_body.png",
+    "sha256": "eeec5b32444b87710a79bb47e4ff0487be326baf89b81969b836153a505c1171"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-axe/parts-hd/hong_head.png",
+    "destination": "WebAssets/rpg/characters/hong/native-axe/parts-hd/hong_head.png",
+    "sha256": "4692c4471d5d1249363bb02f5bdc671397e1af94c3b2d3a17e8d2947b9d0e36d"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-axe/parts/axe07.png",
+    "destination": "WebAssets/rpg/characters/hong/native-axe/parts/axe07.png",
+    "sha256": "0637a6c3caa1927aca0a4c202cebabc419833764684e6a4274024d74c21bdf87"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-axe/parts/hair_back.png",
+    "destination": "WebAssets/rpg/characters/hong/native-axe/parts/hair_back.png",
+    "sha256": "f94da5395d62c91a086291cea39e45d56c698deafef4839ac16ae67656cb0d52"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-axe/parts/hair_front.png",
+    "destination": "WebAssets/rpg/characters/hong/native-axe/parts/hair_front.png",
+    "sha256": "6cb96f484469a58e1edb22f4091c83f7062ce026592847ae68b3780aed33c252"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-axe/parts/hair_side.png",
+    "destination": "WebAssets/rpg/characters/hong/native-axe/parts/hair_side.png",
+    "sha256": "5e3d1b791c9aefec1dce6889de43be44fcf6d340f9c617d6ffc813e8c0024ecd"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-axe/parts/hong_B_Larm.png",
+    "destination": "WebAssets/rpg/characters/hong/native-axe/parts/hong_B_Larm.png",
+    "sha256": "2be8a1f0591b3e0772c727c67b0b589f408769b2cb755c4e9336eeb4a3890744"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-axe/parts/hong_B_Lleg1.png",
+    "destination": "WebAssets/rpg/characters/hong/native-axe/parts/hong_B_Lleg1.png",
+    "sha256": "a71b3913065c890df95843f4b56252bd0348b72e019618af29e4fab46012d6c0"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-axe/parts/hong_B_Lleg2.png",
+    "destination": "WebAssets/rpg/characters/hong/native-axe/parts/hong_B_Lleg2.png",
+    "sha256": "febf4bb95f4f75f9831145fb5a1cd844261a2dd865e3ce2f5aadc24107ada357"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-axe/parts/hong_B_Rarm.png",
+    "destination": "WebAssets/rpg/characters/hong/native-axe/parts/hong_B_Rarm.png",
+    "sha256": "a6666f8f960704b22eaf825de82fbe7eac0b90a2e90dcc68ec5c6f3c4c7677a8"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-axe/parts/hong_B_Rleg.png",
+    "destination": "WebAssets/rpg/characters/hong/native-axe/parts/hong_B_Rleg.png",
+    "sha256": "ae3a087a8905c4d3324ff1e14fa92cdae9ae0ffd240e5a93167262b5929f7428"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-axe/parts/hong_B_body.png",
+    "destination": "WebAssets/rpg/characters/hong/native-axe/parts/hong_B_body.png",
+    "sha256": "64b23a4c8555618b999c822664e517678ce0fcaa7990a4c8b5bf4827347a134f"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-axe/parts/hong_B_head.png",
+    "destination": "WebAssets/rpg/characters/hong/native-axe/parts/hong_B_head.png",
+    "sha256": "9b7bd8a7b36a5133811c15652a88bd71a9c0a8e7f499dd9bf40e0dca585b9d90"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-axe/parts/hong_Larm.png",
+    "destination": "WebAssets/rpg/characters/hong/native-axe/parts/hong_Larm.png",
+    "sha256": "b500593fc21037c6e3db5944f2cfc2b9c7f04ae1e7b26afd922d10b2abe278a2"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-axe/parts/hong_Larm_S.png",
+    "destination": "WebAssets/rpg/characters/hong/native-axe/parts/hong_Larm_S.png",
+    "sha256": "bb08faf1da0c299bf2afe565255af66916f5e22d09f110c630f214a84f9b62be"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-axe/parts/hong_Lleg1.png",
+    "destination": "WebAssets/rpg/characters/hong/native-axe/parts/hong_Lleg1.png",
+    "sha256": "cc7cfdd639c519d7e4ddc591e04a68d0d6dbc17ac98c6ec987285c99010c1c28"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-axe/parts/hong_Lleg2.png",
+    "destination": "WebAssets/rpg/characters/hong/native-axe/parts/hong_Lleg2.png",
+    "sha256": "ab7a43c0ce1a7238a770817943b4c645351e7e8a9f48b57457184f38c792f4bb"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-axe/parts/hong_Rarm.png",
+    "destination": "WebAssets/rpg/characters/hong/native-axe/parts/hong_Rarm.png",
+    "sha256": "128dd7b45fef01bef0481c411881647e29bf467f000761f0ff2a67722fe0db38"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-axe/parts/hong_Rleg.png",
+    "destination": "WebAssets/rpg/characters/hong/native-axe/parts/hong_Rleg.png",
+    "sha256": "84dee5d03161a7c5417e15f22a4f4d435cb914f9534bc46c4ca5222a1d9aeead"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-axe/parts/hong_S_head.png",
+    "destination": "WebAssets/rpg/characters/hong/native-axe/parts/hong_S_head.png",
+    "sha256": "e80d21f48eae0015609b71378276787b8f328cc9dc4e8f0478b596fbbdd2d010"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-axe/parts/hong_body.png",
+    "destination": "WebAssets/rpg/characters/hong/native-axe/parts/hong_body.png",
+    "sha256": "8806464f37b51568545ee316d1c75c41d579ce62d05efe107d10457f9939ff26"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-axe/parts/hong_head.png",
+    "destination": "WebAssets/rpg/characters/hong/native-axe/parts/hong_head.png",
+    "sha256": "970f04df4f0b8de53954af2c30a4607d72a9f1a89cf2ff79a39a0114c1038b95"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-dual/hong-linear.atlas",
+    "destination": "WebAssets/rpg/characters/hong/native-dual/hong-linear.atlas.txt",
+    "sha256": "30b06cfd462494218a08e3ed283510407b558fabdab9e302698e8117df708d35"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-dual/hong-nearest.atlas",
+    "destination": "WebAssets/rpg/characters/hong/native-dual/hong-nearest.atlas.txt",
+    "sha256": "a6762bf1c279dd956014151c1875422f612ff2288d51aba5934a254955bf1493"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-dual/hong.atlas",
+    "destination": "WebAssets/rpg/characters/hong/native-dual/hong.atlas.txt",
+    "sha256": "30b06cfd462494218a08e3ed283510407b558fabdab9e302698e8117df708d35"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-dual/hong.json",
+    "destination": "WebAssets/rpg/characters/hong/native-dual/hong.json",
+    "sha256": "4bd46140d7789aa2dbf7a131774703789142db27426b366b931c6e920c427eff"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-dual/hong.png",
+    "destination": "WebAssets/rpg/characters/hong/native-dual/hong.png",
+    "sha256": "c18ec922f52a1ad6f2309882e5198488910ddef70686778c126a4cb2935725cb"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-dual/manifest.json",
+    "destination": "WebAssets/rpg/characters/hong/native-dual/manifest.json",
+    "sha256": "954284a432094b2b02382da557a11374c2e5b02c166e8ee9350c2fc94116fb6c"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-spear/hong-linear.atlas",
+    "destination": "WebAssets/rpg/characters/hong/native-spear/hong-linear.atlas.txt",
+    "sha256": "28ad177fe5ade3b2de8fbdaef5332f83e90a0d3dd96c1a8c9caf56ef21705a0a"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-spear/hong-nearest.atlas",
+    "destination": "WebAssets/rpg/characters/hong/native-spear/hong-nearest.atlas.txt",
+    "sha256": "821a4893cc72dc2697397135dd1df588d00bdad58238d8edb032a5f471bc7d6b"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-spear/hong.atlas",
+    "destination": "WebAssets/rpg/characters/hong/native-spear/hong.atlas.txt",
+    "sha256": "28ad177fe5ade3b2de8fbdaef5332f83e90a0d3dd96c1a8c9caf56ef21705a0a"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-spear/hong.json",
+    "destination": "WebAssets/rpg/characters/hong/native-spear/hong.json",
+    "sha256": "bd67a18fde6ed6f13a0ea8512ef8d02eccccc0b4e557f271c96dbdd558117687"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-spear/hong.png",
+    "destination": "WebAssets/rpg/characters/hong/native-spear/hong.png",
+    "sha256": "f23487b180c6374e03064b2a00f95c211cd42966d14acbd89c498f11a260160f"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-spear/manifest.json",
+    "destination": "WebAssets/rpg/characters/hong/native-spear/manifest.json",
+    "sha256": "06ab619467c0a20015910eca68f0d65ace9bc4848b55779c81d66c93fdba2886"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-sword/hong-linear.atlas",
+    "destination": "WebAssets/rpg/characters/hong/native-sword/hong-linear.atlas.txt",
+    "sha256": "8fd2f9e56cd027cb4e8a33c962cc709e8d66659a32047f4c3ee1984f032c30a0"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-sword/hong-nearest.atlas",
+    "destination": "WebAssets/rpg/characters/hong/native-sword/hong-nearest.atlas.txt",
+    "sha256": "44fce80f0f21f417919d51eb0ba890c205d65cbffbed1a56bd730317642c27fb"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-sword/hong.atlas",
+    "destination": "WebAssets/rpg/characters/hong/native-sword/hong.atlas.txt",
+    "sha256": "8fd2f9e56cd027cb4e8a33c962cc709e8d66659a32047f4c3ee1984f032c30a0"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-sword/hong.json",
+    "destination": "WebAssets/rpg/characters/hong/native-sword/hong.json",
+    "sha256": "35f2e1f391e9147058092b19d7d796562773a3a31428e27a30d24aed1c566b7e"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-sword/hong.png",
+    "destination": "WebAssets/rpg/characters/hong/native-sword/hong.png",
+    "sha256": "df06b4b1039ef812ae993c934d73e9dfb2f2f3f6c79b798dc17f12078e3467b4"
+  },
+  {
+    "source": "public/rpg/characters/hong/native-sword/manifest.json",
+    "destination": "WebAssets/rpg/characters/hong/native-sword/manifest.json",
+    "sha256": "dd58caa73d23eb4a32b5d27981a78078b096725f5f720a15d65a985b13edfe7f"
+  },
+  {
+    "source": "public/rpg/maps/candle-dungeon/background.webp",
+    "destination": "WebAssets/rpg/maps/candle-dungeon/background.png",
+    "sha256": "b860e86650f5b60fd14531f1b49fe33ad5478d524a25be3c1c04bb7b2e41ddf0"
+  },
+  {
+    "source": "public/rpg/maps/candle-dungeon/evidence.json",
+    "destination": "WebAssets/rpg/maps/candle-dungeon/evidence.json",
+    "sha256": "f1f0fc952ae38856d1033194217258095db142646d461ed721bc1c61d3eae658"
+  },
+  {
+    "source": "public/rpg/maps/candle-dungeon/foreground.webp",
+    "destination": "WebAssets/rpg/maps/candle-dungeon/foreground.png",
+    "sha256": "d6a2f6eb874d8df0e70a57154e0b87c8a1f9e6a55bce7261196d214628f9a091"
+  },
+  {
+    "source": "public/rpg/maps/candle-dungeon/layout.json",
+    "destination": "WebAssets/rpg/maps/candle-dungeon/layout.json",
+    "sha256": "aea9ae45078ba0e95c4dc690c4540a8ff0652f79954006b0d9cfbd532494d99a"
+  },
+  {
+    "source": "public/rpg/maps/candle-dungeon/panorama.webp",
+    "destination": "WebAssets/rpg/maps/candle-dungeon/panorama.png",
+    "sha256": "bdccdd64fcd7d016f664ee991b37ec883b20badf6100e5dbfb45d68ba9bbc53f"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_BatBoss_01/Enemy_BatBoss_01.atlas",
+    "destination": "WebAssets/rpg/monsters/Enemy_BatBoss_01/Enemy_BatBoss_01.atlas.txt",
+    "sha256": "c3bebc9f3d996a38dd1f1014c81fe1f37b200d1c5efa3236da621e8c77b3d02c"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_BatBoss_01/Enemy_BatBoss_01.json",
+    "destination": "WebAssets/rpg/monsters/Enemy_BatBoss_01/Enemy_BatBoss_01.json",
+    "sha256": "ba3856388065b1241a6eca5ace68ca2a54081035f27eb20cb90b85b61debeaa1"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_BatBoss_01/Enemy_BatBoss_01.png",
+    "destination": "WebAssets/rpg/monsters/Enemy_BatBoss_01/Enemy_BatBoss_01.png",
+    "sha256": "131562bfb6802d1353aacdd08e4678e081684aa28641c8c3fcf3880371a2d916"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_BatM_01/Enemy_BatM_01.atlas",
+    "destination": "WebAssets/rpg/monsters/Enemy_BatM_01/Enemy_BatM_01.atlas.txt",
+    "sha256": "8fed9fa1690d80fec72d03888ef2d9e8332bf4bad2a9b239fbc3c23b761b025a"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_BatM_01/Enemy_BatM_01.json",
+    "destination": "WebAssets/rpg/monsters/Enemy_BatM_01/Enemy_BatM_01.json",
+    "sha256": "cc7c4c63e359bacbc20dc8afdfe4257b97e061aed94cc73807b3ce7e5455b986"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_BatM_01/Enemy_BatM_01.png",
+    "destination": "WebAssets/rpg/monsters/Enemy_BatM_01/Enemy_BatM_01.png",
+    "sha256": "e83de1a3482cc4e29a4909df605c36e662eb79b6a1906a845acb29284dd3b728"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Bat_01/Enemy_Bat_01.atlas",
+    "destination": "WebAssets/rpg/monsters/Enemy_Bat_01/Enemy_Bat_01.atlas.txt",
+    "sha256": "7b1c37ffe3bd235ff889b68a01c63a0f529b1bf0df6302f8cd6cfc1d047834b9"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Bat_01/Enemy_Bat_01.json",
+    "destination": "WebAssets/rpg/monsters/Enemy_Bat_01/Enemy_Bat_01.json",
+    "sha256": "fb36382797c2bc407216168a7bd5b37834af66d4dba02c0e50d2c0cfd6f10fcc"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Bat_01/Enemy_Bat_01.png",
+    "destination": "WebAssets/rpg/monsters/Enemy_Bat_01/Enemy_Bat_01.png",
+    "sha256": "d5850697ce47859fbd94888649cbcff7a92271d2d25ea78f31543979e934b8bc"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_BlazeElemental_Earth/Enemy_BlazeElemental_Earth.atlas",
+    "destination": "WebAssets/rpg/monsters/Enemy_BlazeElemental_Earth/Enemy_BlazeElemental_Earth.atlas.txt",
+    "sha256": "740f64c4906601ed508bbc2f11803c8eb704ba6adcfaf58eb666c8ae26103388"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_BlazeElemental_Earth/Enemy_BlazeElemental_Earth.json",
+    "destination": "WebAssets/rpg/monsters/Enemy_BlazeElemental_Earth/Enemy_BlazeElemental_Earth.json",
+    "sha256": "c3d20fcc0b0d1e57fe686b9dc86a06c7d24eba296e2ae8272de3ac6cd428cda9"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_BlazeElemental_Earth/Enemy_BlazeElemental_Earth.png",
+    "destination": "WebAssets/rpg/monsters/Enemy_BlazeElemental_Earth/Enemy_BlazeElemental_Earth.png",
+    "sha256": "248f4c18bdd8a152f9c9e38c373032a1097b38e3ee20481adeafa849edec30c1"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_BlazeElemental_Fire/Enemy_BlazeElemental_Fire.atlas",
+    "destination": "WebAssets/rpg/monsters/Enemy_BlazeElemental_Fire/Enemy_BlazeElemental_Fire.atlas.txt",
+    "sha256": "ed48c8bdd5d24e338e18c1737f03c849d9cb988c078a77fc91b2e98b8a530bf0"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_BlazeElemental_Fire/Enemy_BlazeElemental_Fire.json",
+    "destination": "WebAssets/rpg/monsters/Enemy_BlazeElemental_Fire/Enemy_BlazeElemental_Fire.json",
+    "sha256": "6233d7d48c1e8a7b9f7836b30c8e0da810542f0499dc69651df282db35c2a2bc"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_BlazeElemental_Fire/Enemy_BlazeElemental_Fire.png",
+    "destination": "WebAssets/rpg/monsters/Enemy_BlazeElemental_Fire/Enemy_BlazeElemental_Fire.png",
+    "sha256": "a54a7fd3b3f7f802655b6c761126d6b2a516b78b1ca38041c996df7ca9ec8d85"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_BlazeElemental_Water/Enemy_BlazeElemental_Water.atlas",
+    "destination": "WebAssets/rpg/monsters/Enemy_BlazeElemental_Water/Enemy_BlazeElemental_Water.atlas.txt",
+    "sha256": "4ba94f61a60e90d07fb5c9c275cddcd369e1fa303c728fc5a639e67c48ffb13c"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_BlazeElemental_Water/Enemy_BlazeElemental_Water.json",
+    "destination": "WebAssets/rpg/monsters/Enemy_BlazeElemental_Water/Enemy_BlazeElemental_Water.json",
+    "sha256": "6233d7d48c1e8a7b9f7836b30c8e0da810542f0499dc69651df282db35c2a2bc"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_BlazeElemental_Water/Enemy_BlazeElemental_Water.png",
+    "destination": "WebAssets/rpg/monsters/Enemy_BlazeElemental_Water/Enemy_BlazeElemental_Water.png",
+    "sha256": "1f48bf443446ad8a528e6e000c5b69084a100d75c339e83bad3bae1fe32d1518"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Deadspawn_01/Enemy_Deadspawn_01.atlas",
+    "destination": "WebAssets/rpg/monsters/Enemy_Deadspawn_01/Enemy_Deadspawn_01.atlas.txt",
+    "sha256": "928969fc99e5a048c88698e5f4e4e76ca5c001cf8a835750b246affd7b8a635d"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Deadspawn_01/Enemy_Deadspawn_01.json",
+    "destination": "WebAssets/rpg/monsters/Enemy_Deadspawn_01/Enemy_Deadspawn_01.json",
+    "sha256": "a3eb217354cb727e1f55ca298885c3ab721be48f03d9186ae0b321e2ead3ef5e"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Deadspawn_01/Enemy_Deadspawn_01.png",
+    "destination": "WebAssets/rpg/monsters/Enemy_Deadspawn_01/Enemy_Deadspawn_01.png",
+    "sha256": "d91529990808891e3d8538a92521160f0521e0d081888bf4ae4d3f110d4e2d03"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Deadspawn_02/Enemy_Deadspawn_02.atlas",
+    "destination": "WebAssets/rpg/monsters/Enemy_Deadspawn_02/Enemy_Deadspawn_02.atlas.txt",
+    "sha256": "ea28ee8722b6393671d7dde32b61b3d33810ebce5d6b07054dd6fb20d2540d52"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Deadspawn_02/Enemy_Deadspawn_02.json",
+    "destination": "WebAssets/rpg/monsters/Enemy_Deadspawn_02/Enemy_Deadspawn_02.json",
+    "sha256": "31c5cb45d9e1e792f2adbf2b70505bb40caa3078bb9f6465cfc11522d3bae99e"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Deadspawn_02/Enemy_Deadspawn_02.png",
+    "destination": "WebAssets/rpg/monsters/Enemy_Deadspawn_02/Enemy_Deadspawn_02.png",
+    "sha256": "cf906ef5098a3d56dbcd4012a2067bd69ef7e1671b3b97524a171e44160d5005"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Deadspawn_03/Enemy_Deadspawn_03.atlas",
+    "destination": "WebAssets/rpg/monsters/Enemy_Deadspawn_03/Enemy_Deadspawn_03.atlas.txt",
+    "sha256": "0317951887faa80a3156c9f9450976693a9c238ea76af2c1331708f2f1eb1ffd"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Deadspawn_03/Enemy_Deadspawn_03.json",
+    "destination": "WebAssets/rpg/monsters/Enemy_Deadspawn_03/Enemy_Deadspawn_03.json",
+    "sha256": "2311717a83dbc225eccf19aec222c48ffbc94167c7b1a34de405707960af0481"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Deadspawn_03/Enemy_Deadspawn_03.png",
+    "destination": "WebAssets/rpg/monsters/Enemy_Deadspawn_03/Enemy_Deadspawn_03.png",
+    "sha256": "2b13da285e09ff3f7c3ed046ef7e9d5c879f20496e136817696274441d933f4a"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Deadspawn_Boss_01/Enemy_Deadspawn_Boss_01.atlas",
+    "destination": "WebAssets/rpg/monsters/Enemy_Deadspawn_Boss_01/Enemy_Deadspawn_Boss_01.atlas.txt",
+    "sha256": "b6c8faa8f50eb170f855a54dab889f58153a48fee336412b9db1c35cbd4b4898"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Deadspawn_Boss_01/Enemy_Deadspawn_Boss_01.json",
+    "destination": "WebAssets/rpg/monsters/Enemy_Deadspawn_Boss_01/Enemy_Deadspawn_Boss_01.json",
+    "sha256": "d17c4a9982704799cc7b2c6da4491bc0123c6b8bcfec1b3014422c5e2766c902"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Deadspawn_Boss_01/Enemy_Deadspawn_Boss_01.png",
+    "destination": "WebAssets/rpg/monsters/Enemy_Deadspawn_Boss_01/Enemy_Deadspawn_Boss_01.png",
+    "sha256": "920368ea9fe27a69c9a0b278e370f6c1f5f9a4c5a9b2a374ed225401754c688b"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_EmberElemental_Earth/Enemy_EmberElemental_Earth.atlas",
+    "destination": "WebAssets/rpg/monsters/Enemy_EmberElemental_Earth/Enemy_EmberElemental_Earth.atlas.txt",
+    "sha256": "1485a3429a59b2d20610ede06d18f6db46b2d4fbd21dad4dc461c8f365f92bb9"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_EmberElemental_Earth/Enemy_EmberElemental_Earth.json",
+    "destination": "WebAssets/rpg/monsters/Enemy_EmberElemental_Earth/Enemy_EmberElemental_Earth.json",
+    "sha256": "e363546a6317ff4b59d840f2fe56f8c92c71c3fd1444706e10844edd19c23411"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_EmberElemental_Earth/Enemy_EmberElemental_Earth.png",
+    "destination": "WebAssets/rpg/monsters/Enemy_EmberElemental_Earth/Enemy_EmberElemental_Earth.png",
+    "sha256": "c519619c11cc783d7465662b4daeb2666aee6c5cf228f688754930e3039ec6a0"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_EmberElemental_Fire/Enemy_EmberElemental_Fire.atlas",
+    "destination": "WebAssets/rpg/monsters/Enemy_EmberElemental_Fire/Enemy_EmberElemental_Fire.atlas.txt",
+    "sha256": "ce01b428917a1277ebcd736ea2e8daa02b0e15a6e7f4715523aa842c24d8f7d4"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_EmberElemental_Fire/Enemy_EmberElemental_Fire.json",
+    "destination": "WebAssets/rpg/monsters/Enemy_EmberElemental_Fire/Enemy_EmberElemental_Fire.json",
+    "sha256": "97d3de45e2a6f1187bdbb7afabef68082b73ddf3146081ee3e6500684e65aab6"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_EmberElemental_Fire/Enemy_EmberElemental_Fire.png",
+    "destination": "WebAssets/rpg/monsters/Enemy_EmberElemental_Fire/Enemy_EmberElemental_Fire.png",
+    "sha256": "4dcba6096f6e0a4bed1f6b8ab89c5fca037ff1e115f60360df7dd15c59848588"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_EmberElemental_Water/Enemy_EmberElemental_Water.atlas",
+    "destination": "WebAssets/rpg/monsters/Enemy_EmberElemental_Water/Enemy_EmberElemental_Water.atlas.txt",
+    "sha256": "a6c3f33ac01df59011875e79fc417c5d664c2442443d6da8fae952dd8726949f"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_EmberElemental_Water/Enemy_EmberElemental_Water.json",
+    "destination": "WebAssets/rpg/monsters/Enemy_EmberElemental_Water/Enemy_EmberElemental_Water.json",
+    "sha256": "56f91e2870bb93028ff76177824668606c39dc1cc054c88eac910bcda7267005"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_EmberElemental_Water/Enemy_EmberElemental_Water.png",
+    "destination": "WebAssets/rpg/monsters/Enemy_EmberElemental_Water/Enemy_EmberElemental_Water.png",
+    "sha256": "eaeb718713069187b30e306b7abee611e637772930e95d768b925c0e9aa1b5bf"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_GoblinDagger_01/Enemy_GoblinDagger_01.atlas",
+    "destination": "WebAssets/rpg/monsters/Enemy_GoblinDagger_01/Enemy_GoblinDagger_01.atlas.txt",
+    "sha256": "9a7a3fa173b5c24606d5eefb93797a810cb12baf8c8c0be5c2adff0385b95b36"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_GoblinDagger_01/Enemy_GoblinDagger_01.json",
+    "destination": "WebAssets/rpg/monsters/Enemy_GoblinDagger_01/Enemy_GoblinDagger_01.json",
+    "sha256": "aea728b22846c0c65329417a3f8f25542a3283e40d01fc4ceb1158f018972d67"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_GoblinDagger_01/Enemy_GoblinDagger_01.png",
+    "destination": "WebAssets/rpg/monsters/Enemy_GoblinDagger_01/Enemy_GoblinDagger_01.png",
+    "sha256": "d3a491b0e1f8beedb75f4e4123886159ba8d5428bb5cef18b3bdfd4d9b18bf73"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_GoblinMagic_01/Enemy_GoblinMagic_01.atlas",
+    "destination": "WebAssets/rpg/monsters/Enemy_GoblinMagic_01/Enemy_GoblinMagic_01.atlas.txt",
+    "sha256": "80d377fd063c0f6ff0e6d282d36c61ea461c656af335dc7b414a7142f5d0fac8"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_GoblinMagic_01/Enemy_GoblinMagic_01.json",
+    "destination": "WebAssets/rpg/monsters/Enemy_GoblinMagic_01/Enemy_GoblinMagic_01.json",
+    "sha256": "75aaf48b41277fe8063ee7040a5160deed6bf6d4a5fbf318af8263cf06a9b93b"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_GoblinMagic_01/Enemy_GoblinMagic_01.png",
+    "destination": "WebAssets/rpg/monsters/Enemy_GoblinMagic_01/Enemy_GoblinMagic_01.png",
+    "sha256": "925063c9a1484248d3a2ecf0da00089498a87c79d03cd11903650ad233280c1c"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_GoblinSword_01/Enemy_GoblinSword_01.atlas",
+    "destination": "WebAssets/rpg/monsters/Enemy_GoblinSword_01/Enemy_GoblinSword_01.atlas.txt",
+    "sha256": "d9b349871f4e820fcd47896ac0e47436a883cbeb012b5ee56c7076e8e3842b50"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_GoblinSword_01/Enemy_GoblinSword_01.json",
+    "destination": "WebAssets/rpg/monsters/Enemy_GoblinSword_01/Enemy_GoblinSword_01.json",
+    "sha256": "6138993d54fb81fb21c1a332fdc22c78b7adf36dcda29ba10e88bfc04f82f5e4"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_GoblinSword_01/Enemy_GoblinSword_01.png",
+    "destination": "WebAssets/rpg/monsters/Enemy_GoblinSword_01/Enemy_GoblinSword_01.png",
+    "sha256": "acf3001f595024fc4a05e412d9c796545ac985483fb778c82202cf5b35c328af"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_GoblinWarrior_Boss_01/Enemy_GoblinWarrior_Boss_01.atlas",
+    "destination": "WebAssets/rpg/monsters/Enemy_GoblinWarrior_Boss_01/Enemy_GoblinWarrior_Boss_01.atlas.txt",
+    "sha256": "20fe30ae68171c05f0f5c2acff2c82d25a56321f54b8dde145be73cd2a0e7a2c"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_GoblinWarrior_Boss_01/Enemy_GoblinWarrior_Boss_01.json",
+    "destination": "WebAssets/rpg/monsters/Enemy_GoblinWarrior_Boss_01/Enemy_GoblinWarrior_Boss_01.json",
+    "sha256": "d55ca1cf4c614277035718f9e0460c3514fb31b4188ca7bd9b2e1ed5d9bf1a22"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_GoblinWarrior_Boss_01/Enemy_GoblinWarrior_Boss_01.png",
+    "destination": "WebAssets/rpg/monsters/Enemy_GoblinWarrior_Boss_01/Enemy_GoblinWarrior_Boss_01.png",
+    "sha256": "69f58117613de601185d9a331c4e0c0d3ad26d8c9bef85696f0016c8af3893f6"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_InfernalElemental_Earth/Enemy_InfernalElemental_Earth.atlas",
+    "destination": "WebAssets/rpg/monsters/Enemy_InfernalElemental_Earth/Enemy_InfernalElemental_Earth.atlas.txt",
+    "sha256": "90e571449f34d7084c5f15ee58ae8c78ac73de2c9b225ec0af3805662e43ec3c"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_InfernalElemental_Earth/Enemy_InfernalElemental_Earth.json",
+    "destination": "WebAssets/rpg/monsters/Enemy_InfernalElemental_Earth/Enemy_InfernalElemental_Earth.json",
+    "sha256": "62d000b6ad42ca8d18530f08bb801027dc784f658e12c2fbb86f6f1e9f70b026"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_InfernalElemental_Earth/Enemy_InfernalElemental_Earth.png",
+    "destination": "WebAssets/rpg/monsters/Enemy_InfernalElemental_Earth/Enemy_InfernalElemental_Earth.png",
+    "sha256": "ab03f92477cb2f73eb94842015fe81ae974dd8be867ac7f93c55a649eb5b373b"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_InfernalElemental_Fire/Enemy_InfernalElemental_Fire.atlas",
+    "destination": "WebAssets/rpg/monsters/Enemy_InfernalElemental_Fire/Enemy_InfernalElemental_Fire.atlas.txt",
+    "sha256": "2106c59beed6541892d12c8a6307ff582e2c407bfafe9521d82f8dc824e40ca3"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_InfernalElemental_Fire/Enemy_InfernalElemental_Fire.json",
+    "destination": "WebAssets/rpg/monsters/Enemy_InfernalElemental_Fire/Enemy_InfernalElemental_Fire.json",
+    "sha256": "5f333c0084a950fa34431f9f4695a3ff084d547998dd4521d9a01ea86a76f23f"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_InfernalElemental_Fire/Enemy_InfernalElemental_Fire.png",
+    "destination": "WebAssets/rpg/monsters/Enemy_InfernalElemental_Fire/Enemy_InfernalElemental_Fire.png",
+    "sha256": "f675eb515e1c43b751877c357ae704b53a5d70f2e5051d488388697d06f44f78"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_InfernalElemental_Water/Enemy_InfernalElemental_Water.atlas",
+    "destination": "WebAssets/rpg/monsters/Enemy_InfernalElemental_Water/Enemy_InfernalElemental_Water.atlas.txt",
+    "sha256": "c7d7380aae61a07317f7a1302caaf00be4284133bec4e9c446f98c528c70def7"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_InfernalElemental_Water/Enemy_InfernalElemental_Water.json",
+    "destination": "WebAssets/rpg/monsters/Enemy_InfernalElemental_Water/Enemy_InfernalElemental_Water.json",
+    "sha256": "ede161a7a755defaeab148b8dea2962bd5dbf6d9aadc3457ab39b557ae8e3ae2"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_InfernalElemental_Water/Enemy_InfernalElemental_Water.png",
+    "destination": "WebAssets/rpg/monsters/Enemy_InfernalElemental_Water/Enemy_InfernalElemental_Water.png",
+    "sha256": "185c852d81286b63f3e0e53157bb644f79f4d55cc673067959df44be0df55d50"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Nohaz_Boss_01/Enemy_Nohaz_Boss_01.atlas",
+    "destination": "WebAssets/rpg/monsters/Enemy_Nohaz_Boss_01/Enemy_Nohaz_Boss_01.atlas.txt",
+    "sha256": "034c628e0f0b5f99ac2c16e1468ed2bcba6c7cb68bf16e615bc670ec9b2174dd"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Nohaz_Boss_01/Enemy_Nohaz_Boss_01.json",
+    "destination": "WebAssets/rpg/monsters/Enemy_Nohaz_Boss_01/Enemy_Nohaz_Boss_01.json",
+    "sha256": "942c5da4b5397149969fd27308dbf63e00dbf35e39f845c38ccfc1dacb72999b"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Nohaz_Boss_01/Enemy_Nohaz_Boss_01.png",
+    "destination": "WebAssets/rpg/monsters/Enemy_Nohaz_Boss_01/Enemy_Nohaz_Boss_01.png",
+    "sha256": "c3dfce42edc735eb0a52af6a3dff2f6f97139156f59692a8105138bafd4680bc"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_SkeletonArcher_01/Enemy_SkeletonArcher_01.atlas",
+    "destination": "WebAssets/rpg/monsters/Enemy_SkeletonArcher_01/Enemy_SkeletonArcher_01.atlas.txt",
+    "sha256": "043bc9631161355451bf634fb784769ef462761621cf52dc2863f9b6aeca5168"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_SkeletonArcher_01/Enemy_SkeletonArcher_01.json",
+    "destination": "WebAssets/rpg/monsters/Enemy_SkeletonArcher_01/Enemy_SkeletonArcher_01.json",
+    "sha256": "cbcbfce383ff56605fa56381d50338e62b750cfc2e297c501b50ecd666a2b365"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_SkeletonArcher_01/Enemy_SkeletonArcher_01.png",
+    "destination": "WebAssets/rpg/monsters/Enemy_SkeletonArcher_01/Enemy_SkeletonArcher_01.png",
+    "sha256": "2ce32ad47a448b414e5c175edc9976fd94d3a55ca855063580b50deb10a61196"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_SkeletonBoss_01/Enemy_SkeletonBoss_01.atlas",
+    "destination": "WebAssets/rpg/monsters/Enemy_SkeletonBoss_01/Enemy_SkeletonBoss_01.atlas.txt",
+    "sha256": "25c38c90152f7761fbe3bcc4c53c5f0b7a09c2ca2f152fef8c6bdf057443775b"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_SkeletonBoss_01/Enemy_SkeletonBoss_01.json",
+    "destination": "WebAssets/rpg/monsters/Enemy_SkeletonBoss_01/Enemy_SkeletonBoss_01.json",
+    "sha256": "0dd5bd0716697686d5678e284d7acff0df5496d7a6f31932dab798a7c6033bc1"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_SkeletonBoss_01/Enemy_SkeletonBoss_01.png",
+    "destination": "WebAssets/rpg/monsters/Enemy_SkeletonBoss_01/Enemy_SkeletonBoss_01.png",
+    "sha256": "daf8825e46edaf924993134faf833c3fccfd61ae9f81ec54880f9bdf30c41894"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_SkeletonMBoss_01/Enemy_SkeletonMBoss_01.atlas",
+    "destination": "WebAssets/rpg/monsters/Enemy_SkeletonMBoss_01/Enemy_SkeletonMBoss_01.atlas.txt",
+    "sha256": "9c2d8e0c247a960d15466d72900998fc15249601de834861c9f95894b11738e5"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_SkeletonMBoss_01/Enemy_SkeletonMBoss_01.json",
+    "destination": "WebAssets/rpg/monsters/Enemy_SkeletonMBoss_01/Enemy_SkeletonMBoss_01.json",
+    "sha256": "06fe8c95488dbcca2df1b21a474927c5d9ce0fa5bc1c074d3bb07cb3897043dd"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_SkeletonMBoss_01/Enemy_SkeletonMBoss_01.png",
+    "destination": "WebAssets/rpg/monsters/Enemy_SkeletonMBoss_01/Enemy_SkeletonMBoss_01.png",
+    "sha256": "f80310794128f801de5ecfee256f91c7ffd9c2d050cb78f99db4905bbaf0fd7f"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_SkeletonMagic_01/Enemy_SkeletonMagic_01.atlas",
+    "destination": "WebAssets/rpg/monsters/Enemy_SkeletonMagic_01/Enemy_SkeletonMagic_01.atlas.txt",
+    "sha256": "a6af643d04e94c4ae68b36352db8c7b0c02626b8e1fa7f94f147996f5ab86df9"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_SkeletonMagic_01/Enemy_SkeletonMagic_01.json",
+    "destination": "WebAssets/rpg/monsters/Enemy_SkeletonMagic_01/Enemy_SkeletonMagic_01.json",
+    "sha256": "44c63e9288da3bbe3ef18f38deb44a92c4253787403a09e9bf4c45804d669291"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_SkeletonMagic_01/Enemy_SkeletonMagic_01.png",
+    "destination": "WebAssets/rpg/monsters/Enemy_SkeletonMagic_01/Enemy_SkeletonMagic_01.png",
+    "sha256": "67189f6fe033ce94f60700dc5317c837aa07772a521fa63f6323c9c2bec1ba11"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_SkeletonMelee_01/Enemy_SkeletonMelee_01.atlas",
+    "destination": "WebAssets/rpg/monsters/Enemy_SkeletonMelee_01/Enemy_SkeletonMelee_01.atlas.txt",
+    "sha256": "837e30ee6ed756c4909833a6024efa838895ff47107de993de47658de4280a0f"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_SkeletonMelee_01/Enemy_SkeletonMelee_01.json",
+    "destination": "WebAssets/rpg/monsters/Enemy_SkeletonMelee_01/Enemy_SkeletonMelee_01.json",
+    "sha256": "5009c029428df1d3cc9d40af276b584e376a22335fd72c1f5349d449e9e82fd4"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_SkeletonMelee_01/Enemy_SkeletonMelee_01.png",
+    "destination": "WebAssets/rpg/monsters/Enemy_SkeletonMelee_01/Enemy_SkeletonMelee_01.png",
+    "sha256": "b09ad1862c744e46c646cd38eb1a3eaed6772568dd4aa97a67b50aad05c4a453"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Slime_01_B/Enemy_Slime_01_B.atlas",
+    "destination": "WebAssets/rpg/monsters/Enemy_Slime_01_B/Enemy_Slime_01_B.atlas.txt",
+    "sha256": "72c341c110b855d9d34834dca2e976dad8a87398f02ea96b77773ed78c14363c"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Slime_01_B/Enemy_Slime_01_B.json",
+    "destination": "WebAssets/rpg/monsters/Enemy_Slime_01_B/Enemy_Slime_01_B.json",
+    "sha256": "c02def7c7a052ac50435d5a9ea0f9e35b902f8ffb08c9fa06e798b97792922af"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Slime_01_B/Enemy_Slime_01_B.png",
+    "destination": "WebAssets/rpg/monsters/Enemy_Slime_01_B/Enemy_Slime_01_B.png",
+    "sha256": "a12707fb3f422f07df7d15924fa3bcc2299ef922fdd1ef7ab57fb4c35ae0edcf"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Slime_01_G/Enemy_Slime_01_G.atlas",
+    "destination": "WebAssets/rpg/monsters/Enemy_Slime_01_G/Enemy_Slime_01_G.atlas.txt",
+    "sha256": "573667de3d47fc57014159cbfeb2c7708873797ae6a556d9783760d0779b8fba"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Slime_01_G/Enemy_Slime_01_G.json",
+    "destination": "WebAssets/rpg/monsters/Enemy_Slime_01_G/Enemy_Slime_01_G.json",
+    "sha256": "d7764fa8c4e955bf8f82bb539eda8e3c3fbca1953f61cfc2060ddbe73bf2f450"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Slime_01_G/Enemy_Slime_01_G.png",
+    "destination": "WebAssets/rpg/monsters/Enemy_Slime_01_G/Enemy_Slime_01_G.png",
+    "sha256": "acdfe7fdda9705d2d3d7cefcb8a55f58a7f9711a858b172570147ba630be0dee"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Slime_01_R/Enemy_Slime_01_R.atlas",
+    "destination": "WebAssets/rpg/monsters/Enemy_Slime_01_R/Enemy_Slime_01_R.atlas.txt",
+    "sha256": "5cf6ec65dce344143eb65130896559264af813c6a1d9155f93a057d132f4f765"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Slime_01_R/Enemy_Slime_01_R.json",
+    "destination": "WebAssets/rpg/monsters/Enemy_Slime_01_R/Enemy_Slime_01_R.json",
+    "sha256": "7b8af72468145f76cc71a28531a9d5f96920d49852d4534b6d1d64367871631a"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Slime_01_R/Enemy_Slime_01_R.png",
+    "destination": "WebAssets/rpg/monsters/Enemy_Slime_01_R/Enemy_Slime_01_R.png",
+    "sha256": "1d42701493bd4a2103b3ffd3c43d2a69aaebde5369fa65ea68bbdd6c7a4df03a"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Slime_02_B/Enemy_Slime_02_B.atlas",
+    "destination": "WebAssets/rpg/monsters/Enemy_Slime_02_B/Enemy_Slime_02_B.atlas.txt",
+    "sha256": "3e6b6c3ae7450b8edf26e26ae06f96278d4e065ffc631c2f7e5649a13206be6e"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Slime_02_B/Enemy_Slime_02_B.json",
+    "destination": "WebAssets/rpg/monsters/Enemy_Slime_02_B/Enemy_Slime_02_B.json",
+    "sha256": "e80aab1f362353aa1e604ef44559935c2f45ad23b23cb283074e99a93d461ac6"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Slime_02_B/Enemy_Slime_02_B.png",
+    "destination": "WebAssets/rpg/monsters/Enemy_Slime_02_B/Enemy_Slime_02_B.png",
+    "sha256": "af599aa0b157729d54cb52994ebe5405d7bd1e8b8009c175ab8ca315f42efe2b"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Slime_02_G/Enemy_Slime_02_G.atlas",
+    "destination": "WebAssets/rpg/monsters/Enemy_Slime_02_G/Enemy_Slime_02_G.atlas.txt",
+    "sha256": "a302b45c6c5cee71e8c764026e443431aec22150485fd157f06282b8fd72a06b"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Slime_02_G/Enemy_Slime_02_G.json",
+    "destination": "WebAssets/rpg/monsters/Enemy_Slime_02_G/Enemy_Slime_02_G.json",
+    "sha256": "00e8a244c1bca6546d51c911d1f3e2fc1665a56c3f20824061a4b1634378932d"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Slime_02_G/Enemy_Slime_02_G.png",
+    "destination": "WebAssets/rpg/monsters/Enemy_Slime_02_G/Enemy_Slime_02_G.png",
+    "sha256": "a4364bb5669e8fe61b38aa3454539005fb42165992620c6c12d0119fcbb8ce3b"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Slime_02_R/Enemy_Slime_02_R.atlas",
+    "destination": "WebAssets/rpg/monsters/Enemy_Slime_02_R/Enemy_Slime_02_R.atlas.txt",
+    "sha256": "94ef00e846a4436d31a4cca987509879fe30c26fba49373422756f2a6445f86d"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Slime_02_R/Enemy_Slime_02_R.json",
+    "destination": "WebAssets/rpg/monsters/Enemy_Slime_02_R/Enemy_Slime_02_R.json",
+    "sha256": "14ddf52864f62e02c4bf5e9b13b0eae84723499d3557b6c69fe64fe10c3f9abe"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Slime_02_R/Enemy_Slime_02_R.png",
+    "destination": "WebAssets/rpg/monsters/Enemy_Slime_02_R/Enemy_Slime_02_R.png",
+    "sha256": "5e3ca9bf159de9348d5c0b4e4af994aa06b3a4de9c015cd04d5c1fdb3a504d8f"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Slime_Boss_01_B/Enemy_Slime_Boss_01_B.atlas",
+    "destination": "WebAssets/rpg/monsters/Enemy_Slime_Boss_01_B/Enemy_Slime_Boss_01_B.atlas.txt",
+    "sha256": "4e4901bd1f10351a180c491bff1309790eaf96c7c66b84e2cc6b52801341a2c2"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Slime_Boss_01_B/Enemy_Slime_Boss_01_B.json",
+    "destination": "WebAssets/rpg/monsters/Enemy_Slime_Boss_01_B/Enemy_Slime_Boss_01_B.json",
+    "sha256": "cc0b39388a859f11bf1209d07aeb9aa56023464e37981a675ccd0c82f97830c1"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Slime_Boss_01_B/Enemy_Slime_Boss_01_B.png",
+    "destination": "WebAssets/rpg/monsters/Enemy_Slime_Boss_01_B/Enemy_Slime_Boss_01_B.png",
+    "sha256": "6d9fe704b57c7fb1ffed591ee42640d24b8808ab4d4ab94cfa21b52b0a4f8913"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Slime_Boss_01_G/Enemy_Slime_Boss_01_G.atlas",
+    "destination": "WebAssets/rpg/monsters/Enemy_Slime_Boss_01_G/Enemy_Slime_Boss_01_G.atlas.txt",
+    "sha256": "4ffe2139fc336fc1bde09fca5b5aa3fdf24acb8770ed50481ec9d37da9cf56de"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Slime_Boss_01_G/Enemy_Slime_Boss_01_G.json",
+    "destination": "WebAssets/rpg/monsters/Enemy_Slime_Boss_01_G/Enemy_Slime_Boss_01_G.json",
+    "sha256": "8ecf3db6063c4a19d91ad70b5352dd4f8da1cfdddf1a3494d26af8245636eb58"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Slime_Boss_01_G/Enemy_Slime_Boss_01_G.png",
+    "destination": "WebAssets/rpg/monsters/Enemy_Slime_Boss_01_G/Enemy_Slime_Boss_01_G.png",
+    "sha256": "01da94aa47e5f42113ea8ed425b0dcce97398a7177e284be4fd76ad46d207b90"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Slime_Boss_01_R/Enemy_Slime_Boss_01_R.atlas",
+    "destination": "WebAssets/rpg/monsters/Enemy_Slime_Boss_01_R/Enemy_Slime_Boss_01_R.atlas.txt",
+    "sha256": "fecafd01b08f2a7962072d43603604771012f0b3310c245c76db5a62b3c774b6"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Slime_Boss_01_R/Enemy_Slime_Boss_01_R.json",
+    "destination": "WebAssets/rpg/monsters/Enemy_Slime_Boss_01_R/Enemy_Slime_Boss_01_R.json",
+    "sha256": "233167263c7a81ad5e68b2a309eead561c628c4bccc7c3ace8843681c004c982"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Slime_Boss_01_R/Enemy_Slime_Boss_01_R.png",
+    "destination": "WebAssets/rpg/monsters/Enemy_Slime_Boss_01_R/Enemy_Slime_Boss_01_R.png",
+    "sha256": "3cf62677101555a1d25f6d5e04bd01d3dfc6cb5c123039c985b1fcedfdeef9aa"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Slime_Boss_02_B/Enemy_Slime_Boss_02_B.atlas",
+    "destination": "WebAssets/rpg/monsters/Enemy_Slime_Boss_02_B/Enemy_Slime_Boss_02_B.atlas.txt",
+    "sha256": "55771ede4ebb33481df0bef85553433a6b11c89c63990fbd1bcb69b2a60e8353"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Slime_Boss_02_B/Enemy_Slime_Boss_02_B.json",
+    "destination": "WebAssets/rpg/monsters/Enemy_Slime_Boss_02_B/Enemy_Slime_Boss_02_B.json",
+    "sha256": "9a55c295a3a6388b4d714d8b3c2f213228c393d4cf1e220faf60d3af59031cad"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Slime_Boss_02_B/Enemy_Slime_Boss_02_B.png",
+    "destination": "WebAssets/rpg/monsters/Enemy_Slime_Boss_02_B/Enemy_Slime_Boss_02_B.png",
+    "sha256": "4bd088ef9c17ada2a941fd2b12d1c9f6ca20bff55ad7f3e4b333c1f8fe45ef7b"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Slime_Boss_02_G/Enemy_Slime_Boss_02_G.atlas",
+    "destination": "WebAssets/rpg/monsters/Enemy_Slime_Boss_02_G/Enemy_Slime_Boss_02_G.atlas.txt",
+    "sha256": "76894f1b36ea63454c499ba0fad458bed2aa61a19a918d75e1c196ab6de5f00c"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Slime_Boss_02_G/Enemy_Slime_Boss_02_G.json",
+    "destination": "WebAssets/rpg/monsters/Enemy_Slime_Boss_02_G/Enemy_Slime_Boss_02_G.json",
+    "sha256": "202c149e0d8ab1f035298ed3a6860b1fd3cb56fa258fb92ca8f722b4c1356be9"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Slime_Boss_02_G/Enemy_Slime_Boss_02_G.png",
+    "destination": "WebAssets/rpg/monsters/Enemy_Slime_Boss_02_G/Enemy_Slime_Boss_02_G.png",
+    "sha256": "a22b3061ca5781b542efc3d0094146b036069ba86b04f17d374b589c91d5d4e1"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Slime_Boss_02_R/Enemy_Slime_Boss_02_R.atlas",
+    "destination": "WebAssets/rpg/monsters/Enemy_Slime_Boss_02_R/Enemy_Slime_Boss_02_R.atlas.txt",
+    "sha256": "8c30da6060c299716cd25d2af9f679d22e0e5685a7bd8cd7fdd80e94589d0d6b"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Slime_Boss_02_R/Enemy_Slime_Boss_02_R.json",
+    "destination": "WebAssets/rpg/monsters/Enemy_Slime_Boss_02_R/Enemy_Slime_Boss_02_R.json",
+    "sha256": "0cf2bce4046cf3d1b88fc7acf20c2334e89fa695fed6842bd928c71d448cc4db"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Slime_Boss_02_R/Enemy_Slime_Boss_02_R.png",
+    "destination": "WebAssets/rpg/monsters/Enemy_Slime_Boss_02_R/Enemy_Slime_Boss_02_R.png",
+    "sha256": "05b47ca8042f37667ad2e3d3dd7d469c8998d614c8930e257f848b4b3c0646f8"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Snixx_Boss_01/Enemy_Snixx_Boss_01.atlas",
+    "destination": "WebAssets/rpg/monsters/Enemy_Snixx_Boss_01/Enemy_Snixx_Boss_01.atlas.txt",
+    "sha256": "b0e139f6ad07f449a6d88f17b6f432d8a80a3d83d65409761f22f76adc61ed4c"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Snixx_Boss_01/Enemy_Snixx_Boss_01.json",
+    "destination": "WebAssets/rpg/monsters/Enemy_Snixx_Boss_01/Enemy_Snixx_Boss_01.json",
+    "sha256": "4bee2c293522444573bd00122dccc6edfd6fb117e6eac2595d758f2a56e78fa5"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Snixx_Boss_01/Enemy_Snixx_Boss_01.png",
+    "destination": "WebAssets/rpg/monsters/Enemy_Snixx_Boss_01/Enemy_Snixx_Boss_01.png",
+    "sha256": "a158751f203c5dbb3a379e5484de1e4b4e76d96529ea417938bf545f21f20125"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Spider_01/Enemy_Spider_01.atlas",
+    "destination": "WebAssets/rpg/monsters/Enemy_Spider_01/Enemy_Spider_01.atlas.txt",
+    "sha256": "9050fa9cd37a440ba05450da4b85b5e9880e40542c2bb05ce5c0776bb70dfd0d"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Spider_01/Enemy_Spider_01.json",
+    "destination": "WebAssets/rpg/monsters/Enemy_Spider_01/Enemy_Spider_01.json",
+    "sha256": "90a28c5d2d08a97b8223ac123743d797ad0989b390397e92b4e6f7e419542bc0"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Spider_01/Enemy_Spider_01.png",
+    "destination": "WebAssets/rpg/monsters/Enemy_Spider_01/Enemy_Spider_01.png",
+    "sha256": "03dada3bedf0de3cc9ed446d9919ad08f7170e84ac5183b77556d0d556c3b035"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Spider_Boss_01/Enemy_Spider_Boss_01.atlas",
+    "destination": "WebAssets/rpg/monsters/Enemy_Spider_Boss_01/Enemy_Spider_Boss_01.atlas.txt",
+    "sha256": "a52aca1d72ac6b2bb4a37b64fd82ace05ec6fba9e81e468a38a0c281dbe8bf4b"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Spider_Boss_01/Enemy_Spider_Boss_01.json",
+    "destination": "WebAssets/rpg/monsters/Enemy_Spider_Boss_01/Enemy_Spider_Boss_01.json",
+    "sha256": "7fc4a59080a95379f66ba0d9eeaa4eecc90c7924ab6a94b14412b69c2b75a59f"
+  },
+  {
+    "source": "public/rpg/monsters/Enemy_Spider_Boss_01/Enemy_Spider_Boss_01.png",
+    "destination": "WebAssets/rpg/monsters/Enemy_Spider_Boss_01/Enemy_Spider_Boss_01.png",
+    "sha256": "6bd575361c0cfd07f8faad15b36ca1b085476a3666822fb490b10bcc0b972da2"
+  }
+]

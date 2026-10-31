@@ -1197,7 +1197,8 @@ const io = new Server(httpServer, {
 });
 
 if (process.env.POKER_TEST_MODE !== "1") {
-  const room = new HybridHoldemRoom(false); // Eight-seat mode temporarily under repair.
+  const unitySolo=process.env.UNITY_SOLO==='1';
+  const room = new HybridHoldemRoom(unitySolo); // Dedicated local Unity solo backend only.
   const room6 = new HybridHoldemRoom(true,6);
   let tournamentRoom=new HybridHoldemRoom(false,8,'tournament');
 
@@ -1228,6 +1229,12 @@ if (process.env.POKER_TEST_MODE !== "1") {
     });
     socket.on("JOIN_ROOM", (data: { name: string; tableSize?: number; tournament?:boolean }) => {
       if(selectedRoom)return;
+      if(unitySolo){
+        if(room.userCount>0){socket.emit('ROOM_DENIED',{message:'전용 싱글 테이블이 사용 중입니다.'});return;}
+        if(!registered){lobbyLedger.connect(socket.id,undefined);registered=true;}
+        if(!lobbyLedger.reserve(socket.id))return;
+        selectedRoom=room;room.onUserConnect(socket,data?.name||'용사');return;
+      }
       if(data?.tournament===true){
         refreshTournament();
         selectedRoom=tournamentRoom;selectedRoom.onUserConnect(socket,data.name);return;

@@ -1,0 +1,621 @@
+{
+  "sourceCommit": "d3b199937a57aba16af1badb8ff7106ad8d0cfe4",
+  "heroes": {
+    "axe": "characters/hong/native-axe/hong",
+    "sword": "characters/hong/native-sword/hong",
+    "dual": "characters/hong/native-dual/hong",
+    "spear": "characters/hong/native-spear/hong",
+    "unarmed": "characters/hong/native-axe/hong"
+  },
+  "monsters": {
+    "1001": {
+      "skeleton": "monsters/Enemy_Slime_01_R/Enemy_Slime_01_R",
+      "groundSlots": [
+        "body"
+      ],
+      "clips": {
+        "idle": "stay1",
+        "move": "run1",
+        "attack": "attack1",
+        "hurt": "stay1",
+        "death": "die1"
+      }
+    },
+    "1002": {
+      "skeleton": "monsters/Enemy_Slime_01_B/Enemy_Slime_01_B",
+      "groundSlots": [
+        "body"
+      ],
+      "clips": {
+        "idle": "stay1",
+        "move": "run1",
+        "attack": "attack1",
+        "hurt": "stay1",
+        "death": "die1"
+      }
+    },
+    "1003": {
+      "skeleton": "monsters/Enemy_Slime_01_G/Enemy_Slime_01_G",
+      "groundSlots": [
+        "body"
+      ],
+      "clips": {
+        "idle": "stay1",
+        "move": "run1",
+        "attack": "attack1",
+        "hurt": "stay1",
+        "death": "die1"
+      }
+    },
+    "1011": {
+      "skeleton": "monsters/Enemy_Slime_02_R/Enemy_Slime_02_R",
+      "groundSlots": [
+        "body"
+      ],
+      "clips": {
+        "idle": "stay1",
+        "move": "run1",
+        "attack": "attack1",
+        "hurt": "stay1",
+        "death": "die1"
+      }
+    },
+    "1012": {
+      "skeleton": "monsters/Enemy_Slime_02_B/Enemy_Slime_02_B",
+      "groundSlots": [
+        "body"
+      ],
+      "clips": {
+        "idle": "stay1",
+        "move": "run1",
+        "attack": "attack1",
+        "hurt": "stay1",
+        "death": "die1"
+      }
+    },
+    "1013": {
+      "skeleton": "monsters/Enemy_Slime_02_G/Enemy_Slime_02_G",
+      "groundSlots": [
+        "body"
+      ],
+      "clips": {
+        "idle": "stay1",
+        "move": "run1",
+        "attack": "attack1",
+        "hurt": "stay1",
+        "death": "die1"
+      }
+    },
+    "1021": {
+      "skeleton": "monsters/Enemy_Slime_Boss_01_R/Enemy_Slime_Boss_01_R",
+      "groundSlots": [
+        "body"
+      ],
+      "clips": {
+        "idle": "stay1",
+        "move": "run1",
+        "attack": "attack1",
+        "hurt": "stay1",
+        "death": "die1"
+      }
+    },
+    "1022": {
+      "skeleton": "monsters/Enemy_Slime_Boss_01_B/Enemy_Slime_Boss_01_B",
+      "groundSlots": [
+        "body"
+      ],
+      "clips": {
+        "idle": "stay1",
+        "move": "run1",
+        "attack": "attack1",
+        "hurt": "stay1",
+        "death": "die1"
+      }
+    },
+    "1023": {
+      "skeleton": "monsters/Enemy_Slime_Boss_01_G/Enemy_Slime_Boss_01_G",
+      "groundSlots": [
+        "body"
+      ],
+      "clips": {
+        "idle": "stay1",
+        "move": "run1",
+        "attack": "attack1",
+        "hurt": "stay1",
+        "death": "die1"
+      }
+    },
+    "1031": {
+      "skeleton": "monsters/Enemy_Slime_Boss_02_R/Enemy_Slime_Boss_02_R",
+      "groundSlots": [
+        "body2",
+        "body1"
+      ],
+      "clips": {
+        "idle": "stay1",
+        "move": "run1",
+        "attack": "attack1",
+        "hurt": "stay1",
+        "death": "die1"
+      }
+    },
+    "1032": {
+      "skeleton": "monsters/Enemy_Slime_Boss_02_B/Enemy_Slime_Boss_02_B",
+      "groundSlots": [
+        "body2",
+        "body1"
+      ],
+      "clips": {
+        "idle": "stay1",
+        "move": "run1",
+        "attack": "attack1",
+        "hurt": "stay1",
+        "death": "die1"
+      }
+    },
+    "1033": {
+      "skeleton": "monsters/Enemy_Slime_Boss_02_G/Enemy_Slime_Boss_02_G",
+      "groundSlots": [
+        "body2",
+        "body1"
+      ],
+      "clips": {
+        "idle": "stay1",
+        "move": "run1",
+        "attack": "attack1",
+        "hurt": "stay1",
+        "death": "die1"
+      }
+    },
+    "1051": {
+      "skeleton": "monsters/Enemy_Deadspawn_01/Enemy_Deadspawn_01",
+      "groundSlots": [
+        "BRleg",
+        "BLleg",
+        "FRleg",
+        "FLleg",
+        "body"
+      ],
+      "clips": {
+        "idle": "stay1",
+        "move": "run1",
+        "attack": "attack1",
+        "hurt": "stay1",
+        "death": "die1"
+      }
+    },
+    "1052": {
+      "skeleton": "monsters/Enemy_Deadspawn_02/Enemy_Deadspawn_02",
+      "groundSlots": [
+        "BRleg",
+        "FRleg",
+        "body",
+        "BLleg",
+        "FLleg"
+      ],
+      "clips": {
+        "idle": "stay1",
+        "move": "run1",
+        "attack": "attack1",
+        "hurt": "stay1",
+        "death": "die1"
+      }
+    },
+    "1053": {
+      "skeleton": "monsters/Enemy_Deadspawn_03/Enemy_Deadspawn_03",
+      "groundSlots": [
+        "Rleg",
+        "body",
+        "Lleg"
+      ],
+      "clips": {
+        "idle": "stay1",
+        "move": "run1",
+        "attack": "attack1",
+        "hurt": "stay1",
+        "death": "die1"
+      }
+    },
+    "1054": {
+      "skeleton": "monsters/Enemy_Deadspawn_Boss_01/Enemy_Deadspawn_Boss_01",
+      "groundSlots": [
+        "Rleg",
+        "Lleg_1",
+        "Lleg",
+        "body"
+      ],
+      "clips": {
+        "idle": "stay1",
+        "move": "run1",
+        "attack": "attack1",
+        "hurt": "stay1",
+        "death": "die1"
+      }
+    },
+    "1055": {
+      "skeleton": "monsters/Enemy_Nohaz_Boss_01/Enemy_Nohaz_Boss_01",
+      "groundSlots": [
+        "Rleg",
+        "body"
+      ],
+      "clips": {
+        "idle": "stay1",
+        "move": "run1",
+        "attack": "attack1",
+        "hurt": "stay1",
+        "death": "die1"
+      }
+    },
+    "1101": {
+      "skeleton": "monsters/Enemy_GoblinDagger_01/Enemy_GoblinDagger_01",
+      "groundSlots": [
+        "Lleg",
+        "Rleg",
+        "body",
+        "Lleg2"
+      ],
+      "clips": {
+        "idle": "stay1",
+        "move": "run1",
+        "attack": "attack1",
+        "hurt": "stay1",
+        "death": "die1"
+      }
+    },
+    "1102": {
+      "skeleton": "monsters/Enemy_GoblinSword_01/Enemy_GoblinSword_01",
+      "groundSlots": [
+        "Lleg",
+        "Rleg",
+        "body"
+      ],
+      "clips": {
+        "idle": "stay1",
+        "move": "run1",
+        "attack": "attack1",
+        "hurt": "stay1",
+        "death": "die1"
+      }
+    },
+    "1103": {
+      "skeleton": "monsters/Enemy_GoblinMagic_01/Enemy_GoblinMagic_01",
+      "groundSlots": [
+        "Lleg",
+        "body",
+        "Rleg"
+      ],
+      "clips": {
+        "idle": "stay1",
+        "move": "run1",
+        "attack": "attack1",
+        "hurt": "stay1",
+        "death": "die1"
+      }
+    },
+    "1104": {
+      "skeleton": "monsters/Enemy_Snixx_Boss_01/Enemy_Snixx_Boss_01",
+      "groundSlots": [
+        "Lleg",
+        "body",
+        "Rleg"
+      ],
+      "clips": {
+        "idle": "stay1",
+        "move": "run1",
+        "attack": "attack1",
+        "hurt": "stay1",
+        "death": "die1"
+      }
+    },
+    "1105": {
+      "skeleton": "monsters/Enemy_GoblinWarrior_Boss_01/Enemy_GoblinWarrior_Boss_01",
+      "groundSlots": [
+        "Rleg",
+        "Lleg",
+        "body"
+      ],
+      "clips": {
+        "idle": "stay1",
+        "move": "run1",
+        "attack": "attack1",
+        "hurt": "stay1",
+        "death": "die1"
+      }
+    },
+    "1151": {
+      "skeleton": "monsters/Enemy_SkeletonArcher_01/Enemy_SkeletonArcher_01",
+      "groundSlots": [
+        "Lleg",
+        "Rleg",
+        "body"
+      ],
+      "clips": {
+        "idle": "stay1",
+        "move": "run1",
+        "attack": "attack1",
+        "hurt": "stay1",
+        "death": "die1"
+      }
+    },
+    "1152": {
+      "skeleton": "monsters/Enemy_SkeletonMelee_01/Enemy_SkeletonMelee_01",
+      "groundSlots": [
+        "Lleg",
+        "Rleg",
+        "body"
+      ],
+      "clips": {
+        "idle": "stay1",
+        "move": "run1",
+        "attack": "attack1",
+        "hurt": "stay1",
+        "death": "die1"
+      }
+    },
+    "1153": {
+      "skeleton": "monsters/Enemy_SkeletonMagic_01/Enemy_SkeletonMagic_01",
+      "groundSlots": [
+        "Lleg",
+        "Rleg",
+        "body"
+      ],
+      "clips": {
+        "idle": "stay1",
+        "move": "run1",
+        "attack": "attack1",
+        "hurt": "stay1",
+        "death": "die1"
+      }
+    },
+    "1154": {
+      "skeleton": "monsters/Enemy_SkeletonMBoss_01/Enemy_SkeletonMBoss_01",
+      "groundSlots": [
+        "Lleg",
+        "Rleg",
+        "body"
+      ],
+      "clips": {
+        "idle": "stay1",
+        "move": "run1",
+        "attack": "attack1",
+        "hurt": "stay1",
+        "death": "die1"
+      }
+    },
+    "1155": {
+      "skeleton": "monsters/Enemy_SkeletonBoss_01/Enemy_SkeletonBoss_01",
+      "groundSlots": [
+        "Rleg",
+        "Lleg",
+        "body",
+        "pet_body"
+      ],
+      "clips": {
+        "idle": "stay1",
+        "move": "run1",
+        "attack": "attack1",
+        "hurt": "stay1",
+        "death": "die1"
+      }
+    },
+    "1201": {
+      "skeleton": "monsters/Enemy_Spider_01/Enemy_Spider_01",
+      "groundSlots": [
+        "Lleg3",
+        "Rleg3",
+        "body",
+        "Lleg2",
+        "Lleg1",
+        "Lleg",
+        "Rleg2",
+        "Rleg1"
+      ],
+      "clips": {
+        "idle": "stay1",
+        "move": "run1",
+        "attack": "attack1",
+        "hurt": "stay1",
+        "death": "die1"
+      }
+    },
+    "1202": {
+      "skeleton": "monsters/Enemy_Spider_Boss_01/Enemy_Spider_Boss_01",
+      "groundSlots": [
+        "body"
+      ],
+      "clips": {
+        "idle": "stay1",
+        "move": "run1",
+        "attack": "attack1",
+        "hurt": "stay1",
+        "death": "die1"
+      }
+    },
+    "1251": {
+      "skeleton": "monsters/Enemy_Bat_01/Enemy_Bat_01",
+      "groundSlots": [
+        "body"
+      ],
+      "clips": {
+        "idle": "stay1",
+        "move": "run1",
+        "attack": "attack1",
+        "hurt": "stay1",
+        "death": "die1"
+      }
+    },
+    "1252": {
+      "skeleton": "monsters/Enemy_BatM_01/Enemy_BatM_01",
+      "groundSlots": [
+        "body"
+      ],
+      "clips": {
+        "idle": "stay1",
+        "move": "run1",
+        "attack": "attack1",
+        "hurt": "stay1",
+        "death": "die1"
+      }
+    },
+    "1253": {
+      "skeleton": "monsters/Enemy_BatBoss_01/Enemy_BatBoss_01",
+      "groundSlots": [
+        "Lleg",
+        "Rleg",
+        "body"
+      ],
+      "clips": {
+        "idle": "stay1",
+        "move": "run1",
+        "attack": "attack1",
+        "hurt": "stay1",
+        "death": "die1"
+      }
+    },
+    "1301": {
+      "skeleton": "monsters/Enemy_EmberElemental_Fire/Enemy_EmberElemental_Fire",
+      "groundSlots": [
+        "body2"
+      ],
+      "clips": {
+        "idle": "stay1",
+        "move": "run1",
+        "attack": "attack1",
+        "hurt": "stay1",
+        "death": "die1"
+      }
+    },
+    "1302": {
+      "skeleton": "monsters/Enemy_EmberElemental_Water/Enemy_EmberElemental_Water",
+      "groundSlots": [
+        "body2"
+      ],
+      "clips": {
+        "idle": "stay1",
+        "move": "run1",
+        "attack": "attack1",
+        "hurt": "stay1",
+        "death": "die1"
+      }
+    },
+    "1303": {
+      "skeleton": "monsters/Enemy_EmberElemental_Earth/Enemy_EmberElemental_Earth",
+      "groundSlots": [
+        "body2"
+      ],
+      "clips": {
+        "idle": "stay1",
+        "move": "run1",
+        "attack": "attack1",
+        "hurt": "stay1",
+        "death": "die1"
+      }
+    },
+    "1311": {
+      "skeleton": "monsters/Enemy_BlazeElemental_Fire/Enemy_BlazeElemental_Fire",
+      "groundSlots": [
+        "body"
+      ],
+      "clips": {
+        "idle": "stay1",
+        "move": "run1",
+        "attack": "attack1",
+        "hurt": "stay1",
+        "death": "die1"
+      }
+    },
+    "1312": {
+      "skeleton": "monsters/Enemy_BlazeElemental_Water/Enemy_BlazeElemental_Water",
+      "groundSlots": [
+        "body"
+      ],
+      "clips": {
+        "idle": "stay1",
+        "move": "run1",
+        "attack": "attack1",
+        "hurt": "stay1",
+        "death": "die1"
+      }
+    },
+    "1313": {
+      "skeleton": "monsters/Enemy_BlazeElemental_Earth/Enemy_BlazeElemental_Earth",
+      "groundSlots": [
+        "body"
+      ],
+      "clips": {
+        "idle": "stay1",
+        "move": "run1",
+        "attack": "attack1",
+        "hurt": "stay1",
+        "death": "die1"
+      }
+    },
+    "1321": {
+      "skeleton": "monsters/Enemy_InfernalElemental_Fire/Enemy_InfernalElemental_Fire",
+      "groundSlots": [
+        "Layer 1",
+        "Layer 2",
+        "Layer 4",
+        "Layer 3"
+      ],
+      "clips": {
+        "idle": "stay1",
+        "move": "run1",
+        "attack": "attack1",
+        "hurt": "stay1",
+        "death": "die1"
+      }
+    },
+    "1322": {
+      "skeleton": "monsters/Enemy_InfernalElemental_Water/Enemy_InfernalElemental_Water",
+      "groundSlots": [
+        "Layer 1",
+        "Layer 2",
+        "Layer 4",
+        "Layer 3"
+      ],
+      "clips": {
+        "idle": "stay1",
+        "move": "run1",
+        "attack": "attack1",
+        "hurt": "stay1",
+        "death": "die1"
+      }
+    },
+    "1323": {
+      "skeleton": "monsters/Enemy_InfernalElemental_Earth/Enemy_InfernalElemental_Earth",
+      "groundSlots": [
+        "Layer 1",
+        "Layer 2",
+        "Layer 4",
+        "Layer 3"
+      ],
+      "clips": {
+        "idle": "stay1",
+        "move": "run1",
+        "attack": "attack1",
+        "hurt": "stay1",
+        "death": "die1"
+      }
+    }
+  },
+  "unresolvedMonsterAssets": {
+    "1106": "Enemy_SpecterGoblin_01",
+    "1203": "Enemy_NerissaQueen_01",
+    "1331": "Enemy_GoldenGolem01",
+    "1332": "Enemy_Mimic_01",
+    "1333": "Enemy_GoldenGoblin_01",
+    "1334": "Enemy_DarkLumibird_01",
+    "1341": "Enemy_DesertBeetle_01",
+    "1342": "Enemy_DesertSpikedBeetle_01",
+    "1343": "Enemy_DesertStinger_01",
+    "1344": "Enemy_DesertScorpion_01",
+    "1345": "Enemy_DesertScorpionKing_01",
+    "3001": "Enemy_Meduzelle_Boss_01",
+    "3002": "Enemy_Undine_01",
+    "3003": "Enemy_Radric",
+    "3004": "Enemy_DemonEye_01",
+    "3005": "Enemy_BattleDummy_01",
+    "3006": "Enemy_AutomatonGuardian01"
+  }
+}
