@@ -1,3 +1,4 @@
+import {ROGUE_PACE} from '../components/rpg/rogue/pace';
 import {buildView,changeBuild,isBuildAction,type BuildAction} from '../components/rpg/hunt-build';
 import {newHuntProgress,type HuntProgress} from '../components/rpg/hunt-progression';
 import type {RpgStore} from './rpg-store';
@@ -37,8 +38,11 @@ export class RogueService{
    try{if(this.store)s.revision=this.store.save(account,next,s.revision);}catch(e){this.sessions.delete(account);throw e;}
    s.progress=next;s.game.build=structuredClone(next.build);
   }
-  const now=this.now();let remaining=Math.max(0,Math.min(.25,(now-s.last)/1000));s.last=now;s.seen=now;
-  while(remaining>1e-8){const dt=Math.min(.02,remaining);s.game.step(dt,s.input);remaining-=dt;}
+  const now=this.now(),gap=Math.max(0,(now-s.last)/1000),reconnecting=gap>ROGUE_PACE.maxActiveGap;
+  // Catch up ordinary network jitter in small authoritative steps. Long absences use neutral input.
+  let remaining=reconnecting?ROGUE_PACE.reconnectStep:gap;s.last=Math.max(s.last,now);s.seen=now;
+  const previousInput=reconnecting?idle:s.input;
+  while(remaining>1e-8){const dt=Math.min(.02,remaining);s.game.step(dt,previousInput);remaining-=dt;}
   s.input=input;s.game.command(input);s.sequence=sequence;s.cached={...s.game.view(),build:buildView(s.game.build,s.progress.level),id:s.id,sequence};return s.cached;
  }
 }
