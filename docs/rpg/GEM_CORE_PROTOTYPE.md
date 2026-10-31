@@ -49,3 +49,13 @@ Formal verification was not run: this feature reuses the synchronous sequence/re
 ## Expansion boundary
 
 The prototype intentionally has no gem loot/drop/crafting economy, vision-degree growth, arbitrary trigger execution, conversion chain, projectile shotgun system, or 100-node tree. Those require separate balance and save-version design. Original UmbraCore tables/prices remain unverified; do not label the trial graph an exact restoration. `BuildState` and definitions are data-oriented to allow a later Unity port.
+
+## Validated release — 2026-10-31
+
+Runtime code: `fdb4220` (base feature `55b88b7`). RPG/asset tests: 135/135; dungeon + build tests: 29/29; poker-server regressions: 244/244. RPG TypeScript check and production webpack build passed. Local and live HTTP smoke passed, including duplicate sequence and cross-mode save/re-entry. Live browser verified three-gem selection, calculated multipliers, node spending, blocked bridge refund, re-entry persistence and shared build in the legacy campaign. The expanded phone-frame editor has no horizontal overflow at its observed 399px content width.
+
+Preview examples use a disposable test guest.
+
+![Three support links and calculated combat modifiers](images/rpg-gem-core-live-20261031.jpg)
+
+![28-node trial tree and one allocated node](images/rpg-core-tree-live-20261031.jpg)
