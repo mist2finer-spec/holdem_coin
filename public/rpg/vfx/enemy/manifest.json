@@ -3,14 +3,15 @@
   "effects": [
     {
       "id": "dark",
-      "prefab": "FX_DarkShot_Projectile_01",
-      "sourcePreview": "public/rpg/vfx/previews/FX_DarkShot_Projectile_01.gif",
-      "sourceSha256": "1536cd9ecb115654536de650430e52c8e1c0506a679189f98317a2ce6ccaeff3",
+      "prefab": "FX_DarkShot_Projectile_02",
+      "sourcePreview": "public/rpg/vfx/previews/FX_DarkShot_Projectile_02.gif",
+      "sourceSha256": "4c28fd5487df106cc19a541251715c0cd51c70378cbbf99dc72b3eeb7ad7677f",
       "sheet": "/rpg/vfx/enemy/dark.webp",
       "cell": 128,
       "columns": 8,
       "frames": 32,
       "seconds": 2,
+      "alphaRecovery": "approximate corner-backdrop unmatting from opaque preview GIF; not original particle alpha",
       "mapping": "thematic preview selection; not verified GUID resolution"
     },
     {
@@ -23,6 +24,7 @@
       "columns": 8,
       "frames": 32,
       "seconds": 2,
+      "alphaRecovery": "approximate corner-backdrop unmatting from opaque preview GIF; not original particle alpha",
       "mapping": "thematic preview selection; not verified GUID resolution"
     },
     {
@@ -35,6 +37,7 @@
       "columns": 8,
       "frames": 32,
       "seconds": 2,
+      "alphaRecovery": "approximate corner-backdrop unmatting from opaque preview GIF; not original particle alpha",
       "mapping": "thematic preview selection; not verified GUID resolution"
     },
     {
@@ -47,6 +50,7 @@
       "columns": 8,
       "frames": 32,
       "seconds": 2,
+      "alphaRecovery": "approximate corner-backdrop unmatting from opaque preview GIF; not original particle alpha",
       "mapping": "thematic preview selection; not verified GUID resolution"
     },
     {
@@ -59,6 +63,7 @@
       "columns": 8,
       "frames": 32,
       "seconds": 2,
+      "alphaRecovery": "approximate corner-backdrop unmatting from opaque preview GIF; not original particle alpha",
       "mapping": "thematic preview selection; not verified GUID resolution"
     },
     {
@@ -71,6 +76,7 @@
       "columns": 8,
       "frames": 32,
       "seconds": 2,
+      "alphaRecovery": "approximate corner-backdrop unmatting from opaque preview GIF; not original particle alpha",
       "mapping": "thematic preview selection; not verified GUID resolution"
     },
     {
@@ -83,6 +89,7 @@
       "columns": 8,
       "frames": 32,
       "seconds": 2,
+      "alphaRecovery": "approximate corner-backdrop unmatting from opaque preview GIF; not original particle alpha",
       "mapping": "thematic preview selection; not verified GUID resolution"
     },
     {
@@ -95,6 +102,7 @@
       "columns": 8,
       "frames": 32,
       "seconds": 2,
+      "alphaRecovery": "approximate corner-backdrop unmatting from opaque preview GIF; not original particle alpha",
       "mapping": "thematic preview selection; not verified GUID resolution"
     },
     {
@@ -107,6 +115,7 @@
       "columns": 8,
       "frames": 32,
       "seconds": 2,
+      "alphaRecovery": "approximate corner-backdrop unmatting from opaque preview GIF; not original particle alpha",
       "mapping": "thematic preview selection; not verified GUID resolution"
     }
   ]
