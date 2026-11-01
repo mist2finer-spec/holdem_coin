@@ -15,6 +15,7 @@ if (ports.some(p => !Number.isInteger(p) || p < 1 || p > 65535) || new Set(ports
   throw new Error('Public, web and poker ports must be valid and distinct');
 }
 
+process.env.RPG_SAVE_DIR=path.resolve(process.env.RPG_SAVE_DIR||path.join(root,'.data/rpg'));
 const children = [];
 let stopping = false;
 const proxy = http.createServer(async (req, res) => {

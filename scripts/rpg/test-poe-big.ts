@@ -23,7 +23,7 @@ test('axe AoE node changes real boundary hits and visual radius, without hitting
  const basic=basicBuild(b);assert.ok(basic.range>1);assert.equal(compileSkill(b,0,'sword').range,1);
 });
 test('cyclic tree refund enforces connectivity and notable/keystone tradeoffs are compiled',()=>{
- assert.equal(CORE_NODES.length,52);for(const [a,b] of CORE_EDGES)assert.ok(CORE_NODES.some(n=>n.id===a)&&CORE_NODES.some(n=>n.id===b));
+ assert.equal(CORE_NODES.length,222);for(const [a,b] of CORE_EDGES)assert.ok(CORE_NODES.some(n=>n.id===a)&&CORE_NODES.some(n=>n.id===b));
  let b=newBuild();for(let n=1;n<=9;n++)b=changeBuild(b,`core-allocate-2_${n}`);assert.ok(compileSkill(b,0).range>1.6);assert.equal(compileSkill(b,0).effect,.85);assert.throws(()=>changeBuild(b,'core-refund-2_1'));
  b=changeBuild(changeBuild(b,'core-allocate-2_10'),'core-allocate-2_11');const refunded=changeBuild(b,'core-refund-2_3');assert.ok(connected(refunded.nodes));validateBuild(refunded);assert.ok(compileSkill(refunded,0).range<compileSkill(b,0).range);
 });

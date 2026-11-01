@@ -7,7 +7,7 @@ import {RogueEngine} from '../../src/components/rpg/rogue/engine';
 import {HuntEngine} from '../../src/components/rpg/hunt-engine';
 const idle={x:0,y:0,auto:false};
 test('six actives, six gems, five supports form a six-link; invalid and incompatible links leave original unchanged',()=>{
- assert.equal(ACTIVE_SKILLS.length,6);assert.equal(GEMS.length,6);assert.equal(CORE_NODES.length,52);
+ assert.equal(ACTIVE_SKILLS.length,6);assert.equal(GEMS.length,30);assert.equal(CORE_NODES.length,222);
  const b=newBuild(),before=structuredClone(b);assert.equal(b.links.length,6);b.links.forEach(l=>assert.equal(l.length,5));
  for(const bad of ['gem-0-5-power','gem-6-0-power','gem-0-0-evil','core-allocate-0_18','core-allocate-__proto__'])assert.equal(isBuildAction(bad),false);
  assert.throws(()=>changeBuild(b,'gem-0-0-renew'));assert.throws(()=>changeBuild(b,'gem-5-0-power'));assert.deepEqual(b,before);

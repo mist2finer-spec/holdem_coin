@@ -49,6 +49,7 @@ export class RpgService{
   if(sequence===b.sequence)return b.cached;
   if(!Number.isSafeInteger(sequence)||sequence!==b.sequence+1)throw Error('Invalid sequence');
   const g=b.engine,now=this.now();const before=JSON.stringify(g.progress);
+  if(action.startsWith('core-start-')&&action!==`core-start-${b.character}`)throw Error('시작점은 플레이 캐릭터에 고정됩니다.');
   if(isBuildAction(action))g.progress.build=changeBuild(g.progress.build,action,g.progress.level);
   if(action.startsWith('art-')){const [,id,count]=action.split('-');buyArt(g.progress,Number(id),Number(count));}
   if(action.startsWith('trait-'))buyTrait(g.progress,Number(action.slice(6)));

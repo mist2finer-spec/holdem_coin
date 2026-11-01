@@ -142,3 +142,10 @@ test('room routes tournament short stacks through the native chip policy and rec
  Object.assign(r.state.seats[1],{stack:4000,currentBet:200,totalBet:200,inHand:true,folded:false});r.state.phase='PREFLOP';r.state.board=[];r.state.raiseLevel=0;
  const d=await r.getDecision(r.state.seats[0],200,400,600,false);assert.equal(d.action,'allin');assert.equal(d.amount,600);assert.equal(r.pendingAudit.tournamentShortStack.band,3);
 });
+
+test('authoritative terminal hand pays one transcendence orb to the initially linked RPG guest',async()=>{
+ const {RpgItemsStore}=await import('../src/lib/rpg-items');const {TournamentRewards}=await import('../mini-services/poker-server/tournament-rewards');const wallet=new RpgItemsStore(':memory:');
+ try{const r=room();r.startGameLoop=async()=>{};r.rewards=new TournamentRewards(wallet);const user=socket('rpg-winner');r.onUserConnect(user,'Champion',wallet.link('rpg-guest'));r.processSeatSwaps();const winner=r.state.seats.find((s:any)=>!s.isBot);assert.ok(winner);r.tournament.beginHand(0);
+  for(const s of r.state.seats)Object.assign(s,{stack:s.seatId===winner.seatId?159800:0,totalBet:s.seatId===winner.seatId?200:0,currentBet:s.seatId===winner.seatId?200:0,inHand:s.seatId===winner.seatId,folded:s.seatId!==winner.seatId});r.state.pot=200;await r.finishHand(false);assert.equal(r.tournament.winner.seatId,winner.seatId);assert.equal(wallet.view('rpg-guest').orbs,6);r.retryPrize();assert.equal(wallet.view('rpg-guest').orbs,6);
+ }finally{wallet.close();}
+});

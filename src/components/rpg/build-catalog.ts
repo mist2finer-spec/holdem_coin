@@ -1,0 +1,81 @@
+/** Custom prototype values inspired by the supplied class catalogs; not PoE balance data. */
+export type SkillTag='MELEE'|'AREA'|'SPELL'|'PHYSICAL'|'DARK'|'CHAOS'|'COLD'|'HOLY'|'FIRE'|'LIGHTNING'|'ELEMENTAL'|'HEAL'|'AXE'|'ATTACK'|'PROJECTILE'|'BOW'|'DOT'|'DURATION'|'AURA'|'GUARD'|'TRIGGER'|'CHANNEL';
+export type SkillElement='physical'|'chaos'|'cold'|'holy'|'fire'|'lightning';
+export type TriggerKind='timed'|'crit'|'hurt';
+export type ActiveSkill={id:string;name:string;tags:readonly SkillTag[];icon:string;description:string;baseIndex:number;element:SkillElement;damage?:number;area?:number;cooldown?:number;mana?:number;repeat?:number;projectiles?:number;chain?:number;pierce?:number;dot?:number;dotDuration?:number;crit?:number;duration?:number;guard?:number;aura?:number;trigger?:TriggerKind;triggerInterval?:number};
+const icons=['GroundRift','DarkHole','Blizzard3','HolyWrath2','Whirlwind','VitalRecovery'];
+function active(id:string,name:string,tags:readonly SkillTag[],baseIndex:number,element:SkillElement,stats:Partial<ActiveSkill>={},description=''):ActiveSkill{return {id,name,tags,baseIndex,element,icon:icons[baseIndex],description,...stats};}
+/** Original IDs, tags, order and neutral multipliers are preserved for v1/v2 saves. */
+export const ACTIVE_SKILLS=[
+ active('rift','대지 균열',['MELEE','AREA','PHYSICAL','AXE','ATTACK'],0,'physical',{},'전방에 물리 균열을 일으킵니다.'),
+ active('dark','암흑 구체',['SPELL','AREA','DARK'],1,'chaos',{},'전방에 혼돈 구체를 방출합니다.'),
+ active('frost','서리 폭풍',['SPELL','AREA','COLD'],2,'cold',{},'주변 적에게 냉기 피해를 줍니다.'),
+ active('holy','빛의 심판',['SPELL','AREA','HOLY'],3,'holy',{},'넓은 영역에 신성 피해를 줍니다.'),
+ active('whirl','회오리',['MELEE','AREA','PHYSICAL','AXE','ATTACK'],4,'physical',{},'주변을 휩쓰는 물리 공격입니다.'),
+ active('heal','회복',['HEAL'],5,'holy',{},'즉시 생명력을 회복합니다.'),
+] as const;
+export const ACTIVE_CATALOG:readonly ActiveSkill[]=[...ACTIVE_SKILLS,
+ active('cleave','쪼개기',['MELEE','AREA','PHYSICAL','ATTACK'],0,'physical',{damage:.85,area:1.35,cooldown:.75},'피해 ×0.85 · 면적 ×1.35 · 재사용 ×0.75'),
+ active('earthquake','지진',['MELEE','AREA','PHYSICAL','ATTACK'],0,'physical',{damage:1.7,area:1.1,cooldown:1.45},'강한 지진 · 피해 ×1.70 · 재사용 ×1.45'),
+ active('lacerate','열상',['MELEE','AREA','PHYSICAL','ATTACK','DOT','DURATION'],0,'physical',{damage:.8,dot:.55,dotDuration:3},'타격 ×0.80 + 3초 동안 타격의 55% 지속 피해'),
+ active('doublestrike','이중 타격',['MELEE','PHYSICAL','ATTACK'],0,'physical',{damage:.65,repeat:1,area:.75},'피해 ×0.65로 2회 타격'),
+ active('bladestorm','칼날 폭풍',['MELEE','AREA','PHYSICAL','ATTACK','DOT','DURATION'],4,'physical',{damage:.7,dot:.65,dotDuration:3},'타격 ×0.70 + 3초 동안 타격의 65% 지속 피해'),
+ active('moltenstrike','용암 타격',['MELEE','PROJECTILE','AREA','FIRE','ELEMENTAL','ATTACK'],0,'fire',{damage:.85,projectiles:3},'화염 투사체 3개 · 피해 ×0.85'),
+ active('lightningstrike','번개 타격',['MELEE','PROJECTILE','LIGHTNING','ELEMENTAL','ATTACK'],0,'lightning',{damage:.9,projectiles:2},'번개 투사체 2개 · 피해 ×0.90'),
+ active('splitarrow','분할 화살',['PROJECTILE','PHYSICAL','ATTACK','BOW'],1,'physical',{damage:.7,projectiles:3},'물리 투사체 3개 · 피해 ×0.70'),
+ active('piercingshot','관통 사격',['PROJECTILE','PHYSICAL','ATTACK','BOW'],1,'physical',{damage:1.05,projectiles:1,pierce:2},'추가 적 2명 관통 · 피해 ×1.05'),
+ active('chainarrow','연쇄 화살',['PROJECTILE','LIGHTNING','ELEMENTAL','ATTACK','BOW'],1,'lightning',{damage:.8,projectiles:1,chain:2},'추가 적 2명 연쇄 · 피해 ×0.80'),
+ active('frostshot','얼음 사격',['PROJECTILE','AREA','COLD','ELEMENTAL','ATTACK','BOW'],2,'cold',{damage:.95,projectiles:1,area:1.2},'냉기 투사체 · 피해 ×0.95 · 면적 ×1.20'),
+ active('fireball','화염구',['SPELL','PROJECTILE','AREA','FIRE','ELEMENTAL'],3,'fire',{damage:1.2,projectiles:1,mana:1.1},'화염 투사체 · 피해 ×1.20 · 마나 ×1.10'),
+ active('icespear','얼음 창',['SPELL','PROJECTILE','COLD','ELEMENTAL'],2,'cold',{projectiles:1,pierce:1,crit:.05},'관통 +1 · 치명타 확률 +5%'),
+ active('spark','전기불꽃',['SPELL','PROJECTILE','LIGHTNING','ELEMENTAL'],3,'lightning',{damage:.7,projectiles:4},'번개 투사체 4개 · 피해 ×0.70'),
+ active('arc','연쇄 번개',['SPELL','PROJECTILE','LIGHTNING','ELEMENTAL'],3,'lightning',{damage:.95,projectiles:1,chain:3},'추가 적 3명 연쇄 · 피해 ×0.95'),
+ active('flameburst','화염 폭발',['SPELL','AREA','FIRE','ELEMENTAL'],3,'fire',{damage:1.3,area:1.15,cooldown:1.2},'피해 ×1.30 · 면적 ×1.15 · 재사용 ×1.20'),
+ active('icenova','얼음 폭발',['SPELL','AREA','COLD','ELEMENTAL'],2,'cold',{damage:1.15,area:1.2},'피해 ×1.15 · 면적 ×1.20'),
+ active('stormcall','폭풍 부름',['SPELL','AREA','LIGHTNING','ELEMENTAL'],3,'lightning',{damage:1.3,cooldown:1.25},'피해 ×1.30 · 재사용 ×1.25'),
+ active('essence','정수 흡수',['SPELL','PROJECTILE','CHAOS','DOT','DURATION'],1,'chaos',{damage:.7,projectiles:1,dot:1,dotDuration:4},'타격 ×0.70 + 4초 동안 타격의 100% 지속 피해'),
+ active('contagion','전염',['SPELL','AREA','CHAOS','DOT','DURATION'],1,'chaos',{damage:.45,dot:1.2,dotDuration:4,area:1.2},'타격 ×0.45 + 4초 동안 타격의 120% 지속 피해'),
+ active('blight','황폐',['SPELL','AREA','CHAOS','DOT','DURATION','CHANNEL'],1,'chaos',{damage:.5,dot:1.25,dotDuration:4},'집중 계열 · 타격 ×0.50 + 4초 동안 125% 지속 피해 · 발동 보조 불가'),
+ active('toxicrain','맹독 화살비',['ATTACK','BOW','PROJECTILE','AREA','CHAOS','DOT','DURATION'],2,'chaos',{damage:.5,projectiles:3,dot:.8,dotDuration:3},'투사체 3개 · 타격 ×0.50 + 3초 동안 80% 지속 피해'),
+ active('viperstrike','독사 타격',['MELEE','ATTACK','CHAOS','DOT','DURATION'],0,'chaos',{damage:.7,dot:.9,dotDuration:4},'타격 ×0.70 + 4초 동안 90% 지속 피해'),
+ active('firestorm','불의 폭풍',['SPELL','AREA','FIRE','ELEMENTAL','DOT','DURATION'],3,'fire',{damage:.55,dot:1.6,dotDuration:4},'타격 ×0.55 + 4초 동안 160% 지속 피해'),
+ active('vitality','활력',['HEAL','AURA','DURATION'],5,'holy',{damage:.55,aura:.12,duration:1.5,cooldown:1.3},'회복 ×0.55 · 피해 오라 +12% · 지속시간 ×1.50'),
+ active('hatred','증오',['SPELL','AREA','COLD','ELEMENTAL','AURA','DURATION'],2,'cold',{damage:.4,aura:.18,duration:1.5},'냉기 타격 ×0.40 · 피해 오라 +18% · 지속시간 ×1.50'),
+ active('moltenshell','용암 방패',['SPELL','AREA','FIRE','ELEMENTAL','GUARD','DURATION'],3,'fire',{damage:.35,guard:.22},'화염 타격 ×0.35 · 기본 최대 생명력의 22% 보호막'),
+ active('steelskin','강철 피부',['GUARD','PHYSICAL','DURATION'],0,'physical',{damage:.2,guard:.3},'물리 타격 ×0.20 · 기본 최대 생명력의 30% 보호막'),
+ active('heraldstorm','폭풍 전령',['SPELL','AREA','LIGHTNING','ELEMENTAL','TRIGGER'],3,'lightning',{damage:.45,trigger:'timed',triggerInterval:1.8},'최소 발동 간격 1.8초 · 스킬 재사용 적용 · 피해 ×0.45 · 추가 발동 보조 불가'),
+];
+export type SupportGem={id:string;name:string;tags:readonly SkillTag[];text:string;requireAll?:readonly SkillTag[];exclude?:readonly SkillTag[];more?:number;area?:number;cooldown?:number;repeat?:number;projectiles?:number;chain?:number;pierce?:number;dot?:number;dotMore?:number;duration?:number;crit?:number;critMultiplier?:number;leech?:number;mana?:number;guard?:number;trigger?:TriggerKind;triggerInterval?:number};
+/** Keep the first six in their old order for legacy links and cross-language parity vectors. */
+export const GEMS:readonly SupportGem[]=[
+ {id:'power',name:'강타',tags:['PHYSICAL','SPELL'],text:'피해 ×1.30 · 재사용 ×1.15',more:1.3,cooldown:1.15},
+ {id:'wide',name:'광역',tags:['AREA'],text:'범위 면적 ×1.40 · 피해 ×0.90',area:1.4,more:.9},
+ {id:'echo',name:'메아리',tags:['MELEE','SPELL','HEAL'],text:'0.22초 후 1회 반복 · 각 효과 ×0.65',repeat:1,more:.65},
+ {id:'quick',name:'가속',tags:['MELEE','SPELL','HEAL'],text:'재사용 ×0.75 · 각 효과 ×0.90',cooldown:.75,more:.9},
+ {id:'reach',name:'도달',tags:['MELEE','SPELL'],text:'범위 면적 ×1.25 · 피해 ×1.08 · 재사용 ×1.10',area:1.25,more:1.08,cooldown:1.1},
+ {id:'renew',name:'재생',tags:['HEAL'],text:'회복 ×1.45 · 재사용 ×1.20',more:1.45,cooldown:1.2},
+ {id:'melee',name:'근접 물리',tags:['MELEE'],text:'근접 피해 ×1.35 · 마나 ×1.10',more:1.35,mana:1.1},
+ {id:'brutality',name:'포악함',tags:['PHYSICAL'],exclude:['ELEMENTAL','FIRE','COLD','LIGHTNING','HOLY','DARK','CHAOS'],text:'순수 물리 피해 ×1.45 · 원소/혼돈 스킬 불가',more:1.45},
+ {id:'spellpower',name:'제어된 파괴',tags:['SPELL'],text:'주문 피해 ×1.35 · 마나 ×1.20',more:1.35,mana:1.2},
+ {id:'elemental',name:'원소 집중',tags:['FIRE','COLD','LIGHTNING','HOLY','ELEMENTAL'],text:'원소 피해 ×1.30',more:1.3},
+ {id:'chaos',name:'공허 조작',tags:['CHAOS','DARK'],text:'혼돈 피해 ×1.35 · 지속 피해 ×1.10',more:1.35,dotMore:1.1},
+ {id:'multistrike',name:'연속 타격',tags:['MELEE'],exclude:['CHANNEL','TRIGGER'],text:'2회 추가 반복 · 각 타격 ×0.55 · 재사용 ×1.20',repeat:2,more:.55,cooldown:1.2},
+ {id:'volley',name:'다중 투사체',tags:['PROJECTILE'],text:'투사체 +2 · 각 타격 ×0.75',projectiles:2,more:.75},
+ {id:'barrage',name:'일제 사격',tags:['PROJECTILE'],text:'투사체 +2 · 각 타격 ×0.80 · 재사용 ×1.15',projectiles:2,more:.8,cooldown:1.15},
+ {id:'chain',name:'연쇄',tags:['PROJECTILE'],text:'추가 적 연쇄 +2 · 피해 ×0.80',chain:2,more:.8},
+ {id:'pierce',name:'관통',tags:['PROJECTILE'],text:'추가 적 관통 +3 · 피해 ×0.95',pierce:3,more:.95},
+ {id:'swift',name:'고통 격화',tags:['DOT'],text:'지속 피해 ×1.45 · 지속시간 ×0.75 · 타격 ×0.85',dotMore:1.45,duration:.75,more:.85},
+ {id:'duration',name:'지속시간 증가',tags:['DURATION','DOT','GUARD','AURA'],text:'지속시간 ×1.50 · 마나 ×1.10',duration:1.5,mana:1.1},
+ {id:'poison',name:'중독',tags:['PHYSICAL','CHAOS','DARK'],text:'타격 피해의 50% 추가 지속 피해 · 타격 ×0.85',dot:.5,more:.85},
+ {id:'bleed',name:'출혈',tags:['ATTACK'],requireAll:['ATTACK','PHYSICAL'],text:'물리 공격에 지속 피해 +60% · 타격 ×0.80',dot:.6,more:.8},
+ {id:'burn',name:'연소',tags:['FIRE'],text:'화염 타격에 지속 피해 +60% · 타격 ×0.85',dot:.6,more:.85},
+ {id:'critical',name:'치명타 증가',tags:['ATTACK','SPELL'],text:'치명타 확률 +10% · 치명타 배율 +0.25 · 마나 ×1.10',crit:.1,critMultiplier:.25,mana:1.1},
+ {id:'precision',name:'정밀 공격',tags:['ATTACK'],text:'치명타 확률 +8% · 피해 ×1.10',crit:.08,more:1.1},
+ {id:'leech',name:'생명력 흡수',tags:['ATTACK','SPELL'],exclude:['HEAL','AURA','GUARD'],text:'적중 피해의 3% 흡수 · 피해 ×0.90',leech:.03,more:.9},
+ {id:'efficient',name:'영감',tags:['ATTACK','SPELL','HEAL','GUARD','AURA'],text:'마나 소모 ×0.65 · 효과 ×0.95',mana:.65,more:.95},
+ {id:'concentrate',name:'효과 집중',tags:['AREA'],text:'범위 면적 ×0.65 · 피해 ×1.35',area:.65,more:1.35},
+ {id:'fortify',name:'방어 상승',tags:['MELEE'],text:'기본 최대 생명력의 12% 보호막 · 피해 ×0.90',guard:.12,more:.9},
+ {id:'triggerclock',name:'주기적 시전',tags:['SPELL','HEAL','GUARD'],exclude:['CHANNEL','AURA','TRIGGER'],text:'최소 발동 간격 1.6초 · 스킬 재사용 적용 · 효과 ×0.65 · 마나 ×1.20 · 발동 보조는 하나만',trigger:'timed',triggerInterval:1.6,more:.65,mana:1.2},
+ {id:'triggercrit',name:'치명타 시 시전',tags:['SPELL'],exclude:['CHANNEL','AURA','TRIGGER','GUARD'],text:'다른 직접 타격의 치명타 시 발동 · 간격 0.55초 · 효과 ×0.75 · 마나 ×1.10',trigger:'crit',triggerInterval:.55,more:.75,mana:1.1},
+ {id:'triggerhurt',name:'피격 시 시전',tags:['SPELL','HEAL','GUARD'],exclude:['CHANNEL','AURA','TRIGGER'],text:'피해를 받을 때 발동 · 간격 0.9초 · 효과 ×0.80 · 마나 ×1.10',trigger:'hurt',triggerInterval:.9,more:.8,mana:1.1},
+];

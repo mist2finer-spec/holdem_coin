@@ -1,3 +1,4 @@
+import {TournamentRewards,tournamentRewardWallet} from './tournament-rewards';
 import {tournamentShortStack} from '../../src/lib/poker-tournament-shortstack';
 import {tournamentMoney} from '../../src/lib/poker-tournament';
 import {TournamentLifecycle} from './tournament';
@@ -96,6 +97,7 @@ interface ServerGameState {
 }
 
 interface ConnectedUser {
+  rewardLink?:string;
   timeoutFolds?: number;
   playerId: string;   // ★ 고유 플레이어 ID (서버 생성)
   socketId: string;
@@ -111,9 +113,11 @@ interface ConnectedUser {
 
 export class HybridHoldemRoom {
   readonly tournament:TournamentLifecycle|null;
+  private rewards: TournamentRewards|undefined;
   private get smallBlind(){return this.tournament?.smallBlind??SMALL_BLIND;}
   private get bigBlind(){return this.tournament?.bigBlind??BIG_BLIND;}
   private get buyIn(){return this.tournament?.buyIn??DEFAULT_BUYIN;}
+  retryPrize(){if(this.tournament?.finished&&this.rewards){try{this.rewards.settle(this.tournament.winner,this.state.seats);}catch{ /* Remains retryable on the next status request. */ }}}
   public state: ServerGameState;
   public trainer: SelfPlayTrainer;
   private users: Map<string, ConnectedUser> = new Map();
@@ -236,7 +240,7 @@ export class HybridHoldemRoom {
   // 유저 접속/이탈 처리
   // ============================================================
 
-  onUserConnect(socket: Socket, name: string) {
+  onUserConnect(socket: Socket, name: string, rewardLink?:string) {
     // JOIN_ROOM is idempotent, including duplicate events during reconnect.
     if (this.users.has(socket.id)) {
       socket.emit("TABLE_STATE", this.createSafeSnapshot(socket.id));
@@ -252,9 +256,9 @@ export class HybridHoldemRoom {
       const returning=this.state.seats.find(s=>!s.isBot&&this.tournament!.key(s.name)===key&&!this.tournament!.eliminated.has(s.seatId));
       const available=this.state.seats.filter(s=>s.isBot&&!this.tournament!.eliminated.has(s.seatId)&&s.stack>0).length;
       if(!returning&&available<=this.pendingJoinQueue.length)return deny('참가 가능한 AI 좌석이 없습니다. 탈락 좌석에는 입장할 수 없습니다.');
-      const user:ConnectedUser={playerId:`T${Date.now().toString(36)}${Math.random().toString(36).slice(2,6)}`,socketId:socket.id,name:baseName,baseName,seatId:returning?.seatId??null,preAction:null};
+      const user:ConnectedUser={playerId:`T${Date.now().toString(36)}${Math.random().toString(36).slice(2,6)}`,socketId:socket.id,name:baseName,baseName,seatId:returning?.seatId??null,preAction:null,rewardLink};
       this.users.set(socket.id,user);
-      if(returning)returning.socketId=socket.id;else this.pendingJoinQueue.push(user);
+      if(returning){returning.socketId=socket.id;this.rewards??=new TournamentRewards(tournamentRewardWallet());this.rewards.bind(returning.seatId,rewardLink);}else this.pendingJoinQueue.push(user);
       socket.emit('TABLE_STATE',this.createSafeSnapshot(socket.id));
       if(!this.isRunning)void this.startGameLoop();
       return;
@@ -339,7 +343,7 @@ export class HybridHoldemRoom {
     if (user.seatId !== null) {
       if(!this.tournament)this.leaveSeats.add(user.seatId);
       else if(this.tournament.startedAt===null){
-        const seat=this.state.seats[user.seatId],persona=RPG_BOT_POOL[user.seatId%RPG_BOT_POOL.length];
+        this.rewards?.releaseBeforeStart(user.seatId);const seat=this.state.seats[user.seatId],persona=RPG_BOT_POOL[user.seatId%RPG_BOT_POOL.length];
         Object.assign(seat,{isBot:true,socketId:null,persona,name:persona.name});
       }
       // 유저가 턴 중에 나갔다면 즉시 폴드 처리
@@ -406,7 +410,7 @@ export class HybridHoldemRoom {
         if(this.users.get(user.socketId)!==user)continue;
         const target=this.state.seats.find(s=>s.isBot&&s.stack>0&&!this.tournament!.eliminated.has(s.seatId));
         if(!target){io.to(user.socketId).emit('ROOM_DENIED',{message:'생존 AI 좌석이 없습니다.'});continue;}
-        target.isBot=false;target.name=user.name;target.socketId=user.socketId;target.persona=undefined;user.seatId=target.seatId;
+        target.isBot=false;target.name=user.name;target.socketId=user.socketId;target.persona=undefined;user.seatId=target.seatId;this.rewards??=new TournamentRewards(tournamentRewardWallet());this.rewards.bind(target.seatId,user.rewardLink);
       }
       return;
     }
@@ -1016,7 +1020,7 @@ export class HybridHoldemRoom {
     this.endHistory(settlement,isShowdown);
     st.seats = st.seats.map(seat => ({ ...seat, stack: seat.stack + settlement.results.find(r=>r.seatId===seat.seatId)!.payout }));
     for(const seat of st.seats)if(!this.tournament&&!seat.isBot&&seat.socketId)lobbyLedger.sync(seat.socketId,seat.stack);
-    if(this.tournament){this.tournament.settle(st.seats);if(this.tournament.finished)this.isRunning=false;}
+    if(this.tournament){this.tournament.settle(st.seats);if(this.tournament.finished){this.isRunning=false;try{this.rewards?.settle(this.tournament.winner,st.seats);}catch(error){console.error('[Tournament] prize wallet write failed',error);}}}
     const winners = settlement.results.filter(r=>r.award>0);
     const hand = isShowdown && winners[0]
       ? scoreToCategoryName(evaluateBestHand(st.seats[winners[0].seatId].holeCards, st.board))
@@ -1224,13 +1228,13 @@ if (process.env.POKER_TEST_MODE !== "1") {
     socket.on('GET_LEADERBOARD',(reply:unknown)=>{if(typeof reply==='function')reply({players:lobbyLedger.leaderboard(),updatedAt:Date.now(),tableSize:6});});
     socket.on('GET_TOURNAMENT_STATUS',(reply:unknown)=>{
       if(typeof reply!=='function')return;
-      refreshTournament();reply({...tournamentRoom.tournament!.snapshot(),serverNow:Date.now(),handNumber:tournamentRoom.state.handNumber});
+      refreshTournament();tournamentRoom.retryPrize();reply({...tournamentRoom.tournament!.snapshot(),serverNow:Date.now(),handNumber:tournamentRoom.state.handNumber});
     });
-    socket.on("JOIN_ROOM", (data: { name: string; tableSize?: number; tournament?:boolean }) => {
+    socket.on("JOIN_ROOM", (data: { name: string; tableSize?: number; tournament?:boolean;rewardLink?:string }) => {
       if(selectedRoom)return;
       if(data?.tournament===true){
         refreshTournament();
-        selectedRoom=tournamentRoom;selectedRoom.onUserConnect(socket,data.name);return;
+        selectedRoom=tournamentRoom;selectedRoom.onUserConnect(socket,data.name,data.rewardLink);return;
       }
       if(data?.tableSize!==6){socket.emit("SYSTEM_NOTICE",{messages:["8인 서버: Under Repair — 6인 서버를 이용해 주세요."]});return;}
       // Older clients also receive an automatic unique tester identity.

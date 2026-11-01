@@ -138,7 +138,7 @@ export function PokerTableSocket({ userName, onToast, tableSize=8, onMain,tourna
           <small>SB {tournamentState.smallBlind.toLocaleString()} / BB {bb.toLocaleString()}</small>
         </div>
       </>}
-      {tournamentState?.winner&&<div className="tournament-finish" role="dialog" aria-modal="true" aria-label="토너먼트 우승"><section><span>TOURNAMENT CHAMPION</span><CharacterPortrait portrait={tournamentState.winner.portrait} name={tournamentState.winner.name}/><h1>{tournamentState.winner.name}</h1><h2>1위! 우승을 축하합니다!</h2><Button onClick={onMain}>로비로</Button></section></div>}
+      {tournamentState?.winner&&<div className="tournament-finish" role="dialog" aria-modal="true" aria-label="토너먼트 우승"><section><span>TOURNAMENT CHAMPION</span><CharacterPortrait portrait={tournamentState.winner.portrait} name={tournamentState.winner.name}/><h1>{tournamentState.winner.name}</h1><h2>1위! 우승을 축하합니다!</h2><p>플레이어 우승 보상: 초월석 1개 · 연결된 RPG 젬 보관함 지급</p><Button onClick={onMain}>로비로</Button></section></div>}
       {eliminated&&!watchEliminated&&!tournamentState?.winner&&<div className="tournament-finish" role="dialog" aria-modal="true" aria-label="토너먼트 탈락"><section><h2>토너먼트에서 탈락했습니다.</h2><p>리바인과 같은 이름의 재입장은 불가합니다.</p><Button onClick={()=>setWatchEliminated(true)}>계속 관전</Button><Button onClick={onMain}>로비로</Button></section></div>}
       {/* 배경 장식 */}
       <div className="absolute inset-0 opacity-30 pointer-events-none"
