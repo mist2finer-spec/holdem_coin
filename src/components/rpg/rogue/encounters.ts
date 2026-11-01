@@ -16,3 +16,11 @@ export class CrowdIndex<T extends {id:number;x:number;hp:number}>{
  nearby(x:number){const k=Math.floor(x/this.width);return [...(this.bins.get(k-1)??[]),...(this.bins.get(k)??[]),...(this.bins.get(k+1)??[])];}
  moved(item:T){const old=this.slots.get(item.id),next=Math.floor(item.x/this.width);if(old===next)return;if(old!==undefined)this.bins.get(old)?.delete(item);this.add(item);}
 }
+
+/** Keep an actionable retreat lane instead of inserting reinforcements on top of the hero. */
+export const SPAWN_SAFETY={entryRetreat:240,nearHero:240,spacing:8,outerMargin:72} as const;
+export function spawnLanes(left:number,right:number,heroX:number){
+ // Prefer the long forward section; retain a rear nest only beyond the safe radius and entry refuge.
+ return [{left:Math.max(left,heroX+SPAWN_SAFETY.nearHero),right},
+ {left,right:Math.min(right,heroX-SPAWN_SAFETY.nearHero)}].filter(r=>r.right-r.left>=24);
+}

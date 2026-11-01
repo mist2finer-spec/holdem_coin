@@ -1,0 +1,84 @@
+{
+  "version": 1,
+  "image": "atlas-v1.png",
+  "size": [
+    1536,
+    1024
+  ],
+  "coordinateOrigin": "top-left",
+  "regions": {
+    "crypt": [
+      22,
+      82,
+      352,
+      251
+    ],
+    "moss": [
+      405,
+      82,
+      357,
+      251
+    ],
+    "prison": [
+      793,
+      82,
+      332,
+      251
+    ],
+    "cathedral": [
+      1156,
+      82,
+      357,
+      251
+    ],
+    "floor": [
+      23,
+      503,
+      461,
+      138
+    ],
+    "brokenFloor": [
+      513,
+      503,
+      452,
+      138
+    ],
+    "pillar": [
+      1035,
+      364,
+      128,
+      301
+    ],
+    "candle": [
+      1243,
+      362,
+      245,
+      304
+    ],
+    "closed": [
+      48,
+      678,
+      288,
+      307
+    ],
+    "open": [
+      412,
+      677,
+      369,
+      310
+    ],
+    "statue": [
+      900,
+      667,
+      138,
+      324
+    ],
+    "rubble": [
+      1106,
+      797,
+      401,
+      194
+    ]
+  },
+  "note": "Rects are source x,y,width,height. Props ground at bottom-center. Wall/floor modules use per-axis scale. Decorative props do not add collision or rewards."
+}

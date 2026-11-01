@@ -6,6 +6,7 @@ import type {RogueView} from '../../../lib/rpg-rogue-service';
 import type {RogueInput} from './engine';
 import type {RogueMap} from './map';
 import {roguePollDelay} from './pace';
+import {SCENERY_LABELS} from './scenery';
 import {THEME_LABELS} from './encounters';
 import {PASSAGE_LABEL} from './traversal';
 import '../hunt.css';
@@ -59,14 +60,14 @@ export function RoguePrototype({onExit}:{onExit:()=>void}){
  return <main className="rogue-shell rogue-vardian">
   <header className="rogue-header"><button onClick={onExit} aria-label="캐릭터 선택으로 돌아가기">‹</button><div><small>LABYRINTH · PROTOTYPE</small><strong>촛불 미궁</strong></div><span className="rogue-gold" title="이번 탐험의 테스트 골드">◈ {(view?.gold??0).toLocaleString()} <small>G</small></span><button onClick={()=>setHelp(!help)} aria-label="조작 도움말" aria-expanded={help}>?</button></header>
   <section className="rogue-stage" aria-label="구역 진행형 촛불 던전"><canvas ref={canvas} aria-label="홍과 10개 전투 구역" data-status={state} onClick={()=>{if(active&&!help&&!panel)enqueue({attack:true});}}/>
-   <div className="rogue-room"><small>CHAMBER</small><strong>{String((view?.room??0)+1).padStart(2,'0')} <span>/ 10</span></strong><span>{boss?'슬라임 군주':view?.phase==='exit-ready'?'출구 개방':THEME_LABELS[map?.rooms[view?.room??0]?.theme??'red']}</span></div>
+   <div className="rogue-room"><small>CHAMBER</small><strong>{String((view?.room??0)+1).padStart(2,'0')} <span>/ 10</span></strong><span>{boss?'슬라임 군주':view?.phase==='exit-ready'?'출구 개방':`${SCENERY_LABELS[map?.rooms[view?.room??0]?.scenery??'crypt']} · ${THEME_LABELS[map?.rooms[view?.room??0]?.theme??'red']}`}</span></div>
    {boss&&<div className="rogue-boss"><span>슬라임 군주</span><meter aria-label="슬라임 군주 체력" min={0} max={boss.maxHP} value={boss.hp}/></div>}
    {clearedRoom!==undefined&&<div key={clearedRoom} className="rogue-clear" aria-live="polite"><small>CHAMBER CLEAR</small><strong>{clearedRoom+1}번 구역 정리</strong></div>}
    {view?.phase==='exit-ready'&&view.choices.length>1&&view.gate?.near&&<div className="rogue-branches" aria-label="갈림길 선택"><button disabled={!active} onClick={()=>{automatic.current=false;enqueue({jump:true,branch:'upper',auto:false});}}>↑ 위쪽 길</button><button disabled={!active} onClick={()=>{automatic.current=false;enqueue({jump:true,branch:'lower',auto:false});}}>↓ 아래쪽 길</button></div>}
    <div className="rogue-objective"><span>{statusText}</span><div className="rogue-room-track" aria-label={`선택 경로 정리 ${view?.cleared.length??0} / 7`}>{Array.from({length:10},(_,i)=><i key={i} className={view?.cleared.includes(i)?'cleared':view?.room===i?'current':''}>{i+1}</i>)}</div></div>
    {state==='loading'&&<div className="rogue-overlay" role="status"><strong>전투 구역과 통과로를 준비하는 중…</strong><span>원본 캐릭터와 몬스터를 불러옵니다.</span></div>}
    {(state==='error'||view?.status==='dead'||view?.status==='won')&&<div className="rogue-overlay" role="dialog" aria-label="던전 결과"><h2>{state==='error'?'연결 오류':view?.status==='won'?'미궁 탈출 성공':'전투 불능'}</h2><p>{state==='error'?error:`${view?.kills}마리 처치 · 테스트 골드 ${view?.gold}`}</p><button onClick={()=>setRun(n=>n+1)}>새 던전 생성</button><button onClick={onExit}>캐릭터 선택</button></div>}
-   {help&&<div className="rogue-help"><strong>촛불 미궁 · 조작 안내</strong><p>A/D · 좌우 방향키 또는 스틱으로 좌우 이동합니다. 상하 이동 입력은 사용하지 않습니다. 높이 변화는 연결 구간의 점프·하강에서만 일어납니다. AUTO는 구역별 전투 후 틈 건너기·하강·상승 점프와 낮은 통로 슬라이딩으로 다음 구역에 진입합니다.</p><p>전투 화면 터치 / Space 기본 공격 · Q/E 좌우 회피 · J 점프 · Shift 슬라이딩 · 1~6 스킬</p><p>구역마다 처음 30마리, 초기 수를 포함해 총 150~200마리가 약 55초 동안 출현합니다. 처치 제한 시간은 없습니다. 모든 적을 처치하면 출구가 열립니다. 갈림길은 위·아래 중 선택하며 AUTO는 위로 갑니다. W/↑는 위쪽, S/↓는 아래쪽 길입니다. 어느 길이든 공통 보스로 합류하고 선택 경로 7구역을 정리하면 탈출합니다.</p><button onClick={()=>setHelp(false)}>닫기</button></div>}
+   {help&&<div className="rogue-help"><strong>촛불 미궁 · 조작 안내</strong><p>A/D · 좌우 방향키 또는 스틱으로 좌우 이동합니다. 상하 이동 입력은 사용하지 않습니다. 높이 변화는 연결 구간의 점프·하강에서만 일어납니다. AUTO는 구역별 전투 후 틈 건너기·하강·상승 점프와 낮은 통로 슬라이딩으로 다음 구역에 진입합니다.</p><p>전투 화면 터치 / Space 기본 공격 · Q/E 좌우 회피 · J 점프 · Shift 슬라이딩 · 1~6 스킬</p><p>맵의 길이·높낮이·벽·장식은 시드마다 달라집니다. 입구 쪽에 후퇴할 공간이 있고 새 몬스터는 플레이어 가까이에 생성되지 않습니다. 구역마다 처음 30마리, 초기 수를 포함해 총 150~200마리가 약 55초 동안 출현합니다. 처치 제한 시간은 없습니다. 모든 적을 처치하면 출구가 열립니다. 갈림길은 위·아래 중 선택하며 AUTO는 위로 갑니다. W/↑는 위쪽, S/↓는 아래쪽 길입니다. 어느 길이든 공통 보스로 합류하고 선택 경로 7구역을 정리하면 탈출합니다.</p><button onClick={()=>setHelp(false)}>닫기</button></div>}
   </section>
   <div className="rogue-lower hunt-lower">
   <section className="rogue-console hunt-console" aria-label="로그라이크 조작" inert={panel!==null}>

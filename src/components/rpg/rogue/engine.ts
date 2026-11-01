@@ -1,4 +1,4 @@
-import {HORDE,THEME_SPECIES,createWave,waveInterval,hash,CrowdIndex,type HordeWave,type HordeTuning} from './encounters';
+import {HORDE,SPAWN_SAFETY,spawnLanes,THEME_SPECIES,createWave,waveInterval,hash,CrowdIndex,type HordeWave,type HordeTuning} from './encounters';
 import {ROGUE_PACE,rogueAttackTiming} from './pace';
 import {newBuild,compileSkill,passiveBuild,type BuildState} from '../hunt-build';
 import {generateRogueMap,roomGates,routeFrom,moveOnMap,walkable,lineClear,tileCenter,ROGUE_TILE,type Point,type RogueMap,type RogueGate} from './map';
@@ -28,17 +28,19 @@ export class RogueEngine{
   this.spawnBatch(wave,Math.min(this.tuning.initial,wave.target-(id===9?1:0)));wave.nextAt=this.elapsed+waveInterval(wave,this.tuning);
  }
  private spawnBatch(wave:HordeWave,count:number,boss=false){
-  const room=this.map.rooms[wave.room],roster=THEME_SPECIES[room.theme],left=room.x1*ROGUE_TILE+48,right=(room.x2+1)*ROGUE_TILE-48;
+  const room=this.map.rooms[wave.room],roster=THEME_SPECIES[room.theme],left=room.x1*ROGUE_TILE+SPAWN_SAFETY.entryRetreat+SPAWN_SAFETY.outerMargin,right=(room.x2+1)*ROGUE_TILE-SPAWN_SAFETY.outerMargin;
   for(let i=0;i<count;i++){
    const ordinal=wave.spawned,random=hash(this.map.seed^Math.imul(wave.room+1,97531)^Math.imul(ordinal+1,197933));
    const species=boss?1031:roster[random%roster.length],radius=boss?22:species===1102||species===1152?15:12;
-   let x=left+(right-left)*((random>>>8)%10000)/10000;
+   const lanes=spawnLanes(left,right,this.hero.x);
+   // Room width guarantees a distant nest, even when the hero stands against either boundary.
+   const lane=lanes.length===2&&random%5===0?lanes[1]:lanes[0];
+   if(!lane)throw Error('No safe spawn lane');
+   let x=lane.left+(lane.right-lane.left)*((random>>>8)%10000)/10000;
    for(let attempt=0;attempt<40;attempt++){
-    if(Math.abs(x-this.hero.x)>=radius+44&&this.mobs.every(m=>m.hp<=0||m.room!==wave.room||Math.abs(m.x-x)>=5))break;
-    x=left+(right-left)*(hash(random+attempt+1)%10000)/10000;
+    if(this.mobs.every(m=>m.hp<=0||m.room!==wave.room||Math.abs(m.x-x)>=SPAWN_SAFETY.spacing))break;
+    x=lane.left+(lane.right-lane.left)*(hash(random+attempt+1)%10000)/10000;
    }
-   // Never spawn a collider inside the player, even at maximum crowd density.
-   if(Math.abs(x-this.hero.x)<radius+24)x=this.hero.x<(left+right)/2?right:left;
    const y=tileCenter(7),hp=boss?4000:[1102,1152,1153,1301].includes(species)?130:100;
    this.mobs.push({id:++this.mobSerial,room:wave.room,species,x,y,hp,maxHP:hp,radius,state:'idle',until:this.elapsed+.2,hitUntil:0,target:{x,y},boss,born:this.elapsed});wave.spawned++;
   }
@@ -173,5 +175,5 @@ export class RogueEngine{
   if(this.hero.hp<=0){this.status='dead';if(this.hero.motion)this.land(this.hero.motion);this.hero.motion=null;this.hero.airHeight=0;this.hero.elevation=this.map.rooms[this.room].elevation;this.pose('die1');}
   else if(this.room===9&&this.cleared.has(9)&&this.mobs.every(e=>e.hp<=0)&&dist(this.hero,this.map.exit)<ROGUE_TILE){this.status='won';this.hero.motion=null;this.hero.airHeight=0;this.pose('stay1');}
  }
- view():RogueSnapshot{const choices=roomGates(this.map,this.room).map(g=>({...g,ready:this.cleared.has(this.room),near:dist(this.hero,g.from)<=40})),gate=choices.find(g=>this.map.rooms[g.nextRoom].branch==='upper')??choices[0];return {wave:{...this.waves.get(this.room)!},choices,route:[...this.visited],phase:this.status==='won'?'complete':this.hero.motion?.gateId!==undefined?'traversing':this.cleared.has(this.room)?'exit-ready':'combat',gate:gate?{...gate,ready:this.cleared.has(this.room),near:dist(this.hero,gate.from)<=40}:null,transitions:[...this.transitions],elapsed:this.elapsed,hero:{...this.hero,direction:{...this.hero.direction},motion:this.hero.motion?{...this.hero.motion,from:{...this.hero.motion.from},to:{...this.hero.motion.to},legs:this.hero.motion.legs?.map(l=>({...l,from:{...l.from},to:{...l.to}}))}:null},mobs:this.mobs.map(m=>({...m,target:{...m.target}})),visited:[...this.visited],cleared:[...this.cleared],room:this.room,status:this.status,kills:this.kills,gold:this.gold,cooldowns:[...this.cooldowns],pendingSkill:this.pendingSkill,jumpReady:this.elapsed>=this.jumpAt&&!this.hero.motion,dodgeReady:this.elapsed>=this.dodgeAt&&!this.hero.motion,slideReady:this.elapsed>=this.dodgeAt&&!this.hero.motion,autoRoom:this.autoRoom,autoOrder:[...this.autoOrder],auto:this.auto,fx:this.fx.slice(-96).map(f=>({...f}))};}
+ view():RogueSnapshot{const choices=roomGates(this.map,this.room).map(g=>({...g,ready:this.cleared.has(this.room),near:dist(this.hero,g.from)<=40})),gate=choices.find(g=>g.id===this.hero.motion?.gateId)??choices.find(g=>this.map.rooms[g.nextRoom].branch==='upper')??choices[0];return {wave:{...this.waves.get(this.room)!},choices,route:[...this.visited],phase:this.status==='won'?'complete':this.hero.motion?.gateId!==undefined?'traversing':this.cleared.has(this.room)?'exit-ready':'combat',gate:gate?{...gate,ready:this.cleared.has(this.room),near:dist(this.hero,gate.from)<=40}:null,transitions:[...this.transitions],elapsed:this.elapsed,hero:{...this.hero,direction:{...this.hero.direction},motion:this.hero.motion?{...this.hero.motion,from:{...this.hero.motion.from},to:{...this.hero.motion.to},legs:this.hero.motion.legs?.map(l=>({...l,from:{...l.from},to:{...l.to}}))}:null},mobs:this.mobs.map(m=>({...m,target:{...m.target}})),visited:[...this.visited],cleared:[...this.cleared],room:this.room,status:this.status,kills:this.kills,gold:this.gold,cooldowns:[...this.cooldowns],pendingSkill:this.pendingSkill,jumpReady:this.elapsed>=this.jumpAt&&!this.hero.motion,dodgeReady:this.elapsed>=this.dodgeAt&&!this.hero.motion,slideReady:this.elapsed>=this.dodgeAt&&!this.hero.motion,autoRoom:this.autoRoom,autoOrder:[...this.autoOrder],auto:this.auto,fx:this.fx.slice(-96).map(f=>({...f}))};}
 }

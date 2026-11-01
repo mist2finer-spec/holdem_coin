@@ -1,3 +1,4 @@
+import {drawModularScenery} from './scenery';
 import {RogueVisualClock,projectRogueHero} from './presentation';
 import {ROGUE_PACE} from './pace';
 import {ROGUE_SPECIES,type RogueInput} from './engine';
@@ -38,9 +39,9 @@ export async function createRogueRenderer(canvas:HTMLCanvasElement,map:RogueMap,
  signal.addEventListener('abort',releaseGL,{once:true});
  canvas.dataset.renderer=renderer?'webgl':'canvas';
  const species=[...ROGUE_SPECIES,1031];
- const [hero,floor,wall,flame,monsters,nativeBackground,nativeForeground,layout]=await Promise.all([
+ const [hero,floor,wall,flame,monsters,sceneryAtlas]=await Promise.all([
   rig('characters/hong/native-axe/hong',signal,HONG_NATIVE_FOOT_SLOTS,gl),loadImage(root+'maps/candle-dungeon/textures/8fc6a24c9fa1201c.png',signal),loadImage(root+'maps/candle-dungeon/textures/7c8bd537db964e9d.png',signal),loadImage(root+'maps/candle-dungeon/textures/2a5fa6602875c8d0.png',signal),
-  Promise.all(species.map(async id=>{const profile=LABYRINTH.monsters[id],a=LABYRINTH.assets[profile.asset];return [id,{rig:await rig(a.skeleton,signal,a.groundSlots,gl),clips:a.clips}] as const;})),loadImage(root+'maps/candle-dungeon/background.webp',signal),loadImage(root+'maps/candle-dungeon/foreground.webp',signal),fetch(root+'maps/candle-dungeon/layout.json',{signal}).then(r=>{if(!r.ok)throw Error('원본 맵 로드 실패');return r.json();})]);
+  Promise.all(species.map(async id=>{const profile=LABYRINTH.monsters[id],a=LABYRINTH.assets[profile.asset];return [id,{rig:await rig(a.skeleton,signal,a.groundSlots,gl),clips:a.clips}] as const;})),loadImage(root+'maps/modular-dungeon/atlas-v1.png',signal)]);
  const sources=new Map(monsters),actors=new Map<number,ReturnType<typeof hero.clone>>();let heroKey='',visible=new Set<number>(),explored=new Set<number>(),lastCell=-1,flameTime=0;
  const fov=new FOV.PreciseShadowcasting((x,y)=>x>=0&&y>=0&&x<map.width&&y<map.height&&map.tiles[y*map.width+x]===0,{topology:8});
  let hx=map.start.x,hy=map.start.y,hz=map.rooms[0].elevation,heroZ=hz;const positions=new Map<number,{x:number;y:number}>();
@@ -66,24 +67,7 @@ export async function createRogueRenderer(canvas:HTMLCanvasElement,map:RogueMap,
   const revealed=[map.rooms[view.room]];
   for(const g of view.choices)if(g.ready)revealed.push(map.rooms[g.nextRoom]);
   for(const chamber of revealed)if(chamber)for(let y=chamber.y1;y<=chamber.y2;y++)for(let x=chamber.x1;x<=chamber.x2;x++){const k=y*map.width+x;visible.add(k);explored.add(k);}
-  const drawNative=(front:boolean)=>{
-   const span=70*24,scale=span/(layout.endPixel-layout.startPixel)*zoom;
-   for(const room of map.rooms){
-    const left=room.id===0?0:sx(room.x1*ROGUE_TILE),right=room.id===9?w:sx((room.x2+1)*ROGUE_TILE);
-    if(right<0||left>w)continue;
-    const floorY=sy(map.start.y,room.elevation),phase=(room.x1*ROGUE_TILE)%span;
-    ctx.save();ctx.beginPath();ctx.rect(left,room.branch==='common'?0:floorY-175*zoom,right-left,room.branch==='common'?h:220*zoom);ctx.clip();
-    for(let repeat=-1;repeat<=1;repeat++){
-     const x=sx(room.x1*ROGUE_TILE-phase+repeat*span)-layout.startPixel*scale,y=floorY-layout.groundY*scale;
-     ctx.globalAlpha=front?.7:1;ctx.drawImage(front?nativeForeground:nativeBackground,x,y,layout.size[0]*scale,layout.size[1]*scale);
-     if(!front){ctx.save();ctx.globalCompositeOperation='lighter';
-      for(const [i,f] of layout.flames.entries()){
-       const frame=(Math.floor((view.elapsed+i*.137)*16))%16,side=Math.max(6,Math.min(100,f.size*f.scale*layout.size[1]/14))*scale;
-       ctx.drawImage(flame,(frame%4)*64,(3-Math.floor(frame/4))*64,64,64,x+f.pixel[0]*scale-side/2,y+f.pixel[1]*scale-side/2,side,side);
-      }ctx.restore();}
-    }ctx.restore();
-   }
-  };drawNative(false);flameTime+=dt;
+  drawModularScenery(ctx,sceneryAtlas,map,view.room,view.cleared,visualTime,{width:w,height:h,zoom,sx,sy});
   // Source-style action links: elevation changes, open chasms, climbing ledges and low lintels.
   const drawGates=(overhead:boolean)=>{for(const gate of map.gates){
    if(!view.visited.includes(gate.fromRoom))continue;
@@ -141,7 +125,7 @@ export async function createRogueRenderer(canvas:HTMLCanvasElement,map:RogueMap,
    }
   }
   if(renderer){renderer.end();ctx.drawImage(layer,0,0,w,h);for(const overlay of overlays)overlay();}
-  drawNative(true);drawGates(true);
+  drawGates(true);
   for(const f of view.fx){
    if(f.kind==='damage'||f.kind==='gold'){
     if(!visible.has(cell(f.y)*map.width+cell(f.x)))continue;
@@ -154,6 +138,6 @@ export async function createRogueRenderer(canvas:HTMLCanvasElement,map:RogueMap,
   // Compact route strip shows the local arena and its next movement requirement.
   const gate=view.gate;ctx.fillStyle='#081012df';ctx.fillRect(w-105,10,96,43);ctx.strokeStyle='#ad8b4d66';ctx.strokeRect(w-105,10,96,43);ctx.textAlign='center';ctx.font='10px sans-serif';ctx.fillStyle='#cdbf98';ctx.fillText('NEXT PASSAGE',w-57,25);ctx.font='bold 12px sans-serif';ctx.fillStyle=gate?.ready?'#e7d48e':'#b8c2b7';ctx.fillText(view.choices.length>1?'↑ / ↓ 갈림길':gate?PASSAGE_LABEL[gate.passage]:'최종 출구',w-57,43);
   drawCost=drawCost*.9+(performance.now()-frameStart)*.1;canvas.dataset.detailedActors=String(actors.size);canvas.dataset.spawned=String(view.wave.spawned);canvas.dataset.waveTarget=String(view.wave.target);canvas.dataset.drawMs=drawCost.toFixed(2);canvas.dataset.frameMs=(frameInterval*1000).toFixed(2);
-  canvas.dataset.visualTime=String(visualTime);canvas.dataset.serverTime=String(authority.elapsed);canvas.dataset.authoritativeWorldX=String(authority.hero.x);canvas.dataset.heroAction=view.hero.action;canvas.dataset.autoTarget=String(Math.min(10,view.autoRoom+1));canvas.dataset.autoOrder=view.autoOrder.map(i=>i+1).join(',');canvas.dataset.mode='rogue';canvas.dataset.presentation='vardian-native-sideview';canvas.dataset.mapSource='Map002_001';canvas.dataset.movementAxis='x';canvas.dataset.elevation=String(view.hero.elevation);canvas.dataset.passage=view.gate?.passage??'exit';canvas.dataset.phase=view.phase;canvas.dataset.gate=String(view.gate?.kind??'exit');canvas.dataset.transitions=view.transitions.join(',');canvas.dataset.rooms=String(map.rooms.length);canvas.dataset.visibleMonsters=String(mobs.filter(m=>m.hp>0).length);canvas.dataset.heroHeight=String(ROGUE_VISUAL.heroHeight);canvas.dataset.tileSize=String(ROGUE_TILE);canvas.dataset.worldX=String(view.hero.x);canvas.dataset.worldY=String(view.hero.y);canvas.dataset.status='ready';
+  canvas.dataset.visualTime=String(visualTime);canvas.dataset.serverTime=String(authority.elapsed);canvas.dataset.authoritativeWorldX=String(authority.hero.x);canvas.dataset.heroAction=view.hero.action;canvas.dataset.autoTarget=String(Math.min(10,view.autoRoom+1));canvas.dataset.autoOrder=view.autoOrder.map(i=>i+1).join(',');canvas.dataset.mode='rogue';canvas.dataset.presentation='modular-vardian-sideview';canvas.dataset.mapSource='modular-dungeon-v1';canvas.dataset.roomWidth=String((map.rooms[view.room].x2-map.rooms[view.room].x1+1)*ROGUE_TILE);canvas.dataset.scenery=map.rooms[view.room].scenery;canvas.dataset.movementAxis='x';canvas.dataset.elevation=String(view.hero.elevation);canvas.dataset.passage=view.gate?.passage??'exit';canvas.dataset.phase=view.phase;canvas.dataset.gate=String(view.gate?.kind??'exit');canvas.dataset.transitions=view.transitions.join(',');canvas.dataset.rooms=String(map.rooms.length);canvas.dataset.visibleMonsters=String(mobs.filter(m=>m.hp>0).length);canvas.dataset.heroHeight=String(ROGUE_VISUAL.heroHeight);canvas.dataset.tileSize=String(ROGUE_TILE);canvas.dataset.worldX=String(view.hero.x);canvas.dataset.worldY=String(view.hero.y);canvas.dataset.status='ready';
  },dispose(){signal.removeEventListener('abort',releaseGL);releaseGL();hero.atlas.dispose();for(const s of sources.values())s.rig.atlas.dispose();actors.clear();positions.clear();}};
 }
