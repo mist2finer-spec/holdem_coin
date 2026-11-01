@@ -1,0 +1,5419 @@
+{
+  "sourceTraceSha256": "fadadb06264e710c62f7a363e100e00908e1a3e71ad1ab40f1cbf62e337c9081",
+  "scope": "All locally compiled requested families and multi-skill monster/boss profiles; command recovery is not native shader/3D physics parity.",
+  "actors": [
+    {
+      "actor": 1021,
+      "name": "BroodSlime_Fire",
+      "asset": "Enemy_Slime_Boss_01_R",
+      "visualFallback": false,
+      "skills": [
+        {
+          "id": 2020,
+          "clip": "attack1",
+          "rangeWorld": 250.0,
+          "cooldown": 0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.2199999988079071,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 500.0,
+              "duration": 0.0,
+              "width": 50.0,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 100.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2021,
+          "clip": "skill1",
+          "rangeWorld": 250.0,
+          "cooldown": 7.0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.5,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.5,
+              "speed": 600.0,
+              "duration": 0.0,
+              "width": 50.0,
+              "moving": false,
+              "arrive": true,
+              "release": false,
+              "repeat": 0.10000000149011612,
+              "unique": false,
+              "targetOrigin": 12,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 500.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Moving",
+                  "type": 107,
+                  "value": 1.0,
+                  "duration": 0.5,
+                  "target": 2
+                },
+                {
+                  "phase": "Arrive",
+                  "type": 1,
+                  "value": 500.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Arrive",
+                  "type": 107,
+                  "value": 0.15000000596046448,
+                  "duration": 1.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2022,
+          "clip": "skill2",
+          "rangeWorld": 250.0,
+          "cooldown": 10.0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 0,
+          "commands": [],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        }
+      ]
+    },
+    {
+      "actor": 1022,
+      "name": "BroodSlime_Water",
+      "asset": "Enemy_Slime_Boss_01_B",
+      "visualFallback": false,
+      "skills": [
+        {
+          "id": 2040,
+          "clip": "attack1",
+          "rangeWorld": 250.0,
+          "cooldown": 0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.2199999988079071,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 500.0,
+              "duration": 0.0,
+              "width": 50.0,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 100.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2041,
+          "clip": "skill1",
+          "rangeWorld": 250.0,
+          "cooldown": 7.0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.5,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.5,
+              "speed": 600.0,
+              "duration": 0.0,
+              "width": 50.0,
+              "moving": false,
+              "arrive": true,
+              "release": false,
+              "repeat": 0.10000000149011612,
+              "unique": false,
+              "targetOrigin": 12,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 500.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Moving",
+                  "type": 107,
+                  "value": 1.0,
+                  "duration": 0.5,
+                  "target": 2
+                },
+                {
+                  "phase": "Arrive",
+                  "type": 1,
+                  "value": 500.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Arrive",
+                  "type": 107,
+                  "value": 0.15000000596046448,
+                  "duration": 1.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2042,
+          "clip": "skill2",
+          "rangeWorld": 250.0,
+          "cooldown": 10.0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 0,
+          "commands": [],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        }
+      ]
+    },
+    {
+      "actor": 1023,
+      "name": "BroodSlime_Earth",
+      "asset": "Enemy_Slime_Boss_01_G",
+      "visualFallback": false,
+      "skills": [
+        {
+          "id": 2060,
+          "clip": "attack1",
+          "rangeWorld": 250.0,
+          "cooldown": 0,
+          "cooldownDomain": "seconds",
+          "hold": 1.2000000476837158,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.2199999988079071,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 500.0,
+              "duration": 0.0,
+              "width": 50.0,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 100.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2061,
+          "clip": "skill1",
+          "rangeWorld": 250.0,
+          "cooldown": 7.0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.5,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.5,
+              "speed": 600.0,
+              "duration": 0.0,
+              "width": 50.0,
+              "moving": false,
+              "arrive": true,
+              "release": false,
+              "repeat": 0.10000000149011612,
+              "unique": false,
+              "targetOrigin": 12,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 100.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Moving",
+                  "type": 107,
+                  "value": 1.0,
+                  "duration": 0.5,
+                  "target": 2
+                },
+                {
+                  "phase": "Arrive",
+                  "type": 1,
+                  "value": 500.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Arrive",
+                  "type": 107,
+                  "value": 0.15000000596046448,
+                  "duration": 1.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2062,
+          "clip": "skill2",
+          "rangeWorld": 250.0,
+          "cooldown": 10.0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 0,
+          "commands": [],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        }
+      ]
+    },
+    {
+      "actor": 1031,
+      "name": "OverlordSlime_Fire",
+      "asset": "Enemy_Slime_Boss_02_R",
+      "visualFallback": false,
+      "skills": [
+        {
+          "id": 2025,
+          "clip": "attack1",
+          "rangeWorld": 250.0,
+          "cooldown": 0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.2199999988079071,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 500.0,
+              "duration": 0.0,
+              "width": 50.0,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 100.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2026,
+          "clip": "skill1",
+          "rangeWorld": 250.0,
+          "cooldown": 6.0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 3,
+          "commands": [
+            {
+              "at": 0.33000001311302185,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 3,
+              "interval": 0.25,
+              "speed": 400.0,
+              "duration": 0.0,
+              "width": 50.0,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 2,
+              "startOrigin": 1,
+              "tracking": true,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 150.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2027,
+          "clip": "skill2",
+          "rangeWorld": 150.0,
+          "cooldown": 7.0,
+          "cooldownDomain": "seconds",
+          "hold": 1.800000047683716,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 1.7000000476837158,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 0.0,
+              "duration": 0.0,
+              "width": 160.0000023841858,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 1,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 500.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Moving",
+                  "type": 107,
+                  "value": 0.10000000149011612,
+                  "duration": 1.5,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2028,
+          "clip": "skill3",
+          "rangeWorld": 150.0,
+          "cooldown": 10.0,
+          "cooldownDomain": "seconds",
+          "hold": 4.009999966621399,
+          "emissions": 15,
+          "commands": [
+            {
+              "at": 0.8299999833106995,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 15,
+              "interval": 0.2199999988079071,
+              "speed": 1000.0,
+              "duration": 0.0,
+              "width": 50.0,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 5,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 120.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        }
+      ]
+    },
+    {
+      "actor": 1032,
+      "name": "OverlordSlime_Water",
+      "asset": "Enemy_Slime_Boss_02_B",
+      "visualFallback": false,
+      "skills": [
+        {
+          "id": 2045,
+          "clip": "attack1",
+          "rangeWorld": 250.0,
+          "cooldown": 0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.2199999988079071,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 500.0,
+              "duration": 0.0,
+              "width": 50.0,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 100.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2046,
+          "clip": "skill1",
+          "rangeWorld": 250.0,
+          "cooldown": 6.0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 3,
+          "commands": [
+            {
+              "at": 0.33000001311302185,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 3,
+              "interval": 0.25,
+              "speed": 400.0,
+              "duration": 0.0,
+              "width": 50.0,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 2,
+              "startOrigin": 1,
+              "tracking": true,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 150.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2047,
+          "clip": "skill2",
+          "rangeWorld": 150.0,
+          "cooldown": 7.0,
+          "cooldownDomain": "seconds",
+          "hold": 1.800000047683716,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 1.7000000476837158,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 0.0,
+              "duration": 0.0,
+              "width": 160.0000023841858,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 1,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 500.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Moving",
+                  "type": 107,
+                  "value": 0.10000000149011612,
+                  "duration": 1.5,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2048,
+          "clip": "skill3",
+          "rangeWorld": 150.0,
+          "cooldown": 10.0,
+          "cooldownDomain": "seconds",
+          "hold": 4.009999966621399,
+          "emissions": 15,
+          "commands": [
+            {
+              "at": 0.8299999833106995,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 15,
+              "interval": 0.2199999988079071,
+              "speed": 1000.0,
+              "duration": 0.0,
+              "width": 50.0,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 5,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 120.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        }
+      ]
+    },
+    {
+      "actor": 1033,
+      "name": "OverlordSlime_Earth",
+      "asset": "Enemy_Slime_Boss_02_G",
+      "visualFallback": false,
+      "skills": [
+        {
+          "id": 2065,
+          "clip": "attack1",
+          "rangeWorld": 250.0,
+          "cooldown": 0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.2199999988079071,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 500.0,
+              "duration": 0.0,
+              "width": 50.0,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 100.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2066,
+          "clip": "skill1",
+          "rangeWorld": 250.0,
+          "cooldown": 6.0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 3,
+          "commands": [
+            {
+              "at": 0.33000001311302185,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 3,
+              "interval": 0.25,
+              "speed": 400.0,
+              "duration": 0.0,
+              "width": 50.0,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 2,
+              "startOrigin": 1,
+              "tracking": true,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 150.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2067,
+          "clip": "skill2",
+          "rangeWorld": 100.0,
+          "cooldown": 7.0,
+          "cooldownDomain": "seconds",
+          "hold": 1.800000047683716,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 1.7000000476837158,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 0.0,
+              "duration": 0.0,
+              "width": 160.0000023841858,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 1,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 500.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Moving",
+                  "type": 107,
+                  "value": 0.10000000149011612,
+                  "duration": 1.5,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2068,
+          "clip": "skill3",
+          "rangeWorld": 150.0,
+          "cooldown": 10.0,
+          "cooldownDomain": "seconds",
+          "hold": 4.009999966621399,
+          "emissions": 15,
+          "commands": [
+            {
+              "at": 0.8299999833106995,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 15,
+              "interval": 0.2199999988079071,
+              "speed": 1000.0,
+              "duration": 0.0,
+              "width": 50.0,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 5,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 120.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        }
+      ]
+    },
+    {
+      "actor": 1054,
+      "name": "MagisterMuckling",
+      "asset": "Enemy_Deadspawn_Boss_01",
+      "visualFallback": false,
+      "skills": [
+        {
+          "id": 2115,
+          "clip": "attack1",
+          "rangeWorld": 100.0,
+          "cooldown": 0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.5,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 0.0,
+              "duration": 0.0,
+              "width": 104.99999523162842,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 100.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2116,
+          "clip": "skill1",
+          "rangeWorld": 150.0,
+          "cooldown": 6.0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 1.2999999523162842,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.23999999463558197,
+              "speed": 0.0,
+              "duration": 0.0,
+              "width": 75.0,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": true,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 500.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Moving",
+                  "type": 107,
+                  "value": 0.10000000149011612,
+                  "duration": 1.5,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2117,
+          "clip": "skill2",
+          "rangeWorld": 150.0,
+          "cooldown": 8.0,
+          "cooldownDomain": "seconds",
+          "hold": 2.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 1.2999999523162842,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 0.0,
+              "duration": 0.0,
+              "width": 350.0,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 800.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Moving",
+                  "type": 2,
+                  "value": 20.0,
+                  "duration": 0.0,
+                  "target": 1
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        }
+      ]
+    },
+    {
+      "actor": 1055,
+      "name": "MotherMuckling",
+      "asset": "Enemy_Nohaz_Boss_01",
+      "visualFallback": false,
+      "skills": [
+        {
+          "id": 2120,
+          "clip": "attack1",
+          "rangeWorld": 250.0,
+          "cooldown": 0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.5,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 650.0,
+              "duration": 0.0,
+              "width": 50.0,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 100.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2121,
+          "clip": "skill1",
+          "rangeWorld": 200.0,
+          "cooldown": 6.0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 1.100000023841858,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.5,
+              "speed": 1000.0,
+              "duration": 0.0,
+              "width": 50.0,
+              "moving": false,
+              "arrive": true,
+              "release": false,
+              "repeat": 0.10000000149011612,
+              "unique": false,
+              "targetOrigin": 12,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 100.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Moving",
+                  "type": 106,
+                  "value": 0.20000000298023224,
+                  "duration": 1.5,
+                  "target": 2
+                },
+                {
+                  "phase": "Arrive",
+                  "type": 1,
+                  "value": 500.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Arrive",
+                  "type": 106,
+                  "value": 0.15000000596046448,
+                  "duration": 1.600000023841858,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2122,
+          "clip": "skill2",
+          "rangeWorld": 150.0,
+          "cooldown": 3.0,
+          "cooldownDomain": "seconds",
+          "hold": 0.30000001192092896,
+          "emissions": 0,
+          "commands": [],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2123,
+          "clip": "skill3",
+          "rangeWorld": 150.0,
+          "cooldown": 9.0,
+          "cooldownDomain": "seconds",
+          "hold": 4.0,
+          "emissions": 2,
+          "commands": [
+            {
+              "at": 1.2999999523162842,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 0.0,
+              "duration": 2.0,
+              "width": 229.99999523162842,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 8.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 200.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            },
+            {
+              "at": 2.700000047683716,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 0.0,
+              "duration": 0.5,
+              "width": 229.99999523162842,
+              "moving": true,
+              "arrive": false,
+              "release": true,
+              "repeat": 3.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 106,
+                  "value": 0.25,
+                  "duration": 0.699999988079071,
+                  "target": 2
+                },
+                {
+                  "phase": "Release",
+                  "type": 107,
+                  "value": 0.0,
+                  "duration": 1.5,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        }
+      ]
+    },
+    {
+      "actor": 1103,
+      "name": "ShamanGoblin",
+      "asset": "Enemy_GoblinMagic_01",
+      "visualFallback": false,
+      "skills": [
+        {
+          "id": 2160,
+          "clip": "attack1",
+          "rangeWorld": 250.0,
+          "cooldown": 0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.25,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 1100.0,
+              "duration": 0.0,
+              "width": 60.00000238418579,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 2,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 100.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Arrive",
+                  "type": 1,
+                  "value": 100.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2161,
+          "clip": "skill1",
+          "rangeWorld": 250.0,
+          "cooldown": 6.0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.30000001192092896,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 0.0,
+              "duration": 1.0,
+              "width": 100.0,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 3.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 2,
+              "tracking": true,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 120.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        }
+      ]
+    },
+    {
+      "actor": 1104,
+      "name": "StrikerGoblin",
+      "asset": "Enemy_Snixx_Boss_01",
+      "visualFallback": false,
+      "skills": [
+        {
+          "id": 2165,
+          "clip": "attack1",
+          "rangeWorld": 89.99999761581421,
+          "cooldown": 0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.3499999940395355,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 0.0,
+              "duration": 0.0,
+              "width": 94.9999988079071,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 100.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2166,
+          "clip": "skill1",
+          "rangeWorld": 100.0,
+          "cooldown": 3.0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.4000000059604645,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 0.0,
+              "duration": 0.30000001192092896,
+              "width": 150.0,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 5.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 60.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Moving",
+                  "type": 106,
+                  "value": 0.05000000074505806,
+                  "duration": 0.30000001192092896,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2167,
+          "clip": "skill2",
+          "rangeWorld": 150.0,
+          "cooldown": 8.0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.4000000059604645,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0,
+              "speed": 0,
+              "duration": 0,
+              "width": 50,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0,
+              "unique": true,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 3,
+                  "value": 3.0,
+                  "duration": 30.0,
+                  "target": 1
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        }
+      ]
+    },
+    {
+      "actor": 1105,
+      "name": "GuardianGoblin",
+      "asset": "Enemy_GoblinWarrior_Boss_01",
+      "visualFallback": true,
+      "skills": [
+        {
+          "id": 2170,
+          "clip": "attack1",
+          "rangeWorld": 100.0,
+          "cooldown": 0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.4000000059604645,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 0.0,
+              "duration": 0.0,
+              "width": 125.0,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 100.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2171,
+          "clip": "skill1",
+          "rangeWorld": 100.0,
+          "cooldown": 3.0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.4000000059604645,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 0.0,
+              "duration": 0.0,
+              "width": 150.0,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 300.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2172,
+          "clip": "skill2",
+          "rangeWorld": 150.0,
+          "cooldown": 8.0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 2,
+          "commands": [
+            {
+              "at": 1.0,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 0.0,
+              "duration": 0.0,
+              "width": 200.0,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 200.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Moving",
+                  "type": 106,
+                  "value": 0.25,
+                  "duration": 1.5,
+                  "target": 2
+                }
+              ]
+            },
+            {
+              "at": 1.0,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0,
+              "speed": 0,
+              "duration": 0,
+              "width": 50,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0,
+              "unique": true,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 222,
+                  "value": 3.0,
+                  "duration": 20.0,
+                  "target": 1
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2173,
+          "clip": "skill3",
+          "rangeWorld": 100.0,
+          "cooldown": 10.0,
+          "cooldownDomain": "seconds",
+          "hold": 2.5,
+          "emissions": 2,
+          "commands": [
+            {
+              "at": 1.2000000476837158,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 0.0,
+              "duration": 0.0,
+              "width": 129.99999523162842,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 350.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            },
+            {
+              "at": 1.7000000476837158,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 0.0,
+              "duration": 0.0,
+              "width": 129.99999523162842,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 650.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Moving",
+                  "type": 107,
+                  "value": 0.10000000149011612,
+                  "duration": 1.5,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        }
+      ]
+    },
+    {
+      "actor": 1106,
+      "name": "SpecterGoblin",
+      "asset": "Enemy_SpecterGoblin_01",
+      "visualFallback": false,
+      "skills": [
+        {
+          "id": 2180,
+          "clip": "attack1",
+          "rangeWorld": 89.99999761581421,
+          "cooldown": 0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.3499999940395355,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 0.0,
+              "duration": 0.0,
+              "width": 139.9999976158142,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 100.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2181,
+          "clip": "attack1",
+          "rangeWorld": 150.0,
+          "cooldown": 3.0,
+          "cooldownDomain": "default-attack-count",
+          "hold": 1.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.5,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.20000000298023224,
+              "speed": 5000.0,
+              "duration": 0.0,
+              "width": 100.0,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 100.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 0.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2182,
+          "clip": "skill2",
+          "rangeWorld": 100.0,
+          "cooldown": 10.0,
+          "cooldownDomain": "seconds",
+          "hold": 2.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.6499999761581421,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 0.0,
+              "duration": 0.0,
+              "width": 129.99999523162842,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 650.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Moving",
+                  "type": 107,
+                  "value": 0.10000000149011612,
+                  "duration": 1.5,
+                  "target": 2
+                },
+                {
+                  "phase": "Moving",
+                  "type": 104,
+                  "value": 2.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2183,
+          "clip": "skill3",
+          "rangeWorld": 150.0,
+          "cooldown": 10.0,
+          "cooldownDomain": "seconds",
+          "hold": 4.0,
+          "emissions": 5,
+          "commands": [
+            {
+              "at": 0.699999988079071,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 5,
+              "interval": 0.20000000298023224,
+              "speed": 1250.0,
+              "duration": 0.0,
+              "width": 50.0,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 4,
+              "startOrigin": 5,
+              "tracking": false,
+              "effects": []
+            }
+          ],
+          "pending": [
+            {
+              "kind": "effect-parameter-or-filter",
+              "dataId": 18
+            }
+          ],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2184,
+          "clip": "attack1",
+          "rangeWorld": 100.0,
+          "cooldown": 7.0,
+          "cooldownDomain": "seconds",
+          "hold": 3.0,
+          "emissions": 2,
+          "commands": [
+            {
+              "at": 0.699999988079071,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0,
+              "speed": 0,
+              "duration": 0,
+              "width": 50,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0,
+              "unique": true,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 103,
+                  "value": 1.0,
+                  "duration": 0.0,
+                  "target": 1
+                }
+              ]
+            },
+            {
+              "at": 1.600000023841858,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 0.0,
+              "duration": 0.0,
+              "width": 209.99999046325684,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 1,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 800.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Moving",
+                  "type": 107,
+                  "value": 0.10000000149011612,
+                  "duration": 2.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        }
+      ]
+    },
+    {
+      "actor": 1151,
+      "name": "BoneArcherSkeleton",
+      "asset": "Enemy_SkeletonArcher_01",
+      "visualFallback": false,
+      "skills": [
+        {
+          "id": 2200,
+          "clip": "attack1",
+          "rangeWorld": 250.0,
+          "cooldown": 0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.30000001192092896,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 1000.0,
+              "duration": 0.0,
+              "width": 60.00000238418579,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 2,
+              "startOrigin": 1,
+              "tracking": true,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 100.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        }
+      ]
+    },
+    {
+      "actor": 1152,
+      "name": "BoneSpearSkeleton",
+      "asset": "Enemy_SkeletonMelee_01",
+      "visualFallback": false,
+      "skills": [
+        {
+          "id": 2205,
+          "clip": "attack1",
+          "rangeWorld": 75.0,
+          "cooldown": 0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.3499999940395355,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 0.0,
+              "duration": 0.0,
+              "width": 80.0000011920929,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 100.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        }
+      ]
+    },
+    {
+      "actor": 1153,
+      "name": "BoneWeaverSkeleton",
+      "asset": "Enemy_SkeletonMagic_01",
+      "visualFallback": false,
+      "skills": [
+        {
+          "id": 2210,
+          "clip": "attack1",
+          "rangeWorld": 250.0,
+          "cooldown": 0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.5,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 1100.0,
+              "duration": 0.0,
+              "width": 60.00000238418579,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 2,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 100.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Arrive",
+                  "type": 1,
+                  "value": 100.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2211,
+          "clip": "skill1",
+          "rangeWorld": 250.0,
+          "cooldown": 6.0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 4,
+          "commands": [
+            {
+              "at": 0.5,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 4,
+              "interval": 0.25,
+              "speed": 1100.0,
+              "duration": 0.0,
+              "width": 60.00000238418579,
+              "moving": false,
+              "arrive": true,
+              "release": false,
+              "repeat": 0.0,
+              "unique": true,
+              "targetOrigin": 11,
+              "startOrigin": 4,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 300.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Arrive",
+                  "type": 1,
+                  "value": 300.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        }
+      ]
+    },
+    {
+      "actor": 1154,
+      "name": "GraveKnightSkeleton",
+      "asset": "Enemy_SkeletonMBoss_01",
+      "visualFallback": false,
+      "skills": [
+        {
+          "id": 2215,
+          "clip": "attack1",
+          "rangeWorld": 100.0,
+          "cooldown": 0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.4000000059604645,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 0.0,
+              "duration": 0.0,
+              "width": 104.99999523162842,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 100.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2216,
+          "clip": "skill1",
+          "rangeWorld": 150.0,
+          "cooldown": 6.0,
+          "cooldownDomain": "seconds",
+          "hold": 2.0,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 1.25,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 500.0,
+              "duration": 0.0,
+              "width": 75.0,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": true,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 400.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Moving",
+                  "type": 107,
+                  "value": 1.0,
+                  "duration": 2.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2217,
+          "clip": "skill2",
+          "rangeWorld": 250.0,
+          "cooldown": 10.0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 0,
+          "commands": [],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2218,
+          "clip": "attack1",
+          "rangeWorld": 150.0,
+          "cooldown": 3.0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.4300000071525574,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 0.0,
+              "duration": 0.0,
+              "width": 150.0,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 300.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        }
+      ]
+    },
+    {
+      "actor": 1155,
+      "name": "AstrichSkeleton",
+      "asset": "Enemy_SkeletonBoss_01",
+      "visualFallback": false,
+      "skills": [
+        {
+          "id": 2220,
+          "clip": "attack1",
+          "rangeWorld": 250.0,
+          "cooldown": 0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.4000000059604645,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.30000001192092896,
+              "speed": 700.0,
+              "duration": 0.0,
+              "width": 64.99999761581421,
+              "moving": false,
+              "arrive": true,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 2,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 100.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Arrive",
+                  "type": 1,
+                  "value": 100.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2221,
+          "clip": "skill1",
+          "rangeWorld": 250.0,
+          "cooldown": 4.0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.800000011920929,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.5,
+              "speed": 0.0,
+              "duration": 0.0,
+              "width": 75.0,
+              "moving": true,
+              "arrive": true,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 12,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 400.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Moving",
+                  "type": 107,
+                  "value": 0.25,
+                  "duration": 2.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2222,
+          "clip": "skill2",
+          "rangeWorld": 150.0,
+          "cooldown": 14.0,
+          "cooldownDomain": "seconds",
+          "hold": 5.0,
+          "emissions": 20,
+          "commands": [
+            {
+              "at": 1.5,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 10,
+              "interval": 0.23999999463558197,
+              "speed": 1000.0,
+              "duration": 0.0,
+              "width": 50.0,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 1,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 100.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            },
+            {
+              "at": 1.600000023841858,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 10,
+              "interval": 0.23999999463558197,
+              "speed": 1000.0,
+              "duration": 0.0,
+              "width": 50.0,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 1,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 200.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2223,
+          "clip": "attack1",
+          "rangeWorld": 250.0,
+          "cooldown": 10.0,
+          "cooldownDomain": "seconds",
+          "hold": 3.0,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.20000000298023224,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 0.0,
+              "duration": 1.7000000476837158,
+              "width": 150.0,
+              "moving": true,
+              "arrive": false,
+              "release": true,
+              "repeat": 6.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 12,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 20.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Release",
+                  "type": 1,
+                  "value": 1000.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Release",
+                  "type": 107,
+                  "value": 0.0,
+                  "duration": 2.5,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        }
+      ]
+    },
+    {
+      "actor": 1202,
+      "name": "ArmaSpider",
+      "asset": "Enemy_Spider_Boss_01",
+      "visualFallback": false,
+      "skills": [
+        {
+          "id": 2255,
+          "clip": "attack1",
+          "rangeWorld": 75.0,
+          "cooldown": 0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.3499999940395355,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 0.0,
+              "duration": 0.0,
+              "width": 80.0000011920929,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 100.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2256,
+          "clip": "attack1",
+          "rangeWorld": 100.0,
+          "cooldown": 7.0,
+          "cooldownDomain": "seconds",
+          "hold": 3.0,
+          "emissions": 2,
+          "commands": [
+            {
+              "at": 0.5,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0,
+              "speed": 0,
+              "duration": 0,
+              "width": 50,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0,
+              "unique": true,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 103,
+                  "value": 1.5,
+                  "duration": 0.0,
+                  "target": 1
+                }
+              ]
+            },
+            {
+              "at": 1.899999976158142,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 0.0,
+              "duration": 0.0,
+              "width": 125.0,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 800.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Moving",
+                  "type": 107,
+                  "value": 0.10000000149011612,
+                  "duration": 2.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2257,
+          "clip": "skill2",
+          "rangeWorld": 150.0,
+          "cooldown": 10.0,
+          "cooldownDomain": "seconds",
+          "hold": 2.0,
+          "emissions": 0,
+          "commands": [],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        }
+      ]
+    },
+    {
+      "actor": 1203,
+      "name": "NerissaQueenSpider",
+      "asset": "Enemy_NerissaQueen_01",
+      "visualFallback": false,
+      "skills": [
+        {
+          "id": 2261,
+          "clip": "skill1",
+          "rangeWorld": 150.0,
+          "cooldown": 4.0,
+          "cooldownDomain": "seconds",
+          "hold": 2.5,
+          "emissions": 2,
+          "commands": [
+            {
+              "at": 1.0499999523162842,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 0.0,
+              "duration": 0.0,
+              "width": 164.9999976158142,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 150.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            },
+            {
+              "at": 1.2000000476837158,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 0.0,
+              "duration": 0.0,
+              "width": 164.9999976158142,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 250.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Moving",
+                  "type": 107,
+                  "value": 0.10000000149011612,
+                  "duration": 1.5,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2262,
+          "clip": "skill2",
+          "rangeWorld": 300.0,
+          "cooldown": 6.0,
+          "cooldownDomain": "seconds",
+          "hold": 3.0,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.8600000143051147,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 625.0,
+              "duration": 0.0,
+              "width": 139.9999976158142,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 400.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Moving",
+                  "type": 107,
+                  "value": 0.5,
+                  "duration": 3.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2263,
+          "clip": "skill3",
+          "rangeWorld": 300.0,
+          "cooldown": 8.0,
+          "cooldownDomain": "seconds",
+          "hold": 2.5,
+          "emissions": 4,
+          "commands": [
+            {
+              "at": 0.699999988079071,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 2,
+              "interval": 0.30000001192092896,
+              "speed": 400.0,
+              "duration": 0.0,
+              "width": 50.0,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 12,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 150.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Moving",
+                  "type": 106,
+                  "value": 0.10000000149011612,
+                  "duration": 0.30000001192092896,
+                  "target": 2
+                }
+              ]
+            },
+            {
+              "at": 0.800000011920929,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 2,
+              "interval": 0.30000001192092896,
+              "speed": 400.0,
+              "duration": 0.0,
+              "width": 50.0,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 12,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 150.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Moving",
+                  "type": 106,
+                  "value": 0.10000000149011612,
+                  "duration": 0.30000001192092896,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2264,
+          "clip": "attack1",
+          "rangeWorld": 200.0,
+          "cooldown": 10.0,
+          "cooldownDomain": "seconds",
+          "hold": 3.0,
+          "emissions": 2,
+          "commands": [
+            {
+              "at": 0.5,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0,
+              "speed": 0,
+              "duration": 0,
+              "width": 50,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0,
+              "unique": true,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 103,
+                  "value": 1.5,
+                  "duration": 0.0,
+                  "target": 1
+                }
+              ]
+            },
+            {
+              "at": 1.7999999523162842,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 0.0,
+              "duration": 0.0,
+              "width": 179.99999523162842,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 800.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Moving",
+                  "type": 107,
+                  "value": 0.10000000149011612,
+                  "duration": 2.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Moving",
+                  "type": 104,
+                  "value": 3.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        }
+      ]
+    },
+    {
+      "actor": 1251,
+      "name": "BabyBat",
+      "asset": "Enemy_Bat_01",
+      "visualFallback": false,
+      "skills": [
+        {
+          "id": 2300,
+          "clip": "attack1",
+          "rangeWorld": 55.000001192092896,
+          "cooldown": 0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.3499999940395355,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 0.0,
+              "duration": 0.0,
+              "width": 60.00000238418579,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 100.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        }
+      ]
+    },
+    {
+      "actor": 1252,
+      "name": "HammerBat",
+      "asset": "Enemy_BatM_01",
+      "visualFallback": false,
+      "skills": [
+        {
+          "id": 2305,
+          "clip": "attack1",
+          "rangeWorld": 75.0,
+          "cooldown": 0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.4000000059604645,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 0.0,
+              "duration": 0.0,
+              "width": 80.0000011920929,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": []
+            }
+          ],
+          "pending": [
+            {
+              "kind": "effect-parameter-or-filter",
+              "dataId": 5
+            }
+          ],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2306,
+          "clip": "skill1",
+          "rangeWorld": 250.0,
+          "cooldown": 4.0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.4000000059604645,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 350.0,
+              "duration": 0.0,
+              "width": 50.0,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 1,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 300.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        }
+      ]
+    },
+    {
+      "actor": 1253,
+      "name": "NightmawBat",
+      "asset": "Enemy_BatBoss_01",
+      "visualFallback": false,
+      "skills": [
+        {
+          "id": 2310,
+          "clip": "attack1",
+          "rangeWorld": 120.00000476837158,
+          "cooldown": 0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.3499999940395355,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 0.0,
+              "duration": 0.0,
+              "width": 125.0,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 100.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2311,
+          "clip": "skill1",
+          "rangeWorld": 150.0,
+          "cooldown": 3.0,
+          "cooldownDomain": "default-attack-count",
+          "hold": 1.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 1.0,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.20000000298023224,
+              "speed": 1250.0,
+              "duration": 0.0,
+              "width": 50.0,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 250.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Moving",
+                  "type": 107,
+                  "value": 0.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2312,
+          "clip": "attack1",
+          "rangeWorld": 150.0,
+          "cooldown": 12.0,
+          "cooldownDomain": "seconds",
+          "hold": 3.0,
+          "emissions": 2,
+          "commands": [
+            {
+              "at": 0.3499999940395355,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 0.0,
+              "duration": 1.2999999523162842,
+              "width": 275.0,
+              "moving": true,
+              "arrive": false,
+              "release": true,
+              "repeat": 5.0,
+              "unique": false,
+              "targetOrigin": 1,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 40.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Release",
+                  "type": 1,
+                  "value": 800.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Release",
+                  "type": 107,
+                  "value": 0.0,
+                  "duration": 1.5,
+                  "target": 2
+                }
+              ]
+            },
+            {
+              "at": 1.7999999523162842,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0,
+              "speed": 0,
+              "duration": 0,
+              "width": 50,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0,
+              "unique": true,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 2,
+                  "value": 10.0,
+                  "duration": 0.0,
+                  "target": 1
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2313,
+          "clip": "skill3",
+          "rangeWorld": 150.0,
+          "cooldown": 5.0,
+          "cooldownDomain": "default-attack-count",
+          "hold": 3.0,
+          "emissions": 4,
+          "commands": [
+            {
+              "at": 1.350000023841858,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 0.0,
+              "duration": 0.0,
+              "width": 125.0,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 3.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 100.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            },
+            {
+              "at": 1.600000023841858,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 0.0,
+              "duration": 0.0,
+              "width": 150.0,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 3.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 100.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            },
+            {
+              "at": 1.7699999809265137,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 0.0,
+              "duration": 0.0,
+              "width": 150.0,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 3.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 100.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            },
+            {
+              "at": 2.049999952316284,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 0.0,
+              "duration": 0.0,
+              "width": 104.99999523162842,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 1,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 300.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Moving",
+                  "type": 107,
+                  "value": 0.0,
+                  "duration": 2.5,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        }
+      ]
+    },
+    {
+      "actor": 1301,
+      "name": "ShardElemental_Fire",
+      "asset": "Enemy_EmberElemental_Fire",
+      "visualFallback": true,
+      "skills": [
+        {
+          "id": 2350,
+          "clip": "attack1",
+          "rangeWorld": 250.0,
+          "cooldown": 0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.6000000238418579,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 1100.0,
+              "duration": 0.0,
+              "width": 60.00000238418579,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 2,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 100.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Arrive",
+                  "type": 1,
+                  "value": 100.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        }
+      ]
+    },
+    {
+      "actor": 1302,
+      "name": "ShardElemental_Water",
+      "asset": "Enemy_EmberElemental_Water",
+      "visualFallback": true,
+      "skills": [
+        {
+          "id": 2365,
+          "clip": "attack1",
+          "rangeWorld": 250.0,
+          "cooldown": 0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.6000000238418579,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 1100.0,
+              "duration": 0.0,
+              "width": 60.00000238418579,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 2,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 100.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        }
+      ]
+    },
+    {
+      "actor": 1303,
+      "name": "ShardElemental_Earth",
+      "asset": "Enemy_EmberElemental_Earth",
+      "visualFallback": true,
+      "skills": [
+        {
+          "id": 2380,
+          "clip": "attack1",
+          "rangeWorld": 250.0,
+          "cooldown": 0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.6000000238418579,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 1100.0,
+              "duration": 0.0,
+              "width": 60.00000238418579,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 2,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 100.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        }
+      ]
+    },
+    {
+      "actor": 1311,
+      "name": "CoreElemental_Fire",
+      "asset": "Enemy_BlazeElemental_Fire",
+      "visualFallback": true,
+      "skills": [
+        {
+          "id": 2355,
+          "clip": "attack1",
+          "rangeWorld": 250.0,
+          "cooldown": 0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.6000000238418579,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 1100.0,
+              "duration": 0.0,
+              "width": 60.00000238418579,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 2,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 100.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Arrive",
+                  "type": 1,
+                  "value": 100.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2356,
+          "clip": "skill1",
+          "rangeWorld": 100.0,
+          "cooldown": 10.0,
+          "cooldownDomain": "seconds",
+          "hold": 2.5,
+          "emissions": 2,
+          "commands": [
+            {
+              "at": 1.5,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0,
+              "speed": 0,
+              "duration": 0,
+              "width": 50,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0,
+              "unique": true,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 103,
+                  "value": 1.5,
+                  "duration": 0.0,
+                  "target": 1
+                }
+              ]
+            },
+            {
+              "at": 1.5,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 0.0,
+              "duration": 0.0,
+              "width": 200.0,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 1,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 500.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Moving",
+                  "type": 107,
+                  "value": 1.5,
+                  "duration": 1.5,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        }
+      ]
+    },
+    {
+      "actor": 1312,
+      "name": "CoreElemental_Water",
+      "asset": "Enemy_BlazeElemental_Water",
+      "visualFallback": true,
+      "skills": [
+        {
+          "id": 2370,
+          "clip": "attack1",
+          "rangeWorld": 250.0,
+          "cooldown": 0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.6000000238418579,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 1100.0,
+              "duration": 0.0,
+              "width": 60.00000238418579,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 2,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 100.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2371,
+          "clip": "skill1",
+          "rangeWorld": 100.0,
+          "cooldown": 10.0,
+          "cooldownDomain": "seconds",
+          "hold": 3.0,
+          "emissions": 2,
+          "commands": [
+            {
+              "at": 1.5,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0,
+              "speed": 0,
+              "duration": 0,
+              "width": 50,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0,
+              "unique": true,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 103,
+                  "value": 1.5,
+                  "duration": 0.0,
+                  "target": 1
+                }
+              ]
+            },
+            {
+              "at": 1.5,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 0.0,
+              "duration": 0.0,
+              "width": 200.0,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 1,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 500.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Moving",
+                  "type": 111,
+                  "value": 2.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        }
+      ]
+    },
+    {
+      "actor": 1313,
+      "name": "CoreElemental_Earth",
+      "asset": "Enemy_BlazeElemental_Earth",
+      "visualFallback": true,
+      "skills": [
+        {
+          "id": 2385,
+          "clip": "attack1",
+          "rangeWorld": 250.0,
+          "cooldown": 0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.6000000238418579,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 1100.0,
+              "duration": 0.0,
+              "width": 60.00000238418579,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 2,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 100.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2386,
+          "clip": "skill1",
+          "rangeWorld": 100.0,
+          "cooldown": 10.0,
+          "cooldownDomain": "seconds",
+          "hold": 3.0,
+          "emissions": 2,
+          "commands": [
+            {
+              "at": 1.5,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0,
+              "speed": 0,
+              "duration": 0,
+              "width": 50,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0,
+              "unique": true,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 103,
+                  "value": 1.5,
+                  "duration": 0.0,
+                  "target": 1
+                }
+              ]
+            },
+            {
+              "at": 1.5,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 0.0,
+              "duration": 0.0,
+              "width": 200.0,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 1,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 500.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Moving",
+                  "type": 104,
+                  "value": 2.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        }
+      ]
+    },
+    {
+      "actor": 1321,
+      "name": "PrimeElemental_Fire",
+      "asset": "Enemy_InfernalElemental_Fire",
+      "visualFallback": true,
+      "skills": [
+        {
+          "id": 2360,
+          "clip": "attack1",
+          "rangeWorld": 250.0,
+          "cooldown": 0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.6000000238418579,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.30000001192092896,
+              "speed": 1100.0,
+              "duration": 0.0,
+              "width": 60.00000238418579,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 2,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 100.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2361,
+          "clip": "skill1",
+          "rangeWorld": 250.0,
+          "cooldown": 6.0,
+          "cooldownDomain": "seconds",
+          "hold": 2.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 1.5,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 75.0,
+              "duration": 3.0,
+              "width": 120.00000476837158,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.25,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 100.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2362,
+          "clip": "attack1",
+          "rangeWorld": 250.0,
+          "cooldown": 8.0,
+          "cooldownDomain": "seconds",
+          "hold": 2.5,
+          "emissions": 4,
+          "commands": [
+            {
+              "at": 1.2999999523162842,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 4,
+              "interval": 0.10000000149011612,
+              "speed": 0.0,
+              "duration": 0.0,
+              "width": 75.0,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 2.0,
+              "unique": true,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 300.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Moving",
+                  "type": 107,
+                  "value": 0.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        }
+      ]
+    },
+    {
+      "actor": 1322,
+      "name": "PrimeElemental_Water",
+      "asset": "Enemy_InfernalElemental_Water",
+      "visualFallback": true,
+      "skills": [
+        {
+          "id": 2375,
+          "clip": "attack1",
+          "rangeWorld": 250.0,
+          "cooldown": 0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.6000000238418579,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.30000001192092896,
+              "speed": 1100.0,
+              "duration": 0.0,
+              "width": 60.00000238418579,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 2,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 100.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2376,
+          "clip": "skill1",
+          "rangeWorld": 250.0,
+          "cooldown": 10.0,
+          "cooldownDomain": "seconds",
+          "hold": 2.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 1.5,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 75.0,
+              "duration": 3.0,
+              "width": 120.00000476837158,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.25,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 100.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2377,
+          "clip": "attack1",
+          "rangeWorld": 250.0,
+          "cooldown": 8.0,
+          "cooldownDomain": "seconds",
+          "hold": 2.5,
+          "emissions": 4,
+          "commands": [
+            {
+              "at": 1.2999999523162842,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 4,
+              "interval": 0.10000000149011612,
+              "speed": 0.0,
+              "duration": 0.0,
+              "width": 75.0,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": true,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 300.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Moving",
+                  "type": 107,
+                  "value": 0.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        }
+      ]
+    },
+    {
+      "actor": 1323,
+      "name": "PrimeElemental_Earth",
+      "asset": "Enemy_InfernalElemental_Earth",
+      "visualFallback": true,
+      "skills": [
+        {
+          "id": 2390,
+          "clip": "attack1",
+          "rangeWorld": 250.0,
+          "cooldown": 0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.6000000238418579,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.30000001192092896,
+              "speed": 1100.0,
+              "duration": 0.0,
+              "width": 60.00000238418579,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 2,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 100.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2391,
+          "clip": "skill1",
+          "rangeWorld": 250.0,
+          "cooldown": 10.0,
+          "cooldownDomain": "seconds",
+          "hold": 2.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 1.5,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 75.0,
+              "duration": 3.0,
+              "width": 120.00000476837158,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.25,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 100.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2392,
+          "clip": "attack1",
+          "rangeWorld": 250.0,
+          "cooldown": 8.0,
+          "cooldownDomain": "seconds",
+          "hold": 2.5,
+          "emissions": 4,
+          "commands": [
+            {
+              "at": 1.2999999523162842,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 4,
+              "interval": 0.10000000149011612,
+              "speed": 0.0,
+              "duration": 0.0,
+              "width": 75.0,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": true,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 300.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Moving",
+                  "type": 107,
+                  "value": 0.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        }
+      ]
+    },
+    {
+      "actor": 1343,
+      "name": "DesertStinger_01",
+      "asset": "Enemy_DesertStinger_01",
+      "visualFallback": false,
+      "skills": [
+        {
+          "id": 2450,
+          "clip": "attack1",
+          "rangeWorld": 80.0000011920929,
+          "cooldown": 0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.3700000047683716,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 0.0,
+              "duration": 0.0,
+              "width": 85.00000238418579,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 100.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2451,
+          "clip": "skill1",
+          "rangeWorld": 100.0,
+          "cooldown": 3.0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.4000000059604645,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 0.0,
+              "duration": 0.30000001192092896,
+              "width": 129.99999523162842,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 5.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 60.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Moving",
+                  "type": 106,
+                  "value": 0.05000000074505806,
+                  "duration": 0.20000000298023224,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2452,
+          "clip": "skill2",
+          "rangeWorld": 150.0,
+          "cooldown": 7.0,
+          "cooldownDomain": "seconds",
+          "hold": 2.0,
+          "emissions": 2,
+          "commands": [
+            {
+              "at": 1.2000000476837158,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 0.0,
+              "duration": 0.0,
+              "width": 160.0000023841858,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 1,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 600.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Moving",
+                  "type": 107,
+                  "value": 0.10000000149011612,
+                  "duration": 2.0,
+                  "target": 2
+                }
+              ]
+            },
+            {
+              "at": 1.2000000476837158,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0,
+              "speed": 0,
+              "duration": 0,
+              "width": 50,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0,
+              "unique": true,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 3,
+                  "value": 3.0,
+                  "duration": 25.0,
+                  "target": 1
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        }
+      ]
+    },
+    {
+      "actor": 1344,
+      "name": "DesertScorpion_01",
+      "asset": "Enemy_DesertScorpion_01",
+      "visualFallback": false,
+      "skills": [
+        {
+          "id": 2455,
+          "clip": "attack1",
+          "rangeWorld": 114.99999761581421,
+          "cooldown": 0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.3700000047683716,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 0.0,
+              "duration": 0.0,
+              "width": 120.00000476837158,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 100.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2456,
+          "clip": "skill1",
+          "rangeWorld": 150.0,
+          "cooldown": 8.0,
+          "cooldownDomain": "seconds",
+          "hold": 3.559999904036522,
+          "emissions": 20,
+          "commands": [
+            {
+              "at": 1.2000000476837158,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 10,
+              "interval": 0.23999999463558197,
+              "speed": 0.0,
+              "duration": 0.0,
+              "width": 50.0,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.20000000298023224,
+              "unique": false,
+              "targetOrigin": 1,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 150.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            },
+            {
+              "at": 1.2999999523162842,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 10,
+              "interval": 0.23999999463558197,
+              "speed": 0.0,
+              "duration": 0.0,
+              "width": 50.0,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.20000000298023224,
+              "unique": false,
+              "targetOrigin": 1,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 150.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2457,
+          "clip": "attack1",
+          "rangeWorld": 300.0,
+          "cooldown": 6.0,
+          "cooldownDomain": "seconds",
+          "hold": 2.0,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.8600000143051147,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 625.0,
+              "duration": 0.0,
+              "width": 139.9999976158142,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 400.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Moving",
+                  "type": 107,
+                  "value": 0.5,
+                  "duration": 3.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2458,
+          "clip": "skill3",
+          "rangeWorld": 200.0,
+          "cooldown": 10.0,
+          "cooldownDomain": "seconds",
+          "hold": 3.0,
+          "emissions": 3,
+          "commands": [
+            {
+              "at": 0.699999988079071,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0,
+              "speed": 0,
+              "duration": 0,
+              "width": 50,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0,
+              "unique": true,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 103,
+                  "value": 1.5,
+                  "duration": 0.0,
+                  "target": 1
+                }
+              ]
+            },
+            {
+              "at": 2.0,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0,
+              "speed": 0,
+              "duration": 0,
+              "width": 50,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0,
+              "unique": true,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 2,
+                  "value": 12.0,
+                  "duration": 0.0,
+                  "target": 1
+                }
+              ]
+            },
+            {
+              "at": 2.0,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 0.0,
+              "duration": 0.0,
+              "width": 179.99999523162842,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 1000.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Moving",
+                  "type": 107,
+                  "value": 0.10000000149011612,
+                  "duration": 2.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Moving",
+                  "type": 104,
+                  "value": 3.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        }
+      ]
+    },
+    {
+      "actor": 1345,
+      "name": "DesertScorpionKing_01",
+      "asset": "Enemy_DesertScorpionKing_01",
+      "visualFallback": true,
+      "skills": [
+        {
+          "id": 2461,
+          "clip": "attack1",
+          "rangeWorld": 125.0,
+          "cooldown": 12.0,
+          "cooldownDomain": "seconds",
+          "hold": 3.5,
+          "emissions": 4,
+          "commands": [
+            {
+              "at": 2.059999942779541,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 4,
+              "interval": 0.30000001192092896,
+              "speed": 0.0,
+              "duration": 0.0,
+              "width": 75.0,
+              "moving": true,
+              "arrive": true,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 400.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Moving",
+                  "type": 107,
+                  "value": 0.25,
+                  "duration": 1.7999999523162842,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2462,
+          "clip": "skill2",
+          "rangeWorld": 125.0,
+          "cooldown": 10.0,
+          "cooldownDomain": "seconds",
+          "hold": 2.5,
+          "emissions": 2,
+          "commands": [
+            {
+              "at": 1.5,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0,
+              "speed": 0,
+              "duration": 0,
+              "width": 50,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0,
+              "unique": true,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 222,
+                  "value": 5.0,
+                  "duration": 100.0,
+                  "target": 1
+                }
+              ]
+            },
+            {
+              "at": 1.5,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 0.0,
+              "duration": 0.0,
+              "width": 315.00000953674316,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 1,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 200.0,
+                  "duration": 0.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Moving",
+                  "type": 104,
+                  "value": 2.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2463,
+          "clip": "skill3",
+          "rangeWorld": 125.0,
+          "cooldown": 3.0,
+          "cooldownDomain": "seconds",
+          "hold": 1.5,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.6000000238418579,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 0.0,
+              "duration": 0.0,
+              "width": 129.99999523162842,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 0.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 1,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 300.0,
+                  "duration": 2.0,
+                  "target": 2
+                },
+                {
+                  "phase": "Moving",
+                  "type": 106,
+                  "value": 0.10000000149011612,
+                  "duration": 1.2000000476837158,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        },
+        {
+          "id": 2464,
+          "clip": "skill4",
+          "rangeWorld": 250.0,
+          "cooldown": 1.5,
+          "cooldownDomain": "seconds",
+          "hold": 0.8999999761581421,
+          "emissions": 1,
+          "commands": [
+            {
+              "at": 0.699999988079071,
+              "condition": {
+                "ConditionTarget": 0,
+                "Condition": 0,
+                "ConditionValue": 0.0,
+                "ConditionValue2": 0.0
+              },
+              "count": 1,
+              "interval": 0.0,
+              "speed": 0.0,
+              "duration": 0.30000001192092896,
+              "width": 100.0,
+              "moving": true,
+              "arrive": false,
+              "release": false,
+              "repeat": 1.0,
+              "unique": false,
+              "targetOrigin": 11,
+              "startOrigin": 12,
+              "tracking": false,
+              "effects": [
+                {
+                  "phase": "Moving",
+                  "type": 1,
+                  "value": 100.0,
+                  "duration": 0.0,
+                  "target": 2
+                }
+              ]
+            }
+          ],
+          "pending": [],
+          "hasNativeSpatialMetadata": true
+        }
+      ]
+    }
+  ]
+}

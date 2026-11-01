@@ -8,6 +8,7 @@ import type {RogueInput} from './engine';
 import type {RogueMap} from './map';
 import {ResourceHud} from './ResourceHud';
 import {roguePollDelay} from './pace';
+import {LABYRINTH} from '../hunt-labyrinth';
 import {SCENERY_LABELS} from './scenery';
 import {THEME_LABELS} from './encounters';
 import {PASSAGE_LABEL} from './traversal';
@@ -63,10 +64,11 @@ export function RoguePrototype({onExit}:{onExit:()=>void}){
  return <main className="rogue-shell rogue-vardian">
   <header className="rogue-header"><button onClick={onExit} aria-label="캐릭터 선택으로 돌아가기">‹</button><div><small>LABYRINTH · PROTOTYPE</small><strong>촛불 미궁</strong></div><span className="rogue-gold" title="이번 탐험의 테스트 골드">◈ {(view?.gold??0).toLocaleString()} <small>G</small></span><button onClick={()=>setHelp(!help)} aria-label="조작 도움말" aria-expanded={help}>?</button></header>
   <section className="rogue-stage" aria-label="구역 진행형 촛불 던전"><canvas ref={canvas} aria-label="홍과 10개 전투 구역" data-status={state} onClick={()=>{if(active&&!help&&!panel)enqueue({attack:true});}}/>
-   <div className="rogue-room"><small>CHAMBER</small><strong>{String((view?.room??0)+1).padStart(2,'0')} <span>/ 10</span></strong><span>{boss?'슬라임 군주':view?.phase==='exit-ready'?'출구 개방':`${SCENERY_LABELS[map?.rooms[view?.room??0]?.scenery??'crypt']} · ${THEME_LABELS[map?.rooms[view?.room??0]?.theme??'red']}`}</span></div>
+   <div className="rogue-room"><small>CHAMBER</small><strong>{String((view?.room??0)+1).padStart(2,'0')} <span>/ 10</span></strong><span>{boss?(LABYRINTH.monsters[boss.species]?.name??'보스'):view?.phase==='exit-ready'?'출구 개방':`${SCENERY_LABELS[map?.rooms[view?.room??0]?.scenery??'crypt']} · ${THEME_LABELS[map?.rooms[view?.room??0]?.theme??'red']}`}</span></div>
    {view?.defense&&view.defense.maxShield!=='0'&&<div className="rogue-es" role="progressbar" aria-label="에너지 보호막" aria-valuenow={Math.round(view.defense.shieldPercent)} aria-valuemin={0} aria-valuemax={100}><i style={{width:`${view.defense.shieldPercent}%`}}/><span>{view.defense.chaosImmune?'카오스 면역 · 체력 1':'에너지 보호막'}</span></div>}
+   {!!view?.debuff.stunned&&<div className="rogue-stunned" role="status">행동 불가 {view.debuff.stunned.toFixed(1)}초</div>}
    <ResourceHud hp={view?.hero.hp??10000} maxHP={view?.hero.maxHP??10000} mana={view?.resources?.mana??100} maxMana={view?.resources?.maxMana??100} potions={view?.resources?.potions??{health:3,mana:3}} cooldowns={view?.resources?.potionCooldowns??{health:0,mana:0}} active={!!active&&!help&&!panel} onDrink={potion=>enqueue({potion})}/>
-   {boss&&<div className="rogue-boss"><span>슬라임 군주</span><meter aria-label="슬라임 군주 체력" min={0} max={boss.maxHP} value={boss.hp}/></div>}
+   {boss&&<div className="rogue-boss"><span>{LABYRINTH.monsters[boss.species]?.name??'보스'}</span><meter aria-label="보스 체력" min={0} max={boss.maxHP} value={boss.hp}/></div>}
    {clearedRoom!==undefined&&<div key={clearedRoom} className="rogue-clear" aria-live="polite"><small>CHAMBER CLEAR</small><strong>{clearedRoom+1}번 구역 정리</strong></div>}
    {view?.phase==='exit-ready'&&view.choices.length>1&&view.gate?.near&&<div className="rogue-branches" aria-label="갈림길 선택"><button disabled={!active} onClick={()=>{automatic.current=false;enqueue({jump:true,branch:'upper',auto:false});}}>↑ 위쪽 길</button><button disabled={!active} onClick={()=>{automatic.current=false;enqueue({jump:true,branch:'lower',auto:false});}}>↓ 아래쪽 길</button></div>}
    <div className="rogue-objective"><span>{statusText}</span><div className="rogue-room-track" aria-label={`선택 경로 정리 ${view?.cleared.length??0} / 7`}>{Array.from({length:10},(_,i)=><i key={i} className={view?.cleared.includes(i)?'cleared':view?.room===i?'current':''}>{i+1}</i>)}</div></div>

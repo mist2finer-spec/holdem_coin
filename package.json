@@ -50,10 +50,12 @@
     "test:rpg:vfx": "node --import ./mini-services/poker-server/node_modules/tsx/dist/loader.mjs --test scripts/rpg/test-vfx.ts",
     "test:rpg:dungeon": "node --import ./mini-services/poker-server/node_modules/tsx/dist/loader.mjs --test scripts/rpg/test-dungeon.ts",
     "test:rpg:jump": "node --import ./mini-services/poker-server/node_modules/tsx/dist/loader.mjs --test scripts/rpg/test-jump.ts",
-    "test:rpg:rogue": "node --import ./mini-services/poker-server/node_modules/tsx/dist/loader.mjs --test scripts/rpg/test-rogue.ts scripts/rpg/test-pace.ts scripts/rpg/test-horde.ts scripts/rpg/test-modular-map.ts scripts/rpg/test-resources.ts",
+    "test:rpg:rogue": "node --import ./mini-services/poker-server/node_modules/tsx/dist/loader.mjs --test scripts/rpg/test-rogue.ts scripts/rpg/test-pace.ts scripts/rpg/test-horde.ts scripts/rpg/test-modular-map.ts scripts/rpg/test-resources.ts scripts/rpg/test-enemy-attacks.ts",
     "test:rpg:build": "node --import ./mini-services/poker-server/node_modules/tsx/dist/loader.mjs --test scripts/rpg/test-build.ts scripts/rpg/test-poe-big.ts scripts/rpg/test-expanded-build.ts scripts/rpg/test-expanded-runtime.ts scripts/rpg/test-items.ts",
     "rpg:export:axe": "node --import ./mini-services/poker-server/node_modules/tsx/dist/loader.mjs scripts/rpg/export-axe-build.ts",
-    "test:rpg:parity": "node --import ./mini-services/poker-server/node_modules/tsx/dist/loader.mjs scripts/rpg/test-big-parity.ts"
+    "test:rpg:parity": "node --import ./mini-services/poker-server/node_modules/tsx/dist/loader.mjs scripts/rpg/test-big-parity.ts",
+    "rpg:enemy:audit": "python scripts/rpg/audit_enemy_attacks.py",
+    "rpg:enemy:vfx": "python scripts/rpg/build_enemy_vfx.py"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

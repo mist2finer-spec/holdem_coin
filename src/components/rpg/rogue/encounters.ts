@@ -1,8 +1,8 @@
 /** Guide 123456 prototype balance. Native repeat-wave structure, not an exact Sanctuary DB restoration. */
 export type HordeTuning={initial:number;min:number;max:number;seconds:number;batch:number};
 export const HORDE:HordeTuning={initial:30,min:150,max:200,seconds:55,batch:8};
-export const THEME_SPECIES:Record<string,readonly number[]>={red:[1001],green:[1003],blue:[1002],goblin:[1101,1102],skeleton:[1152,1153],spider:[1201],ember:[1301],boss:[1001,1102,1152]};
-export const THEME_LABELS:Record<string,string>={red:'불 슬라임 무리',green:'숲 슬라임 무리',blue:'물 슬라임 무리',goblin:'고블린 전초지',skeleton:'해골 회랑',spider:'거미 소굴',ember:'불의 정령',boss:'군주의 방'};
+export const THEME_SPECIES:Record<string,readonly number[]>={red:[1001],green:[1003],blue:[1002],goblin:[1101,1102,1103],skeleton:[1151,1152,1153],spider:[1201,1251,1252],ember:[1301,1302,1303,1311,1312,1313,1321,1322,1323],boss:[1001,1102,1152]};
+export const THEME_LABELS:Record<string,string>={red:'불 슬라임 무리',green:'숲 슬라임 무리',blue:'물 슬라임 무리',goblin:'고블린 전초지',skeleton:'해골 회랑',spider:'거미 · 박쥐 둥지',ember:'원소 스피릿 무리',boss:'군주의 방'};
 export const hash=(value:number)=>{let x=value>>>0;x=Math.imul(x^(x>>>16),0x7feb352d);x=Math.imul(x^(x>>>15),0x846ca68b);return (x^(x>>>16))>>>0;};
 export type HordeWave={room:number;target:number;spawned:number;killed:number;enteredAt:number;nextAt:number;bossSpawned:boolean};
 export function createWave(seed:number,room:number,now:number,tuning=HORDE):HordeWave{return {room,target:tuning.min+hash(seed^Math.imul(room+1,0x9e3779b9))%(tuning.max-tuning.min+1),spawned:0,killed:0,enteredAt:now,nextAt:now,bossSpawned:false};}
@@ -24,3 +24,6 @@ export function spawnLanes(left:number,right:number,heroX:number){
  return [{left:Math.max(left,heroX+SPAWN_SAFETY.nearHero),right},
  {left,right:Math.min(right,heroX-SPAWN_SAFETY.nearHero)}].filter(r=>r.right-r.left>=24);
 }
+
+export const BOSS_SPECIES=[1031,1105,1155,1253,1321,1322,1323] as const;
+export const dungeonBossSpecies=(seed:number)=>BOSS_SPECIES[hash(seed^0x37abcd)%BOSS_SPECIES.length];

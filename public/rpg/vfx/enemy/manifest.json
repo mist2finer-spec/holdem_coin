@@ -1,0 +1,113 @@
+{
+  "scope": "Existing approximate XY Unity particle bakes, not exact Unity shaders. Yellow warning is code-native reconstruction; source warning texture not present locally.",
+  "effects": [
+    {
+      "id": "dark",
+      "prefab": "FX_DarkShot_Projectile_01",
+      "sourcePreview": "public/rpg/vfx/previews/FX_DarkShot_Projectile_01.gif",
+      "sourceSha256": "1536cd9ecb115654536de650430e52c8e1c0506a679189f98317a2ce6ccaeff3",
+      "sheet": "/rpg/vfx/enemy/dark.webp",
+      "cell": 128,
+      "columns": 8,
+      "frames": 32,
+      "seconds": 2,
+      "mapping": "thematic preview selection; not verified GUID resolution"
+    },
+    {
+      "id": "poison",
+      "prefab": "FX_PoisonCloud_01",
+      "sourcePreview": "public/rpg/vfx/previews/FX_PoisonCloud_01.gif",
+      "sourceSha256": "aa59951bac2f9d5b9fe1eba80b82e5f992c75404e6e8b80c42249688324d2f0c",
+      "sheet": "/rpg/vfx/enemy/poison.webp",
+      "cell": 128,
+      "columns": 8,
+      "frames": 32,
+      "seconds": 2,
+      "mapping": "thematic preview selection; not verified GUID resolution"
+    },
+    {
+      "id": "pillar",
+      "prefab": "FX_DarkPillarHit_01",
+      "sourcePreview": "public/rpg/vfx/previews/FX_DarkPillarHit_01.gif",
+      "sourceSha256": "0f79ff4898c0c4062b1b53c748ea978e8e6389fcef80834fcf9bad5b4f4b69c5",
+      "sheet": "/rpg/vfx/enemy/pillar.webp",
+      "cell": 128,
+      "columns": 8,
+      "frames": 32,
+      "seconds": 2,
+      "mapping": "thematic preview selection; not verified GUID resolution"
+    },
+    {
+      "id": "fire",
+      "prefab": "FX_ElementalBall_01_RE",
+      "sourcePreview": "public/rpg/vfx/previews/FX_ElementalBall_01_RE.gif",
+      "sourceSha256": "3ad80da371bceffa2839e9a75a602f39f0c54867115c7dfa5ecba450f7f57142",
+      "sheet": "/rpg/vfx/enemy/fire.webp",
+      "cell": 128,
+      "columns": 8,
+      "frames": 32,
+      "seconds": 2,
+      "mapping": "thematic preview selection; not verified GUID resolution"
+    },
+    {
+      "id": "water",
+      "prefab": "FX_ElementalBall_01_BL",
+      "sourcePreview": "public/rpg/vfx/previews/FX_ElementalBall_01_BL.gif",
+      "sourceSha256": "0980f21feb7514b1853149054a18eab105cc3cbfefb3c0b3d45aed34c67acbba",
+      "sheet": "/rpg/vfx/enemy/water.webp",
+      "cell": 128,
+      "columns": 8,
+      "frames": 32,
+      "seconds": 2,
+      "mapping": "thematic preview selection; not verified GUID resolution"
+    },
+    {
+      "id": "earth",
+      "prefab": "FX_ElementalBall_01_GR",
+      "sourcePreview": "public/rpg/vfx/previews/FX_ElementalBall_01_GR.gif",
+      "sourceSha256": "f257dcbeca74f1320b08603ff1070643a45e9694dcc9f11670f32968d1457d3b",
+      "sheet": "/rpg/vfx/enemy/earth.webp",
+      "cell": 128,
+      "columns": 8,
+      "frames": 32,
+      "seconds": 2,
+      "mapping": "thematic preview selection; not verified GUID resolution"
+    },
+    {
+      "id": "sonic",
+      "prefab": "FX_Pulse_Projectile_01",
+      "sourcePreview": "public/rpg/vfx/previews/FX_Pulse_Projectile_01.gif",
+      "sourceSha256": "34e63379b3cc0c0c7d276129c6800aa48cee82b6397c2288fb7062c223fb8ecc",
+      "sheet": "/rpg/vfx/enemy/sonic.webp",
+      "cell": 128,
+      "columns": 8,
+      "frames": 32,
+      "seconds": 2,
+      "mapping": "thematic preview selection; not verified GUID resolution"
+    },
+    {
+      "id": "meteor",
+      "prefab": "FX_RockMeteoArea_01",
+      "sourcePreview": "public/rpg/vfx/previews/FX_RockMeteoArea_01.gif",
+      "sourceSha256": "d0e50be767404c885999057a45e840d65f63b527544c3a667d41a909ea4c4ec3",
+      "sheet": "/rpg/vfx/enemy/meteor.webp",
+      "cell": 128,
+      "columns": 8,
+      "frames": 32,
+      "seconds": 2,
+      "mapping": "thematic preview selection; not verified GUID resolution"
+    },
+    {
+      "id": "explosion",
+      "prefab": "FX_CoreElementalExplosion_RE",
+      "sourcePreview": "public/rpg/vfx/previews/FX_CoreElementalExplosion_RE.gif",
+      "sourceSha256": "8d26db8f01d7615c33654b68ae5264c32ee09fc8f1f2a3c6809ffc7ec57f5072",
+      "sheet": "/rpg/vfx/enemy/explosion.webp",
+      "cell": 128,
+      "columns": 8,
+      "frames": 32,
+      "seconds": 2,
+      "mapping": "thematic preview selection; not verified GUID resolution"
+    }
+  ]
+}

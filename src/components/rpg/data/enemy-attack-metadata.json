@@ -1,0 +1,2697 @@
+{
+  "sourceSha256": "fadadb06264e710c62f7a363e100e00908e1a3e71ad1ab40f1cbf62e337c9081",
+  "scope": "Present scalar accessor fields only. Per-action row indexes match original impactor child order; native defaults and GUID-to-prefab mapping are not inferred.",
+  "skills": {
+    "2390": [
+      {
+        "at": 0.6000000238418579,
+        "AssetGuid": "5a1ab7262bdbd2741bbf49141d626590",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": 1,
+        "ColliderHeight": 1.2000000476837158,
+        "ArriveHitRange": 1.0,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2391": [
+      {
+        "at": 1.5,
+        "AssetGuid": "eceebb2efb688bd418622f28c01c6672",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": 1,
+        "TargetOnGround": 1,
+        "ColliderHeight": 5.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": 1,
+        "MovingHitMethod": 1,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": 0.5
+      }
+    ],
+    "2392": [
+      {
+        "at": 1.2999999523162842,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": 1.0,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2261": [
+      {
+        "at": 1.2000000476837158,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.5999999046325684,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      },
+      {
+        "at": 1.0499999523162842,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.5999999046325684,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2262": [
+      {
+        "at": 0.8600000143051147,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.799999952316284,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": 1,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2263": [
+      {
+        "at": 0.800000011920929,
+        "AssetGuid": "547f1fd27fec30647b5a615abcb2872a",
+        "StartOriginRange": null,
+        "TargetOriginRange": 3.0,
+        "StartOnGround": null,
+        "TargetOnGround": 1,
+        "ColliderHeight": 1.0,
+        "ArriveHitRange": 1.0,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": 2.0,
+        "ScaleValue": null
+      },
+      {
+        "at": 0.699999988079071,
+        "AssetGuid": "547f1fd27fec30647b5a615abcb2872a",
+        "StartOriginRange": null,
+        "TargetOriginRange": 3.0,
+        "StartOnGround": null,
+        "TargetOnGround": 1,
+        "ColliderHeight": 1.0,
+        "ArriveHitRange": 1.0,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": 2.0,
+        "ScaleValue": null
+      }
+    ],
+    "2264": [
+      {
+        "at": 1.7999999523162842,
+        "AssetGuid": "d174acf2e52f88f4291e3cbad79f257b",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": 1,
+        "TargetOnGround": 1,
+        "ColliderHeight": 3.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2205": [
+      {
+        "at": 0.3499999940395355,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 1.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2155": [
+      {
+        "at": 0.3499999940395355,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 1.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2180": [
+      {
+        "at": 0.3499999940395355,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2181": [
+      {
+        "at": 0.5,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 3.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2182": [
+      {
+        "at": 0.6499999761581421,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.5999999046325684,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2183": [
+      {
+        "at": 0.699999988079071,
+        "AssetGuid": "dbbbf0b0872490e428133325cdffdded",
+        "StartOriginRange": 5.0,
+        "TargetOriginRange": 4.0,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 0.5,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": 0.800000011920929,
+        "ScaleValue": null
+      }
+    ],
+    "2184": [
+      {
+        "at": 1.600000023841858,
+        "AssetGuid": "90852c23b43cba742918ba47e1b3fc0a",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": 1,
+        "TargetOnGround": 1,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2200": [
+      {
+        "at": 0.30000001192092896,
+        "AssetGuid": "ba45ba307324a324daa46c8196f395e1",
+        "StartOriginRange": null,
+        "TargetOriginRange": 5.0,
+        "StartOnGround": null,
+        "TargetOnGround": 1,
+        "ColliderHeight": 1.2000000476837158,
+        "ArriveHitRange": 1.0,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": 1.0,
+        "ScaleValue": 1.0
+      }
+    ],
+    "2065": [
+      {
+        "at": 0.2199999988079071,
+        "AssetGuid": "96e40ea695919c744bb1805825e2df27",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2066": [
+      {
+        "at": 0.33000001311302185,
+        "AssetGuid": "96e40ea695919c744bb1805825e2df27",
+        "StartOriginRange": null,
+        "TargetOriginRange": 5.0,
+        "StartOnGround": null,
+        "TargetOnGround": 1,
+        "ColliderHeight": 1.0,
+        "ArriveHitRange": 1.0,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": 2.0,
+        "ScaleValue": null
+      }
+    ],
+    "2067": [
+      {
+        "at": 1.7000000476837158,
+        "AssetGuid": "fcab8781efe170047b878ac8db7bca0a",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": 1,
+        "TargetOnGround": 1,
+        "ColliderHeight": 2.5,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2068": [
+      {
+        "at": 0.8299999833106995,
+        "AssetGuid": "96e40ea695919c744bb1805825e2df27",
+        "StartOriginRange": 2.0,
+        "TargetOriginRange": 2.0,
+        "StartOnGround": null,
+        "TargetOnGround": 1,
+        "ColliderHeight": 1.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": 1,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": 1.2000000476837158
+      }
+    ],
+    "2040": [
+      {
+        "at": 0.2199999988079071,
+        "AssetGuid": "3ec55359bf1cbdf4bb0cb883f8801281",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2041": [
+      {
+        "at": 0.5,
+        "AssetGuid": "58e33dc96a2235949af31d427a921fdd",
+        "StartOriginRange": null,
+        "TargetOriginRange": 5.0,
+        "StartOnGround": null,
+        "TargetOnGround": 1,
+        "ColliderHeight": 1.0,
+        "ArriveHitRange": 2.0,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": 1,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2042": [],
+    "2120": [
+      {
+        "at": 0.5,
+        "AssetGuid": "31320c28a8e5ea04c94a3d2d6ac72fe6",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 3.0,
+        "ArriveHitRange": 5.0,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2121": [
+      {
+        "at": 1.100000023841858,
+        "AssetGuid": "76c23d4dccc002c45a6f7ae37eb615cd",
+        "StartOriginRange": null,
+        "TargetOriginRange": 6.0,
+        "StartOnGround": null,
+        "TargetOnGround": 1,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": 2.5,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": 1,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": 1.0
+      }
+    ],
+    "2122": [],
+    "2123": [
+      {
+        "at": 1.2999999523162842,
+        "AssetGuid": "91a7005ac37bd4343b1e29a2d8f977bb",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      },
+      {
+        "at": 2.700000047683716,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2455": [
+      {
+        "at": 0.3700000047683716,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2456": [
+      {
+        "at": 1.2000000476837158,
+        "AssetGuid": "b4d243ee598848041a67ab986e2b3a86",
+        "StartOriginRange": 2.0,
+        "TargetOriginRange": null,
+        "StartOnGround": 1,
+        "TargetOnGround": 1,
+        "ColliderHeight": 3.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      },
+      {
+        "at": 1.2999999523162842,
+        "AssetGuid": "b4d243ee598848041a67ab986e2b3a86",
+        "StartOriginRange": 2.0,
+        "TargetOriginRange": null,
+        "StartOnGround": 1,
+        "TargetOnGround": 1,
+        "ColliderHeight": 3.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2457": [
+      {
+        "at": 0.8600000143051147,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.799999952316284,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": 1,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2458": [
+      {
+        "at": 2.0,
+        "AssetGuid": "90c83f492f0d58c41b6db47e68e988ff",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": 1,
+        "TargetOnGround": 1,
+        "ColliderHeight": 3.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "4040": [
+      {
+        "at": 0.3499999940395355,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "4041": [
+      {
+        "at": 0.33000001311302185,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      },
+      {
+        "at": 1.0,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "4042": [
+      {
+        "at": 0.8299999833106995,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 1.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "4043": [
+      {
+        "at": 1.4500000476837158,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": 1,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      },
+      {
+        "at": 0.6700000166893005,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": 1,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      },
+      {
+        "at": 0.9599999785423279,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": 1,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "4044": [
+      {
+        "at": 0.20000000298023224,
+        "AssetGuid": "1d076a542dc01034eb77769a9311a56d",
+        "StartOriginRange": 5.0,
+        "TargetOriginRange": 5.0,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": 1.0,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "4045": [
+      {
+        "at": 1.2400000095367432,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": 1,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      },
+      {
+        "at": 0.6700000166893005,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": 1,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      },
+      {
+        "at": 0.8799999952316284,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": 1,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "4046": [
+      {
+        "at": 0.3499999940395355,
+        "AssetGuid": "019e34d3fa5cd5e41893a772e26d69f3",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": 1,
+        "TargetOnGround": 1,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": 5.0,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2100": [
+      {
+        "at": 0.3199999928474426,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 1.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2310": [
+      {
+        "at": 0.3499999940395355,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2311": [
+      {
+        "at": 1.0,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 4.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2312": [
+      {
+        "at": 0.3499999940395355,
+        "AssetGuid": "019e34d3fa5cd5e41893a772e26d69f3",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": 1,
+        "TargetOnGround": 1,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": 5.0,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2313": [
+      {
+        "at": 1.600000023841858,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 3.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      },
+      {
+        "at": 2.049999952316284,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 3.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      },
+      {
+        "at": 1.7699999809265137,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 3.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      },
+      {
+        "at": 1.350000023841858,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 3.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2060": [
+      {
+        "at": 0.2199999988079071,
+        "AssetGuid": "96e40ea695919c744bb1805825e2df27",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2061": [
+      {
+        "at": 0.5,
+        "AssetGuid": "62532973df417244e93fd5eecbe83b03",
+        "StartOriginRange": null,
+        "TargetOriginRange": 5.0,
+        "StartOnGround": null,
+        "TargetOnGround": 1,
+        "ColliderHeight": 1.0,
+        "ArriveHitRange": 2.0,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": 1,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2062": [],
+    "2255": [
+      {
+        "at": 0.3499999940395355,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2256": [
+      {
+        "at": 1.899999976158142,
+        "AssetGuid": "1ae500b0f87a71e4ba3d65def1f84367",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": 1,
+        "TargetOnGround": 1,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2257": [],
+    "2380": [
+      {
+        "at": 0.6000000238418579,
+        "AssetGuid": "5a1ab7262bdbd2741bbf49141d626590",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": 1,
+        "ColliderHeight": 1.2000000476837158,
+        "ArriveHitRange": 1.0,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "4011": [
+      {
+        "at": 1.559999942779541,
+        "AssetGuid": "c1418ab564bebca45bc983547ed9107b",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": 1,
+        "TargetOnGround": 1,
+        "ColliderHeight": 3.0,
+        "ArriveHitRange": 1.0,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "4012": [
+      {
+        "at": 1.5,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 3.0,
+        "ArriveHitRange": 1.0,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "4013": [
+      {
+        "at": 1.399999976158142,
+        "AssetGuid": "a8c439f7964365b4b9aeedfcaa00d34c",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      },
+      {
+        "at": 2.700000047683716,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "4014": [],
+    "4015": [
+      {
+        "at": 0.7599999904632568,
+        "AssetGuid": "fd49e9aa0b81d1342bf071783998a14e",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": 1,
+        "ColliderHeight": 1.0,
+        "ArriveHitRange": 1.0,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": 1,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2025": [
+      {
+        "at": 0.2199999988079071,
+        "AssetGuid": "807203751ddb1504c886dccc658a84c1",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2026": [
+      {
+        "at": 0.33000001311302185,
+        "AssetGuid": "807203751ddb1504c886dccc658a84c1",
+        "StartOriginRange": null,
+        "TargetOriginRange": 5.0,
+        "StartOnGround": null,
+        "TargetOnGround": 1,
+        "ColliderHeight": 1.0,
+        "ArriveHitRange": 1.0,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": 2.0,
+        "ScaleValue": null
+      }
+    ],
+    "2027": [
+      {
+        "at": 1.7000000476837158,
+        "AssetGuid": "fcab8781efe170047b878ac8db7bca0a",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": 1,
+        "TargetOnGround": 1,
+        "ColliderHeight": 2.5,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2028": [
+      {
+        "at": 0.8299999833106995,
+        "AssetGuid": "807203751ddb1504c886dccc658a84c1",
+        "StartOriginRange": 2.0,
+        "TargetOriginRange": 5.0,
+        "StartOnGround": null,
+        "TargetOnGround": 1,
+        "ColliderHeight": 1.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": 1,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": 1.2000000476837158
+      }
+    ],
+    "4030": [
+      {
+        "at": 2.5999999046325684,
+        "AssetGuid": "b659d364aad4d2b438227bc72f40a16b",
+        "StartOriginRange": 5.0,
+        "TargetOriginRange": 5.0,
+        "StartOnGround": null,
+        "TargetOnGround": 1,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": 1,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      },
+      {
+        "at": 2.5,
+        "AssetGuid": "b659d364aad4d2b438227bc72f40a16b",
+        "StartOriginRange": 5.0,
+        "TargetOriginRange": 5.0,
+        "StartOnGround": null,
+        "TargetOnGround": 1,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": 1,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "4031": [
+      {
+        "at": 1.399999976158142,
+        "AssetGuid": "6e54fe46ca1d22f44a3a43c7d53c6880",
+        "StartOriginRange": 4.0,
+        "TargetOriginRange": 5.0,
+        "StartOnGround": 1,
+        "TargetOnGround": 1,
+        "ColliderHeight": 3.0,
+        "ArriveHitRange": 2.0,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": 1.0
+      }
+    ],
+    "4032": [
+      {
+        "at": 1.0499999523162842,
+        "AssetGuid": "b086d61b28dad694da79271926067fed",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": 1,
+        "TargetOnGround": 1,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": 5.0,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "4033": [
+      {
+        "at": 0.4000000059604645,
+        "AssetGuid": "547f1fd27fec30647b5a615abcb2872a",
+        "StartOriginRange": null,
+        "TargetOriginRange": 3.0,
+        "StartOnGround": null,
+        "TargetOnGround": 1,
+        "ColliderHeight": 1.0,
+        "ArriveHitRange": 1.0,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": 2.0,
+        "ScaleValue": null
+      }
+    ],
+    "2305": [
+      {
+        "at": 0.4000000059604645,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.299999952316284,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2306": [
+      {
+        "at": 0.4000000059604645,
+        "AssetGuid": "1b528859104a87541b13f84ad7b99fdf",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2450": [
+      {
+        "at": 0.3700000047683716,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2451": [
+      {
+        "at": 0.4000000059604645,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2452": [
+      {
+        "at": 1.2000000476837158,
+        "AssetGuid": "fcab8781efe170047b878ac8db7bca0a",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": 1,
+        "TargetOnGround": 1,
+        "ColliderHeight": 2.5,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2210": [
+      {
+        "at": 0.5,
+        "AssetGuid": "ea786b0645f900648b0811a75e42d281",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": 1,
+        "ColliderHeight": 1.2000000476837158,
+        "ArriveHitRange": 1.2000000476837158,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2211": [
+      {
+        "at": 0.5,
+        "AssetGuid": "4556d4bbccd1e3840b3d1e32b65dd3b8",
+        "StartOriginRange": 5.0,
+        "TargetOriginRange": 3.0,
+        "StartOnGround": null,
+        "TargetOnGround": 1,
+        "ColliderHeight": 1.0,
+        "ArriveHitRange": 1.2000000476837158,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": 1,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": 1.2999999523162842
+      }
+    ],
+    "2165": [
+      {
+        "at": 0.3499999940395355,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2166": [
+      {
+        "at": 0.4000000059604645,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2167": [],
+    "2050": [
+      {
+        "at": 0.15000000596046448,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 1.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2360": [
+      {
+        "at": 0.6000000238418579,
+        "AssetGuid": "3d4dfd9d9b7b9b94685c5a43be1feb44",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": 1,
+        "ColliderHeight": 1.2000000476837158,
+        "ArriveHitRange": 1.0,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2361": [
+      {
+        "at": 1.5,
+        "AssetGuid": "d966a5de191a1eb4f87684c17fe4bddf",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": 1,
+        "TargetOnGround": 1,
+        "ColliderHeight": 5.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": 1,
+        "MovingHitMethod": 1,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": 0.5
+      }
+    ],
+    "2362": [
+      {
+        "at": 1.2999999523162842,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": 1.0,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2010": [
+      {
+        "at": 0.15000000596046448,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 1.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2035": [
+      {
+        "at": 0.20000000298023224,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 1.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2370": [
+      {
+        "at": 0.6000000238418579,
+        "AssetGuid": "192afcfb02322ea4fb79f960fc41f3bb",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": 1,
+        "ColliderHeight": 1.2000000476837158,
+        "ArriveHitRange": 1.0,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2371": [
+      {
+        "at": 1.5,
+        "AssetGuid": "f41de182910ed9f4787d1a2d9ceb7df8",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": 1,
+        "TargetOnGround": 1,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": 1.0,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2355": [
+      {
+        "at": 0.6000000238418579,
+        "AssetGuid": "3d4dfd9d9b7b9b94685c5a43be1feb44",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": 1,
+        "ColliderHeight": 1.2000000476837158,
+        "ArriveHitRange": 1.2000000476837158,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2356": [
+      {
+        "at": 1.5,
+        "AssetGuid": "d1886d8b9987d344dbd5ec3815cfa9e8",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": 1,
+        "TargetOnGround": 1,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": 1.0,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2410": [
+      {
+        "at": 0.3199999928474426,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 1.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2045": [
+      {
+        "at": 0.2199999988079071,
+        "AssetGuid": "3ec55359bf1cbdf4bb0cb883f8801281",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2046": [
+      {
+        "at": 0.33000001311302185,
+        "AssetGuid": "3ec55359bf1cbdf4bb0cb883f8801281",
+        "StartOriginRange": null,
+        "TargetOriginRange": 5.0,
+        "StartOnGround": null,
+        "TargetOnGround": 1,
+        "ColliderHeight": 1.0,
+        "ArriveHitRange": 1.0,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": 2.0,
+        "ScaleValue": null
+      }
+    ],
+    "2047": [
+      {
+        "at": 1.7000000476837158,
+        "AssetGuid": "fcab8781efe170047b878ac8db7bca0a",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": 1,
+        "TargetOnGround": 1,
+        "ColliderHeight": 2.5,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2048": [
+      {
+        "at": 0.8299999833106995,
+        "AssetGuid": "3ec55359bf1cbdf4bb0cb883f8801281",
+        "StartOriginRange": 2.0,
+        "TargetOriginRange": 5.0,
+        "StartOnGround": null,
+        "TargetOnGround": 1,
+        "ColliderHeight": 1.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": 1,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": 1.2000000476837158
+      }
+    ],
+    "2250": [
+      {
+        "at": 0.3700000047683716,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 1.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2015": [
+      {
+        "at": 0.20000000298023224,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 1.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2030": [
+      {
+        "at": 0.15000000596046448,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 1.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2445": [
+      {
+        "at": 0.4000000059604645,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 1.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2461": [
+      {
+        "at": 2.059999942779541,
+        "AssetGuid": "60c4b8e4fe125cb4cadc1ced316d48b1",
+        "StartOriginRange": 4.0,
+        "TargetOriginRange": 5.0,
+        "StartOnGround": 1,
+        "TargetOnGround": 1,
+        "ColliderHeight": 4.0,
+        "ArriveHitRange": 2.0,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": 1.0
+      }
+    ],
+    "2462": [
+      {
+        "at": 1.5,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 3.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2463": [
+      {
+        "at": 0.6000000238418579,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 3.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": 1,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2464": [
+      {
+        "at": 0.699999988079071,
+        "AssetGuid": "e696867d774e3bd4db8ec421ded37a43",
+        "StartOriginRange": 4.5,
+        "TargetOriginRange": null,
+        "StartOnGround": 1,
+        "TargetOnGround": 1,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": 5.0,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": 4.0,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2110": [
+      {
+        "at": 0.2199999988079071,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2111": [
+      {
+        "at": 0.30000001192092896,
+        "AssetGuid": "5705322f69306db4eb5f646869a92ba5",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": 1,
+        "TargetOnGround": 1,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2160": [
+      {
+        "at": 0.25,
+        "AssetGuid": "8bb229d0575f2e240a8bd4fe2682f5c1",
+        "StartOriginRange": null,
+        "TargetOriginRange": 5.0,
+        "StartOnGround": null,
+        "TargetOnGround": 1,
+        "ColliderHeight": 1.2000000476837158,
+        "ArriveHitRange": 1.2000000476837158,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2161": [
+      {
+        "at": 0.30000001192092896,
+        "AssetGuid": "166cc6cf10733bd4f8ff356219f56405",
+        "StartOriginRange": 5.0,
+        "TargetOriginRange": null,
+        "StartOnGround": 1,
+        "TargetOnGround": 1,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": 1.0,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2375": [
+      {
+        "at": 0.6000000238418579,
+        "AssetGuid": "192afcfb02322ea4fb79f960fc41f3bb",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": 1,
+        "ColliderHeight": 1.2000000476837158,
+        "ArriveHitRange": 1.0,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2376": [
+      {
+        "at": 1.5,
+        "AssetGuid": "d3e59be8a39f1f04185d40d970f211bb",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": 1,
+        "TargetOnGround": 1,
+        "ColliderHeight": 5.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": 1,
+        "MovingHitMethod": 1,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": 0.5
+      }
+    ],
+    "2377": [
+      {
+        "at": 1.2999999523162842,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": 1.0,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "4000": [
+      {
+        "at": 0.3499999940395355,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.5,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "4001": [
+      {
+        "at": 0.3499999940395355,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.5,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "4002": [
+      {
+        "at": 0.3499999940395355,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.5,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "4003": [
+      {
+        "at": 0.3499999940395355,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.5,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2215": [
+      {
+        "at": 0.4000000059604645,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2216": [
+      {
+        "at": 1.25,
+        "AssetGuid": "c3ec7b6c0e917cf4cb48834bed05ea6f",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": 1,
+        "TargetOnGround": 1,
+        "ColliderHeight": 3.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": 1,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": 1.2999999523162842
+      }
+    ],
+    "2217": [],
+    "2218": [
+      {
+        "at": 0.4300000071525574,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.200000047683716,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2365": [
+      {
+        "at": 0.6000000238418579,
+        "AssetGuid": "192afcfb02322ea4fb79f960fc41f3bb",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": 1,
+        "ColliderHeight": 1.2000000476837158,
+        "ArriveHitRange": 1.0,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2220": [
+      {
+        "at": 0.4000000059604645,
+        "AssetGuid": "7aebf1d888791dc44ad666383acb6f55",
+        "StartOriginRange": null,
+        "TargetOriginRange": 5.0,
+        "StartOnGround": null,
+        "TargetOnGround": 1,
+        "ColliderHeight": 1.2999999523162842,
+        "ArriveHitRange": 1.2000000476837158,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": 1,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2221": [
+      {
+        "at": 0.800000011920929,
+        "AssetGuid": "19c3b8807f12b1641a1eaf08857995c7",
+        "StartOriginRange": 5.0,
+        "TargetOriginRange": 5.0,
+        "StartOnGround": 1,
+        "TargetOnGround": 1,
+        "ColliderHeight": 3.0,
+        "ArriveHitRange": 2.0,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2222": [
+      {
+        "at": 1.5,
+        "AssetGuid": "05c29f7401d7bb347b97b2c9b3efff00",
+        "StartOriginRange": 5.0,
+        "TargetOriginRange": 5.0,
+        "StartOnGround": null,
+        "TargetOnGround": 1,
+        "ColliderHeight": 1.2000000476837158,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      },
+      {
+        "at": 1.600000023841858,
+        "AssetGuid": "05c29f7401d7bb347b97b2c9b3efff00",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": 1,
+        "ColliderHeight": 1.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2223": [
+      {
+        "at": 0.20000000298023224,
+        "AssetGuid": "1d076a542dc01034eb77769a9311a56d",
+        "StartOriginRange": 5.0,
+        "TargetOriginRange": 5.0,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": 1.0,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2300": [
+      {
+        "at": 0.3499999940395355,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.299999952316284,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2440": [
+      {
+        "at": 0.30000001192092896,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 1.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "4050": [
+      {
+        "at": 0.3499999940395355,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "4051": [
+      {
+        "at": 0.5,
+        "AssetGuid": "2b59cf522c275e348a9472d180168cbe",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": 1,
+        "TargetOnGround": 1,
+        "ColliderHeight": 3.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "4052": [
+      {
+        "at": 1.399999976158142,
+        "AssetGuid": "48c7eb32f4d8ec54f94c7e636b106d1d",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      },
+      {
+        "at": 2.4000000953674316,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "4053": [
+      {
+        "at": 1.100000023841858,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 3.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": 1,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2170": [
+      {
+        "at": 0.4000000059604645,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.200000047683716,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2171": [
+      {
+        "at": 0.4000000059604645,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.200000047683716,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2172": [
+      {
+        "at": 1.0,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2173": [
+      {
+        "at": 1.7000000476837158,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.5999999046325684,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      },
+      {
+        "at": 1.2000000476837158,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.5999999046325684,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2150": [
+      {
+        "at": 0.3499999940395355,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 1.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2350": [
+      {
+        "at": 0.6000000238418579,
+        "AssetGuid": "3d4dfd9d9b7b9b94685c5a43be1feb44",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": 1,
+        "ColliderHeight": 1.2000000476837158,
+        "ArriveHitRange": 1.2000000476837158,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "4020": [
+      {
+        "at": 0.5,
+        "AssetGuid": "31320c28a8e5ea04c94a3d2d6ac72fe6",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 3.0,
+        "ArriveHitRange": 5.0,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "4021": [
+      {
+        "at": 1.100000023841858,
+        "AssetGuid": "76c23d4dccc002c45a6f7ae37eb615cd",
+        "StartOriginRange": null,
+        "TargetOriginRange": 6.0,
+        "StartOnGround": null,
+        "TargetOnGround": 1,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": 2.5,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": 1,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": 1.0
+      }
+    ],
+    "4022": [],
+    "4023": [
+      {
+        "at": 1.2999999523162842,
+        "AssetGuid": "91a7005ac37bd4343b1e29a2d8f977bb",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      },
+      {
+        "at": 2.700000047683716,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2400": [
+      {
+        "at": 1.0,
+        "AssetGuid": "92ba6edef6bec2948bc7e9f3142ed40a",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": 1,
+        "TargetOnGround": 1,
+        "ColliderHeight": 3.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2115": [
+      {
+        "at": 0.5,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2116": [
+      {
+        "at": 1.2999999523162842,
+        "AssetGuid": "ecac0687a1aa56f4ea30c3c22d1010ed",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": 1,
+        "TargetOnGround": 1,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2117": [
+      {
+        "at": 1.2999999523162842,
+        "AssetGuid": "98c2578395971e0429d9f2f1304c3491",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": 1,
+        "TargetOnGround": 1,
+        "ColliderHeight": 1.5,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2385": [
+      {
+        "at": 0.6000000238418579,
+        "AssetGuid": "5a1ab7262bdbd2741bbf49141d626590",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": 1,
+        "ColliderHeight": 1.2000000476837158,
+        "ArriveHitRange": 1.0,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2386": [
+      {
+        "at": 1.5,
+        "AssetGuid": "71debc6282855384caf9a410893c639a",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": 1,
+        "TargetOnGround": 1,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": 1.0,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2020": [
+      {
+        "at": 0.2199999988079071,
+        "AssetGuid": "807203751ddb1504c886dccc658a84c1",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 2.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2021": [
+      {
+        "at": 0.5,
+        "AssetGuid": "7735f22a403db92438ca12065083dbda",
+        "StartOriginRange": null,
+        "TargetOriginRange": 5.0,
+        "StartOnGround": null,
+        "TargetOnGround": 1,
+        "ColliderHeight": 1.0,
+        "ArriveHitRange": 2.0,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": 1,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2022": [],
+    "2055": [
+      {
+        "at": 0.20000000298023224,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 1.0,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ],
+    "2105": [
+      {
+        "at": 0.3700000047683716,
+        "AssetGuid": "",
+        "StartOriginRange": null,
+        "TargetOriginRange": null,
+        "StartOnGround": null,
+        "TargetOnGround": null,
+        "ColliderHeight": 1.5,
+        "ArriveHitRange": null,
+        "ReleaseHitRange": null,
+        "MovingReleaseOnArrive": null,
+        "MovingHitMethod": null,
+        "TargetTrackSpeed": null,
+        "TrackMaxTime": null,
+        "ScaleValue": null
+      }
+    ]
+  }
+}

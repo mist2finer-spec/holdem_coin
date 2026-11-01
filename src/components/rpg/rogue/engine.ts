@@ -1,20 +1,21 @@
+import {EnemyAttackSystem,nativeEnemySupported} from './enemy-attacks';
 import {heroStats,newHuntProgress,type HuntProgress} from '../hunt-progression';
 import {TRANSCEND_OUTCOMES,type TranscendOutcome} from '../transcendence';
 import {MANA,POTIONS,type PotionKind} from './resources';
 import {big,damageBig,attachVitals,hurtBig,healBig,amountLabel,type BigSource,type BigVitals} from '../combat-big';
-import {HORDE,SPAWN_SAFETY,spawnLanes,THEME_SPECIES,createWave,waveInterval,hash,CrowdIndex,type HordeWave,type HordeTuning} from './encounters';
+import {dungeonBossSpecies,HORDE,SPAWN_SAFETY,spawnLanes,THEME_SPECIES,createWave,waveInterval,hash,CrowdIndex,type HordeWave,type HordeTuning} from './encounters';
 import {ROGUE_PACE,rogueAttackTiming} from './pace';
 import {newBuild,compileSkill,passiveBuild,basicBuild,type BuildState} from '../hunt-build';
 import {generateRogueMap,roomGates,routeFrom,moveOnMap,walkable,lineClear,tileCenter,ROGUE_TILE,type Point,type RogueMap,type RogueGate} from './map';
 import {TRAVERSAL,traversalLeg,traversalDuration,sampleTraversal,type TraversalLeg} from './traversal';
 import {LABYRINTH} from '../hunt-labyrinth';
-export const ROGUE_SPECIES=[1001,1002,1003,1101,1102,1152,1153,1201,1301] as const;
+export const ROGUE_SPECIES=[1001,1002,1003,1101,1102,1103,1151,1152,1153,1201,1251,1252,1253,1301,1302,1303,1311,1312,1313,1321,1322,1323] as const;
 export const ROGUE_LABELS:Record<number,string>={1001:'불 슬라임',1002:'물 슬라임',1003:'숲 슬라임',1051:'오염체',1101:'정찰 고블린',1102:'검 고블린',1103:'주술 고블린',1152:'창 해골',1153:'마법 해골',1301:'불의 정령',1201:'별거미',1031:'슬라임 군주'};
 export type RogueInput={potion?:PotionKind;paused?:boolean;branch?:'upper'|'lower';x:number;y:number;auto:boolean;attack?:boolean;skill?:number;jump?:boolean;dodge?:boolean;slide?:boolean};
-export type RogueMob=Point&{id:number;room:number;species:number;hp:number;maxHP:number;bigHP?:string;bigMaxHP?:string;radius:number;state:'idle'|'walk'|'windup'|'recover'|'dead';until:number;hitUntil:number;target:Point;boss:boolean;born:number};
+export type RogueMob=Point&{castSkill?:number;castStart?:number;castDuration?:number;castClip?:string;attackMove?:number;id:number;room:number;species:number;hp:number;maxHP:number;bigHP?:string;bigMaxHP?:string;radius:number;state:'idle'|'walk'|'windup'|'recover'|'dead';until:number;hitUntil:number;target:Point;boss:boolean;born:number};
 export type RogueFx=Point&{id:number;kind:'slash'|'rift'|'dash'|'heal'|'damage'|'gold';born:number;angle:number;room?:number;scale?:number;value?:number|string;target?:'hero'|'mob'};
 export type RogueMotion={kind:'attack'|'jump'|'dodge'|'slide'|'skill'|'rush';start:number;duration:number;hitAt:number;done:boolean;from:Point;to:Point;skill?:number;targetId?:number;basic?:ReturnType<typeof basicBuild>;build?:ReturnType<typeof compileSkill>;pulse?:number;gateId?:number;legs?:TraversalLeg[]};
-export type RogueSnapshot={defense:{shield:string;maxShield:string;shieldPercent:number;chaosImmune:boolean;guard:number};resources:{mana:number;maxMana:number;costs:readonly number[];potions:Record<PotionKind,number>;potionCooldowns:Record<PotionKind,number>};paused:boolean;wave:HordeWave;choices:(RogueGate&{ready:boolean;near:boolean})[];route:number[];elapsed:number;hero:Point&{elevation:number;airHeight:number;hp:number;maxHP:number;bigHP?:string;bigMaxHP?:string;action:string;serial:number;facing:number;direction:Point;motion:RogueMotion|null;hitUntil:number};mobs:RogueMob[];visited:number[];cleared:number[];room:number;status:'playing'|'dead'|'won';kills:number;gold:number;cooldowns:number[];pendingSkill:number|null;jumpReady:boolean;dodgeReady:boolean;slideReady:boolean;autoRoom:number;autoOrder:number[];auto:boolean;fx:RogueFx[];phase:'combat'|'exit-ready'|'traversing'|'complete';gate:(RogueGate&{ready:boolean;near:boolean})|null;transitions:number[]};
+export type RogueSnapshot={enemyCombat:ReturnType<EnemyAttackSystem['view']>;debuff:{stunned:number};defense:{shield:string;maxShield:string;shieldPercent:number;chaosImmune:boolean;guard:number};resources:{mana:number;maxMana:number;costs:readonly number[];potions:Record<PotionKind,number>;potionCooldowns:Record<PotionKind,number>};paused:boolean;wave:HordeWave;choices:(RogueGate&{ready:boolean;near:boolean})[];route:number[];elapsed:number;hero:Point&{elevation:number;airHeight:number;hp:number;maxHP:number;bigHP?:string;bigMaxHP?:string;action:string;serial:number;facing:number;direction:Point;motion:RogueMotion|null;hitUntil:number};mobs:RogueMob[];visited:number[];cleared:number[];room:number;status:'playing'|'dead'|'won';kills:number;gold:number;cooldowns:number[];pendingSkill:number|null;jumpReady:boolean;dodgeReady:boolean;slideReady:boolean;autoRoom:number;autoOrder:number[];auto:boolean;fx:RogueFx[];phase:'combat'|'exit-ready'|'traversing'|'complete';gate:(RogueGate&{ready:boolean;near:boolean})|null;transitions:number[]};
 const dist=(a:Point,b:Point)=>Math.hypot(a.x-b.x,a.y-b.y);
 const unit=(x:number,y:number)=>{const d=Math.hypot(x,y);return d?{x:x/d,y:y/d}:{x:1,y:0};};
 /** Separate test run. Does not advance Labyrinth stages or write account rewards. */
@@ -46,11 +47,12 @@ export class RogueEngine{
  }
  readonly map:RogueMap;elapsed=0;hero:RogueSnapshot['hero'];mobs:RogueMob[]=[];visited=new Set<number>([0]);cleared=new Set<number>();room=0;status:RogueSnapshot['status']='playing';kills=0;gold=0;cooldowns=[0,0,0,0,0,0];autoRoom=0;autoOrder:number[]=[];auto=true;paused=false;fx:RogueFx[]=[];transitions:number[]=[];private spawned=new Set<number>();
  private pendingSkill:number|null=null;private jumpAt=0;private dodgeAt=0;private attackAt=0;private combo=0;private fxId=0;private waves=new Map<number,HordeWave>();private mobSerial=0;private hurtReady=0;private crowd=new CrowdIndex<RogueMob>();
+ readonly enemyAttacks:EnemyAttackSystem;private enemyStunUntil=0;private enemyDamageAt=0;
  readonly combatScale;
  constructor(seed:number,readonly tuning:HordeTuning=HORDE,scale:BigSource=1){
   this.combatScale=big(scale);if(this.combatScale.lte(0))throw Error('Invalid combat scale');
   if(![tuning.initial,tuning.min,tuning.max,tuning.batch].every(Number.isInteger)||tuning.initial<1||tuning.min<2||tuning.max<tuning.min||tuning.max>300||tuning.initial>tuning.min||tuning.batch<1||!Number.isFinite(tuning.seconds)||tuning.seconds<0)throw Error('Invalid horde tuning');
-  this.map=generateRogueMap(seed);this.hero={...this.map.start,elevation:this.map.rooms[0].elevation,airHeight:0,hp:10000,maxHP:10000,action:'stay1',serial:0,facing:1,direction:{x:1,y:0},motion:null,hitUntil:0};
+  this.map=generateRogueMap(seed);this.enemyAttacks=new EnemyAttackSystem(seed);this.hero={...this.map.start,elevation:this.map.rooms[0].elevation,airHeight:0,hp:10000,maxHP:10000,action:'stay1',serial:0,facing:1,direction:{x:1,y:0},motion:null,hitUntil:0};
   attachVitals(this.hero,this.combatScale.mul(10000),this.combatScale.mul(10000));this.spawnRoom(0);
  }
  private spawnRoom(id:number){
@@ -61,7 +63,7 @@ export class RogueEngine{
   const room=this.map.rooms[wave.room],roster=THEME_SPECIES[room.theme],left=room.x1*ROGUE_TILE+SPAWN_SAFETY.entryRetreat+SPAWN_SAFETY.outerMargin,right=(room.x2+1)*ROGUE_TILE-SPAWN_SAFETY.outerMargin;
   for(let i=0;i<count;i++){
    const ordinal=wave.spawned,random=hash(this.map.seed^Math.imul(wave.room+1,97531)^Math.imul(ordinal+1,197933));
-   const species=boss?1031:roster[random%roster.length],radius=boss?22:species===1102||species===1152?15:12;
+   const species=boss?dungeonBossSpecies(this.map.seed):roster[random%roster.length],radius=boss?22:species===1102||species===1152?15:12;
    const lanes=spawnLanes(left,right,this.hero.x);
    // Room width guarantees a distant nest, even when the hero stands against either boundary.
    const lane=lanes[0];
@@ -130,6 +132,7 @@ export class RogueEngine{
   this.paused=!!input.paused;if(this.status!=='playing'||this.paused)return false;this.auto=input.auto;this.syncDefense();
   if(input.skill!==undefined&&this.compiled(input.skill).trigger&&!triggered)return false;
   if(input.potion!==undefined){if(!['health','mana'].includes(input.potion)||input.skill!==undefined||input.attack||input.jump||input.slide||input.dodge)return false;return this.drink(input.potion);}
+  if(this.elapsed<this.enemyStunUntil)return false;
   if([input.jump,input.slide,input.dodge].filter(Boolean).length>1||input.branch!==undefined&&!['upper','lower'].includes(input.branch))return false;
   if(this.hero.motion?.kind==='rush'&&(input.jump||input.slide||input.dodge)){this.hero.motion=null;this.pose('stay1');}
   if(this.hero.motion){if(input.skill!==undefined){this.pendingSkill=input.skill;return true;}return false;}
@@ -170,6 +173,11 @@ export class RogueEngine{
   if(this.shieldEnabled&&this.elapsed-this.lastDamage>=4)healBig(this.shield,big(this.shield.bigMaxHP!).mul(.2*dt));if(passive.regeneration>0)healBig(this.hero,big(this.hero.bigMaxHP!).mul(passive.regeneration*dt));
   for(const dot of this.dots){if(dot.left>0&&this.elapsed>=dot.next){const target=this.mobs.find(e=>e.id===dot.mob&&e.hp>0);if(target)this.hit(target,dot.damage);dot.next+=.5;dot.left--;}}this.dots=this.dots.filter(d=>d.left>0&&this.mobs.some(m=>m.id===d.mob&&m.hp>0));this.cooldowns=this.cooldowns.map(c=>Math.max(0,c-dt));this.fx=this.fx.filter(f=>this.elapsed-f.born<(f.kind==='damage'||f.kind==='gold'?1:.65)).slice(-96);
   this.mobs=this.mobs.filter(m=>m.hp>0||this.elapsed-m.until<.65);this.advanceWaves();
+  // AUTO reacts only to already-visible warnings/projectiles, never unrevealed skill intent.
+  if(input.auto&&this.elapsed>=this.enemyStunUntil&&!this.hero.motion){
+   const threats=this.enemyAttacks.view(this.elapsed).hazards.filter(h=>h.room===this.room&&(h.phase==='warning'&&h.hitAt-this.elapsed<=.2&&Math.abs(h.x-this.hero.x)<h.radius+16||h.phase==='flight'&&h.style==='sonic'&&Math.abs(h.x-this.hero.x)<90));
+   const threat=threats[0];if(threat){const jump=threat.plane==='low',ready=jump?this.elapsed>=this.jumpAt:this.elapsed>=this.dodgeAt;if(ready){this.hero.motion=null;const x=threat.plane==='column'||threat.plane==='ground'?(this.hero.x<=threat.x?-1:1):0;this.command({...input,x,jump:jump||undefined,slide:threat.plane==='upper'||undefined,dodge:!jump&&threat.plane!=='upper'||undefined});}}
+  }
   const m=this.hero.motion;
   if(m){const age=this.elapsed-m.start;
    if(m.kind==='rush'){
@@ -201,6 +209,7 @@ export class RogueEngine{
     }
    }
    if(m.kind!=='rush'&&age>=m.duration){if(m.gateId!==undefined)this.finishGate(m);else if(m.kind==='jump'||m.kind==='dodge'||m.kind==='slide')this.land(m);this.hero.motion=null;this.hero.airHeight=0;this.pose('stay1');}
+  }else if(this.elapsed<this.enemyStunUntil){this.pose('damage1');
   }else if(this.scheduleTrigger(input)){
   }else if(this.pendingSkill!==null&&this.cooldowns[this.pendingSkill]<=0&&this.afford(this.pendingSkill)){const skill=this.pendingSkill;this.pendingSkill=null;this.command({...input,skill});
   }else{const move=unit(input.x,0),length=Math.min(1,Math.abs(input.x));
@@ -212,6 +221,13 @@ export class RogueEngine{
   }
   const active=this.mobs.filter(e=>e.hp>0&&e.room===this.room);this.crowd.rebuild(active);
   for(const enemy of this.mobs){if(enemy.hp<=0)continue;if(!this.eligible(enemy)){enemy.state='idle';continue;}const d=dist(enemy,this.hero),profile=LABYRINTH.monsters[enemy.species];
+   const native=nativeEnemySupported(enemy);if(native&&lineClear(this.map,enemy,this.hero)){
+    const owned=this.enemyAttacks.actor(enemy,{...this.hero,dodge:this.hero.motion?.kind==='dodge',slide:this.hero.motion?.kind==='slide'},this.elapsed,this.elapsed-this.waves.get(this.room)!.enteredAt);
+    if(owned){if(enemy.attackMove&&this.hero.motion?.kind!=='jump'&&this.hero.motion?.kind!=='dodge'&&this.hero.motion?.kind!=='slide'){
+     const travel=enemy.attackMove*Math.min(profile.move,60)*dt,p=moveOnMap(this.map,enemy,travel,0,enemy.radius);
+     if(this.inRoom(p,enemy.room,enemy.radius)&&dist(p,this.hero)>=enemy.radius+12&&this.crowd.nearby(p.x).every(o=>o.id===enemy.id||o.hp<=0||Math.abs(o.x-p.x)>=4)){enemy.x=p.x;this.crowd.moved(enemy);}
+    }continue;}
+   }
    if(enemy.state==='windup'){if(this.elapsed>=enemy.until){enemy.state='recover';enemy.until=this.elapsed+.8;
      if(this.elapsed>=this.hurtReady&&this.hero.motion?.kind!=='dodge'&&this.hero.motion?.kind!=='slide'&&d<enemy.radius+38&&dist(this.hero,enemy.target)<48&&lineClear(this.map,enemy,this.hero)){const damage=this.receiveDamage(damageBig(this.combatScale.mul(enemy.boss?350:65),0,[1-passive.reduction,this.growthDefense]),[1051,1201,1153].includes(enemy.species)?'chaos':enemy.species===1301?'fire':'physical');this.hurtReady=this.elapsed+.4;this.hero.hitUntil=this.elapsed+.15;this.fx.push({id:++this.fxId,kind:'damage',born:this.elapsed,x:this.hero.x,y:this.hero.y,angle:0,value:amountLabel(damage),target:'hero'});}
     }continue;}
@@ -223,8 +239,13 @@ export class RogueEngine{
    const dir=unit(goal.x-enemy.x,goal.y-enemy.y),speed=enemy.species===1201?90:enemy.species===1101?80:60,p=moveOnMap(this.map,enemy,dir.x*speed*dt,dir.y*speed*dt,enemy.radius);
    if(this.inRoom(p,enemy.room,enemy.radius)&&dist(p,this.hero)>=enemy.radius+12&&this.crowd.nearby(p.x).every(o=>o.id===enemy.id||o.hp<=0||Math.abs(o.x-p.x)>=4)){enemy.x=p.x;enemy.y=tileCenter(7);this.crowd.moved(enemy);}
   }
+  this.enemyAttacks.advance(this.elapsed,dt,this.mobs,{...this.hero,dodge:this.hero.motion?.kind==='dodge',slide:this.hero.motion?.kind==='slide'},this.room,(source,e,h)=>{
+   if(e.type===1&&e.value>0&&this.elapsed>=this.enemyDamageAt){const element=h.style==='poison'||h.style==='dark'||h.style==='pillar'?'chaos':h.style==='fire'||h.style==='explosion'||h.style==='meteor'?'fire':h.style==='water'?'cold':'physical',damage=this.receiveDamage(damageBig(this.combatScale.mul(source.boss?90:45),0,[e.value/100,1-passive.reduction,this.growthDefense]),element);if(damage.gt(0)){this.enemyDamageAt=this.elapsed+.12;this.hero.hitUntil=this.elapsed+.12;this.fx.push({id:++this.fxId,kind:'damage',born:this.elapsed,x:this.hero.x,y:this.hero.y,room:this.room,angle:0,value:amountLabel(damage),target:'hero'});}}
+   else if([104,105,107,111].includes(e.type)&&e.value>0){this.enemyStunUntil=Math.max(this.enemyStunUntil,this.elapsed+Math.min(3,e.duration||e.value));if(this.hero.motion)this.land(this.hero.motion);this.hero.motion=null;this.hero.airHeight=0;}
+   else if(e.type===106&&e.value>0)this.heroMove(h.direction*Math.min(150,e.value*50),0);
+  });
   if(this.hero.hp<=0){this.status='dead';if(this.hero.motion)this.land(this.hero.motion);this.hero.motion=null;this.hero.airHeight=0;this.hero.elevation=this.map.rooms[this.room].elevation;this.pose('die1');}
   else if(this.room===9&&this.cleared.has(9)&&this.mobs.every(e=>e.hp<=0)&&dist(this.hero,this.map.exit)<ROGUE_TILE){this.status='won';this.hero.motion=null;this.hero.airHeight=0;this.pose('stay1');}
  }
- view():RogueSnapshot{const choices=roomGates(this.map,this.room).map(g=>({...g,ready:this.cleared.has(this.room),near:dist(this.hero,g.from)<=40})),gate=choices.find(g=>g.id===this.hero.motion?.gateId)??choices.find(g=>this.map.rooms[g.nextRoom].branch==='upper')??choices[0];return {defense:{shield:this.shieldEnabled?this.shield.bigHP!:'0',maxShield:this.shieldEnabled?this.shield.bigMaxHP!:'0',shieldPercent:this.shieldEnabled?big(this.shield.bigHP!).div(this.shield.bigMaxHP!).toNumber()*100:0,chaosImmune:this.chaosImmune,guard:this.elapsed<this.guardUntil?this.guard.div(this.combatScale).toNumber():0},resources:{mana:this.mana,maxMana:this.maxMana,costs:MANA.cost.map((_,i)=>this.manaCost(i)),potions:{...this.potions},potionCooldowns:{health:Math.max(0,this.potionAt.health-this.elapsed),mana:Math.max(0,this.potionAt.mana-this.elapsed)}},paused:this.paused,wave:{...this.waves.get(this.room)!},choices,route:[...this.visited],phase:this.status==='won'?'complete':this.hero.motion?.gateId!==undefined?'traversing':this.cleared.has(this.room)?'exit-ready':'combat',gate:gate?{...gate,ready:this.cleared.has(this.room),near:dist(this.hero,gate.from)<=40}:null,transitions:[...this.transitions],elapsed:this.elapsed,hero:{...this.hero,direction:{...this.hero.direction},motion:this.hero.motion?{...this.hero.motion,from:{...this.hero.motion.from},to:{...this.hero.motion.to},legs:this.hero.motion.legs?.map(l=>({...l,from:{...l.from},to:{...l.to}}))}:null},mobs:this.mobs.map(m=>({...m,target:{...m.target}})),visited:[...this.visited],cleared:[...this.cleared],room:this.room,status:this.status,kills:this.kills,gold:this.gold,cooldowns:[...this.cooldowns],pendingSkill:this.pendingSkill,jumpReady:this.elapsed>=this.jumpAt&&!this.hero.motion,dodgeReady:this.elapsed>=this.dodgeAt&&!this.hero.motion,slideReady:this.elapsed>=this.dodgeAt&&!this.hero.motion,autoRoom:this.autoRoom,autoOrder:[...this.autoOrder],auto:this.auto,fx:this.fx.slice(-96).map(f=>({...f}))};}
+ view():RogueSnapshot{const choices=roomGates(this.map,this.room).map(g=>({...g,ready:this.cleared.has(this.room),near:dist(this.hero,g.from)<=40})),gate=choices.find(g=>g.id===this.hero.motion?.gateId)??choices.find(g=>this.map.rooms[g.nextRoom].branch==='upper')??choices[0];return {enemyCombat:this.enemyAttacks.view(this.elapsed),debuff:{stunned:Math.max(0,this.enemyStunUntil-this.elapsed)},defense:{shield:this.shieldEnabled?this.shield.bigHP!:'0',maxShield:this.shieldEnabled?this.shield.bigMaxHP!:'0',shieldPercent:this.shieldEnabled?big(this.shield.bigHP!).div(this.shield.bigMaxHP!).toNumber()*100:0,chaosImmune:this.chaosImmune,guard:this.elapsed<this.guardUntil?this.guard.div(this.combatScale).toNumber():0},resources:{mana:this.mana,maxMana:this.maxMana,costs:MANA.cost.map((_,i)=>this.manaCost(i)),potions:{...this.potions},potionCooldowns:{health:Math.max(0,this.potionAt.health-this.elapsed),mana:Math.max(0,this.potionAt.mana-this.elapsed)}},paused:this.paused,wave:{...this.waves.get(this.room)!},choices,route:[...this.visited],phase:this.status==='won'?'complete':this.hero.motion?.gateId!==undefined?'traversing':this.cleared.has(this.room)?'exit-ready':'combat',gate:gate?{...gate,ready:this.cleared.has(this.room),near:dist(this.hero,gate.from)<=40}:null,transitions:[...this.transitions],elapsed:this.elapsed,hero:{...this.hero,direction:{...this.hero.direction},motion:this.hero.motion?{...this.hero.motion,from:{...this.hero.motion.from},to:{...this.hero.motion.to},legs:this.hero.motion.legs?.map(l=>({...l,from:{...l.from},to:{...l.to}}))}:null},mobs:this.mobs.map(m=>({...m,target:{...m.target}})),visited:[...this.visited],cleared:[...this.cleared],room:this.room,status:this.status,kills:this.kills,gold:this.gold,cooldowns:[...this.cooldowns],pendingSkill:this.pendingSkill,jumpReady:this.elapsed>=this.jumpAt&&!this.hero.motion,dodgeReady:this.elapsed>=this.dodgeAt&&!this.hero.motion,slideReady:this.elapsed>=this.dodgeAt&&!this.hero.motion,autoRoom:this.autoRoom,autoOrder:[...this.autoOrder],auto:this.auto,fx:this.fx.slice(-96).map(f=>({...f}))};}
 }
