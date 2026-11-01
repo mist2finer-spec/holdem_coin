@@ -15,7 +15,7 @@ The ten-room branching graph is retained deliberately. This version randomizes a
 ## Retreat and spawn safety
 
 - First player spawn moves from arena center to the sixth tile after the entrance, leaving over300 world units behind the player. Later entries keep their original landing point and encounter boundary.
-- No spawn nests in the first240 world units of the room, plus72 margin. Every **new** monster is at least240 world units away from the player. Nests prefer the forward lane (80% if both sides are available); a rear lane is used only outside that safety radius.
+- No spawn nests in the first240 world units of the room, plus72 margin. Every **new** monster is at least240 world units away from the player. Nests use the forward lane whenever available; the distant rear lane is used only when the hero has reached the far end and no forward lane remains. This avoids new flanking packs closing the retreat route while fighting in the middle of an arena.
 - Monster count stays entry30, total150–200, normal batches complete by55 seconds, no kill deadline. Existing enemies may chase into the refuge; it is movement space, not an invulnerable sanctuary.
 - Player cannot walk through mobs. Jump/dodge/slide maximum-three-enemy crossing rule remains. Existing attack, damage, skills and economy values unchanged.
 - Lower-branch passage label now follows the actual in-flight gate instead of showing AUTO's upper preference.
@@ -33,7 +33,7 @@ The ten-room branching graph is retained deliberately. This version randomizes a
 
 ## Verification
 
-`check:rpg` and production Next build. Focused47 tests:40 rogue/pace/horde/modular +7 saved-build tests. Existing RPG135 and poker244 regressions. Total426 tests. New checks cover100 seed layouts and deterministic reproduction, all four styles, variation in elevations/props, slide height alignment, actual dodge/slide retreat across30 seeds, reinforcement safety at both arena ends, lower-passage label. Existing tests still cover all8 branch combinations and real production horde AUTO completion.
+`check:rpg` and production Next build. Focused48 tests:41 rogue/pace/horde/modular +7 saved-build tests. Existing RPG135 and poker244 regressions. Total427 tests. New checks cover100 seed layouts and deterministic reproduction, all four styles, variation in elevations/props, slide height alignment, actual dodge/slide retreat across30 seeds, reinforcement safety at both arena ends, lower-passage label and retreat after all reinforcements arrive. Existing tests still cover all8 branch combinations and real production horde AUTO completion.
 
 Formal verification not run: synchronous map/spawn changes are covered directly by these bounded geometry, replay and integration tests; no sequence/CAS protocol or economy invariant changed. Real device FPS and subjective combat-space feel still need user feedback. Decorations are visual only.
 

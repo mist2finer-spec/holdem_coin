@@ -21,3 +21,6 @@ test('reinforcement birth respects the safety radius even at arena ends and whil
 test('selected lower passage label follows the actual traversal, not AUTO preference',()=>{
  const g=new RogueEngine(4,{initial:3,min:3,max:3,batch:3,seconds:0});g.mobs.forEach(m=>m.hp=0);g.step(.02,idle);const gate=routeFrom(g.map,0,'lower')!;Object.assign(g.hero,gate.from);assert.ok(g.command({...idle,branch:'lower',jump:true}));assert.equal(g.view().gate?.id,gate.id);assert.equal(g.view().gate?.passage,'jump-down');
 });
+test('a waiting front horde still leaves a usable retreat lane after the full spawn budget',()=>{
+ for(const seed of [3,13,27]){const g=new RogueEngine(seed);g.hero.hp=g.hero.maxHP=1e8;g.mobs.forEach(m=>m.hp=0);g.hero.x+=400;for(let i=0;i<2800;i++)g.step(.02,idle);assert.equal(g.view().wave.spawned,g.view().wave.target);assert.ok(g.mobs.length>=120);assert.ok(g.mobs.every(m=>m.x>g.hero.x));const x=g.hero.x;assert.ok(g.command({...idle,x:-1,dodge:true}));for(let i=0;i<24;i++)g.step(.02,idle);assert.ok(g.hero.x<x-119,`retreat blocked seed=${seed}`);}
+});

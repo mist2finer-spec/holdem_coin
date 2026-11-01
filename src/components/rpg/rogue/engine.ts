@@ -34,7 +34,7 @@ export class RogueEngine{
    const species=boss?1031:roster[random%roster.length],radius=boss?22:species===1102||species===1152?15:12;
    const lanes=spawnLanes(left,right,this.hero.x);
    // Room width guarantees a distant nest, even when the hero stands against either boundary.
-   const lane=lanes.length===2&&random%5===0?lanes[1]:lanes[0];
+   const lane=lanes[0];
    if(!lane)throw Error('No safe spawn lane');
    let x=lane.left+(lane.right-lane.left)*((random>>>8)%10000)/10000;
    for(let attempt=0;attempt<40;attempt++){
