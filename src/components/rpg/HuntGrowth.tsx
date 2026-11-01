@@ -1,31 +1,29 @@
 'use client';
 import {useState} from 'react';
-import {X,Info,BookOpen,GitBranch,Sparkles,Swords,Flame} from 'lucide-react';
-import {ABILITY_INFO,ABILITY_ORDER,SKILL_INFO,DEVELOPMENT,artQuote,traitIncrement} from './hunt-development';
+import {X,Info,GitBranch,Swords} from 'lucide-react';
+import {ABILITY_INFO,ABILITY_ORDER,DEVELOPMENT,artLevel,artQuote,traitIncrement,traitPoints} from './hunt-development';
+import type {HuntProgress} from './hunt-progression';
 import type {BattleView,HuntAction} from '../../lib/rpg-service';
 import './hunt-development.css';
-const tabs=[['arts','전투술',Swords],['traits','특성',GitBranch],['skills','스킬',Sparkles],['mastery','숙련도',BookOpen],['will','투혼',Flame]] as const;
-const fmt=(n:number)=>new Intl.NumberFormat('en',{notation:n>=10000?'compact':'standard',maximumFractionDigits:1}).format(n);
+const tabs=[['arts','골드 성장',Swords],['traits','특성',GitBranch]] as const;
+const fmt=(n:number)=>new Intl.NumberFormat('ko',{notation:n>=10000?'compact':'standard',maximumFractionDigits:1}).format(n);
 const value=(n:number)=>Number(n.toFixed(2)).toLocaleString();
+type GrowthCommand=`art-${number}-${number}`|`trait-${number}`;
+type ControlsProps={progress:HuntProgress;onCommand:(action:GrowthCommand)=>void;disabled?:boolean};
+export function GoldStatControls({progress:p,onCommand,disabled=false}:ControlsProps){
+ const [batch,setBatch]=useState(1);
+ return <><p className="development-note">골드로 능력치를 영구 성장시킵니다. 묶음 훈련은 보유 골드와 선행 조건 안에서 가능한 단계만 구매합니다.</p><div className="development-batches" role="group" aria-label="훈련 횟수">{[1,10,100].map(n=><button key={n} aria-pressed={batch===n} onClick={()=>setBatch(n)}>×{n}</button>)}</div>
+ <div className="development-list">{ABILITY_ORDER.map(ability=>{const meta=ABILITY_INFO[ability],rows=DEVELOPMENT.arts.filter(row=>row.ability===ability),row=rows.find(row=>artLevel(p,row.id)<row.max)??rows[rows.length-1],quote=artQuote(p,row.id,batch),total=rows.reduce((sum,row)=>sum+artLevel(p,row.id)*row.increment,0);
+ return <article className="development-row" key={ability}><img src={`/rpg/SkillIcon_${meta.icon}.png`} alt=""/><div><small>단계 {row.tier} · Lv.{quote.level} / {row.max}</small><h3>{meta.name}</h3><p>+{value(total)}{meta.percent?'%':''}</p><span>{quote.lock||meta.hint}</span></div><button disabled={disabled||!quote.quantity} onClick={()=>onCommand(`art-${row.id}-${batch}`)}>{quote.level===row.max?'MAX':quote.lock?'잠김':`+${quote.quantity||batch} 훈련`}<small>{quote.quantity?`${fmt(quote.cost)} 골드`:quote.nextCost?`${fmt(quote.nextCost)} 골드`:''}</small></button></article>;
+ })}</div></>;
+}
+export function TraitControls({progress:p,onCommand,disabled=false}:ControlsProps){
+ const remaining=traitPoints(p);
+ return <><p className="development-note">남은 특성 <b>{remaining}P</b> · 레벨 상승마다 1P<br/>각 항목 최대 10레벨 · 1P는 해당 전투술 10레벨의 효과입니다. 코어 트리 포인트와 별도로 사용합니다.</p><div className="development-traits">{ABILITY_ORDER.map(ability=>{const meta=ABILITY_INFO[ability],rank=p.traits?.[ability]??0;return <button key={ability} disabled={disabled||rank>=10||remaining<1} onClick={()=>onCommand(`trait-${ability}`)}><img src={`/rpg/SkillIcon_${meta.icon}.png`} alt=""/><strong>{meta.name}</strong><span>Lv. {rank} / 10</span><small>+{value(rank*traitIncrement(ability))}{meta.percent?'%':''}</small><i>{rank>=10?'MAX':'특성 1P 사용'}</i></button>;})}</div></>;
+}
 export function HuntGrowth({view,active,onCommand,onClose}:{view:BattleView|null;active:boolean;onCommand:(a:HuntAction)=>void;onClose:()=>void}){
- const [tab,setTab]=useState<typeof tabs[number][0]>('arts'),[batch,setBatch]=useState(1),[info,setInfo]=useState(false);
- const p=view?.progress,d=view?.development;
- const summary=tab==='traits'?`특성 포인트 ${d?.traitPoints??0}`:tab==='mastery'?`숙련의 정수 ${fmt(p?.masteryEssence??0)}`:tab==='will'?`투혼의 오브 ${fmt(p?.soulOrb??0)}`:`골드 ${fmt(p?.gold??0)}`;
- return <section className="hunt-development" aria-label="캐릭터 성장">
-  <header className="development-header"><div><small>CHARACTER GROWTH</small><strong>성장 <span>Lv. {p?.level??1}</span></strong></div><span>{summary}</span><button aria-label="성장 안내" aria-expanded={info} onClick={()=>setInfo(!info)}><Info size={19}/></button><button aria-label="성장창 닫기" onClick={onClose}><X size={21}/></button></header>
-  <nav className="development-tabs" aria-label="성장 분류">{tabs.map(([id,label,Icon])=><button key={id} aria-pressed={tab===id} onClick={()=>setTab(id)}><Icon size={17}/>{label}</button>)}</nav>
-  {info&&<div className="development-help">전투술은 골드로 훈련합니다. ×10·×100은 구매 가능한 단계까지만 합산 결제합니다. 특성은 캐릭터 레벨당 1포인트를 사용합니다. 현재 사냥 보상에는 웹 테스트용 숙련의 정수·투혼의 오브·스킬 재료가 포함됩니다. 고등급 합성·각인·투혼 카드는 아직 지원하지 않습니다.</div>}
-  <div className="development-body">
-   {tab==='arts'&&<><div className="development-batches" role="group" aria-label="훈련 횟수">{[1,10,100].map(n=><button key={n} aria-pressed={batch===n} onClick={()=>setBatch(n)}>×{n}</button>)}</div>
-   <div className="development-list">{ABILITY_ORDER.map(a=>{const meta=ABILITY_INFO[a],rows=DEVELOPMENT.arts.filter(r=>r.ability===a),row=rows.find(r=>(d?.arts.find(x=>x.id===r.id)?.level??0)<r.max)??rows[rows.length-1];const q=p?artQuote(p,row.id,batch):null;
-    const total=d?.arts.filter(r=>r.ability===a).reduce((n,r)=>n+r.level*r.increment,0)??0;
-    return <article className="development-row" key={a}><img src={`/rpg/SkillIcon_${meta.icon}.png`} alt=""/><div><small>단계 {row.tier} · Lv.{q?.level??0} / {row.max}</small><h3>{meta.name}</h3><p>+{value(total)}{meta.percent?'%':''}</p><span>{q?.lock||meta.hint}</span></div><button disabled={!active||!q?.quantity} onClick={()=>onCommand(`art-${row.id}-${batch}`)}>{q?.level===row.max?'MAX':q?.lock?'잠김':`+${q?.quantity||batch} 훈련`}<small>{q?.quantity?`${fmt(q.cost)} 골드`:q?.nextCost?`${fmt(q.nextCost)} 골드`:''}</small></button></article>;
-   })}</div></>}
-   {tab==='traits'&&<><p className="development-note">레벨업으로 포인트 획득 · 각 항목 최대 10레벨<br/>1포인트 = 해당 전투술 10레벨 효과 · 웹용 분배판</p><div className="development-traits">{ABILITY_ORDER.map(a=>{const meta=ABILITY_INFO[a],rank=p?.traits[a]??0;return <button key={a} disabled={!active||rank>=10||!d?.traitPoints} onClick={()=>onCommand(`trait-${a}`)}><img src={`/rpg/SkillIcon_${meta.icon}.png`} alt=""/><strong>{meta.name}</strong><span>Lv. {rank} / 10</span><small>+{value(rank*traitIncrement(a))}{meta.percent?'%':''}</small><i>{rank>=10?'MAX':'+ 1 포인트'}</i></button>;})}</div><p className="development-note">집중력은 저장·표시됩니다. 적 집중력과 원본 명중 판정 연결은 준비 중입니다.</p></>}
-   {tab==='skills'&&<><p className="development-note">6개 슬롯 · 같은 스킬 재료로 강화<br/>테스트 사냥에서 5마리마다 재료 1개를 순서대로 획득합니다.</p><div className="development-list">{SKILL_INFO.map(([name,icon],i)=><article className="development-row" key={icon}><img src={`/rpg/SkillIcon_${icon}.png`} alt=""/><div><small>슬롯 {i+1} · Lv.{p?.skillLevels[i]??1} / 50</small><h3>{name}</h3><p>재료 {fmt(p?.skillCopies[i]??0)} / {d?.skillCosts[i]??1}</p><span>레벨당 피해 +5% · 웹 전투 보정</span></div><div className="development-actions"><button disabled={!active} aria-pressed={!!p?.skillEnabled[i]} onClick={()=>onCommand(`skill-toggle-${i}`)}>{p?.skillEnabled[i]?'장착 중':'장착'}</button><button disabled={!active||!d?.skillCosts[i]||(p?.skillCopies[i]??0)<(d?.skillCosts[i]??1)} onClick={()=>onCommand(`skill-train-${i}`)}>강화</button></div></article>)}</div><p className="development-note">현재 6종 웹 스킬을 유지합니다. 원본 스킬 소환·합성·속성 조합·각성은 추가 연결이 필요합니다.</p></>}
-   {tab==='mastery'&&<div className="development-feature"><BookOpen size={48}/><small>MASTERY</small><h3>숙련도 {p?.masteryLevel??1}단계</h3><p>공격력·체력 보정 +{view?.stats.abilities[63]??0}%<br/>사냥 처치당 숙련의 정수 100 획득</p><div className="development-milestones">{DEVELOPMENT.mastery.map(r=><span key={r.level} className={r.level<=(p?.masteryLevel??1)?'is-earned':''}>{r.level}</span>)}</div><button disabled={!active||!d?.masteryNext||(p?.masteryEssence??0)<(d?.masteryNext?.cost??Infinity)} onClick={()=>onCommand('mastery')}>{d?.masteryNext?`${d.masteryNext.level}단계 승급 · ${fmt(d.masteryNext.cost)}`:'현재 구현 최대 단계'}</button><p className="development-note">복원 DB의 초기 10단계 비용·능력치 적용.<br/>강공격·마무리 공격의 추가 해금은 준비 중입니다.</p></div>}
-   {tab==='will'&&<div className="development-feature"><img className="development-will-icon" src="/rpg/SkillIcon_DarkHole.png" alt=""/><small>FIGHTING SPIRIT</small><h3>투혼 Lv. {p?.willLevel??0}</h3><progress max="100" value={p?.willLevel??0} aria-label="투혼 성장"/><p>공격력 +{(p?.willLevel??0)*2} · 체력 +{(p?.willLevel??0)*10}<br/>용기·집중력 +{(p?.willLevel??0)*2}</p><button disabled={!active||!d?.willCost||(p?.soulOrb??0)<(d?.willCost??Infinity)} onClick={()=>onCommand('will')}>{d?.willCost?`성장 · 오브 ${fmt(d.willCost)}`:'현재 구현 최대 레벨'}</button><p className="development-note">처치당 오브 50 획득 · 초기 Lv.100까지 적용<br/>투혼 진화와 카드는 준비 중입니다.</p></div>}
-  </div>
-  <footer className="development-stats"><span>공격력 <b>{fmt(view?.stats.attack??0)}</b></span><span>성장 체력 <b>{fmt(view?.stats.naturalHP??0)}</b></span><span>치명타 <b>{value((view?.stats.crit??0)*100)}%</b></span></footer>
- </section>;
+ const [tab,setTab]=useState<typeof tabs[number][0]>('arts'),[info,setInfo]=useState(false),p=view?.progress;
+ return <section className="hunt-development" aria-label="캐릭터 성장"><header className="development-header"><div><small>CHARACTER GROWTH</small><strong>성장 <span>Lv. {p?.level??1}</span></strong></div><span>{tab==='traits'?`특성 ${p?traitPoints(p):0}P`:`골드 ${fmt(p?.gold??0)}`}</span><button aria-label="성장 안내" aria-expanded={info} onClick={()=>setInfo(!info)}><Info size={19}/></button><button aria-label="성장창 닫기" onClick={onClose}><X size={21}/></button></header><nav className="development-tabs" aria-label="성장 분류">{tabs.map(([id,label,Icon])=><button key={id} aria-pressed={tab===id} onClick={()=>setTab(id)}><Icon size={17}/>{label}</button>)}</nav>
+ {info&&<div className="development-help">복구된 전투술·골드 훈련과 레벨당 특성 1P를 유지합니다. 스킬은 보유한 액티브 젬과 장비의 보조 소켓으로 조합합니다. 장비와 젬은 장비·소환 창에서 관리하세요.</div>}
+ <div className="development-body">{p?tab==='arts'?<GoldStatControls progress={p} onCommand={onCommand} disabled={!active}/>:<TraitControls progress={p} onCommand={onCommand} disabled={!active}/>:<p className="development-note">성장 정보를 불러오는 중입니다.</p>}</div><footer className="development-stats"><span>기초 공격력 <b>{fmt(view?.stats.attack??0)}</b></span><span>성장 체력 <b>{fmt(view?.stats.naturalHP??0)}</b></span><span>치명타 <b>{value((view?.stats.crit??0)*100)}%</b></span></footer></section>;
 }

@@ -1,10 +1,11 @@
 import type {BuildState,CoreNode,PassiveStats} from './hunt-build';
+import {forbiddenIdentity,forbiddenSeed,type CharacterIdentity} from './character-identities';
 import {JEWELS_BY_ID,type JewelDefinition} from './jewel-catalog';
 export const TIMELESS_RADIUS=310,MAX_LARGE_CLUSTERS=2,MAX_JEWEL_PLACEMENTS=40;
 export type JewelInstance={instanceId:string;jewelId:string;seed:number;conqueror?:string};
 export type JewelPlacement=JewelInstance&{socketId:string;order:number};
 type Helpers={make:(v:any)=>CoreNode;describe:(s:Partial<PassiveStats>)=>string[];keys:readonly string[]};
-export type ResolvedBuildTree={nodes:CoreNode[];edges:[string,string][];jewelStats:Partial<PassiveStats>[];grantedSkills:string[];conditionalJewels:string[];transformations:{nodeId:string;jewelId:string;instanceId:string;before:string;after:string}[];spent:number};
+export type ResolvedBuildTree={nodes:CoreNode[];edges:[string,string][];jewelStats:Partial<PassiveStats>[];grantedSkills:string[];conditionalJewels:string[];transformations:{nodeId:string;jewelId:string;instanceId:string;before:string;after:string}[];spent:number;borrowedIdentity?:CharacterIdentity};
 function seedHash(seed:number,text:string){let h=seed>>>0;for(let i=0;i<text.length;i++){h^=text.charCodeAt(i);h=Math.imul(h,16777619);}return h>>>0;}
 export function validateJewelInstance(raw:unknown):asserts raw is JewelInstance{
  const j=raw as JewelInstance,d=JEWELS_BY_ID.get(j?.jewelId);
@@ -64,7 +65,7 @@ export function resolveJewelTree(baseNodes:readonly CoreNode[],baseEdges:readonl
   }
   pending.splice(i--,1);progressed=true;
  }if(!progressed)throw Error('군주얼 부모 소켓이 없거나 잘못된 중첩입니다.');}
- if(pairs.flame&&pairs.flesh&&pairs.flame.seed===pairs.flesh.seed)jewelStats.push({life:.12,block:.08});
+ const borrowedIdentity=pairs.flame&&pairs.flesh&&forbiddenSeed(pairs.flame.seed)===forbiddenSeed(pairs.flesh.seed)?forbiddenIdentity(build.start??'hong',pairs.flame.seed):undefined;if(borrowedIdentity)jewelStats.push({...borrowedIdentity.stats});
  const timeless=placements.filter(p=>JEWELS_BY_ID.get(p.jewelId)!.kind==='timeless').sort((a,b)=>a.order-b.order),transformations:ResolvedBuildTree['transformations']=[];
  for(let i=0;i<baseNodes.length;i++){
   const n=baseNodes[i];if(n.startFor||n.kind==='socket'||n.kind==='keystone')continue;
@@ -72,5 +73,5 @@ export function resolveJewelTree(baseNodes:readonly CoreNode[],baseEdges:readonl
   if(winner){nodes[i]=transformed(n,winner,helpers);byId.set(n.id,nodes[i]);transformations.push({nodeId:n.id,jewelId:winner.jewelId,instanceId:winner.instanceId,before:n.description,after:nodes[i].description});}
  }
  const grantedSkills=[...new Set(nodes.filter(n=>allocated.has(n.id)&&n.grantsSkill).map(n=>n.grantsSkill!))].slice(0,4);
- return {nodes,edges,jewelStats,grantedSkills,conditionalJewels,transformations,spent:build.nodes.reduce((total,id)=>{const n=byId.get(id);return total+(n?.startFor===(build.start??'hong')?0:n?.allocationCost??1);},0)};
+ return {nodes,edges,jewelStats,grantedSkills,conditionalJewels,transformations,borrowedIdentity,spent:build.nodes.reduce((total,id)=>{const n=byId.get(id);return total+(n?.startFor===(build.start??'hong')?0:n?.allocationCost??1);},0)};
 }

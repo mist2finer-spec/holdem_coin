@@ -1,4 +1,5 @@
 'use client';
+import {IdleEquipmentPanel} from './IdleEquipmentPanel';
 import {SkillCooldownButton} from './SkillCooldownButton';
 import {GemCorePanel} from './GemCorePanel';
 import {HuntGrowth} from './HuntGrowth';
@@ -105,9 +106,9 @@ export function HuntPrototype({onExit,character='hong',mapId='forest'}:{onExit?:
   </section>
   <div className="hunt-lower">
    {dialog&&<div ref={panel} className={`hunt-window ${dialog==='build'?'gem-window':''}`} role="dialog" aria-label={{growth:'캐릭터 성장',weapons:'무기',bag:'가방',quest:'사냥 의뢰',build:'젬 · 코어'}[dialog]} onKeyDown={e=>{if(e.key==='Escape'){e.stopPropagation();setDialog(null);}}}>
-    {dialog==='weapons'&&<HuntArmory view={view} active={active} onCommand={action=>enqueue({action})} onClose={()=>setDialog(null)}/>}
+    {dialog==='weapons'&&view&&<IdleEquipmentPanel progress={view.progress} error={notice} onCommand={action=>enqueue({action:action as HuntAction})} onClose={()=>setDialog(null)}/>}
     {dialog==='growth'&&<button className="gem-open" onClick={()=>setDialog('build')}>◆ 젬 링크 · 옴브라 코어</button>}
-    {dialog==='build'&&view&&<GemCorePanel view={view.build} error={notice} onCommand={action=>enqueue({action})} onClose={()=>setDialog('growth')}/>}
+    {dialog==='build'&&view&&<GemCorePanel collection={view.progress.gemCollection} equipmentInventory={view.progress.equipment} view={view.build} error={notice} onCommand={action=>enqueue({action})} onClose={()=>setDialog('growth')}/>}
     {dialog==='growth'&&<HuntGrowth view={view} active={active} onCommand={action=>enqueue({action})} onClose={()=>setDialog(null)}/>}
   {dialog&&dialog!=='weapons'&&dialog!=='growth'&&dialog!=='build'&&<section className="hunt-window-content" aria-labelledby="hunt-growth-title"><h2 id="hunt-growth-title">{dialog==='bag'?'가방 · 회복 물약':'사냥 의뢰'}</h2>
    {dialog==='bag'&&<><p>골드 {view?.progress.gold??0} · 물약 {view?.progress.potions??0}개</p><p>회복 물약: 최대 HP의 40% 회복 · 재사용 2초</p><button disabled={!active||!view?.potionReady} onClick={()=>enqueue({action:'potion'})}>물약 사용</button><button disabled={!active||!view||view.progress.gold<POTION_PRICE||view.progress.potions>=99} onClick={()=>enqueue({action:'buy-potion'})}>물약 구매 · {POTION_PRICE} 골드</button><p>훈련 무기 +{(view?.progress.weaponLevel??1)-1} · 방어구 +{(view?.progress.armorLevel??1)-1}</p></>}

@@ -29,8 +29,8 @@ export const JEWEL_CATALOG:readonly JewelDefinition[]=[
  unique('prismatic','Prismatic Jewel',{strength:10,dexterity:10,intelligence:10,damage:.1},1000),
  {...unique('splitpersonality','Split Personality',{life:.05},1500,'시작점→소켓 최단 경로의 할당 거리로 생명력 5% 증폭 · 5%~25%'),source:'HOLDEM 상점 · 가이드: Grand Heist'},
  {...unique('watcherseye',"Watcher’s Eye",{},2200,'실제로 시전한 오라 지속 중: Hatred 냉기 +20% / Vitality 재생 +1% · 엔진 지원 오라 적용'),source:'HOLDEM 상점 · 가이드: Uber Elder'},
- {...unique('forbiddenflame','Forbidden Flame',{},1600,'동일 시드의 Flame/Flesh 한 쌍: 철벽 수호 · 생명력 +12%, 막기 +8% · 한 쌍 제한'),pair:'flame' as const,source:'HOLDEM 상점 · 가이드: Sanctum'},
- {...unique('forbiddenflesh','Forbidden Flesh',{},1600,'동일 시드의 Flame/Flesh 한 쌍: 철벽 수호 · 생명력 +12%, 막기 +8% · 한 쌍 제한'),pair:'flesh' as const,source:'HOLDEM 상점 · 가이드: Sanctum'},
+ {...unique('forbiddenflame','Forbidden Flame',{},1600,'정규 시드 1~8이 같은 Flame/Flesh 한 쌍: 다른 캐릭터의 시작 고유 코어 1개 복사 · 기존 시드 보존 · 한 쌍 제한'),pair:'flame' as const,source:'HOLDEM 상점 · 가이드: Sanctum'},
+ {...unique('forbiddenflesh','Forbidden Flesh',{},1600,'정규 시드 1~8이 같은 Flame/Flesh 한 쌍: 다른 캐릭터의 시작 고유 코어 1개 복사 · 기존 시드 보존 · 한 쌍 제한'),pair:'flesh' as const,source:'HOLDEM 상점 · 가이드: Sanctum'},
  unique('bluepearl','The Blue Pearl',{chaosResistance:.15}),unique('fortitudecovenant','The Fortitude Covenant',{armour:.25}),unique('emberheart','Ember Heart',{fireDamage:.2,regeneration:.003}),unique('frostmemory','Frost Memory',{coldDamage:.2,energyShield:.08}),unique('stormglass','Storm Glass',{lightningDamage:.2,castSpeed:.05}),unique('ironpromise','Iron Promise',{life:.1,armour:.1}),unique('fleetstep','Fleet Step',{movement:.08,evasion:.1}),unique('voidseed','Void Seed',{chaosDamage:.15,dotDamage:.1}),unique('arcanepearl','Arcane Pearl',{mana:.15,manaRegen:.15}),unique('warriorsvow',"Warrior's Vow",{meleeDamage:.18,leech:.01}),
 ];
 export const JEWELS_BY_ID=new Map(JEWEL_CATALOG.map(j=>[j.id,j]));

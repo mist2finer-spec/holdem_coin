@@ -1,3 +1,7 @@
+import {initializeIdleProfile,syncIdleBuild,applyIdleAction,applyPhysicalBuildAction,isIdleAction,type IdleAction} from './rpg-idle-profile';
+import {accrueIdleProgress} from '../components/rpg/idle-progression';
+import {developmentView} from '../components/rpg/hunt-development';
+import {sqliteAtomic} from './rpg-sqlite';
 import {RpgItemsStore} from './rpg-items';
 import {buyArt} from '../components/rpg/hunt-development';
 import {ROGUE_PACE} from '../components/rpg/rogue/pace';
@@ -8,9 +12,9 @@ import {randomBytes,randomUUID} from 'node:crypto';
 import {RogueEngine,type RogueInput,type RogueSnapshot} from '../components/rpg/rogue/engine';
 import type {RogueMap} from '../components/rpg/rogue/map';
 export type JewelAction=`jewel-equip:${string}:${string}`|`jewel-unequip:${string}`;
-export type RogueAction=BuildAction|JewelAction|'tick'|'train-attack'|'train-health'|'items-refresh';
-export function isRogueAction(a:unknown):a is RogueAction{return isBuildAction(a)||(typeof a==='string'&&/^(jewel-equip:[a-zA-Z0-9_]{1,100}:[a-zA-Z0-9_]{1,64}|jewel-unequip:[a-zA-Z0-9_]{1,100})$/.test(a))||['tick','train-attack','train-health','items-refresh'].includes(a as string);}
-export type RogueView=RogueSnapshot&{growth:{gold:number;attack:number;health:number;attackCost:number;healthCost:number};id:string;sequence:number;buildRevision:number;build:ReturnType<typeof buildView>;map?:RogueMap};
+export type RogueAction=IdleAction|BuildAction|JewelAction|'tick'|'train-attack'|'train-health'|'items-refresh';
+export function isRogueAction(a:unknown):a is RogueAction{return isIdleAction(a)||isBuildAction(a)||(typeof a==='string'&&/^(jewel-equip:[a-zA-Z0-9_]{1,100}:[a-zA-Z0-9_]{1,64}|jewel-unequip:[a-zA-Z0-9_]{1,100})$/.test(a))||['tick','train-attack','train-health','items-refresh'].includes(a as string);}
+export type RogueView=RogueSnapshot&{progress:HuntProgress;development:ReturnType<typeof developmentView>;loot?:unknown;growth:{gold:number;attack:number;health:number;attackCost:number;healthCost:number};id:string;sequence:number;buildRevision:number;build:ReturnType<typeof buildView>;map?:RogueMap};
 export function parseRogueInput(raw:unknown):RogueInput{
  if(!raw||typeof raw!=='object')throw Error('Invalid input');const p=raw as Record<string,unknown>;
  if(typeof p.x!=='number'||typeof p.y!=='number'||!Number.isFinite(p.x)||!Number.isFinite(p.y)||Math.abs(p.x)>1||Math.abs(p.y)>1||typeof p.auto!=='boolean')throw Error('Invalid direction');
@@ -23,40 +27,47 @@ export function parseRogueInput(raw:unknown):RogueInput{
  return {potion:p.potion as 'health'|'mana'|undefined,paused:p.paused as boolean|undefined,branch:p.branch as 'upper'|'lower'|undefined,x:p.x,y:p.y,auto:p.auto,attack:p.attack as boolean|undefined,jump:p.jump as boolean|undefined,dodge:p.dodge as boolean|undefined,slide:p.slide as boolean|undefined,skill:p.skill as number|undefined};
 }
 const idle:RogueInput={x:0,y:0,auto:false};
-type Session={progress:HuntProgress;revision:number;id:string;game:RogueEngine;last:number;seen:number;input:RogueInput;sequence:number;cached:RogueView;buildKey?:string;buildVersion:number;buildCache?:ReturnType<typeof buildView>};
+type Session={progress:HuntProgress;revision:number;id:string;game:RogueEngine;last:number;seen:number;input:RogueInput;sequence:number;cached:RogueView;buildKey?:string;buildVersion:number;buildCache?:ReturnType<typeof buildView>;dirtyAttempt?:boolean};
 /** Commands are synchronous and use the existing session sequence/idempotency contract. */
 export class RogueService{
  private sessions=new Map<string,Session>();
- constructor(readonly now=()=>performance.now(),readonly seed=()=>randomBytes(4).readUInt32LE(),readonly store?:RpgStore,readonly items?:RpgItemsStore){}
- start(account:string,character:string){
+ constructor(readonly now=()=>performance.now(),readonly seed=()=>randomBytes(4).readUInt32LE(),readonly store?:RpgStore,readonly items?:RpgItemsStore,readonly idleMode=false,readonly wallNow=()=>Date.now()){}
+ start(account:string,character:string){if(this.idleMode&&this.store){try{return sqliteAtomic(this.store.db,()=>this.startInner(account,character));}catch(e){this.sessions.delete(account);throw e;}}return this.startInner(account,character);}
+ private startInner(account:string,character:string){
   if(character!=='hong')throw Error('현재 홍만 선택할 수 있습니다.');
   const now=this.now();for(const [id,s] of this.sessions)if(now-s.seen>20*60*1000)this.sessions.delete(id);
   if(!this.sessions.has(account)&&this.sessions.size>=500)throw Error('던전 접속자가 많습니다.');
-  const saved=this.store?.load(account)??{progress:newHuntProgress(),revision:0};
+  const saved=this.store?.load(account)??{progress:newHuntProgress(),revision:0};if(this.idleMode){initializeIdleProfile(saved.progress,this.wallNow());if(this.store)saved.revision=this.store.save(account,saved.progress,saved.revision);}
   const game=new RogueEngine(this.seed()),id=randomUUID(),s:Session={...saved,id,game,last:now,seen:now,input:{...idle},sequence:0,buildVersion:0,cached:null as unknown as RogueView};
   const owned=this.items?.jewels(account)??[];for(const placed of saved.progress.build?.jewels??[]){if(!owned.some(j=>j.instanceId===placed.instanceId&&j.jewelId===placed.jewelId&&j.seed===placed.seed&&j.conqueror===placed.conqueror))throw Error('저장된 주얼 보유 정보를 확인할 수 없습니다. 보관함을 확인해 주세요.');}
   game.build=structuredClone(saved.progress.build!);if(game.build.start&&game.build.start!=='hong')game.build=changeBuild(game.build,'core-start-hong',saved.progress.level);saved.progress.build=structuredClone(game.build);game.setGrowth(saved.progress);game.transcended=this.items?.view(account).transcended??{};
-  s.cached={...game.view(),growth:this.growth(s.progress),build:this.viewBuild(s),buildRevision:s.buildVersion,id,sequence:0,map:game.map};this.sessions.set(account,s);return s.cached;
+  s.cached={...game.view(),progress:structuredClone(s.progress),development:developmentView(s.progress),growth:this.growth(s.progress),build:this.viewBuild(s),buildRevision:s.buildVersion,id,sequence:0,map:game.map};this.sessions.set(account,s);return s.cached;
  }
  private viewBuild(s:Session){const key=JSON.stringify([s.game.build,s.progress.level]);if(s.buildKey!==key){s.buildKey=key;s.buildVersion++;s.buildCache=buildView(s.game.build,s.progress.level);}return {...s.buildCache!,skills:s.game.skillPreview()};}
  private growth(p:HuntProgress){return {gold:p.gold,attack:p.attackTraining,health:p.healthTraining,attackCost:trainingCost(p,'attack'),healthCost:trainingCost(p,'health')};}
- command(account:string,id:string,sequence:number,input:RogueInput,action:RogueAction='tick'){
+ command(account:string,id:string,sequence:number,input:RogueInput,action:RogueAction='tick'){if(this.idleMode&&this.store){try{return sqliteAtomic(this.store.db,()=>this.commandInner(account,id,sequence,input,action));}catch(e){const current=this.sessions.get(account);if(current?.id===id&&current.dirtyAttempt)this.sessions.delete(account);throw e;}}return this.commandInner(account,id,sequence,input,action);}
+ private commandInner(account:string,id:string,sequence:number,input:RogueInput,action:RogueAction='tick'){
   const s=this.sessions.get(account);if(!s||s.id!==id)throw Error('던전 세션이 만료됐습니다. 다시 입장해 주세요.');
-  if(!Number.isSafeInteger(sequence)||sequence<1)throw Error('Invalid sequence');if(sequence===s.sequence)return s.cached;if(sequence!==s.sequence+1)throw Error('Invalid sequence');
+  s.dirtyAttempt=false;if(!Number.isSafeInteger(sequence)||sequence<1)throw Error('Invalid sequence');if(sequence===s.sequence)return s.cached;if(sequence!==s.sequence+1)throw Error('Invalid sequence');
+  if(this.idleMode&&this.store){const latest=this.store.load(account);if(latest.revision!==s.revision){s.progress=latest.progress;s.revision=latest.revision;s.game.build=structuredClone(s.progress.build!);s.game.setGrowth(s.progress);}}
+  let timeDirty=false,loot:unknown,pendingClock:HuntProgress|undefined;const nowWall=this.wallNow();if(this.idleMode&&s.progress.idle&&(action!=='tick'||nowWall-s.progress.idle.lastAccruedAt>=60000)){const next=structuredClone(s.progress);accrueIdleProgress(next,nowWall);pendingClock=next;timeDirty=true;}
   if(action!=='tick'){
    if(!isRogueAction(action))throw Error('Invalid build action');if(action.startsWith('core-start-')&&action!=='core-start-hong')throw Error('시작점은 플레이 캐릭터에 고정됩니다.');
-   const next=structuredClone(s.progress);if(isBuildAction(action))next.build=changeBuild(next.build,action,next.level);else if(action.startsWith('jewel-equip:')){const [,socketId,instanceId]=action.split(':');const instance=this.items?.jewels(account).find(j=>j.instanceId===instanceId);if(!instance)throw Error('보유하지 않은 주얼입니다. 홀덤 상점에서 먼저 구매해 주세요.');next.build=equipJewel(next.build!,socketId,instance,next.level);}else if(action.startsWith('jewel-unequip:'))next.build=unequipJewel(next.build!,action.split(':')[1],next.level);else if(action==='train-attack'||action==='train-health')buyArt(next,action==='train-attack'?101:102,1);
-   try{if(this.store)s.revision=this.store.save(account,next,s.revision);}catch(e){this.sessions.delete(account);throw e;}
-   s.progress=next;s.game.build=structuredClone(next.build!);s.game.setGrowth(next);if(action==='items-refresh')s.game.transcended=this.items?.view(account).transcended??{};
+   const next=structuredClone(pendingClock??s.progress);if(isIdleAction(action)){loot=applyIdleAction(next,action);}else if(this.idleMode&&applyPhysicalBuildAction(next,action)){}else if(isBuildAction(action))next.build=changeBuild(next.build,action,next.level);else if(action.startsWith('jewel-equip:')){const [,socketId,instanceId]=action.split(':');const instance=this.items?.jewels(account).find(j=>j.instanceId===instanceId);if(!instance)throw Error('보유하지 않은 주얼입니다. 홀덤 상점에서 먼저 구매해 주세요.');next.build=equipJewel(next.build!,socketId,instance,next.level);}else if(action.startsWith('jewel-unequip:'))next.build=unequipJewel(next.build!,action.split(':')[1],next.level);else if(action==='train-attack'||action==='train-health')buyArt(next,action==='train-attack'?101:102,1);
+   if(this.idleMode)syncIdleBuild(next);try{if(this.store)s.revision=this.store.save(account,next,s.revision);}catch(e){this.sessions.delete(account);throw e;}
+   timeDirty=false;s.progress=next;s.game.build=structuredClone(next.build!);s.game.setGrowth(next);if(action==='items-refresh')s.game.transcended=this.items?.view(account).transcended??{};
   }
+  s.dirtyAttempt=true;if(pendingClock&&timeDirty){s.progress=pendingClock;s.game.setGrowth(s.progress);}
   const now=this.now(),gap=Math.max(0,(now-s.last)/1000),reconnecting=gap>ROGUE_PACE.maxActiveGap;
   // Catch up ordinary network jitter in small authoritative steps. Long absences use neutral input.
-  const beforeGold=s.game.gold,beforeKills=s.game.kills;
+  const beforeGold=s.game.gold,beforeKills=s.game.kills,bossesBefore=this.idleMode?s.game.mobs.filter(m=>m.boss&&m.hp>0).map(m=>m.id):[];const bossStage=s.progress.labyrinthStage;
   let remaining=reconnecting?ROGUE_PACE.reconnectStep:gap;s.last=Math.max(s.last,now);s.seen=now;
   const previousInput=reconnecting?{...idle,paused:s.input.paused}:s.input;
   while(remaining>1e-8){const dt=Math.min(.02,remaining);s.game.step(dt,previousInput);remaining-=dt;}
   s.input=input;s.game.command(input);
-  if(s.game.gold>beforeGold){s.progress.gold=Math.min(1e12,s.progress.gold+s.game.gold-beforeGold);for(let n=beforeKills;n<s.game.kills;n++)awardHuntKill(s.progress,{...DEFAULT_HUNT_BALANCE,reward:{...DEFAULT_HUNT_BALANCE.reward,gold:0,soulGem:0}});s.game.setGrowth(s.progress);try{if(this.store)s.revision=this.store.save(account,s.progress,s.revision);}catch(e){this.sessions.delete(account);throw e;}}
-  s.sequence=sequence;s.cached={...s.game.view(),growth:this.growth(s.progress),build:this.viewBuild(s),buildRevision:s.buildVersion,id:s.id,sequence};return s.cached;
+  if(bossesBefore.some(id=>!s.game.mobs.some(m=>m.id===id&&m.hp>0)))this.items?.awardBossFirst(account,bossStage);
+  if(s.game.gold>beforeGold){timeDirty=false;s.progress.gold=Math.min(1e12,s.progress.gold+s.game.gold-beforeGold);for(let n=beforeKills;n<s.game.kills;n++)awardHuntKill(s.progress,{...DEFAULT_HUNT_BALANCE,reward:{...DEFAULT_HUNT_BALANCE.reward,gold:0,soulGem:0}});s.game.setGrowth(s.progress);try{if(this.store)s.revision=this.store.save(account,s.progress,s.revision);}catch(e){this.sessions.delete(account);throw e;}}
+  if(timeDirty&&this.store)s.revision=this.store.save(account,s.progress,s.revision);
+  s.sequence=sequence;s.cached={...s.game.view(),progress:structuredClone(s.progress),development:developmentView(s.progress),growth:this.growth(s.progress),build:this.viewBuild(s),buildRevision:s.buildVersion,id:s.id,sequence,loot};return s.cached;
  }
 }

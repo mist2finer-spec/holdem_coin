@@ -1,3 +1,5 @@
+import {gameStorage} from '../../../../lib/game-storage';
+import {isIdleAction} from '../../../../lib/rpg-idle-profile';
 import {isBuildAction} from '../../../../components/rpg/hunt-build';
 import {NextRequest,NextResponse} from 'next/server';
 import {randomBytes} from 'node:crypto';
@@ -7,7 +9,7 @@ import {RpgStore} from '../../../../lib/rpg-store';
 import {loadHuntBalance} from '../../../../lib/rpg-balance';
 export const runtime='nodejs';
 const globalRpg=globalThis as unknown as {huntService?:RpgService};
-function service(){if(!globalRpg.huntService){const balance=loadHuntBalance();globalRpg.huntService=new RpgService(new RpgStore(path.join(process.env.RPG_SAVE_DIR||path.join(process.cwd(),'.data/rpg'),'players.sqlite')),balance);}return globalRpg.huntService;}
+function service(){if(!globalRpg.huntService){const balance=loadHuntBalance();globalRpg.huntService=new RpgService(gameStorage().progress,balance,undefined,true);}return globalRpg.huntService;}
 export async function POST(req:NextRequest){
  const origin=req.headers.get('origin');try{if(origin&&new URL(origin).host!==req.headers.get('host'))throw Error('Origin');}catch{return NextResponse.json({error:'다른 출처 요청은 허용되지 않습니다.'},{status:403});}
  if(Number(req.headers.get('content-length')||0)>4096)return NextResponse.json({error:'Request too large'},{status:413});
@@ -18,7 +20,7 @@ export async function POST(req:NextRequest){
   const body=JSON.parse(Buffer.concat(chunks).toString('utf8'));
   let result;
   if(body.action==='start'&&typeof body.character==='string')result=service().start(account,body.character);
-  else {if((!isBuildAction(body.action)&&!['interact','tick','revive','weapon','armor','potion','buy-potion','quest','train-attack','train-health','equip-unarmed','equip-sword','equip-axe','equip-dual','equip-spear','upgrade-unarmed','upgrade-sword','upgrade-axe','upgrade-dual','upgrade-spear','mastery','will'].includes(body.action)&&!(typeof body.action==='string'&&/^(art-\d{3}-(1|10|100)|trait-\d{1,2}|skill-(train|toggle)-[0-5])$/.test(body.action)))||typeof body.id!=='string')throw Error('Invalid command');
+  else {if((!isIdleAction(body.action)&&!isBuildAction(body.action)&&!['interact','tick','revive','weapon','armor','potion','buy-potion','quest','train-attack','train-health','equip-unarmed','equip-sword','equip-axe','equip-dual','equip-spear','upgrade-unarmed','upgrade-sword','upgrade-axe','upgrade-dual','upgrade-spear','mastery','will'].includes(body.action)&&!(typeof body.action==='string'&&/^(art-\d{3}-(1|10|100)|trait-\d{1,2}|skill-(train|toggle)-[0-5])$/.test(body.action)))||typeof body.id!=='string')throw Error('Invalid command');
    result=service().command(account,body.id,body.sequence,parseHuntInput(body.input),body.action);}
   const response=NextResponse.json(result,{headers:{'Cache-Control':'no-store'}});
   response.cookies.set('rpg_guest',account,{httpOnly:true,sameSite:'strict',secure:process.env.NODE_ENV==='production',maxAge:60*60*24*365,path:'/api/rpg'});

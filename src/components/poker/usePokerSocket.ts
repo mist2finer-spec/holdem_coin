@@ -178,8 +178,8 @@ export function usePokerSocket({ userName, onToast, tableSize=8, onExit, tournam
         if(account.token)localStorage.setItem('holdem-lobby-token',account.token);
         // Link only the current browser guest. Poker decides the winner server-side.
         void (async()=>{let rewardLink:string|undefined;
-          if(tournament){for(let attempt=0;attempt<3&&!rewardLink&&socket.connected;attempt++){try{const r=await fetch('/api/rpg/items',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'view'}),signal:AbortSignal.timeout(5000)});if(r.ok){const link=(await r.json()).link;if(typeof link==='string'&&/^[a-f0-9]{64}$/.test(link))rewardLink=link;}}catch{}}
-            if(!rewardLink){onToast?.('RPG 상품 보관함 연결에 실패했습니다. 잠시 후 토너먼트에 다시 입장해 주세요.','info');onExit?.();return;}}
+          {for(let attempt=0;attempt<3&&!rewardLink&&socket.connected;attempt++){try{const r=await fetch('/api/rpg/items',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'view'}),signal:AbortSignal.timeout(5000)});if(r.ok){const link=(await r.json()).link;if(typeof link==='string'&&/^[a-f0-9]{64}$/.test(link))rewardLink=link;}}catch{}}
+            if(!rewardLink&&tournament){onToast?.('RPG 상품 보관함 연결에 실패했습니다. 잠시 후 토너먼트에 다시 입장해 주세요.','info');onExit?.();return;}}
           if(socket.connected)socket.emit("JOIN_ROOM",{name:userName,tableSize,tournament,rewardLink});})();
       });
       socket.timeout(20000).emitWithAck('GET_HAND_HISTORY')

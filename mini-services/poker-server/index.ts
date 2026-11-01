@@ -286,6 +286,7 @@ export class HybridHoldemRoom {
       baseName,
       seatId: null,
       preAction: null,
+      rewardLink: tournamentRewardWallet().resolve(rewardLink)?rewardLink:undefined,
     };
     this.users.set(socket.id, user);
 
@@ -1017,10 +1018,18 @@ export class HybridHoldemRoom {
       this.broadcast("SYSTEM_NOTICE", { messages: [bluffTaunt(st.seats[st.bluffReveal].name)] });
     }
 
+    const settlementId=`${this.history.sessionId}:${st.handNumber}`;if(!this.tournament&&lobbyLedger.isSettled(settlementId))return;
     const settlement = settleHand(st.seats, st.board, st.buttonSeat,this.tournament?0:undefined,{bigBlind:this.bigBlind,preflopRaiseLevel:st.preflopRaiseLevel});
-    this.endHistory(settlement,isShowdown);
-    st.seats = st.seats.map(seat => ({ ...seat, stack: seat.stack + settlement.results.find(r=>r.seatId===seat.seatId)!.payout }));
-    for(const seat of st.seats)if(!this.tournament&&!seat.isBot&&seat.socketId)lobbyLedger.sync(seat.socketId,seat.stack);
+    const nextSeats=st.seats.map(seat=>({...seat,stack:seat.stack+settlement.results.find(r=>r.seatId===seat.seatId)!.payout}));
+    if(!this.tournament)lobbyLedger.settleHand(settlementId,nextSeats.filter(s=>!s.isBot&&s.socketId).map(s=>({socketId:s.socketId!,stack:s.stack})),()=>{
+      for(const result of settlement.results.filter(r=>r.award>0&&r.netProfit>0)){
+        const seat=st.seats.find(s=>s.seatId===result.seatId);if(!seat||seat.isBot||!seat.socketId)continue;
+        const account=tournamentRewardWallet().resolve(this.users.get(seat.socketId)?.rewardLink);if(!account)continue;
+        const flushPlus=isShowdown&&Math.floor(evaluateBestHand(seat.holeCards,st.board)/16**5)>=5;
+        tournamentRewardWallet().awardCashWin(settlementId,account,{flushPlus});
+      }
+    });
+    this.endHistory(settlement,isShowdown);st.seats=nextSeats;
     if(this.tournament){this.tournament.settle(st.seats);if(this.tournament.finished){this.isRunning=false;try{this.rewards?.settle(this.tournament.winner,st.seats);}catch(error){console.error('[Tournament] prize wallet write failed',error);}}}
     const winners = settlement.results.filter(r=>r.award>0);
     const hand = isShowdown && winners[0]
@@ -1248,7 +1257,7 @@ if (process.env.POKER_TEST_MODE !== "1") {
       if(!registered){lobbyLedger.connect(socket.id,undefined);registered=true;}
       if(!lobbyLedger.reserve(socket.id)){socket.emit('SYSTEM_NOTICE',{messages:['동일 계정이 다른 테이블에 연결되어 있습니다. 이전 핸드 종료 후 재접속해 주세요.']});return;}
       selectedRoom=data?.tableSize===6?room6:room;
-      selectedRoom?.onUserConnect(socket, lobbyLedger.view(socket.id)?.name || "테스터");
+      selectedRoom?.onUserConnect(socket, lobbyLedger.view(socket.id)?.name || "테스터",data.rewardLink);
     });
 
     socket.on("PLAYER_ACTION", (data: { action: string; amount: number }) => {

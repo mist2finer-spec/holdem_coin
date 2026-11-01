@@ -52,11 +52,13 @@
     "test:rpg:jump": "node --import ./mini-services/poker-server/node_modules/tsx/dist/loader.mjs --test scripts/rpg/test-jump.ts",
     "test:rpg:rogue": "node --import ./mini-services/poker-server/node_modules/tsx/dist/loader.mjs --test scripts/rpg/test-rogue.ts scripts/rpg/test-pace.ts scripts/rpg/test-horde.ts scripts/rpg/test-modular-map.ts scripts/rpg/test-resources.ts scripts/rpg/test-enemy-attacks.ts",
     "test:rpg:build": "node --import ./mini-services/poker-server/node_modules/tsx/dist/loader.mjs --test scripts/rpg/test-build.ts scripts/rpg/test-poe-big.ts scripts/rpg/test-expanded-build.ts scripts/rpg/test-expanded-runtime.ts scripts/rpg/test-items.ts scripts/rpg/test-jewel-shop.ts scripts/rpg/test-jewel-core.ts",
+    "test:rpg:idle": "POKER_TEST_MODE=1 node --import ./mini-services/poker-server/node_modules/tsx/dist/loader.mjs --test scripts/rpg/test-idle-economy.ts scripts/rpg/test-equipment-combat.ts scripts/rpg/test-idle-persistence.ts scripts/rpg/test-idle-items.ts",
     "rpg:export:axe": "node --import ./mini-services/poker-server/node_modules/tsx/dist/loader.mjs scripts/rpg/export-axe-build.ts",
     "test:rpg:parity": "node --import ./mini-services/poker-server/node_modules/tsx/dist/loader.mjs scripts/rpg/test-big-parity.ts",
     "rpg:enemy:audit": "python scripts/rpg/audit_enemy_attacks.py",
     "rpg:enemy:vfx": "python scripts/rpg/build_enemy_vfx.py",
-    "test:rpg:jewel:e2e": "node scripts/rpg/smoke-jewel-shop.mjs"
+    "test:rpg:jewel:e2e": "node scripts/rpg/smoke-jewel-shop.mjs",
+    "test:rpg:idle:e2e": "node scripts/rpg/smoke-idle-economy.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

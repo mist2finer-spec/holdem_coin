@@ -1,3 +1,4 @@
+import {gameStorage} from '../../src/lib/game-storage';
 import {randomUUID} from 'node:crypto';
 import path from 'node:path';
 import {RpgItemsStore} from '../../src/lib/rpg-items';
@@ -13,4 +14,4 @@ export class TournamentRewards{
  }
 }
 let wallet:RpgItemsStore|undefined;
-export function tournamentRewardWallet(){return wallet??(wallet=new RpgItemsStore(path.join(process.env.RPG_SAVE_DIR||path.resolve(process.cwd(),'../../.data/rpg'),'items.sqlite')));}
+export function tournamentRewardWallet(){return wallet??(wallet=gameStorage().items);}

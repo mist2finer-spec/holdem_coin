@@ -1,3 +1,6 @@
+import {sqliteAtomic} from './rpg-sqlite';
+import {initializeIdleProfile,applyIdleAction,applyPhysicalBuildAction,isIdleAction,syncIdleBuild,type IdleAction} from './rpg-idle-profile';
+import {accrueIdleProgress} from '../components/rpg/idle-progression';
 import {buildView,changeBuild,isBuildAction,type BuildAction} from '../components/rpg/hunt-build';
 import {isHuntPlayable} from '../components/rpg/combat-characters';
 import type {HuntJump} from '../components/rpg/hunt-jump';
@@ -21,16 +24,17 @@ export function parseHuntInput(raw:unknown):HuntInput{
  if(x.dodge!==undefined&&x.dodge!==-1&&x.dodge!==1||x.parry!==undefined&&typeof x.parry!=='boolean'||x.basic!==undefined&&typeof x.basic!=='boolean')throw Error('Invalid action');
  return {move:x.move,attack:x.attack,auto:x.auto,basic:x.basic as boolean|undefined,skill:x.skill as number|undefined,dodge:x.dodge as number|undefined,parry:x.parry as boolean|undefined,...(x.jump===undefined?{}:{jump:x.jump as boolean})};
 }
-export type HuntAction=BuildAction|'interact'|'tick'|'revive'|'weapon'|'armor'|'potion'|'buy-potion'|'quest'|'train-attack'|'train-health'|`art-${number}-${number}`|`trait-${number}`|'mastery'|'will'|`skill-train-${number}`|`skill-toggle-${number}`|`equip-${WeaponType}`|`upgrade-${WeaponType}`;
+export type HuntAction=IdleAction|BuildAction|'interact'|'tick'|'revive'|'weapon'|'armor'|'potion'|'buy-potion'|'quest'|'train-attack'|'train-health'|`art-${number}-${number}`|`trait-${number}`|'mastery'|'will'|`skill-train-${number}`|`skill-toggle-${number}`|`equip-${WeaponType}`|`upgrade-${WeaponType}`;
 export type BattleView={build:ReturnType<typeof buildView>;jump:HuntJump|null;jumpReady:boolean;vfx:HuntVfxEvent[];maxLevel:number;impactors:{id:number;x:number;width:number;born:number;expires:number;speed:number;targetX:number}[];stage:LabyrinthView;id:string;sequence:number;character:string;hp:number;maxHP:number;x:number;elapsed:number;action:string;actionSerial:number;animationSpeed:number;facing:number;
  development:ReturnType<typeof developmentView>;stats:ReturnType<typeof heroStats>;weaponDetails:Record<WeaponType,ReturnType<typeof weaponGrowth>>;trainingCosts:{attack:number;health:number};armorPreview:{naturalHP:number;nextHP:number|null};enemies:HuntEnemy[];cooldowns:number[];cooldownTotals:number[];pendingSkill:number|null;auto:boolean;progress:HuntProgress;xpRequired:number;weaponCost:number;weaponCosts:Record<WeaponType,number>;armorCost:number;loadout:string;dead:boolean;reviveReady:boolean;potionReady:boolean;heroHitUntil:number;lastHeroDamage:number;source:string;weapon:WeaponType;motion:{startedAt:number;duration:number;hitAt:number}};
-type Battle={id:string;character:string;engine:HuntEngine;revision:number;last:number;input:HuntInput;sequence:number;cached:BattleView;seen:number};
+type Battle={id:string;character:string;engine:HuntEngine;revision:number;last:number;input:HuntInput;sequence:number;cached:BattleView;seen:number;dirtyAttempt?:boolean};
 export class RpgService{
  private sessions=new Map<string,Battle>();
- constructor(readonly store:RpgStore,readonly balance:HuntBalance,readonly now=()=>performance.now()){}
- start(account:string,character:string){
+ constructor(readonly store:RpgStore,readonly balance:HuntBalance,readonly now=()=>performance.now(),readonly idleMode=false,readonly wallNow=()=>Date.now()){}
+ start(account:string,character:string){if(this.idleMode){try{return sqliteAtomic(this.store.db,()=>this.startInner(account,character));}catch(e){this.sessions.delete(account);throw e;}}return this.startInner(account,character);}
+ private startInner(account:string,character:string){
   if(!isHuntPlayable(character))throw Error('현재 홍만 선택할 수 있습니다. 다른 캐릭터는 준비 중입니다.');
-  huntLoadout(character);const saved=this.store.load(account);const loadout=weaponLoadout(character,saved.progress.weaponType);
+  huntLoadout(character);const saved=this.store.load(account);if(this.idleMode){initializeIdleProfile(saved.progress,this.wallNow());saved.revision=this.store.save(account,saved.progress,saved.revision);}const loadout=weaponLoadout(character,saved.progress.weaponType);
   if(saved.progress.level>this.balance.maxLevel)throw Error('저장된 레벨보다 낮은 밸런스 설정입니다. 관리자 확인이 필요합니다.');
   for(const [key,b] of this.sessions)if(this.now()-b.seen>20*60*1000)this.sessions.delete(key);
   if(!this.sessions.has(account)&&this.sessions.size>=1000)throw Error('사냥터 접속자가 많습니다.');
@@ -41,27 +45,34 @@ export class RpgService{
  private view(b:Battle):BattleView{const g=b.engine;
   return {build:buildView(g.progress.build,g.progress.level),jump:g.jumpState,jumpReady:g.elapsed>=g.jumpReady&&!g.jumpState,vfx:g.vfx.map(e=>({...e})),maxLevel:this.balance.maxLevel,impactors:g.impactors.map(p=>({id:p.id,x:p.x,width:p.command.width,born:p.born,expires:p.expires,speed:p.command.speed,targetX:p.targetX})),stage:g.stage,id:b.id,sequence:b.sequence,character:b.character,hp:g.hp,maxHP:g.maxHP,x:g.x,elapsed:g.elapsed,action:g.action,actionSerial:g.actionSerial,animationSpeed:g.animationSpeed,facing:g.facing,
    development:developmentView(g.progress),stats:g.stats,weaponDetails:Object.fromEntries(WEAPON_TYPES.map(type=>[type,weaponGrowth(g.progress,type)])) as Record<WeaponType,ReturnType<typeof weaponGrowth>>,trainingCosts:{attack:trainingCost(g.progress,'attack'),health:trainingCost(g.progress,'health')},armorPreview:{naturalHP:g.stats.naturalHP,nextHP:g.progress.armorLevel>=50?null:heroStats({...g.progress,armorLevel:g.progress.armorLevel+1}).naturalHP},
-   enemies:g.enemies.map(e=>({...e})),cooldowns:[...g.cooldowns],cooldownTotals:[...g.cooldownTotals],pendingSkill:g.pendingSkill,auto:g.auto,progress:{...g.progress,build:structuredClone(g.progress.build),weaponLevels:{...g.progress.weaponLevels},combatArts:{...g.progress.combatArts},traits:{...g.progress.traits},skillLevels:[...g.progress.skillLevels],skillCopies:[...g.progress.skillCopies],skillEnabled:[...g.progress.skillEnabled]},xpRequired:g.progress.level>=this.balance.maxLevel?0:curveValue(this.balance.team,g.progress.level),
+   enemies:g.enemies.map(e=>({...e})),cooldowns:[...g.cooldowns],cooldownTotals:[...g.cooldownTotals],pendingSkill:g.pendingSkill,auto:g.auto,progress:structuredClone(g.progress),xpRequired:g.progress.level>=this.balance.maxLevel?0:curveValue(this.balance.team,g.progress.level),
    weaponCost:g.progress.weaponLevel>=50?0:curveValue(this.balance.weapon,g.progress.weaponLevel),weaponCosts:Object.fromEntries(WEAPON_TYPES.map(type=>[type,g.progress.weaponLevels[type]>=50?0:curveValue(this.balance.weapon,g.progress.weaponLevels[type])])) as Record<WeaponType,number>,armorCost:g.progress.armorLevel>=50?0:curveValue(this.balance.armor,g.progress.armorLevel),loadout:weaponLoadout(b.character,g.progress.weaponType).name,
    dead:g.hp<=0,reviveReady:g.hp<=0&&g.elapsed-g.deadAt>=2,potionReady:g.hp>0&&g.hp<g.maxHP&&g.elapsed>=g.potionReady&&g.progress.potions>0,heroHitUntil:g.heroHitUntil,lastHeroDamage:g.lastHeroDamage,source:this.balance.source,weapon:g.progress.weaponType,motion:g.visualTiming};}
- command(account:string,id:string,sequence:number,input:HuntInput,action:HuntAction='tick'){
+ command(account:string,id:string,sequence:number,input:HuntInput,action:HuntAction='tick'){if(this.idleMode){try{return sqliteAtomic(this.store.db,()=>this.commandInner(account,id,sequence,input,action));}catch(e){const current=this.sessions.get(account);if(current?.id===id&&current.dirtyAttempt)this.sessions.delete(account);throw e;}}return this.commandInner(account,id,sequence,input,action);}
+ private commandInner(account:string,id:string,sequence:number,input:HuntInput,action:HuntAction='tick'){
   const b=this.sessions.get(account);if(!b||b.id!==id)throw Error('사냥 세션이 만료되거나 다른 창에서 입장했습니다. 다시 입장해 주세요.');
-  if(sequence===b.sequence)return b.cached;
+  b.dirtyAttempt=false;if(sequence===b.sequence)return b.cached;
   if(!Number.isSafeInteger(sequence)||sequence!==b.sequence+1)throw Error('Invalid sequence');
-  const g=b.engine,now=this.now();const before=JSON.stringify(g.progress);
+  const g=b.engine,now=this.now();const before=JSON.stringify(g.progress),oldWeapon=g.progress.weaponType;
   if(action.startsWith('core-start-')&&action!==`core-start-${b.character}`)throw Error('시작점은 플레이 캐릭터에 고정됩니다.');
-  if(isBuildAction(action))g.progress.build=changeBuild(g.progress.build,action,g.progress.level);
-  if(action.startsWith('art-')){const [,id,count]=action.split('-');buyArt(g.progress,Number(id),Number(count));}
-  if(action.startsWith('trait-'))buyTrait(g.progress,Number(action.slice(6)));
-  if(action==='mastery')buyMastery(g.progress);if(action==='will')buyWill(g.progress);
-  if(action.startsWith('skill-train-'))buySkill(g.progress,Number(action.slice(12)));
-  if(action.startsWith('skill-toggle-'))toggleSkill(g.progress,Number(action.slice(13)));
+  const latest=this.idleMode?this.store.load(account):undefined,progress=this.idleMode?structuredClone(latest!.revision!==b.revision?latest!.progress:g.progress):g.progress;
+  if(this.idleMode){accrueIdleProgress(progress,this.wallNow());if(isIdleAction(action))applyIdleAction(progress,action);else if(isBuildAction(action)){if(!applyPhysicalBuildAction(progress,action))progress.build=changeBuild(progress.build,action,progress.level);}if(/^(equip-|upgrade-|weapon$|armor$)/.test(action))throw Error('장비·소환 창에서 보유 장비를 선택해 주세요.');syncIdleBuild(progress);}
+  else if(isBuildAction(action))progress.build=changeBuild(progress.build,action,progress.level);
+  if(!this.idleMode&&action.startsWith('art-')){const [,id,count]=action.split('-');buyArt(progress,Number(id),Number(count));}
+  if(!this.idleMode&&action.startsWith('trait-'))buyTrait(progress,Number(action.slice(6)));
+  if(action==='mastery')buyMastery(progress);if(action==='will')buyWill(progress);
+  if(action.startsWith('skill-train-'))buySkill(progress,Number(action.slice(12)));
+  if(action.startsWith('skill-toggle-'))toggleSkill(progress,Number(action.slice(13)));
   if(action.startsWith('equip-')){if(g.jumpState)throw Error('착지 후 무기를 변경해 주세요.');const type=action.slice(6);if(!isWeaponType(type))throw Error('Invalid weapon');
-   equipHuntWeapon(g.progress,type);const l=weaponLoadout(b.character,type);g.configureLoadout(l.combo,l.range,l.crit,l.tempo);}
-  if(action.startsWith('upgrade-')){const type=action.slice(8);if(!isWeaponType(type))throw Error('Invalid weapon');upgradeHuntWeapon(g.progress,this.balance,type);}
-  if(action==='weapon'||action==='armor')upgradeHunt(g.progress,this.balance,action);
-  if(action==='train-attack')buyArt(g.progress,101,1);if(action==='train-health')buyArt(g.progress,102,1);
-  if(action==='potion')g.usePotion();if(action==='buy-potion')buyHuntPotion(g.progress);if(action==='quest')claimHuntQuest(g.progress);
+   equipHuntWeapon(progress,type);const l=weaponLoadout(b.character,type);g.configureLoadout(l.combo,l.range,l.crit,l.tempo);}
+  if(action.startsWith('upgrade-')){const type=action.slice(8);if(!isWeaponType(type))throw Error('Invalid weapon');upgradeHuntWeapon(progress,this.balance,type);}
+  if(action==='weapon'||action==='armor')upgradeHunt(progress,this.balance,action);
+  if(action==='train-attack')buyArt(progress,101,1);if(action==='train-health')buyArt(progress,102,1);
+  if(action==='buy-potion')buyHuntPotion(progress);if(action==='quest')claimHuntQuest(progress);
+  if(this.idleMode&&oldWeapon!==progress.weaponType&&g.jumpState)throw Error('착지 후 무기를 변경해 주세요.');
+  b.dirtyAttempt=true;
+  if(this.idleMode){Object.assign(g.progress,progress);b.revision=latest!.revision;if(oldWeapon!==progress.weaponType){const l=weaponLoadout(b.character,progress.weaponType);g.configureLoadout(l.combo,l.range,l.crit,l.tempo);}}
+  if(action==='potion')g.usePotion();
   // Requests do not manufacture time. Background gaps are capped; no offline farming.
   let remaining=Math.max(0,Math.min((now-b.last)/1000,.3));b.last=now;b.seen=now;
   while(remaining>1e-8){const dt=Math.min(.01,remaining);const auto=b.input.auto&&g.hp>0;if(g.auto!==auto)g.setAuto(auto);g.attackHeld=b.input.attack;g.step(dt,b.input.move);remaining-=dt;}

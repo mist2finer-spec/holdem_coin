@@ -1,4 +1,6 @@
-import {compileSkill,passiveBuild,basicBuild} from './hunt-build';
+import {compileBuild,type CompiledBuild,type CompiledSkill,type BuildState} from './hunt-build';
+import {CombatEffects,mitigation} from './combat-effects';
+import {MANA} from './rogue/resources';
 import {HUNT_JUMP,type HuntJump} from './hunt-jump';
 import {SceneFlow,sceneBinding,type SceneSpawn} from './hunt-scene-flow';
 import type {HuntVfxEvent} from './hunt-vfx';
@@ -12,7 +14,7 @@ import {HUNT_RULES,motions,SKILL_COOLDOWNS,WORLD_WIDTH,type ComboStage} from './
 import {bodySeparation,separation,planDodge,sweepHero} from './hunt-collision';
 import {awardHuntKill,awardStageClear,DEFAULT_HUNT_BALANCE,heroStats,newHuntProgress,type HuntBalance,type HuntProgress} from './hunt-progression';
 export {SKILL_COOLDOWNS,WORLD_WIDTH} from './combat-rules';
-type Motion={kind:'attack'|'skill'|'rush'|'dodge'|'jump';start:number;duration:number;target:number;skillIndex?:number;
+type Motion={build?:CompiledSkill;basic?:CompiledBuild['basic'];kind:'attack'|'skill'|'rush'|'dodge'|'jump';start:number;duration:number;target:number;skillIndex?:number;
  segments:{animation:string;duration:number}[];phase:number;animationRate?:number;hits:{at:number;damage:number;range:number;done:boolean;heal?:boolean}[];
  destination?:number;speed?:number;origin?:number};
 const clampX=(x:number)=>Math.max(65,Math.min(WORLD_WIDTH-65,x));
@@ -29,6 +31,11 @@ export class HuntEngine {
  private escort:{x:number;hp:number;maxHP:number}|null=null;private failure='';
  private casts=new Map<number,Cast>();private ready=new Map<number,Record<number,number>>();private uses=new Map<number,Record<number,number>>();
  impactors:Impactor[]=[];private impactorId=0;heroShield=0;heroStunUntil=0;heroInvincibleUntil=0;
+ mana:number=MANA.maximum;maxMana:number=MANA.maximum;energyShield=0;maxEnergyShield=0;private guardUntil=0;private lastReceivedDamage=-100;private lifeCeiling=0;
+ readonly effects=new CombatEffects();private dots:{target:number;damage:number;next:number;left:number;cull:number}[]=[];
+ private compiledSource?:BuildState;private compiledAt=-Infinity;private compiledWeapon='';private compiledValue?:CompiledBuild;
+ get compiledBuild(){if(this.compiledSource!==this.progress.build||this.compiledAt!==this.elapsed||this.compiledWeapon!==this.progress.weaponType||!this.compiledValue){this.compiledSource=this.progress.build;this.compiledAt=this.elapsed;this.compiledWeapon=this.progress.weaponType;this.compiledValue=compileBuild(this.progress.build,this.progress.weaponType);}return this.compiledValue;}
+ get combatSnapshot(){return {compiled:this.compiledBuild,effects:this.effects.snapshot(this.elapsed),resources:{mana:this.mana,maxMana:this.maxMana},defense:{shield:this.energyShield,maxShield:this.maxEnergyShield,guard:this.heroShield}};}
  vfx:HuntVfxEvent[]=[];private vfxId=0;
  get stage():LabyrinthView{const id=stageDefinition(this.stageIndex).id;const d=stageDefinition(this.stageIndex);return {id,chapter:Math.floor(id/100),section:id%100,phase:this.stagePhase,remaining:this.enemies.filter(e=>e.hp>0).length,total:this.sceneFlow?this.sceneFlow.layout.waves.reduce((n,w)=>n+w.spawns.length*(w.repeat?w.count:1),0):this.stagePhase==='normal'?6:1,nextIn:Math.max(0,this.nextStageAt-this.elapsed),
  objective:this.sceneFlow?.nextAreaX!==undefined&&!this.enemies.some(e=>e.hp>0)?'전방 구역으로 이동':({1:'모든 적 처치',2:'목표 수 처치',3:'보스 처치',4:'출구 도달',5:'오브젝트 완료',6:'장치 작동',7:'동료 보호 및 처치'} as Record<number,string>)[d.victory]??'전투',goal:d.goal||this.objectiveObjects.length||(this.sceneFlow?this.sceneFlow.layout.waves.reduce((n,w)=>n+w.spawns.length*(w.repeat?w.count:1),0):7),done:[5,6].includes(d.victory)?this.objectiveObjects.filter(o=>o.done).length:this.stageKills,remainingTime:d.timeLimit>0?Math.max(0,d.timeLimit-(this.elapsed-this.stageStarted)):null,failure:this.failure,objects:this.objectiveObjects.map(o=>({...o})),exitX:d.victory===4?WORLD_WIDTH-160:null,escort:this.escort?{...this.escort}:null};}
@@ -49,10 +56,17 @@ export class HuntEngine {
  deadAt=-1;lastHeroDamage=0;heroHitUntil=0;parryUntil=0;parryReady=0;critical=false;
  potionReady=0;
  readonly progress:HuntProgress;readonly balance:HuntBalance;readonly hostile:boolean;
- private get attackTempo(){return this.tempo*(this.hostile?this.stats.attackSpeed:1);}
+ private get attackTempo(){return this.tempo*(this.hostile?this.stats.attackSpeed:1)*Math.max(.2,1+this.compiledBuild.passive.attackSpeed);}
  private rng:number;private range:number;private crit:number;private tempo:number;
  get stats(){return heroStats(this.progress);}
- get maxHP(){return this.hostile?this.stats.maxHP:100;}
+ private get baseHP(){return this.hostile?this.stats.maxHP:100;}
+ get maxHP(){const p=this.compiledBuild.passive;return p.maxLifeOne?1:Math.max(1,(this.baseHP+this.baseHP/10000*p.lifeFlat)*(1+p.life));}
+ private roll(){this.rng=(Math.imul(this.rng,1664525)+1013904223)>>>0;return this.rng/4294967296;}
+ private syncDefense(){const p=this.compiledBuild.passive,max=this.maxHP;if(this.lifeCeiling&&max!==this.lifeCeiling)this.hp=Math.min(max,this.hp/this.lifeCeiling*max);this.lifeCeiling=max;const shield=p.energyToMana?0:Math.max(0,this.baseHP*p.energyShield+this.baseHP/10000*p.shieldFlat);if(shield!==this.maxEnergyShield){this.energyShield=this.maxEnergyShield?this.energyShield/this.maxEnergyShield*shield:shield;this.maxEnergyShield=shield;}const mana=Math.max(1,(MANA.maximum+p.manaFlat)*(1+p.mana)+(p.energyToMana?Math.max(0,10000*p.energyShield+p.shieldFlat):0));if(mana!==this.maxMana){this.mana=this.mana/this.maxMana*mana;this.maxMana=mana;}}
+ receiveDamage(amount:number,element='physical'){if(!Number.isFinite(amount)||amount<=0)return 0;this.syncDefense();const p=this.compiledBuild.passive;let damage=Math.max(0,amount)*mitigation(p,element,()=>this.roll())*(1-p.reduction);if(damage<=0)return 0;this.lastReceivedDamage=this.elapsed;const guard=Math.min(this.heroShield,damage);this.heroShield-=guard;damage-=guard;const shield=element==='chaos'?0:Math.min(this.energyShield,damage);this.energyShield-=shield;damage-=shield;if(p.manaBeforeLife>0&&damage>0){const unit=this.baseHP/10000,cost=Math.min(this.mana,damage*p.manaBeforeLife/unit);this.mana-=cost;damage-=cost*unit;}const applied=Math.min(this.hp,Math.max(0,damage));this.hp=Math.max(0,this.hp-applied);if(applied+guard+shield>0)this.effects.record('hurt',this.elapsed);return applied;}
+ private skillCost(c:Readonly<CompiledSkill>){return MANA.cost[c.baseIndex]*c.mana;}
+ private afford(c:Readonly<CompiledSkill>){const cost=this.skillCost(c);return c.enabled&&(c.bloodMagic?this.hp>cost*this.baseHP/10000:this.mana+1e-8>=cost);}
+ private spend(c:Readonly<CompiledSkill>){const cost=this.skillCost(c);if(c.bloodMagic)this.hp-=cost*this.baseHP/10000;else this.mana=Math.max(0,this.mana-cost);}
  private motion:Motion|null=null;private pendingJump:{direction:number;expires:number}|null=null;
  private comboIndex=0;private comboExpires=0;private queuedUntil=0;private attackIntent=false;
  combo:readonly ComboStage[];
@@ -67,7 +81,7 @@ export class HuntEngine {
   this.progress=options.progress??newHuntProgress();this.balance=options.balance??DEFAULT_HUNT_BALANCE;
   this.tempo=options.tempo??1;if(!Number.isFinite(this.tempo)||this.tempo<.5||this.tempo>2)throw Error('Invalid tempo');
   this.hostile=options.hostile??false;this.rng=(options.seed??12345)>>>0;this.range=options.range??HUNT_RULES.attackRange;this.crit=options.crit??.1;
-  this.hp=this.maxHP;this.coins=this.progress.gold;this.xp=this.progress.xp;this.kills=this.progress.kills;
+  this.hp=this.maxHP;this.syncDefense();this.coins=this.progress.gold;this.xp=this.progress.xp;this.kills=this.progress.kills;
   if(!Number.isInteger(enemyCount)||enemyCount<1||enemyCount>7)throw Error('Invalid monster count');
   const positions=this.hostile&&enemyCount===HUNT_STAGE.maxAlive?HUNT_STAGE.spawns:[780,700,860,540,940,460,1020];
   this.enemies=positions.slice(0,enemyCount).map((x,slot)=>({slot,x,hp:HUNT_MONSTER.maxHP,maxHP:HUNT_MONSTER.maxHP,serial:slot+1,respawnAt:0,lastDamage:0,hitUntil:0,
@@ -170,19 +184,24 @@ export class HuntEngine {
   this.motion=m;this.actionUntil=this.elapsed+m.duration;
   this.pose(m.segments[0].animation,true,m.kind==='rush'?motions.durations.dash/m.duration:m.animationRate??this.tempo);
  }
- private hurt(damage:number,skill=false,target=this.target){
-  if(this.campaign&&accuracy(this.stats.focus,target.focus??0)<1){this.rng=(Math.imul(this.rng,1664525)+1013904223)>>>0;if(this.rng/4294967296>=accuracy(this.stats.focus,target.focus??0)){target.lastDamage=0;target.hitUntil=this.elapsed+.3;return;}}
-  if(this.hostile){this.rng=(Math.imul(this.rng,1664525)+1013904223)>>>0;this.critical=this.rng/4294967296<Math.max(0,Math.min(.9,this.stats.crit+this.crit-.1));
+ private hurt(damage:number,skill=false,target=this.target,compiled?:CompiledSkill,secondary=false,cull=compiled?.cull??0,basic?:CompiledBuild['basic']){
+  const before=target.hp;this.critical=false;
+  if(!secondary&&this.campaign&&accuracy(this.stats.focus,target.focus??0)<1){this.rng=(Math.imul(this.rng,1664525)+1013904223)>>>0;if(this.rng/4294967296>=accuracy(this.stats.focus,target.focus??0)){target.lastDamage=0;target.hitUntil=this.elapsed+.3;return;}}
+  if(!secondary&&this.hostile){this.rng=(Math.imul(this.rng,1664525)+1013904223)>>>0;this.critical=this.rng/4294967296<Math.max(0,Math.min(.9,this.stats.crit+this.crit-.1));
    damage=Math.max(1,Math.round(damage*this.stats.attack/6*(1+relativeStat(skill?this.stats.mental:this.stats.valor,skill?(target.mental??0):(target.valor??0),skill?'Mental':'Valor'))*(skill?this.stats.skillDamageMultiplier:this.stats.basicDamageMultiplier)*(this.critical?this.stats.critMultiplier:1)));}
-  if(this.campaign)damage=Math.max(1,Math.round(classDamage(damage,this.stats.abilities,!!target.boss)));
+  if(!secondary&&this.campaign)damage=Math.max(1,Math.round(classDamage(damage,this.stats.abilities,!!target.boss)));
+  if(!secondary&&compiled){const critical=this.roll()<compiled.crit;this.critical||=critical;damage*=this.effects.damageMultiplier(this.elapsed)*(compiled.lowLifeSpellMore&&this.hp<=this.maxHP*.5?1+compiled.lowLifeSpellMore:1)*(compiled.farShot?1+compiled.farShot*Math.min(1,Math.abs(target.x-this.x)/300):1)*(compiled.tripleChance>0&&this.roll()<compiled.tripleChance?3:1)*(critical?compiled.critMultiplier:1);}
+  if(!secondary&&basic){const critical=this.roll()<basic.crit;this.critical||=critical;damage*=(basic.tripleChance>0&&this.roll()<basic.tripleChance?3:1)*(critical?basic.critMultiplier:1);}
+  if(cull>0&&target.hp<=target.maxHP*cull)damage=Math.max(damage,target.hp+(target.shield??0));
   const settlement=settleDamage({hp:target.hp,maxHP:target.maxHP,shield:target.shield??0},damage);
   target.shield=settlement.shield;target.lastDamage=settlement.hpDamage;target.hitUntil=this.elapsed+.75;
-  target.hp=settlement.hp;
+  target.hp=settlement.hp;if(!secondary&&this.critical)this.effects.record('crit',this.elapsed,compiled);const leech=compiled?.leech??basic?.leech??0;if(!secondary&&leech)this.hp=Math.min(this.maxHP,this.hp+settlement.hpDamage*leech);if(!secondary&&compiled?.dot&&target.hp>0){const ticks=Math.max(1,Math.ceil(compiled.dotDuration*2));this.dots.push({target:target.serial,damage:settlement.hpDamage*compiled.dot/ticks,next:this.elapsed+.5,left:ticks,cull:compiled.cull});if(this.dots.length>300)this.dots.shift();}
   if(target.hp===0){target.state='dead';this.stageKills++;this.casts.delete(target.serial);
    if(this.hostile){awardHuntKill(this.progress,this.balance);this.kills=this.progress.kills;this.coins=this.progress.gold;this.xp=this.progress.xp;}
    else {this.kills++;this.coins+=25;this.xp+=12;}
    target.respawnAt=this.elapsed+HUNT_MONSTER.respawnSeconds;
    this.attackIntent=false;this.resetCombo();}
+  return before-target.hp;
  }
  private advanceRecoveredEnemies(dt:number){
   if(this.escort){this.escort.x=Math.max(65,this.x-110);if(this.escort.hp<=0){this.failStage('동료 전투 불능');return;}}
@@ -241,8 +260,7 @@ export class HuntEngine {
        if(this.heroHitUntil>this.elapsed)continue;
        this.rng=(Math.imul(this.rng,1664525)+1013904223)>>>0;if(this.rng/4294967296>=accuracy(source.focus??0,this.stats.focus))continue;
        let damage=Math.max(1,Math.round(classDamage((source.damage??1)*effect.value/100*(1+relativeStat(source.valor??0,this.stats.valor,'Valor')),this.stats.abilities,!!source.boss,true)*this.stats.incomingDamageScale));
-       const settlement=settleDamage({hp:this.hp,maxHP:this.maxHP,shield:this.heroShield},damage*(1-passiveBuild(this.progress.build,this.progress.weaponType).reduction));this.heroShield=settlement.shield;
-       this.lastHeroDamage=settlement.hpDamage;this.hp=settlement.hp;this.heroHitUntil=this.elapsed+.2;
+       this.lastHeroDamage=this.receiveDamage(damage);this.heroHitUntil=this.elapsed+.2;
        if(this.hp===0){this.failStage('전투 불능');return;}
       }else if([104,105,107,111].includes(effect.type)&&effect.value>0){this.landJump();this.heroStunUntil=Math.max(this.heroStunUntil,this.elapsed+effectDuration(effect.value,source.tenacity??0,this.stats.tenacity));this.motion=null;this.clearInput();this.pose('stay1');}
       else if(effect.type===106&&effect.value>0){this.moveTo(this.x+p.direction*Math.min(250,effect.value*50));}
@@ -267,8 +285,7 @@ export class HuntEngine {
       if(this.parryUntil>=this.elapsed){enemy.nextAttack=this.elapsed+HUNT_MONSTER_ATTACK.parriedRecovery;continue;}
       if(this.heroHitUntil>this.elapsed)continue;
       const damage=Math.max(1,Math.round(classDamage(enemy.damage??HUNT_MONSTER_ATTACK.damage,this.stats.abilities,!!enemy.boss,true)*this.stats.incomingDamageScale));
-      const settlement=settleDamage({hp:this.hp,maxHP:this.maxHP,shield:this.heroShield},damage*(1-passiveBuild(this.progress.build,this.progress.weaponType).reduction));this.heroShield=settlement.shield;
-      this.lastHeroDamage=settlement.hpDamage;this.hp=settlement.hp;this.heroHitUntil=this.elapsed+.2;
+      this.lastHeroDamage=this.receiveDamage(damage);this.heroHitUntil=this.elapsed+.2;
       if(this.hp===0){this.deadAt=this.elapsed;this.motion=null;this.clearInput();this.resetCombo();this.auto=false;this.pose('die1',true);return;}
      }
     }
@@ -315,12 +332,13 @@ export class HuntEngine {
     this.vfx.push({id:++this.vfxId,skill:m.skillIndex,x:this.x+(m.skillIndex===5?0:this.facing*65),facing:this.facing,born:this.elapsed,expires:this.elapsed+2});
     this.vfx=this.vfx.slice(-24);
    }
+   if(m.build){this.effects.activate(m.build,this.elapsed);if(m.build.guard){this.heroShield=this.baseHP*m.build.guard;this.guardUntil=this.elapsed+4*m.build.duration;}}
    if(hit.heal){this.hp=Math.min(this.maxHP,this.hp+hit.damage);continue;}
-   if(m.kind==='skill'){for(const enemy of this.enemies)if(enemy.hp>0&&Math.abs(enemy.x-this.x)<=hit.range)this.hurt(hit.damage,true,enemy);continue;}
+   if(m.kind==='skill'){let hits=0;const cap=m.build?.tags.includes('PROJECTILE')?m.build.projectiles+m.build.chain+m.build.pierce:Infinity;for(const enemy of this.enemies)if(hits<cap&&enemy.hp>0&&Math.abs(enemy.x-this.x)<=hit.range){this.hurt(hit.damage,true,enemy,m.build);hits++;}continue;}
    if(m.target===this.enemySerial&&this.enemyHP>0&&Math.abs(this.enemyX-this.x)<=hit.range
     &&(this.enemyX-this.x)*this.facing>=0
     &&!this.enemies.some(e=>e.hp>0&&e.serial!==m.target&&(e.x-this.x)*this.facing>0
-     &&Math.abs(e.x-this.x)<Math.abs(this.enemyX-this.x)))this.hurt(hit.damage*basicBuild(this.progress.build,this.progress.weaponType).effect,false);
+     &&Math.abs(e.x-this.x)<Math.abs(this.enemyX-this.x)))this.hurt(hit.damage*(m.basic?.effect??this.compiledBuild.basic.effect)*this.effects.damageMultiplier(this.elapsed),false,this.target,undefined,false,m.basic?.cull??0,m.basic);
   }
   let end=0,phase=m.segments.length-1;
   for(let i=0;i<m.segments.length;i++){end+=m.segments[i].duration;if(age<end-1e-8){phase=i;break;}}
@@ -339,7 +357,7 @@ export class HuntEngine {
   if(this.paused)return;
   dt=Math.max(0,Math.min(Number.isFinite(dt)?dt:0,.05));
   direction=Number.isFinite(direction)?Math.max(-1,Math.min(1,direction)):0;
-  this.elapsed+=dt;this.cooldowns=this.cooldowns.map(t=>Math.max(0,t-dt));
+  this.elapsed+=dt;this.syncDefense();const passive=this.compiledBuild.passive;this.mana=Math.min(this.maxMana,this.mana+MANA.regen*(1+passive.manaRegen)*dt);if(this.guardUntil&&this.elapsed>=this.guardUntil){this.heroShield=0;this.guardUntil=0;}if(this.maxEnergyShield&&this.elapsed-this.lastReceivedDamage>=4)this.energyShield=Math.min(this.maxEnergyShield,this.energyShield+this.maxEnergyShield*.2*dt);if(this.hp>0)this.hp=Math.min(this.maxHP,this.hp+this.maxHP*this.effects.regeneration(this.compiledBuild,this.elapsed)*dt);for(const dot of this.dots)if(dot.left>0&&this.elapsed>=dot.next){const target=this.enemies.find(e=>e.serial===dot.target&&e.hp>0);if(target)this.hurt(dot.damage,true,target,undefined,true,dot.cull);dot.next+=.5;dot.left--;}this.dots=this.dots.filter(d=>d.left>0&&this.enemies.some(e=>e.serial===d.target&&e.hp>0));this.cooldowns=this.cooldowns.map(t=>Math.max(0,t-dt));
   this.vfx=this.vfx.filter(e=>e.expires>this.elapsed);
   if(this.hp<=0)return;
   this.sceneStep=dt;
@@ -362,6 +380,7 @@ export class HuntEngine {
   this.advanceMotion(dt,direction);
   if(this.motion)return;
   if(this.heroStunUntil>this.elapsed){this.pose('stay1');return;}
+  if(this.scheduleAutomaticSkills())return;
   if(this.pendingJump){const request=this.pendingJump;this.pendingJump=null;if(this.elapsed<=request.expires&&this.jump(request.direction))return;}
   if(this.campaign&&this.auto&&!direction&&!this.enemies.some(e=>e.hp>0)){const d=stageDefinition(this.stageIndex),goal=this.sceneFlow?.nextAreaX??(d.victory===4?WORLD_WIDTH-160:this.objectiveObjects.find(o=>!o.done)?.x);if(goal!==undefined){if(Math.abs(goal-this.x)<= (this.sceneFlow?2:65))this.interact();else {this.facing=Math.sign(goal-this.x);this.moveTo(this.x+this.facing*HUNT_RULES.moveSpeed*this.tempo*dt);this.pose('run1');}return;}}
   this.selectTarget();
@@ -380,7 +399,7 @@ export class HuntEngine {
    const distance=Math.abs(this.enemyX-this.x);
    for(let skill=0;skill<6;skill++){
     if(!this.progress.skillEnabled[skill]||this.cooldowns[skill]>1e-8)continue;
-    if(skill===5?this.hp>=this.maxHP:distance>330)continue;
+    const c=this.compiledBuild.skills[skill];if(!c.enabled||c.trigger||(c.heal?this.hp>=this.maxHP:distance>330))continue;
     if(this.attack(skill))return;
    }
   }
@@ -404,14 +423,14 @@ export class HuntEngine {
  /** Retain one manual skill across attack/roll/recovery and cooldown boundaries. */
  requestSkill(skill:number){
   if(!Number.isInteger(skill)||skill<0||skill>=6||!this.progress.skillEnabled[skill]||this.paused||this.hp<=0
-   ||this.campaign&&['cleared','complete','failed'].includes(this.stagePhase))return false;
+   ||this.campaign&&['cleared','complete','failed'].includes(this.stagePhase)||!this.compiledBuild.skills[skill].enabled||!!this.compiledBuild.skills[skill].trigger)return false;
   if(this.attack(skill)){this.pendingSkill=null;return true;}
   this.pendingSkill=skill;return true;
  }
- attack(skill=-1){
+ attack(skill=-1,triggered=false){
   if(this.campaign&&(this.stagePhase==="cleared"||this.stagePhase==="complete"))return false;
   if(this.paused||this.hp<=0||this.heroStunUntil>this.elapsed||!Number.isInteger(skill)||skill< -1||skill>=6)return false;
-  if(skill>=0&&!this.progress.skillEnabled[skill])return false;
+  if(skill>=0&&(!this.progress.skillEnabled[skill]||!this.afford(this.compiledBuild.skills[skill])||this.compiledBuild.skills[skill].trigger&&!triggered))return false;
   if(this.motion){
    if(skill===-1&&this.motion.kind==='attack'&&this.actionUntil-this.elapsed<=HUNT_RULES.inputBuffer){
     this.queuedUntil=this.actionUntil+HUNT_RULES.inputBuffer;return true;
@@ -428,20 +447,16 @@ export class HuntEngine {
    const stage=this.combo[this.comboIndex],duration=(stage.duration??motions.durations[stage.animation])/this.attackTempo;
    this.comboStage=this.comboIndex+1;this.comboIndex=(this.comboIndex+1)%this.combo.length;
    this.comboExpires=this.elapsed+duration+HUNT_RULES.comboReset;this.attackReady=this.elapsed+Math.max(duration,HUNT_RULES.minAttackDelay/this.attackTempo);
-   this.start({kind:'attack',start:this.elapsed,duration,target:this.enemySerial,
+   this.start({basic:this.compiledBuild.basic,kind:'attack',start:this.elapsed,duration,target:this.enemySerial,
     segments:[{animation:stage.animation,duration}],phase:0,
-    hits:[{at:stage.hitAt/this.attackTempo,damage:stage.damage,range:this.targetRange*basicBuild(this.progress.build,this.progress.weaponType).range,done:false}]});
+    hits:[{at:stage.hitAt/this.attackTempo,damage:stage.damage,range:this.targetRange*this.compiledBuild.basic.range,done:false}]});
   }else{
-   const build=compileSkill(this.progress.build,skill,this.progress.weaponType);
-   this.resetCombo();this.cooldownTotals[skill]=SKILL_COOLDOWNS[skill]*build.cooldown;this.cooldowns[skill]=this.cooldownTotals[skill];
-   const names=skill===4?['skill5','skill5_loop','skill5_end']:['skill1','skill2','skill3','skill4','skill5','rest1'].slice(skill,skill+1);
-   const segments=names.map(animation=>({animation,duration:motions.durations[animation as keyof typeof motions.durations]/this.attackTempo}));
-   const baseDuration=segments.reduce((n,s)=>n+s.duration,0),duration=baseDuration+build.repeats*build.repeatDelay;segments[segments.length-1].duration+=build.repeats*build.repeatDelay;this.attackReady=this.elapsed+duration;
-   this.start({kind:'skill',skillIndex:skill,start:this.elapsed,duration,target:this.enemySerial,segments,phase:0,
-    hits:Array.from({length:1+build.repeats},(_,i)=>({at:baseDuration*.55+i*build.repeatDelay,damage:(skill===5?25:40)*(1+((this.progress.skillLevels[skill]??1)-1)*.05)*build.effect,range:330*build.range,done:false,heal:skill===5}))});
+   this.startSkill(this.compiledBuild.skills[skill],skill);
   }
   return true;
  }
+ private startSkill(raw:Readonly<CompiledSkill>,slot?:number){const build:CompiledSkill={...raw,tags:[...raw.tags],supportIds:[...raw.supportIds],builtInSupports:[...raw.builtInSupports],effect:raw.effect*this.effects.conditionalMultiplier(raw,this.compiledBuild,this.elapsed)};this.spend(build);this.resetCombo();if(slot!==undefined)this.cooldownTotals[slot]=this.cooldowns[slot]=SKILL_COOLDOWNS[build.baseIndex]*build.cooldown;const i=build.baseIndex,names=i===4?['skill5','skill5_loop','skill5_end']:['skill1','skill2','skill3','skill4','skill5','rest1'].slice(i,i+1),segments=names.map(animation=>({animation,duration:motions.durations[animation as keyof typeof motions.durations]/this.attackTempo})),baseDuration=segments.reduce((n,s)=>n+s.duration,0),duration=baseDuration+build.repeats*build.repeatDelay;segments[segments.length-1].duration+=build.repeats*build.repeatDelay;this.attackReady=this.elapsed+duration;this.start({build,kind:'skill',skillIndex:i,start:this.elapsed,duration,target:this.enemySerial,segments,phase:0,hits:Array.from({length:1+build.repeats},(_,j)=>({at:baseDuration*.55+j*build.repeatDelay,damage:(build.heal?this.baseHP*.25:40)*build.effect,range:330*build.range,done:false,heal:build.heal}))});}
+ private scheduleAutomaticSkills(){if(this.motion||this.elapsed<this.attackReady||!this.enemies.some(e=>e.hp>0&&Math.abs(e.x-this.x)<320))return false;for(let i=0;i<6;i++){const c=this.compiledBuild.skills[i];if(this.progress.skillEnabled[i]&&this.cooldowns[i]<=0&&this.afford(c)&&this.effects.triggerReady(c,this.elapsed)&&this.attack(i,true)){this.effects.consumeTrigger(c,this.elapsed);return true;}}for(const c of this.compiledBuild.grantedSkills)if(this.effects.grantedReady(c,this.elapsed)&&this.afford(c)){this.effects.consumeGranted(c,this.elapsed);this.startSkill(c);return true;}return false;}
  requestJump(direction=0){
   if(this.jump(direction))return true;
   if(this.paused||this.hp<=0||!Number.isFinite(direction)||Math.abs(direction)>1||this.jumpState||this.elapsed<this.jumpReady||this.campaign&&['cleared','complete','failed'].includes(this.stagePhase))return false;

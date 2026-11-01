@@ -3,6 +3,7 @@ import {extraAbilities} from './hunt-development';
 import data from './data/recovered-growth.json';
 import type {HuntProgress} from './hunt-progression';
 import type {WeaponType} from './hunt-weapons';
+import {equippedItems,EQUIPMENT_RARITIES} from './idle-equipment';
 export const RECOVERED_GROWTH=data;
 /** Original midpoint-to-even, including negative half ties. */
 export {roundEven} from './hunt-math';
@@ -11,10 +12,22 @@ function add(target:Record<number,number>,rows:number[][],level:number){for(cons
 /** Curated grade-1 loadout. Each owned type contributes Hold once, not count times. */
 export function recoveredStats(p:HuntProgress){
  const r:Record<number,number>={7:(p.attackTraining??0)*data.training.attackPerLevel,8:100+(p.healthTraining??0)*data.training.healthPerLevel,26:5,27:20};
+ const equipment=p.equipment?equippedItems(p.equipment):null;
  for(const type of ['sword','axe','spear','dual'] as const)add(r,data.weapons[type].hold,Math.min(50,p.weaponLevels[type]));
- if(p.weaponType==='unarmed')r[7]+=normalize(7,data.webAdaptation.unarmedBaseAttack+data.webAdaptation.unarmedAttackPerLevel*(Math.min(50,p.weaponLevels.unarmed)-1));
- else add(r,data.weapons[p.weaponType].equip,Math.min(50,p.weaponLevels[p.weaponType]));
- add(r,data.armor.equip,Math.min(50,p.armorLevel));add(r,data.armor.hold,Math.min(50,p.armorLevel));
+ if(equipment){
+  // Grade-1 base rows are recovered. Six-tier multipliers/accessory bonuses are custom web balance.
+  const scale=[1,1.15,1.35,1.7,2.2,3],weapon=equipment.weapon,armor=equipment.armor;
+  const scaled=(rows:number[][],factor:number)=>rows.map(([id,base,inc])=>[id,base*factor,inc*factor]);
+  add(r,scaled(data.weapons[weapon.weaponType!].equip,scale[EQUIPMENT_RARITIES.indexOf(weapon.rarity)]),weapon.level);
+  add(r,scaled(data.armor.equip,scale[EQUIPMENT_RARITIES.indexOf(armor.rarity)]),armor.level);add(r,data.armor.hold,Math.min(50,p.armorLevel));
+  const rank=(slot:'gloves'|'boots'|'ring1'|'ring2')=>{const item=equipment[slot];return EQUIPMENT_RARITIES.indexOf(item.rarity)+(item.level-1)/10;};
+  r[7]+=(rank('gloves')+rank('ring1'))*2;r[8]+=(rank('boots')+rank('ring2'))*10;
+  r[25]=(r[25]??0)+rank('boots')*.5;r[26]+=(rank('ring1')+rank('ring2'))*.2;
+ }else{
+  if(p.weaponType==='unarmed')r[7]+=normalize(7,data.webAdaptation.unarmedBaseAttack+data.webAdaptation.unarmedAttackPerLevel*(Math.min(50,p.weaponLevels.unarmed)-1));
+  else add(r,data.weapons[p.weaponType].equip,Math.min(50,p.weaponLevels[p.weaponType]));
+  add(r,data.armor.equip,Math.min(50,p.armorLevel));add(r,data.armor.hold,Math.min(50,p.armorLevel));
+ }
  for(const [id,n] of Object.entries(extraAbilities(p)))r[Number(id)]=(r[Number(id)]??0)+n;
  const attack=roundEven((r[7]??0)*(1+(r[59]??0)/100)*(1+(r[63]??0)/100)*(1+(r[73]??0)/100)*(1+(r[75]??0)/100));
  const naturalHP=roundEven((r[8]??0)*(1+(r[60]??0)/100)*(1+(r[64]??0)/100)*(1+(r[76]??0)/100));

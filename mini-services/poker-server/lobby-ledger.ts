@@ -1,39 +1,30 @@
-import {randomUUID} from 'node:crypto';
+import {randomUUID} from 'node:crypto';import {DatabaseSync} from 'node:sqlite';
+import {sqliteAtomic} from '../../src/lib/rpg-sqlite';import {gameStorage} from '../../src/lib/game-storage';
 type Account={id:string;token:string;name:string;balance:number;tableAmount:number;seatSocket?:string;connections:Set<string>;lastSeen:number;played?:boolean};
-// Demo chips only. Runtime memory is deliberately reset on server restart.
-export class LobbyLedger {
- private accounts=new Map<string,Account>();
- private sockets=new Map<string,Account>();
- connect(socket:string,token:unknown) {
-  const key=typeof token==='string'&&/^[\da-f-]{36}$/i.test(token)?token:randomUUID();
-  let a=this.accounts.get(key);
-  if(!a){
-   if(this.accounts.size>=5000){const old=[...this.accounts.values()].filter(x=>!x.connections.size&&!x.seatSocket).sort((x,y)=>x.lastSeen-y.lastSeen)[0];if(old)this.accounts.delete(old.token);else throw new Error('Lobby full');}
-   a={id:randomUUID(),token:key,name:'',balance:5000,tableAmount:0,connections:new Set(),lastSeen:Date.now()};this.accounts.set(key,a);
-  }
-  const used=new Set([...this.accounts.values()].filter(x=>x!==a&&(x.connections.size||x.seatSocket)).map(x=>x.name));
-  if(!a.name||used.has(a.name)){a.name='';for(let n=1;n<=99;n++)if(!used.has(`테스터${n}`)){a.name=`테스터${n}`;break;}if(!a.name)a.name=`테스터-${a.id.slice(0,8)}`;}
-  a.connections.add(socket);a.lastSeen=Date.now();this.sockets.set(socket,a);return this.view(socket);
- }
- view(socket:string){const a=this.sockets.get(socket);return a?{id:a.id,token:a.token,name:a.name,multi:a.balance+a.tableAmount}:null;}
- rename(socket:string,value:unknown):{id?:string;token?:string;name?:string;multi?:number;error?:string}|null{
-  const a=this.sockets.get(socket);
-  if(!a)return {error:'서버 연결 후 다시 시도해 주세요.'};
-  if(a.seatSocket)return {error:'이전 핸드가 끝나고 퇴장 처리된 후 이름을 변경해 주세요.'};
-  const name=typeof value==='string'?value.trim():'';
-  if(!name||[...name].length>12||/[\x00-\x1f\x7f<>]/.test(name))return {error:'이름은 특수 제어문자 없이 1~12자로 입력해 주세요.'};
-  if([...this.accounts.values()].some(x=>x!==a&&x.name===name))return {error:'이미 사용 중인 이름입니다.'};
-  a.name=name;return this.view(socket);
- }
- /** No await between balance validation, committed grant, and debit. Demo wallet is runtime-only. */
- purchase(socket:string,price:number,grant:()=>boolean){const a=this.sockets.get(socket);if(!a)throw Error('서버 연결 후 다시 시도해 주세요.');if(a.seatSocket)throw Error('게임방에서 퇴장한 후 구매해 주세요.');if(!Number.isSafeInteger(price)||price<1)throw Error('잘못된 가격입니다.');if(a.balance<price)throw Error('멀티 재화가 부족합니다.');const purchased=grant();if(purchased)a.balance-=price;return this.view(socket)!;}
+/** Persist settled chips and table escrow. An interrupted hand restores its last committed checkpoint. */
+export class LobbyLedger{
+ private accounts=new Map<string,Account>();private sockets=new Map<string,Account>();readonly db:DatabaseSync;private epoch:number;
+ constructor(db?:DatabaseSync){this.db=db??new DatabaseSync(':memory:');this.db.exec(`PRAGMA busy_timeout=5000;CREATE TABLE IF NOT EXISTS holdem_wallets(token TEXT PRIMARY KEY,id TEXT UNIQUE NOT NULL,name TEXT NOT NULL,balance INTEGER NOT NULL CHECK(balance>=0),table_amount INTEGER NOT NULL CHECK(table_amount>=0),played INTEGER NOT NULL DEFAULT 0,last_seen INTEGER NOT NULL);CREATE TABLE IF NOT EXISTS holdem_wallet_settlements(id TEXT PRIMARY KEY,created INTEGER NOT NULL);`);this.db.exec('CREATE TABLE IF NOT EXISTS holdem_runtime(id INTEGER PRIMARY KEY CHECK(id=1),epoch INTEGER NOT NULL);INSERT OR IGNORE INTO holdem_runtime VALUES(1,0)');this.epoch=sqliteAtomic(this.db,()=>{this.db.exec('UPDATE holdem_runtime SET epoch=epoch+1 WHERE id=1;UPDATE holdem_wallets SET balance=balance+table_amount,table_amount=0 WHERE table_amount>0');return (this.db.prepare('SELECT epoch FROM holdem_runtime WHERE id=1').get() as {epoch:number}).epoch;});}
+ private assertWriter(){if((this.db.prepare('SELECT epoch FROM holdem_runtime WHERE id=1').get() as {epoch:number}).epoch!==this.epoch)throw Error('지갑 서버가 교체됐습니다. 다시 연결해 주세요.');}
+ private refresh(a:Account){this.assertWriter();const r=this.db.prepare('SELECT balance,table_amount FROM holdem_wallets WHERE token=?').get(a.token) as any;if(r){a.balance=r.balance;a.tableAmount=r.table_amount;}}
+ private persist(a:Account){try{sqliteAtomic(this.db,()=>{this.assertWriter();this.db.prepare('INSERT INTO holdem_wallets VALUES(?,?,?,?,?,?,?) ON CONFLICT(token) DO UPDATE SET name=excluded.name,balance=excluded.balance,table_amount=excluded.table_amount,played=excluded.played,last_seen=excluded.last_seen').run(a.token,a.id,a.name,a.balance,a.tableAmount,a.played?1:0,a.lastSeen);});}catch(e){const row=this.db.prepare('SELECT name,balance,table_amount,played FROM holdem_wallets WHERE token=?').get(a.token) as any;if(row){a.name=row.name;a.balance=row.balance;a.tableAmount=row.table_amount;a.played=!!row.played;}throw e;} }
+ connect(socket:string,token:unknown){const key=typeof token==='string'&&/^[\da-f-]{36}$/i.test(token)?token:randomUUID();let a=this.accounts.get(key);
+  if(!a){if(this.accounts.size>=5000){const old=[...this.accounts.values()].filter(x=>!x.connections.size&&!x.seatSocket).sort((x,y)=>x.lastSeen-y.lastSeen)[0];if(old)this.accounts.delete(old.token);else throw Error('Lobby full');}const r=this.db.prepare('SELECT * FROM holdem_wallets WHERE token=?').get(key) as any;a={id:r?.id??randomUUID(),token:key,name:r?.name??'',balance:r?.balance??5000,tableAmount:r?.table_amount??0,played:!!r?.played,connections:new Set(),lastSeen:Date.now()};this.accounts.set(key,a);}
+  this.refresh(a);const used=new Set([...this.accounts.values()].filter(x=>x!==a&&(x.connections.size||x.seatSocket)).map(x=>x.name));if(!a.name||used.has(a.name)){a.name='';for(let n=1;n<=99;n++)if(!used.has(`테스터${n}`)){a.name=`테스터${n}`;break;}if(!a.name)a.name=`테스터-${a.id.slice(0,8)}`;}a.connections.add(socket);a.lastSeen=Date.now();this.sockets.set(socket,a);this.persist(a);return this.view(socket);}
+ view(socket:string){const a=this.sockets.get(socket);if(!a)return null;this.refresh(a);return {id:a.id,token:a.token,name:a.name,multi:a.balance+a.tableAmount};}
+ rename(socket:string,value:unknown):{id?:string;token?:string;name?:string;multi?:number;error?:string}|null{const a=this.sockets.get(socket);if(!a)return {error:'서버 연결 후 다시 시도해 주세요.'};if(a.seatSocket)return {error:'이전 핸드가 끝나고 퇴장 처리된 후 이름을 변경해 주세요.'};const name=typeof value==='string'?value.trim():'';if(!name||[...name].length>12||/[\x00-\x1f\x7f<>]/.test(name))return {error:'이름은 특수 제어문자 없이 1~12자로 입력해 주세요.'};if([...this.accounts.values()].some(x=>x!==a&&x.name===name))return {error:'이미 사용 중인 이름입니다.'};this.refresh(a);a.name=name;this.persist(a);return this.view(socket);}
+ purchase(socket:string,price:number,grant:()=>boolean){const a=this.sockets.get(socket);if(!a)throw Error('서버 연결 후 다시 시도해 주세요.');if(a.seatSocket)throw Error('게임방에서 퇴장한 후 구매해 주세요.');if(!Number.isSafeInteger(price)||price<1)throw Error('잘못된 가격입니다.');
+  sqliteAtomic(this.db,()=>{this.assertWriter();const r=this.db.prepare('SELECT balance FROM holdem_wallets WHERE token=?').get(a.token) as {balance:number};if(r.balance<price)throw Error('멀티 재화가 부족합니다.');if(grant())this.db.prepare('UPDATE holdem_wallets SET balance=balance-? WHERE token=?').run(price,a.token);});return this.view(socket)!;}
  reserve(socket:string){const a=this.sockets.get(socket);if(!a||a.seatSocket&&a.seatSocket!==socket)return false;a.seatSocket=socket;return true;}
- start(socket:string){const a=this.sockets.get(socket);if(!a)return 5000;a.played=true;const amount=a.balance;a.balance=0;a.tableAmount=amount;return amount;}
- sync(socket:string,stack:number){const a=this.sockets.get(socket);if(a)a.tableAmount=stack;}
- takeCredit(socket:string){const a=this.sockets.get(socket);if(!a)return 0;const n=a.balance;a.balance=0;a.tableAmount+=n;return n;}
- recharge(socket:string){const a=this.sockets.get(socket);if(!a)return null;a.balance=Math.min(Number.MAX_SAFE_INTEGER-a.tableAmount,a.balance+5000);return this.view(socket);}
- release(socket:string,stack?:number){const a=this.sockets.get(socket);if(!a)return;if(a.seatSocket===socket){a.balance+=stack??a.tableAmount;a.tableAmount=0;a.seatSocket=undefined;}if(!a.connections.has(socket))this.sockets.delete(socket);}
- disconnect(socket:string){const a=this.sockets.get(socket);if(!a)return;a.connections.delete(socket);a.lastSeen=Date.now();if(a.seatSocket!==socket)this.sockets.delete(socket);}
- leaderboard(){return [...this.accounts.values()].filter(a=>a.played).map(a=>({id:a.id,name:a.name,amount:a.balance+a.tableAmount})).sort((a,b)=>b.amount-a.amount||a.id.localeCompare(b.id)).slice(0,7);}
+ start(socket:string){const a=this.sockets.get(socket);if(!a)return 5000;this.refresh(a);a.played=true;const n=a.balance;a.balance=0;a.tableAmount=n;this.persist(a);return n;}
+ sync(socket:string,stack:number){const a=this.sockets.get(socket);if(a){if(!Number.isSafeInteger(stack)||stack<0)throw Error('Invalid stack');this.refresh(a);a.tableAmount=stack;this.persist(a);}}
+ isSettled(id:string){return !!this.db.prepare('SELECT 1 FROM holdem_wallet_settlements WHERE id=?').get(id);}
+ settleHand(id:string,rows:{socketId:string;stack:number}[],reward?:()=>void){const result=sqliteAtomic(this.db,()=>{this.assertWriter();if(this.isSettled(id))return false;for(const r of rows){const a=this.sockets.get(r.socketId);if(!a)continue;if(!Number.isSafeInteger(r.stack)||r.stack<0)throw Error('Invalid settlement');this.db.prepare('UPDATE holdem_wallets SET table_amount=? WHERE token=?').run(r.stack,a.token);}reward?.();this.db.prepare('INSERT INTO holdem_wallet_settlements VALUES(?,?)').run(id,Date.now());return true;});if(result)for(const r of rows){const a=this.sockets.get(r.socketId);if(a)this.refresh(a);}return result;}
+
+ takeCredit(socket:string){const a=this.sockets.get(socket);if(!a)return 0;this.refresh(a);const n=a.balance;a.balance=0;a.tableAmount+=n;this.persist(a);return n;}
+ recharge(socket:string){const a=this.sockets.get(socket);if(!a)return null;this.refresh(a);a.balance=Math.min(Number.MAX_SAFE_INTEGER-a.tableAmount,a.balance+5000);this.persist(a);return this.view(socket);}
+ release(socket:string,stack?:number){const a=this.sockets.get(socket);if(!a)return;this.refresh(a);if(a.seatSocket===socket){a.balance+=stack??a.tableAmount;a.tableAmount=0;try{this.persist(a);a.seatSocket=undefined;}catch(e){a.seatSocket=socket;throw e;}}if(!a.connections.has(socket))this.sockets.delete(socket);}
+ disconnect(socket:string){const a=this.sockets.get(socket);if(!a)return;this.refresh(a);a.connections.delete(socket);a.lastSeen=Date.now();this.persist(a);if(a.seatSocket!==socket)this.sockets.delete(socket);}
+ leaderboard(){return (this.db.prepare('SELECT id,name,balance+table_amount AS amount FROM holdem_wallets WHERE played=1 ORDER BY amount DESC,id LIMIT 7').all() as {id:string;name:string;amount:number}[]);}
 }
-export const lobbyLedger=new LobbyLedger();
+export const lobbyLedger=new LobbyLedger(process.env.POKER_TEST_MODE==='1'?undefined:gameStorage().db);

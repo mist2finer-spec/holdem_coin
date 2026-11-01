@@ -1,6 +1,11 @@
 'use client';
 import {useEffect,useRef,useState} from 'react';
 import {SkillCooldownButton} from '../SkillCooldownButton';
+import {IdleEquipmentPanel} from '../IdleEquipmentPanel';
+import {ACTIVE_CATALOG,GEMS} from '../build-catalog';
+import {EQUIPMENT_LABELS,EQUIPMENT_SLOT_LABELS,type EquipmentRarity,type EquipmentSlot} from '../idle-equipment';
+import {WEAPONS,type WeaponType} from '../hunt-weapons';
+import {COMBAT_CHARACTERS} from '../combat-characters';
 import {BuildInventory} from '../BuildInventory';
 import {GemCorePanel} from '../GemCorePanel';
 import type {RogueAction} from '../../../lib/rpg-rogue-service';
@@ -16,15 +21,26 @@ import {PASSAGE_LABEL} from './traversal';
 import '../hunt.css';
 import './rogue.css';
 const skills=[['대지 균열','SkillIcon_GroundRift'],['암흑 구체','SkillIcon_DarkHole'],['서리 폭풍','SkillIcon_Blizzard3'],['빛의 심판','SkillIcon_HolyWrath2'],['회오리','SkillIcon_Whirlwind'],['회복','SkillIcon_VitalRecovery']];
+function summonFeedback(loot:unknown){
+ if(!Array.isArray(loot)||!loot.length)return '';const counts=new Map<string,number>();
+ for(const entry of loot.slice(0,10)){if(!entry||typeof entry!=='object')continue;let label='';
+  if(typeof entry.gemId==='string'){const gem=(entry.kind==='active'?ACTIVE_CATALOG:GEMS).find(g=>g.id===entry.gemId);if(gem)label=`${entry.kind==='active'?'액티브':'보조'} ${gem.name}`;}
+  else if(typeof entry.rarity==='string'&&Object.hasOwn(EQUIPMENT_LABELS,entry.rarity)&&typeof entry.slot==='string'&&Object.hasOwn(EQUIPMENT_SLOT_LABELS,entry.slot)){
+   const name=typeof entry.weaponType==='string'&&Object.hasOwn(WEAPONS,entry.weaponType)?WEAPONS[entry.weaponType as WeaponType].name:EQUIPMENT_SLOT_LABELS[entry.slot as EquipmentSlot];label=`${EQUIPMENT_LABELS[entry.rarity as EquipmentRarity]} ${name}${entry.uniqueEffect||entry.builtInSupports?.length?' (고유 옵션)':''}`;
+  }
+  if(label)counts.set(label,(counts.get(label)??0)+1);
+ }
+ return counts.size?`소환 완료 · ${[...counts].map(([name,count])=>`${name} ×${count}`).join(' · ')}`:'';
+}
 export function RoguePrototype({onExit}:{onExit:()=>void}){
  const canvas=useRef<HTMLCanvasElement>(null),keys=useRef(new Set<string>()),stick=useRef({x:0,y:0}),automatic=useRef(true),queue=useRef<(Partial<RogueInput>&{action?:RogueAction})[]>([]);
- const [view,setView]=useState<RogueView|null>(null),[map,setMap]=useState<RogueMap|null>(null),[state,setState]=useState('loading'),[error,setError]=useState(''),[notice,setNotice]=useState(''),[run,setRun]=useState(0),[help,setHelp]=useState(false),[knob,setKnob]=useState({x:0,y:0}),[panel,setPanel]=useState<'weapons'|'growth'|'training'|'bag'|'quest'|null>(null);
+ const [view,setView]=useState<RogueView|null>(null),[map,setMap]=useState<RogueMap|null>(null),[state,setState]=useState('loading'),[error,setError]=useState(''),[notice,setNotice]=useState(''),[rewardNotice,setRewardNotice]=useState(''),[run,setRun]=useState(0),[help,setHelp]=useState(false),[knob,setKnob]=useState({x:0,y:0}),[panel,setPanel]=useState<'weapons'|'growth'|'training'|'bag'|'quest'|null>(null);
  const flush=useRef(()=>{});
  const uiBlocked=useRef(false);uiBlocked.current=help||panel!==null;
  const enqueue=(command:Partial<RogueInput>)=>{if(queue.current.length<6){queue.current.push(command);flush.current();}};
  useEffect(()=>{
   const controller=new AbortController();let renderer:Awaited<ReturnType<typeof import('./renderer').createRogueRenderer>>|undefined,frame=0,timer:ReturnType<typeof setTimeout>|undefined,inFlight=false,target:RogueView|null=null,last=0,sequence=0,id='',retry:Record<string,unknown>|null=null,lastSent=0,retryDelay=0,retryAt=0;
-  const reset=()=>{keys.current.clear();stick.current={x:0,y:0};queue.current=[];setKnob({x:0,y:0});};reset();automatic.current=true;setState('loading');setError('');setView(null);setMap(null);
+  const reset=()=>{keys.current.clear();stick.current={x:0,y:0};queue.current=[];setKnob({x:0,y:0});};reset();automatic.current=true;setState('loading');setError('');setNotice('');setRewardNotice('');setView(null);setMap(null);
   const request=async(body:Record<string,unknown>)=>{
    const requestController=new AbortController(),abort=()=>requestController.abort();
    if(controller.signal.aborted)abort();else controller.signal.addEventListener('abort',abort,{once:true});
@@ -32,14 +48,14 @@ export function RoguePrototype({onExit}:{onExit:()=>void}){
    try{const r=await fetch('/api/rpg/rogue',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),signal:requestController.signal});const data=await r.json();if(!r.ok){const e=new Error(data.error||'던전 연결 오류') as Error&{terminal?:boolean};e.terminal=r.status<500;throw e;}return data as RogueView;}
    finally{clearTimeout(timeout);controller.signal.removeEventListener('abort',abort);}
   };
-  const apply=(v:RogueView)=>{if(!v.build.tree&&target?.build.tree)v={...v,build:{...v.build,tree:target.build.tree}};target=v;sequence=v.sequence;id=v.id;setView(v);};
+  const apply=(v:RogueView)=>{if(target){v={...v,compiled:v.compiled??target.compiled,build:{...v.build,tree:v.build.tree??target.build.tree},progress:{...v.progress,equipment:v.progress?.equipment??target.progress?.equipment,gemCollection:v.progress?.gemCollection??target.progress?.gemCollection,gacha:v.progress?.gacha??target.progress?.gacha,legacyBuild:v.progress?.legacyBuild??target.progress?.legacyBuild}};}target=v;sequence=v.sequence;id=v.id;setView(v);};
   const input=():RogueInput=>{const k=keys.current,x=(k.has('d')||k.has('ArrowRight')?1:0)-(k.has('a')||k.has('ArrowLeft')?1:0);return {paused:uiBlocked.current,x:document.hidden||uiBlocked.current?0:x||stick.current.x,y:0,auto:!document.hidden&&!uiBlocked.current&&automatic.current,attack:!document.hidden&&!uiBlocked.current&&k.has(' ')};};
   const schedule=()=>{if(controller.signal.aborted||!id||inFlight||target&&target.status!=='playing')return;if(timer)clearTimeout(timer);timer=setTimeout(()=>void pump(),roguePollDelay(lastSent,performance.now(),retryAt,document.hidden));};
   flush.current=schedule;
   const pump=async()=>{if(inFlight||!id||controller.signal.aborted||target&&target.status!=='playing')return;inFlight=true;lastSent=performance.now();
    const command=retry?{}:queue.current.shift()??{};
    const body=retry||{action:command.action??'tick',id,sequence:sequence+1,knownBuildRevision:target?.buildRevision,input:{...input(),...command,...(command.potion?{attack:false}:{})}};
-   try{const v=await request(body);if(controller.signal.aborted)return;retry=null;retryDelay=0;retryAt=0;if(canvas.current)canvas.current.dataset.rttMs=String(Math.round(performance.now()-lastSent));apply(v);setError('');if(body.action!=='tick')setNotice('');}catch(e){if(!controller.signal.aborted){const terminal=(e as Error&{terminal?:boolean}).terminal;retry=terminal?null:body;retryDelay=terminal?0:Math.min(1000,Math.max(200,retryDelay*2));retryAt=terminal?0:performance.now()+retryDelay;const message=e instanceof Error?e.message:'연결 재시도 중';if(terminal&&/세션|다시 입장|다른 창/.test(message)){id='';setState('error');setError(message);}else if(terminal&&body.action!=='tick')setNotice(message);else setError(message);}}finally{inFlight=false;schedule();}
+   try{const v=await request(body);if(controller.signal.aborted)return;retry=null;retryDelay=0;retryAt=0;if(canvas.current)canvas.current.dataset.rttMs=String(Math.round(performance.now()-lastSent));apply(v);setError('');if(body.action!=='tick'){setNotice('');setRewardNotice(summonFeedback(v.loot));}}catch(e){if(!controller.signal.aborted){const terminal=(e as Error&{terminal?:boolean}).terminal;retry=terminal?null:body;retryDelay=terminal?0:Math.min(1000,Math.max(200,retryDelay*2));retryAt=terminal?0:performance.now()+retryDelay;const message=e instanceof Error?e.message:'연결 재시도 중';if(terminal&&/세션|다시 입장|다른 창/.test(message)){id='';setState('error');setError(message);}else if(terminal&&body.action!=='tick'){setRewardNotice('');setNotice(message);}else setError(message);}}finally{inFlight=false;schedule();}
   };
   const down=(e:KeyboardEvent)=>{if(uiBlocked.current)return;if(e.target instanceof HTMLElement&&/INPUT|SELECT|TEXTAREA/.test(e.target.tagName))return;const key=e.key.toLowerCase().startsWith('arrow')?e.key:e.key.toLowerCase();if(['w','a','s','d','ArrowUp','ArrowLeft','ArrowDown','ArrowRight',' ','Shift','shift','j','q','e','z','x','1','2','3','4','5','6'].includes(key)){e.preventDefault();keys.current.add(key);}flush.current();if(e.repeat)return;if(key==='j'||key==='w'||key==='ArrowUp')enqueue({jump:true,branch:'upper'});else if(key==='s'||key==='ArrowDown')enqueue({jump:true,branch:'lower'});else if(key==='shift')enqueue({slide:true});else if(key==='q'||key==='e')enqueue({dodge:true,x:key==='q'?-1:1,y:0});else if(key==='z'||key==='x')enqueue({potion:key==='z'?'health':'mana'});else if(/^[1-6]$/.test(key))enqueue({skill:Number(key)-1});};
   const up=(e:KeyboardEvent)=>{keys.current.delete(e.key.toLowerCase().startsWith('arrow')?e.key:e.key.toLowerCase());flush.current();};
@@ -54,6 +70,7 @@ export function RoguePrototype({onExit}:{onExit:()=>void}){
  const active=state==='ready'&&view?.status==='playing';
  const clearedRoom=view?.cleared.at(-1);
  const boss=view?.mobs.find(m=>m.boss&&m.hp>0&&m.room===view.room);
+ const assist=view?.effects?.assists.filter(a=>view.elapsed-a.at<1.2).at(-1),partner=assist?COMBAT_CHARACTERS.find(c=>c.id===assist.sourceActor):undefined;
  const remaining=view?.mobs.filter(m=>m.room===view.room&&m.hp>0).length??0;
  const passage=view?.gate?PASSAGE_LABEL[view.gate.passage]:'이동';
  const statusText=view?.phase==='traversing'?`${passage} 통과 · 다음 구역으로 이동`:
@@ -64,7 +81,7 @@ export function RoguePrototype({onExit}:{onExit:()=>void}){
  const release=()=>{stick.current={x:0,y:0};setKnob(stick.current);flush.current();};
  return <main className="rogue-shell rogue-vardian">
   <header className="rogue-header"><button onClick={onExit} aria-label="캐릭터 선택으로 돌아가기">‹</button><div><small>LABYRINTH · PROTOTYPE</small><strong>촛불 미궁</strong></div><span className="rogue-gold" title="이번 탐험의 테스트 골드">◈ {(view?.gold??0).toLocaleString()} <small>G</small></span><button onClick={()=>setHelp(!help)} aria-label="조작 도움말" aria-expanded={help}>?</button></header>
-  <section className="rogue-stage" aria-label="구역 진행형 촛불 던전"><canvas ref={canvas} aria-label="홍과 10개 전투 구역" data-status={state} onClick={()=>{if(active&&!help&&!panel)enqueue({attack:true});}}/>
+  <section className="rogue-stage" aria-label="구역 진행형 촛불 던전">{assist&&partner&&<aside className="rogue-assist" key={assist.serial} aria-label={`${partner.label} 어시스트`}><img alt="" src={`/rpg/characters/${partner.id}/portrait.png`}/><span>ASSIST<b>{partner.label}</b></span></aside>}<canvas ref={canvas} aria-label="홍과 10개 전투 구역" data-status={state} onClick={()=>{if(active&&!help&&!panel)enqueue({attack:true});}}/>
    <div className="rogue-room"><small>CHAMBER</small><strong>{String((view?.room??0)+1).padStart(2,'0')} <span>/ 10</span></strong><span>{boss?(LABYRINTH.monsters[boss.species]?.name??'보스'):view?.phase==='exit-ready'?'출구 개방':`${SCENERY_LABELS[map?.rooms[view?.room??0]?.scenery??'crypt']} · ${THEME_LABELS[map?.rooms[view?.room??0]?.theme??'red']}`}</span></div>
    {view?.defense&&view.defense.maxShield!=='0'&&<div className="rogue-es" role="progressbar" aria-label="에너지 보호막" aria-valuenow={Math.round(view.defense.shieldPercent)} aria-valuemin={0} aria-valuemax={100}><i style={{width:`${view.defense.shieldPercent}%`}}/><span>{view.defense.chaosImmune?'카오스 면역 · 체력 1':'에너지 보호막'}</span></div>}
    {!!view?.debuff.stunned&&<div className="rogue-stunned" role="status">행동 불가 {view.debuff.stunned.toFixed(1)}초</div>}
@@ -80,7 +97,7 @@ export function RoguePrototype({onExit}:{onExit:()=>void}){
   <div className="rogue-lower hunt-lower">
   <section className="rogue-console hunt-console" aria-label="로그라이크 조작" inert={panel!==null}>
 
-   <div className="hunt-skill-row">{(view?.build.actives?.map(a=>[a.name,'SkillIcon_'+a.icon])??skills).map(([label,icon],i)=><SkillCooldownButton key={`${i}-${label}`} name={label} icon={icon} index={i} remaining={view?.cooldowns[i]??0} total={view?.cooldownTotals?.[i]??0} reserved={view?.pendingSkill===i} disabled={!active} onClick={()=>enqueue({skill:i})}/>)}</div>
+   <div className="hunt-skill-row">{(view?.build.actives?.map(a=>[a.name,'SkillIcon_'+a.icon])??skills).map(([label,icon],i)=><SkillCooldownButton key={`${i}-${label}`} name={label} icon={icon} index={i} remaining={view?.cooldowns[i]??0} total={view?.cooldownTotals?.[i]??0} reserved={view?.pendingSkill===i} disabled={!active||view?.compiled?.skills[i]?.enabled===false} onClick={()=>enqueue({skill:i})}/>)}</div>
    <div className="hunt-mode-row"><span>게스트 빌드 저장 · <b>{view?.kills??0} 처치</b></span><button disabled={!active} aria-pressed={view?.auto??true} onClick={()=>{automatic.current=!automatic.current;flush.current();}}>AUTO {view?.auto?'ON':'OFF'}</button></div>
    <div className="hunt-controls">
     <button className="hunt-dodge" aria-label="왼쪽 회피" disabled={!active||!view?.dodgeReady} onClick={()=>enqueue({dodge:true,x:-1,y:0})}>↶<small>회피</small></button>
@@ -90,15 +107,14 @@ export function RoguePrototype({onExit}:{onExit:()=>void}){
    </div>
    {error&&state==='ready'&&<p className="rogue-error" role="status">{error}</p>}
   </section>
-  {panel&&<section className="hunt-window rogue-panel" role="dialog" aria-modal="true" aria-label={{weapons:'무기',growth:'젬 · 코어',training:'골드 성장',bag:'가방',quest:'사냥 의뢰'}[panel]}>{panel!=='growth'&&<h2>{{weapons:'무기',growth:'젬 · 코어',training:'골드 성장',bag:'가방',quest:'사냥 의뢰'}[panel]}</h2>}
-   {panel==='weapons'&&<><button onClick={()=>setPanel('training')}>성장 · 골드 능력치</button><p>현재 로그라이크 테스트 무기: 홍의 도끼</p><p>원본 5타 콤보와 점프·슬라이딩 모션을 사용합니다.</p></>}
-   {panel==='growth'&&view&&<GemCorePanel onJewelCommand={sendAction} view={view.build} error={notice||error} onCommand={action=>{if(queue.current.length<6){queue.current.push({action});flush.current();}}} onClose={()=>setPanel(null)}/>}
-   {panel==='training'&&view?.growth&&<><p>보유 골드: {view.growth.gold.toLocaleString()} G · 공격 수련 Lv.{view.growth.attack} · 체력 수련 Lv.{view.growth.health}</p><p>기존 바르디안 훈련 비용곡선 적용. 공격 수련은 전투 피해, 체력 수련은 받는 피해 감소에 적용됩니다. 현재 테스트 기본 체력은 10,000이며, 생명력 노드와 카오스 면역은 별도로 적용됩니다. 처치 EXP로 레벨과 특성 포인트도 증가합니다.</p><button disabled={view.growth.gold<view.growth.attackCost||!view.growth.attackCost} onClick={()=>sendAction('train-attack')}>공격력 수련 · {view.growth.attackCost} G</button><button disabled={view.growth.gold<view.growth.healthCost||!view.growth.healthCost} onClick={()=>sendAction('train-health')}>체력 수련 · {view.growth.healthCost} G</button><p>{notice||error}</p></>}
+  {panel&&<section className="hunt-window rogue-panel" role="dialog" aria-modal="true" aria-label={{weapons:'무기',growth:'젬 · 코어',training:'골드 성장',bag:'가방',quest:'사냥 의뢰'}[panel]}>{panel!=='growth'&&panel!=='weapons'&&panel!=='training'&&<h2>{{weapons:'무기',growth:'젬 · 코어',training:'골드 성장',bag:'가방',quest:'사냥 의뢰'}[panel]}</h2>}
+   {(panel==='weapons'||panel==='training')&&view?.progress&&<IdleEquipmentPanel progress={view.progress} error={notice||error} feedback={rewardNotice} onCommand={action=>sendAction(action as RogueAction)} onClose={()=>setPanel(null)}/>}
+   {panel==='growth'&&view&&<GemCorePanel collection={view.progress?.gemCollection} equipmentInventory={view.progress?.equipment} onJewelCommand={sendAction} view={view.build} error={notice||error} onCommand={action=>{if(queue.current.length<6){queue.current.push({action});flush.current();}}} onClose={()=>setPanel(null)}/>}
    {panel==='bag'&&<><button className="inventory-close" aria-label="가방 닫기" onClick={()=>setPanel(null)}>✕</button><BuildInventory onChanged={()=>{queue.current.push({action:'items-refresh'});flush.current();}}/></>}
    {panel==='quest'&&<><p>상·하 갈림길을 선택해 공통 보스 격파 후 탈출</p><p>현재 정리: {view?.cleared.length??0}/7 · 현재 구역 남은 적: {remaining}</p><p>AUTO 경로: 1 → 2 → 4 → 5 → 7 → 8 → 10. 아래쪽 길도 같은 보스로 이어집니다. 구역마다 총 150~200마리, 처치 시간 제한 없음.</p></>}
-   {panel!=='growth'&&panel!=='bag'&&<button autoFocus onClick={()=>setPanel(null)}>닫기</button>}
+   {panel!=='growth'&&panel!=='bag'&&panel!=='weapons'&&panel!=='training'&&<button autoFocus onClick={()=>setPanel(null)}>닫기</button>}
   </section>}
   </div>
-  <footer className="rogue-footer hunt-footer"><button aria-pressed={panel==='weapons'} onClick={()=>setPanel(panel==='weapons'?null:'weapons')}>무기 · 성장</button><button aria-pressed={panel==='growth'} onClick={()=>setPanel(panel==='growth'?null:'growth')}>젬 · 코어</button><button aria-pressed={panel==='bag'} onClick={()=>setPanel(panel==='bag'?null:'bag')}>가방</button><button aria-pressed={!panel} onClick={()=>setPanel(null)}>✦ 탐험</button><button aria-pressed={panel==='quest'} onClick={()=>setPanel(panel==='quest'?null:'quest')}>사냥 의뢰</button></footer>
+  <footer className="rogue-footer hunt-footer"><button aria-pressed={panel==='weapons'} onClick={()=>setPanel(panel==='weapons'?null:'weapons')}>장비 · 소환</button><button aria-pressed={panel==='growth'} onClick={()=>setPanel(panel==='growth'?null:'growth')}>젬 · 코어</button><button aria-pressed={panel==='bag'} onClick={()=>setPanel(panel==='bag'?null:'bag')}>가방</button><button aria-pressed={!panel} onClick={()=>setPanel(null)}>✦ 탐험</button><button aria-pressed={panel==='quest'} onClick={()=>setPanel(panel==='quest'?null:'quest')}>사냥 의뢰</button></footer>
  </main>;
 }

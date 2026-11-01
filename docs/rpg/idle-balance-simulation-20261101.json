@@ -1,0 +1,113 @@
+{
+  "model": "custom-web-idle-v1",
+  "seedRange": [
+    1,
+    128
+  ],
+  "rng": "LCG 1664525/1013904223 uint32",
+  "assumptions": {
+    "claimEveryHours": 24,
+    "capHours": 24,
+    "activeMinutesRequired": 0,
+    "activeXpBonus": 0,
+    "freeCurrencyPerDay": 1440,
+    "equipmentPerDay": 8,
+    "gemsPerDay": 8,
+    "equipmentPoolSchedule": [
+      "armor",
+      "weapon",
+      "armor",
+      "weapon",
+      "gloves",
+      "boots",
+      "ring",
+      "armor"
+    ],
+    "upgradeSpend": 0,
+    "paidSpend": 0,
+    "startingPoints": 12
+  },
+  "pointDays": [
+    {
+      "points": 50,
+      "level": 39,
+      "xp": 231325,
+      "daysAt24hCapture": 32.1285,
+      "daysAt12hCapture": 64.2569
+    },
+    {
+      "points": 55,
+      "level": 44,
+      "xp": 312395,
+      "daysAt24hCapture": 43.3882,
+      "daysAt12hCapture": 86.7764
+    },
+    {
+      "points": 60,
+      "level": 49,
+      "xp": 410840,
+      "daysAt24hCapture": 57.0611,
+      "daysAt12hCapture": 114.1222
+    },
+    {
+      "points": 90,
+      "level": 79,
+      "xp": 1173892,
+      "daysAt24hCapture": 163.0406,
+      "daysAt12hCapture": 326.0811
+    }
+  ],
+  "acquisition": [
+    {
+      "day": 30,
+      "equipmentPulls": 240,
+      "gemPulls": 240,
+      "atLeastOneSixSocketItem": 0.6171875,
+      "atLeastOneUniqueOption": 0.0390625,
+      "activeCollected": {
+        "p10": 33,
+        "median": 35,
+        "p90": 35
+      },
+      "supportCollected": {
+        "p10": 29,
+        "median": 30,
+        "p90": 30
+      }
+    },
+    {
+      "day": 45,
+      "equipmentPulls": 360,
+      "gemPulls": 360,
+      "atLeastOneSixSocketItem": 0.84375,
+      "atLeastOneUniqueOption": 0.0703125,
+      "activeCollected": {
+        "p10": 35,
+        "median": 35,
+        "p90": 35
+      },
+      "supportCollected": {
+        "p10": 30,
+        "median": 30,
+        "p90": 30
+      }
+    },
+    {
+      "day": 60,
+      "equipmentPulls": 480,
+      "gemPulls": 480,
+      "atLeastOneSixSocketItem": 0.90625,
+      "atLeastOneUniqueOption": 0.125,
+      "activeCollected": {
+        "p10": 35,
+        "median": 35,
+        "p90": 35
+      },
+      "supportCollected": {
+        "p10": 30,
+        "median": 30,
+        "p90": 30
+      }
+    }
+  ]
+}

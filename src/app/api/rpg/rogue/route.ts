@@ -1,3 +1,4 @@
+import {gameStorage} from '../../../../lib/game-storage';
 import path from 'node:path';
 import {RpgStore} from '../../../../lib/rpg-store';
 import {isRogueAction} from '../../../../lib/rpg-rogue-service';
@@ -13,12 +14,12 @@ export async function POST(req:NextRequest){
   const reader=req.body?.getReader();if(!reader)throw Error('Missing body');let size=0;const chunks:Uint8Array[]=[];
   for(;;){const p=await reader.read();if(p.done)break;size+=p.value.byteLength;if(size>4096){await reader.cancel();return NextResponse.json({error:'Request too large'},{status:413});}chunks.push(p.value);}
   const body=JSON.parse(Buffer.concat(chunks).toString('utf8'));let account=req.cookies.get('rpg_guest')?.value;if(!account||!/^[a-f0-9]{64}$/.test(account))account=randomBytes(32).toString('hex');
-  const service=scope.rogueService??(scope.rogueService=new RogueService(undefined,undefined,new RpgStore(path.join(process.env.RPG_SAVE_DIR||path.join(process.cwd(),'.data/rpg'),'players.sqlite')),new RpgItemsStore(path.join(process.env.RPG_SAVE_DIR||path.join(process.cwd(),'.data/rpg'),'items.sqlite'))));let value;
+  const service=scope.rogueService??(scope.rogueService=new RogueService(undefined,undefined,gameStorage().progress,gameStorage().items,true));let value;
   if(body.action==='start')value=service.start(account,body.character);
   else if(isRogueAction(body.action)&&typeof body.id==='string')value=service.command(account,body.id,body.sequence,parseRogueInput(body.input),body.action);
   else throw Error('Invalid command');
   // A static 780-node graph is sent on entry/build changes, never on every 100ms combat poll.
-  const wire=body.action==='tick'&&body.knownBuildRevision===value.buildRevision?{...value,build:{...value.build,tree:undefined}}:value;
+  const wire=body.action==='tick'&&body.knownBuildRevision===value.buildRevision?{...value,compiled:undefined,build:{...value.build,tree:undefined},progress:{...value.progress,equipment:undefined,gemCollection:undefined,gacha:undefined,legacyBuild:undefined}}:value;
   const response=NextResponse.json(wire,{headers:{'Cache-Control':'no-store'}});response.cookies.set('rpg_guest',account,{httpOnly:true,sameSite:'strict',secure:process.env.NODE_ENV==='production',path:'/api/rpg',maxAge:31536000});return response;
  }catch(e){const message=e instanceof Error&&/[가-힣]/.test(e.message)?e.message:'던전 요청을 처리하지 못했습니다.';return NextResponse.json({error:message},{status:400,headers:{'Cache-Control':'no-store'}});}
 }

@@ -25,7 +25,7 @@ test('starting regions enforce owned-root connectivity, paid travel and reset/re
  const loop=changeBuild(b,'core-refund-arcane_0_1');assert.equal(connected(loop.nodes,'pink-glasses'),true);
  assert.throws(()=>changeBuild(changeBuild(arcane,'core-allocate-arcane_0_1'),'core-allocate-arcane_0_3'));
  assert.deepEqual(changeBuild(b,'core-reset').nodes,['start_arcane']);assert.deepEqual(changeBuild(b,'core-start-hong').nodes,['root']);assert.equal(changeBuild(b,'core-start-hong').start,undefined);
- assert.equal(buildBudget(1),12);assert.equal(buildBudget(40),51);assert.equal(buildBudget(100),51);
+ assert.equal(buildBudget(1),12);assert.equal(buildBudget(40),51);assert.equal(buildBudget(100),90);
 });
 
 test('v1 migration and raw v2 preserve IDs, defaults, balances, shapes and caller data',()=>{

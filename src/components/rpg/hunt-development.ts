@@ -33,17 +33,17 @@ export function traitPoints(p:HuntProgress){return Math.max(0,(p.level-1)*data.t
 export function traitIncrement(ability:number){return data.arts.find(a=>a.ability===ability)!.increment*10;}
 export function buyTrait(p:HuntProgress,ability:number){if(!ABILITY_ORDER.includes(ability))throw Error('잘못된 특성입니다.');if((p.traits[ability]??0)>=10)throw Error('특성 최대 레벨입니다.');if(!traitPoints(p))throw Error('특성 포인트가 부족합니다.');p.traits[ability]=(p.traits[ability]??0)+1;}
 export function masteryNext(p:HuntProgress){return data.mastery.find(r=>r.level===p.masteryLevel+1);}
-export function buyMastery(p:HuntProgress){const next=masteryNext(p);if(!next||p.masteryEssence<next.cost)throw Error('숙련의 정수가 부족하거나 최대 단계입니다.');p.masteryEssence-=next.cost;p.masteryLevel++;}
+export function buyMastery(p:HuntProgress){if(p.idle)throw Error('숙련도 성장은 장비와 젬 성장으로 대체되었습니다.');const next=masteryNext(p);if(!next||p.masteryEssence<next.cost)throw Error('숙련의 정수가 부족하거나 최대 단계입니다.');p.masteryEssence-=next.cost;p.masteryLevel++;}
 export function willCost(p:HuntProgress){return p.willLevel>=data.will.max?0:curveValue([data.will.cost],Math.max(1,p.willLevel));}
-export function buyWill(p:HuntProgress){const cost=willCost(p);if(!cost||p.soulOrb<cost)throw Error('투혼의 오브가 부족하거나 최대 단계입니다.');p.soulOrb-=cost;p.willLevel++;}
+export function buyWill(p:HuntProgress){if(p.idle)throw Error('투혼 성장은 장비와 젬 성장으로 대체되었습니다.');const cost=willCost(p);if(!cost||p.soulOrb<cost)throw Error('투혼의 오브가 부족하거나 최대 단계입니다.');p.soulOrb-=cost;p.willLevel++;}
 export function skillCost(p:HuntProgress,i:number){return p.skillLevels[i]>=data.skillMax?0:data.skillCopyCosts[p.skillLevels[i]-1];}
-export function buySkill(p:HuntProgress,i:number){if(!Number.isInteger(i)||i<0||i>=6)throw Error('잘못된 스킬입니다.');const cost=skillCost(p,i);if(!cost||p.skillCopies[i]<cost)throw Error('동일 스킬 재료가 부족하거나 최대 단계입니다.');p.skillCopies[i]-=cost;p.skillLevels[i]++;}
+export function buySkill(p:HuntProgress,i:number){if(p.idle)throw Error('스킬 레벨 성장은 젬 수집과 연결로 대체되었습니다.');if(!Number.isInteger(i)||i<0||i>=6)throw Error('잘못된 스킬입니다.');const cost=skillCost(p,i);if(!cost||p.skillCopies[i]<cost)throw Error('동일 스킬 재료가 부족하거나 최대 단계입니다.');p.skillCopies[i]-=cost;p.skillLevels[i]++;}
 export function toggleSkill(p:HuntProgress,i:number){if(!Number.isInteger(i)||i<0||i>=6)throw Error('잘못된 스킬입니다.');p.skillEnabled[i]=p.skillEnabled[i]?0:1;}
 export function developmentView(p:HuntProgress){return {arts:data.arts.map(a=>({...a,...artQuote(p,a.id,1)})),traitPoints:traitPoints(p),masteryNext:masteryNext(p)??null,willCost:willCost(p),skillCosts:p.skillLevels.map((_,i)=>skillCost(p,i))};}
 export function extraAbilities(p:HuntProgress){const r:Record<number,number>={};const add=(id:number,n:number)=>r[id]=(r[id]??0)+n;
  for(const a of data.arts)if(a.id!==101&&a.id!==102)add(a.ability,artLevel(p,a.id)*a.increment);
  for(const a of ABILITY_ORDER)add(a,(p.traits?.[a]??0)*traitIncrement(a));
- const mastery=data.mastery.find(r=>r.level===p.masteryLevel);if(mastery)for(const [id,n] of mastery.abilities)add(id,n);
- for(const [id,n] of data.will.abilities)add(id,(p.willLevel??0)*n);
+ if(!p.idle){const mastery=data.mastery.find(r=>r.level===p.masteryLevel);if(mastery)for(const [id,n] of mastery.abilities)add(id,n);
+ for(const [id,n] of data.will.abilities)add(id,(p.willLevel??0)*n);}
  return r;
 }
