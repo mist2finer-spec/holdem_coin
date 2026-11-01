@@ -1,3 +1,4 @@
+import {initializeHybridProgress} from './rpg-hybrid-profile';
 import {ACTIVE_SKILLS,ACTIVE_CATALOG,GEMS,activeSkill,validateBuild,supportsActive} from '../components/rpg/hunt-build';
 import {createStarterEquipment,EQUIPMENT_SLOTS,equippedItems,equipEquipment,upgradeEquipment} from '../components/rpg/idle-equipment';
 import {createGemCollection,createGachaState,validateGemCollection,validateOwnedEquipmentGems,rollEquipmentBatch,rollGemBatch,socketEquipmentGem} from '../components/rpg/idle-gacha';
@@ -12,7 +13,7 @@ export function initializeIdleProfile(p:HuntProgress,now:number){
   for(const[id,n]of Object.entries(activeUse))p.gemCollection.active[id]=Math.max(p.gemCollection.active[id]??0,n);p.gemCollection.support={...supportUse};
  }
  p.gemCollection??=createGemCollection();p.gacha??=createGachaState();if(!p.idle){p.idle=createIdleProgress(now);p.soulGem=Math.min(1e12,p.soulGem+1000);}
- syncIdleBuild(p);return accrueIdleProgress(p,now);
+ initializeHybridProgress(p,now);syncIdleBuild(p);return accrueIdleProgress(p,now);
 }
 export function syncIdleBuild(p:HuntProgress){if(!p.equipment)return;validateOwnedEquipmentGems(p.equipment,p.gemCollection!);const equipped=equippedItems(p.equipment);p.weaponType=equipped.weapon.weaponType!;p.weaponLevel=equipped.weapon.level;p.armorLevel=Math.max(p.armorLevel,equipped.armor.level);p.weaponLevels[p.weaponType]=Math.max(p.weaponLevels[p.weaponType],p.weaponLevel);p.build!.equipment={version:1,items:EQUIPMENT_SLOTS.map(slot=>structuredClone(equipped[slot])),equipped:{...p.equipment.equipped}};validateBuild(p.build,p.level);}
 export function applyIdleAction(p:HuntProgress,action:IdleAction,rng=()=>randomInt(0,1000000000)/1000000000,idFactory=()=>randomBytes(16).toString('hex')){

@@ -1,3 +1,5 @@
+import {initializeHybridProgress,creditHybridRewards} from './rpg-hybrid-profile';
+import {HYBRID_BALANCE} from '../components/rpg/hybrid-balance';
 import {initializeIdleProfile,syncIdleBuild,applyIdleAction,applyPhysicalBuildAction,isIdleAction,type IdleAction} from './rpg-idle-profile';
 import {accrueIdleProgress} from '../components/rpg/idle-progression';
 import {developmentView} from '../components/rpg/hunt-development';
@@ -38,7 +40,7 @@ export class RogueService{
   const now=this.now();for(const [id,s] of this.sessions)if(now-s.seen>20*60*1000)this.sessions.delete(id);
   if(!this.sessions.has(account)&&this.sessions.size>=500)throw Error('던전 접속자가 많습니다.');
   const saved=this.store?.load(account)??{progress:newHuntProgress(),revision:0};if(this.idleMode){initializeIdleProfile(saved.progress,this.wallNow());if(this.store)saved.revision=this.store.save(account,saved.progress,saved.revision);}
-  const game=new RogueEngine(this.seed()),id=randomUUID(),s:Session={...saved,id,game,last:now,seen:now,input:{...idle},sequence:0,buildVersion:0,cached:null as unknown as RogueView};
+  const game=new RogueEngine(this.seed(),undefined,1,saved.progress.hybrid?.dungeonLevel??1),id=randomUUID(),s:Session={...saved,id,game,last:now,seen:now,input:{...idle},sequence:0,buildVersion:0,cached:null as unknown as RogueView};
   const owned=this.items?.jewels(account)??[];for(const placed of saved.progress.build?.jewels??[]){if(!owned.some(j=>j.instanceId===placed.instanceId&&j.jewelId===placed.jewelId&&j.seed===placed.seed&&j.conqueror===placed.conqueror))throw Error('저장된 주얼 보유 정보를 확인할 수 없습니다. 보관함을 확인해 주세요.');}
   game.build=structuredClone(saved.progress.build!);if(game.build.start&&game.build.start!=='hong')game.build=changeBuild(game.build,'core-start-hong',saved.progress.level);saved.progress.build=structuredClone(game.build);game.setGrowth(saved.progress);game.transcended=this.items?.view(account).transcended??{};
   s.cached={...game.view(),progress:structuredClone(s.progress),development:developmentView(s.progress),growth:this.growth(s.progress),build:this.viewBuild(s),buildRevision:s.buildVersion,id,sequence:0,map:game.map};this.sessions.set(account,s);return s.cached;
@@ -60,13 +62,18 @@ export class RogueService{
   s.dirtyAttempt=true;if(pendingClock&&timeDirty){s.progress=pendingClock;s.game.setGrowth(s.progress);}
   const now=this.now(),gap=Math.max(0,(now-s.last)/1000),reconnecting=gap>ROGUE_PACE.maxActiveGap;
   // Catch up ordinary network jitter in small authoritative steps. Long absences use neutral input.
-  const beforeGold=s.game.gold,beforeKills=s.game.kills,bossesBefore=this.idleMode?s.game.mobs.filter(m=>m.boss&&m.hp>0).map(m=>m.id):[];const bossStage=s.progress.labyrinthStage;
+  const beforeProgress=s.game.progression,beforeStatus=s.game.status,beforeGold=s.game.gold,beforeKills=s.game.kills;
   let remaining=reconnecting?ROGUE_PACE.reconnectStep:gap;s.last=Math.max(s.last,now);s.seen=now;
   const previousInput=reconnecting?{...idle,paused:s.input.paused}:s.input;
   while(remaining>1e-8){const dt=Math.min(.02,remaining);s.game.step(dt,previousInput);remaining-=dt;}
   s.input=input;s.game.command(input);
-  if(bossesBefore.some(id=>!s.game.mobs.some(m=>m.id===id&&m.hp>0)))this.items?.awardBossFirst(account,bossStage);
-  if(s.game.gold>beforeGold){timeDirty=false;s.progress.gold=Math.min(1e12,s.progress.gold+s.game.gold-beforeGold);for(let n=beforeKills;n<s.game.kills;n++)awardHuntKill(s.progress,{...DEFAULT_HUNT_BALANCE,reward:{...DEFAULT_HUNT_BALANCE.reward,gold:0,soulGem:0}});s.game.setGrowth(s.progress);try{if(this.store)s.revision=this.store.save(account,s.progress,s.revision);}catch(e){this.sessions.delete(account);throw e;}}
+  if(this.idleMode&&s.game.progression.totalBossKills>beforeProgress.totalBossKills)this.items?.awardDungeonBossFirst(account,s.game.progression.dungeonLevel);
+  if(this.idleMode){
+   const after=s.game.progression,killDelta=after.totalKills-beforeProgress.totalKills;
+   if(killDelta>0){creditHybridRewards(s.progress,{xp:after.totalXp-beforeProgress.totalXp,gold:after.totalGold-beforeProgress.totalGold},nowWall);s.progress.kills=Math.min(1e12,s.progress.kills+killDelta);timeDirty=true;}
+   if(beforeStatus!=='won'&&s.game.status==='won'){const h=initializeHybridProgress(s.progress,nowWall);if(h.dungeonLevel===after.dungeonLevel){h.dungeonLevel=Math.min(HYBRID_BALANCE.maxDifficulty,h.dungeonLevel+1);timeDirty=true;}}
+   if(timeDirty)s.game.setGrowth(s.progress);
+  }else if(s.game.gold>beforeGold){timeDirty=false;s.progress.gold=Math.min(1e12,s.progress.gold+s.game.gold-beforeGold);for(let n=beforeKills;n<s.game.kills;n++)awardHuntKill(s.progress,{...DEFAULT_HUNT_BALANCE,reward:{...DEFAULT_HUNT_BALANCE.reward,gold:0,soulGem:0}});s.game.setGrowth(s.progress);try{if(this.store)s.revision=this.store.save(account,s.progress,s.revision);}catch(e){this.sessions.delete(account);throw e;}}
   if(timeDirty&&this.store)s.revision=this.store.save(account,s.progress,s.revision);
   s.sequence=sequence;s.cached={...s.game.view(),progress:structuredClone(s.progress),development:developmentView(s.progress),growth:this.growth(s.progress),build:this.viewBuild(s),buildRevision:s.buildVersion,id:s.id,sequence,loot};return s.cached;
  }

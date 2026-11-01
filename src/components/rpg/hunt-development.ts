@@ -6,7 +6,7 @@ export const ABILITY_INFO:Record<number,{name:string;percent:boolean;icon:string
  7:{name:'공격력',percent:false,icon:'GroundRift',hint:'공격 피해의 기본 능력치'},8:{name:'체력',percent:false,icon:'VitalRecovery',hint:'테스트 HP는 10,000으로 유지하며 피해 감소에 반영'},
  17:{name:'일반공격 피해',percent:true,icon:'Whirlwind',hint:'일반 공격의 최종 피해 증가'},18:{name:'스킬 피해',percent:true,icon:'DarkHole',hint:'스킬의 최종 피해 증가'},
  9:{name:'용기',percent:false,icon:'GroundRift',hint:'적과 비교해 물리 피해 보정 · 최대 ±20%'},10:{name:'정신력',percent:false,icon:'DarkHole',hint:'적과 비교해 마법 피해 보정 · 최대 ±20%'},
- 11:{name:'집중력',percent:false,icon:'HolyWrath2',hint:'능력치 저장 · 원본 명중 판정 연결 준비 중'},12:{name:'강인함',percent:false,icon:'Blizzard3',hint:'능력치 저장 · 원본 CC 판정 연결 준비 중'},
+ 11:{name:'강인함',percent:false,icon:'Blizzard3',hint:'상대 강인함과 비교해 상태이상 지속시간 감소'},12:{name:'명중 · 집중력',percent:false,icon:'HolyWrath2',hint:'적과 비교해 명중 및 상태이상 효율 보정'},
  25:{name:'공격속도',percent:true,icon:'Whirlwind',hint:'공격 모션과 타격 시점을 함께 빠르게 함'},26:{name:'치명타율',percent:true,icon:'HolyWrath2',hint:'최대 90%'},27:{name:'치명타 피해',percent:true,icon:'GroundRift',hint:'치명타 배율 증가'},
 };
 export const ABILITY_ORDER=[59,60,7,8,17,18,9,10,11,12,25,26,27];

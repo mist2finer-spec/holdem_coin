@@ -1,6 +1,7 @@
-/** Guide 123456 prototype balance. Native repeat-wave structure, not an exact Sanctuary DB restoration. */
+import {dungeonEncounter} from '../hybrid-balance';
+/** Native repeat-wave structure with independent, one-based dungeon difficulty. */
 export type HordeTuning={initial:number;min:number;max:number;seconds:number;batch:number};
-export const HORDE:HordeTuning={initial:30,min:150,max:200,seconds:55,batch:8};
+export const HORDE:HordeTuning=dungeonEncounter(1);
 export const THEME_SPECIES:Record<string,readonly number[]>={red:[1001],green:[1003],blue:[1002],goblin:[1101,1102,1103],skeleton:[1151,1152,1153],spider:[1201,1251,1252],ember:[1301,1302,1303,1311,1312,1313,1321,1322,1323],boss:[1001,1102,1152]};
 export const THEME_LABELS:Record<string,string>={red:'불 슬라임 무리',green:'숲 슬라임 무리',blue:'물 슬라임 무리',goblin:'고블린 전초지',skeleton:'해골 회랑',spider:'거미 · 박쥐 둥지',ember:'원소 스피릿 무리',boss:'군주의 방'};
 export const hash=(value:number)=>{let x=value>>>0;x=Math.imul(x^(x>>>16),0x7feb352d);x=Math.imul(x^(x>>>15),0x846ca68b);return (x^(x>>>16))>>>0;};

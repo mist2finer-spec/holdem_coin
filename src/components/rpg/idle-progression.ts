@@ -1,5 +1,5 @@
 import growth from './data/recovered-growth.json';
-/** Custom pacing atop the recovered native level-cost curve; server clock is the only idle XP source. */
+/** Custom pacing atop the recovered native level-cost curve; server clock grants idle XP; capped hybrid kill XP is credited separately. */
 export const IDLE_BALANCE={version:1,source:'custom-web-idle-v1',xpPerMinute:5,goldPerMinute:30,soulGemPerMinute:1,offlineCapMs:24*60*60*1000,buildBasePoints:12,buildMaxPoints:90} as const;
 export type IdleProgress={version:1;lastAccruedAt:number;totalAccruedMs:number;xpRemainder:number;goldRemainder:number;soulGemRemainder:number};
 export type IdleProgressHost={level:number;xp:number;gold:number;soulGem:number;idle?:IdleProgress};

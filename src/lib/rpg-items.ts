@@ -1,4 +1,4 @@
-import {sqliteAtomic} from './rpg-sqlite';
+import {sqliteAtomic,configureSqlite} from './rpg-sqlite';
 import {DatabaseSync} from 'node:sqlite';
 import {mkdirSync} from 'node:fs';
 import {randomBytes,randomInt} from 'node:crypto';
@@ -17,7 +17,7 @@ function weekStart(now:number){if(!Number.isSafeInteger(now)||now<0)throw Error(
 /** Shared web/poker reward wallet. SQL uniqueness is the authority, never a client winner claim. */
 export class RpgItemsStore{
  readonly db:DatabaseSync;private ownsDatabase:boolean;
- constructor(filename:string,shared?:DatabaseSync){this.ownsDatabase=!shared;if(filename!==':memory:')mkdirSync(path.dirname(filename),{recursive:true});this.db=shared??new DatabaseSync(filename);this.db.exec(`PRAGMA journal_mode=WAL; PRAGMA busy_timeout=3000;
+ constructor(filename:string,shared?:DatabaseSync){this.ownsDatabase=!shared;if(filename!==':memory:')mkdirSync(path.dirname(filename),{recursive:true});this.db=shared??new DatabaseSync(filename);configureSqlite(this.db);this.db.exec(`
  CREATE TABLE IF NOT EXISTS rpg_items(account TEXT PRIMARY KEY,orbs INTEGER NOT NULL DEFAULT 5,transcended TEXT NOT NULL DEFAULT '{}',revision INTEGER NOT NULL DEFAULT 0,link TEXT UNIQUE NOT NULL);
  CREATE TABLE IF NOT EXISTS rpg_jewels(instance TEXT PRIMARY KEY,account TEXT NOT NULL,jewel TEXT NOT NULL,seed INTEGER NOT NULL,conqueror TEXT);
  CREATE TABLE IF NOT EXISTS rpg_jewel_receipts(id TEXT PRIMARY KEY,account TEXT NOT NULL,jewel TEXT NOT NULL,variant TEXT NOT NULL,instance TEXT NOT NULL);
@@ -68,6 +68,11 @@ export class RpgItemsStore{
  awardBossFirst(account:string,stage:number){
   if(!Number.isSafeInteger(stage)||stage<0||stage>6000)throw Error('잘못된 보스 단계입니다.');
   return this.atomic(()=>{this.ensure(account);const id=`bossfirst:${account}:${stage}`;if(this.db.prepare('SELECT 1 FROM rpg_item_events WHERE id=?').get(id))return false;this.record(id,account,`보스 ${stage}단계 첫 처치 · 초월석 +1`);this.db.prepare('UPDATE rpg_items SET orbs=MIN(1000000,orbs+1),revision=revision+1 WHERE account=?').run(account);return true;});
+ }
+ /** Dungeon difficulties are a separate namespace from original campaign stages. */
+ awardDungeonBossFirst(account:string,level:number){
+  if(!Number.isSafeInteger(level)||level<1||level>1000000)throw Error('잘못된 미궁 난이도입니다.');
+  return this.atomic(()=>{this.ensure(account);const id=`dungeonbossfirst:${account}:${level}`;if(this.db.prepare('SELECT 1 FROM rpg_item_events WHERE id=?').get(id))return false;this.record(id,account,`미궁 Lv.${level} 보스 첫 처치 · 초월석 +1`);this.db.prepare('UPDATE rpg_items SET orbs=MIN(1000000,orbs+1),revision=revision+1 WHERE account=?').run(account);return true;});
  }
  rerollJewel(account:string,instanceId:string,request:string,revision:number,roll=(max:number)=>randomInt(max)){
   this.assertRequest(request,revision);if(typeof instanceId!=='string'||!/^\w{1,64}$/.test(instanceId))throw Error('잘못된 주얼 인스턴스입니다.');

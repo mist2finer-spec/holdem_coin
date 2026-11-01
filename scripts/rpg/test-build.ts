@@ -1,7 +1,7 @@
 import {HUNT_RULES} from '../../src/components/rpg/combat-rules';
 import test from 'node:test';import assert from 'node:assert/strict';
 import {newBuild,validateBuild,changeBuild,buildBudget,buildView,compileSkill,CORE_NODES,connected,GEMS,ACTIVE_SKILLS,supports,isBuildAction} from '../../src/components/rpg/hunt-build';
-import {newHuntProgress} from '../../src/components/rpg/hunt-progression';
+import {heroStats,newHuntProgress} from '../../src/components/rpg/hunt-progression';
 import {RpgStore} from '../../src/lib/rpg-store';import {RogueService} from '../../src/lib/rpg-rogue-service';
 import {RogueEngine} from '../../src/components/rpg/rogue/engine';
 import {HuntEngine} from '../../src/components/rpg/hunt-engine';
@@ -47,11 +47,11 @@ test('SQLite old saves migrate, saved builds survive a new service, duplicates c
 function rogue(build= newBuild()) {const g=new RogueEngine(1);g.build=build;g.mobs=g.mobs.slice(0,1);const m=g.mobs[0];m.x=g.hero.x+70;m.hp=m.maxHP=10000;m.until=999;return g;}
 function step(g:RogueEngine,seconds:number){for(let t=0;t<seconds;t+=.01)g.step(.01,idle);}
 test('default dungeon: linked damage, extended AoE and delayed echo hit real enemies; cast captures build',()=>{
- let b=changeBuild(newBuild(),'gem-0-0-power');b=changeBuild(b,'gem-0-1-echo');const g=rogue(b);g.command({...idle,skill:0});g.build=newBuild();step(g,.26);assert.ok(Math.abs(g.mobs[0].hp-(10000-110*1.3*.65))<1e-8);step(g,.22);assert.ok(Math.abs(g.mobs[0].hp-(10000-2*110*1.3*.65))<1e-8);step(g,1);assert.equal(g.hero.motion,null);
- const near=rogue(),wide=rogue(changeBuild(newBuild(),'gem-0-0-wide'));near.mobs[0].x=wide.mobs[0].x=near.hero.x+210;near.command({...idle,skill:0});wide.command({...idle,skill:0});step(near,.3);step(wide,.3);assert.equal(near.mobs[0].hp,10000);assert.equal(wide.mobs[0].hp,9901);
+ let b=changeBuild(newBuild(),'gem-0-0-power');b=changeBuild(b,'gem-0-1-echo');const g=rogue(b);g.command({...idle,skill:0});g.build=newBuild();step(g,.26);assert.ok(Math.abs(g.mobs[0].hp-(10000-110*1.3*.65*heroStats(newHuntProgress()).skillDamageMultiplier))<1e-8);step(g,.22);assert.ok(Math.abs(g.mobs[0].hp-(10000-2*110*1.3*.65*heroStats(newHuntProgress()).skillDamageMultiplier))<1e-8);step(g,1);assert.equal(g.hero.motion,null);
+ const near=rogue(),wide=rogue(changeBuild(newBuild(),'gem-0-0-wide'));near.mobs[0].x=wide.mobs[0].x=near.hero.x+210;near.command({...idle,skill:0});wide.command({...idle,skill:0});step(near,.3);step(wide,.3);assert.equal(near.mobs[0].hp,10000);assert.ok(Math.abs(wide.mobs[0].hp-(10000-99*heroStats(newHuntProgress()).skillDamageMultiplier))<1e-8);
 });
 test('healing, cooldown and protection work in the default dungeon',()=>{
- let b=changeBuild(newBuild(),'gem-5-0-renew');b=changeBuild(b,'gem-5-1-echo');b=changeBuild(b,'gem-5-2-quick');b=changeBuild(b,'core-allocate-1_1');const g=rogue(b);g.hero.hp=1000;g.command({...idle,skill:5});assert.ok(Math.abs(g.cooldowns[5]-12*1.2*.75)<1e-8);step(g,.5);assert.ok(Math.abs(g.hero.hp-(1000+2*2500*1.45*.65*.9))<1e-8);
+ let b=changeBuild(newBuild(),'gem-5-0-renew');b=changeBuild(b,'gem-5-1-echo');b=changeBuild(b,'gem-5-2-quick');b=changeBuild(b,'core-allocate-1_1');const g=rogue(b);g.hero.hp=1000;g.command({...idle,skill:5});assert.ok(Math.abs(g.cooldowns[5]-12*1.2*.75)<1e-8);step(g,.5);assert.ok(Math.abs(g.hero.hp-(1000+2*2500*1.45*.65*.9*heroStats(newHuntProgress()).skillDamageMultiplier))<1e-8);
  const m=g.mobs[0];g.hero.motion=null;m.x=g.hero.x+25;m.state='windup';m.until=0;m.target={x:g.hero.x,y:g.hero.y};const hp=g.hero.hp;step(g,.01);assert.ok(Math.abs(hp-g.hero.hp-65*.98)<1e-8);
 });
 test('campaign uses the same compiler, repeats actual damage and healing, retaining baseline skill values',()=>{

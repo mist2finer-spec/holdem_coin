@@ -12,8 +12,13 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: mini-services/poker-server/package-lock.json
+          cache-dependency-path: |
+            package-lock.json
+            mini-services/poker-server/package-lock.json
+      - run: npm ci --legacy-peer-deps --no-audit --no-fund
       - run: npm ci --prefix mini-services/poker-server
       - run: npm run typecheck --prefix mini-services/poker-server
       - run: npm test --prefix mini-services/poker-server
+      - run: npm run test:rpg:hybrid
+      - run: npm run test:rpg:idle
       - run: node scripts/test-server-smoke.mjs

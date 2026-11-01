@@ -32,7 +32,7 @@ export function IdleEquipmentPanel({progress:p,onCommand,onClose,error,feedback}
  const chooseSlot=(next:EquipmentSlot)=>{setSlot(next);setSelection(equipped?.[next].instanceId??'');};
  return <section className="idle-panel" aria-label="방치 성장과 장비">
   <header className="idle-header"><div><small>THE LONG HUNT</small><h2>성장 · 장비</h2></div><div className="idle-wallet"><span><Coins size={13}/>{compact(p.gold)}</span><span><Gem size={13}/>{format(p.soulGem)}</span></div><button className="idle-close" aria-label="장비 성장창 닫기" onClick={onClose}><X size={20}/></button></header>
-  <div className="idle-progress"><div><strong>Lv. {p.level}</strong><span>코어 {budget}P · 특성 {traitPoints(p)}P 남음</span></div><progress aria-label="다음 레벨 경험치" value={p.xp} max={required||1}/><small>{format(p.xp)} / {format(required)} XP · 24시간까지 적립</small><button onClick={()=>onCommand('idle-claim')} disabled={!p.idle}><Clock size={14}/> 방치 보상 받기</button></div>
+  <div className="idle-progress"><div><strong>Lv. {p.level}</strong><span>코어 {budget}P · 특성 {traitPoints(p)}P 남음</span></div><progress aria-label="다음 레벨 경험치" value={p.xp} max={required||1}/><small>{format(p.xp)} / {format(required)} XP · 방치 적립 + 전투 보상</small><button onClick={()=>onCommand('idle-claim')} disabled={!p.idle}><Clock size={14}/> 방치 보상 받기</button></div>
   <nav className="idle-tabs" aria-label="성장 메뉴">{tabs.map(([id,label,Icon])=><button key={id} aria-pressed={tab===id} onClick={()=>setTab(id)}><Icon size={16}/><span>{label}</span></button>)}</nav>
   {error&&<p className="idle-error" role="status">{error}</p>}
   {feedback&&!error&&<p className="idle-feedback" role="status" aria-live="polite">{feedback}</p>}
@@ -60,6 +60,6 @@ export function IdleEquipmentPanel({progress:p,onCommand,onClose,error,feedback}
    {tab==='goldstats'&&<GoldStatControls progress={p} onCommand={onCommand}/>}
    {tab==='traits'&&<TraitControls progress={p} onCommand={onCommand}/>}
    <details className="idle-details idle-pace"><summary><Clock size={13}/> 방치 성장 속도</summary><p>분당 경험치 {IDLE_BALANCE.xpPerMinute} · 골드 {IDLE_BALANCE.goldPerMinute} · 영혼석 {IDLE_BALANCE.soulGemPerMinute}. 접속 여부와 관계없이 같은 시간으로 적립되며 한 번에 최대 24시간입니다.</p><p>새 계정에서 매일 24시간을 빠짐없이 받으면 코어 50P 약32일, 60P 약57일이 설계 목표입니다. 처치로 경험치가 추가되지는 않습니다. 실제 플레이 측정값이 아니며 기존 레벨과 놓친 정산 시간에 따라 달라집니다.</p></details>
-  </div><footer className="idle-stats"><span>기초 공격 <b>{compact(stats.attack)}</b></span><span>성장 체력 <b>{compact(stats.naturalHP)}</b></span><span>치명타 <b>{(stats.crit*100).toFixed(1)}%</b></span></footer>
+  </div><footer className="idle-stats"><span>기초 공격 <b>{compact(stats.attack)}</b></span><span>성장 체력 <b>{compact(stats.naturalHP)}</b></span><span>기초 치명타 <b>{(stats.crit*100).toFixed(1)}%</b></span></footer>
  </section>;
 }

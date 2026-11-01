@@ -1,3 +1,4 @@
+import {big} from '../../src/components/rpg/combat-big';
 import test from 'node:test';import assert from 'node:assert/strict';
 import {generateRogueMap,ROGUE_TILE,routeFrom} from '../../src/components/rpg/rogue/map';
 import {RogueEngine} from '../../src/components/rpg/rogue/engine';
@@ -10,7 +11,7 @@ test('100 seeds: long connected arenas vary width, elevation, scenery and props,
  }assert.equal(layouts.size,100);assert.ok(heights.size>90);
 });
 test('entry pack leaves room for actual retreat, dodge and slide without bypassing collision rules',()=>{
- for(let seed=1;seed<=30;seed++){const g=new RogueEngine(seed),start=g.hero.x;assert.equal(g.mobs.length,30);assert.ok(g.mobs.every(m=>m.x>=start+SPAWN_SAFETY.nearHero));
+ for(let seed=1;seed<=30;seed++){const g=new RogueEngine(seed),start=g.hero.x;assert.equal(g.mobs.length,12);assert.ok(g.mobs.every(m=>m.x>=start+SPAWN_SAFETY.nearHero));
   g.command({...idle,x:-1,dodge:true});for(let i=0;i<24;i++)g.step(.02,idle);assert.ok(g.hero.x<=start-119);assert.equal(g.hero.y,g.map.start.y);assert.equal(g.room,0);assert.ok(g.hero.hp>0);
   for(let i=0;i<60;i++)g.step(.02,idle);const x=g.hero.x;g.command({...idle,x:1,slide:true});for(let i=0;i<24;i++)g.step(.02,idle);assert.ok(g.hero.x>x+119);}
 });
@@ -22,5 +23,5 @@ test('selected lower passage label follows the actual traversal, not AUTO prefer
  const g=new RogueEngine(4,{initial:3,min:3,max:3,batch:3,seconds:0});g.mobs.forEach(m=>m.hp=0);g.step(.02,idle);const gate=routeFrom(g.map,0,'lower')!;Object.assign(g.hero,gate.from);assert.ok(g.command({...idle,branch:'lower',jump:true}));assert.equal(g.view().gate?.id,gate.id);assert.equal(g.view().gate?.passage,'jump-down');
 });
 test('a waiting front horde still leaves a usable retreat lane after the full spawn budget',()=>{
- for(const seed of [3,13,27]){const g=new RogueEngine(seed);g.hero.hp=g.hero.maxHP=1e8;g.mobs.forEach(m=>m.hp=0);g.hero.x+=400;for(let i=0;i<2800;i++)g.step(.02,idle);assert.equal(g.view().wave.spawned,g.view().wave.target);assert.ok(g.mobs.length>=120);assert.ok(g.mobs.every(m=>m.x>g.hero.x));const x=g.hero.x;assert.ok(g.command({...idle,x:-1,dodge:true}));for(let i=0;i<24;i++)g.step(.02,idle);assert.ok(g.hero.x<x-119,`retreat blocked seed=${seed}`);}
+ for(const seed of [3,13,27]){const g=new RogueEngine(seed,undefined,1,1000);g.receiveDamage=()=>big(0);g.hero.hp=g.hero.maxHP=1e8;g.mobs.forEach(m=>m.hp=0);g.hero.x+=400;for(let i=0;i<2800;i++)g.step(.02,idle);assert.equal(g.view().wave.spawned,g.view().wave.target);assert.ok(g.mobs.length>=120);assert.ok(g.mobs.every(m=>m.x>g.hero.x));const x=g.hero.x;assert.ok(g.command({...idle,x:-1,dodge:true}));for(let i=0;i<24;i++)g.step(.02,idle);assert.ok(g.hero.x<x-119,`retreat blocked seed=${seed}`);}
 });

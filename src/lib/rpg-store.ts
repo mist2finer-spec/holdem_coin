@@ -1,3 +1,5 @@
+import {validateHybridProgress} from './rpg-hybrid-profile';
+import {configureSqlite} from './rpg-sqlite';
 import {validateEquipmentState,equippedItems} from '../components/rpg/idle-equipment';
 import {validateGemCollection,validateGachaState,validateOwnedEquipmentGems} from '../components/rpg/idle-gacha';
 import {validateIdleProgress} from '../components/rpg/idle-progression';
@@ -11,7 +13,7 @@ import {newHuntProgress,type HuntProgress} from '../components/rpg/hunt-progress
 export class RpgStore{
  readonly db:DatabaseSync;private ownsDatabase:boolean;
  constructor(filename:string,shared?:DatabaseSync){this.ownsDatabase=!shared;if(filename!==':memory:')mkdirSync(path.dirname(filename),{recursive:true});
-  this.db=shared??new DatabaseSync(filename);this.db.exec('PRAGMA journal_mode=WAL; PRAGMA busy_timeout=3000; CREATE TABLE IF NOT EXISTS rpg_players (id TEXT PRIMARY KEY, progress TEXT NOT NULL, revision INTEGER NOT NULL DEFAULT 0, updated_at INTEGER NOT NULL)');}
+  this.db=shared??new DatabaseSync(filename);configureSqlite(this.db);this.db.exec('CREATE TABLE IF NOT EXISTS rpg_players (id TEXT PRIMARY KEY, progress TEXT NOT NULL, revision INTEGER NOT NULL DEFAULT 0, updated_at INTEGER NOT NULL)');}
  load(id:string){
   let row=this.db.prepare('SELECT progress,revision FROM rpg_players WHERE id=?').get(id) as {progress:string;revision:number}|undefined;
   if(!row){const count=this.db.prepare('SELECT COUNT(*) AS n FROM rpg_players').get() as {n:number};if(count.n>=10000)throw Error('RPG guest capacity reached');
@@ -39,9 +41,10 @@ export class RpgStore{
   if(progress.weaponLevels===undefined)progress.weaponLevels={unarmed:1,sword:1,axe:progress.weaponLevel,dual:1,spear:1};
   if(progress.weaponLevels.unarmed===undefined)progress.weaponLevels.unarmed=1;
   if(!isWeaponType(progress.weaponType)||!progress.weaponLevels||WEAPON_TYPES.some(w=>!Number.isSafeInteger(progress.weaponLevels[w])||progress.weaponLevels[w]<1||progress.weaponLevels[w]>1e12)||(progress.equipment?equippedItems(progress.equipment).weapon.level!==progress.weaponLevel:progress.weaponLevels[progress.weaponType]!==progress.weaponLevel))throw Error('Invalid saved weapons');
-  for(const value of Object.entries(progress).filter(([key])=>!['equipment','gemCollection','gacha','idle','legacyBuild','build','weaponType','weaponLevels','combatArts','traits','skillLevels','skillCopies','skillEnabled'].includes(key)))if(typeof value[1]!=='number'||!Number.isSafeInteger(value[1])||value[1]<0||value[1]>(value[0]==='xp'?Number.MAX_SAFE_INTEGER:1e12))throw Error('Invalid saved progress');
+  for(const value of Object.entries(progress).filter(([key])=>!['hybrid','equipment','gemCollection','gacha','idle','legacyBuild','build','weaponType','weaponLevels','combatArts','traits','skillLevels','skillCopies','skillEnabled'].includes(key)))if(typeof value[1]!=='number'||!Number.isSafeInteger(value[1])||value[1]<0||value[1]>(value[0]==='xp'?Number.MAX_SAFE_INTEGER:1e12))throw Error('Invalid saved progress');
   if(progress.labyrinthStage>=6000||progress.labyrinthCompleted>1)throw Error('Invalid labyrinth progress');
   if(!progress.level||!progress.weaponLevel||!progress.armorLevel)throw Error('Invalid saved levels');
+  if(progress.hybrid)validateHybridProgress(progress.hybrid);
   if(progress.equipment){validateEquipmentState(progress.equipment);validateGemCollection(progress.gemCollection);validateOwnedEquipmentGems(progress.equipment,progress.gemCollection!);}if(progress.gacha)validateGachaState(progress.gacha);if(progress.idle)validateIdleProgress(progress.idle);
   return {progress,revision:row.revision};
  }

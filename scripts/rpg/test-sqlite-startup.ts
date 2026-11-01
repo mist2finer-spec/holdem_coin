@@ -1,0 +1,14 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {DatabaseSync} from 'node:sqlite';import {spawn} from 'node:child_process';import {mkdtempSync,rmSync} from 'node:fs';import {tmpdir} from 'node:os';import path from 'node:path';import {createGameStorage} from '../../src/lib/game-storage';
+test('fresh shared DB waits for an exclusive startup lock before WAL configuration',async()=>{
+ const dir=mkdtempSync(path.join(tmpdir(),'sqlite-startup-')),file=path.join(dir,'game.sqlite'),initial=new DatabaseSync(file);initial.exec('CREATE TABLE lock_probe(id INTEGER)');initial.close();
+ const child=spawn(process.execPath,['--input-type=module','-e',`import {DatabaseSync} from 'node:sqlite';const d=new DatabaseSync(process.argv[1]);d.exec('BEGIN EXCLUSIVE');console.log('LOCKED');setTimeout(()=>{d.exec('COMMIT');d.close();},350);`,file],{stdio:['ignore','pipe','pipe']});let error='';child.stderr.on('data',b=>error+=b);
+ const exited=new Promise<number|null>((resolve,reject)=>{child.once('error',reject);child.once('exit',resolve);});
+ try{await new Promise<void>((resolve,reject)=>{child.stdout.on('data',b=>{if(String(b).includes('LOCKED'))resolve();});child.once('error',reject);child.once('exit',code=>{if(code)reject(Error(error));});});const storage=createGameStorage(file);assert.equal((storage.db.prepare('PRAGMA journal_mode').get() as any).journal_mode,'wal');assert.ok(storage.progress.load('startup').progress);storage.close();assert.equal(await exited,0,error);}finally{child.kill();await exited;rmSync(dir,{recursive:true,force:true});}
+});
+
+test('concurrent web/poker migration rechecks receipts inside the write transaction',async()=>{
+ const dir=mkdtempSync(path.join(tmpdir(),'sqlite-migrate-')),file=path.join(dir,'game.sqlite');
+ const {RpgStore}=await import('../../src/lib/rpg-store');const legacy=new RpgStore(path.join(dir,'players.sqlite'));const saved=legacy.load('migration-race');saved.progress.gold=12345;legacy.save('migration-race',saved.progress,saved.revision);legacy.close();
+ const code=`const {createGameStorage}=require('./src/lib/game-storage.ts');const s=createGameStorage(process.argv[1]);if(s.progress.load('migration-race').progress.gold!==12345)throw Error('lost gold');s.close();`;
+ try{await Promise.all(Array.from({length:6},()=>new Promise<void>((resolve,reject)=>{const p=spawn(process.execPath,['--import','./mini-services/poker-server/node_modules/tsx/dist/loader.mjs','-e',code,file],{cwd:process.cwd(),stdio:['ignore','ignore','pipe']});let errors='';p.stderr.on('data',b=>errors+=b);p.on('error',reject);p.on('exit',c=>c===0?resolve():reject(Error(errors)));})));const s=createGameStorage(file);assert.equal(s.progress.load('migration-race').progress.gold,12345);assert.equal((s.db.prepare('SELECT COUNT(*) AS n FROM storage_migrations').get() as any).n,1);s.close();}finally{rmSync(dir,{recursive:true,force:true});}
+});

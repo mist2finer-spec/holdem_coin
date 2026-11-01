@@ -5,12 +5,13 @@ import {isWeaponType,type WeaponType} from './hunt-weapons';
 import type {EquipmentState} from './idle-equipment';
 import type {GemCollection,GachaState} from './idle-gacha';
 import type {IdleProgress} from './idle-progression';
+import type {HybridProgress} from '../../lib/rpg-hybrid-profile';
 /** Web adaptation. Native curve arithmetic recovered; reward/stat balance is provisional. */
 export type Curve={min:number;max:number;base:number;inc:number;rate:number;scaler:number};
 export type HuntBalance={version:1;source:string;maxLevel:number;team:Curve[];weapon:Curve[];armor:Curve[];reward:{gold:number;xp:number;soulGem:number}};
 export const DEFAULT_HUNT_BALANCE:HuntBalance={version:1,source:RECOVERED_GROWTH.source,maxLevel:RECOVERED_GROWTH.teamMaxLevel,
  team:RECOVERED_GROWTH.teamCurves,weapon:[RECOVERED_GROWTH.weaponCurve],armor:[RECOVERED_GROWTH.armorCurve],reward:{...HUNT_MONSTER.reward}};
-export type HuntProgress={build?:BuildState;equipment?:EquipmentState;gemCollection?:GemCollection;gacha?:GachaState;idle?:IdleProgress;legacyBuild?:BuildState;labyrinthStage:number;labyrinthCompleted:number;combatArts:Record<number,number>;traits:Record<number,number>;masteryLevel:number;masteryEssence:number;willLevel:number;soulOrb:number;skillLevels:number[];skillCopies:number[];skillEnabled:number[];level:number;attackTraining:number;healthTraining:number;xp:number;gold:number;soulGem:number;kills:number;weaponLevel:number;armorLevel:number;potions:number;questTier:number;weaponType:WeaponType;weaponLevels:Record<WeaponType,number>};
+export type HuntProgress={hybrid?:HybridProgress;build?:BuildState;equipment?:EquipmentState;gemCollection?:GemCollection;gacha?:GachaState;idle?:IdleProgress;legacyBuild?:BuildState;labyrinthStage:number;labyrinthCompleted:number;combatArts:Record<number,number>;traits:Record<number,number>;masteryLevel:number;masteryEssence:number;willLevel:number;soulOrb:number;skillLevels:number[];skillCopies:number[];skillEnabled:number[];level:number;attackTraining:number;healthTraining:number;xp:number;gold:number;soulGem:number;kills:number;weaponLevel:number;armorLevel:number;potions:number;questTier:number;weaponType:WeaponType;weaponLevels:Record<WeaponType,number>};
 export const newHuntProgress=():HuntProgress=>({build:newBuild(),labyrinthStage:0,labyrinthCompleted:0,combatArts:{},traits:{},masteryLevel:1,masteryEssence:0,willLevel:0,soulOrb:0,skillLevels:[1,1,1,1,1,1],skillCopies:[0,0,0,0,0,0],skillEnabled:[1,1,1,1,1,1],level:1,attackTraining:0,healthTraining:0,xp:0,gold:0,soulGem:0,kills:0,weaponLevel:1,armorLevel:1,potions:3,questTier:0,weaponType:'axe',weaponLevels:{unarmed:1,sword:1,axe:1,dual:1,spear:1}});
 export const HUNT_QUESTS=[{name:'숲의 첫걸음',kills:5,gold:50,soulGem:10},{name:'슬라임 정리',kills:20,gold:150,soulGem:20},{name:'숲의 수호자',kills:50,gold:400,soulGem:40}] as const;
 export const POTION_PRICE=50;

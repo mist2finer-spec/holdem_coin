@@ -4,6 +4,7 @@ import {generateRogueMap,walkable,moveOnMap,lineClear,cell,ROGUE_TILE,roomGates,
 import {sampleTraversal,traversalLeg,traversalDuration,TRAVERSAL} from '../../src/components/rpg/rogue/traversal';
 import {RogueEngine,ROGUE_SPECIES,type RogueInput} from '../../src/components/rpg/rogue/engine';
 import {LABYRINTH} from '../../src/components/rpg/hunt-labyrinth';
+import {rewardForKill} from '../../src/components/rpg/hybrid-balance';
 import {RogueService,parseRogueInput} from '../../src/lib/rpg-rogue-service';
 const SMALL={initial:3,min:3,max:3,seconds:0,batch:3};
 const game=(seed:number)=>new RogueEngine(seed,SMALL);
@@ -46,7 +47,7 @@ test('side-view movement ignores vertical input, keeps mobs on one lane, and all
  c.command({...idle,y:1,jump:true});assert.equal(c.hero.motion?.to.x,c.hero.x);
 });
 test('attacks award once, skills reserve across attacks, jump cannot pass walls or land inside a mob',()=>{
- const g=game(3);for(const m of g.mobs)m.hp=0;const m=g.mobs[0];m.x=g.hero.x+45;m.y=g.hero.y;m.hp=40;m.maxHP=40;m.state='idle';g.command({...idle,attack:true});g.command({...idle,skill:0});step(g,55);assert.equal(g.kills,1);assert.equal(g.gold,10);assert.ok(g.cooldowns[0]>0);step(g,100);assert.equal(g.gold,10);
+ const g=game(3);for(const m of g.mobs)m.hp=0;const m=g.mobs[0];m.x=g.hero.x+45;m.y=g.hero.y;m.hp=40;m.maxHP=40;m.state='idle';g.command({...idle,attack:true});g.command({...idle,skill:0});step(g,55);assert.equal(g.kills,1);assert.equal(g.gold,rewardForKill(1,1,SMALL.max).gold);assert.ok(g.cooldowns[0]>0);step(g,100);assert.equal(g.gold,rewardForKill(1,1,SMALL.max).gold);
  g.command({...idle,x:1,jump:true});assert.equal(g.hero.motion?.kind,'jump');step(g,50);assert.equal(g.hero.motion,null);assert.ok(walkable(g.map,g.hero.x,g.hero.y));assert.ok(Math.hypot(m.x-g.hero.x,m.y-g.hero.y)>=24||m.hp===0);
 });
 test('server sessions cap elapsed time, isolate users, deduplicate actions and reject replaced sessions',()=>{
@@ -83,8 +84,8 @@ test('combat feedback reports actual damage and one kill reward without changing
  const g=game(3);g.mobs.forEach(m=>m.hp=0);const m=g.mobs[0];m.x=g.hero.x+45;m.y=g.hero.y;m.hp=m.maxHP=40;m.state='idle';
  g.command({...idle,attack:true});step(g,14);
  const damage=g.view().fx.filter(f=>f.kind==='damage'),gold=g.view().fx.filter(f=>f.kind==='gold');
- assert.equal(damage.length,1);assert.equal(damage[0].value,40);assert.equal(gold.length,1);assert.equal(gold[0].value,10);assert.equal(g.gold,10);
- step(g,20);g.command({...idle,attack:true});step(g,65);assert.equal(g.gold,10);assert.equal(g.kills,1);assert.equal(g.view().fx.filter(f=>f.kind==='gold'||f.kind==='damage').length,0);
+ assert.equal(damage.length,1);assert.equal(damage[0].value,40);assert.equal(gold.length,1);assert.equal(gold[0].value,rewardForKill(1,1,SMALL.max).gold);assert.equal(g.gold,rewardForKill(1,1,SMALL.max).gold);
+ step(g,20);g.command({...idle,attack:true});step(g,65);assert.equal(g.gold,rewardForKill(1,1,SMALL.max).gold);assert.equal(g.kills,1);assert.equal(g.view().fx.filter(f=>f.kind==='gold'||f.kind==='damage').length,0);
 });
 
 test('walking, dodge, and the wrong action never bypass locked or cleared passage gates',()=>{
