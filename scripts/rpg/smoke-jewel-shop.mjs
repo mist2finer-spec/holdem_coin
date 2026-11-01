@@ -1,7 +1,7 @@
 // Requires `npm run build`; starts an isolated disposable web+poker pair and removes its own save directory.
 import {spawn} from 'node:child_process';import {mkdtempSync,rmSync,openSync,closeSync} from 'node:fs';import {tmpdir} from 'node:os';import path from 'node:path';import assert from 'node:assert/strict';
 import {io} from '../../mini-services/poker-server/node_modules/socket.io-client/build/esm-debug/index.js';
-const dir=mkdtempSync(path.join(tmpdir(),'poe-shop-http-')),env={...process.env,RPG_SAVE_DIR:dir},processes=[],logs=[];let socket;
+const dir=mkdtempSync(path.join(tmpdir(),'poe-shop-http-')),env={...process.env,RPG_SAVE_DIR:dir,HAND_HISTORY_DIR:path.join(dir,'history')},processes=[],logs=[];let socket;
 function launch(args,port){const fd=openSync(path.join(dir,`${port}.log`),'a');logs.push(fd);const p=spawn(process.execPath,args,{cwd:process.cwd(),env:{...env,PORT:String(port),POKER_PORT:String(port),HOSTNAME:'127.0.0.1'},stdio:['ignore',fd,fd]});processes.push(p);p.on('error',e=>console.error(e.message));}
 let cookie='';async function request(body){const r=await fetch('http://127.0.0.1:3210/api/rpg/'+(body.action==='view'?'items':'rogue'),{method:'POST',headers:{'Content-Type':'application/json',...(cookie?{Cookie:cookie}:{})},body:JSON.stringify(body)});cookie=r.headers.get('set-cookie')?.split(';')[0]??cookie;const text=await r.text();if(!r.ok)throw Error(text);return [JSON.parse(text),text.length];}
 try{
