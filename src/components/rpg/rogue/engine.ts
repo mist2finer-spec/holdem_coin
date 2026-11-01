@@ -27,6 +27,7 @@ export class RogueEngine{
  private dots:{mob:number;damage:string;next:number;left:number}[]=[];
  setGrowth(p:HuntProgress){const base=heroStats(newHuntProgress()),now=heroStats(p);this.growthDamage=now.attack/Math.max(1,base.attack);this.growthDefense=now.incomingDamageScale/base.incomingDamageScale;}
  private compiled(slot:number){const c=compileSkill(this.build,slot);for(const key of [`gem:${c.activeId}`,...(this.build.links[slot]??[]).filter(Boolean).map(id=>`gem:${id}`),'gear:axe']){const outcome=this.transcended[key];if(outcome){const m=TRANSCEND_OUTCOMES[outcome];c.effect*=m.damage;c.area*=m.area;c.range=Math.sqrt(c.area);c.mana*=m.mana;}}return c;}
+ skillPreview(){return Array.from({length:6},(_,i)=>this.compiled(i));}
  private syncDefense(){const p=passiveBuild(this.build),maxLife=p.maxLifeOne?big(1):this.combatScale.mul(10000*(1+p.life)),maxShield=this.combatScale.mul(10000*p.energyShield),key=`${maxLife}:${maxShield}`;
   this.chaosImmune=p.chaosImmune;const maxMana=MANA.maximum*(1+p.mana);if(this.maxMana!==maxMana){this.mana=this.mana/this.maxMana*maxMana;this.maxMana=maxMana;}if(key===this.defenseKey)return;
   const oldMax=big(this.hero.bigMaxHP!).add(this.shieldEnabled?this.shield.bigMaxHP!:0),oldHP=big(this.hero.bigHP!).add(this.shieldEnabled?this.shield.bigHP!:0),ratio=oldHP.div(oldMax);

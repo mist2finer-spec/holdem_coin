@@ -34,7 +34,7 @@ export class RogueService{
   const saved=this.store?.load(account)??{progress:newHuntProgress(),revision:0};
   const game=new RogueEngine(this.seed()),id=randomUUID(),s:Session={...saved,id,game,last:now,seen:now,input:{...idle},sequence:0,cached:null as unknown as RogueView};
   game.build=structuredClone(saved.progress.build!);if(game.build.start&&game.build.start!=='hong')game.build=changeBuild(game.build,'core-start-hong',saved.progress.level);saved.progress.build=structuredClone(game.build);game.setGrowth(saved.progress);game.transcended=this.items?.view(account).transcended??{};
-  s.cached={...game.view(),growth:this.growth(s.progress),build:buildView(game.build,s.progress.level),id,sequence:0,map:game.map};this.sessions.set(account,s);return s.cached;
+  s.cached={...game.view(),growth:this.growth(s.progress),build:{...buildView(game.build,s.progress.level),skills:game.skillPreview()},id,sequence:0,map:game.map};this.sessions.set(account,s);return s.cached;
  }
  private growth(p:HuntProgress){return {gold:p.gold,attack:p.attackTraining,health:p.healthTraining,attackCost:trainingCost(p,'attack'),healthCost:trainingCost(p,'health')};}
  command(account:string,id:string,sequence:number,input:RogueInput,action:RogueAction='tick'){
@@ -54,6 +54,6 @@ export class RogueService{
   while(remaining>1e-8){const dt=Math.min(.02,remaining);s.game.step(dt,previousInput);remaining-=dt;}
   s.input=input;s.game.command(input);
   if(s.game.gold>beforeGold){s.progress.gold=Math.min(1e12,s.progress.gold+s.game.gold-beforeGold);for(let n=beforeKills;n<s.game.kills;n++)awardHuntKill(s.progress,{...DEFAULT_HUNT_BALANCE,reward:{...DEFAULT_HUNT_BALANCE.reward,gold:0,soulGem:0}});s.game.setGrowth(s.progress);try{if(this.store)s.revision=this.store.save(account,s.progress,s.revision);}catch(e){this.sessions.delete(account);throw e;}}
-  s.sequence=sequence;s.cached={...s.game.view(),growth:this.growth(s.progress),build:buildView(s.game.build,s.progress.level),id:s.id,sequence};return s.cached;
+  s.sequence=sequence;s.cached={...s.game.view(),growth:this.growth(s.progress),build:{...buildView(s.game.build,s.progress.level),skills:s.game.skillPreview()},id:s.id,sequence};return s.cached;
  }
 }
