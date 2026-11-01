@@ -1,4 +1,4 @@
-import {newBuild,validateBuild} from '../components/rpg/hunt-build';
+import {newBuild,validateBuild,migrateBuild} from '../components/rpg/hunt-build';
 import {DEVELOPMENT,ABILITY_ORDER} from '../components/rpg/hunt-development';
 import {WEAPON_TYPES,isWeaponType} from '../components/rpg/hunt-weapons';
 import {DatabaseSync} from 'node:sqlite';
@@ -17,7 +17,7 @@ export class RpgStore{
   const progress=JSON.parse(row.progress) as HuntProgress;
   // Additive migration
   const defaults=newHuntProgress();
-  if(progress.build===undefined)progress.build=newBuild();
+  progress.build=migrateBuild(progress.build,progress.level);
   validateBuild(progress.build,progress.level);
   for(const k of ['labyrinthStage','labyrinthCompleted','combatArts','traits','masteryLevel','masteryEssence','willLevel','soulOrb','skillLevels','skillCopies','skillEnabled'] as const)if(progress[k]===undefined)(progress as any)[k]=defaults[k];
   const record=(x:unknown)=>!!x&&typeof x==='object'&&!Array.isArray(x);

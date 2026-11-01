@@ -29,7 +29,7 @@ export function RoguePrototype({onExit}:{onExit:()=>void}){
    finally{clearTimeout(timeout);controller.signal.removeEventListener('abort',abort);}
   };
   const apply=(v:RogueView)=>{target=v;sequence=v.sequence;id=v.id;setView(v);};
-  const input=():RogueInput=>{const k=keys.current,x=(k.has('d')||k.has('ArrowRight')?1:0)-(k.has('a')||k.has('ArrowLeft')?1:0);return {x:document.hidden||uiBlocked.current?0:x||stick.current.x,y:0,auto:!document.hidden&&!uiBlocked.current&&automatic.current,attack:!document.hidden&&!uiBlocked.current&&k.has(' ')};};
+  const input=():RogueInput=>{const k=keys.current,x=(k.has('d')||k.has('ArrowRight')?1:0)-(k.has('a')||k.has('ArrowLeft')?1:0);return {paused:uiBlocked.current,x:document.hidden||uiBlocked.current?0:x||stick.current.x,y:0,auto:!document.hidden&&!uiBlocked.current&&automatic.current,attack:!document.hidden&&!uiBlocked.current&&k.has(' ')};};
   const schedule=()=>{if(controller.signal.aborted||!id||inFlight||target&&target.status!=='playing')return;if(timer)clearTimeout(timer);timer=setTimeout(()=>void pump(),roguePollDelay(lastSent,performance.now(),retryAt,document.hidden));};
   flush.current=schedule;
   const pump=async()=>{if(inFlight||!id||controller.signal.aborted||target&&target.status!=='playing')return;inFlight=true;lastSent=performance.now();

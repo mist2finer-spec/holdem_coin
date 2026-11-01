@@ -6,10 +6,10 @@ import {RpgStore} from '../../src/lib/rpg-store';import {RogueService} from '../
 import {RogueEngine} from '../../src/components/rpg/rogue/engine';
 import {HuntEngine} from '../../src/components/rpg/hunt-engine';
 const idle={x:0,y:0,auto:false};
-test('six actives, six gems, three sockets; invalid and incompatible links leave original unchanged',()=>{
- assert.equal(ACTIVE_SKILLS.length,6);assert.equal(GEMS.length,6);assert.equal(CORE_NODES.length,28);
- const b=newBuild(),before=structuredClone(b);assert.equal(b.links.length,6);b.links.forEach(l=>assert.equal(l.length,3));
- for(const bad of ['gem-0-3-power','gem-6-0-power','gem-0-0-evil','core-allocate-0_10','core-allocate-__proto__'])assert.equal(isBuildAction(bad),false);
+test('six actives, six gems, five supports form a six-link; invalid and incompatible links leave original unchanged',()=>{
+ assert.equal(ACTIVE_SKILLS.length,6);assert.equal(GEMS.length,6);assert.equal(CORE_NODES.length,52);
+ const b=newBuild(),before=structuredClone(b);assert.equal(b.links.length,6);b.links.forEach(l=>assert.equal(l.length,5));
+ for(const bad of ['gem-0-5-power','gem-6-0-power','gem-0-0-evil','core-allocate-0_18','core-allocate-__proto__'])assert.equal(isBuildAction(bad),false);
  assert.throws(()=>changeBuild(b,'gem-0-0-renew'));assert.throws(()=>changeBuild(b,'gem-5-0-power'));assert.deepEqual(b,before);
  const linked=changeBuild(b,'gem-0-0-power');assert.throws(()=>changeBuild(linked,'gem-0-1-power'));
  assert.deepEqual(changeBuild(linked,'gem-0-0-empty'),b);
@@ -29,7 +29,7 @@ test('all 1000 prefix graphs: connectivity, points and bridge removal enforced',
   if(a>1)assert.throws(()=>changeBuild(state,'core-refund-0_1',16));
  }
  let b=newBuild();assert.throws(()=>changeBuild(b,'core-allocate-0_2'));for(let i=1;i<=9;i++)b=changeBuild(b,`core-allocate-0_${i}`);for(let i=1;i<=3;i++)b=changeBuild(b,`core-allocate-1_${i}`);assert.throws(()=>changeBuild(b,'core-allocate-1_4'));
- assert.equal(buildBudget(100),27);assert.deepEqual(changeBuild(b,'core-reset').nodes,['root']);
+ assert.equal(buildBudget(100),51);assert.deepEqual(changeBuild(b,'core-reset').nodes,['root']);
  const disconnected={...newBuild(),nodes:['root','0_2']};assert.throws(()=>validateBuild(disconnected));
 });
 test('SQLite old saves migrate, saved builds survive a new service, duplicates charge once and stale writer fails',()=>{
@@ -39,7 +39,7 @@ test('SQLite old saves migrate, saved builds survive a new service, duplicates c
   assert.equal(one.build.remaining,11);assert.deepEqual(service.command('guest',v.id,1,idle,'core-allocate-0_1'),one);assert.equal(store.load('guest').revision,1);
   const other=new RogueService(()=>now,()=>12,store),w=other.start('guest','hong');assert.ok(w.build.state.nodes.includes('0_1'));
   other.command('guest',w.id,1,idle,'gem-0-0-power');assert.throws(()=>service.command('guest',v.id,2,idle,'core-allocate-0_2'),/다른 세션/);
-  assert.deepEqual(store.load('guest').progress.build?.links[0],['power',null,null]);assert.equal(store.load('guest').progress.build?.nodes.includes('0_2'),false);
+  assert.deepEqual(store.load('guest').progress.build?.links[0],['power',null,null,null,null]);assert.equal(store.load('guest').progress.build?.nodes.includes('0_2'),false);
   assert.throws(()=>other.command('guest',w.id,3,idle,'core-reset'));assert.throws(()=>other.command('guest',w.id,2,idle,'gem-5-0-power'));
   const valid=other.command('guest',w.id,2,idle,'gem-5-0-renew');assert.equal(valid.sequence,2);
  }finally{store.close();}
@@ -48,7 +48,7 @@ function rogue(build= newBuild()) {const g=new RogueEngine(1);g.build=build;g.mo
 function step(g:RogueEngine,seconds:number){for(let t=0;t<seconds;t+=.01)g.step(.01,idle);}
 test('default dungeon: linked damage, extended AoE and delayed echo hit real enemies; cast captures build',()=>{
  let b=changeBuild(newBuild(),'gem-0-0-power');b=changeBuild(b,'gem-0-1-echo');const g=rogue(b);g.command({...idle,skill:0});g.build=newBuild();step(g,.26);assert.ok(Math.abs(g.mobs[0].hp-(10000-110*1.3*.65))<1e-8);step(g,.22);assert.ok(Math.abs(g.mobs[0].hp-(10000-2*110*1.3*.65))<1e-8);step(g,1);assert.equal(g.hero.motion,null);
- const near=rogue(),wide=rogue(changeBuild(newBuild(),'gem-0-0-wide'));near.mobs[0].x=wide.mobs[0].x=near.hero.x+240;near.command({...idle,skill:0});wide.command({...idle,skill:0});step(near,.3);step(wide,.3);assert.equal(near.mobs[0].hp,10000);assert.equal(wide.mobs[0].hp,9901);
+ const near=rogue(),wide=rogue(changeBuild(newBuild(),'gem-0-0-wide'));near.mobs[0].x=wide.mobs[0].x=near.hero.x+210;near.command({...idle,skill:0});wide.command({...idle,skill:0});step(near,.3);step(wide,.3);assert.equal(near.mobs[0].hp,10000);assert.equal(wide.mobs[0].hp,9901);
 });
 test('healing, cooldown and protection work in the default dungeon',()=>{
  let b=changeBuild(newBuild(),'gem-5-0-renew');b=changeBuild(b,'gem-5-1-echo');b=changeBuild(b,'gem-5-2-quick');b=changeBuild(b,'core-allocate-1_1');const g=rogue(b);g.hero.hp=1000;g.command({...idle,skill:5});assert.ok(Math.abs(g.cooldowns[5]-12*1.2*.75)<1e-8);step(g,.5);assert.ok(Math.abs(g.hero.hp-(1000+2*2500*1.45*.65*.9))<1e-8);

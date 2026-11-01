@@ -9,11 +9,11 @@ export type RogueView=RogueSnapshot&{id:string;sequence:number;build:ReturnType<
 export function parseRogueInput(raw:unknown):RogueInput{
  if(!raw||typeof raw!=='object')throw Error('Invalid input');const p=raw as Record<string,unknown>;
  if(typeof p.x!=='number'||typeof p.y!=='number'||!Number.isFinite(p.x)||!Number.isFinite(p.y)||Math.abs(p.x)>1||Math.abs(p.y)>1||typeof p.auto!=='boolean')throw Error('Invalid direction');
- for(const field of ['attack','jump','dodge','slide'])if(p[field]!==undefined&&typeof p[field]!=='boolean')throw Error('Invalid action');
+ for(const field of ['attack','jump','dodge','slide','paused'])if(p[field]!==undefined&&typeof p[field]!=='boolean')throw Error('Invalid action');
  if([p.jump,p.slide,p.dodge].filter(Boolean).length>1)throw Error('Invalid movement action');
  if(p.branch!==undefined&&p.branch!=='upper'&&p.branch!=='lower')throw Error('Invalid branch');
  if(p.skill!==undefined&&(!Number.isInteger(p.skill)||Number(p.skill)<0||Number(p.skill)>5))throw Error('Invalid skill');
- return {branch:p.branch as 'upper'|'lower'|undefined,x:p.x,y:p.y,auto:p.auto,attack:p.attack as boolean|undefined,jump:p.jump as boolean|undefined,dodge:p.dodge as boolean|undefined,slide:p.slide as boolean|undefined,skill:p.skill as number|undefined};
+ return {paused:p.paused as boolean|undefined,branch:p.branch as 'upper'|'lower'|undefined,x:p.x,y:p.y,auto:p.auto,attack:p.attack as boolean|undefined,jump:p.jump as boolean|undefined,dodge:p.dodge as boolean|undefined,slide:p.slide as boolean|undefined,skill:p.skill as number|undefined};
 }
 const idle:RogueInput={x:0,y:0,auto:false};
 type Session={progress:HuntProgress;revision:number;id:string;game:RogueEngine;last:number;seen:number;input:RogueInput;sequence:number;cached:RogueView};
@@ -42,7 +42,7 @@ export class RogueService{
   const now=this.now(),gap=Math.max(0,(now-s.last)/1000),reconnecting=gap>ROGUE_PACE.maxActiveGap;
   // Catch up ordinary network jitter in small authoritative steps. Long absences use neutral input.
   let remaining=reconnecting?ROGUE_PACE.reconnectStep:gap;s.last=Math.max(s.last,now);s.seen=now;
-  const previousInput=reconnecting?idle:s.input;
+  const previousInput=reconnecting?{...idle,paused:s.input.paused}:s.input;
   while(remaining>1e-8){const dt=Math.min(.02,remaining);s.game.step(dt,previousInput);remaining-=dt;}
   s.input=input;s.game.command(input);s.sequence=sequence;s.cached={...s.game.view(),build:buildView(s.game.build,s.progress.level),id:s.id,sequence};return s.cached;
  }

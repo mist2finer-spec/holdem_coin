@@ -93,3 +93,6 @@ mini-services/poker-server/data/
 
 # Curated procedural dungeon atlas generated from the supplied visual reference
 !/public/rpg/maps/modular-dungeon/*.png
+
+/scripts/rpg/csharp-parity/bin/
+/scripts/rpg/csharp-parity/obj/

@@ -1,0 +1,3 @@
+import fs from 'node:fs';import path from 'node:path';
+import {CORE_NODES,CORE_EDGES,ACTIVE_SKILLS,GEMS} from '../../src/components/rpg/hunt-build';
+const target=process.argv[2]??'public/rpg/builds/axe-v2.json';fs.mkdirSync(path.dirname(target),{recursive:true});fs.writeFileSync(target,JSON.stringify({version:2,weapon:'axe',linkCount:6,supportSockets:5,numberLibrary:'break_infinity.js@2.2.0',formula:'base*(1+sum(increased))*product(more)',radiusFormula:'sqrt((1+increasedArea)*moreArea)',nodes:CORE_NODES,edges:CORE_EDGES.map(([from,to])=>({from,to})),skills:ACTIVE_SKILLS,gems:GEMS.map(g=>({more:1,area:1,cooldown:1,repeat:0,...g}))},null,2)+'\n');console.log(target);
