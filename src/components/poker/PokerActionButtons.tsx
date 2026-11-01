@@ -16,7 +16,7 @@ export function PokerActionButtons({currentBet,call,stack,minRaise,maxRaise,pot,
  const submit=(action:ActionType,amount:number)=>{setOpen(false);onSubmit(action,amount);};
  const customAmount=bigBlind?Math.round(Number(custom)*bigBlind):Number(custom);
  const validCustom=custom.trim()!==''&&Number.isSafeInteger(customAmount)&&customAmount>=minRaise&&customAmount<=maxRaise&&maxRaise>currentBet+call&&stack>call;
- return <div className="poker-action-row" aria-label="배팅 액션">
+ return <div className="poker-action-row" aria-label="배팅 액션" data-poker-chip-action>
   <ActionSkinButton skin="red" className="poker-main-action" onClick={()=>submit('fold',0)}>FOLD</ActionSkinButton>
   <ActionSkinButton skin="blue" className="poker-main-action" onClick={()=>submit(call>0?'call':'check',Math.min(call,stack))}>
    {call>0?<><span>CALL</span><span className="text-[10px]">{formatMoney(Math.min(call,stack))}</span></>:'CHECK'}
@@ -29,6 +29,7 @@ export function PokerActionButtons({currentBet,call,stack,minRaise,maxRaise,pot,
     </ActionSkinButton>
    </PopoverTrigger>
    <PopoverContent side="top" align="end" sideOffset={8} collisionPadding={8}
+    data-poker-chip-action
     className="poker-pot-menu w-44 sm:w-52 p-2 bg-slate-950 border-amber-700 text-amber-100"
     aria-label="팟 베팅 또는 올인 선택">
     <p className="text-[10px] text-center mb-2 text-amber-200/80">금액을 눌러 베팅</p>

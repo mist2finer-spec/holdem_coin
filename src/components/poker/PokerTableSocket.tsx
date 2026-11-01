@@ -291,7 +291,7 @@ export function PokerTableSocket({ userName, onToast, tableSize=8, onMain,tourna
 
               {/* 사전 액션 큐 */}
               {!winnerInfo && !showdownReveal && rotatedActiveSeatId >= 0 && rotatedActiveSeatId !== 0 && mySeatId >= 0 && (
-                <div className="mt-1.5 pt-1.5 border-t border-amber-800/30">
+                <div data-poker-chip-action className="mt-1.5 pt-1.5 border-t border-amber-800/30">
                   {preAction ? (
                     <div className="flex items-center justify-center gap-2">
                       <span className="text-amber-300 text-[10px] sm:text-xs font-bold">

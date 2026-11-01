@@ -231,7 +231,7 @@ export function PokerTable({ userName, onToast, onMain }: Props) {
 
               {/* ★ 사전 액션 큐 (내 차례가 아닐 때 폴드/콜 미리 선택) */}
               {!isDealing && !winnerInfo && !showdownReveal && activeSeatId >= 0 && activeSeatId !== userSeatId && (
-                <div className="mt-1.5 pt-1.5 border-t border-amber-800/30">
+                <div data-poker-chip-action className="mt-1.5 pt-1.5 border-t border-amber-800/30">
                   {preAction ? (
                     // 사전 액션이 예약된 상태
                     <div className="flex items-center justify-center gap-2">

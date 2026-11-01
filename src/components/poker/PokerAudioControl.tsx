@@ -1,6 +1,6 @@
 "use client";
 import {useEffect, useState} from 'react';
-import {setPokerAudioHidden, setPokerAudioMuted, unlockPokerAudio} from '@/lib/poker-audio';
+import {playPokerSound, setPokerAudioHidden, setPokerAudioMuted, unlockPokerAudio} from '@/lib/poker-audio';
 
 export function PokerAudioControl() {
   const [muted, setMuted] = useState(false);
@@ -9,13 +9,22 @@ export function PokerAudioControl() {
     setMuted(saved); setPokerAudioMuted(saved);
     const visibility = () => setPokerAudioHidden(document.hidden);
     visibility();
+    const buttonClick = (event: MouseEvent) => {
+      const target = event.target instanceof Element ? event.target : null;
+      const button = target?.closest('button,[role="button"],summary');
+      if (!button || button.matches(':disabled,[aria-disabled="true"]') || button.closest('[data-poker-chip-action]')) return;
+      unlockPokerAudio();
+      void playPokerSound('button_press');
+    };
     document.addEventListener('pointerdown', unlockPokerAudio);
     document.addEventListener('keydown', unlockPokerAudio);
     document.addEventListener('visibilitychange', visibility);
+    document.addEventListener('click', buttonClick, true);
     return () => {
       document.removeEventListener('pointerdown', unlockPokerAudio);
       document.removeEventListener('keydown', unlockPokerAudio);
       document.removeEventListener('visibilitychange', visibility);
+      document.removeEventListener('click', buttonClick, true);
     };
   }, []);
   return <button type="button" aria-label={muted ? '사운드 켜기' : '사운드 끄기'} aria-pressed={!muted}

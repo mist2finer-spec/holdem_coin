@@ -1,5 +1,5 @@
 // Browser-only audio, shared by solo and multiplayer. No audio enters the engine.
-export type PokerSound = 'chip_raise' | 'all_in_chip' | 'shuffle_card' | 'taking_card';
+export type PokerSound = 'chip_raise' | 'all_in_chip' | 'shuffle_card' | 'taking_card' | 'button_press';
 export type PokerAudioScene = 'start' | 'lobby' | 'table' | null;
 const file = (name: string) => `/audio/poker/${name}.mp3`;
 let context: AudioContext | undefined;
@@ -11,6 +11,7 @@ let dealRequest = 0;
 let unlocked = false;
 let muted = false;
 let hidden = false;
+let uiEpoch = 0;
 const buffers = new Map<string, Promise<AudioBuffer>>();
 const effects = new Map<AudioBufferSourceNode, PokerSound>();
 
@@ -30,7 +31,7 @@ async function startMusic() {
   for(const source of music) source.stop(); music.clear();
   if (!context || !unlocked || !scene || muted || hidden) return;
   const tracks: ReadonlyArray<readonly [string,number]> = scene === 'start'
-    ? [['choose_map',.42],['tv_sound',.22]] : [[scene === 'lobby'?'game_room':'poker_room',.24]];
+    ? [['choose_map',.42],['tv_sound',.22]] : [['lobby_jazz',scene === 'lobby' ? .24 : .06]];
   await Promise.all(tracks.map(async([track,volume])=>{
     try {
       const data = await buffer(track);
@@ -45,14 +46,17 @@ async function startMusic() {
 }
 export function setPokerAudioScene(next: PokerAudioScene) {
   if (scene === next) return;
+  if (next === null) uiEpoch++;
   scene = next; stopEffects(); void startMusic();
 }
 export function setPokerAudioMuted(next: boolean) {
+  uiEpoch++;
   muted = next;
   if (master && context) master.gain.setValueAtTime(muted || hidden ? 0 : 1, context.currentTime);
   stopEffects(); void startMusic();
 }
 export function setPokerAudioHidden(next: boolean) {
+  uiEpoch++;
   hidden = next;
   if (master && context) master.gain.setValueAtTime(muted || hidden ? 0 : 1, context.currentTime);
   stopEffects(); void startMusic();
@@ -68,14 +72,16 @@ export function unlockPokerAudio() {
     void context.resume().then(() => {
       if (!unlocked) {
         unlocked = true;
-        for (const name of ['chip_raise','all_in_chip','shuffle_card','taking_card']) void buffer(name).catch(() => {});
+        for (const name of ['chip_raise','all_in_chip','shuffle_card','taking_card','button_press']) void buffer(name).catch(() => {});
         void startMusic();
       }
     }).catch(() => {});
   } catch { /* AudioContext may be unavailable. */ }
 }
 export async function playPokerSound(name: PokerSound, duration?: number) {
-  if (!context || !unlocked || muted || hidden || scene !== 'table') return;
+  const isButton = name === 'button_press';
+  if (!context || !unlocked || muted || hidden || (isButton ? !scene : scene !== 'table')) return;
+  const epoch = uiEpoch;
   const isDeal = name === 'shuffle_card' || name === 'taking_card';
   const deal = isDeal ? ++dealRequest : dealRequest;
   if (name === 'taking_card') {
@@ -84,9 +90,11 @@ export async function playPokerSound(name: PokerSound, duration?: number) {
   const requested = musicRequest;
   try {
     const data = await buffer(name);
-    if (!context || requested !== musicRequest || (isDeal && deal !== dealRequest) || muted || hidden || scene !== 'table') return;
+    // A navigation click may finish loading in the destination poker scene.
+    // Mute/hide/exit still invalidate it even if audio is subsequently re-enabled.
+    if (!context || (isButton ? epoch !== uiEpoch || !scene : requested !== musicRequest || scene !== 'table') || (isDeal && deal !== dealRequest) || muted || hidden) return;
     const source = context.createBufferSource(); const gain = context.createGain();
-    gain.gain.value = .65; source.buffer = data;
+    gain.gain.value = isButton ? .45 : .65; source.buffer = data;
     source.connect(gain).connect(master!);
     // Shuffle is looped/cut to the exact table-clear interval, even for a short clip.
     source.loop = duration !== undefined;
