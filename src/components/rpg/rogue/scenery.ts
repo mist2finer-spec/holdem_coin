@@ -15,7 +15,8 @@ export function drawModularScenery(ctx:CanvasRenderingContext2D,image:CanvasImag
  const wallWidth=240*zoom,wallHeight=172*zoom,shift=((sx(current.x1*ROGUE_TILE)*.3)%wallWidth+wallWidth)%wallWidth;
  ctx.save();ctx.globalAlpha=.7;for(let x=shift-wallWidth;x<w;x+=wallWidth)for(let y=-wallHeight;y<h;y+=wallHeight)part(current.scenery,x,y,wallWidth+.5,wallHeight+.5);ctx.restore();
  const shade=ctx.createLinearGradient(0,0,0,h);shade.addColorStop(0,'#050c12bb');shade.addColorStop(1,'#060b0f22');ctx.fillStyle=shade;ctx.fillRect(0,0,w,h);
- for(const room of map.rooms){
+ // The chosen fork's ground stays in front of the alternate-height backdrop.
+ for(const room of [...map.rooms.filter(r=>r.id!==currentRoom),current]){
   const left=sx(room.x1*ROGUE_TILE),right=sx((room.x2+1)*ROGUE_TILE);if(right<0||left>w)continue;
   const floorY=sy(map.start.y,room.elevation),alternate=room.column===current.column&&room.id!==currentRoom;
   const clipTop=Math.max(0,floorY-230*zoom);
