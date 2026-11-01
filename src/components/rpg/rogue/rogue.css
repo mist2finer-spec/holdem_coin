@@ -46,3 +46,34 @@
 .rogue-branches{position:absolute;bottom:65px;left:0;right:0;display:flex;justify-content:center;gap:12px;z-index:3}
 .rogue-branches button{min-height:44px;padding:8px 14px;background:#17373af5;border-color:#c6b67c}
 @container(max-height:700px){.rogue-shell{grid-template-rows:42px minmax(0,1fr) 277px 44px}.hunt-device .rogue-shell .hunt-console{padding-top:8px}.hunt-device .rogue-shell .hunt-controls{min-height:165px}.hunt-device .rogue-shell .hunt-dodge{bottom:58px}.hunt-device .rogue-shell .rogue-mobility{top:4px;bottom:auto}}
+/* Reference resource console: portrait proportions, glass orbs, two flasks and cyan controls. */
+.rogue-shell{grid-template-rows:48px minmax(0,2.35fr) minmax(310px,2.65fr) 48px}
+.rogue-shell .rogue-lower{background:#10222b;box-shadow:inset 0 1px #4dc9c766}
+.rogue-shell .rogue-objective{bottom:73px;padding:6px 8px 2px;background:linear-gradient(transparent,#07121888)}
+.rogue-shell .rogue-objective>span{font-size:8px}.rogue-shell .rogue-room-track{display:none}
+.rogue-resources{position:absolute;left:9px;right:9px;bottom:5px;display:flex;align-items:flex-end;justify-content:space-between;z-index:4;pointer-events:none}
+.vital-orb{position:relative;width:64px;height:64px;flex:none;filter:drop-shadow(0 2px 3px #000b)}
+.orb-mount{position:absolute;inset:0;width:100%;height:100%}.orb-glass{position:absolute;inset:9px;border-radius:50%;overflow:hidden;background:radial-gradient(at 45% 70%,#182329,#040c15);box-shadow:inset 0 0 8px #000,inset 1px 1px 2px #fff4}
+.orb-liquid{position:absolute;bottom:0;left:0;right:0;background:radial-gradient(ellipse at 38% 28%,#ef6c7b,#a40f36 55%,#480c26);box-shadow:inset 0 2px 2px #ffa0ad88;transition:height .2s linear}
+.vital-mana .orb-liquid{background:radial-gradient(ellipse at 38% 28%,#63bbf1,#155dab 55%,#102450);box-shadow:inset 0 2px 2px #a1e0ff99}
+.orb-liquid:before{content:'';position:absolute;left:-12%;right:-12%;top:-4px;height:8px;border-radius:50%;background:#ffffff20}
+.orb-shine{position:absolute;inset:0;border-radius:50%;background:radial-gradient(ellipse at 28% 20%,#fff9,transparent 23%),linear-gradient(125deg,#ffffff26,transparent 45%,#0007);box-shadow:inset 0 0 7px #000a,inset -3px -3px 4px #02090f99}
+.rogue-flasks{display:flex;gap:9px;pointer-events:auto;margin-bottom:4px}
+.rogue-shell .flask-button{position:relative;width:48px;height:46px;padding:4px 16px 3px 3px;border:1px solid #9c815e;border-radius:4px;background:linear-gradient(#23353c,#0e1b24);box-shadow:inset 0 0 4px #000a}
+.flask-button svg{display:block;width:26px;height:34px}.flask-button>span{position:absolute;right:4px;bottom:7px;font-size:10px;color:#eadcbb;line-height:1}.rogue-shell .flask-mana{border-color:#587eac}
+.hunt-device .rogue-shell .hunt-skill{border-color:#36b6b3;background:#10242c;border-radius:3px;padding:2px;box-shadow:inset 0 0 4px #36c8bf44,0 1px 3px #0006}
+.hunt-device .rogue-shell .hunt-mode-row button{min-width:76px;min-height:26px;border:1px solid #36c2bc;color:#6ae0d5;background:#102c35;border-radius:3px;padding:4px 8px}
+.hunt-device .rogue-shell .hunt-mode-row button[aria-pressed=true]{color:#74eee1;background:#11363c;border-color:#38d8c6}
+.hunt-device .rogue-shell .hunt-controls{max-height:245px;min-height:195px}
+.hunt-device .rogue-shell .hunt-dodge{top:80px;bottom:auto;width:44px;height:44px;border:1px solid #40c7bf;background:#102e36;color:#5ce5d4;box-shadow:0 0 8px #27bdb119}
+.hunt-device .rogue-shell .rogue-mobility{top:10px;gap:13px}
+.hunt-device .rogue-shell .rogue-mobility button{width:40px;height:40px;padding:7px;background:#102e36;border:1px solid #40c7bf;color:#5ce5d4;box-shadow:none}
+.hunt-device .rogue-shell .hunt-controls small{display:none}
+.hunt-device .rogue-shell .hunt-joystick{background:radial-gradient(#12242c,#12242c);border:1px solid #9a8a5f77;box-shadow:inset 0 1px 4px #0005;width:80px;height:80px;bottom:6px}
+.hunt-device .rogue-shell .hunt-stick{width:35px;height:35px;background:radial-gradient(at 30% 20%,#edf4e4,#91bbb1);border:1px solid #39caba;box-shadow:0 2px 4px #0008}
+.hunt-device .rogue-shell .hunt-stick-rail{opacity:0}
+.hunt-device .rogue-shell .hunt-footer{background:#0e2029;border-top:1px solid #b0a06b;padding-top:4px;gap:3px}
+.hunt-device .rogue-shell .hunt-footer button{border:1px solid #53645b;background:linear-gradient(#1a3039,#10232b);color:#cbb76e;border-radius:3px}
+.hunt-device .rogue-shell .hunt-footer button[aria-pressed=true]{border-color:#36c9c2;color:#57d6cc;background:#10333a}
+@container(max-height:700px){.rogue-shell{grid-template-rows:42px minmax(0,1fr) 285px 44px}.vital-orb{width:49px;height:49px}.orb-glass{inset:7px}.rogue-shell .rogue-objective{bottom:54px}.rogue-resources{bottom:3px;left:6px;right:6px}.rogue-shell .flask-button{height:42px;width:44px}.flask-button svg{height:30px}.hunt-device .rogue-shell .hunt-controls{min-height:170px}.hunt-device .rogue-shell .hunt-dodge{top:64px}.hunt-device .rogue-shell .rogue-mobility{top:5px}}
+@media(prefers-reduced-motion:reduce){.orb-liquid{transition:none}}

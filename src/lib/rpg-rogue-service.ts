@@ -11,9 +11,11 @@ export function parseRogueInput(raw:unknown):RogueInput{
  if(typeof p.x!=='number'||typeof p.y!=='number'||!Number.isFinite(p.x)||!Number.isFinite(p.y)||Math.abs(p.x)>1||Math.abs(p.y)>1||typeof p.auto!=='boolean')throw Error('Invalid direction');
  for(const field of ['attack','jump','dodge','slide','paused'])if(p[field]!==undefined&&typeof p[field]!=='boolean')throw Error('Invalid action');
  if([p.jump,p.slide,p.dodge].filter(Boolean).length>1)throw Error('Invalid movement action');
+ if(p.potion!==undefined&&(p.potion!=='health'&&p.potion!=='mana'))throw Error('Invalid potion');
+ if(p.potion!==undefined&&(p.skill!==undefined||p.attack||p.jump||p.slide||p.dodge))throw Error('Invalid potion action');
  if(p.branch!==undefined&&p.branch!=='upper'&&p.branch!=='lower')throw Error('Invalid branch');
  if(p.skill!==undefined&&(!Number.isInteger(p.skill)||Number(p.skill)<0||Number(p.skill)>5))throw Error('Invalid skill');
- return {paused:p.paused as boolean|undefined,branch:p.branch as 'upper'|'lower'|undefined,x:p.x,y:p.y,auto:p.auto,attack:p.attack as boolean|undefined,jump:p.jump as boolean|undefined,dodge:p.dodge as boolean|undefined,slide:p.slide as boolean|undefined,skill:p.skill as number|undefined};
+ return {potion:p.potion as 'health'|'mana'|undefined,paused:p.paused as boolean|undefined,branch:p.branch as 'upper'|'lower'|undefined,x:p.x,y:p.y,auto:p.auto,attack:p.attack as boolean|undefined,jump:p.jump as boolean|undefined,dodge:p.dodge as boolean|undefined,slide:p.slide as boolean|undefined,skill:p.skill as number|undefined};
 }
 const idle:RogueInput={x:0,y:0,auto:false};
 type Session={progress:HuntProgress;revision:number;id:string;game:RogueEngine;last:number;seen:number;input:RogueInput;sequence:number;cached:RogueView};
