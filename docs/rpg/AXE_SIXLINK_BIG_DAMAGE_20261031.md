@@ -53,3 +53,15 @@ RogueEngine's optional third constructor argument is a **trusted server-only com
 Formal verification omitted: existing CAS/sequence protocol not replaced; bounded graph/connectivity, migration, pause/reconnect and actual combat guards tested directly. No total-game safety proof claimed.
 
 Vendored BigDouble.cs SHA256: `2228487ee4583b20c235936bf6c4aebe6549c41bcb52c0978dd4eb6d0c17d10b`.
+
+## Operational verification
+
+Runtime commit `c8c3f4bed954f6b9d5f7fcde131d9bd5d238f39d` pushed to main and feat/rpg-axe-sixlink-bigdamage. Render deploy `dep-dbj9jk95efls73dqh0d0` reached **live** at2026-11-01 01:47:52 UTC (October31 in New York). Release endpoint matched that hash; health reported web:true/poker:true.
+
+In live Chrome, linked power/wide/echo/quick/reach to Rift: five supports, heading6/6. Learned area nodes2_1,2_2,2_3: points12→9, area increased+54%. Combined compiled area2.695 (UI rounds displayed floating value to2.69), radius1.6416455 (UI×1.64), per-hit effect0.739206, cooldown0.891825, two pulses. Quest gold/wave remained frozen while editing. Returned to character selection and entered a fresh run; five supports and9 remaining points persisted. No application-origin console errors observed; browser-extension metadata errors excluded. Source-level boundary-hit tests, rather than screenshots alone, verify actual expanded collision reach.
+
+![Allocated axe range path](images/axe-tree-live.jpg)
+
+![Six-link support configuration and radius preview](images/sixlink-live.jpg)
+
+Save rollback note: once a v2 build is saved, old v1-only server code cannot read it without a deliberate downgrade migration; do not silently discard the new two sockets or side nodes to roll back.
