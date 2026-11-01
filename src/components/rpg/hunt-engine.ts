@@ -43,7 +43,7 @@ export class HuntEngine {
  elapsed=0;kills=0;coins=0;xp=0;auto=false;paused=false;
  action='stay1';actionSerial=0;animationSpeed=1;actionUntil=0;
  pendingSkill:number|null=null;
- cooldowns=[0,0,0,0,0,0];dodgeReady=0;jumpReady=0;attackReady=0;
+ cooldownTotals=[0,0,0,0,0,0];cooldowns=[0,0,0,0,0,0];dodgeReady=0;jumpReady=0;attackReady=0;
  get jumpState():HuntJump|null{const m=this.motion;return m?.kind==='jump'?{startedAt:m.start,duration:m.duration,origin:m.origin!,destination:m.destination!}:null;}
  comboStage=0;attackHeld=false;
  deadAt=-1;lastHeroDamage=0;heroHitUntil=0;parryUntil=0;parryReady=0;critical=false;
@@ -433,7 +433,7 @@ export class HuntEngine {
     hits:[{at:stage.hitAt/this.attackTempo,damage:stage.damage,range:this.targetRange*basicBuild(this.progress.build,this.progress.weaponType).range,done:false}]});
   }else{
    const build=compileSkill(this.progress.build,skill,this.progress.weaponType);
-   this.resetCombo();this.cooldowns[skill]=SKILL_COOLDOWNS[skill]*build.cooldown;
+   this.resetCombo();this.cooldownTotals[skill]=SKILL_COOLDOWNS[skill]*build.cooldown;this.cooldowns[skill]=this.cooldownTotals[skill];
    const names=skill===4?['skill5','skill5_loop','skill5_end']:['skill1','skill2','skill3','skill4','skill5','rest1'].slice(skill,skill+1);
    const segments=names.map(animation=>({animation,duration:motions.durations[animation as keyof typeof motions.durations]/this.attackTempo}));
    const baseDuration=segments.reduce((n,s)=>n+s.duration,0),duration=baseDuration+build.repeats*build.repeatDelay;segments[segments.length-1].duration+=build.repeats*build.repeatDelay;this.attackReady=this.elapsed+duration;

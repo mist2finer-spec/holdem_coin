@@ -17,6 +17,8 @@ export async function POST(req:NextRequest){
   if(body.action==='start')value=service.start(account,body.character);
   else if(isRogueAction(body.action)&&typeof body.id==='string')value=service.command(account,body.id,body.sequence,parseRogueInput(body.input),body.action);
   else throw Error('Invalid command');
-  const response=NextResponse.json(value,{headers:{'Cache-Control':'no-store'}});response.cookies.set('rpg_guest',account,{httpOnly:true,sameSite:'strict',secure:process.env.NODE_ENV==='production',path:'/api/rpg',maxAge:31536000});return response;
+  // A static 780-node graph is sent on entry/build changes, never on every 100ms combat poll.
+  const wire=body.action==='tick'&&body.knownBuildRevision===value.buildRevision?{...value,build:{...value.build,tree:undefined}}:value;
+  const response=NextResponse.json(wire,{headers:{'Cache-Control':'no-store'}});response.cookies.set('rpg_guest',account,{httpOnly:true,sameSite:'strict',secure:process.env.NODE_ENV==='production',path:'/api/rpg',maxAge:31536000});return response;
  }catch(e){const message=e instanceof Error&&/[가-힣]/.test(e.message)?e.message:'던전 요청을 처리하지 못했습니다.';return NextResponse.json({error:message},{status:400,headers:{'Cache-Control':'no-store'}});}
 }

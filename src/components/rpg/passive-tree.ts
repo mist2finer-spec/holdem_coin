@@ -1,0 +1,63 @@
+import type {CoreNode,PassiveStats,CharacterStart} from './hunt-build';
+type Stats=Partial<PassiveStats>;
+type Named={id:string;name:string;stats:Stats;note?:string};
+const named=(id:string,name:string,stats:Stats,note?:string):Named=>({id,name,stats,note});
+/** Supplied design values use flat life/attributes and percentages, kept separate. */
+export const ATTRIBUTE_NOTABLES:Record<string,Named[]>={
+ STR:[
+ named('heart_warrior','Heart of the Warrior',{lifeFlat:20,regeneration:.01}),named('sentinel','Sentinel',{armour:.1,resistance:.05}),named('bloodless','Bloodless',{life:.12,leech:.004}),named('berserking','Berserking',{attackSpeed:.15}),named('warriors_path',"Warrior's Path",{meleeDamage:.15}),named('golems_blood',"Golem's Blood",{regeneration:.012}),named('butchery','Butchery',{meleeDamage:.2}),named('cleaving','Cleaving',{physicalDamage:.2}),named('juggernaut','Juggernaut',{armour:.24},'방어도 +24% · 인내 충전 시스템 대신 고정 방어도'),named('barbarism','Barbarism',{resistance:.1}),named('slaughter','Slaughter',{meleeDamage:.15,attackSpeed:.05}),named('master_arena','Master of Arena',{area:.16,meleeDamage:.1},'근접 범위는 면적 +16%로 환산'),named('art_gladiator','Art of Gladiator',{evasion:.1,attackSpeed:.05}),named('gladiator','Gladiator',{meleeDamage:.15,block:.05}),named('soldier','Soldier',{armour:.1,block:.05}),named('iron_grip','Iron Grip',{projectileDamage:.1,strength:10}),named('retribution','Retribution',{elementalDamage:.15,resistance:.05}),named('purity','Purity',{resistance:.16,elementalDamage:.05}),named('consecration','Consecration',{elementalDamage:.15,block:.05}),named('faith','Faith',{aura:.15,manaRegen:.1})],
+ DEX:[
+ named('fleetness','Fleetness',{movement:.05}),named('panther','Aspect of Panther',{evasion:.15,attackDamage:.1},'이동 중 조건 대신 공격 피해 +10%'),named('hunters_gambit',"Hunter's Gambit",{projectileDamage:.15}),named('herbalism','Herbalism',{chaosResistance:.16,life:.06}),named('survivalist','Survivalist',{life:.12,evasion:.1}),named('void_arrow','Void Arrow',{projectileDamage:.15,attackSpeed:.1},'투사체 속도 대신 공격 속도 +10%'),named('primal_spirit','Primal Spirit',{manaFlat:20,evasion:.1}),named('wolf','Heart of the Wolf',{projectileDamage:.15,movement:.05}),named('celerity','Celerity',{movement:.04,attackSpeed:.05}),named('avoidance','Avoidance',{dodge:.1,spellDodge:.1}),named('rangers_path',"Ranger's Path",{projectileDamage:.15}),named('adders_touch',"Adder's Touch",{crit:.15,critMultiplier:.2}),named('fangs_frost','Fangs of Frost',{coldDamage:.15,resistance:.1},'냉기 단독 저항 대신 공통 원소 저항'),named('void_shadow','Void Shadow',{chaosDamage:.15,chaosResistance:.1}),named('assassin','Assassin',{crit:.15}),named('cruel_preparation','Cruel Preparation',{life:.12,damage:.05},'최대 생명력 조건 대신 모든 피해 +5%'),named('shadowstalker','Shadowstalker',{evasion:.15,damage:.1}),named('projectile_tactician','Projectile Tactician',{projectileDamage:.15,cooldown:.1},'Trapper 대체 · 함정 미지원'),named('prolonged_pain','Prolonged Pain',{dotDamage:.15,cooldown:.1},'함정 피해 대신 지속 피해'),named('acrobatics_path','Acrobatics Path',{dodge:.08,spellDodge:.04})],
+ INT:[
+ named('arcane_will','Arcane Will',{shieldFlat:20,intelligence:10}),named('deep_wisdom','Deep Wisdom',{intelligence:10,shieldFlat:20}),named('blood_siphon','Blood Siphon',{life:.12,chaosResistance:.12}),named('sacrifice','Sacrifice',{spellDamage:.15,castSpeed:.05}),named('dreamer','Dreamer',{manaFlat:20,manaRegen:.004}),named('mystic_bulwark','Mystic Bulwark',{mana:.12,manaRegen:.003}),named('lord_arcana','Lord of Arcana',{spellDamage:.1,energyShield:.1},'Lord of the Dead 대체 · 소환수 미지원'),named('mind_drinker','Mind Drinker',{manaRegen:.1},'마나 흡수 대신 마나 재생'),named('endbringer','Endbringer',{spellDamage:.15,area:.1}),named('witchs_lament',"Witch's Lament",{spellDamage:.15},'소환수 피해 대신 주문 피해'),named('discipline','Discipline',{manaRegen:.15,energyShield:.05}),named('devotion','Devotion',{manaFlat:20,elementalDamage:.05}),named('arcane_bond','Arcane Bond',{spellDamage:.1,castSpeed:.1},'Totemic Bond 대체 · 토템 미지원'),named('sanctuary','Sanctuary',{block:.12,resistance:.05}),named('defiance','Defiance',{elementalDamage:.15,energyShield:.05}),named('strong_arm','Strong Arm',{physicalDamage:.15}),named('versatility','Versatility',{damage:.1,resistance:.05}),named('hybrid','Hybrid Notable',{damage:.1}),named('resourcefulness','Resourcefulness',{manaRegen:.15,mana:.1}),named('heretical_ward','Heretical Ward',{energyShield:.15,castSpeed:.05})],
+};
+const KEYSTONES:Named[]=[
+ named('resolute_technique','Resolute Technique',{noCritical:true,physicalDamage:.3},'모든 공격 기본 명중 보장 · 치명타 불가 · 물리 피해 +30%'),
+ named('vaal_pact','Vaal Pact',{leech:.04,noRegen:true},'흡수 즉시 적용 · 생명력 재생 불가'),named('bloodless','Bloodless Covenant',{life:.12,leech:.004}),named('iron_reflexes','Iron Reflexes',{ironReflexes:true}),named('avatar_fire','Avatar of Fire',{fireOnly:true}),
+ named('acrobatics','Acrobatics',{dodge:.3,evasion:-.5}),named('phase_acrobatics','Phase Acrobatics',{spellDodge:.2}),named('far_shot','Far Shot',{farShot:.5}),named('endless_munitions','Endless Munitions',{projectiles:1}),named('phase_run','Phase Run',{movement:.15,cooldown:.1}),
+ named('chaos_inoculation','Chaos Inoculation',{maxLifeOne:true,chaosImmune:true,energyShield:.8}),named('mind_over_matter','Mind Over Matter',{manaBeforeLife:.3}),named('eldritch_battery','Eldritch Battery',{energyToMana:true}),named('pain_attunement','Pain Attunement',{lowLifeSpellMore:.3}),named('blood_magic','Zealous Oath · Blood Magic',{bloodMagic:true},'가이드 명칭 유지 · 스킬 비용을 생명력으로 지불'),
+ named('overleech','Slayer Recovery',{leech:.08,regeneration:.02},'Overleech 대체 · 즉시 흡수 +8%, 초당 재생 +2%'),named('culling_strike','Culling Strike',{cull:.2}),named('gladiator_block','Gladiator Block',{block:.15,dotDamage:.2}),named('elemental_overload','Elemental Overload',{moreElemental:1.4,noCritical:true},'현 엔진 규칙: 원소 피해 ×1.4 · 치명타 불가'),named('piercing_faith','Constitution of Faith · Adapted',{elementalDamage:.3,crit:.1},'적 저항 모델 미지원 · 원소 피해 +30%, 치명타 +10%'),
+ named('adders_touch','Adder’s Touch',{critMultiplier:.6}),named('shaper_storm','Shaper of Storm · Adapted',{coldDamage:.35,elementalDamage:.15},'다중 피해 속성 미지원 · 냉기 +35%, 원소 +15%'),named('elemental_equilibrium','Elemental Equilibrium · Adapted',{elementalDamage:.25,moreDamage:.9},'적 저항 디버프 대신 원소 +25% · 모든 피해 ×0.9'),named('bastion_hope','Bastion of Hope · Adapted',{block:.3,moreDamage:.9},'최근 막기 조건 대신 막기 +30% · 피해 ×0.9'),named('ancestral_guard','Ancestral Guard',{guard:.4,moreDamage:.85},'Ancestral Bond 대체 · 토템 미지원: 보호막 효과 +40% · 피해 ×0.85'),
+];
+const attributes:Record<string,CoreNode['attribute']>={axe:'STR',duelist:'STR_DEX',agility:'DEX',projectile:'DEX_INT',arcane:'INT',element:'INT_STR',guard:'INT_STR',precision:'DEX_INT',balance:'ALL',travel:'ALL'};
+export function expandAttributeTree(legacy:readonly CoreNode[],oldEdges:readonly (readonly [string,string])[],starts:readonly CharacterStart[],make:(v:any)=>CoreNode){
+ const at=(a:number,r:number,side=0)=>{const t=a*Math.PI/180;return{x:1750+Math.cos(t)*r-Math.sin(t)*side,y:1750-Math.sin(t)*r-Math.cos(t)*side};};
+ const nodes:CoreNode[]=legacy.map(n=>{
+  const start=starts.find(s=>s.region===n.region),angle=start?.angle??0;
+  let xy={x:n.x,y:n.y};
+  if(start){const source=n.region==='axe'?90:angle,t=source*Math.PI/180,dx=n.x-1750,dy=n.y-1750,r=dx*Math.cos(t)+dy*Math.sin(t),side=-dx*Math.sin(t)+dy*Math.cos(t);
+   xy=n.region==='balance'?at(20+(r-560)*.2,Math.max(0,Math.abs(side)+100)):at(angle,400+(r-560)*.74,side*.7);if(n.startFor)xy=at(angle,n.region==='balance'?0:400);
+  }
+  return {...n,...xy,legacy:true,attribute:attributes[n.region]??'ALL',category:n.startFor?'start':n.region==='travel'?'travel':n.kind==='small'?'small':'notable',kind:n.kind==='keystone'?'notable':n.kind};
+ });
+ const edges:[string,string][]=oldEdges.map(([a,b])=>[a,b]);
+ // Legacy travel IDs/edges are retained. Their display follows their connected roots.
+ for(let i=0;i<starts.length;i++){const a=nodes.find(n=>n.id===starts[i].nodeId)!,b=nodes.find(n=>n.id===starts[(i+1)%starts.length].nodeId)!;for(let j=1;j<=2;j++){const n=nodes.find(n=>n.id===`travel_${i}_${j}`)!;n.x=a.x+(b.x-a.x)*j/3;n.y=a.y+(b.y-a.y)*j/3;}}
+ const add=(v:any,parent?:string)=>{const n=make(v);nodes.push(n);if(parent)edges.push([parent,n.id]);return n;};
+ const outer=[starts[0],starts[2],starts[1],starts[3],starts[7],starts[6],starts[5],starts[4]];
+ // 80 central nodes in eight ten-node spokes. No free cross-zone travel.
+ for(let spoke=0;spoke<8;spoke++)for(let i=0;i<10;i++)add({id:`hub_${spoke}_${i}`,name:i===9?'균형의 통찰':`중앙 균형 ${i+1}`,region:'balance',branch:20,tier:i+1,...at(spoke*45,190+Math.cos((i/10*Math.PI*2)+Math.PI)*72,Math.sin((i/10*Math.PI*2)+Math.PI)*72),category:'hub',attribute:'ALL',kind:i===9?'notable':'small',...(i%3===0?{strength:5}:i%3===1?{dexterity:5}:{intelligence:5})},i?`hub_${spoke}_${i-1}`:'start_balance');
+ // 23 additional paid connectors route the center to three pure zones (8/8/7).
+ for(const [k,length] of [8,8,7].entries()){const target=[outer[0],outer[2],outer[4]][k];for(let i=0;i<length;i++)add({id:`bridge_${k}_${i}`,name:'속성 연결로',region:'travel',branch:21,tier:i+1,...at(target.angle+(i%2?4:-4),320+i*9),category:'travel',attribute:'ALL',strength:2,dexterity:2,intelligence:2},i?`bridge_${k}_${i-1}`:`hub_${k*2}_9`);edges.push([`bridge_${k}_${length-1}`,target.nodeId]);}
+ const counts=()=>({small:nodes.filter(n=>n.category==='small').length,notable:nodes.filter(n=>n.category==='notable').length});
+ const required={small:350-counts().small,notable:250-counts().notable};
+ const totals=required.small+required.notable;
+ const lastBySector:string[][]=Array.from({length:8},()=>[]);
+ const chainLength=Math.ceil(totals/8/5);
+ for(let i=0;i<totals;i++){
+  const sector=i%8,start=outer[sector],local=Math.floor(i/8),lane=local%5,step=Math.floor(local/5),pool=ATTRIBUTE_NOTABLES[start.region==='axe'||start.region==='duelist'||start.region==='guard'?'STR':start.region==='arcane'||start.region==='element'?'INT':'DEX'];
+  const notable=Math.floor((i+1)*required.notable/totals)>Math.floor(i*required.notable/totals),entry=pool[(step*5+lane)%pool.length],id=`attr_${sector}_${local}`,theme=attributes[start.region],stat=theme==='STR'?{strength:10}:theme==='DEX'?{dexterity:10}:theme==='INT'?{intelligence:10}:theme==='STR_DEX'?{strength:5,dexterity:5}:theme==='DEX_INT'?{dexterity:5,intelligence:5}:{strength:5,intelligence:5};
+  add({id,name:notable?`${entry.name}${local>=pool.length?` ${Math.floor(local/pool.length)+1}`:''}`:`${theme?.replace('_',' / ')} 성장 ${local+1}`,region:start.region,branch:30+sector,tier:step+1,...at(start.angle,690+Math.floor(step/5)*425+(lane%2)*65+Math.cos((step%5*72-90+lane*15)*Math.PI/180)*75,(lane-2)*110+Math.sin((step%5*72-90+lane*15)*Math.PI/180)*75),attribute:theme,category:notable?'notable':'small',kind:notable?'notable':'small',...(notable?entry.stats:stat),...(notable&&entry.note?{description:entry.note}:{} )},step?`attr_${sector}_${local-5}`:start.nodeId);
+  if(lane>0&&step%3===2)edges.push([`attr_${sector}_${local-1}`,id]);lastBySector[sector][lane]=id;
+ }
+ // 25 is the stated total: central Ascendant is deferred (requires an absent Lab ascendancy system).
+ const sectors=[0,1,0,6,5,2,2,3,3,2,4,4,4,4,6,1,1,1,7,3,7,5,5,6,6];
+ KEYSTONES.forEach((entry,i)=>{const sector=sectors[i],start=outer[sector],same=sectors.slice(0,i).filter(v=>v===sector).length;add({id:`keystone_${entry.id}`,name:entry.name,region:start.region,branch:40+sector,tier:12,...at(start.angle,1350+same%2*75,(same-2)*115),attribute:attributes[start.region],category:'keystone',kind:'keystone',...entry.stats,...(entry.note?{description:entry.note}:{})},lastBySector[sector][same%5]);});
+ for(let i=0;i<25;i++){
+  const inner=i<8,middle=i>=8&&i<20,angle=inner?[0,90,180,270,45,135,225,315][i]:middle?15+(i-8)*30:15+(i-20)*72,r=inner?600:middle?865:1120;
+  const sector=outer.reduce((best,s,j)=>{const delta=(a:number,b:number)=>Math.abs(((a-b+540)%360)-180);return delta(s.angle,angle)<delta(outer[best].angle,angle)?j:best;},0);
+  add({id:`jewel_${i+1}`,name:`J${i+1} · ${inner?'군단':middle?'대형 군주얼':'고유'} 소켓`,region:outer[sector].region,branch:50,tier:inner?3:middle?7:10,...at(angle,r,inner?35:0),attribute:attributes[outer[sector].region],category:'socket',kind:'socket',socketType:inner?'timeless':middle?'large':'unique',description:inner?'Timeless 주얼 · 반경 310 · 나중에 장착한 변환 우선':middle?'대형 군주얼 · 최대 2개 · 10개 노드 확장':'일반 / 고유 주얼 소켓'},inner?`attr_${sector}_7`:middle?`attr_${sector}_15`:lastBySector[sector][2]);
+ }
+ if(nodes.length!==780)throw Error(`Attribute tree must contain 780 nodes, got ${nodes.length}`);
+ return {nodes,edges};
+}

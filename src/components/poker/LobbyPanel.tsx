@@ -1,5 +1,6 @@
 'use client';
 import {useEffect,useRef,useState} from 'react';
+import {JewelShopPanel} from './JewelShopPanel';
 import {io,Socket} from 'socket.io-client';
 import {CurrencyDisplay} from '@/ui/components/CurrencyDisplay';
 import {StorePopup} from '@/ui/components/Store';
@@ -18,6 +19,7 @@ export function LobbyPanel({onName}:{onName:(name:string)=>void}){
  const [account,setAccount]=useState<Account|null>(null);
  const [solo,setSolo]=useState(()=>typeof window==='undefined'?5000:soloBalance());
  const [message,setMessage]=useState('');
+ const [jewelShop,setJewelShop]=useState(false);
  const [store,setStore]=useState<StoreItemCategory|null>(null);
  const [showRanks,setShowRanks]=useState(false);
  const [players,setPlayers]=useState<Player[]>([]);
@@ -52,12 +54,13 @@ export function LobbyPanel({onName}:{onName:(name:string)=>void}){
    <CurrencyDisplay amount={account?.multi??5000} currency="멀티" chipId="Chip_01_a" onRechargeClick={()=>recharge('multi')}/>
    <CurrencyDisplay amount={0} currency="토너먼트" chipId="Chip_01_b" onRechargeClick={()=>recharge('tournament')}/>
   </div>
-  <div className="lobby-shop-buttons">{catalog.map(c=><button key={c.category} onClick={()=>setStore(c.category)}>{c.label}</button>)}</div>
+  <div className="lobby-shop-buttons">{catalog.map(c=><button key={c.category} onClick={()=>setStore(c.category)}>{c.label}</button>)}<button onClick={()=>setJewelShop(true)}>주얼</button></div>
   <button className="lobby-rank-button" onClick={()=>setShowRanks(true)}>리더보드 · 6인 서버</button>
   <form className="lobby-name-form" onSubmit={e=>{e.preventDefault();void rename();}}>
    <label htmlFor="lobby-player-name">플레이어 이름 · {account?.name??'연결 중'}</label>
    <div><input id="lobby-player-name" value={nameDraft} onChange={e=>setNameDraft(e.target.value)} placeholder={account?.name??'새 이름'} maxLength={24} autoComplete="nickname"/><button type="submit" disabled={busy||!account||!nameDraft.trim()}>이름 변경</button></div>
   </form>
+  {jewelShop&&<JewelShopPanel socket={socket.current} balance={account?.multi??0} onAccount={setAccount} onClose={()=>setJewelShop(false)}/>}
   {store&&<StorePopup key={store} open items={items} onClose={()=>setStore(null)} titleKo="상점"/>}
   {showRanks&&<div className="lobby-overlay" role="dialog" aria-modal="true" aria-label="6인 서버 리더보드"><section><button className="lobby-close" onClick={()=>setShowRanks(false)} aria-label="리더보드 닫기">×</button><Leaderboard players={players.slice(0,7)} maxVisible={7} currency=""/><p>{players.length?'6인 서버 플레이어 TOP 7':'아직 참여한 플레이어가 없습니다.'} · 3분마다 갱신{updated&&` · ${updated}`}</p></section></div>}
   {message&&<div className="island-modal"><section role="alertdialog" aria-modal="true" aria-label="재화 안내"><p>{message}</p><button autoFocus onClick={()=>setMessage('')}>확인</button></section></div>}

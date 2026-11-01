@@ -25,6 +25,8 @@ export class LobbyLedger {
   if([...this.accounts.values()].some(x=>x!==a&&x.name===name))return {error:'이미 사용 중인 이름입니다.'};
   a.name=name;return this.view(socket);
  }
+ /** No await between balance validation, committed grant, and debit. Demo wallet is runtime-only. */
+ purchase(socket:string,price:number,grant:()=>boolean){const a=this.sockets.get(socket);if(!a)throw Error('서버 연결 후 다시 시도해 주세요.');if(a.seatSocket)throw Error('게임방에서 퇴장한 후 구매해 주세요.');if(!Number.isSafeInteger(price)||price<1)throw Error('잘못된 가격입니다.');if(a.balance<price)throw Error('멀티 재화가 부족합니다.');const purchased=grant();if(purchased)a.balance-=price;return this.view(socket)!;}
  reserve(socket:string){const a=this.sockets.get(socket);if(!a||a.seatSocket&&a.seatSocket!==socket)return false;a.seatSocket=socket;return true;}
  start(socket:string){const a=this.sockets.get(socket);if(!a)return 5000;a.played=true;const amount=a.balance;a.balance=0;a.tableAmount=amount;return amount;}
  sync(socket:string,stack:number){const a=this.sockets.get(socket);if(a)a.tableAmount=stack;}

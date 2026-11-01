@@ -1,3 +1,4 @@
+import {buyShopJewel} from './jewel-shop';
 import {TournamentRewards,tournamentRewardWallet} from './tournament-rewards';
 import {tournamentShortStack} from '../../src/lib/poker-tournament-shortstack';
 import {tournamentMoney} from '../../src/lib/poker-tournament';
@@ -1224,6 +1225,12 @@ if (process.env.POKER_TEST_MODE !== "1") {
       lastRecharge=Date.now();reply(lobbyLedger.recharge(socket.id));
     });
     socket.on('LOBBY_RENAME',(data:{name?:string},reply:unknown)=>{if(typeof reply==='function')reply(lobbyLedger.rename(socket.id,data?.name));});
+    let lastJewelPurchase=0;
+    socket.on('LOBBY_BUY_JEWEL',(data:unknown,reply:unknown)=>{
+      if(typeof reply!=='function')return;
+      try{if(!registered)throw Error('서버 연결 후 다시 시도해 주세요.');if(Date.now()-lastJewelPurchase<150)throw Error('잠시 후 다시 시도해 주세요.');lastJewelPurchase=Date.now();reply(buyShopJewel(lobbyLedger,tournamentRewardWallet(),socket.id,data));}
+      catch(e){reply({error:e instanceof Error&&/[가-힣]/.test(e.message)?e.message:'구매를 완료하지 못했습니다. 다시 시도해 주세요.'});}
+    });
     socket.on('LOBBY_STATUS',(reply:unknown)=>{if(typeof reply==='function')reply(lobbyLedger.view(socket.id));});
     socket.on('GET_LEADERBOARD',(reply:unknown)=>{if(typeof reply==='function')reply({players:lobbyLedger.leaderboard(),updatedAt:Date.now(),tableSize:6});});
     socket.on('GET_TOURNAMENT_STATUS',(reply:unknown)=>{

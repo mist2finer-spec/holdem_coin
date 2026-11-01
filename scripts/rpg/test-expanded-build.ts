@@ -8,14 +8,14 @@ function paths(root:string){const result=new Map<string,string[]>([[root,[root]]
 function allocate(build:BuildState,id:string,level=40){const path=paths(buildStart(build).nodeId).get(id)!;for(const n of path.slice(1))if(!build.nodes.includes(n))build=changeBuild(build,`core-allocate-${n}`,level);return build;}
 function close(a:number,b:number){assert.ok(Math.abs(a-b)<1e-12,`${a} != ${b}`);}
 
-test('catalog has 222 connected nodes, nine real character starts, 35 actives and 30 supports',()=>{
- assert.equal(CORE_NODES.length,222);assert.equal(ACTIVE_CATALOG.length,35);assert.equal(GEMS.length,30);assert.equal(ACTIVE_SKILLS.length,6);
- assert.equal(new Set(CORE_NODES.map(n=>n.id)).size,222);assert.equal(new Set(ACTIVE_CATALOG.map(s=>s.id)).size,35);assert.equal(new Set(GEMS.map(g=>g.id)).size,30);
+test('catalog has 780 connected nodes, nine real character starts, 35 actives and 30 supports',()=>{
+ assert.equal(CORE_NODES.length,780);assert.equal(ACTIVE_CATALOG.length,35);assert.equal(GEMS.length,30);assert.equal(ACTIVE_SKILLS.length,6);
+ assert.equal(new Set(CORE_NODES.map(n=>n.id)).size,780);assert.equal(new Set(ACTIVE_CATALOG.map(s=>s.id)).size,35);assert.equal(new Set(GEMS.map(g=>g.id)).size,30);
  assert.deepEqual(CHARACTER_STARTS.map(s=>s.id).sort(),COMBAT_CHARACTERS.map(c=>c.id).sort());
  for(const n of CORE_NODES){assert.ok(n.description);assert.ok(n.x>0&&n.x<TREE_BOUNDS.width&&n.y>0&&n.y<TREE_BOUNDS.height);}
  for(const g of GEMS)assert.match(g.id,/^[a-z][a-z0-9]*$/);
  for(const s of ACTIVE_CATALOG){assert.ok(s.description);assert.ok(s.baseIndex>=0&&s.baseIndex<6);assert.ok(!s.tags.some(t=>/MINION|TOTEM|SUMMON/.test(t)));}
- for(const start of CHARACTER_STARTS){const reachable=paths(start.nodeId);assert.equal(reachable.size,222);for(const path of reachable.values()){const b={...newBuild(start.id),nodes:path};assert.equal(connected(path,start.id),true);validateBuild(b,40);}}
+ for(const start of CHARACTER_STARTS){const reachable=paths(start.nodeId);assert.equal(reachable.size,780);for(const path of reachable.values()){const b={...newBuild(start.id),nodes:path};assert.equal(connected(path,start.id),true);validateBuild(b,40);}}
 });
 
 test('starting regions enforce owned-root connectivity, paid travel and reset/refund rules',()=>{
