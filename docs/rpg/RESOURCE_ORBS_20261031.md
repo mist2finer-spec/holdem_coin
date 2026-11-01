@@ -19,3 +19,11 @@ Applied to default `/hunt` rogue prototype using uploaded `image(20261101-015229
 Files:`rogue/ResourceHud.tsx`, `resources.ts`, `rogue.css`, `engine.ts`, client command composition and server input parser.
 
 Verification: RPG typecheck, Next production build;47 rogue/map/pace/resource tests,15 build/big-number tests,135 existing RPG and244 poker =441 passing tests. Six new tests cover capped HP/MP recovery, depletion/cooldowns/pause, mana reservations, zero-MP AUTO, huge-HP potion and sequence-replayed/invalid potion commands. Formal verification omitted: existing synchronous command and replay protocol retained and directly tested.
+
+## Deployment and live QA
+
+Runtime `ec57eab0f6dfcc241f0f305a69b7d09619157dae` pushed atomically to main and feat/rpg-health-mana-orbs. Render deploy `dep-dbj9s1rbc2fs73d96drg` is live. `/healthz` returned web=true,poker=true; `/api/release` returned the exact runtime revision.
+
+Browser QA at https://holdem-coin-tavern.onrender.com/hunt: entered as Hong, AUTO continued through room2; HP potion brought the displayed99% to100% and started8s cooldown. Both HP and mana buttons were used and each remaining-charge text later showed2 (from3); mana potion cooldown visible in screenshot. Six skills, jump/slide and symmetric evades remained visible. Screenshot records actual live UI, not a mockup. Cloud canvas timing is not a device-FPS benchmark.
+
+![Live resource HUD](images/resource-orbs-live.jpg)
