@@ -297,11 +297,24 @@ try {
         Move-Item -LiteralPath (Join-Path $stage $package.Name) -Destination $destination
         $installed.Add($package.Name)
     }
-    [System.IO.File]::Replace($newManifest, $manifestPath, $null)
+    # PowerShell 5.1 can bind a null .NET string argument as an empty path.
+    # Use portable copying: originals are already backed up above. Set the
+    # rollback flag BEFORE writing so a partial copy is restored on failure.
     $manifestWritten = $true
+    Copy-Item -LiteralPath $newManifest -Destination $manifestPath -Force
+    if ((Get-FileHash -LiteralPath $newManifest -Algorithm SHA256).Hash -ne
+        (Get-FileHash -LiteralPath $manifestPath -Algorithm SHA256).Hash) {
+        throw 'Installed manifest does not match its staged file.'
+    }
+    [void](Read-JsonObject $manifestPath)
     if ($null -ne $lock) {
-        [System.IO.File]::Replace($newLock, $lockPath, $null)
         $lockWritten = $true
+        Copy-Item -LiteralPath $newLock -Destination $lockPath -Force
+        if ((Get-FileHash -LiteralPath $newLock -Algorithm SHA256).Hash -ne
+            (Get-FileHash -LiteralPath $lockPath -Algorithm SHA256).Hash) {
+            throw 'Installed package lock does not match its staged file.'
+        }
+        [void](Read-JsonObject $lockPath)
     }
 } catch {
     $failure = $_

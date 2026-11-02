@@ -46,3 +46,9 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\repair_project.ps1 -Projec
 권한 서버는 기존 Node 서비스입니다. 현재 Unity 화면은 기능용 IMGUI이며 웹의 모든 아트/VFX/주얼 상점/터치 UX까지 완성된 제품으로 간주하지 않습니다. 원본에서 찾지 못한 몬스터 그래픽 17종도 그대로 명시합니다. 과거 별도 브랜치에 있던 오프라인/전용 8인 싱글 기능은 현재 서버에 없어 버튼을 비활성화했습니다. 새 영구 DB를 추가하지 않았습니다.
 
 이 환경에서는 Unity Editor와 .NET SDK를 실행할 수 없어 전체 컴파일·PlayMode·Windows/Android 빌드는 미실행입니다. 동봉 코드·에셋·웹 서비스 검증과 실제 Unity 실행 검증을 구분합니다.
+
+## Windows PowerShell의 File.Replace 오류가 발생한 경우
+
+`File.Replace(..., $null)`에서 경로 형식 오류가 발생하던 부분을 제거했습니다. 백업 뒤 `Copy-Item`으로 교체하고 SHA-256·JSON 검사를 수행합니다. 쓰기 시작 전에 복원 플래그를 설정하므로 교체 중 실패해도 기존 백업으로 복원을 시도합니다. 다중 파일 원자적 교체라고 주장하지 않습니다.
+
+Unity를 닫고 최신 `repair_project.ps1`을 다시 받은 뒤 같은 프로젝트 경로로 실행하세요. 정상 캐시 ZIP은 재사용합니다. 이전 실행에 `Automatic rollback could not finish` 경고가 있었다면 먼저 해당 백업에서 복원해야 합니다. 그 경고 없이 끝났다면 최신 스크립트로 재실행할 수 있습니다.
