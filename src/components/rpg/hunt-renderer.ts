@@ -1,3 +1,4 @@
+import {amountLabel} from './combat-big';
 import {jumpVisual,type HuntJump} from './hunt-jump';
 import {hongNativeName,hongNativeContact,HONG_NATIVE_BODY_SLOTS,HONG_NATIVE_FOOT_SLOTS} from './hong-native-motion';
 import {hongMotionName,hongMotionTime,hongVisualContact,HONG_BODY_SLOTS,HONG_FOOT_SLOTS} from './hong-combat-motion';
@@ -209,7 +210,7 @@ export async function createHuntRenderer(canvas: HTMLCanvasElement, signal: Abor
     if(mob.hp>0){ctx.fillStyle='#111c';ctx.fillRect(x-bar/2,y,bar,3);ctx.fillStyle='#e07b67';ctx.fillRect(x-bar/2,y,bar*mob.hp/mob.maxHP,3);}
     if(mob.state==='windup'&&mob.hp>0){ctx.fillStyle='#ff9c72';ctx.font='bold 18px sans-serif';ctx.textAlign='center';ctx.fillText('!',x,y-10);
      ctx.strokeStyle='#ff644c';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(x,floor+3,24*zoom,6*zoom,0,0,Math.PI*2);ctx.stroke();}
-    if(mob.hitUntil>game.elapsed){ctx.fillStyle='#ffdb8b';ctx.font=`bold ${Math.max(12,20*zoom)}px sans-serif`;ctx.textAlign='center';ctx.fillText(String(mob.lastDamage),x,y-8-(.75-(mob.hitUntil-game.elapsed))*25);}
+    if(mob.hitUntil>game.elapsed){ctx.fillStyle='#ffdb8b';ctx.font=`bold ${Math.max(12,20*zoom)}px sans-serif`;ctx.textAlign='center';ctx.fillText(String(amountLabel(mob.lastDamage)),x,y-8-(.75-(mob.hitUntil-game.elapsed))*25);}
    }
 
    for(const p of view?.impactors??[]){if(game.elapsed>p.expires)continue;const delta=p.targetX-p.x,lag=Math.min(.15,Math.max(0,game.elapsed-(view?.elapsed??game.elapsed))),px=p.x+Math.sign(delta)*Math.min(Math.abs(delta),p.speed*lag);ctx.fillStyle='#ffbb66';ctx.beginPath();ctx.ellipse(screenX(px),floor-20*zoom,Math.min(25,Math.max(5,p.width/4))*zoom,7*zoom,0,0,Math.PI*2);ctx.fill();}

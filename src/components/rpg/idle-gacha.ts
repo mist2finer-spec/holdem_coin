@@ -1,3 +1,4 @@
+import {colorMatches,SOCKET_CRAFT_COST,rollSocketColors,rollSocketLinks,rollSocketCount,type SocketCraft} from './ertel-sockets';
 /** Server supplies crypto RNG. Rates/costs are disclosed custom free-currency balance, not native claims. */
 import {ACTIVE_CATALOG,ACTIVE_SKILLS,GEMS} from './build-catalog';
 import {EQUIPMENT_MAX_ITEMS,EQUIPMENT_RARITIES,EQUIPMENT_SLOTS,EQUIPMENT_WEAPONS,equipmentLinkCap,validateEquipmentState,type EquipmentInstance,type EquipmentState} from './idle-equipment';
@@ -38,10 +39,11 @@ export function rollEquipmentBatch(state:EquipmentState,gacha:GachaState,soulGem
  for(let i=0;i<count;i++){
   const rarity=EQUIPMENT_RARITIES[weightedIndex(EQUIPMENT_GACHA_WEIGHTS[gachaLevel(gacha.equipmentPulls+i)-1],rng)],slot=category==='all'?EQUIPMENT_SLOTS[Math.floor(randomUnit(rng)*EQUIPMENT_SLOTS.length)]:category==='ring'?(randomUnit(rng)<.5?'ring1':'ring2'):category,weaponType=slot==='weapon'?EQUIPMENT_WEAPONS[Math.floor(randomUnit(rng)*4)]:undefined;
   const instanceId=idFactory();if(!/^\w{1,64}$/.test(instanceId)||ids.has(instanceId))throw Error('중복되거나 잘못된 장비 식별자입니다.');ids.add(instanceId);
-  const item:EquipmentInstance={instanceId,slot,rarity,...(weaponType?{weaponType}:{}),level:1,gems:[]};item.gems=Array(equipmentLinkCap(item)).fill(null);
+  const item:EquipmentInstance={instanceId,slot,rarity,...(weaponType?{weaponType}:{}),level:1,gems:[]};
   if((rarity==='ancient'||rarity==='mythic')&&(slot==='weapon'||slot==='armor')&&randomUnit(rng)<GACHA_POLICY.ancientMythicOptionChance){
    const option=randomUnit(rng)<.5?0:1;if(slot==='weapon')item.builtInSupports=[['brutality','bleed'][option]];else item.uniqueEffect=(['cluster-notables','devotion-speed'] as const)[option];
   }
+  item.gems=Array(rollSocketCount(equipmentLinkCap(item),rng)).fill(null);item.socketColors=rollSocketColors(item.gems.length,rng);item.socketLinks=rollSocketLinks(item.gems.length,rng);
   results.push(item);
  }
  const equipment:EquipmentState={...state,items:[...state.items,...results]},nextGacha={...gacha,equipmentPulls:gacha.equipmentPulls+count};validateEquipmentState(equipment);validateGachaState(nextGacha);
@@ -55,9 +57,16 @@ export function rollGemBatch(collection:GemCollection,gacha:GachaState,soulGem:n
 /** All physical sockets, including inventory items, reserve copies. Built-in supports need no gem copies. */
 export function validateOwnedEquipmentGems(equipment:EquipmentState,collection:GemCollection){
  validateEquipmentState(equipment);validateGemCollection(collection);const used={active:{} as Record<string,number>,support:{} as Record<string,number>};
- for(const item of equipment.items)for(let i=0;i<item.gems.length;i++){const id=item.gems[i];if(id===null)continue;const kind=i===0?'active':'support';if(!(kind==='active'?activeIds:supportIds).has(id))throw Error('잘못된 종류의 젬 소켓입니다.');used[kind][id]=(used[kind][id]??0)+1;if(used[kind][id]>(collection[kind][id]??0))throw Error('보유한 젬 수량이 부족합니다.');}
+ for(const item of equipment.items)for(let i=0;i<item.gems.length;i++){const id=item.gems[i];if(id===null)continue;const kind=i===0?'active':'support';if(!colorMatches(item,i,id))throw Error('에르텔과 홈의 색상이 맞지 않습니다.');if(!(kind==='active'?activeIds:supportIds).has(id))throw Error('잘못된 종류의 젬 소켓입니다.');used[kind][id]=(used[kind][id]??0)+1;if(used[kind][id]>(collection[kind][id]??0))throw Error('보유한 젬 수량이 부족합니다.');}
 }
 export function socketEquipmentGem(equipment:EquipmentState,collection:GemCollection,instanceId:string,socket:number,gemId:string|null){
  validateOwnedEquipmentGems(equipment,collection);const item=equipment.items.find(item=>item.instanceId===instanceId);if(!item||!Number.isInteger(socket)||socket<0||socket>=item.gems.length)throw Error('잘못된 장비 소켓입니다.');
  const result:EquipmentState={...equipment,items:equipment.items.map(old=>old.instanceId===instanceId?{...old,gems:old.gems.map((id,index)=>index===socket?gemId:id)}:old)};validateOwnedEquipmentGems(result,collection);return result;
+}
+
+export function craftEquipmentSockets(equipment:EquipmentState,collection:GemCollection,soulGem:number,instanceId:string,kind:SocketCraft,rng:GachaRandom){
+ validateOwnedEquipmentGems(equipment,collection);if(!Object.hasOwn(SOCKET_CRAFT_COST,kind))throw Error('잘못된 세공입니다.');const cost=SOCKET_CRAFT_COST[kind];if(!Number.isSafeInteger(soulGem)||soulGem<cost)throw Error('영혼석이 부족합니다.');
+ const old=equipment.items.find(i=>i.instanceId===instanceId);if(!old)throw Error('보유하지 않은 장비입니다.');if(kind!=='sockets'&&!old.gems.length)throw Error('홈을 먼저 세공하세요.');
+ const item=structuredClone(old);if(kind==='sockets'){item.gems=Array(rollSocketCount(equipmentLinkCap(item),rng)).fill(null);item.socketColors=rollSocketColors(item.gems.length,rng);item.socketLinks=rollSocketLinks(item.gems.length,rng);}else if(kind==='colors'){item.socketColors=rollSocketColors(item.gems.length,rng);item.gems=item.gems.map((id,i)=>id&&colorMatches(item,i,id)?id:null);if(!item.gems[0])item.gems=item.gems.map(()=>null);}else item.socketLinks=rollSocketLinks(item.gems.length,rng);
+ const next={...equipment,items:equipment.items.map(i=>i.instanceId===instanceId?item:i)};validateOwnedEquipmentGems(next,collection);return {equipment:next,soulGem:soulGem-cost,cost};
 }

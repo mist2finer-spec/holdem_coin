@@ -20,6 +20,7 @@ function HomeContent() {
   setScreen(next);
  },[]);
  useEffect(()=>{setPokerAudioScene(screen==='start'?'start':screen==='lobby'?'lobby':['single','six','eight','tournament'].includes(screen)?'table':null);},[screen]);
+ useEffect(()=>{if(new URLSearchParams(window.location.search).get('screen')==='poker')go('lobby');},[go]);
  const [name,setName]=useState('테스터1');
  const [repair,setRepair]=useState(false);
  const returnToLobby=useCallback(()=>go('lobby'),[go]);

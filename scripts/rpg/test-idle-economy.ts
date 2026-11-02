@@ -37,10 +37,10 @@ test('all 10 probability tables are exact and every integer ticket receives its 
 });
 test('server rolls each weapon type uniformly and enforce pool, currency, batch, and unique-instance boundaries',()=>{
  const state=createStarterEquipment(),gacha=createGachaState();const before=structuredClone(state);
- for(let i=0;i<4;i++){const roll=rollEquipmentBatch(state,gacha,100,1,numbers([0,(i+.5)/4]),()=>`roll_${i}`,'weapon');assert.equal(roll.results[0].weaponType,EQUIPMENT_WEAPONS[i]);assert.equal(roll.soulGem,0);assert.equal(roll.gacha.equipmentPulls,1);}
+ for(let i=0;i<4;i++){const roll=rollEquipmentBatch(state,gacha,100,1,numbers([0,(i+.5)/4,0]),()=>`roll_${i}`,'weapon');assert.equal(roll.results[0].weaponType,EQUIPMENT_WEAPONS[i]);assert.equal(roll.soulGem,0);assert.equal(roll.gacha.equipmentPulls,1);}
  assert.throws(()=>rollEquipmentBatch(state,gacha,1e6,11,()=>0,()=>`x`));assert.throws(()=>rollEquipmentBatch(state,gacha,99,1,()=>0,()=>`x`));assert.throws(()=>rollEquipmentBatch(state,gacha,100,1,()=>0,()=>`starter_weapon`));assert.deepEqual(state,before);
- const top=rollEquipmentBatch(state,gacha,100,1,numbers([.9999,.6,0,0]),()=>`unique_weapon`,'weapon');assert.equal(top.results[0].rarity,'mythic');assert.deepEqual(top.results[0].builtInSupports,['brutality']);
- const armor=rollEquipmentBatch(state,gacha,100,1,numbers([.995,0,.75]),()=>`unique_armor`,'armor');assert.equal(armor.results[0].uniqueEffect,'devotion-speed');
+ const top=rollEquipmentBatch(state,gacha,100,1,numbers([.9999,.6,0,0,0]),()=>`unique_weapon`,'weapon');assert.equal(top.results[0].rarity,'mythic');assert.deepEqual(top.results[0].builtInSupports,['brutality']);
+ const armor=rollEquipmentBatch(state,gacha,100,1,numbers([.995,0,.75,0]),()=>`unique_armor`,'armor');assert.equal(armor.results[0].uniqueEffect,'devotion-speed');
 });
 test('starter collection is six active gems; all remaining29 actives and all30 supports have a reachable roll',()=>{
  const starter=createGemCollection();assert.equal(Object.keys(starter.active).length,6);assert.equal(Object.keys(starter.support).length,0);assert.equal(ACQUIRABLE_ACTIVE_GEMS.length,29);assert.equal(GEMS.length,30);assert.equal(ACTIVE_CATALOG.length,35);
@@ -50,7 +50,7 @@ test('starter collection is six active gems; all remaining29 actives and all30 s
 test('gem copies are reserved across physical inventory items; changing equipment preserves its socket group',()=>{
  let state=createStarterEquipment();const collection=createGemCollection();collection.support.power=1;
  state=socketEquipmentGem(state,collection,'starter_weapon',1,'power');assert.equal(state.items[0].gems[1],'power');assert.throws(()=>socketEquipmentGem(state,collection,'starter_armor',1,'power'));assert.throws(()=>socketEquipmentGem(state,collection,'starter_weapon',1,'fireball'));
- const rolled=rollEquipmentBatch(state,createGachaState(),100,1,numbers([0,0]),()=>`second_weapon`,'weapon');const switched=equipEquipment(rolled.equipment,'second_weapon');assert.equal(switched.items.find(i=>i.instanceId==='starter_weapon')!.gems[1],'power');assert.deepEqual(switched.items.find(i=>i.instanceId==='second_weapon')!.gems,[null]);
+ const rolled=rollEquipmentBatch(state,createGachaState(),100,1,numbers([0,0,.75,.99]),()=>`second_weapon`,'weapon');const switched=equipEquipment(rolled.equipment,'second_weapon');assert.equal(switched.items.find(i=>i.instanceId==='starter_weapon')!.gems[1],'power');assert.deepEqual(switched.items.find(i=>i.instanceId==='second_weapon')!.gems,[null]);
 });
 test('native XP fixtures and clock pacing place50–60P in32–58 captured days without kill shortcuts',()=>{
  assert.equal(idleLevelCost(1),1000);assert.equal(idleLevelCost(2),1107);assert.equal(idleLevelCost(49),21928);assert.equal(idleLevelCost(50),22028);

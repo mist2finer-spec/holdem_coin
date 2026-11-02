@@ -1,11 +1,12 @@
+import {type SocketCraft} from '../components/rpg/ertel-sockets';
 import {initializeHybridProgress} from './rpg-hybrid-profile';
 import {ACTIVE_SKILLS,ACTIVE_CATALOG,GEMS,activeSkill,validateBuild,supportsActive} from '../components/rpg/hunt-build';
 import {createStarterEquipment,EQUIPMENT_SLOTS,equippedItems,equipEquipment,upgradeEquipment} from '../components/rpg/idle-equipment';
-import {createGemCollection,createGachaState,validateGemCollection,validateOwnedEquipmentGems,rollEquipmentBatch,rollGemBatch,socketEquipmentGem} from '../components/rpg/idle-gacha';
+import {createGemCollection,createGachaState,validateGemCollection,validateOwnedEquipmentGems,rollEquipmentBatch,rollGemBatch,socketEquipmentGem,craftEquipmentSockets} from '../components/rpg/idle-gacha';
 import {accrueIdleProgress,createIdleProgress} from '../components/rpg/idle-progression';
 import {buyArt,buyTrait} from '../components/rpg/hunt-development';import type {HuntProgress} from '../components/rpg/hunt-progression';import {randomBytes,randomInt} from 'node:crypto';
-export type IdleAction='idle-claim'|`idle-draw-equipment-${string}-${number}`|`idle-draw-gems-${number}`|`idle-equip-${string}`|`idle-upgrade-${string}`|`idle-socket-${string}-${number}-${string}`|`art-${number}-${number}`|`trait-${number}`;
-export function isIdleAction(a:unknown):a is IdleAction{return typeof a==='string'&&a.length<=240&&/^(idle-claim|idle-draw-equipment-(all|weapon|armor|gloves|boots|ring)-(1|10)|idle-draw-gems-(1|10)|idle-(equip|upgrade)-\w{1,64}|idle-socket-\w{1,64}-[0-5]-(empty|[a-z][a-z0-9]*)|art-\d{1,6}-(1|10|100)|trait-\d{1,4})$/.test(a);}
+export type IdleAction=`idle-craft-${SocketCraft}-${string}`|'idle-claim'|`idle-draw-equipment-${string}-${number}`|`idle-draw-gems-${number}`|`idle-equip-${string}`|`idle-upgrade-${string}`|`idle-socket-${string}-${number}-${string}`|`art-${number}-${number}`|`trait-${number}`;
+export function isIdleAction(a:unknown):a is IdleAction{return typeof a==='string'&&a.length<=240&&/^(idle-claim|idle-craft-(colors|links|sockets)-\w{1,64}|idle-draw-equipment-(all|weapon|armor|gloves|boots|ring)-(1|10)|idle-draw-gems-(1|10)|idle-(equip|upgrade)-\w{1,64}|idle-socket-\w{1,64}-[0-5]-(empty|[a-z][a-z0-9]*)|art-\d{1,6}-(1|10|100)|trait-\d{1,4})$/.test(a);}
 /** Additive migration retains all old fields and archives old full links; only real capacity is equipped. */
 export function initializeIdleProfile(p:HuntProgress,now:number){
  if(!p.equipment){const old=structuredClone(p.build!);p.legacyBuild??=old;p.equipment=createStarterEquipment(p.weaponType==='unarmed'?'axe':p.weaponType);p.gemCollection=createGemCollection();const activeUse:Record<string,number>={},supportUse:Record<string,number>={};
@@ -21,6 +22,7 @@ export function applyIdleAction(p:HuntProgress,action:IdleAction,rng=()=>randomI
  if(action.startsWith('idle-draw-equipment-')){const m=/^idle-draw-equipment-(\w+)-(1|10)$/.exec(action)!;const v=rollEquipmentBatch(p.equipment,p.gacha,p.soulGem,Number(m[2]),rng,idFactory,m[1] as any);p.equipment=v.equipment;p.gacha=v.gacha;p.soulGem=v.soulGem;result=v.results;}
  else if(action.startsWith('idle-draw-gems-')){const v=rollGemBatch(p.gemCollection,p.gacha,p.soulGem,Number(action.slice(15)),rng);p.gemCollection=v.gemCollection;p.gacha=v.gacha;p.soulGem=v.soulGem;result=v.results;}
  else if(action.startsWith('idle-equip-'))p.equipment=equipEquipment(p.equipment,action.slice(11));
+ else if(action.startsWith('idle-craft-')){const m=/^idle-craft-(colors|links|sockets)-(\w+)$/.exec(action)!;const v=craftEquipmentSockets(p.equipment,p.gemCollection,p.soulGem,m[2],m[1] as SocketCraft,rng);p.equipment=v.equipment;p.soulGem=v.soulGem;}
  else if(action.startsWith('idle-upgrade-')){const v=upgradeEquipment(p.equipment,p.soulGem,action.slice(13));p.equipment=v.equipment;p.soulGem=v.soulGem;}
  else if(action.startsWith('idle-socket-')){const m=/^idle-socket-(\w+)-([0-5])-(\w+)$/.exec(action)!;p.equipment=socketEquipmentGem(p.equipment,p.gemCollection,m[1],Number(m[2]),m[3]==='empty'?null:m[3]);if(Number(m[2])===0){const item=p.equipment.items.find(i=>i.instanceId===m[1])!,active=item.gems[0];item.gems=item.gems.map((v,i)=>i===0?v:!active||v&&!supportsActive(active,v)?null:v);}}
  else if(action.startsWith('art-')){const[,id,n]=action.split('-');buyArt(p,Number(id),Number(n));}

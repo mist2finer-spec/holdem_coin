@@ -1,4 +1,5 @@
 /** Six-slot web equipment adaptation. Rarity/socket policy is custom, not recovered Vardian data. */
+import {SOCKET_COLORS,type SocketColor} from './ertel-sockets';
 import growth from './data/recovered-growth.json';
 
 export const EQUIPMENT_RARITIES=['normal','high','rare','heroic','ancient','mythic'] as const;
@@ -14,7 +15,7 @@ export const EQUIPMENT_SLOT_LABELS:Record<EquipmentSlot,string>={weapon:'무기'
 export const EQUIPMENT_MAX_ITEMS=2000;
 /** Count includes the active socket; a paired dual weapon remains ONE item/group. */
 export const EQUIPMENT_LINK_CAPS={sword:[1,2,3,4,4,4],axe:[2,3,4,5,6,6],dual:[1,1,2,2,3,3],spear:[2,3,4,5,6,6],armor:[2,3,4,5,6,6],gloves:[1,2,3,4,4,4],boots:[1,2,3,4,4,4],ring1:[1,1,1,1,1,1],ring2:[1,1,1,1,1,1]} as const;
-export type EquipmentInstance={instanceId:string;slot:EquipmentSlot;rarity:EquipmentRarity;weaponType?:EquipmentWeapon;level:number;gems:(string|null)[];builtInSupports?:string[];uniqueEffect?:'cluster-notables'|'devotion-speed';legacyRarity?:LegacyEquipmentRarity};
+export type EquipmentInstance={instanceId:string;slot:EquipmentSlot;rarity:EquipmentRarity;weaponType?:EquipmentWeapon;level:number;gems:(string|null)[];socketColors?:SocketColor[];socketLinks?:boolean[];builtInSupports?:string[];uniqueEffect?:'cluster-notables'|'devotion-speed';legacyRarity?:LegacyEquipmentRarity};
 export type EquipmentState={version:1;items:EquipmentInstance[];equipped:Record<EquipmentSlot,string>};
 export function equipmentLinkCap(item:Pick<EquipmentInstance,'slot'|'rarity'|'weaponType'>){
  const grade=EQUIPMENT_RARITIES.indexOf(item.rarity),key=item.slot==='weapon'?item.weaponType:item.slot;
@@ -34,7 +35,9 @@ export function validateEquipmentState(raw:unknown):asserts raw is EquipmentStat
  for(const item of state.items){
   if(!item||typeof item.instanceId!=='string'||!/^\w{1,64}$/.test(item.instanceId)||ids.has(item.instanceId)||!EQUIPMENT_SLOTS.includes(item.slot)||!EQUIPMENT_RARITIES.includes(item.rarity)||!Number.isSafeInteger(item.level)||item.level<1||item.level>50)throw Error('잘못된 장비 인스턴스입니다.');
   if(item.slot==='weapon'?!EQUIPMENT_WEAPONS.includes(item.weaponType!):item.weaponType!==undefined)throw Error('잘못된 장비 무기 종류입니다.');
-  if(!Array.isArray(item.gems)||item.gems.length!==equipmentLinkCap(item)||Array.from(item.gems).some(id=>id!==null&&(typeof id!=='string'||!/^\w{1,64}$/.test(id))))throw Error('장비 소켓 한도와 젬 배치가 일치하지 않습니다.');
+  if(!Array.isArray(item.gems)||item.gems.length>equipmentLinkCap(item)||Array.from(item.gems).some(id=>id!==null&&(typeof id!=='string'||!/^\w{1,64}$/.test(id))))throw Error('장비 소켓 한도와 젬 배치가 일치하지 않습니다.');
+  if(item.socketColors!==undefined&&(!Array.isArray(item.socketColors)||item.socketColors.length!==item.gems.length||Array.from(item.socketColors).some(c=>!SOCKET_COLORS.includes(c))))throw Error('잘못된 홈 색상입니다.');
+  if(item.socketLinks!==undefined&&(!Array.isArray(item.socketLinks)||item.socketLinks.length!==Math.max(0,item.gems.length-1)||Array.from(item.socketLinks).some(v=>typeof v!=='boolean')))throw Error('잘못된 홈 연결입니다.');
   if(item.builtInSupports!==undefined&&(!Array.isArray(item.builtInSupports)||item.builtInSupports.length>2||new Set(item.builtInSupports).size!==item.builtInSupports.length||Array.from(item.builtInSupports).some(id=>!['brutality','bleed'].includes(id))||(item.builtInSupports.length>0&&(item.slot!=='weapon'||!['ancient','mythic'].includes(item.rarity)))))throw Error('잘못된 장비 내장 보조입니다.');
   if(item.uniqueEffect!==undefined&&(!['cluster-notables','devotion-speed'].includes(item.uniqueEffect)||item.slot!=='armor'||!['ancient','mythic'].includes(item.rarity)))throw Error('잘못된 고유 장비 효과입니다.');
   if(item.legacyRarity!==undefined&&LEGACY_RARITY_MAP[item.legacyRarity]!==item.rarity)throw Error('잘못된 이전 장비 등급입니다.');
