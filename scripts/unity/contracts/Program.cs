@@ -13,6 +13,7 @@ class Program {
   var used=ShowdownSelection.BestFive(new[]{"As","Kd"},new[]{"2c","3h","4s","5d","9h"});Check(used.Count==5&&used.Contains(0)&&!used.Contains(1),"wheel selection");
   Check(ShowdownSelection.BestFive(new[]{"??","??"},new[]{"2c","3h","4s","5d","9h"}).Count==0,"hidden cards");
   RpgChecks.Run(Check);
+  DisplayNameChecks.Run(Check);
   Console.WriteLine("UNITY_CONTRACTS_PASSED checks="+checks);
  }
 }

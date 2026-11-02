@@ -59,7 +59,7 @@ namespace IslandGame {
   void LateUpdate(){if(session==null||session.State==null){if(world)world.SetActive(false);return;}if(index==null)return;if(sessionId!=(string)session.State["id"])NewWorld();world.SetActive(true);
    var state=session.State;bool campaign=state["hero"]==null;var hero=campaign?state:(JObject)state["hero"];float x=hero.Value<float>("x"),e=hero.Value<float?>("elevation")??0,air=hero.Value<float?>("airHeight")??0;
    string weapon=campaign?state.Value<string>("weapon")??"axe":state["progress"]?.Value<string>("weaponType")??"axe",path=index["heroes"]?[weapon]?.Value<string>()??"characters/hong/native-axe/hong";
-   var motion=campaign?state["motion"]:hero["motion"];float elapsed=state.Value<float>("elapsed"),start=motion?[campaign?"startedAt":"start"]?.Value<float>()??elapsed,duration=motion?["duration"]?.Value<float>()??0;
+   var motion=(campaign?state["motion"]:hero["motion"]) as JObject;float elapsed=state.Value<float>("elapsed"),start=motion?[campaign?"startedAt":"start"]?.Value<float?>()??elapsed,duration=motion?["duration"]?.Value<float?>()??0;
    DrawActor("hero",path,hero.Value<string>("action")??"stay1",x,e+air,88,hero.Value<float?>("facing")??1,(hero["serial"]??hero["actionSerial"]??0).ToString(),elapsed-start,duration);
    var shown=new HashSet<string>{"hero"};foreach(var m in (JArray)(state[campaign?"enemies":"mobs"]??new JArray())){
     if((m.Value<float?>("hp")??0)<=0)continue;int species=m.Value<int?>(campaign?"actorType":"species")??0;var profile=index["monsters"]?[species.ToString()];if(profile==null)continue;float mx=m.Value<float>("x"),height=0;

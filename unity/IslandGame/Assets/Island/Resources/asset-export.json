@@ -500,6 +500,81 @@
     "sha256": "bdccdd64fcd7d016f664ee991b37ec883b20badf6100e5dbfb45d68ba9bbc53f"
   },
   {
+    "source": "public/rpg/maps/candle-dungeon/scene.json",
+    "destination": "WebAssets/rpg/maps/candle-dungeon/scene.json",
+    "sha256": "5daf29c4bd93a0cf5e16555089e4525d605c853b3a83efa22a3b31a6848908f4"
+  },
+  {
+    "source": "public/rpg/maps/candle-dungeon/textures/16e48bb7221336dc.png",
+    "destination": "WebAssets/rpg/maps/candle-dungeon/textures/16e48bb7221336dc.png",
+    "sha256": "dfed7a16f7bbcc5382c7f580fd047de6722fd41eed82cfb26d4444c6ebc858c4"
+  },
+  {
+    "source": "public/rpg/maps/candle-dungeon/textures/1e17c3c8e5865a65.png",
+    "destination": "WebAssets/rpg/maps/candle-dungeon/textures/1e17c3c8e5865a65.png",
+    "sha256": "2e45827162500d502d95e18a3b29bce34f4d4bfdca61815f47d0f33d02553683"
+  },
+  {
+    "source": "public/rpg/maps/candle-dungeon/textures/2a5fa6602875c8d0.png",
+    "destination": "WebAssets/rpg/maps/candle-dungeon/textures/2a5fa6602875c8d0.png",
+    "sha256": "aa6c356e930057eb9cc3a8815965087f49eb41ddf38b832f5ba359fd3ed0b8e1"
+  },
+  {
+    "source": "public/rpg/maps/candle-dungeon/textures/3818887566c67f1f.png",
+    "destination": "WebAssets/rpg/maps/candle-dungeon/textures/3818887566c67f1f.png",
+    "sha256": "cc66800b3eaf6f1323e74130a538a7b7885f64abe8eda9e32d177bbb7190632b"
+  },
+  {
+    "source": "public/rpg/maps/candle-dungeon/textures/59b4fbe2cc97512c.png",
+    "destination": "WebAssets/rpg/maps/candle-dungeon/textures/59b4fbe2cc97512c.png",
+    "sha256": "b44272ab0c0d64c43ddcebfa99927080724b3a7c5a2b5031f82311c3f0cab323"
+  },
+  {
+    "source": "public/rpg/maps/candle-dungeon/textures/5d733d3b71f5a27f.png",
+    "destination": "WebAssets/rpg/maps/candle-dungeon/textures/5d733d3b71f5a27f.png",
+    "sha256": "15d12b01c60c188fa95b00c6a88ec75364ab57d18c6cfc16566f420476aaf502"
+  },
+  {
+    "source": "public/rpg/maps/candle-dungeon/textures/63fd965e93603a62.png",
+    "destination": "WebAssets/rpg/maps/candle-dungeon/textures/63fd965e93603a62.png",
+    "sha256": "a64ef3e571b9b39623160edd0affd97220c1c06fe94d2cc5f3557383fc410030"
+  },
+  {
+    "source": "public/rpg/maps/candle-dungeon/textures/746918fece0dec92.png",
+    "destination": "WebAssets/rpg/maps/candle-dungeon/textures/746918fece0dec92.png",
+    "sha256": "567b1b5772db75921aa82fb8a885ae7182d2e212795c67c7e904f6b4ef579de2"
+  },
+  {
+    "source": "public/rpg/maps/candle-dungeon/textures/7c8bd537db964e9d.png",
+    "destination": "WebAssets/rpg/maps/candle-dungeon/textures/7c8bd537db964e9d.png",
+    "sha256": "9541bf68f34ed6d33c16e5ccda543011aef95ce12ac930d079d3f29f26b2c45a"
+  },
+  {
+    "source": "public/rpg/maps/candle-dungeon/textures/81da1c091e05431a.png",
+    "destination": "WebAssets/rpg/maps/candle-dungeon/textures/81da1c091e05431a.png",
+    "sha256": "befd353504f70fdda3f553a269259e844adefca41b38fbef3a00f91218420545"
+  },
+  {
+    "source": "public/rpg/maps/candle-dungeon/textures/8fc6a24c9fa1201c.png",
+    "destination": "WebAssets/rpg/maps/candle-dungeon/textures/8fc6a24c9fa1201c.png",
+    "sha256": "85cba48b5cf2bbd8e347f05f2556e877fa70b2f2b9065d14fa1f0bba246951b6"
+  },
+  {
+    "source": "public/rpg/maps/candle-dungeon/textures/9da4fa96dfa3af8c.png",
+    "destination": "WebAssets/rpg/maps/candle-dungeon/textures/9da4fa96dfa3af8c.png",
+    "sha256": "9cd5c4aa27e0212c1b41f243efe0161b3ee3459b1ace9ac33d582715ad03562d"
+  },
+  {
+    "source": "public/rpg/maps/candle-dungeon/textures/cf858293a6ca56fd.png",
+    "destination": "WebAssets/rpg/maps/candle-dungeon/textures/cf858293a6ca56fd.png",
+    "sha256": "96c4e93fff21a803a33028fcf6579829ead6f2a608d44ee47da0198fbfd96041"
+  },
+  {
+    "source": "public/rpg/maps/candle-dungeon/textures/d68aa7b98a7a2b26.png",
+    "destination": "WebAssets/rpg/maps/candle-dungeon/textures/d68aa7b98a7a2b26.png",
+    "sha256": "8d4fab44599a3fe15980cdebff1920db0803f91d04dea068eeb098c20af71a2a"
+  },
+  {
     "source": "public/rpg/monsters/Enemy_BatBoss_01/Enemy_BatBoss_01.atlas",
     "destination": "WebAssets/rpg/monsters/Enemy_BatBoss_01/Enemy_BatBoss_01.atlas.txt",
     "sha256": "c3bebc9f3d996a38dd1f1014c81fe1f37b200d1c5efa3236da621e8c77b3d02c"
@@ -1143,5 +1218,30 @@
     "source": "@current-web-catalog",
     "destination": "RpgCatalog.json",
     "sha256": "c80a244d53c1a259b52fb2a87ae720d5a38a7e5ccb76b7e76080e0bc3538b0cb"
+  },
+  {
+    "source": "@native-map-contract",
+    "destination": "BossTrials/map-contract.json",
+    "sha256": "4bbd2b8301faebf94b2b8c700e0420dc036532d335c1a26f2b42e4ae76634d49"
+  },
+  {
+    "source": "unity/IslandGame/Assets/Island/Resources/BossTrials/BossTrialRecoveredMap.shader",
+    "destination": "BossTrials/BossTrialRecoveredMap.shader",
+    "sha256": "13118077b3f8c66150f2c7ef02ea7398c2d39e6703bca8edbdcc4c52d11c2391"
+  },
+  {
+    "source": "unity/IslandGame/Assets/Island/Resources/BossTrials/bosses.json",
+    "destination": "BossTrials/bosses.json",
+    "sha256": "966891f62956dbc93aedfcbc85f920826850f13d5e73781fe94968209261882a"
+  },
+  {
+    "source": "unity/IslandGame/Assets/Island/Resources/UnityDisplayNames.json",
+    "destination": "UnityDisplayNames.json",
+    "sha256": "5f6ae88858e140b91fea1d9794b8520185f3a76598fb03076384bfeca35b366c"
+  },
+  {
+    "source": "@asset-index",
+    "destination": "AssetIndex.json",
+    "sha256": "e737d86c9c390ba9f8ac22fe5e681b4cf66afec321c6769bf5feddf9cdccef05"
   }
 ]

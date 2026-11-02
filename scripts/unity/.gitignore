@@ -1,3 +1,5 @@
 contracts/bin/
 contracts/obj/
 __pycache__/
+boss-trial-checks/bin/
+boss-trial-checks/obj/

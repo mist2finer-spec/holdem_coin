@@ -7,7 +7,7 @@ except ImportError:
  print('C_SHARP_SYNTAX_NOT_RUN: install tree-sitter and tree-sitter-c-sharp',file=sys.stderr);raise SystemExit(2)
 ROOT=Path(__file__).resolve().parents[2]
 parser=tree_sitter.Parser(tree_sitter.Language(tree_sitter_c_sharp.language()))
-paths=sorted((ROOT/'unity/IslandGame/Assets/Island').rglob('*.cs'))+sorted((ROOT/'scripts/unity/contracts').glob('*.cs'))
+paths=sorted((ROOT/'unity/IslandGame/Assets/Island').rglob('*.cs'))+sorted((ROOT/'scripts/unity/contracts').glob('*.cs'))+sorted((ROOT/'scripts/unity/boss-trial-checks').glob('*.cs'))
 failed=[]
 for path in paths:
  tree=parser.parse(path.read_bytes())

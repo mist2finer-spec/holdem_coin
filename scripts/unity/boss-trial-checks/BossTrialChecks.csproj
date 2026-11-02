@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType><TargetFramework>net8.0</TargetFramework>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="../../../unity/IslandGame/Assets/Island/Runtime/BossTrials/BossTrialModel.cs" />
+    <None Include="../../../unity/IslandGame/Assets/Island/Resources/BossTrials/bosses.json" Link="bosses.json" CopyToOutputDirectory="PreserveNewest" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" Condition="'$(BossOfflineNewtonsoft)' == ''" />
+    <Reference Include="Newtonsoft.Json" Condition="'$(BossOfflineNewtonsoft)' != ''"><HintPath>$(BossOfflineNewtonsoft)</HintPath></Reference>
+  </ItemGroup>
+</Project>

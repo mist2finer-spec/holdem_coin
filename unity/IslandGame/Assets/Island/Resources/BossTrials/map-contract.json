@@ -1,0 +1,1099 @@
+{
+  "schema": 1,
+  "scene": "Map002_001",
+  "sceneResource": "WebAssets/rpg/maps/candle-dungeon/scene",
+  "textureResourceRoot": "WebAssets/rpg/maps/candle-dungeon/",
+  "coordinateSystem": "Unity left-handed, Y up; world matrices are row-major arrays",
+  "sourceFilesSha256": {
+    "scene.json": "5daf29c4bd93a0cf5e16555089e4525d605c853b3a83efa22a3b31a6848908f4",
+    "source.json.gz": "b2525dcc7f566c9114e46d27ef32df0441f853f79d778c4b8d8f14f2d821d0ed",
+    "evidence.json": "f1f0fc952ae38856d1033194217258095db142646d461ed721bc1c61d3eae658"
+  },
+  "nativeBundleSha256": {
+    "map_scenes_all_4b458b9f2434e6d32bf59723a0ba1ae6.bundle": "d6538186a5b57f3946ef5e15a715d47af6b22b1a48695964eb0410d8095f1d58",
+    "map_assets_all_9a2547367880a72516ddfb87af0076d5.bundle": "91c93cee16b63938e0fbd652812d4ffe0b3030747db94a7d7bef9fbd942f228f"
+  },
+  "counts": {
+    "geometry": 33,
+    "renderers": 108,
+    "materials": 14,
+    "textures": 14,
+    "lightmaps": 1,
+    "flames": 6
+  },
+  "geometryBounds": {
+    "min": [
+      -13.831988559428304,
+      2.0,
+      -76.0
+    ],
+    "max": [
+      0.0037689805030822754,
+      28.0,
+      20.0
+    ]
+  },
+  "camera": {
+    "raw": {
+      "m_GameObject": {
+        "m_FileID": 0,
+        "m_PathID": 325
+      },
+      "m_Enabled": 1,
+      "m_ClearFlags": 1,
+      "m_BackGroundColor": {
+        "r": 0.0,
+        "g": 0.0,
+        "b": 0.0,
+        "a": 0.0
+      },
+      "m_projectionMatrixMode": 2,
+      "m_GateFitMode": 2,
+      "m_Iso": 200,
+      "m_ShutterSpeed": 0.004999999888241291,
+      "m_Aperture": 16.0,
+      "m_FocusDistance": 10.0,
+      "m_FocalLength": 36.93220138549805,
+      "m_BladeCount": 5,
+      "m_Curvature": {
+        "x": 2.0,
+        "y": 11.0
+      },
+      "m_BarrelClipping": 0.25,
+      "m_Anamorphism": 0.0,
+      "m_SensorSize": {
+        "x": 21.489999771118164,
+        "y": 24.0
+      },
+      "m_LensShift": {
+        "x": 0.0,
+        "y": -0.47999998927116394
+      },
+      "m_NormalizedViewPortRect": {
+        "x": 0.0,
+        "y": 0.0,
+        "width": 1.0,
+        "height": 1.0
+      },
+      "near clip plane": 0.30000001192092896,
+      "far clip plane": 200.0,
+      "field of view": 36.0,
+      "orthographic": false,
+      "orthographic size": 5.0,
+      "m_Depth": 0.0,
+      "m_CullingMask": {
+        "m_Bits": 4294967295
+      },
+      "m_RenderingPath": -1,
+      "m_TargetTexture": {
+        "m_FileID": 0,
+        "m_PathID": 0
+      },
+      "m_TargetDisplay": 0,
+      "m_TargetEye": 3,
+      "m_HDR": true,
+      "m_AllowMSAA": true,
+      "m_AllowDynamicResolution": false,
+      "m_ForceIntoRT": false,
+      "m_OcclusionCulling": true,
+      "m_StereoConvergence": 10.0,
+      "m_StereoSeparation": 0.02199999988079071
+    },
+    "world": [
+      [
+        -6.7317107443898294e-09,
+        -0.05233590569839208,
+        -0.9986295441444493,
+        16.0
+      ],
+      [
+        0.0,
+        0.9986295374127385,
+        -0.05233590569839208,
+        14.630000114440918
+      ],
+      [
+        1.0000000067317107,
+        0.0,
+        -6.7317107443898294e-09,
+        -61.79999923706055
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "name": "CombatCamera",
+    "sourceNodeId": "CAB-df037f00af28a0305d7dbdf37be3f3c5#325",
+    "parent": null,
+    "localPosition": [
+      16.0,
+      14.630000114440918,
+      -61.79999923706055
+    ],
+    "localRotation": [
+      0.0185098797082901,
+      -0.7068644762039185,
+      0.0185098797082901,
+      0.7068644762039185
+    ],
+    "localScale": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "originalLocal": {
+      "m_GameObject": {
+        "m_FileID": 0,
+        "m_PathID": 325
+      },
+      "m_LocalRotation": {
+        "x": 0.0185098797082901,
+        "y": -0.7068644762039185,
+        "z": 0.0185098797082901,
+        "w": 0.7068644762039185
+      },
+      "m_LocalPosition": {
+        "x": 16.0,
+        "y": 14.630000114440918,
+        "z": -61.79999923706055
+      },
+      "m_LocalScale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      },
+      "m_Children": [
+        {
+          "m_FileID": 0,
+          "m_PathID": 754
+        },
+        {
+          "m_FileID": 0,
+          "m_PathID": 879
+        }
+      ],
+      "m_Father": {
+        "m_FileID": 0,
+        "m_PathID": 0
+      }
+    },
+    "projectionPolicy": "Original physical perspective camera; panorama/layout projection is not the native camera."
+  },
+  "playable": {
+    "axis": "Z",
+    "minZ": -63.0,
+    "maxZ": 7.0,
+    "depthX": -4.0,
+    "groundY": 10.0,
+    "actorOriginY": 11.0,
+    "minX": -5.0,
+    "maxX": -3.0,
+    "startNodeId": "CAB-df037f00af28a0305d7dbdf37be3f3c5#8",
+    "endNodeId": "CAB-df037f00af28a0305d7dbdf37be3f3c5#219",
+    "startWorld": [
+      -4.0,
+      11.0,
+      -63.0
+    ],
+    "endWorld": [
+      -4.0,
+      11.0,
+      7.0
+    ],
+    "actorOriginOffsetAboveGround": 1.0,
+    "movementMapping": "Trial lateral input maps directly to native world Z. Node server x is a separate adapter."
+  },
+  "defaultArena": "west",
+  "arenas": [
+    {
+      "id": "west",
+      "minZ": -61.0,
+      "maxZ": -37.0,
+      "playerZ": -56.0,
+      "bossZ": -42.0
+    },
+    {
+      "id": "central",
+      "minZ": -41.0,
+      "maxZ": -17.0,
+      "playerZ": -36.0,
+      "bossZ": -22.0
+    },
+    {
+      "id": "east",
+      "minZ": -19.0,
+      "maxZ": 5.0,
+      "playerZ": -14.0,
+      "bossZ": 0.0
+    }
+  ],
+  "colliders": [
+    {
+      "id": "native-floor-strip",
+      "positions": [
+        [
+          -3.0,
+          9.999997723,
+          -8.200001224
+        ],
+        [
+          -5.0,
+          9.999996364,
+          -7.000001259
+        ],
+        [
+          -5.0,
+          9.999996364,
+          -3.999999844
+        ],
+        [
+          -3.0,
+          9.999997723,
+          -3.999999844
+        ],
+        [
+          -3.0,
+          9.999997616,
+          -10.000000201
+        ],
+        [
+          -5.0,
+          9.999996185,
+          -10.000000201
+        ],
+        [
+          -3.0,
+          9.999997866,
+          -54.999998687
+        ],
+        [
+          -5.0,
+          9.999996603,
+          -52.999996599
+        ],
+        [
+          -5.0,
+          9.999996781,
+          -47.999999605
+        ],
+        [
+          -3.0,
+          9.999998116,
+          -47.999999605
+        ],
+        [
+          -3.0,
+          9.999997616,
+          -58.000000201
+        ],
+        [
+          -5.0,
+          9.999996185,
+          -58.000000201
+        ],
+        [
+          -5.0,
+          10.000000715,
+          -31.999998779
+        ],
+        [
+          -3.0,
+          10.000001001,
+          -31.999998779
+        ],
+        [
+          -3.0,
+          10.000001001,
+          -35.000008984
+        ],
+        [
+          -5.0,
+          10.000000715,
+          -37.000008793
+        ],
+        [
+          -3.0,
+          10.000001001,
+          -41.999998779
+        ],
+        [
+          -5.0,
+          10.000000715,
+          -41.999998779
+        ],
+        [
+          -5.0,
+          10.000000238,
+          -21.999998779
+        ],
+        [
+          -3.0,
+          10.000000715,
+          -21.999998779
+        ],
+        [
+          -3.0,
+          10.000001001,
+          -25.00000753
+        ],
+        [
+          -5.0,
+          10.000000715,
+          -27.000008278
+        ],
+        [
+          -3.0,
+          9.999997723,
+          -46.200001224
+        ],
+        [
+          -5.0,
+          9.999996364,
+          -45.000001259
+        ],
+        [
+          -5.0,
+          9.999996364,
+          -41.999999844
+        ],
+        [
+          -3.0,
+          9.999997723,
+          -41.999999844
+        ],
+        [
+          -3.0,
+          9.999997616,
+          -48.000000201
+        ],
+        [
+          -5.0,
+          9.999996185,
+          -48.000000201
+        ],
+        [
+          -3.0,
+          9.999997723,
+          -2.200001224
+        ],
+        [
+          -5.0,
+          9.999996364,
+          -1.000001259
+        ],
+        [
+          -5.0,
+          9.999996364,
+          2.000000156
+        ],
+        [
+          -3.0,
+          9.999997723,
+          2.000000156
+        ],
+        [
+          -3.0,
+          9.999997616,
+          -4.000000201
+        ],
+        [
+          -5.0,
+          9.999996185,
+          -4.000000201
+        ],
+        [
+          -3.0,
+          9.999997723,
+          7.0
+        ],
+        [
+          -3.0,
+          9.999997723,
+          3.799998776
+        ],
+        [
+          -5.0,
+          9.999996364,
+          4.999998741
+        ],
+        [
+          -5.0,
+          9.999996364,
+          7.0
+        ],
+        [
+          -3.0,
+          9.999997616,
+          1.999999799
+        ],
+        [
+          -5.0,
+          9.999996185,
+          1.999999799
+        ],
+        [
+          -3.0,
+          9.999997723,
+          -62.200001224
+        ],
+        [
+          -5.0,
+          9.999996364,
+          -61.000001259
+        ],
+        [
+          -5.0,
+          9.999996364,
+          -57.999999844
+        ],
+        [
+          -3.0,
+          9.999997723,
+          -57.999999844
+        ],
+        [
+          -5.0,
+          9.999996245,
+          -63.0
+        ],
+        [
+          -3.0,
+          9.999997675,
+          -63.0
+        ],
+        [
+          -3.0,
+          9.999997723,
+          -20.200001224
+        ],
+        [
+          -5.0,
+          9.999996364,
+          -19.000001259
+        ],
+        [
+          -5.0,
+          9.999996364,
+          -15.999999844
+        ],
+        [
+          -3.0,
+          9.999997723,
+          -15.999999844
+        ],
+        [
+          -3.0,
+          9.999997616,
+          -22.000000201
+        ],
+        [
+          -5.0,
+          9.999996185,
+          -22.000000201
+        ],
+        [
+          -3.0,
+          9.999997723,
+          -14.200001224
+        ],
+        [
+          -5.0,
+          9.999996364,
+          -13.000001259
+        ],
+        [
+          -5.0,
+          9.999996364,
+          -9.999999844
+        ],
+        [
+          -3.0,
+          9.999997723,
+          -9.999999844
+        ],
+        [
+          -3.0,
+          9.999997616,
+          -16.000000201
+        ],
+        [
+          -5.0,
+          9.999996185,
+          -16.000000201
+        ]
+      ],
+      "triangles": [
+        [
+          0,
+          1,
+          2
+        ],
+        [
+          0,
+          2,
+          3
+        ],
+        [
+          1,
+          0,
+          4
+        ],
+        [
+          1,
+          4,
+          5
+        ],
+        [
+          6,
+          7,
+          8
+        ],
+        [
+          6,
+          8,
+          9
+        ],
+        [
+          7,
+          6,
+          10
+        ],
+        [
+          7,
+          10,
+          11
+        ],
+        [
+          12,
+          13,
+          14
+        ],
+        [
+          12,
+          14,
+          15
+        ],
+        [
+          16,
+          17,
+          15
+        ],
+        [
+          16,
+          15,
+          14
+        ],
+        [
+          18,
+          19,
+          20
+        ],
+        [
+          18,
+          20,
+          21
+        ],
+        [
+          13,
+          12,
+          21
+        ],
+        [
+          13,
+          21,
+          20
+        ],
+        [
+          22,
+          23,
+          24
+        ],
+        [
+          22,
+          24,
+          25
+        ],
+        [
+          23,
+          22,
+          26
+        ],
+        [
+          23,
+          26,
+          27
+        ],
+        [
+          28,
+          29,
+          30
+        ],
+        [
+          28,
+          30,
+          31
+        ],
+        [
+          29,
+          28,
+          32
+        ],
+        [
+          29,
+          32,
+          33
+        ],
+        [
+          34,
+          35,
+          36
+        ],
+        [
+          34,
+          36,
+          37
+        ],
+        [
+          36,
+          35,
+          38
+        ],
+        [
+          36,
+          38,
+          39
+        ],
+        [
+          40,
+          41,
+          42
+        ],
+        [
+          40,
+          42,
+          43
+        ],
+        [
+          44,
+          41,
+          40
+        ],
+        [
+          44,
+          40,
+          45
+        ],
+        [
+          46,
+          47,
+          48
+        ],
+        [
+          46,
+          48,
+          49
+        ],
+        [
+          47,
+          46,
+          50
+        ],
+        [
+          47,
+          50,
+          51
+        ],
+        [
+          52,
+          53,
+          54
+        ],
+        [
+          52,
+          54,
+          55
+        ],
+        [
+          53,
+          52,
+          56
+        ],
+        [
+          53,
+          56,
+          57
+        ]
+      ],
+      "triangleSources": [
+        {
+          "renderer": "CAB-df037f00af28a0305d7dbdf37be3f3c5#972",
+          "geometry": "CAB-df037f00af28a0305d7dbdf37be3f3c5.sharedAssets#651",
+          "submesh": 0,
+          "triangle": 4
+        },
+        {
+          "renderer": "CAB-df037f00af28a0305d7dbdf37be3f3c5#972",
+          "geometry": "CAB-df037f00af28a0305d7dbdf37be3f3c5.sharedAssets#651",
+          "submesh": 0,
+          "triangle": 4
+        },
+        {
+          "renderer": "CAB-df037f00af28a0305d7dbdf37be3f3c5#972",
+          "geometry": "CAB-df037f00af28a0305d7dbdf37be3f3c5.sharedAssets#651",
+          "submesh": 0,
+          "triangle": 5
+        },
+        {
+          "renderer": "CAB-df037f00af28a0305d7dbdf37be3f3c5#972",
+          "geometry": "CAB-df037f00af28a0305d7dbdf37be3f3c5.sharedAssets#651",
+          "submesh": 0,
+          "triangle": 5
+        },
+        {
+          "renderer": "CAB-df037f00af28a0305d7dbdf37be3f3c5#982",
+          "geometry": "CAB-df037f00af28a0305d7dbdf37be3f3c5.sharedAssets#649",
+          "submesh": 0,
+          "triangle": 4
+        },
+        {
+          "renderer": "CAB-df037f00af28a0305d7dbdf37be3f3c5#982",
+          "geometry": "CAB-df037f00af28a0305d7dbdf37be3f3c5.sharedAssets#649",
+          "submesh": 0,
+          "triangle": 4
+        },
+        {
+          "renderer": "CAB-df037f00af28a0305d7dbdf37be3f3c5#982",
+          "geometry": "CAB-df037f00af28a0305d7dbdf37be3f3c5.sharedAssets#649",
+          "submesh": 0,
+          "triangle": 5
+        },
+        {
+          "renderer": "CAB-df037f00af28a0305d7dbdf37be3f3c5#982",
+          "geometry": "CAB-df037f00af28a0305d7dbdf37be3f3c5.sharedAssets#649",
+          "submesh": 0,
+          "triangle": 5
+        },
+        {
+          "renderer": "CAB-df037f00af28a0305d7dbdf37be3f3c5#984",
+          "geometry": "CAB-df037f00af28a0305d7dbdf37be3f3c5.sharedAssets#642",
+          "submesh": 0,
+          "triangle": 4
+        },
+        {
+          "renderer": "CAB-df037f00af28a0305d7dbdf37be3f3c5#984",
+          "geometry": "CAB-df037f00af28a0305d7dbdf37be3f3c5.sharedAssets#642",
+          "submesh": 0,
+          "triangle": 4
+        },
+        {
+          "renderer": "CAB-df037f00af28a0305d7dbdf37be3f3c5#984",
+          "geometry": "CAB-df037f00af28a0305d7dbdf37be3f3c5.sharedAssets#642",
+          "submesh": 0,
+          "triangle": 5
+        },
+        {
+          "renderer": "CAB-df037f00af28a0305d7dbdf37be3f3c5#984",
+          "geometry": "CAB-df037f00af28a0305d7dbdf37be3f3c5.sharedAssets#642",
+          "submesh": 0,
+          "triangle": 5
+        },
+        {
+          "renderer": "CAB-df037f00af28a0305d7dbdf37be3f3c5#984",
+          "geometry": "CAB-df037f00af28a0305d7dbdf37be3f3c5.sharedAssets#642",
+          "submesh": 0,
+          "triangle": 18
+        },
+        {
+          "renderer": "CAB-df037f00af28a0305d7dbdf37be3f3c5#984",
+          "geometry": "CAB-df037f00af28a0305d7dbdf37be3f3c5.sharedAssets#642",
+          "submesh": 0,
+          "triangle": 18
+        },
+        {
+          "renderer": "CAB-df037f00af28a0305d7dbdf37be3f3c5#984",
+          "geometry": "CAB-df037f00af28a0305d7dbdf37be3f3c5.sharedAssets#642",
+          "submesh": 0,
+          "triangle": 19
+        },
+        {
+          "renderer": "CAB-df037f00af28a0305d7dbdf37be3f3c5#984",
+          "geometry": "CAB-df037f00af28a0305d7dbdf37be3f3c5.sharedAssets#642",
+          "submesh": 0,
+          "triangle": 19
+        },
+        {
+          "renderer": "CAB-df037f00af28a0305d7dbdf37be3f3c5#995",
+          "geometry": "CAB-df037f00af28a0305d7dbdf37be3f3c5.sharedAssets#651",
+          "submesh": 0,
+          "triangle": 4
+        },
+        {
+          "renderer": "CAB-df037f00af28a0305d7dbdf37be3f3c5#995",
+          "geometry": "CAB-df037f00af28a0305d7dbdf37be3f3c5.sharedAssets#651",
+          "submesh": 0,
+          "triangle": 4
+        },
+        {
+          "renderer": "CAB-df037f00af28a0305d7dbdf37be3f3c5#995",
+          "geometry": "CAB-df037f00af28a0305d7dbdf37be3f3c5.sharedAssets#651",
+          "submesh": 0,
+          "triangle": 5
+        },
+        {
+          "renderer": "CAB-df037f00af28a0305d7dbdf37be3f3c5#995",
+          "geometry": "CAB-df037f00af28a0305d7dbdf37be3f3c5.sharedAssets#651",
+          "submesh": 0,
+          "triangle": 5
+        },
+        {
+          "renderer": "CAB-df037f00af28a0305d7dbdf37be3f3c5#996",
+          "geometry": "CAB-df037f00af28a0305d7dbdf37be3f3c5.sharedAssets#651",
+          "submesh": 0,
+          "triangle": 4
+        },
+        {
+          "renderer": "CAB-df037f00af28a0305d7dbdf37be3f3c5#996",
+          "geometry": "CAB-df037f00af28a0305d7dbdf37be3f3c5.sharedAssets#651",
+          "submesh": 0,
+          "triangle": 4
+        },
+        {
+          "renderer": "CAB-df037f00af28a0305d7dbdf37be3f3c5#996",
+          "geometry": "CAB-df037f00af28a0305d7dbdf37be3f3c5.sharedAssets#651",
+          "submesh": 0,
+          "triangle": 5
+        },
+        {
+          "renderer": "CAB-df037f00af28a0305d7dbdf37be3f3c5#996",
+          "geometry": "CAB-df037f00af28a0305d7dbdf37be3f3c5.sharedAssets#651",
+          "submesh": 0,
+          "triangle": 5
+        },
+        {
+          "renderer": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1008",
+          "geometry": "CAB-df037f00af28a0305d7dbdf37be3f3c5.sharedAssets#651",
+          "submesh": 0,
+          "triangle": 4
+        },
+        {
+          "renderer": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1008",
+          "geometry": "CAB-df037f00af28a0305d7dbdf37be3f3c5.sharedAssets#651",
+          "submesh": 0,
+          "triangle": 4
+        },
+        {
+          "renderer": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1008",
+          "geometry": "CAB-df037f00af28a0305d7dbdf37be3f3c5.sharedAssets#651",
+          "submesh": 0,
+          "triangle": 5
+        },
+        {
+          "renderer": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1008",
+          "geometry": "CAB-df037f00af28a0305d7dbdf37be3f3c5.sharedAssets#651",
+          "submesh": 0,
+          "triangle": 5
+        },
+        {
+          "renderer": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1009",
+          "geometry": "CAB-df037f00af28a0305d7dbdf37be3f3c5.sharedAssets#651",
+          "submesh": 0,
+          "triangle": 4
+        },
+        {
+          "renderer": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1009",
+          "geometry": "CAB-df037f00af28a0305d7dbdf37be3f3c5.sharedAssets#651",
+          "submesh": 0,
+          "triangle": 4
+        },
+        {
+          "renderer": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1009",
+          "geometry": "CAB-df037f00af28a0305d7dbdf37be3f3c5.sharedAssets#651",
+          "submesh": 0,
+          "triangle": 5
+        },
+        {
+          "renderer": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1009",
+          "geometry": "CAB-df037f00af28a0305d7dbdf37be3f3c5.sharedAssets#651",
+          "submesh": 0,
+          "triangle": 5
+        },
+        {
+          "renderer": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1016",
+          "geometry": "CAB-df037f00af28a0305d7dbdf37be3f3c5.sharedAssets#651",
+          "submesh": 0,
+          "triangle": 4
+        },
+        {
+          "renderer": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1016",
+          "geometry": "CAB-df037f00af28a0305d7dbdf37be3f3c5.sharedAssets#651",
+          "submesh": 0,
+          "triangle": 4
+        },
+        {
+          "renderer": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1016",
+          "geometry": "CAB-df037f00af28a0305d7dbdf37be3f3c5.sharedAssets#651",
+          "submesh": 0,
+          "triangle": 5
+        },
+        {
+          "renderer": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1016",
+          "geometry": "CAB-df037f00af28a0305d7dbdf37be3f3c5.sharedAssets#651",
+          "submesh": 0,
+          "triangle": 5
+        },
+        {
+          "renderer": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1022",
+          "geometry": "CAB-df037f00af28a0305d7dbdf37be3f3c5.sharedAssets#651",
+          "submesh": 0,
+          "triangle": 4
+        },
+        {
+          "renderer": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1022",
+          "geometry": "CAB-df037f00af28a0305d7dbdf37be3f3c5.sharedAssets#651",
+          "submesh": 0,
+          "triangle": 4
+        },
+        {
+          "renderer": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1022",
+          "geometry": "CAB-df037f00af28a0305d7dbdf37be3f3c5.sharedAssets#651",
+          "submesh": 0,
+          "triangle": 5
+        },
+        {
+          "renderer": "CAB-df037f00af28a0305d7dbdf37be3f3c5#1022",
+          "geometry": "CAB-df037f00af28a0305d7dbdf37be3f3c5.sharedAssets#651",
+          "submesh": 0,
+          "triangle": 5
+        }
+      ],
+      "sourceRendererIds": [
+        "CAB-df037f00af28a0305d7dbdf37be3f3c5#1008",
+        "CAB-df037f00af28a0305d7dbdf37be3f3c5#1009",
+        "CAB-df037f00af28a0305d7dbdf37be3f3c5#1016",
+        "CAB-df037f00af28a0305d7dbdf37be3f3c5#1022",
+        "CAB-df037f00af28a0305d7dbdf37be3f3c5#972",
+        "CAB-df037f00af28a0305d7dbdf37be3f3c5#982",
+        "CAB-df037f00af28a0305d7dbdf37be3f3c5#984",
+        "CAB-df037f00af28a0305d7dbdf37be3f3c5#995",
+        "CAB-df037f00af28a0305d7dbdf37be3f3c5#996"
+      ],
+      "worldSpace": true,
+      "convex": false,
+      "derivation": "Upward native ground_tile01 triangles at Y=10, clipped to the trial strip."
+    }
+  ],
+  "actorAssets": [
+    {
+      "bossId": "B01",
+      "bossName": "Pyroth, the Cinder Wyrm",
+      "monsterId": "1253",
+      "skeleton": "monsters/Enemy_BatBoss_01/Enemy_BatBoss_01",
+      "substitute": true,
+      "reason": "Existing native Spine 4.2 actor used for the test; bespoke design artwork is not supplied."
+    },
+    {
+      "bossId": "B02",
+      "bossName": "Morthane, the Rot Lord",
+      "monsterId": "1154",
+      "skeleton": "monsters/Enemy_SkeletonMBoss_01/Enemy_SkeletonMBoss_01",
+      "substitute": true,
+      "reason": "Existing native Spine 4.2 actor used for the test; bespoke design artwork is not supplied."
+    },
+    {
+      "bossId": "B03",
+      "bossName": "Granite Sentinel",
+      "monsterId": "1323",
+      "skeleton": "monsters/Enemy_InfernalElemental_Earth/Enemy_InfernalElemental_Earth",
+      "substitute": true,
+      "reason": "Existing native Spine 4.2 actor used for the test; bespoke design artwork is not supplied."
+    },
+    {
+      "bossId": "B04",
+      "bossName": "Sylphid, the Storm Dancer",
+      "monsterId": "1322",
+      "skeleton": "monsters/Enemy_InfernalElemental_Water/Enemy_InfernalElemental_Water",
+      "substitute": true,
+      "reason": "Existing native Spine 4.2 actor used for the test; bespoke design artwork is not supplied."
+    },
+    {
+      "bossId": "B05",
+      "bossName": "Vex'thara, the Shadow Weaver",
+      "monsterId": "1104",
+      "skeleton": "monsters/Enemy_Snixx_Boss_01/Enemy_Snixx_Boss_01",
+      "substitute": true,
+      "reason": "Existing native Spine 4.2 actor used for the test; bespoke design artwork is not supplied."
+    },
+    {
+      "bossId": "B06",
+      "bossName": "AXIOM-9, Sentinel Prime",
+      "monsterId": "1105",
+      "skeleton": "monsters/Enemy_GoblinWarrior_Boss_01/Enemy_GoblinWarrior_Boss_01",
+      "substitute": true,
+      "reason": "Existing native Spine 4.2 actor used for the test; bespoke design artwork is not supplied."
+    },
+    {
+      "bossId": "B07",
+      "bossName": "Swarm Queen Nidra",
+      "monsterId": "1202",
+      "skeleton": "monsters/Enemy_Spider_Boss_01/Enemy_Spider_Boss_01",
+      "substitute": true,
+      "reason": "Existing native Spine 4.2 actor used for the test; bespoke design artwork is not supplied."
+    },
+    {
+      "bossId": "B08",
+      "bossName": "Ravager Drone Array",
+      "monsterId": "1252",
+      "skeleton": "monsters/Enemy_BatM_01/Enemy_BatM_01",
+      "substitute": true,
+      "reason": "Existing native Spine 4.2 actor used for the test; bespoke design artwork is not supplied."
+    },
+    {
+      "bossId": "B09",
+      "bossName": "VIRUS-7, Digital Mind",
+      "monsterId": "1032",
+      "skeleton": "monsters/Enemy_Slime_Boss_02_B/Enemy_Slime_Boss_02_B",
+      "substitute": true,
+      "reason": "Existing native Spine 4.2 actor used for the test; bespoke design artwork is not supplied."
+    },
+    {
+      "bossId": "B10",
+      "bossName": "TITAN-X, Apocalypse Frame",
+      "monsterId": "1055",
+      "skeleton": "monsters/Enemy_Nohaz_Boss_01/Enemy_Nohaz_Boss_01",
+      "substitute": true,
+      "reason": "Existing native Spine 4.2 actor used for the test; bespoke design artwork is not supplied."
+    }
+  ],
+  "unresolved": [
+    {
+      "name": "Vignette",
+      "kind": "external-mesh",
+      "reference": {
+        "m_FileID": 4,
+        "m_PathID": 10209
+      },
+      "reason": "File unity default resources not found in ../dungeon-source"
+    },
+    {
+      "name": "DitheredLightOverlay",
+      "kind": "external-mesh",
+      "reference": {
+        "m_FileID": 4,
+        "m_PathID": 10209
+      },
+      "reason": "File unity default resources not found in ../dungeon-source"
+    }
+  ],
+  "renderPolicy": {
+    "transform": "Apply renderer.world once. Static-batch mesh vertices are already baked; never apply instanceWorld again.",
+    "submesh": "Renderer material slot n uses geometry.submeshes[renderer.submeshes[n]].",
+    "colliders": "Only colliders[] is playable collision. Visual renderers do not automatically receive colliders.",
+    "lightmaps": "Preserve original UV2, lightmap index/scale-offset and PNG payload. Recovered HDR/URP shader parity is unverified.",
+    "shaders": "Use an explicit URP 2D-compatible unlit adapter; original shader assets are not reconstructed.",
+    "framing": "Any combat framing is an explicit trial adaptation; retain a raw-camera mode using camera evidence unchanged.",
+    "sourceScope": "Original mesh placements/material inputs/camera data, not a recovery of all native gameplay scripts."
+  }
+}

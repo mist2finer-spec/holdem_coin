@@ -7,11 +7,12 @@ using Newtonsoft.Json.Linq;
 namespace IslandGame {
  public sealed partial class IslandApp {
   JObject catalog;string rpgPanel="",growthTab="arts",selectedEquipment="",selectedNode="",gemQuery="",gemFilter="all",summonPool="weapon";
+  UnityDisplayNames displayNames;
   int selectedSlot,selectedSocket,itemPage;float panelHeight=1200,treeZoom=.65f;Vector2 panelScroll,treeScroll;Font rpgFont;
   readonly Dictionary<string,JObject> gems=new Dictionary<string,JObject>();
   readonly Dictionary<string,Vector2> treePositions=new Dictionary<string,Vector2>();
   static readonly string[] slotNames={"무기","갑옷","장갑","장화","반지 1","반지 2"};
-  void EnsureCatalog(){if(catalog!=null)return;var asset=Resources.Load<TextAsset>("RpgCatalog");if(!asset)return;catalog=JObject.Parse(asset.text);
+  void EnsureCatalog(){if(catalog!=null)return;var asset=Resources.Load<TextAsset>("RpgCatalog");if(!asset)return;catalog=JObject.Parse(asset.text);var names=Resources.Load<TextAsset>("UnityDisplayNames");if(names){displayNames=new UnityDisplayNames(JObject.Parse(names.text));catalog=displayNames.ApplyCatalog(catalog);}
    foreach(var kind in new[]{"active","support"})foreach(var gem in catalog[kind] as JArray??new JArray()){var copy=(JObject)gem.DeepClone();copy["kind"]=kind;gems[(string)copy["id"]]=copy;}
    foreach(var node in catalog["tree"]?["nodes"] as JArray??new JArray())treePositions[(string)node["id"]]=new Vector2(node.Value<float>("displayX"),node.Value<float>("displayY"));
    rpgFont=Font.CreateDynamicFontFromOSFont(new[]{"Malgun Gothic","Apple SD Gothic Neo","Noto Sans CJK KR","Arial"},14);
@@ -54,7 +55,7 @@ namespace IslandGame {
     var skill=RpgContracts.Skill(state,i);var gem=Gem((string)skill["activeId"]);bool trigger=skill["trigger"]!=null&&skill["trigger"].Type!=JTokenType.Null;
     Button("",x,535,59,57,()=>Cast(slot),rpg.Active&&rpgPanel==""&&RpgContracts.CanCast(state,i));
     string icon=(string)gem?["icon"];if(!string.IsNullOrEmpty(icon))Image("rpg/SkillIcon_"+icon,new Rect(x+9,537,40,35));
-    Text(trigger?"자동 발동":cd>0?cd.ToString("0.0"):(i+1).ToString(),x+5,572,54);Text((string)skill["name"],x,595,62,32);
+    Text(trigger?"자동 발동":cd>0?cd.ToString("0.0"):(i+1).ToString(),x+5,572,54);Text(GemName((string)skill["activeId"]),x,595,62,32);
    }
    if(rpgPanel==""){
     bool left=GUI.RepeatButton(new Rect(18,645,65,60),"◀"),right=GUI.RepeatButton(new Rect(307,645,65,60),"▶");
@@ -95,7 +96,7 @@ namespace IslandGame {
    else if(rpgPanel=="summon")DrawSummon(progress,ref y);
    else if(rpgPanel=="bag")DrawWarehouse(progress,null,ref y);
    else if(rpgPanel=="growth")DrawTraining(state,progress,ref y);
-   else{Text("촛불 미궁 · Lv."+N(progress?["hybrid"],"dungeonLevel"),5,y,325);y+=35;Text("현재 미궁을 이어서 진행합니다.\n추가 던전은 준비 중입니다.",5,y,320,75);y+=90;Button("회랑으로",5,y,320,38,()=>SetPanel(""));y+=50;}
+   else{Text("촛불 미궁 · Lv."+N(progress?["hybrid"],"dungeonLevel"),5,y,325);y+=35;Text("현재 미궁을 이어서 진행하거나 보스 시험에 입장하세요.\n보스 시험은 로컬 연습이며 온라인 보상이 없습니다.",5,y,320,75);y+=90;Button("보스 시험 · 10종 선택",5,y,320,42,OpenBossTrials);y+=54;Button("회랑으로",5,y,320,38,()=>SetPanel(""));y+=50;}
    panelHeight=Math.Max(550,y+20);GUI.EndScrollView();
   }
   void DrawEquipment(JObject progress,ref float y){
@@ -185,9 +186,9 @@ namespace IslandGame {
    Func<JToken,Vector2> position=n=>{Vector2 p;return treePositions.TryGetValue((string)n["id"],out p)?p*treeZoom:new Vector2(n.Value<float>("x")*3+160,n.Value<float>("y")*3+160)*treeZoom;};
    var map=nodes.OfType<JObject>().ToDictionary(n=>(string)n["id"]);
    foreach(var edge in edges){string from=edge is JArray?(string)edge[0]:(string)edge["from"],to=edge is JArray?(string)edge[1]:(string)edge["to"];if(map.ContainsKey(from)&&map.ContainsKey(to))Line(position(map[from]),position(map[to]),allocated.Contains(from)&&allocated.Contains(to)?new Color(.85f,.65f,.25f):new Color(.28f,.32f,.32f));}
-   foreach(var node in nodes){Vector2 p=position(node);if(p.x<treeScroll.x-40||p.y<treeScroll.y-40||p.x>treeScroll.x+390||p.y>treeScroll.y+380)continue;string id=(string)node["id"];float size=(string)node["kind"]=="small"?18:25;GUI.color=allocated.Contains(id)?new Color(1,.78f,.35f):Color.white;if(GUI.Button(new Rect(p.x-size/2,p.y-size/2,size,size),new GUIContent((string)node["kind"]=="socket"?"◇":"·",(string)node["name"])))selectedNode=id;GUI.color=Color.white;}
+   foreach(var node in nodes){Vector2 p=position(node);if(p.x<treeScroll.x-40||p.y<treeScroll.y-40||p.x>treeScroll.x+390||p.y>treeScroll.y+380)continue;string id=(string)node["id"];float size=(string)node["kind"]=="small"?18:25;GUI.color=allocated.Contains(id)?new Color(1,.78f,.35f):Color.white;if(GUI.Button(new Rect(p.x-size/2,p.y-size/2,size,size),new GUIContent((string)node["kind"]=="socket"?"◇":"·",displayNames?.NodeName(node)??(string)node["name"])))selectedNode=id;GUI.color=Color.white;}
    GUI.EndScrollView();var selected=nodes.OfType<JObject>().FirstOrDefault(n=>(string)n["id"]==selectedNode);if(selected==null){Text("트리를 스크롤하고 노드를 선택하세요.\n표시 좌표만 3배 확장합니다. 판정은 서버가 처리합니다.",20,582,345,75);return;}
-   Text((string)selected["name"],20,580,345,35);Text((string)selected["description"],20,615,345,65);bool taken=allocated.Contains(selectedNode),root=(string)build?["start"]?["nodeId"]==selectedNode;string selectedId=selectedNode;
+   Text(displayNames?.NodeName(selected)??(string)selected["name"],20,580,345,35);Text((string)selected["description"],20,615,345,65);bool taken=allocated.Contains(selectedNode),root=(string)build?["start"]?["nodeId"]==selectedNode;string selectedId=selectedNode;
    Button(taken?"환불":"할당",20,686,165,38,()=>rpg.Command("core-"+(taken?"refund-":"allocate-")+selectedId),!root&&(taken||N(build,"remaining")>0));Button("트리 초기화",200,686,165,38,()=>rpg.Command("core-reset"));
   }
   static void Line(Vector2 a,Vector2 b,Color color){var saved=GUI.matrix;GUI.color=color;GUIUtility.RotateAroundPivot(Mathf.Atan2(b.y-a.y,b.x-a.x)*Mathf.Rad2Deg,a);GUI.DrawTexture(new Rect(a.x,a.y,(b-a).magnitude,1.5f),Texture2D.whiteTexture);GUI.matrix=saved;GUI.color=Color.white;}

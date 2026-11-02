@@ -8,6 +8,7 @@ namespace IslandGame {
  public sealed partial class IslandApp : MonoBehaviour {
   public string server="https://holdem-coin-tavern.onrender.com",soloServer="http://127.0.0.1:8081";
   PollingSocket socket;RpgSession rpg;NativeBattle battle;JObject table,account,tournament;string page="lobby",notice="",playerName="Player",custom="",growthAction="train-attack";IslandAudio sound;string lastDeal="";bool online,campaign;double multiplier=2;float nextStatus;
+  BossTrials.BossTrialController bossTrials;
   readonly Dictionary<string,Texture2D> textures=new Dictionary<string,Texture2D>();
   static readonly Vector2[] six={new Vector2(.5f,.83f),new Vector2(.88f,.61f),new Vector2(.88f,.36f),new Vector2(.5f,.12f),new Vector2(.12f,.36f),new Vector2(.12f,.61f)};
   static readonly Vector2[] eight={new Vector2(.5f,.84f),new Vector2(.89f,.66f),new Vector2(.89f,.46f),new Vector2(.89f,.28f),new Vector2(.5f,.1f),new Vector2(.11f,.28f),new Vector2(.11f,.46f),new Vector2(.11f,.66f)};
@@ -25,9 +26,9 @@ namespace IslandGame {
   Texture2D Texture(string path){Texture2D t;if(!textures.TryGetValue(path,out t)){t=Resources.Load<Texture2D>("WebAssets/"+path);textures[path]=t;}return t;}
   void Image(string path,Rect rect){var t=Texture(path);if(t)GUI.DrawTexture(rect,t,ScaleMode.ScaleToFit,true);}
   bool Button(string text,float x,float y,float w,float h,Action action,bool enabled=true){GUI.enabled=enabled;bool pressed=GUI.Button(new Rect(x,y,w,h),text);GUI.enabled=true;if(pressed){sound?.Effect("button_press");action();}return pressed;}
-  static long N(JToken t,string key){return t?[key]?.Value<long>()??0;}static bool B(JToken t,string key){return t?[key]?.Value<bool>()??false;}
+  static long N(JToken t,string key){var value=(t as JObject)?[key];return value==null||value.Type==JTokenType.Null?0:value.Value<long?>()??0;}static bool B(JToken t,string key){var value=(t as JObject)?[key];return value!=null&&value.Type!=JTokenType.Null&&(value.Value<bool?>()??false);}
   void Text(string text,float x,float y,float w,float h=25){GUI.Label(new Rect(x,y,w,h),text);}
-  void OnGUI(){float scale=Math.Min(Screen.width/390f,Screen.height/844f),left=(Screen.width-390*scale)/2;GUI.matrix=Matrix4x4.TRS(new Vector3(left,0),Quaternion.identity,new Vector3(scale,scale,1));GUI.skin.label.fontSize=13;GUI.skin.button.fontSize=12;GUI.skin.textField.fontSize=14;
+  void OnGUI(){if(bossTrials&&bossTrials.Visible)return;float scale=Math.Min(Screen.width/390f,Screen.height/844f),left=(Screen.width-390*scale)/2;GUI.matrix=Matrix4x4.TRS(new Vector3(left,0),Quaternion.identity,new Vector3(scale,scale,1));GUI.skin.label.fontSize=13;GUI.skin.button.fontSize=12;GUI.skin.textField.fontSize=14;
    GUI.Box(new Rect(0,0,390,844),"");Text("ISLAND · UNITY",12,8,220);Text(online?"ONLINE":"CONNECTING",270,8,115);
    if(page=="lobby")DrawLobby();else if(page.StartsWith("poker"))DrawPoker();else if(page=="settings")DrawSettings();else if(page=="growth")DrawCurrentGrowth();else DrawRpg();
    Text(notice,12,790,365,48);
@@ -37,7 +38,7 @@ namespace IslandGame {
    Text("Name: "+(string)account?["name"]+"\nMultiplayer: "+N(account,"multi").ToString("N0"),15,285,360,105);
    Button("Solo · 준비 중",20,400,170,60,()=>{},false);Button("Multiplayer · 6 seats",200,400,170,60,()=>Poker("poker6"));
    Button("Tournament · 8 seats",20,475,350,55,()=>Poker("pokerTournament"));Text(TournamentText(tournament),20,535,350,50);
-   Button("Hunt · Vardian corridor",20,600,350,55,()=>StartRpg(false));Button("Growth / campaign",20,670,350,50,()=>StartRpg(true));
+   Button("Hunt · Vardian corridor",20,600,350,55,()=>StartRpg(false));Button("Growth / campaign",20,670,170,50,()=>StartRpg(true));Button("던전 · 보스 시험 10종",200,670,170,50,OpenBossTrials);
    Button("Recharge",20,735,100,35,()=>socket.Emit("LOBBY_RECHARGE",null,a=>account=a as JObject));Button("Server settings",135,735,160,35,()=>page="settings");
   }
   string TournamentText(JObject t){if(t==null)return "";long now=DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();long until=N(t,"nextTournamentAt");if(until==0)until=N(t,"startsAt");return (string)t["status"]+" · Round "+N(t,"level")+" · "+N(t,"remaining")+" players"+(until>now?" · "+Math.Ceiling((until-now)/1000d)+"s":"");}
@@ -77,6 +78,8 @@ namespace IslandGame {
   }}
 
   void StartRpg(bool growth){socket.Close();campaign=growth;page="rpg";rpgPanel="";battle.enabled=true;rpg.Open(server,growth);}
+  // Public so a locally-authored uGUI Dungeon button can bind this additive entry point.
+  public void OpenBossTrials(){var snapshot=rpg?.State==null?null:(JObject)rpg.State.DeepClone();socket?.Close();rpg?.Close();battle?.Clear();page="bossTrials";notice="";if(!bossTrials){bossTrials=gameObject.AddComponent<BossTrials.BossTrialController>();bossTrials.Returned+=Lobby;}bossTrials.OpenMenu(snapshot);}
   void DrawRpg(){DrawCurrentRpg();}
   void DrawSettings(){Text("Online HTTPS origin",20,100,350);server=GUI.TextField(new Rect(20,135,350,40),server);Text("Dedicated solo backend origin",20,200,350);soloServer=GUI.TextField(new Rect(20,235,350,40),soloServer);
    Button("Save / reconnect",60,320,270,55,()=>{Uri url;Uri solo;if(!Uri.TryCreate(server,UriKind.Absolute,out url)||!Uri.TryCreate(soloServer,UriKind.Absolute,out solo)||!(url.Scheme=="http"||url.Scheme=="https")||!(solo.Scheme=="http"||solo.Scheme=="https")){notice="Invalid HTTP(S) origin";return;}PlayerPrefs.SetString("island-server",server);PlayerPrefs.SetString("island-solo-server",soloServer);PlayerPrefs.Save();Lobby();});
