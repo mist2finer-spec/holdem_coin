@@ -1142,6 +1142,6 @@
   {
     "source": "@current-web-catalog",
     "destination": "RpgCatalog.json",
-    "sha256": "ecb8a13bb2a0d47bf34f7f4089ab23799ac4d2b9df01391d824c5cc966dc7880"
+    "sha256": "c80a244d53c1a259b52fb2a87ae720d5a38a7e5ccb76b7e76080e0bc3538b0cb"
   }
 ]
