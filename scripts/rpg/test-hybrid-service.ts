@@ -32,7 +32,7 @@ function targets(f:Fixture,count=1,boss=false){
  return game;
 }
 function kill(f:Fixture,started:RogueView,count=1,boss=false){
- targets(f,count,boss);f.service.command(account,started.id,1,{...idle,skill:0});
+ targets(f,count,boss);f.service.command(account,started.id,1,{...idle,skill:0},'idle-socket-starter_weapon-0-rift');
  f.clock.active+=500;return f.service.command(account,started.id,2,idle);
 }
 function readyExit(service:RogueService){
@@ -118,7 +118,7 @@ test('winning unlocks exactly one difficulty across retries, later ticks, re-ent
 
 test('failed kill save rolls back XP, gold, kills and boss item reward; clean re-entry retries once',()=>{
  const f=fixture();try{
-  const first=f.service.start(account,'hong');targets(f,1,true);f.service.command(account,first.id,1,{...idle,skill:0});
+  const first=f.service.start(account,'hong');targets(f,1,true);f.service.command(account,first.id,1,{...idle,skill:0},'idle-socket-starter_weapon-0-rift');
   const before=f.b.progress.load(account),items=f.b.items.view(account);
   f.a.db.exec("CREATE TRIGGER reject_hybrid_reward BEFORE UPDATE ON rpg_players BEGIN SELECT RAISE(ABORT,'injected hybrid reward failure'); END;");
   f.clock.active+=500;assert.throws(()=>f.service.command(account,first.id,2,idle),/injected hybrid reward/);
@@ -154,7 +154,7 @@ test('a boss spawned and defeated by a repeated skill within one command grants 
   const wave=internal.waves.get(9)!;wave.spawned=wave.target-1;wave.killed=wave.target-2;
   const lastNormal=game.mobs[0];lastNormal.hp=1;lastNormal.x=game.hero.x+50;lastNormal.until=99999;
   assert.equal(game.mobs.some(m=>m.boss),false);
-  const before=f.b.items.view(account);f.service.command(account,first.id,1,{...idle,skill:0});
+  const before=f.b.items.view(account);f.service.command(account,first.id,1,{...idle,skill:0},'idle-socket-starter_weapon-0-rift');
   // Isolate the legal repeat impact timing with enough reach/damage to include the newly spawned boss.
   const motion=game.hero.motion!;motion.build!.repeats=1;motion.build!.range=100;motion.build!.effect=1e6;motion.duration=1;
   f.clock.active+=700;const view=f.service.command(account,first.id,2,idle);

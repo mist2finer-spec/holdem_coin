@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createStarterEquipment,EQUIPMENT_LINK_CAPS,EQUIPMENT_RARITIES,EQUIPMENT_SLOTS,EQUIPMENT_WEAPONS,equipmentLinkCap,equipEquipment,migrateEquipmentRarity,upgradeEquipment,validateEquipmentState} from '../../src/components/rpg/idle-equipment';
+import {createStarterEquipment,EQUIPMENT_LINK_CAPS,EQUIPMENT_RARITIES,EQUIPMENT_SLOTS,EQUIPMENT_WEAPONS,equipmentLinkCap,equipEquipment,migrateEquipmentRarity,migrateStarterGemPolicy,upgradeEquipment,validateEquipmentState,type EquipmentState} from '../../src/components/rpg/idle-equipment';
 import {ACQUIRABLE_ACTIVE_GEMS,createGachaState,createGemCollection,EQUIPMENT_GACHA_WEIGHTS,gachaLevel,GACHA_POLICY,rollEquipmentBatch,rollGemBatch,socketEquipmentGem,validateOwnedEquipmentGems,weightedIndex} from '../../src/components/rpg/idle-gacha';
 import {accrueIdleProgress,createIdleProgress,IDLE_BALANCE,idleBuildBudget,idleLevelCost} from '../../src/components/rpg/idle-progression';
 import {ACTIVE_CATALOG,GEMS} from '../../src/components/rpg/build-catalog';
@@ -13,13 +13,19 @@ test('six physical groups obey every grade cap; paired dual is a single three-so
  const expected={sword:[1,2,3,4,4,4],axe:[2,3,4,5,6,6],dual:[1,1,2,2,3,3],spear:[2,3,4,5,6,6],armor:[2,3,4,5,6,6],gloves:[1,2,3,4,4,4],boots:[1,2,3,4,4,4],ring1:[1,1,1,1,1,1],ring2:[1,1,1,1,1,1]};
  assert.deepEqual(EQUIPMENT_LINK_CAPS,expected);
  for(const [kind,caps] of Object.entries(expected))for(let i=0;i<6;i++)assert.equal(equipmentLinkCap({slot:EQUIPMENT_WEAPONS.includes(kind as any)?'weapon':kind as any,weaponType:EQUIPMENT_WEAPONS.includes(kind as any)?kind as any:undefined,rarity:EQUIPMENT_RARITIES[i]}),caps[i]);
- const starter=createStarterEquipment('dual');assert.equal(starter.items.length,6);assert.equal(starter.items.filter(i=>i.slot==='weapon').length,1);assert.equal(starter.items.reduce((sum,i)=>sum+i.gems.filter(Boolean).length,0),6);validateOwnedEquipmentGems(starter,createGemCollection());
+ const starter=createStarterEquipment('dual');assert.equal(starter.items.length,6);assert.equal(starter.items.filter(i=>i.slot==='weapon').length,1);assert.equal(starter.items.reduce((sum,i)=>sum+i.gems.filter(Boolean).length,0),0);validateOwnedEquipmentGems(starter,createGemCollection());
  const bad=structuredClone(starter);bad.items[5].gems.push('quick');assert.throws(()=>validateEquipmentState(bad));
  const forged=structuredClone(starter);forged.items[0].builtInSupports=['power'];assert.throws(()=>validateEquipmentState(forged));forged.items[0].builtInSupports=['bleed'];assert.throws(()=>validateEquipmentState(forged));delete forged.items[0].builtInSupports;forged.items[1].uniqueEffect='cluster-notables';assert.throws(()=>validateEquipmentState(forged));
 });
 test('legacy seven grades map without deleting ids, levels, or original top grade',()=>{
  const mapped=['C','UC','R','SR','SSR','UR','LR'].map((rarity,i)=>migrateEquipmentRarity({instanceId:`legacy_${i}`,rarity,level:23,preserved:{a:1}}));
  assert.deepEqual(mapped.map(i=>i.rarity),['normal','high','rare','heroic','ancient','mythic','mythic']);assert.equal(mapped[6].legacyRarity,'LR');assert.equal(mapped[6].level,23);assert.deepEqual(mapped[6].preserved,{a:1});
+});
+test('starter policy clears only the exact original auto-equipped layout and stamps edited inventories without changing them',()=>{
+ const legacy=()=>{const state=createStarterEquipment();delete state.starterGemPolicyVersion;state.items.forEach((item,i)=>item.gems[0]=['rift','dark','frost','holy','whirl','heal'][i]);return state;};
+ const old=legacy(),snapshot=structuredClone(old),migrated=migrateStarterGemPolicy(old);assert.deepEqual(old,snapshot);assert.equal(migrated.starterGemPolicyVersion,1);assert.ok(migrated.items.every(item=>item.gems.every(id=>id===null)));
+ for(const edit of [(s:EquipmentState)=>{s.items[0].level=2;},(s:EquipmentState)=>{s.items[0].gems[1]='power';},(s:EquipmentState)=>{s.items[0].gems[0]='holy';},(s:EquipmentState)=>{s.items[0].socketColors=['white','white'];},(s:EquipmentState)=>{s.items[0].socketLinks=[true];},(s:EquipmentState)=>{s.items.push({...structuredClone(s.items[0]),instanceId:'acquired_axe',gems:[null,null]});}]){const custom=legacy();edit(custom);const before=structuredClone(custom),next=migrateStarterGemPolicy(custom);assert.equal(next.starterGemPolicyVersion,1);assert.deepEqual(next.items,before.items);assert.deepEqual(next.equipped,before.equipped);}
+ const manual=legacy();manual.starterGemPolicyVersion=1;assert.deepEqual(migrateStarterGemPolicy(manual),manual);assert.throws(()=>validateEquipmentState({...manual,starterGemPolicyVersion:2}));
 });
 test('recovered grade-one upgrade fixtures and transaction failures preserve input',()=>{
  const state=createStarterEquipment(),before=structuredClone(state);
@@ -49,7 +55,7 @@ test('starter collection is six active gems; all remaining29 actives and all30 s
 });
 test('gem copies are reserved across physical inventory items; changing equipment preserves its socket group',()=>{
  let state=createStarterEquipment();const collection=createGemCollection();collection.support.power=1;
- state=socketEquipmentGem(state,collection,'starter_weapon',1,'power');assert.equal(state.items[0].gems[1],'power');assert.throws(()=>socketEquipmentGem(state,collection,'starter_armor',1,'power'));assert.throws(()=>socketEquipmentGem(state,collection,'starter_weapon',1,'fireball'));
+ state=socketEquipmentGem(state,collection,'starter_weapon',0,'rift');state=socketEquipmentGem(state,collection,'starter_weapon',1,'power');assert.equal(state.items[0].gems[1],'power');assert.throws(()=>socketEquipmentGem(state,collection,'starter_armor',1,'power'));assert.throws(()=>socketEquipmentGem(state,collection,'starter_weapon',1,'fireball'));
  const rolled=rollEquipmentBatch(state,createGachaState(),100,1,numbers([0,0,.75,.99]),()=>`second_weapon`,'weapon');const switched=equipEquipment(rolled.equipment,'second_weapon');assert.equal(switched.items.find(i=>i.instanceId==='starter_weapon')!.gems[1],'power');assert.deepEqual(switched.items.find(i=>i.instanceId==='second_weapon')!.gems,[null]);
 });
 test('native XP fixtures and clock pacing place50–60P in32–58 captured days without kill shortcuts',()=>{

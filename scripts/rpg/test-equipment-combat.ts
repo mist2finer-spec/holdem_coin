@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {newBuild,changeBuild,compileBuild,compileSkill,validateBuild,getBuildTree,equipJewel,buildStart,buildBudget,type BuildState} from '../../src/components/rpg/hunt-build';
+import {newBuild,changeBuild,compileBuild,compileSkill,validateBuild,getBuildTree,getActiveSkills,buildView,equipJewel,buildStart,buildBudget,type BuildState} from '../../src/components/rpg/hunt-build';
 import {createStarterEquipment,equippedItems,equipmentLinkCap,EQUIPMENT_SLOTS,type EquipmentState,type EquipmentSlot} from '../../src/components/rpg/idle-equipment';
 import {CHARACTER_IDENTITIES,forbiddenSeed,forbiddenIdentity} from '../../src/components/rpg/character-identities';
 import {RogueEngine} from '../../src/components/rpg/rogue/engine';
@@ -64,6 +64,13 @@ test('Watcher Hatred modifier multiplies actual cold hit damage by 1.2 in both e
 
 test('removing an active only releases its physical assignment and keeps archived links intact',()=>{
  const b=equipped();group(b,'weapon',['rift','power']);b.links[0][0]='wide';const removed=changeBuild(b,'active-0-empty');assert.ok(equippedItems(removed.equipment!).weapon.gems.every(id=>id===null));assert.equal(compileSkill(removed,0).enabled,false);assert.equal(removed.links[0][0],'wide');assert.equal(equippedItems(b.equipment!).weapon.gems[0],'rift');assert.throws(()=>changeBuild(newBuild(),'active-0-empty'));
+});
+
+test('empty skill bars expose no default identity or icon and retain the original six shortcut positions',()=>{
+ const b=equipped();assert.deepEqual(getActiveSkills(b).map(s=>({id:s.id,icon:s.icon,enabled:s.enabled,slot:s.slotIndex})),Array.from({length:6},(_,slot)=>({id:'',icon:'',enabled:false,slot})));
+ group(b,'weapon',['rift']);group(b,'ring2',['heal']);const installed=buildView(b);assert.equal(installed.actives[0].id,'rift');assert.equal(installed.actives[5].id,'heal');
+ const removed=changeBuild(b,'active-0-empty'),view=buildView(removed);assert.equal(view.actives.length,6);assert.equal(view.actives[0].icon,'');assert.equal(view.actives[0].id,'');assert.equal(view.skills[0].activeId,'');assert.equal(view.skills[0].enabled,false);assert.equal(view.skills[0].effect,0);assert.equal(view.skills[0].mana,0);assert.equal(view.skills[0].canTriggerEvents,false);assert.equal(view.actives[5].id,'heal');assert.equal(view.skills[5].slotIndex,5);assert.equal(view.skills[5].enabled,true);
+ for(const g of [rogue(removed),hunt(removed)]){const mana=g.mana;assert.equal(g instanceof RogueEngine?g.command({...idle,skill:0}):g.requestSkill(0),false);assert.equal(g.mana,mana);assert.equal(g.cooldowns[0],0);assert.equal(g instanceof RogueEngine?g.command({...idle,skill:5}):g.requestSkill(5),true);assert.ok(g.mana<mana);}
 });
 
 test('equipped boots and rings contribute actual Rogue attack timing and critical chance through shared growth stats',()=>{

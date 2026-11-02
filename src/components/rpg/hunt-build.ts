@@ -102,9 +102,12 @@ export function unequipJewel(raw:BuildState,socketId:string,level=1):BuildState{
  const b=migrateBuild(raw,level);if(!b.jewels?.some(p=>p.socketId===socketId))throw Error('이 소켓에 장착한 주얼이 없습니다.');b.jewels=b.jewels.filter(p=>p.socketId!==socketId);if(!b.jewels.length)delete b.jewels;validateBuild(b,level);return b;
 }
 export function activeSkill(build:Pick<BuildState,'activeIds'|'equipment'>|undefined,index:number):ActiveSkill{
- if(!Number.isInteger(index)||index<0||index>=ACTIVE_SLOTS)throw Error('Invalid active skill');const physical=build?.equipment?equippedItems(build.equipment)[EQUIPMENT_SLOTS[index]]:undefined;const skill=activesById.get(build?.equipment?(physical?.gems[0]??ACTIVE_SKILLS[index].id):(build?.activeIds?.[index]??ACTIVE_SKILLS[index].id));if(!skill)throw Error('Invalid active skill');return skill;
+ if(!Number.isInteger(index)||index<0||index>=ACTIVE_SLOTS)throw Error('Invalid active skill');const physical=build?.equipment?equippedItems(build.equipment)[EQUIPMENT_SLOTS[index]]:undefined;
+ if(physical&&!physical.gems[0])return {id:'',name:'빈 스킬 슬롯',icon:'',tags:[],description:'장비에 액티브 에르텔을 장착하세요.',baseIndex:index,element:'physical',damage:0,area:0,mana:0};
+ const skill=activesById.get(physical?physical.gems[0]!:(build?.activeIds?.[index]??ACTIVE_SKILLS[index].id));if(!skill)throw Error('Invalid active skill');return skill;
 }
-export function getActiveSkills(build:Pick<BuildState,'activeIds'|'equipment'>|undefined):ActiveSkill[]{return Array.from({length:ACTIVE_SLOTS},(_,i)=>{const s=activeSkill(build,i);return {...s,tags:[...s.tags]};});}
+/** Six stable positions: empty physical sockets have no fallback skill identity or icon. */
+export function getActiveSkills(build:Pick<BuildState,'activeIds'|'equipment'>|undefined){return Array.from({length:ACTIVE_SLOTS},(_,slotIndex)=>{const s=activeSkill(build,slotIndex);return {...s,tags:[...s.tags],slotIndex,enabled:!!s.id};});}
 /** Upgrade only known v1 saves; valid v2 input is cloned without rewriting its shape. */
 export function migrateBuild(raw:unknown,level=1):BuildState{
  if(raw===undefined)return newBuild();const b=structuredClone(raw) as {version:number;weapon:string;nodes:string[];links:unknown[][]};
@@ -121,7 +124,7 @@ export function supportsActive(skill:ActiveSkill|string,gemId:string){
  const active=typeof skill==='string'?activesById.get(skill):skill,gem=gemsById.get(gemId);if(!active||!gem)return false;const tags=active.tags;
  return gem.tags.some(t=>tags.includes(t))&&(!gem.requireAll||gem.requireAll.every(t=>tags.includes(t)))&&(!gem.exclude||!gem.exclude.some(t=>tags.includes(t)))&&(!gem.trigger||!active.trigger);
 }
-function convertActive(active:ActiveSkill,fireOnly:boolean):ActiveSkill{return fireOnly&&!active.tags.includes('HEAL')?{...active,element:'fire',tags:[...active.tags.filter(t=>!['PHYSICAL','CHAOS','DARK','COLD','LIGHTNING','HOLY'].includes(t)),'FIRE','ELEMENTAL'] as SkillTag[]}:active;}
+function convertActive(active:ActiveSkill,fireOnly:boolean):ActiveSkill{return active.id&&fireOnly&&!active.tags.includes('HEAL')?{...active,element:'fire',tags:[...active.tags.filter(t=>!['PHYSICAL','CHAOS','DARK','COLD','LIGHTNING','HOLY'].includes(t)),'FIRE','ELEMENTAL'] as SkillTag[]}:active;}
 export function supports(skill:number,gemId:string,build?:Pick<BuildState,'activeIds'|'equipment'>){if(!Number.isInteger(skill)||skill<0||skill>=ACTIVE_SLOTS)return false;const state=build as BuildState|undefined;return supportsActive(convertActive(activeSkill(build,skill),Array.isArray(state?.nodes)&&passiveBuild(state).fireOnly),gemId);}
 export function validateBuild(raw:unknown,level=1):asserts raw is BuildState{
  const b=raw as BuildState;
@@ -172,7 +175,7 @@ export function compileSkill(build:BuildState|undefined,index:number,weapon='axe
  const socketSupports=(item?linkedSupports(item):build?.links[index]??[]).filter((id):id is string=>id!==null),builtInSupports=(item?.builtInSupports??[]).filter(id=>supportsActive(active,id)&&!socketSupports.includes(id)),supportIds=[...new Set([...socketSupports,...builtInSupports])];
  for(const id of supportIds){const g=id?gemsById.get(id):undefined;if(!g)continue;effect*=g.more??1;area*=g.area??1;cooldown*=g.cooldown??1;repeats+=g.repeat??0;projectiles+=g.projectiles??0;chain+=g.chain??0;pierce+=g.pierce??0;dot+=g.dot??0;dotMore*=g.dotMore??1;duration*=g.duration??1;crit+=g.crit??0;critMultiplier+=g.critMultiplier??0;leech+=g.leech??0;mana*=g.mana??1;guard+=g.guard??0;if(g.trigger){trigger=g.trigger;triggerInterval=g.triggerInterval??1;}}
  cooldown=Math.max(.35,cooldown);dot*=dotMore*(1+p.dotDamage);guard*=1+p.guard;aura*=1+p.aura;
- return {enabled,sourceId:item?.instanceId??`legacy:${index}`,equipmentSlot:EQUIPMENT_SLOTS[index] as EquipmentSlot,supportIds,builtInSupports,effect,area,range:areaRadius(0,area),cooldown,repeats,repeatDelay:.22,heal,activeId:active.id,name:active.name,tags:[...tags],baseIndex:active.baseIndex,element:active.element,projectiles,chain,pierce,dot,dotDuration:(active.dotDuration??3)*duration,crit:p.noCritical?0:Math.max(0,Math.min(.8,crit)),critMultiplier,leech:Math.min(.2,leech),mana:Math.max(.1,mana),duration,guard,aura,trigger,triggerInterval:trigger?Math.max(.25,triggerInterval*cooldown):0,canTriggerEvents:trigger===null,lowLifeSpellMore:has('SPELL')?p.lowLifeSpellMore:0,farShot:has('PROJECTILE')?p.farShot:0,tripleChance:p.tripleChance,bloodMagic:p.bloodMagic,cull:p.cull};
+ return {enabled,slotIndex:index,sourceId:item?.instanceId??`legacy:${index}`,equipmentSlot:EQUIPMENT_SLOTS[index] as EquipmentSlot,supportIds,builtInSupports,effect,area,range:areaRadius(0,area),cooldown,repeats,repeatDelay:.22,heal,activeId:active.id,name:active.name,tags:[...tags],baseIndex:active.baseIndex,element:active.element,projectiles,chain,pierce,dot,dotDuration:(active.dotDuration??3)*duration,crit:p.noCritical?0:Math.max(0,Math.min(.8,crit)),critMultiplier,leech:Math.min(.2,leech),mana:enabled?Math.max(.1,mana):0,duration,guard,aura,trigger,triggerInterval:trigger?Math.max(.25,triggerInterval*cooldown):0,canTriggerEvents:enabled&&trigger===null,lowLifeSpellMore:has('SPELL')?p.lowLifeSpellMore:0,farShot:has('PROJECTILE')?p.farShot:0,tripleChance:p.tripleChance,bloodMagic:p.bloodMagic,cull:p.cull};
 }
 export type CompiledSkill=ReturnType<typeof compileSkill>;
 /** Triggered hits, their repeats and DoTs cannot start another event-triggered cast. */

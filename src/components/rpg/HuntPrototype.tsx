@@ -14,7 +14,6 @@ import type {HuntMapId} from './hunt-map';
 import {HUNT_QUESTS,POTION_PRICE} from './hunt-progression';
 import type {BattleView,HuntInput,HuntAction} from '../../lib/rpg-service';
 import './hunt.css';
-const skills=[['대지 균열','SkillIcon_GroundRift'],['암흑 구체','SkillIcon_DarkHole'],['서리 폭풍','SkillIcon_Blizzard3'],['빛의 심판','SkillIcon_HolyWrath2'],['회오리','SkillIcon_Whirlwind'],['회복','SkillIcon_VitalRecovery']];
 type Queued=Partial<HuntInput>&{action?:HuntAction};
 export function HuntPrototype({onExit,character='hong',mapId='forest'}:{onExit?:()=>void;character?:string;mapId?:HuntMapId}){
  const router=useRouter();
@@ -67,7 +66,7 @@ export function HuntPrototype({onExit,character='hong',mapId='forest'}:{onExit?:
    if(e.target instanceof HTMLElement&&/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;
    if(['ArrowLeft','ArrowRight',' ','a','d','q','e','f','r','w','ArrowUp','1','2','3','4','5','6'].includes(e.key)){e.preventDefault();keys.current.add(e.key);}
    if(e.repeat)return;
-   if(e.key==='w'||e.key==='ArrowUp'){auto.current=false;enqueue({jump:true});}else if(e.key==='r')enqueue({action:'interact'});else if(e.key===' ')enqueue({basic:true});else if(/^[1-6]$/.test(e.key))enqueue({skill:Number(e.key)-1});else if(e.key==='q'||e.key==='e')enqueue({dodge:e.key==='q'?-1:1});else if(e.key==='f')enqueue({parry:true});
+   if(e.key==='w'||e.key==='ArrowUp'){auto.current=false;enqueue({jump:true});}else if(e.key==='r')enqueue({action:'interact'});else if(e.key===' ')enqueue({basic:true});else if(/^[1-6]$/.test(e.key)&&target?.build.skills[Number(e.key)-1]?.enabled&&target.progress.skillEnabled[Number(e.key)-1])enqueue({skill:Number(e.key)-1});else if(e.key==='q'||e.key==='e')enqueue({dodge:e.key==='q'?-1:1});else if(e.key==='f')enqueue({parry:true});
   };
   const keyup=(e:KeyboardEvent)=>keys.current.delete(e.key);
   const visibility=()=>{reset();last=0;};
@@ -119,7 +118,7 @@ export function HuntPrototype({onExit,character='hong',mapId='forest'}:{onExit?:
   <section className="hunt-console" aria-label="전투 조작" inert={!!dialog}>
    {notice&&<p className="hunt-notice" role="status">{notice} <button onClick={()=>location.reload()}>다시 입장</button></p>}
    <div className="hunt-vitals"><div><span>HP</span><meter min="0" aria-label="체력" max={view?.maxHP??10000} value={view?.hp??10000}/></div><div><span>EXP</span><progress max={Math.max(1,view?.xpRequired??1000)} value={view?.progress.xp??0}/><small>{view?.xpRequired?`${Math.floor((view.progress.xp/view.xpRequired)*100)}%`:'MAX'}</small></div></div>
-   <div className="hunt-skill-row">{skills.map(([name,icon],i)=><SkillCooldownButton key={name} name={name} icon={icon} index={i} remaining={view?.cooldowns[i]??0} total={view?.cooldownTotals[i]??0} reserved={view?.pendingSkill===i} disabled={!active||!view?.progress.skillEnabled[i]} onClick={()=>enqueue({skill:i})}/>)}</div>
+   <div className="hunt-skill-row">{Array.from({length:6},(_,i)=>{const skill=view?.build.actives[i],equipped=!!skill?.enabled&&view?.build.skills[i]?.enabled!==false;return <SkillCooldownButton key={i} name={skill?.name??''} icon={skill?.icon?`SkillIcon_${skill.icon}`:''} index={i} empty={!equipped} remaining={view?.cooldowns[i]??0} total={view?.cooldownTotals[i]??0} reserved={view?.pendingSkill===i} disabled={!active||!equipped||!view?.progress.skillEnabled[i]} onClick={()=>enqueue({skill:i})}/>;})}</div>
    <div className="hunt-mode-row"><button aria-label="점프" disabled={!active||!view?.jumpReady} onClick={()=>{auto.current=false;enqueue({jump:true});}}>↑ 점프</button><span>게스트 진행 저장</span><button disabled={!active||!view?.potionReady} onClick={()=>enqueue({action:'potion'})}>물약 {view?.progress.potions??0}</button><button className={view?.auto?'is-on':''} disabled={!active} aria-pressed={view?.auto??false} onClick={()=>{auto.current=!auto.current;}}>AUTO {view?.auto?'ON':'OFF'}</button></div>
    <div className="hunt-controls"><button className="hunt-dodge" disabled={!active} onClick={()=>enqueue({dodge:-1})} aria-label="왼쪽 회피">↶</button>
     <div className="hunt-joystick" role="group" aria-label="좌우 이동" onPointerDown={e=>{if(!active)return;e.currentTarget.setPointerCapture(e.pointerId);const r=e.currentTarget.getBoundingClientRect(),v=Math.max(-1,Math.min(1,(e.clientX-r.left-r.width/2)/(r.width*.35)));setStick(v);direction.current=Math.abs(v)<.18?0:v;}} onPointerMove={e=>{if(!e.currentTarget.hasPointerCapture(e.pointerId))return;const r=e.currentTarget.getBoundingClientRect(),v=Math.max(-1,Math.min(1,(e.clientX-r.left-r.width/2)/(r.width*.35)));setStick(v);direction.current=Math.abs(v)<.18?0:v;}} onPointerUp={endStick} onPointerCancel={endStick} onLostPointerCapture={endStick}><span className="hunt-stick-rail">‹ ─── ›</span><span className="hunt-stick" style={{transform:`translateX(${stick*38}px)`}}/></div>
