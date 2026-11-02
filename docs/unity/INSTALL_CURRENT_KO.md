@@ -52,3 +52,9 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\repair_project.ps1 -Projec
 `File.Replace(..., $null)`에서 경로 형식 오류가 발생하던 부분을 제거했습니다. 백업 뒤 `Copy-Item`으로 교체하고 SHA-256·JSON 검사를 수행합니다. 쓰기 시작 전에 복원 플래그를 설정하므로 교체 중 실패해도 기존 백업으로 복원을 시도합니다. 다중 파일 원자적 교체라고 주장하지 않습니다.
 
 Unity를 닫고 최신 `repair_project.ps1`을 다시 받은 뒤 같은 프로젝트 경로로 실행하세요. 정상 캐시 ZIP은 재사용합니다. 이전 실행에 `Automatic rollback could not finish` 경고가 있었다면 먼저 해당 백업에서 복원해야 합니다. 그 경고 없이 끝났다면 최신 스크립트로 재실행할 수 있습니다.
+
+## Safe Mode / CS0234: Spine.Physics가 없다는 오류
+
+고정한 Spine 런타임에서 `Physics`는 `Spine.Skeleton` 안에 선언된 enum입니다. `NativeBattle.cs`의 호출을 `UpdateWorldTransform(Spine.Skeleton.Physics.Pose)`로 교정했습니다. `Spine.Physics.Pose`는 존재하지 않는 형식 경로입니다. 패키지 설치 문제와 별개의 클라이언트 코드 오류입니다. 노란 CS0618 경고는 이 빨간 CS0234 오류와 구분합니다.
+
+최신 `NativeBattle.cs`를 프로젝트의 `Assets/Island/Runtime/NativeBattle.cs`에 백업 후 교체하고 Unity의 재컴파일을 기다리세요. 전체 패키지를 다시 설치할 필요는 없습니다. 이 교정은 고정 커밋의 `Skeleton.cs` enum과 `SkeletonRenderer.cs`의 사용법을 확인했으며, 실제 Editor 컴파일은 사용자 환경에서 확인해야 합니다.

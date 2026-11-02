@@ -45,7 +45,7 @@ namespace IslandGame {
    string key=path+":"+animation.Name+":"+serial;string previous;if(!keys.TryGetValue(id,out previous)||previous!=key){a.AnimationState.SetAnimation(0,animation,action.StartsWith("run")||action.StartsWith("stay"));keys[id]=key;}
    a.Skeleton.ScaleX=Mathf.Sign(facing==0?1:facing);float baseHeight=a.Skeleton.Data.Height;if(baseHeight<=0)baseHeight=100;float scale=height/baseHeight/100;a.transform.localScale=Vector3.one*scale;
    if(age>=0&&duration>0){var track=a.AnimationState.GetCurrent(0);track.TrackTime=Mathf.Min(animation.Duration,age/duration*animation.Duration);}
-   a.AnimationState.Apply(a.Skeleton);a.Skeleton.UpdateWorldTransform(Spine.Physics.Pose);
+   a.AnimationState.Apply(a.Skeleton);a.Skeleton.UpdateWorldTransform(Spine.Skeleton.Physics.Pose);
    var feet=id=="hero"?new HashSet<string>{"Rleg","Lleg2"}:new HashSet<string>();
    if(id!="hero")foreach(var profile in ((JObject)index["monsters"]).Properties())if((string)profile.Value["skeleton"]==path){foreach(var foot in profile.Value["groundSlots"] as JArray??new JArray())feet.Add(foot.Value<string>());break;}
    float low=float.PositiveInfinity;

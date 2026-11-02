@@ -19,3 +19,10 @@ if failed:
  for row in failed:print(*row)
  raise SystemExit(1)
 print('C_SHARP_SYNTAX_PASSED',len(paths),'files; semantic Unity compilation was not run')
+
+# Pinned Spine 4.2 declares Physics inside Skeleton, not directly in namespace Spine.
+# Syntax parsing alone cannot detect an invalid type qualification.
+for path in paths:
+ if 'Spine.Physics.' in path.read_text(encoding='utf-8'):
+  print('INVALID_SPINE_PHYSICS_SCOPE',path,file=sys.stderr);raise SystemExit(1)
+print('PINNED_SPINE_PHYSICS_SCOPE_PASSED')
