@@ -24,6 +24,7 @@ import { rotateSeatView } from "@/lib/poker-seat-view";
 export interface SocketSeat {
   eliminated?:boolean;
   portrait?: number;
+  level?: number;
   seatId: number;
   name: string;
   isBot: boolean;

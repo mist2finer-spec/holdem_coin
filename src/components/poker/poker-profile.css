@@ -1,0 +1,33 @@
+/* All modes share one illustrated profile. Seat origins are profile centres,
+   independent of the retired standing-sprite hand/rail offsets. */
+.poker-salon .salon-seat.poker-profile-seat{--profile-width:clamp(72px,22cqw,88px);position:absolute;top:var(--profile-top);left:var(--profile-left);width:var(--profile-width);height:auto;translate:-50% -50%;z-index:24;line-height:1.1;overflow:visible}
+.poker-player-profile{position:relative;width:100%;aspect-ratio:256/286;isolation:isolate;pointer-events:none;font-family:Arial,'Noto Sans KR','Malgun Gothic',sans-serif;color:#fff}
+.poker-profile-art{position:absolute;inset:0 0 auto;width:100%;height:auto;display:block;filter:drop-shadow(0 2px 3px #0009)}
+.poker-player-profile.is-active .poker-profile-art{filter:drop-shadow(0 0 2px #c6fff1) drop-shadow(0 0 5px #28e6bb)}
+.poker-player-profile.is-folded .poker-profile-art{filter:grayscale(.75) brightness(.63)}
+.poker-profile-dealer{position:absolute;left:75%;top:8.4%;width:24.2%;aspect-ratio:1;z-index:4;display:grid;place-items:center}
+.poker-profile-dealer img{position:absolute;inset:0;width:100%;height:100%}
+.poker-profile-dealer b{position:relative;font-size:calc(var(--profile-width,100px)*.12);line-height:1;color:#fff;text-shadow:0 1px 2px #000}
+.poker-profile-info{box-sizing:border-box;position:absolute;top:76.22%;left:0;width:100%;height:23.78%;border:1px solid #a6b0c247;border-radius:3px;background:linear-gradient(#10131adf,#03060bef);box-shadow:0 2px 5px #0007;overflow:hidden}
+.poker-profile-heading{height:47%;display:flex;align-items:center;padding-left:5%;gap:3%;border-bottom:1px solid #ffffff14}
+.poker-profile-heading strong{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:calc(var(--profile-width,100px)*.115);font-weight:800;line-height:1.2;text-align:left}
+.poker-profile-level{align-self:stretch;min-width:27%;padding:0 3%;display:flex;align-items:center;justify-content:center;white-space:nowrap;box-sizing:border-box;background:linear-gradient(145deg,#348bdf,#124caa);border-left:1px solid #71b7ff8c;box-shadow:inset 0 1px #ffffff40;font-size:calc(var(--profile-width,100px)*.103);font-weight:800}
+.poker-profile-chips{height:53%;display:flex;align-items:center;justify-content:center;padding:0 3%;font-size:calc(var(--profile-width,100px)*.14);font-weight:900;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 1px 2px #000}
+.poker-profile-blind{position:absolute;z-index:5;top:62%;right:-3%;min-width:23%;padding:2% 3%;border:1px solid #ccedff;border-radius:4px;background:#16405df5;font-size:calc(var(--profile-width,100px)*.105);font-weight:900;box-shadow:0 1px 3px #0008}
+.poker-profile-blind.bb{background:#762c50f5;border-color:#ffc8df}
+.poker-profile-fold{position:absolute;top:45%;left:50%;translate:-50% -50%;z-index:6;padding:4% 9%;border:1px solid #fda4af;background:#3b142be8;border-radius:3px;font-size:calc(var(--profile-width,100px)*.12);font-weight:900;letter-spacing:.05em}
+.poker-profile-cards{position:absolute;top:-22px;left:50%;translate:-50% 0;display:flex;gap:2px;z-index:8;pointer-events:none}
+.poker-profile-cards>div{width:15px;height:21px;font-size:8px;border-width:1px;border-radius:3px}
+.poker-profile-cards>div.relative>div:first-child,.poker-profile-cards>div.relative>div:last-child{position:absolute;padding:0;left:2px;top:1px;line-height:1}
+.poker-profile-cards>div.relative>div:last-child{left:auto;top:auto;right:2px;bottom:1px}
+.poker-profile-cards>div>div span{font-size:7px;line-height:1}
+.poker-profile-cards>div>div:nth-child(2)>span{font-size:12px}
+.poker-profile-cards.is-self{top:-45px;gap:3px}
+.poker-profile-cards.is-self>div{width:29px;height:41px}
+.poker-profile-cards.is-self>div>div span{font-size:10px}
+.poker-profile-cards.is-self>div>div:nth-child(2)>span{font-size:18px}
+@container(max-height:700px){.poker-salon .salon-seat.poker-profile-seat{--profile-width:64px}.poker-profile-cards{top:-20px}.poker-profile-cards>div{width:13px;height:18px}.poker-profile-cards.is-self{top:-39px}.poker-profile-cards.is-self>div{width:25px;height:35px}}
+@container(max-height:600px){.poker-salon .salon-seat.poker-profile-seat{--profile-width:54px}.poker-profile-cards{top:-18px}.poker-profile-cards>div{width:12px;height:16px}}
+@media(prefers-reduced-motion:reduce){.poker-player-profile *{transition:none}}
+
+.poker-profile-cards>div:not(.relative)>div{position:static;border-width:1px;border-radius:1px}

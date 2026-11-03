@@ -206,7 +206,7 @@ export function PokerTableSocket({ userName, onToast, tableSize=8, onMain,tourna
           {winnerInfo&&!showdownReveal&&<section className="poker-fold-result" aria-label="폴드 승리 결과"><HandAwards winnerInfo={winnerInfo} formatMoney={tournamentState?bbMoney:undefined} tournament={!!tournamentState}/></section>}
 
           {showdownReveal&&<ShowdownResults formatMoney={tournamentState?bbMoney:undefined} tournament={!!tournamentState} board={board} winnerInfo={winnerInfo} players={rotatedSeats.map(s=>({
-            seatId:s.originalSeatId,name:s.name,portrait:s.isMe?4:s.portrait,
+            seatId:s.originalSeatId,name:s.name,portrait:s.isMe?7:s.portrait,
             holeCards:s.holeCards.filter(c=>c!=="??").map(c=>({rank:c[0] as Card["rank"],suit:c[1] as Card["suit"]})),
             inHand:s.inHand,folded:s.folded,
           }))}/>}
@@ -422,6 +422,7 @@ interface SocketPlayerSeatProps {
   stackLabel?:string;
   seat: {
     portrait?: number;
+    level?: number;
     seatId: number;
     name: string;
     isBot: boolean;
@@ -458,7 +459,7 @@ function SocketPlayerSeat({
   // - 본인(isMe): 폴드해도 카드 계속 보임 + 폴드 오버레이
   // - 다른 플레이어: 폴드 시 카드 숨김, 쇼다운 시 공개
   return <SalonSeat seat={{name:seat.name,stack:seat.stack,isUser:seat.isMe,folded:seat.folded,holeCards}}
-    stackLabel={stackLabel} portrait={seat.isMe?7:seat.portrait}
+    stackLabel={stackLabel} level={seat.level} portrait={seat.isMe?7:seat.portrait}
     isActive={isActive} isDealer={isDealer} isSmallBlind={isSmallBlind} isBigBlind={isBigBlind}
     showCards={showCards} position={position}/>;
 }

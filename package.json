@@ -22,6 +22,8 @@
     "comfy:run": "python scripts/rpg/comfyui_assets.py run",
     "test:comfy": "python -m unittest discover -s scripts/rpg -p test_comfyui.py",
     "test:rpg:archive": "node --import ./mini-services/poker-server/node_modules/tsx/dist/loader.mjs --test scripts/rpg/test-spine-characters.ts",
+    "poker:profiles:build": "node scripts/poker/build-profile-assets.mjs",
+    "test:poker:profiles": "node --import ./mini-services/poker-server/node_modules/tsx/dist/loader.mjs --test scripts/poker/test-profile-ui.tsx",
     "test:audio": "node --import ./mini-services/poker-server/node_modules/tsx/dist/loader.mjs --test scripts/test-poker-audio.ts",
     "rpg:restore": "python scripts/rpg/restore_battle.py",
     "check:rpg": "tsc -p tsconfig.rpg-check.json --pretty false",

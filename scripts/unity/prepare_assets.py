@@ -1,6 +1,7 @@
 """Export current web assets/catalog into the real Unity project root (never a nested project)."""
 import argparse, hashlib, json, shutil, subprocess
 from pathlib import Path
+from export_poker_profiles import export_profiles
 ROOT=Path(__file__).resolve().parents[2]
 
 def source_commit():
@@ -49,6 +50,7 @@ def prepare(checkout=True,project_path=None,skip_catalog=False):
  index={'schema':3,'sourceCommit':source_commit(),'heroes':heroes,'monsters':monsters,'unresolvedMonsterAssets':unresolved,'catalog':'RpgCatalog','spineRuntime':'4.2','serverAuthority':'existing Node RPG services'}
  (destination/'AssetIndex.json').write_text(json.dumps(index,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
  (destination/'asset-export.json').write_text(json.dumps(rows,indent=2)+'\n',encoding='utf-8')
+ export_profiles(project)
  print('UNITY_ASSETS_READY',len(rows),str(project))
 if __name__=='__main__':
  p=argparse.ArgumentParser();p.add_argument('--no-checkout',action='store_true');p.add_argument('--project-path');p.add_argument('--skip-catalog',action='store_true');a=p.parse_args();prepare(not a.no_checkout,a.project_path,a.skip_catalog)
