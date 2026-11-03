@@ -17,6 +17,8 @@ jobs:
             mini-services/poker-server/package-lock.json
       - run: npm ci --legacy-peer-deps --no-audit --no-fund
       - run: npm ci --prefix mini-services/poker-server
+      - run: npm run test:poker:profiles
+      - run: npx tsc -p tsconfig.poker-ui-check.json --pretty false
       - run: npm run typecheck --prefix mini-services/poker-server
       - run: npm test --prefix mini-services/poker-server
       - run: npm run test:rpg:hybrid

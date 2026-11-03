@@ -46,10 +46,8 @@ namespace IslandGame {
    GUI.color=new Color(.06f,.35f,.25f);GUI.Box(new Rect(45,150,300,405),"");GUI.color=Color.white;var seats=table["seats"] as JArray;var positions=seats?.Count==6?six:eight;int mine=(int)N(table,"mySeatId"),count=seats?.Count??0;
    foreach(var seat in seats??new JArray()){
     if(B(seat,"eliminated"))continue;int index=((int)N(seat,"seatId")-Math.Max(0,mine)+count)%count;var p=positions[index];float x=p.x*390,y=135+p.y*450;
-    string character=N(seat,"portrait")==8?"pink-glasses":N(seat,"portrait")==6?"teal-twins":"hong",pose=index==0?"back":index==count/2?"front":p.x<.5?"right":"left";
-    Image("poker/"+character+"-table/"+pose,new Rect(x-38,y-65,76,90));GUI.Box(new Rect(x-43,y+24,86,45),(string)seat["name"]+"\n"+money(N(seat,"stack")));
-    if(B(seat,"folded"))Text("FOLD",x-25,y-35,60);if((int)N(table,"activeSeatId")==N(seat,"seatId"))Text("▶",x-48,y-35,25);
-    string badge=N(table,"bigBlindSeat")==N(seat,"seatId")?"BB":N(table,"smallBlindSeat")==N(seat,"seatId")?"SB":N(table,"buttonSeat")==N(seat,"seatId")?"D":"";Text(badge,x+25,y,30);
+    bool dealer=N(table,"buttonSeat")==N(seat,"seatId");string blind=N(table,"bigBlindSeat")==N(seat,"seatId")?"BB":N(table,"smallBlindSeat")==N(seat,"seatId")?"SB":"";
+    PokerProfileGui.Draw(new Rect(x-38,y-48,76,85),B(seat,"isMe")?7:(int)N(seat,"portrait"),(string)seat["name"],money(N(seat,"stack")),(int)Math.Max(1,N(seat,"level")),dealer,blind,(int)N(table,"activeSeatId")==N(seat,"seatId"),B(seat,"folded"));
     Text(money(N(seat,"currentBet")),x<195?x+40:x-90,y,65);
     var cards=seat["holeCards"] as JArray;if(cards!=null)Cards(cards,x-35,y-95,32,null);
    }

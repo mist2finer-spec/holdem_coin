@@ -134,7 +134,7 @@ export function PokerTable({ userName, onToast, onMain }: Props) {
           {winnerInfo&&!showdownReveal&&<section className="poker-fold-result" aria-label="폴드 승리 결과"><HandAwards winnerInfo={winnerInfo}/></section>}
 
           {showdownReveal&&<ShowdownResults board={board} winnerInfo={winnerInfo} players={seats.map(s=>({
-            seatId:s.seatId,name:s.name,portrait:s.isUser?4:s.persona?.portrait,holeCards:s.holeCards,inHand:s.inHand,folded:s.folded,
+            seatId:s.seatId,name:s.name,portrait:s.isUser?7:s.persona?.portrait,holeCards:s.holeCards,inHand:s.inHand,folded:s.folded,
           }))}/>}
 
           {seats.map(seat => (

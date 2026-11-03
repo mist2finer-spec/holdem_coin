@@ -99,3 +99,6 @@ mini-services/poker-server/data/
 
 # Runtime wallets/inventories are private data, including nested service test working directories.
 **/.data/
+
+# Shared illustrated poker profiles (runtime UI assets, not test screenshots).
+!/public/poker/profiles/*.png
