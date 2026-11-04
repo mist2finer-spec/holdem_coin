@@ -1,0 +1,13 @@
+{
+  "name": "hero040_attack_combo",
+  "duration": 2.29,
+  "firstHit": 0.5,
+  "secondHit": 1.206667,
+  "transition": [
+    0.62,
+    0.99
+  ],
+  "checkedPoses": 2291,
+  "maxBridgeHandTravelPerMs": 1.0048431664328707,
+  "idleError": 0.000002132078919876328
+}
