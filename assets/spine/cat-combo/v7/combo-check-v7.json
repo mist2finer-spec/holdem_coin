@@ -1,0 +1,56 @@
+{
+  "name": "hero040_attack_combo5",
+  "duration": 3.7833,
+  "hits": [
+    0.5,
+    1.206667,
+    1.95,
+    2.5233,
+    3.1266
+  ],
+  "checkedPoses": 3784,
+  "maxAxeStep": 4.313720149993938,
+  "idleError": 0.000005828867989887974,
+  "segments": [
+    {
+      "clip": "hero040_attack_combo",
+      "from": 0,
+      "to": 1.59,
+      "blend": 0.16,
+      "start": 0,
+      "stop": 1.59
+    },
+    {
+      "clip": "attack3",
+      "from": 0,
+      "to": 0.3333,
+      "blend": 0.24,
+      "start": 1.75,
+      "stop": 2.0833
+    },
+    {
+      "clip": "attack4",
+      "from": 0,
+      "to": 0.3,
+      "blend": 0.22,
+      "start": 2.3232999999999997,
+      "stop": 2.6232999999999995
+    },
+    {
+      "clip": "attack5",
+      "from": 0,
+      "to": 0.59,
+      "blend": 0.23,
+      "start": 2.8432999999999997,
+      "stop": 3.4332999999999996
+    },
+    {
+      "clip": "stay1",
+      "from": 0,
+      "to": 0.12,
+      "blend": 0,
+      "start": 3.6632999999999996,
+      "stop": 3.7832999999999997
+    }
+  ]
+}
