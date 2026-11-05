@@ -1,0 +1,101 @@
+{
+  "status": "PASS",
+  "checks": 38,
+  "clips": [
+    {
+      "clip": "death01",
+      "vertices": 2808,
+      "poseDeltaSquaredSum": 3135.561
+    },
+    {
+      "clip": "hit_chest",
+      "vertices": 2808,
+      "poseDeltaSquaredSum": 9.811608
+    },
+    {
+      "clip": "idle_loop",
+      "vertices": 2808,
+      "poseDeltaSquaredSum": 0.9324129
+    },
+    {
+      "clip": "jog_fwd_loop",
+      "vertices": 2808,
+      "poseDeltaSquaredSum": 10879.8418
+    },
+    {
+      "clip": "jump_land",
+      "vertices": 2808,
+      "poseDeltaSquaredSum": 506.2263
+    },
+    {
+      "clip": "jump_loop",
+      "vertices": 2808,
+      "poseDeltaSquaredSum": 3.56439829
+    },
+    {
+      "clip": "jump_start",
+      "vertices": 2808,
+      "poseDeltaSquaredSum": 611.709656
+    },
+    {
+      "clip": "roll",
+      "vertices": 2808,
+      "poseDeltaSquaredSum": 27702.0176
+    },
+    {
+      "clip": "slide_loop",
+      "vertices": 2808,
+      "poseDeltaSquaredSum": 33432.5273
+    },
+    {
+      "clip": "spell_simple_shoot",
+      "vertices": 2808,
+      "poseDeltaSquaredSum": 2.74438572
+    },
+    {
+      "clip": "sword_dash",
+      "vertices": 2808,
+      "poseDeltaSquaredSum": 43709.3359
+    },
+    {
+      "clip": "sword_heavy_combo",
+      "vertices": 2808,
+      "poseDeltaSquaredSum": 23942.83
+    },
+    {
+      "clip": "sword_idle",
+      "vertices": 2808,
+      "poseDeltaSquaredSum": 6.14306927
+    },
+    {
+      "clip": "sword_regular_a",
+      "vertices": 2808,
+      "poseDeltaSquaredSum": 2542.205
+    },
+    {
+      "clip": "sword_regular_b",
+      "vertices": 2808,
+      "poseDeltaSquaredSum": 583.1579
+    },
+    {
+      "clip": "sword_regular_c",
+      "vertices": 2808,
+      "poseDeltaSquaredSum": 6746.80225
+    },
+    {
+      "clip": "sword_regular_combo",
+      "vertices": 2808,
+      "poseDeltaSquaredSum": 3755.9165
+    },
+    {
+      "clip": "walk_loop",
+      "vertices": 2808,
+      "poseDeltaSquaredSum": 795.3148
+    },
+    {
+      "clip": "Slime_RigAction",
+      "vertices": 149,
+      "poseDeltaSquaredSum": 0.370290339
+    }
+  ]
+}

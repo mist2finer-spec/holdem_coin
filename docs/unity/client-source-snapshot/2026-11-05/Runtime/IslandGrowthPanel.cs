@@ -10,7 +10,7 @@ namespace IslandGame {
   RectTransform safe,frame,scrollRect,content,detail,treeSection,list,viewRect,summaryRect,tools;
   UnityEngine.UI.ScrollRect scroll;UnityEngine.UI.RawImage image;
   TextMeshProUGUI summary,selection,description,feedback,zoomLabel;
-  UnityEngine.UI.Button allocate,path,refund,reset;
+  UnityEngine.UI.Button allocate,path,refund,reset,toggleDetail;bool detailExpanded,helpExpanded;
   Camera treeCamera;RenderTexture texture;string tab="tree",listKey,revisionAtCommand,noticeAtCommand;bool pending;
   float pendingAt,lastPanelWidth;int oldW,oldH;
   public SkillTreeManager Tree {get;private set;}
@@ -23,7 +23,7 @@ namespace IslandGame {
    app=owner;font=sharedFont;
    root=new GameObject("GrowthCanvas",typeof(RectTransform),typeof(Canvas),typeof(UnityEngine.UI.CanvasScaler),typeof(UnityEngine.UI.GraphicRaycaster));root.transform.SetParent(transform,false);
    canvas=root.GetComponent<Canvas>();canvas.renderMode=RenderMode.ScreenSpaceOverlay;canvas.sortingOrder=40;
-   var scaler=root.GetComponent<UnityEngine.UI.CanvasScaler>();scaler.uiScaleMode=UnityEngine.UI.CanvasScaler.ScaleMode.ScaleWithScreenSize;scaler.referenceResolution=new Vector2(390,844);scaler.matchWidthOrHeight=.5f;
+   var scaler=root.GetComponent<UnityEngine.UI.CanvasScaler>();scaler.uiScaleMode=UnityEngine.UI.CanvasScaler.ScaleMode.ScaleWithScreenSize;scaler.referenceResolution=new Vector2(390,844);scaler.matchWidthOrHeight=0;
    safe=Rect("SafeArea",root.transform);Stretch(safe);frame=Rect("GrowthFrame",safe);Fill(frame,new Color(.025f,.045f,.07f));
    var title=Text(frame,"GrowthTitle","성장 · 속성 성좌",22);Box(title.rectTransform,16,14,285,36);
    var close=Button(frame,"CloseGrowth","닫기",()=>app.HudMenu(""));Box((RectTransform)close.transform,318,12,60,40);
@@ -35,19 +35,20 @@ namespace IslandGame {
    var layout=content.gameObject.AddComponent<UnityEngine.UI.VerticalLayoutGroup>();layout.padding=new RectOffset(8,8,8,12);layout.spacing=10;layout.childControlWidth=true;layout.childControlHeight=true;layout.childForceExpandWidth=true;layout.childForceExpandHeight=false;
    var fitter=content.gameObject.AddComponent<UnityEngine.UI.ContentSizeFitter>();fitter.horizontalFit=UnityEngine.UI.ContentSizeFitter.FitMode.Unconstrained;fitter.verticalFit=UnityEngine.UI.ContentSizeFitter.FitMode.PreferredSize;
    scroll.content=content;scroll.viewport=mask;
-   summaryRect=Rect("BuildSummary",content);Height(summaryRect,54);summary=Text(summaryRect,"Summary","",13);Stretch(summary.rectTransform);
+   summaryRect=Rect("BuildSummary",content);Height(summaryRect,32);summary=Text(summaryRect,"Summary","",13);Stretch(summary.rectTransform);
    treeSection=Rect("ConstellationSection",content);var treeLayout=treeSection.gameObject.AddComponent<UnityEngine.UI.VerticalLayoutGroup>();treeLayout.spacing=8;treeLayout.childControlWidth=treeLayout.childControlHeight=true;treeLayout.childForceExpandHeight=false;
    
    tools=Rect("TreeTools",treeSection);Height(tools,44);
    var minus=Button(tools,"ZoomOut","−",()=>CameraController.Zoom(1.22f,Vector2.one*.5f));Box((RectTransform)minus.transform,0,0,44,44);
    var plus=Button(tools,"ZoomIn","+",()=>CameraController.Zoom(1/1.22f,Vector2.one*.5f));Box((RectTransform)plus.transform,50,0,44,44);
-   var focus=Button(tools,"FocusStart","내 시작점",()=>Tree.FocusStart());Box((RectTransform)focus.transform,102,0,112,44);zoomLabel=Text(tools,"Zoom","",11);Box(zoomLabel.rectTransform,224,0,115,44);
+   var focus=Button(tools,"FocusStart","내 시작점",()=>Tree.FocusStart());Box((RectTransform)focus.transform,100,0,100,44);var all=Button(tools,"FocusAll","전체 보기",()=>Tree.FocusAll());Box((RectTransform)all.transform,206,0,72,44);var help=Button(tools,"TreeHelp","?",()=>{helpExpanded=!helpExpanded;frame.Find("GrowthScroll/Viewport/Content/ConstellationSection/TreeLegend").gameObject.SetActive(helpExpanded);Layout();});Box((RectTransform)help.transform,284,0,44,44);zoomLabel=Text(tools,"Zoom","",11);zoomLabel.gameObject.SetActive(false);
    viewRect=Rect("SkillTreeViewport",treeSection);Height(viewRect,390);image=viewRect.gameObject.AddComponent<UnityEngine.UI.RawImage>();image.raycastTarget=true;image.uvRect=new Rect(0,0,1,1);
    ViewportInput=viewRect.gameObject.AddComponent<SkillTreeViewportInput>();
-   var legend=Text(treeSection,"TreeLegend","한 손가락 이동 · 두 손가락 확대 · 노드 탭\n금색 습득 / 밝은 테두리 습득 가능 / 청록색 선택",11);Height(legend.rectTransform,46);
+   var legend=Text(treeSection,"TreeLegend","한 손가락 이동 · 두 손가락 확대 · 노드 탭\n금색 습득 / 밝은 테두리 습득 가능 / 청록색 선택",11);Height(legend.rectTransform,46);legend.gameObject.SetActive(false);
    list=Rect("TrainingAndTraits",content);var listLayout=list.gameObject.AddComponent<UnityEngine.UI.VerticalLayoutGroup>();listLayout.spacing=10;listLayout.childControlWidth=listLayout.childControlHeight=true;listLayout.childForceExpandHeight=false;
    
    detail=Rect("NodeOverlay",frame);Fill(detail,new Color(.055f,.095f,.13f));selection=Text(detail,"SelectedNode","시작점을 선택하세요",17);description=Text(detail,"NodeDescription","",12);
+   toggleDetail=Button(detail,"ToggleDetail","상세",()=>{detailExpanded=!detailExpanded;toggleDetail.GetComponentInChildren<TextMeshProUGUI>().text=detailExpanded?"접기":"상세";Layout();});
    allocate=Button(detail,"AllocateNode","배우기",()=>Send("core-allocate-"+Tree.SelectedID));
    path=Button(detail,"AllocatePath","경로 할당",()=>Send("core-path-"+Tree.SelectedID));
    refund=Button(detail,"RefundNode","회수",()=>Send("core-refund-"+Tree.SelectedID));
@@ -74,7 +75,7 @@ namespace IslandGame {
    summary.text="";
    if(tab=="tree"){
     Tree.Bind(state,app.GrowthCatalog?["tree"] as JObject,app.GrowthNodeName);
-    summary.text=$"남은 {Tree.Remaining} / {Tree.Budget} P · {Tree.Nodes.Count}개 노드\n습득한 노드와 이어지는 경로만 배울 수 있습니다.";
+    summary.text=$"남은 {Tree.Remaining} / {Tree.Budget} P · {Tree.Nodes.Count}개 노드";
     zoomLabel.text=Mathf.RoundToInt(CameraController.DefaultOrthographicSize/CameraController.TargetSize*100)+"%";
     if(Tree.SelectedID!=null&&Tree.Nodes.ContainsKey(Tree.SelectedID))SelectNode(Tree.Nodes[Tree.SelectedID].Data);
     ResizeTexture();
@@ -116,17 +117,19 @@ namespace IslandGame {
    var area=Screen.safeArea;safe.anchorMin=new Vector2(area.x/Screen.width,area.y/Screen.height);safe.anchorMax=new Vector2(area.xMax/Screen.width,area.yMax/Screen.height);safe.offsetMin=safe.offsetMax=Vector2.zero;
    var rect=(RectTransform)canvas.transform;float h=rect.rect.height*area.height/Screen.height,w=Mathf.Min(rect.rect.width*area.width/Screen.width,h*.68f);frame.anchorMin=frame.anchorMax=frame.pivot=Vector2.one*.5f;frame.anchoredPosition=Vector2.zero;frame.sizeDelta=new Vector2(w,h);if(Mathf.Abs(w-lastPanelWidth)>.1f){lastPanelWidth=w;listKey=null;}
    Box((RectTransform)frame.Find("CloseGrowth"),w-72,12,60,40);for(int i=0;i<3;i++)Box((RectTransform)frame.Find("Tab"+new[]{"arts","traits","tree"}[i]),12+i*(w-24)/3,62,(w-30)/3,40);
-   float detailH=tab=="tree"?216:0;Box(scrollRect,4,110,w-8,h-118-detailH);Box(detail,8,h-detailH-4,w-16,detailH);
-   float dw=w-16;Box(selection.rectTransform,12,9,dw-24,28);Box(description.rectTransform,12,39,dw-24,65);
-   float bw=(dw-30)/2;Box((RectTransform)allocate.transform,10,108,bw,44);Box((RectTransform)path.transform,20+bw,108,bw,44);Box((RectTransform)refund.transform,10,158,bw*.5f,44);Box((RectTransform)reset.transform,16+bw*.5f,158,bw*.5f,44);Box(feedback.rectTransform,bw+22,154,bw-6,54);
-   Height(viewRect,Mathf.Clamp(h*.45f,280,440));
+   float detailH=tab=="tree"?(detailExpanded?220:112):0;Box(scrollRect,4,110,w-8,h-118-detailH);Box(detail,8,h-detailH-4,w-16,detailH);
+   float dw=w-16;Box(selection.rectTransform,12,5,dw-100,30);Box((RectTransform)toggleDetail.transform,dw-78,0,66,38);description.gameObject.SetActive(detailExpanded);reset.gameObject.SetActive(detailExpanded);
+   if(detailExpanded){Box(description.rectTransform,12,42,dw-24,56);float bw=(dw-30)/2;Box((RectTransform)allocate.transform,10,102,bw,44);Box((RectTransform)path.transform,20+bw,102,bw,44);Box((RectTransform)refund.transform,10,152,bw,44);Box((RectTransform)reset.transform,20+bw,152,bw,44);Box(feedback.rectTransform,12,198,dw-24,18);}
+   else{float bw=(dw-32)/3;Box((RectTransform)allocate.transform,8,40,bw,44);Box((RectTransform)path.transform,16+bw,40,bw,44);Box((RectTransform)refund.transform,24+2*bw,40,bw,44);Box(feedback.rectTransform,12,88,dw-24,20);}
+   Height(viewRect,Mathf.Max(180,h-118-detailH-32-44-42-(helpExpanded?54:0)));
+
   }
   void ResizeTexture(){
    if(viewRect.rect.width<=0||viewRect.rect.height<=0)return;
    int width=Mathf.Clamp(Mathf.CeilToInt(viewRect.rect.width*canvas.scaleFactor*1.5f/32)*32,256,1024),height=Mathf.Clamp(Mathf.CeilToInt(viewRect.rect.height*canvas.scaleFactor*1.5f/32)*32,256,1536);
-   treeCamera.aspect=viewRect.rect.width/viewRect.rect.height;if(texture&&oldW==width&&oldH==height)return;oldW=width;oldH=height;
+   CameraController.ViewportHeightInUIUnits=viewRect.rect.height;CameraController.SetViewportAspect(viewRect.rect.width/viewRect.rect.height);if(texture&&oldW==width&&oldH==height)return;bool firstTexture=texture==null;oldW=width;oldH=height;
    if(texture){treeCamera.targetTexture=null;image.texture=null;texture.Release();Destroy(texture);}
-   texture=new RenderTexture(width,height,0,RenderTextureFormat.ARGB32){name="SkillTree Viewport RT",filterMode=FilterMode.Bilinear,wrapMode=TextureWrapMode.Clamp,antiAliasing=1,useMipMap=false};texture.Create();treeCamera.targetTexture=texture;treeCamera.aspect=viewRect.rect.width/viewRect.rect.height;image.texture=texture;
+   texture=new RenderTexture(width,height,0,RenderTextureFormat.ARGB32){name="SkillTree Viewport RT",filterMode=FilterMode.Bilinear,wrapMode=TextureWrapMode.Clamp,antiAliasing=1,useMipMap=false};texture.Create();treeCamera.targetTexture=texture;treeCamera.aspect=viewRect.rect.width/viewRect.rect.height;image.texture=texture;if(firstTexture)Tree.FocusStart();
   }
   RectTransform Rect(string name,Transform parent){var go=new GameObject(name,typeof(RectTransform));go.transform.SetParent(parent,false);return (RectTransform)go.transform;}
   static void Box(RectTransform r,float x,float y,float w,float h){r.anchorMin=r.anchorMax=new Vector2(0,1);r.pivot=new Vector2(0,1);r.anchoredPosition=new Vector2(x,-y);r.sizeDelta=new Vector2(w,h);}

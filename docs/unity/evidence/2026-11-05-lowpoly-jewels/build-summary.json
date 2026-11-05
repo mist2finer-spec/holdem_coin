@@ -1,0 +1,19 @@
+{
+  "status": "completed",
+  "buildId": "build_eec02ce588c7",
+  "result": "Succeeded",
+  "platform": "Android",
+  "outputPath": "C:/Users/SHK/island-lowpoly-jewel-review/IslandGame-Test-LowPoly-Jewels-20261105.apk",
+  "buildTimeMs": 183415,
+  "buildStartedAt": "2026-11-06T04:32:41.3689280Z",
+  "buildEndedAt": "2026-11-06T04:35:44.7846650Z",
+  "totalWarnings": 1,
+  "totalErrors": 0,
+  "warnings": [
+    {
+      "message": "warning CS0414: The field 'IslandApp.lastDeal' is assigned but its value is never used",
+      "file": "Assets\\Island\\Runtime\\IslandApp.cs"
+    }
+  ],
+  "actualApkBytes": 95829167
+}

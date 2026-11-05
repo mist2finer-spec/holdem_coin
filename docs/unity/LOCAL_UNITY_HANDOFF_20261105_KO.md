@@ -1,5 +1,7 @@
 # IslandGame — 최신 로컬 Unity 통합 인계
 
+**최신 Unity 적용·APK: [로우폴리/주얼 통합 인계](LOWPOLY_JEWEL_UPDATE_20261105_KO.md). assets/unity-lowpoly-combat 브랜치, 버전 .3 / 2026110503. 아래 이전 기록보다 이 인계를 우선합니다.**
+
 기록일: 2026-11-05. **다음 에이전트는 이 문서부터 읽고 실제 Editor/파일 상태를 확인하세요.**
 이 문서는 3D 표시, 모바일 전투 UI, 성장 성좌 및 후속 노드 겹침 수정을 합친 상태입니다. 최신 상태는 [Android APK·CI 인계](ANDROID_TEST_BUILD_20261105_KO.md), 노드 배치 경계는 [성좌 후속 인계](TREE_DENSITY_20261105_KO.md)를 확인하세요.
 
@@ -137,3 +139,8 @@ Play를 시작한 뒤 로비의 미궁 사냥 입장으로 확인합니다. 씬�
 ## 12. 전투 표시 Collider 제거·홀덤 UI/오디오·새 APK
 
 [홀덤·표시 수정 최신 인계](POKER_UI_DISPLAY_FIX_20261105_KO.md)를 먼저 확인하세요. 로비 유지, 표시용 CreatePrimitive 제거, 네이티브 홀덤 UI/실제 웹 BGM 적용. 144 UI/오디오 검사와 실제 격리 서버 콜, 전투 Collider 0 및 새 Development APK 검증 PASS. APK는 IslandGame-Test-Poker-20261105.apk (versionCode 2026110502)입니다. Android 실기기 실행은 UNAVAILABLE. 이번 런타임 소스와 해시를 갱신했습니다.
+
+
+## 13. 로우폴리 전투·주얼 성좌 적용과 APK .3
+
+[최신 통합 인계](LOWPOLY_JEWEL_UPDATE_20261105_KO.md). GLB 실제 임포트/19클립, 기본 780/907·중첩 832/965, 말단 대형 12개·기본 위치 유지, 입력 54·UI 57·실제 서버 할당 PASS. 기존 전투 최적화도 포함한 Development APK .3 생성/서명/정렬 PASS. S25 실측 미실행. 원격에는 소스/데이터/검증을 게시하고 APK는 로컬 Builds/Android에 있습니다.

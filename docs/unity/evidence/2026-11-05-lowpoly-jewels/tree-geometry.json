@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "checks": 2423,
+  "baseNodes": 780,
+  "baseEdges": 907,
+  "expandedNodes": 832,
+  "expandedEdges": 965,
+  "terminalSockets": 12,
+  "maxPrototypeError": 7.688768E-06,
+  "baseStableOnEquipUnequip": true,
+  "orderStateStable": true,
+  "sourceUnchanged": true
+}

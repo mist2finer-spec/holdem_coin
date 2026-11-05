@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "baseNodes": 780,
+  "baseEdges": 907,
+  "expandedNodes": 832,
+  "expandedEdges": 965,
+  "actualPlacements": 10,
+  "spentPoints": 28,
+  "largeSocketsReserved": 12,
+  "baseNodesMovedByExpansion": 0,
+  "dynamicNodes": 52,
+  "dynamicNodeOverlaps": 0,
+  "dynamicEdgeNodePenetrations": 0,
+  "minimumDynamicClearance": 0.5569769241492353,
+  "reservationOverlaps": 0,
+  "baseNodeInsideReservedSpace": 0,
+  "allLargeSocketsDegreeOne": true,
+  "testedTopology": "2 large + 4 medium + 4 small from actual server resolver",
+  "unityImplementation": "UNCHANGED"
+}

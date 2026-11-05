@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "checks": 1215,
+  "offlineReferenceComparisons": 1168,
+  "worstGroundingError": 0.00185183494,
+  "worstClip": "roll",
+  "created": 13,
+  "reused": 230,
+  "pool": 10,
+  "offscreenSkipped": 60,
+  "edgeSamplesIn60Frames": 16,
+  "throttled": 44,
+  "runtimeBakeMeshCalls": 0,
+  "gpuSkinning": "GPUBatched",
+  "devicePerformance": "UNAVAILABLE"
+}

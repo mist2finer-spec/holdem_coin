@@ -1,5 +1,5 @@
 {
-  "capturedAtUTC": "2026-11-05T21:41:21.811535+00:00",
+  "capturedAtUTC": "2026-11-05T23:39:17.116444+00:00",
   "localRoot": "G:\\new_project\\IslandGame",
   "baseline": "a92b9bde8ed507dd18b77574760dc89e3e191364",
   "files": [
@@ -18,8 +18,8 @@
     {
       "source": "Assets/Island/Runtime/Battle3DView.cs",
       "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/Battle3DView.cs",
-      "bytes": 10885,
-      "sha256": "aba3e225c2e0d28a7bee5d8b35db6d524014237e815b0f14c6a23ed329e8e2fd"
+      "bytes": 13242,
+      "sha256": "b3ba898ddd006b209a52946e49bf3083969c6f9f0674f20dbb49accced0cc18a"
     },
     {
       "source": "Assets/Island/Runtime/Battle3DView.cs.meta",
@@ -138,8 +138,8 @@
     {
       "source": "Assets/Island/Runtime/IslandGrowthPanel.cs",
       "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/IslandGrowthPanel.cs",
-      "bytes": 17235,
-      "sha256": "09b4563773970e2958fa26f026423739e855ab70bad999ac3a68a25b657e2e22"
+      "bytes": 18231,
+      "sha256": "ec257374b5987e39c15f1598ebad5ec59f6be46ee140b5567e97f2cc0cf9903e"
     },
     {
       "source": "Assets/Island/Runtime/IslandGrowthPanel.cs.meta",
@@ -198,8 +198,8 @@
     {
       "source": "Assets/Island/Runtime/NativeBattle.cs",
       "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/NativeBattle.cs",
-      "bytes": 15369,
-      "sha256": "d84f93b9ef177dcc80dabdd885ab3b3ad472b22174938674268c054dc19310d7"
+      "bytes": 15283,
+      "sha256": "e369478fc3f3375bdf118d2ed8286adf10d0c2914f2924a9a3ef9ab13241bafe"
     },
     {
       "source": "Assets/Island/Runtime/NativeBattle.cs.meta",
@@ -282,8 +282,8 @@
     {
       "source": "Assets/Island/Runtime/SkillTreeCameraController.cs",
       "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/SkillTreeCameraController.cs",
-      "bytes": 2934,
-      "sha256": "ae01bec5954ab069b4c153e2edc220e3a202f12662e0bb46b8e6fed1bf4fca86"
+      "bytes": 3808,
+      "sha256": "f3b9bcd9b19b38cf6d66dd19d50b7579f0b69e14a8a0eb40c374fabf70eabd09"
     },
     {
       "source": "Assets/Island/Runtime/SkillTreeCameraController.cs.meta",
@@ -294,8 +294,8 @@
     {
       "source": "Assets/Island/Runtime/SkillTreeManager.cs",
       "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/SkillTreeManager.cs",
-      "bytes": 9200,
-      "sha256": "5e1335e73e65ac61ed0ee061db38b4332c7649a43d582166f34c85a046905858"
+      "bytes": 11217,
+      "sha256": "a6ca214c2b9b5cad4f89d84a8a42cb3e9b4626ad9f219ed76cefc4f6acf9a44a"
     },
     {
       "source": "Assets/Island/Runtime/SkillTreeManager.cs.meta",
@@ -306,8 +306,8 @@
     {
       "source": "Assets/Island/Runtime/SkillTreeNode.cs",
       "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/SkillTreeNode.cs",
-      "bytes": 1760,
-      "sha256": "ed4b030883624ea174c4491efc5cc80828cddfc7622fde52cfe24427f0b3b4ce"
+      "bytes": 2276,
+      "sha256": "5d7ac2b66a32cf396ae8a59413b1622f2a577f467a899c4781cdc3acc9cbaaa6"
     },
     {
       "source": "Assets/Island/Runtime/SkillTreeNode.cs.meta",
@@ -318,8 +318,8 @@
     {
       "source": "Assets/Island/Runtime/SkillTreeViewportInput.cs",
       "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/SkillTreeViewportInput.cs",
-      "bytes": 6820,
-      "sha256": "bcaa27f9abd5136a9f7cabb32973711bca59af280783c2efd4d722045e71358b"
+      "bytes": 7026,
+      "sha256": "d89fab4752f1af7ec6a5af12b9235a4fb33a2c68a9d37e6999d73fb2c65424c1"
     },
     {
       "source": "Assets/Island/Runtime/SkillTreeViewportInput.cs.meta",
@@ -498,14 +498,14 @@
     {
       "source": "Assets/Island/Resources/Battle3DAssets.asset",
       "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Assets/Island/Resources/Battle3DAssets.asset",
-      "bytes": 2307,
-      "sha256": "6815d6c62ff084c4ec13bc45cf30c27b7607c85f015be23a5112e544e73347eb"
+      "bytes": 2315,
+      "sha256": "367d2b331a83ee7b2e8fd6f992ff18eae1cd5a082198cd8f77e32045e73f5bc1"
     },
     {
       "source": "Assets/Island/Runtime/SkillTreeLayout.cs",
       "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/SkillTreeLayout.cs",
-      "bytes": 3178,
-      "sha256": "38af9014324188e26445c756cb4ce1096aa1cd3cdda363a527f16634d8d13c47"
+      "bytes": 7068,
+      "sha256": "44f336a92e50127f5ce5a452ea69caff55f35c7337113b7950e65be1ba3b7bcb"
     },
     {
       "source": "Assets/Island/Runtime/SkillTreeLayout.cs.meta",
@@ -686,6 +686,60 @@
       "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Resources/WebAssets/poker/profiles/manifest.json",
       "bytes": 3789,
       "sha256": "70381bdb2ace854e703c84c27410154f1e1075ee7119f4e2f89d4648a6095397"
+    },
+    {
+      "source": "Assets/Island/Runtime/BattleGroundingProfile.cs",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/BattleGroundingProfile.cs",
+      "bytes": 1789,
+      "sha256": "b2b483915f739a72fe032b96ba0f9c9ac4319f167cc9861cd5f0a045618e18bc"
+    },
+    {
+      "source": "Assets/Island/Runtime/BattleGroundingProfile.cs.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/BattleGroundingProfile.cs.meta",
+      "bytes": 59,
+      "sha256": "906d8f9e55841e86e53f35c299b2ce45d33a23c9f6ef92a2556b0ef747f4ba9b"
+    },
+    {
+      "source": "Assets/Island/Resources/BattleGroundingProfile.json",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Resources/BattleGroundingProfile.json",
+      "bytes": 180283,
+      "sha256": "f0f687c5e52031a72eec9d7cf81c54e7f6ea07c04b3aa828fa8e01bbb8975d71"
+    },
+    {
+      "source": "Assets/Island/Resources/BattleGroundingProfile.json.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Resources/BattleGroundingProfile.json.meta",
+      "bytes": 158,
+      "sha256": "3e9bfbe03d8519e3cb2b93ff7446c6216de5a0c258707333aed8fe7306af388c"
+    },
+    {
+      "source": "Assets/Island/Resources/SkillTreePresentationV2.json",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Resources/SkillTreePresentationV2.json",
+      "bytes": 187704,
+      "sha256": "537d23e0cc75b66200743e75dbaa46e7543978abcd3fbeea7d539c6f8febbe7a"
+    },
+    {
+      "source": "Assets/Island/Resources/SkillTreePresentationV2.json.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Resources/SkillTreePresentationV2.json.meta",
+      "bytes": 158,
+      "sha256": "98a2772fe205068b25b4d541bc94b37f874c550cb3c9315047041c07fd540f85"
+    },
+    {
+      "source": "Assets/Island/Art/Battle3D/LowPoly/PinkGlass_5000.glb.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Art/Battle3D/LowPoly/PinkGlass_5000.glb.meta",
+      "bytes": 794,
+      "sha256": "d4b62a8a62718bf935166b32ef35923fff539fd7b81a3be17bc1fdcf002f8325"
+    },
+    {
+      "source": "Assets/Island/Art/Battle3D/LowPoly/Slime_300.glb.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Art/Battle3D/LowPoly/Slime_300.glb.meta",
+      "bytes": 720,
+      "sha256": "4aacf4c9227303eb2cef14f454e63aa95d4444b8ab83c5350d9e402d64cc0d53"
+    },
+    {
+      "source": "Assets/Island/Art/Battle3D/LowPoly.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Art/Battle3D/LowPoly.meta",
+      "bytes": 172,
+      "sha256": "317e066f67d36f3d4b6db181a59e8af01afcdf07e35ea0b43ba11d9a075194f9"
     }
   ],
   "localOnlyModels": [
@@ -788,6 +842,20 @@
       "path": "Assets/Island/Art/Battle3D/Slime/slime_rigged_animated.glb",
       "bytes": 1149816,
       "sha256": "035d641d74999d0b383de2dbe78f17c9eab249d8bf04385db07eb02640d555af"
+    },
+    {
+      "path": "Assets/Island/Art/Battle3D/LowPoly/PinkGlass_5000.glb",
+      "bytes": 1690928,
+      "sha256": "ae1bdeb9be983b95c20eb67416ca5391d53f31ee83a484f7fd71a4c41eaec42d",
+      "repositorySource": "docs/unity/assets/lowpoly-combat/PinkGlass_5000.glb",
+      "sourceCommit": "d9cf41fbe12a5a72c1283fc099ce5e4be4fe5b73"
+    },
+    {
+      "path": "Assets/Island/Art/Battle3D/LowPoly/Slime_300.glb",
+      "bytes": 14864,
+      "sha256": "246b867b44baa0733bd155b16d1e9d2cb5a61bd1cd8ab705e973361ffaf066bf",
+      "repositorySource": "docs/unity/assets/lowpoly-combat/Slime_300.glb",
+      "sourceCommit": "d9cf41fbe12a5a72c1283fc099ce5e4be4fe5b73"
     }
   ],
   "localOnlyFonts": [
@@ -802,15 +870,17 @@
   "androidTestBuildSettings": {
     "applicationIdentifier": "com.mist2finer.islandgame.dev",
     "productName": "IslandGame Test",
-    "bundleVersion": "0.1.0-test.20261105.2",
-    "versionCode": 2026110502,
+    "bundleVersion": "0.1.0-test.20261105.3",
+    "versionCode": 2026110503,
     "architecture": "ARM64",
     "backend": "IL2CPP",
     "graphicsAPI": "OpenGLES3",
     "orientation": "Portrait",
     "minSdk": 23,
     "targetSdk": 36,
-    "fullPlayerSettings": "Local backup only; not exported"
+    "fullPlayerSettings": "Local backup only; not exported",
+    "meshDeformation": "GPUBatched",
+    "gpuSkinning": true
   },
   "localOnlyPokerArt": [
     {
@@ -883,5 +953,7 @@
       "bytes": 78488,
       "sha256": "ea1f4510a95d56cf5dc254c8508e55bdf6a3bf49aab80fee9198dbbe70164e21"
     }
-  ]
+  ],
+  "latestIntegrationBase": "d9cf41fbe12a5a72c1283fc099ce5e4be4fe5b73",
+  "presentationVersion": 2
 }

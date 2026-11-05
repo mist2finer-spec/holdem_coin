@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Newtonsoft.Json.Linq;
@@ -9,7 +9,8 @@ namespace IslandGame {
   sealed class Actor {
    public GameObject root, model;
    public SkinnedMeshRenderer skin;
-   public Mesh baked;public readonly List<Vector3> vertices=new List<Vector3>();
+   public BattleGroundingProfile.Model grounding;
+   public int lastSampleSlot=int.MinValue,phase;public bool placed;
    public Transform leftFoot,rightFoot,pelvis;
    public AnimationClip clip;
    public string serial;
@@ -17,6 +18,17 @@ namespace IslandGame {
   }
   public Battle3DAssets assets;
   readonly Dictionary<string,Actor> actors=new Dictionary<string,Actor>();
+  readonly Stack<Actor> slimePool=new Stack<Actor>();
+  readonly List<string> retired=new List<string>();
+  readonly Plane[] frustum=new Plane[6];
+  Camera battleCamera;BattleGroundingProfile groundingProfile;bool hasFrustum;
+  public const int MaximumPooledSlimes=16;
+  public int PooledSlimes=>slimePool.Count;
+  public int CreatedModels {get;private set;}
+  public int ReusedModels {get;private set;}
+  public int SampleCalls {get;private set;}
+  public int CulledSamples {get;private set;}
+  public int ThrottledSamples {get;private set;}
   readonly List<UnityEngine.Object> owned=new List<UnityEngine.Object>();
   readonly Dictionary<PrimitiveType,Mesh> displayMeshes=new Dictionary<PrimitiveType,Mesh>();
   Transform world;
@@ -25,7 +37,7 @@ namespace IslandGame {
   public float HeroGroundError {get;private set;}
   public int ActorCount=>actors.Count;
   Material ground,edge,bark,leaves,rock,steel,grip,shadow;
-  public void Clear(){actors.Clear();displayMeshes.Clear();world=null;foreach(var o in owned)if(o)Destroy(o);owned.Clear();}
+  public void Clear(){actors.Clear();slimePool.Clear();displayMeshes.Clear();world=null;hasFrustum=false;foreach(var o in owned)if(o)Destroy(o);owned.Clear();}
   Material Mat(string name,Color color,float metallic=0){var m=new Material(Shader.Find("Standard")){name=name,color=color};m.SetFloat("_Glossiness",.2f);m.SetFloat("_Metallic",metallic);owned.Add(m);return m;}
   GameObject Shape(string name,PrimitiveType type,Transform parent,Vector3 p,Vector3 scale,Material material){
    Mesh mesh;if(!displayMeshes.TryGetValue(type,out mesh)){mesh=IslandDisplayMeshes.Create(type);displayMeshes.Add(type,mesh);owned.Add(mesh);}
@@ -33,7 +45,7 @@ namespace IslandGame {
    go.GetComponent<MeshFilter>().sharedMesh=mesh;go.GetComponent<MeshRenderer>().sharedMaterial=material;return go;
   }
   public void Build(Transform root,JObject map,Camera camera){
-   world=root;actors.Clear();
+   world=root;actors.Clear();battleCamera=camera;groundingProfile=BattleGroundingProfile.Load();CreatedModels=ReusedModels=SampleCalls=CulledSamples=ThrottledSamples=0;
    ground=Mat("Moss · sage",new Color(.29f,.40f,.25f));edge=Mat("Earth · warm slate",new Color(.24f,.21f,.18f));
    bark=Mat("Bark · walnut",new Color(.23f,.16f,.12f));leaves=Mat("Canopy · pine",new Color(.13f,.28f,.22f));rock=Mat("Stone · blue slate",new Color(.32f,.39f,.40f));
    steel=Mat("Sword · silver",new Color(.73f,.83f,.84f),.55f);grip=Mat("Sword · leather",new Color(.22f,.10f,.15f));shadow=Mat("Contact shadow · moss",new Color(.13f,.21f,.14f));
@@ -61,6 +73,7 @@ namespace IslandGame {
    Shape("Server room · grass lip",PrimitiveType.Cube,world,new Vector3((a+b)/2,y-.025f,.5f),new Vector3(b-a,.05f,3),ground);
   }
   Actor Create(string id,bool hero){
+   if(!hero&&slimePool.Count>0){var pooled=slimePool.Pop();pooled.root.name=id+" · pooled slime visual";pooled.clip=null;pooled.serial=null;pooled.time=0;pooled.lastSampleSlot=int.MinValue;pooled.phase=Phase(id);pooled.placed=false;pooled.model.transform.localPosition=Vector3.zero;pooled.model.transform.localScale=Vector3.one*pooled.scale;pooled.root.SetActive(true);actors[id]=pooled;ReusedModels++;return pooled;}
    var prefab=hero?assets.hero:assets.slime;if(!prefab)return null;
    var root=new GameObject(hero?"Pink Glass · server hero":id+" · slime visual");root.transform.SetParent(world,false);
    var model=Instantiate(prefab,root.transform,false);model.name="Model";
@@ -68,19 +81,21 @@ namespace IslandGame {
    foreach(var animator in model.GetComponentsInChildren<Animator>())animator.enabled=false;
    var skin=model.GetComponentInChildren<SkinnedMeshRenderer>();
    var clip=hero?assets.idle:assets.slimeIdle;if(clip)clip.SampleAnimation(model,0);
-   var mesh=new Mesh();skin.BakeMesh(mesh);var bound=mesh.bounds;owned.Add(mesh);
-   float height=Mathf.Max(.001f,bound.size.y*Mathf.Abs(skin.transform.lossyScale.y));
-   var a=new Actor{root=root,model=model,skin=skin,baked=mesh,scale=(hero?assets.heroHeight:assets.slimeHeight)/height};
+   var profile=hero?groundingProfile?.Hero:groundingProfile?.Slime;
+   if(profile!=null&&profile.Vertices!=skin.sharedMesh.vertexCount)profile=null;
+   var bound=skin.localBounds;float height=Mathf.Max(.001f,profile!=null?profile.ReferenceHeight:bound.size.y*Mathf.Abs(skin.transform.lossyScale.y));
+   if(profile!=null)skin.localBounds=profile.Bounds;
+   var a=new Actor{root=root,model=model,skin=skin,grounding=profile,phase=Phase(id),scale=(hero?assets.heroHeight:assets.slimeHeight)/height};CreatedModels++;
    foreach(var renderer in model.GetComponentsInChildren<Renderer>()){
     renderer.sharedMaterial=hero?assets.heroMaterial:assets.slimeMaterial;
     renderer.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.On;renderer.receiveShadows=true;
    }
-   skin.updateWhenOffscreen=true;
+   skin.updateWhenOffscreen=false;
    foreach(var t in model.GetComponentsInChildren<Transform>()){
     if(t.name.EndsWith(":Hips"))a.pelvis=t;if(t.name.EndsWith(":LeftFoot"))a.leftFoot=t;if(t.name.EndsWith(":RightFoot"))a.rightFoot=t;
    }
    var low=skin.transform.TransformPoint(new Vector3(bound.center.x,bound.min.y,bound.center.z));
-   a.baseFoot=root.transform.InverseTransformPoint(low).y;
+   a.baseFoot=profile!=null?profile.BaseFoot:root.transform.InverseTransformPoint(low).y;
    if(a.leftFoot&&a.rightFoot)a.soleOffset=Mathf.Min(root.transform.InverseTransformPoint(a.leftFoot.position).y,root.transform.InverseTransformPoint(a.rightFoot.position).y)-a.baseFoot;
    if(hero){
     Transform hand=null;foreach(var t in model.GetComponentsInChildren<Transform>())if(t.name.EndsWith(":RightHand")){hand=t;break;}
@@ -93,6 +108,8 @@ namespace IslandGame {
    Shape("Contact shadow",PrimitiveType.Cylinder,root.transform,new Vector3(0,.005f,0),new Vector3(hero?.48f:.6f,.004f,hero?.20f:.4f),shadow);
    actors[id]=a;return a;
   }
+  static int Phase(string id){unchecked{int h=17;foreach(char c in id)h=h*31+c;return h&0x7fffffff;}}
+  public void BeginFrame(){if(!battleCamera)return;GeometryUtility.CalculateFrustumPlanes(battleCamera,frustum);hasFrustum=true;}
   public float Draw(string id,string action,float x,float elevation,float facing,string serial,float age,float duration,float hitAt,string kind,float advance,float visualTime){
    bool hero=id=="hero";Actor a;if(!actors.TryGetValue(id,out a))a=Create(id,hero);if(a==null)return 0;
    var clip=hero?assets.HeroClip(action):assets.slimeIdle;if(!clip)return 0;
@@ -104,26 +121,33 @@ namespace IslandGame {
     if(kind=="attack"||kind=="skill")sample=NativeCombatPresentation.MotionTime(age,duration,hitAt,clip.length,clip.length*.45f);
     else if(kind=="rush"||kind=="dodge"||kind=="slide")sample=Mathf.Clamp01(age/duration)*clip.length;
    }
-   clip.SampleAnimation(a.model,sample);
-   a.root.transform.localScale=Vector3.one;
+   var target=new Vector3(x/100,elevation/100,0);
+   if(hero||!a.placed||Vector3.Distance(a.root.transform.position,target)>3)a.root.transform.position=target;
+   else a.root.transform.position=Vector3.Lerp(a.root.transform.position,target,1-Mathf.Exp(-Mathf.Max(0,advance)*18));
+   a.placed=true;a.root.transform.localScale=Vector3.one;
+   if(!hero){
+    // A dedicated-camera bounds test avoids SceneView/isVisible and inactive-object traps.
+    var bounds=a.skin.bounds;bounds.Expand(.6f);
+    if(hasFrustum&&!GeometryUtility.TestPlanesAABB(frustum,bounds)){CulledSamples++;return sample;}
+    float dx=battleCamera?Mathf.Abs(battleCamera.WorldToViewportPoint(a.root.transform.position).x-.5f):0;
+    int rate=dx<.25f?60:dx<.45f?30:15;
+    int slot=Mathf.FloorToInt(visualTime*rate+(a.phase%997)/997f);
+    if(!changed&&slot==a.lastSampleSlot){ThrottledSamples++;return sample;}a.lastSampleSlot=slot;
+   }
+   clip.SampleAnimation(a.model,sample);SampleCalls++;
    a.model.transform.localScale=Vector3.one*a.scale;
    a.model.transform.localRotation=Quaternion.Euler(0,hero?assets.heroYaw*(facing<0?-1:1):0,0);
    a.model.transform.localPosition=Vector3.zero;
-   float feet=a.baseFoot*a.scale;
-   if(hero&&a.leftFoot&&a.rightFoot){
-    // Remove source root travel/vertical drift; the server owns all displacement.
+   float feet=a.baseFoot*a.scale,sourceHeight=0;
+   bool cached=a.grounding!=null&&a.grounding.TryHeight(clip,sample,out sourceHeight);
+   if(cached)feet=sourceHeight*a.scale;
+   else if(hero&&a.leftFoot&&a.rightFoot){
     var lp=a.root.transform.InverseTransformPoint(a.leftFoot.position);var rp=a.root.transform.InverseTransformPoint(a.rightFoot.position);
     feet=Mathf.Min(lp.y,rp.y)-a.soleOffset*a.scale;
-    if(a.pelvis){var p=a.root.transform.InverseTransformPoint(a.pelvis.position);a.model.transform.localPosition=new Vector3(-p.x,0,-p.z);}
    }
-   if(hero){
-    // Ground the deformed body, including rolls/low attacks whose feet rise above the torso.
-    a.skin.BakeMesh(a.baked);a.baked.GetVertices(a.vertices);
-    var matrix=a.root.transform.worldToLocalMatrix*a.skin.transform.localToWorldMatrix;
-    feet=float.PositiveInfinity;foreach(var vertex in a.vertices)feet=Mathf.Min(feet,matrix.MultiplyPoint3x4(vertex).y);
-   }
+   if(hero&&a.pelvis){var p=a.root.transform.InverseTransformPoint(a.pelvis.position);a.model.transform.localPosition=new Vector3(-p.x,0,-p.z);}
    a.model.transform.localPosition+=Vector3.down*feet;
-   a.root.transform.position=new Vector3(x/100,elevation/100,0);
+
    if(!hero){
     float bounce=action.Contains("attack")?.06f:0;a.model.transform.localPosition+=Vector3.up*(Mathf.Abs(Mathf.Sin(visualTime*5))*bounce);
     if(action.Contains("death")||action.Contains("die"))a.model.transform.localScale=new Vector3(a.scale*1.25f,a.scale*.3f,a.scale*1.25f);
@@ -132,7 +156,10 @@ namespace IslandGame {
    return sample;
   }
   static Transform Find(Transform root,string name){foreach(var t in root.GetComponentsInChildren<Transform>())if(t.name==name)return t;return null;}
-  public void ShowOnly(HashSet<string> shown){foreach(var pair in actors)pair.Value.root.SetActive(shown.Contains(pair.Key));}
+  public void ShowOnly(HashSet<string> shown){
+   retired.Clear();foreach(var pair in actors){if(shown.Contains(pair.Key)){if(!pair.Value.root.activeSelf)pair.Value.root.SetActive(true);continue;}if(pair.Key=="hero"){pair.Value.root.SetActive(false);continue;}retired.Add(pair.Key);}
+   foreach(var id in retired){var a=actors[id];actors.Remove(id);a.root.SetActive(false);if(slimePool.Count<MaximumPooledSlimes)slimePool.Push(a);else Destroy(a.root);}
+  }
   public void Follow(Camera camera,float x,float elevation,float delta){
    var framing=camera.GetComponent<CameraHorizontalWidthLock>();
    var target=framing?framing.PositionForGround(new Vector3(x/100,elevation/100,0)):new Vector3(x/100,elevation/100+camera.orthographicSize*.70f+10*Mathf.Tan(9*Mathf.Deg2Rad),-10);
@@ -141,3 +168,4 @@ namespace IslandGame {
   void OnDestroy(){Clear();}
  }
 }
+

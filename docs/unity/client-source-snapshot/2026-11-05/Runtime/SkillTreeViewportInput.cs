@@ -78,9 +78,9 @@ namespace IslandGame {
     var point=camera.ViewportToWorldPoint(new Vector3(uv.x,uv.y,Manager.WorldZ-camera.transform.position.z));
     float pixels=Vector2.Distance(RectTransformUtility.WorldToScreenPoint(eventCamera,transform.TransformPoint(new Vector3(0,((RectTransform)transform).rect.height,0))),RectTransformUtility.WorldToScreenPoint(eventCamera,transform.position));
     float radius=2*camera.orthographicSize*TapRadiusPixels/Mathf.Max(1,pixels);float nearest=float.PositiveInfinity;
-    foreach(var collider in Physics2D.OverlapCircleAll(point,radius,Manager.LayerMask)){var candidate=collider.GetComponent<SkillTreeNode>();if(!candidate)continue;float d=((Vector2)candidate.transform.position-(Vector2)point).sqrMagnitude;if(d<nearest){nearest=d;node=candidate;}}
+    foreach(var collider in Physics2D.OverlapCircleAll(point,radius,Manager.LayerMask)){var candidate=collider.GetComponent<SkillTreeNode>();if(!candidate)continue;float d=((Vector2)candidate.transform.position-(Vector2)point).sqrMagnitude;if(d<nearest-.000001f||Mathf.Abs(d-nearest)<.000001f&&(node==null||string.CompareOrdinal(candidate.Data.ID,node.Data.ID)<0)){nearest=d;node=candidate;}}
    }
-   if(node)Manager.SelectNode(node.Data.ID);
+   if(node){Manager.SelectNode(node.Data.ID);float diameter=SkillTreeNode.Radius(node.Data.Type)*Controller.ViewportHeightInUIUnits/Controller.TreeCamera.orthographicSize;if(diameter<10)Manager.FocusNodeNeighborhood(node.Data.ID);}
   }
   public void OnScroll(PointerEventData e){Vector2 uv;if(Controller&&ScreenToUV(e.position,e.enterEventCamera,out uv)){Controller.Zoom(Mathf.Exp(-e.scrollDelta.y*.12f),uv);e.Use();}}
   public void CancelGesture(){fingers.Clear();baseline=false;multiTouch=false;dirty=false;UnlockParents();}

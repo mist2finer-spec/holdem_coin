@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "checks": 19,
+  "width": 1080,
+  "height": 2340,
+  "viewportHeight": 389.0,
+  "baseNodes": 780,
+  "renderedEdges": 907,
+  "layoutRebuilds": 1
+}

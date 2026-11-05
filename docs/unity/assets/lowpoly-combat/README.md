@@ -32,4 +32,4 @@ Pink Glass에 walk_loop도 포함되어 있다.
 - GLB 파싱, 삼각형 수, 본 인덱스, 스킨 가중치와 애니메이션 데이터 대조 통과.
 - Khronos glTF Validator 오류 0. 원본과 같은 스킨 노드 배치 관련 경고가 남아 있다. Pink Glass의 사용되지 않는 발광 강도 설정도 경고로 기록된다.
 - 같은 전투 카메라에서 대표 공격·대기·슬라임 동작의 외형 비교 완료. 비교 렌더는 Unity 외부에서 수행했다.
-- Unity Editor 임포트·Play Mode와 모바일 성능은 미검증.
+- 후속 Unity Editor 임포트·19클립 실제 변형·Play 전투·Android APK 생성/서명/정렬은 검증했습니다. 모바일 기기 성능은 미검증입니다. [최신 Unity 적용 인계](../../LOWPOLY_JEWEL_UPDATE_20261105_KO.md)를 확인하세요.

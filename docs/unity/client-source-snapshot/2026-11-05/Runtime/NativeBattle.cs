@@ -100,6 +100,7 @@ namespace IslandGame {
    float x=NativeCombatPresentation.N(hero["x"]),e=NativeCombatPresentation.N(hero["elevation"]),air=NativeCombatPresentation.N(hero["airHeight"]);
    string weapon=campaign?state.Value<string>("weapon")??"axe":state["progress"]?.Value<string>("weaponType")??"axe",path=index["heroes"]?[weapon]?.Value<string>()??"characters/hong/native-axe/hong";
    var motion=(campaign?state["motion"]:hero["motion"]) as JObject;float start=motion?.Value<float?>(campaign?"startedAt":"start")??elapsed,duration=motion?.Value<float?>("duration")??0;
+   if(Uses3D)threeD.BeginFrame();
    DrawActor("hero",path,hero.Value<string>("action")??"stay1",x,e+air,88,hero.Value<float?>("facing")??1,(hero["serial"]??hero["actionSerial"]??0).ToString(),VisualTime-start,duration,motion?.Value<float?>("hitAt")??0,(string)motion?["kind"]);HeroAirHeight=air;
    var shown=new HashSet<string>{"hero"};foreach(var m in state[campaign?"enemies":"mobs"] as JArray??new JArray()){
     if(!campaign&&(int)NativeCombatPresentation.N(m["room"])!=(int)NativeCombatPresentation.N(state["room"]))continue;

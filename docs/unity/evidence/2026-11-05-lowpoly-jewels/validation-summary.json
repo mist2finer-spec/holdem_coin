@@ -1,0 +1,47 @@
+{
+  "status": "PASS",
+  "scope": "Unity import, deformation, editor play, graph geometry/input, isolated live server, Android artifact",
+  "modelSource": "d9cf41fbe12a5a72c1283fc099ce5e4be4fe5b73",
+  "hero": {
+    "vertices": 2808,
+    "triangles": 5000,
+    "bones": 65,
+    "importedClips": 18,
+    "runtimeFields": 16
+  },
+  "slime": {
+    "vertices": 149,
+    "triangles": 299,
+    "bones": 3,
+    "clips": 1
+  },
+  "deformationChecks": 38,
+  "animationClipsChecked": 19,
+  "treeGeometryAssertions": 2423,
+  "baseGraph": [
+    780,
+    907
+  ],
+  "expandedGraph": [
+    832,
+    965
+  ],
+  "terminalLargeSockets": 12,
+  "basePositionStable": true,
+  "inputChecks": 54,
+  "viewChecks": 57,
+  "optimizationAssertions": 1215,
+  "groundingReferenceSamples": 1168,
+  "maxGroundingError": 0.00185183494,
+  "runtimeBakeMeshCalls": 0,
+  "sceneUnchanged": true,
+  "sceneSha256": "7ad746ca1498a7623219d8e6ddd3873472b1ee61982eac0f4cd3ede71f5b71e1",
+  "serverProtocolChanged": false,
+  "productionDeployed": false,
+  "testPrefsRestored": true,
+  "playModeStopped": true,
+  "androidDevice": "UNAVAILABLE: no adb device",
+  "S25Performance": "UNAVAILABLE",
+  "apkOnGitHub": false,
+  "apkUploadReason": "Git CLI write credentials unavailable; connected GitHub tools expose UTF-8 text writes but no release-asset upload. No binary/Base64 fallback."
+}

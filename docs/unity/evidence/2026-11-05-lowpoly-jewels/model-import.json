@@ -1,0 +1,32 @@
+{
+  "status": "PASS",
+  "heroClips": 18,
+  "connectedHeroClips": 16,
+  "allLegacy": false,
+  "models": [
+    {
+      "model": "PinkGlass_5000",
+      "skins": [
+        {
+          "vertices": 2808,
+          "triangles": 5000,
+          "bones": 65,
+          "submeshes": 1
+        }
+      ]
+    },
+    {
+      "model": "Slime_300",
+      "skins": [
+        {
+          "vertices": 149,
+          "triangles": 299,
+          "bones": 3,
+          "submeshes": 1
+        }
+      ]
+    }
+  ],
+  "heroMaterial": "PinkGlass",
+  "slimeMaterial": "Slime"
+}

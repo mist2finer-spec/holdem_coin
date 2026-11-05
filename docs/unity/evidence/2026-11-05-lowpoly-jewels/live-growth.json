@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "transport": "real isolated RogueService over HTTP",
+  "node": "attr_0_0",
+  "before": 12,
+  "after": 11,
+  "duplicateSendWhilePendingIgnored": true,
+  "serverConfirmed": true
+}
