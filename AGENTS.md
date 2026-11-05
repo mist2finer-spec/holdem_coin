@@ -2,6 +2,19 @@
 
 이 문서는 holdem_coin(2D 종스크롤 방치형 핵앤슬래시 RPG, PoE 스킬·패시브 시스템, 텍사스 홀덤)의 유일한 최상위 저장소 정책이다. Codex(ChatGPT), Unity MCP를 사용하는 에이전트, 그 밖의 모든 AI 에이전트는 세션을 시작할 때와 저장소 작업에 착수하기 전에 이 파일을 읽고 적용한다. 하위 폴더에서 시작한 경우에도 Git 저장소 루트의 `AGENTS.md`를 먼저 확인한다. 도구별 안내 파일은 이 문서를 가리키며, 공통 규칙 변경은 이 파일에 기록한다. 영구 규칙만 180줄 이내로 유지한다. 일시적 지시와 당일 결정은 작업 폴더의 로컬 메모에 날짜와 사용자 원문 그대로 기록한다.
 
+## 저장소 구조와 작업 시작점
+
+| 작업 | 먼저 볼 경로 | 범위 |
+| --- | --- | --- |
+| 라이브 웹 | [Render 설정](render.yaml), [호스팅 시작 스크립트](scripts/start-hosted.mjs), [웹 라우트](src/app/) | [holdem-coin-tavern](https://holdem-coin-tavern.onrender.com/)은 Next.js 웹과 Socket.IO 포커 서버를 한 공개 주소에서 제공합니다. 배포 리비전은 [`/api/release`](https://holdem-coin-tavern.onrender.com/api/release)에서 확인합니다. |
+| 웹 RPG | [`/hunt` 진입점](src/app/hunt/page.tsx), [RPG 컴포넌트](src/components/rpg/) | 사냥 화면과 웹 RPG 기능은 여기서 추적합니다. |
+| 홀덤 서버 | [`mini-services/poker-server/`](mini-services/poker-server/) | 홀덤 서버 로직과 서버 테스트 명령은 이 디렉터리에서 확인합니다. |
+| Unity | [`unity/IslandGame/`](unity/IslandGame/), [Unity 에이전트 안내](unity/IslandGame/AGENTS.md) | Unity Editor와 MCP 작업의 진입점입니다. 프로젝트 버전은 `ProjectSettings/ProjectVersion.txt`에서 확인합니다. |
+| 아트·모션 | [Pink Glass 모션 지시서](unity/IslandGame/지시서.md), [웹 정적 에셋](public/) | Pink Glass 원본 경로는 지시서에서 확인합니다. Unity 적용을 요청받으면 필요한 원본만 가져옵니다. |
+
+- 새 작업은 `main`을 기준으로 대상 경로부터 확인합니다. 라이브 동작을 판단할 때는 배포 리비전도 대조합니다.
+- 브랜치 정리 전에는 라이브 배포, 진행 중인 Unity 작업, 아트 원본과의 연결을 확인합니다. 이름이나 마지막 커밋 날짜만으로 사용 여부를 판단하지 않습니다.
+
 ## 0. 최상위 원칙
 
 1. 현재 대화의 최신 명시적 사용자 지시가 이 문서의 일반 규칙보다 우선한다.
