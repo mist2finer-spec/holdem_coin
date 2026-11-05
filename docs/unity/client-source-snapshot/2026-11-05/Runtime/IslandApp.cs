@@ -13,14 +13,14 @@ namespace IslandGame {
   static readonly Vector2[] eight={new Vector2(.5f,.84f),new Vector2(.89f,.66f),new Vector2(.89f,.46f),new Vector2(.89f,.28f),new Vector2(.5f,.1f),new Vector2(.11f,.28f),new Vector2(.11f,.46f),new Vector2(.11f,.66f)};
   void Awake(){InitializePrototype();server=PlayerPrefs.GetString("island-server",server);soloServer=PlayerPrefs.GetString("island-solo-server",soloServer);sound=gameObject.AddComponent<IslandAudio>();sound.Music("lobby_jazz");Application.targetFrameRate=60;Screen.orientation=ScreenOrientation.Portrait;playerName=PlayerPrefs.GetString("island-name","Player");socket=gameObject.AddComponent<PollingSocket>();rpg=gameObject.AddComponent<RpgSession>();battle=gameObject.AddComponent<NativeBattle>();battle.session=rpg;
    socket.Ready+=()=>{online=true;socket.Emit("LOBBY_HELLO",new JObject{{"token",PlayerPrefs.GetString("island-lobby-token","")}},a=>{if(a?["error"]!=null){notice=(string)a["error"];return;}account=a as JObject;if(a?["token"]!=null){PlayerPrefs.SetString("island-lobby-token",(string)a["token"]);PlayerPrefs.Save();}if(page.StartsWith("poker"))Join();});};
-   socket.Message+=(eventName,data)=>{if(eventName=="TABLE_STATE"){table=data as JObject;string deal=table.Value<string>("dealStage")??"";if(deal!=lastDeal){if(deal=="shuffle")sound.Effect("shuffle_card");if(deal=="cards")sound.Effect("taking_card");lastDeal=deal;}}else if(eventName=="PLAYER_ACTION"){string action=data?.Value<string>("action");if(action=="allin")sound.Effect("all_in_chip");else if(action=="raise"||action=="call")sound.Effect("chip_raise");}else if(eventName=="ROOM_EXIT"||eventName=="ROOM_DENIED"){notice=(string)data?["message"];Lobby();}else if(eventName=="ACTION_REJECTED")notice=(string)data?["message"];else if(eventName=="SYSTEM_NOTICE")notice=string.Join("\n",data?["messages"]?.ToObject<string[]>()??new string[0]);else if(eventName=="HAND_HISTORY")SaveHistory(data);};
-   socket.Failed+=message=>{online=false;notice=message;};rpg.Failed+=message=>notice=message;Connect(server);InitializeBattleHud();
+   socket.Message+=(eventName,data)=>{if(eventName=="TABLE_STATE"){table=data as JObject;pokerReceivedAt=Time.unscaledTime;sound.DealStage((string)table?["dealStage"],N(table,"handNumber").ToString());}else if(eventName=="PLAYER_ACTION"){sound.PlayerAction(data?.Value<string>("action"));}else if(eventName=="ROOM_EXIT"||eventName=="ROOM_DENIED"){notice=(string)data?["message"];Lobby();}else if(eventName=="ACTION_REJECTED"){notice=(string)data?["message"];pokerHud?.RejectAction();}else if(eventName=="SYSTEM_NOTICE")notice=string.Join("\n",data?["messages"]?.ToObject<string[]>()??new string[0]);else if(eventName=="HAND_HISTORY")SaveHistory(data);};
+   socket.Failed+=message=>{online=false;notice=message;};rpg.Failed+=message=>notice=message;Connect(server);InitializeBattleHud();InitializePokerHud();
   }
   void SaveHistory(JToken hand){try{var dir=Path.Combine(Application.persistentDataPath,"hands");Directory.CreateDirectory(dir);var id=hand.Value<string>("id")??Guid.NewGuid().ToString("N");File.WriteAllText(Path.Combine(dir,Uri.EscapeDataString(id)+".json"),hand.ToString());var files=new DirectoryInfo(dir).GetFiles("*.json");Array.Sort(files,(a,b)=>a.LastWriteTimeUtc.CompareTo(b.LastWriteTimeUtc));for(int i=0;i<files.Length-1000;i++)files[i].Delete();}catch(Exception e){notice="History save: "+e.Message;}}
   void Connect(string url){online=false;socket.Open(url);}
   void Join(){socket.Emit("JOIN_ROOM",new JObject{{"name",playerName},{"tableSize",page=="poker6"?6:8},{"tournament",page=="pokerTournament"}});}
-  void Lobby(){sound.Music("lobby_jazz");page="lobby";rpg.Close();battle.Clear();table=null;Connect(server);}
-  void Poker(string mode){sound.Music("lobby_jazz",.06f);page=mode;table=null;Connect(mode=="pokerSolo"?soloServer:server);}
+  void Lobby(){sound.EndTable();page="lobby";rpg.Close();battle.Clear();table=null;Connect(server);}
+  void Poker(string mode){sound.BeginTable();page=mode;table=null;Connect(mode=="pokerSolo"?soloServer:server);}
   void Update(){UpdateRpgInput();if(page=="lobby"&&online&&Time.unscaledTime>=nextStatus){nextStatus=Time.unscaledTime+2;socket.Emit("LOBBY_STATUS",null,a=>account=a as JObject);socket.Emit("GET_TOURNAMENT_STATUS",null,a=>tournament=a as JObject);}}
   Texture2D Texture(string path){Texture2D t;if(!textures.TryGetValue(path,out t)){t=Resources.Load<Texture2D>("WebAssets/"+path);textures[path]=t;}return t;}
   void Image(string path,Rect rect){var t=Texture(path);if(t)GUI.DrawTexture(rect,t,ScaleMode.ScaleToFit,true);}
@@ -30,6 +30,7 @@ namespace IslandGame {
   public int LegacyGuiRenderPasses{get;private set;}
   void OnGUI(){
    if(BossTrialsVisible)return;
+   if(PokerVisible&&pokerHud)return;
    if(HudGrowthOpen&&growthView)return;
    if(battleHud&&battleHud.Visible)return;
    if(BattleHudEnabled&&HudPage&&!HudPanelOpen)return;
@@ -98,7 +99,7 @@ namespace IslandGame {
    Text((string)p["name"]+" · "+(string)p["handCategory"],10,y+row*38,165);Cards(holes,155,y+row*38,25,h);Cards(board,212,y+row*38,25,c);row++;
   }}
 
-  void StartRpg(bool growth){socket.Close();campaign=growth;page="rpg";rpgPanel="";battle.enabled=true;rpg.Open(server,growth);}
+  void StartRpg(bool growth){socket.Close();notice="";campaign=growth;page="rpg";rpgPanel="";battle.enabled=true;rpg.Open(server,growth);}
   void DrawRpg(){DrawCurrentRpg();}
   void DrawSettings(){Text("Online HTTPS origin",20,100,350);server=GUI.TextField(new Rect(20,135,350,40),server);Text("Dedicated solo backend origin",20,200,350);soloServer=GUI.TextField(new Rect(20,235,350,40),soloServer);
    Button("Save / reconnect",60,320,270,55,()=>{Uri url;Uri solo;if(!Uri.TryCreate(server,UriKind.Absolute,out url)||!Uri.TryCreate(soloServer,UriKind.Absolute,out solo)||!(url.Scheme=="http"||url.Scheme=="https")||!(solo.Scheme=="http"||solo.Scheme=="https")){notice="Invalid HTTP(S) origin";return;}PlayerPrefs.SetString("island-server",server);PlayerPrefs.SetString("island-solo-server",soloServer);PlayerPrefs.Save();Lobby();});

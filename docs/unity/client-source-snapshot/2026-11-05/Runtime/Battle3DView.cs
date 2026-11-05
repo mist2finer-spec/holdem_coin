@@ -18,17 +18,19 @@ namespace IslandGame {
   public Battle3DAssets assets;
   readonly Dictionary<string,Actor> actors=new Dictionary<string,Actor>();
   readonly List<UnityEngine.Object> owned=new List<UnityEngine.Object>();
+  readonly Dictionary<PrimitiveType,Mesh> displayMeshes=new Dictionary<PrimitiveType,Mesh>();
   Transform world;
   public string HeroClipName {get;private set;}
   public float HeroSampleTime {get;private set;}
   public float HeroGroundError {get;private set;}
   public int ActorCount=>actors.Count;
   Material ground,edge,bark,leaves,rock,steel,grip,shadow;
-  public void Clear(){actors.Clear();world=null;foreach(var o in owned)if(o)Destroy(o);owned.Clear();}
+  public void Clear(){actors.Clear();displayMeshes.Clear();world=null;foreach(var o in owned)if(o)Destroy(o);owned.Clear();}
   Material Mat(string name,Color color,float metallic=0){var m=new Material(Shader.Find("Standard")){name=name,color=color};m.SetFloat("_Glossiness",.2f);m.SetFloat("_Metallic",metallic);owned.Add(m);return m;}
   GameObject Shape(string name,PrimitiveType type,Transform parent,Vector3 p,Vector3 scale,Material material){
-   var go=GameObject.CreatePrimitive(type);go.name=name;go.transform.SetParent(parent,false);go.transform.localPosition=p;go.transform.localScale=scale;go.layer=30;
-   go.GetComponent<Renderer>().sharedMaterial=material;var collider=go.GetComponent<Collider>();if(collider)Destroy(collider);return go;
+   Mesh mesh;if(!displayMeshes.TryGetValue(type,out mesh)){mesh=IslandDisplayMeshes.Create(type);displayMeshes.Add(type,mesh);owned.Add(mesh);}
+   var go=new GameObject(name,typeof(MeshFilter),typeof(MeshRenderer));go.transform.SetParent(parent,false);go.transform.localPosition=p;go.transform.localScale=scale;go.layer=30;
+   go.GetComponent<MeshFilter>().sharedMesh=mesh;go.GetComponent<MeshRenderer>().sharedMaterial=material;return go;
   }
   public void Build(Transform root,JObject map,Camera camera){
    world=root;actors.Clear();

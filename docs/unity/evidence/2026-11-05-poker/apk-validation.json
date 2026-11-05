@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "apk": "C:\\Users\\SHK\\island-poker-review\\IslandGame-Test-Poker-20261105.apk",
+  "bytes": 96264128,
+  "sha256": "978ada24ebb49912885037400f93d6ca0a531176c6acceecb94a99f58ffa466b",
+  "package": "com.mist2finer.islandgame.dev",
+  "architecture": "arm64-v8a",
+  "backend": "IL2CPP",
+  "zipIntegrity": true,
+  "signatureVerified": true,
+  "zipAlignment16K": true,
+  "internetPermission": true,
+  "deviceExecution": "UNAVAILABLE: no adb device connected",
+  "server": "https://holdem-coin-tavern.onrender.com"
+}

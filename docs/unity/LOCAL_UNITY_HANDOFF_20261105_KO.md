@@ -132,3 +132,8 @@ Play를 시작한 뒤 로비의 미궁 사냥 입장으로 확인합니다. 씬�
 ## 11. Android 테스트 APK와 CI 실패 보정
 
 [Android·CI 최신 인계](ANDROID_TEST_BUILD_20261105_KO.md)를 확인하세요. 테스트 APK 생성/서명/압축·정렬 검증, 번들 한글 폰트, Editor 63개, idle 65개, growth 58개, RPG 타입 검사 PASS. GitHub server run 42099785213 success. 실제 Android 기기 실행과 운영 서버 배포는 미실행입니다.
+
+
+## 12. 전투 표시 Collider 제거·홀덤 UI/오디오·새 APK
+
+[홀덤·표시 수정 최신 인계](POKER_UI_DISPLAY_FIX_20261105_KO.md)를 먼저 확인하세요. 로비 유지, 표시용 CreatePrimitive 제거, 네이티브 홀덤 UI/실제 웹 BGM 적용. 144 UI/오디오 검사와 실제 격리 서버 콜, 전투 Collider 0 및 새 Development APK 검증 PASS. APK는 IslandGame-Test-Poker-20261105.apk (versionCode 2026110502)입니다. Android 실기기 실행은 UNAVAILABLE. 이번 런타임 소스와 해시를 갱신했습니다.

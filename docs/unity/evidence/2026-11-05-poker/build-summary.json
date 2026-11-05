@@ -1,0 +1,20 @@
+{
+  "status": "completed",
+  "buildId": "build_8f0b165c1490",
+  "result": "Succeeded",
+  "platform": "Android",
+  "outputPath": "C:/Users/SHK/island-poker-review/IslandGame-Test-Poker-20261105.apk",
+  "buildTimeMs": 117694,
+  "buildStartedAt": "2026-11-06T02:33:35.3945417Z",
+  "buildEndedAt": "2026-11-06T02:35:33.0890519Z",
+  "totalWarnings": 1,
+  "totalErrors": 0,
+  "warnings": [
+    {
+      "message": "warning CS0414: The field 'IslandApp.lastDeal' is assigned but its value is never used",
+      "file": "Assets\\Island\\Runtime\\IslandApp.cs"
+    }
+  ],
+  "actualApkBytes": 96264128,
+  "note": "Unity totalSizeBytes includes uncompressed development build payload; actualApkBytes is the installable ZIP file size."
+}

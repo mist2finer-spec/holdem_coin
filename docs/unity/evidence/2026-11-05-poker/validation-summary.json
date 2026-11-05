@@ -1,0 +1,41 @@
+{
+  "status": "PASS",
+  "scope": "Editor runtime + isolated real server + Android artifact; device execution UNAVAILABLE",
+  "pokerChecks": 144,
+  "resolutions": [
+    "1080x1920",
+    "1080x2340",
+    "1080x2520"
+  ],
+  "meshTypes": 4,
+  "meshTriangles": 686,
+  "battle": {
+    "status": "PASS",
+    "actors": 13,
+    "displayShapes": 295,
+    "sharedMeshes": 3,
+    "colliders": 0,
+    "heroGroundError": 0.0,
+    "frame": 912
+  },
+  "liveAction": {
+    "status": "PASS",
+    "transport": "real Engine.IO polling + Socket.IO",
+    "requestedAction": "call",
+    "amount": 200,
+    "stackBefore": 4800,
+    "stackAfter": 4600,
+    "serverStateAdvanced": true,
+    "dispatches": 1
+  },
+  "runtimeCreatePrimitiveCalls": 0,
+  "lobbyDrawFunctionUnchanged": true,
+  "sceneSha256": "7ad746ca1498a7623219d8e6ddd3873472b1ee61982eac0f4cd3ede71f5b71e1",
+  "webRelease": "a92b9bde8ed507dd18b77574760dc89e3e191364",
+  "serverAuthorityUnchanged": true,
+  "productionDeployment": false,
+  "audioPhysicalListening": "UNAVAILABLE: no device/speaker listening verification",
+  "androidDevice": "UNAVAILABLE: adb devices empty",
+  "testPreferencesRestored": true,
+  "playModeStopped": true
+}

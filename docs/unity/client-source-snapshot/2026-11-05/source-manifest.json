@@ -1,5 +1,5 @@
 {
-  "capturedAtUTC": "2026-11-05T20:22:25.238736+00:00",
+  "capturedAtUTC": "2026-11-05T21:41:21.811535+00:00",
   "localRoot": "G:\\new_project\\IslandGame",
   "baseline": "a92b9bde8ed507dd18b77574760dc89e3e191364",
   "files": [
@@ -18,8 +18,8 @@
     {
       "source": "Assets/Island/Runtime/Battle3DView.cs",
       "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/Battle3DView.cs",
-      "bytes": 10632,
-      "sha256": "0f20c136d08f1169ededa4f11c74d2204718cb1d92d28347a07685e0a4772f25"
+      "bytes": 10885,
+      "sha256": "aba3e225c2e0d28a7bee5d8b35db6d524014237e815b0f14c6a23ed329e8e2fd"
     },
     {
       "source": "Assets/Island/Runtime/Battle3DView.cs.meta",
@@ -78,8 +78,8 @@
     {
       "source": "Assets/Island/Runtime/IslandApp.cs",
       "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/IslandApp.cs",
-      "bytes": 15748,
-      "sha256": "fce3efebae9131280e52bbbd7698f788c38cdf600369e315ec31e0dee9adbd9b"
+      "bytes": 15651,
+      "sha256": "f540adfa296c32a1b7070a036b6693ae603872800d0da50e03a48f324c97e1c7"
     },
     {
       "source": "Assets/Island/Runtime/IslandApp.cs.meta",
@@ -90,8 +90,8 @@
     {
       "source": "Assets/Island/Runtime/IslandAudio.cs",
       "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/IslandAudio.cs",
-      "bytes": 997,
-      "sha256": "e6c9c26a6680564081f3946f547a6dbd59e8a87a08f8dc45375fea61ea8c87dc"
+      "bytes": 3177,
+      "sha256": "b0eb7bfcd8c22346992b6772d47ecdc3107fe80d0d99c580a4077a89201c5bdf"
     },
     {
       "source": "Assets/Island/Runtime/IslandAudio.cs.meta",
@@ -198,8 +198,8 @@
     {
       "source": "Assets/Island/Runtime/NativeBattle.cs",
       "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/NativeBattle.cs",
-      "bytes": 15218,
-      "sha256": "6bb2c8bc22b9f130a95c51547c9bb694d0c7ad2f52a78e790811d6eebe57c0aa"
+      "bytes": 15369,
+      "sha256": "d84f93b9ef177dcc80dabdd885ab3b3ad472b22174938674268c054dc19310d7"
     },
     {
       "source": "Assets/Island/Runtime/NativeBattle.cs.meta",
@@ -548,6 +548,144 @@
       "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Resources/Fonts/OFL.txt.meta",
       "bytes": 158,
       "sha256": "002c3aa6b888ee3c0520ab3015b1395e1421584d8622c7db67881b2ee519c61f"
+    },
+    {
+      "source": "Assets/Island/Runtime/IslandDisplayMeshes.cs",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/IslandDisplayMeshes.cs",
+      "bytes": 2852,
+      "sha256": "aef11066b2e197a12b45f2723e338c329ad12b6968790f310d4a7fe76f67b801"
+    },
+    {
+      "source": "Assets/Island/Runtime/IslandDisplayMeshes.cs.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/IslandDisplayMeshes.cs.meta",
+      "bytes": 59,
+      "sha256": "90e9ece9786b153ab5ae4216d795413627ead2dbbb437a6903de15256b4c1289"
+    },
+    {
+      "source": "Assets/Island/Runtime/IslandPokerHud.cs",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/IslandPokerHud.cs",
+      "bytes": 27861,
+      "sha256": "df219309438d063ff18dea59f31e8c1ff15bb6e8944637d7b095472a375bb299"
+    },
+    {
+      "source": "Assets/Island/Runtime/IslandPokerHud.cs.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/IslandPokerHud.cs.meta",
+      "bytes": 59,
+      "sha256": "c490ce39365623f1c3ffcad768c9afc9ec736548f5d41327c264f036ff7afec6"
+    },
+    {
+      "source": "Assets/Island/Runtime/IslandPokerBridge.cs",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/IslandPokerBridge.cs",
+      "bytes": 2447,
+      "sha256": "b2e31a2689b29c44725681a788cdca96ad0192f4fa4cec449f020f717cc971df"
+    },
+    {
+      "source": "Assets/Island/Runtime/IslandPokerBridge.cs.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/IslandPokerBridge.cs.meta",
+      "bytes": 59,
+      "sha256": "eb7884d918dec20acf2c61a364d0196200b2b58a41487ad248153a844b2e9dee"
+    },
+    {
+      "source": "Assets/Island/Runtime/IslandPokerPanel.cs",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/IslandPokerPanel.cs",
+      "bytes": 1223,
+      "sha256": "e21b852acbb4a24ea07b16ce1d08873a4c95ce8c80b7e879bf79e5eb172be1f3"
+    },
+    {
+      "source": "Assets/Island/Runtime/IslandPokerPanel.cs.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/IslandPokerPanel.cs.meta",
+      "bytes": 59,
+      "sha256": "0d56a1faa6b9697a95bde46d2d12f08db23b28328d1d0c96285fe1676469691e"
+    },
+    {
+      "source": "Assets/Island/Runtime/IslandPokerTableSurface.cs",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/IslandPokerTableSurface.cs",
+      "bytes": 1659,
+      "sha256": "c6f46d0bc985b3ec93d2fae2ffa4ebea075452ab2547a3a3063ee4e209d92f12"
+    },
+    {
+      "source": "Assets/Island/Runtime/IslandPokerTableSurface.cs.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/IslandPokerTableSurface.cs.meta",
+      "bytes": 59,
+      "sha256": "be8586be1d3d8d55964adbc7e184e278b1ce7b5b0bcff18013d3f2e831c3a8bf"
+    },
+    {
+      "source": "Assets/Island/Resources/WebAssets/poker/profiles.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Resources/WebAssets/poker/profiles.meta",
+      "bytes": 172,
+      "sha256": "02c6819654feeb77b7dbfcca8a113d6ce7307b4a4db7a81d1c4a1072e5684339"
+    },
+    {
+      "source": "Assets/Island/Resources/WebAssets/poker/profiles/black-suit.png.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Resources/WebAssets/poker/profiles/black-suit.png.meta",
+      "bytes": 4795,
+      "sha256": "06699f92fbe9248fd2dfe2a045499fe1b8550307342117e53aa2a04ae921e1cd"
+    },
+    {
+      "source": "Assets/Island/Resources/WebAssets/poker/profiles/blonde-office.png.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Resources/WebAssets/poker/profiles/blonde-office.png.meta",
+      "bytes": 4795,
+      "sha256": "885ade2eac62ad348ee86cfef34a299a360b611f671b7418b1b00f9ade255327"
+    },
+    {
+      "source": "Assets/Island/Resources/WebAssets/poker/profiles/boy-hoodie.png.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Resources/WebAssets/poker/profiles/boy-hoodie.png.meta",
+      "bytes": 4795,
+      "sha256": "485fe5512fdd483fdced13d50c5fe4cc3d0531736d90b63fd1bd4fce41d01bdc"
+    },
+    {
+      "source": "Assets/Island/Resources/WebAssets/poker/profiles/dealer-disc.png.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Resources/WebAssets/poker/profiles/dealer-disc.png.meta",
+      "bytes": 4795,
+      "sha256": "993b72b51a3f6a51911e5b8345785161e38e313725ee179356f80bf9dc406a1a"
+    },
+    {
+      "source": "Assets/Island/Resources/WebAssets/poker/profiles/gold-dress.png.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Resources/WebAssets/poker/profiles/gold-dress.png.meta",
+      "bytes": 4795,
+      "sha256": "c8093d0260386ccca8bb52f06f832195470e467764f3d83b54705c654e1d748d"
+    },
+    {
+      "source": "Assets/Island/Resources/WebAssets/poker/profiles/hong.png.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Resources/WebAssets/poker/profiles/hong.png.meta",
+      "bytes": 4795,
+      "sha256": "b7696e50dd0b41e85c669de2987b710734e5611e4064617c93227b8f2f58f354"
+    },
+    {
+      "source": "Assets/Island/Resources/WebAssets/poker/profiles/longhair-man.png.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Resources/WebAssets/poker/profiles/longhair-man.png.meta",
+      "bytes": 4795,
+      "sha256": "210aa091486547159e84c7c36b7387f695c3f592fb163f601cb5a466e60c84ca"
+    },
+    {
+      "source": "Assets/Island/Resources/WebAssets/poker/profiles/manifest.json.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Resources/WebAssets/poker/profiles/manifest.json.meta",
+      "bytes": 158,
+      "sha256": "a4fad04a348f5416492a3022e31477ec071ef6686a4cc5ab3bd75fb8ee7996c2"
+    },
+    {
+      "source": "Assets/Island/Resources/WebAssets/poker/profiles/pink-glasses.png.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Resources/WebAssets/poker/profiles/pink-glasses.png.meta",
+      "bytes": 4795,
+      "sha256": "8a7d80739ad1600e0ce06921b76b42a5eae59dc3f5a4257433de12f3295a557a"
+    },
+    {
+      "source": "Assets/Island/Resources/WebAssets/poker/profiles/teal-twins.png.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Resources/WebAssets/poker/profiles/teal-twins.png.meta",
+      "bytes": 4795,
+      "sha256": "15d5bc99ce6aa230b3556f2bdeb8d6c71d36a30021043ab0dfaa02a424095e44"
+    },
+    {
+      "source": "Assets/Island/Resources/WebAssets/poker/profiles/white-bob.png.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Resources/WebAssets/poker/profiles/white-bob.png.meta",
+      "bytes": 4795,
+      "sha256": "4f59c28e579430a8622f5f36cdc51db103652b397b1af5e97e55b9a66acc498c"
+    },
+    {
+      "source": "Assets/Island/Resources/WebAssets/poker/profiles/manifest.json",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Resources/WebAssets/poker/profiles/manifest.json",
+      "bytes": 3789,
+      "sha256": "70381bdb2ace854e703c84c27410154f1e1075ee7119f4e2f89d4648a6095397"
     }
   ],
   "localOnlyModels": [
@@ -664,8 +802,8 @@
   "androidTestBuildSettings": {
     "applicationIdentifier": "com.mist2finer.islandgame.dev",
     "productName": "IslandGame Test",
-    "bundleVersion": "0.1.0-test.20261105",
-    "versionCode": 2026110501,
+    "bundleVersion": "0.1.0-test.20261105.2",
+    "versionCode": 2026110502,
     "architecture": "ARM64",
     "backend": "IL2CPP",
     "graphicsAPI": "OpenGLES3",
@@ -673,5 +811,77 @@
     "minSdk": 23,
     "targetSdk": 36,
     "fullPlayerSettings": "Local backup only; not exported"
-  }
+  },
+  "localOnlyPokerArt": [
+    {
+      "path": "Assets/Island/Resources/WebAssets/poker/profiles/black-suit.png",
+      "source": "public/poker/profiles/black-suit.png",
+      "sourceRevision": "a92b9bde8ed507dd18b77574760dc89e3e191364",
+      "bytes": 80043,
+      "sha256": "e37cc6c8853d7889a6f351f68e7ab49909062d79a969aa6e44353b7467b6437d"
+    },
+    {
+      "path": "Assets/Island/Resources/WebAssets/poker/profiles/blonde-office.png",
+      "source": "public/poker/profiles/blonde-office.png",
+      "sourceRevision": "a92b9bde8ed507dd18b77574760dc89e3e191364",
+      "bytes": 91147,
+      "sha256": "3d642a37215a63bc502d8d4c04e7ec3e31b5913a75328c63f2dbcf384d4cbd4c"
+    },
+    {
+      "path": "Assets/Island/Resources/WebAssets/poker/profiles/boy-hoodie.png",
+      "source": "public/poker/profiles/boy-hoodie.png",
+      "sourceRevision": "a92b9bde8ed507dd18b77574760dc89e3e191364",
+      "bytes": 92534,
+      "sha256": "9fc7dc4e5ca32339e0ad044e5abf5f58d91377b30db36bb72130a992e978703f"
+    },
+    {
+      "path": "Assets/Island/Resources/WebAssets/poker/profiles/dealer-disc.png",
+      "source": "public/poker/profiles/dealer-disc.png",
+      "sourceRevision": "a92b9bde8ed507dd18b77574760dc89e3e191364",
+      "bytes": 8861,
+      "sha256": "90ae384274e329a8ea36bd14cd55af1970a0f8e1f63fb1e5c20f55f216c9dc39"
+    },
+    {
+      "path": "Assets/Island/Resources/WebAssets/poker/profiles/gold-dress.png",
+      "source": "public/poker/profiles/gold-dress.png",
+      "sourceRevision": "a92b9bde8ed507dd18b77574760dc89e3e191364",
+      "bytes": 77116,
+      "sha256": "e7263386b65859707820c49fe7187fa3adb51285641810672085f00a5f03dd62"
+    },
+    {
+      "path": "Assets/Island/Resources/WebAssets/poker/profiles/hong.png",
+      "source": "public/poker/profiles/hong.png",
+      "sourceRevision": "a92b9bde8ed507dd18b77574760dc89e3e191364",
+      "bytes": 91131,
+      "sha256": "f529990fa7167ad206e65d6b259bd8e21df3a8cb6f8076f023a05cd8d3a0adf0"
+    },
+    {
+      "path": "Assets/Island/Resources/WebAssets/poker/profiles/longhair-man.png",
+      "source": "public/poker/profiles/longhair-man.png",
+      "sourceRevision": "a92b9bde8ed507dd18b77574760dc89e3e191364",
+      "bytes": 89174,
+      "sha256": "2b10111eac5985512a16c016a1f4870db83b2e326da2486dc79ba64ab16400ab"
+    },
+    {
+      "path": "Assets/Island/Resources/WebAssets/poker/profiles/pink-glasses.png",
+      "source": "public/poker/profiles/pink-glasses.png",
+      "sourceRevision": "a92b9bde8ed507dd18b77574760dc89e3e191364",
+      "bytes": 87062,
+      "sha256": "548f7a75c4735febcabf799b1eb1e4e19be530ab48227448de5d258b67efd8f3"
+    },
+    {
+      "path": "Assets/Island/Resources/WebAssets/poker/profiles/teal-twins.png",
+      "source": "public/poker/profiles/teal-twins.png",
+      "sourceRevision": "a92b9bde8ed507dd18b77574760dc89e3e191364",
+      "bytes": 101718,
+      "sha256": "498337c897db61ed111420624070694d872893905e86df7f8dc26fcf7149f04c"
+    },
+    {
+      "path": "Assets/Island/Resources/WebAssets/poker/profiles/white-bob.png",
+      "source": "public/poker/profiles/white-bob.png",
+      "sourceRevision": "a92b9bde8ed507dd18b77574760dc89e3e191364",
+      "bytes": 78488,
+      "sha256": "ea1f4510a95d56cf5dc254c8508e55bdf6a3bf49aab80fee9198dbbe70164e21"
+    }
+  ]
 }

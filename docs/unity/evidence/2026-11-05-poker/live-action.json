@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "transport": "real Engine.IO polling + Socket.IO",
+  "requestedAction": "call",
+  "amount": 200,
+  "stackBefore": 4800,
+  "stackAfter": 4600,
+  "serverStateAdvanced": true,
+  "dispatches": 1
+}

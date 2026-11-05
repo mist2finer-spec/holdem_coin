@@ -15,7 +15,7 @@ namespace IslandGame {
   NativeCombatClock clock=new NativeCombatClock();JObject lastSnapshot,combatProfile;double lastVisual;bool lastPlaying;float frameAdvance;float viewportAspect=1;
   readonly Dictionary<string,float> bodyHeights=new Dictionary<string,float>();
   public float VisualTime{get;private set;} public float AuthorityTime{get;private set;} public float HeroTrackTime{get;private set;} public float HeroGroundError{get;private set;} public float HeroBodyHeight{get;private set;} public float HeroWorldX{get;private set;} public float HeroAirHeight{get;private set;}public string HeroAction{get;private set;}
-  CameraHorizontalWidthLock widthLock;
+  CameraHorizontalWidthLock widthLock;Mesh landingMesh;
   public bool DirectPresentationActive {get;private set;}
   public Camera BattleCamera=>view;
   public void ConfigureViewport(float aspect){
@@ -38,12 +38,12 @@ namespace IslandGame {
    var cameraObject=new GameObject("Native battle camera");cameraObject.transform.SetParent(transform);view=cameraObject.AddComponent<Camera>();view.orthographic=true;view.orthographicSize=3.2f;view.backgroundColor=new Color(.025f,.035f,.03f);view.clearFlags=CameraClearFlags.SolidColor;view.targetTexture=Output;view.cullingMask=1<<30;
    var models=Resources.Load<Battle3DAssets>("Battle3DAssets");if(models&&models.hero&&models.slime){threeD=gameObject.AddComponent<Battle3DView>();threeD.assets=models;widthLock=cameraObject.AddComponent<CameraHorizontalWidthLock>();widthLock.Apply();}
   }
-  public void Clear(){if(threeD)threeD.Clear();if(world)Destroy(world);actors.Clear();actorPaths.Clear();actorData.Clear();keys.Clear();bodyHeights.Clear();clock=new NativeCombatClock();lastSnapshot=null;lastVisual=0;foreach(var item in owned)if(item&&item!=Output)Destroy(item);owned.RemoveAll(item=>item!=Output);sessionId=null;}
+  public void Clear(){landingMesh=null;if(threeD)threeD.Clear();if(world)Destroy(world);actors.Clear();actorPaths.Clear();actorData.Clear();keys.Clear();bodyHeights.Clear();clock=new NativeCombatClock();lastSnapshot=null;lastVisual=0;foreach(var item in owned)if(item&&item!=Output)Destroy(item);owned.RemoveAll(item=>item!=Output);sessionId=null;}
   void NewWorld(){Clear();world=new GameObject("Authoritative battle view");world.transform.SetParent(transform);sessionId=(string)session.State["id"];
    var map=session.Map;
    if(Uses3D){threeD.Build(world.transform,map,view);return;}
    if(map!=null){foreach(var room in (JArray)map["rooms"]){float x1=(room.Value<float>("x1"))*48,x2=(room.Value<float>("x2")+1)*48,e=room.Value<float>("elevation");Backdrop(x1,x2,e);}
-    foreach(var gate in (JArray)map["gates"]){foreach(var ledge in (JArray)gate["ledges"]){var go=GameObject.CreatePrimitive(PrimitiveType.Quad);go.name="Climb landing ledge";go.transform.SetParent(world.transform);go.layer=30;go.transform.position=new Vector3(ledge.Value<float>("x")/100,ledge.Value<float>("elevation")/100-.05f,1);go.transform.localScale=new Vector3(.32f,.1f,1);var m=new Material(Shader.Find("Unlit/Color"));m.color=new Color(.35f,.30f,.22f);owned.Add(m);go.GetComponent<Renderer>().sharedMaterial=m;Destroy(go.GetComponent<Collider>());}}
+    foreach(var gate in (JArray)map["gates"]){foreach(var ledge in (JArray)gate["ledges"]){if(!landingMesh){landingMesh=IslandDisplayMeshes.Create(PrimitiveType.Quad);owned.Add(landingMesh);}var go=new GameObject("Climb landing ledge",typeof(MeshFilter),typeof(MeshRenderer));go.GetComponent<MeshFilter>().sharedMesh=landingMesh;go.transform.SetParent(world.transform);go.layer=30;go.transform.position=new Vector3(ledge.Value<float>("x")/100,ledge.Value<float>("elevation")/100-.05f,1);go.transform.localScale=new Vector3(.32f,.1f,1);var m=new Material(Shader.Find("Unlit/Color"));m.color=new Color(.35f,.30f,.22f);owned.Add(m);go.GetComponent<Renderer>().sharedMaterial=m;}}
    }else Backdrop(0,5000,0);
   }
   void Backdrop(float from,float to,float elevation){
