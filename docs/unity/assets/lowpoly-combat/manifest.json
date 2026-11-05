@@ -1,0 +1,143 @@
+{
+  "sourceCommit": "af4305e2b102d86c36ab705c6665fe641c873c46",
+  "sourceAssets": [
+    {
+      "path": "Assets/Island/Art/Battle3D/PinkGlass/death01.glb",
+      "bytes": 1567648,
+      "sha256": "cfbfc866224bb53d6a6359dc577065fd9094a237acf9def306ef1435ee6e431e"
+    },
+    {
+      "path": "Assets/Island/Art/Battle3D/PinkGlass/hit_chest.glb",
+      "bytes": 1485916,
+      "sha256": "852d4ad146ff565ee63ca3498228338f10f22ec759bb93b36f2bfda3e8b902b1"
+    },
+    {
+      "path": "Assets/Island/Art/Battle3D/PinkGlass/idle_loop.glb",
+      "bytes": 1570584,
+      "sha256": "622f0645173099ef5673475dba2c02ee0b78bdbe2d012cd1c57d8dc21f365916"
+    },
+    {
+      "path": "Assets/Island/Art/Battle3D/PinkGlass/jog_fwd_loop.glb",
+      "bytes": 1509628,
+      "sha256": "8d4fc9fb7a36f5104e8349d3907033c7aac93caf1ec3e1b7ad03d8c44974ce77"
+    },
+    {
+      "path": "Assets/Island/Art/Battle3D/PinkGlass/jump_land.glb",
+      "bytes": 1522812,
+      "sha256": "fd06e003652d63e334695d985b72891dc1221e900ffb69c729be16fdd7f7ccd5"
+    },
+    {
+      "path": "Assets/Island/Art/Battle3D/PinkGlass/jump_loop.glb",
+      "bytes": 1570620,
+      "sha256": "8c83e770119e5a4cb8848c1fa64a2f86b84b86c391cd0ab4e1afce1e3181c05c"
+    },
+    {
+      "path": "Assets/Island/Art/Battle3D/PinkGlass/jump_start.glb",
+      "bytes": 1525420,
+      "sha256": "94b1ba560cf542c5fa4b39d57da8cb5f1ce7d74f87d5660ac51c95770b263050"
+    },
+    {
+      "path": "Assets/Island/Art/Battle3D/PinkGlass/roll.glb",
+      "bytes": 1530648,
+      "sha256": "6a6149dafd01cfa197e6f31b4706964ee52d8497a288815ab7435cefe78e6070"
+    },
+    {
+      "path": "Assets/Island/Art/Battle3D/PinkGlass/slide_loop.glb",
+      "bytes": 1550624,
+      "sha256": "83c7d37b85c75d0ebe05a2c9c0ccbf183398f31b9693d7c42e19fba1e63525fc"
+    },
+    {
+      "path": "Assets/Island/Art/Battle3D/PinkGlass/spell_simple_shoot.glb",
+      "bytes": 1491556,
+      "sha256": "f6466828c6e3965af2fba73913dbc65099ccffe2b722ce09e8917914558549fb"
+    },
+    {
+      "path": "Assets/Island/Art/Battle3D/PinkGlass/sword_dash.glb",
+      "bytes": 1534608,
+      "sha256": "dccd919d1660183e8474094f81f3fcf0711284149650b9eb4d07ef44e298f337"
+    },
+    {
+      "path": "Assets/Island/Art/Battle3D/PinkGlass/sword_heavy_combo.glb",
+      "bytes": 1644028,
+      "sha256": "21e41d9dd9cbadc967d333b7fba0bf305fe08a4f9ce639c8e63b94bbe9acaa78"
+    },
+    {
+      "path": "Assets/Island/Art/Battle3D/PinkGlass/sword_idle.glb",
+      "bytes": 1538632,
+      "sha256": "cce01607d99775c441276d03831ab35e1ba7737759d5b58f8f55d8e25e642324"
+    },
+    {
+      "path": "Assets/Island/Art/Battle3D/PinkGlass/sword_regular_a.glb",
+      "bytes": 1489852,
+      "sha256": "f131d5e89f18294001286ee516cf90b14bfec77e7382c9e2e4d732a9a812225f"
+    },
+    {
+      "path": "Assets/Island/Art/Battle3D/PinkGlass/sword_regular_b.glb",
+      "bytes": 1493736,
+      "sha256": "e05fd66b2e84bbc5c97ff631dda50d63dd3fb2d7c7effc000b8adece6dc40b31"
+    },
+    {
+      "path": "Assets/Island/Art/Battle3D/PinkGlass/sword_regular_c.glb",
+      "bytes": 1550604,
+      "sha256": "6b7d1172ec41d5dfbc7b3cb2bc9afd74980506d1414b2c714b608674f4494884"
+    },
+    {
+      "path": "Assets/Island/Art/Battle3D/PinkGlass/sword_regular_combo.glb",
+      "bytes": 1590124,
+      "sha256": "1e8e03e9e8e45ff23bed76a1aa22931df5b72e2fa9e09d12a50f1a15b894f0cb"
+    },
+    {
+      "path": "Assets/Island/Art/Battle3D/PinkGlass/walk_loop.glb",
+      "bytes": 1525448,
+      "sha256": "2a8eb2947dea0651863927aaf8ab366d56b06daccef7596a4af68228b5c9a3a6"
+    },
+    {
+      "path": "Assets/Island/Art/Battle3D/Slime/slime_rigged_animated.glb",
+      "bytes": 1149816,
+      "sha256": "035d641d74999d0b383de2dbe78f17c9eab249d8bf04385db07eb02640d555af"
+    }
+  ],
+  "exports": [
+    {
+      "file": "PinkGlass_5000.glb",
+      "sha256": "ae1bdeb9be983b95c20eb67416ca5391d53f31ee83a484f7fd71a4c41eaec42d",
+      "bytes": 1690928,
+      "sourceTriangles": 9387,
+      "triangles": 5000,
+      "vertices": 2808,
+      "joints": 65,
+      "clips": [
+        "sword_idle",
+        "death01",
+        "hit_chest",
+        "idle_loop",
+        "jog_fwd_loop",
+        "jump_land",
+        "jump_loop",
+        "jump_start",
+        "roll",
+        "slide_loop",
+        "spell_simple_shoot",
+        "sword_dash",
+        "sword_heavy_combo",
+        "sword_regular_a",
+        "sword_regular_b",
+        "sword_regular_c",
+        "sword_regular_combo",
+        "walk_loop"
+      ]
+    },
+    {
+      "file": "Slime_300.glb",
+      "sha256": "246b867b44baa0733bd155b16d1e9d2cb5a61bd1cd8ab705e973361ffaf066bf",
+      "bytes": 14864,
+      "sourceTriangles": 8292,
+      "triangles": 299,
+      "vertices": 149,
+      "joints": 3,
+      "clips": [
+        "Slime_RigAction"
+      ]
+    }
+  ]
+}
