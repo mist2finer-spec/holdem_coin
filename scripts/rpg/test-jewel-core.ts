@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {CORE_NODES,CORE_EDGES,CHARACTER_STARTS,newBuild,changeBuild,buildStart,buildView,migrateBuild,validateBuild,getBuildTree,equipJewel,unequipJewel,passiveBuild,compileSkill,compileGrantedSkills,type BuildState,type JewelInstance} from '../../src/components/rpg/hunt-build';
 import {JEWEL_CATALOG} from '../../src/components/rpg/jewel-catalog';
-import {TIMELESS_RADIUS,validateJewelInstance} from '../../src/components/rpg/jewel-system';
+import {TIMELESS_RADIUS,timelessTargets,resolveJewelTree,validateJewelInstance} from '../../src/components/rpg/jewel-system';
 import {RogueEngine} from '../../src/components/rpg/rogue/engine';
 import {big} from '../../src/components/rpg/combat-big';
 const idle={x:0,y:0,auto:false};
@@ -22,21 +22,27 @@ test('780 categories, all 222 legacy IDs, nine attribute positions and 8/12/5 so
 });
 
 test('Glorious Vanity deterministically converts INT to DEX, ES to evasion and spell to attack speed without mutating base',()=>{
- let b=allocate(newBuild('pink-glasses'),'jewel_3');const before=JSON.stringify(CORE_NODES);b=equipJewel(b,'jewel_3',instance('gloriousvanity','vaal',993,'Doryani'),40);const tree=getBuildTree(b),socket=CORE_NODES.find(n=>n.id==='jewel_3')!,eligible=CORE_NODES.filter(n=>!n.startFor&&n.kind!=='socket'&&n.kind!=='keystone'&&Math.hypot(n.x-socket.x,n.y-socket.y)<=TIMELESS_RADIUS);
- assert.ok(eligible.some(n=>(n.intelligence??0)>0));assert.ok(eligible.some(n=>(n.spellDamage??0)>0));
+ let b=allocate(newBuild('pink-glasses'),'jewel_3');const before=JSON.stringify(CORE_NODES);b=equipJewel(b,'jewel_3',instance('gloriousvanity','vaal',993,'Doryani'),40);const tree=getBuildTree(b),socket=CORE_NODES.find(n=>n.id==='jewel_3')!,eligible=timelessTargets(CORE_NODES,socket);
+ assert.ok(eligible.some(n=>(n.intelligence??0)>0));assert.equal(eligible.length,8);assert.equal(tree.transformations.length,8);for(const n of CORE_NODES.filter(n=>!eligible.some(t=>t.id===n.id)))assert.equal(tree.nodes.find(t=>t.id===n.id)!.transformedBy,undefined);
  for(const original of eligible){const n=tree.nodes.find(n=>n.id===original.id)!;assert.equal(n.transformedBy,'vaal');assert.equal(n.intelligence,undefined);assert.equal(n.spellDamage,undefined);assert.equal(n.energyShield,undefined);close(n.dexterity??0,(original.dexterity??0)+(original.intelligence??0)+(original.strength??0));close(n.lifeFlat??0,-1);}
  assert.equal(JSON.stringify(CORE_NODES),before);assert.deepEqual(getBuildTree(migrateBuild(b,40)),tree);assert.equal(unequipJewel(b,'jewel_3',40).jewels,undefined);
 });
 
 test('Atziri and Xibaqua convert actual DEX/STR nodes to INT and every Timeless family changes stats',()=>{
- for(const [socket,start,variant,key] of [['jewel_2','boy-hoodie','Atziri','dexterity'],['jewel_1','hong','Xibaqua','strength']] as const){let b=allocate(newBuild(start),socket);b=equipJewel(b,socket,instance('gloriousvanity',variant,7,variant),40);const tree=getBuildTree(b),changed=tree.nodes.filter(n=>n.transformedBy);assert.ok(changed.some(n=>(CORE_NODES.find(o=>o.id===n.id)?.[key]??0)>0));for(const n of changed)assert.equal(n[key],undefined);assert.ok(changed.some(n=>(n.intelligence??0)>0));}
- for(const [id,conqueror] of [['lethalpride','Kaom'],['brutalrestraint','Asenath'],['militantfaith','Avarus'],['eleganthubris','Caspiro']] as const){const b=equipJewel(allocate(newBuild(),'jewel_1'),'jewel_1',instance(id,id,2,conqueror),40);assert.ok(getBuildTree(b).transformations.length>0);const stats=passiveBuild(b);if(id==='militantfaith')assert.ok(stats.devotion>0);if(id==='eleganthubris'){assert.ok(stats.tripleChance>0);assert.ok(getBuildTree(b).spent>b.nodes.length-1);}}
+ for(const [socket,start,variant,key] of [['jewel_2','boy-hoodie','Atziri','dexterity'],['jewel_5','hong','Xibaqua','strength']] as const){let b=allocate(newBuild(start),socket);b=equipJewel(b,socket,instance('gloriousvanity',variant,7,variant),40);const tree=getBuildTree(b),changed=tree.nodes.filter(n=>n.transformedBy);assert.ok(changed.some(n=>(CORE_NODES.find(o=>o.id===n.id)?.[key]??0)>0));for(const n of changed)assert.equal(n[key],undefined);assert.ok(changed.some(n=>(n.intelligence??0)>0));}
+ for(const [id,conqueror] of [['lethalpride','Kaom'],['brutalrestraint','Asenath'],['militantfaith','Avarus'],['eleganthubris','Caspiro']] as const){let b=equipJewel(allocate(newBuild(),'jewel_1'),'jewel_1',instance(id,id,2,conqueror),40);const target=getBuildTree(b).nodes.find(n=>n.transformedBy&&n.kind==='small')!;b=allocate(b,target.id);assert.equal(getBuildTree(b).transformations.length,8);const stats=passiveBuild(b);if(id==='militantfaith')assert.ok(stats.devotion>0);if(id==='eleganthubris'){assert.ok(stats.tripleChance>0);assert.ok(getBuildTree(b).spent>b.nodes.length-1);}}
 });
 
 test('overlapping Timeless transformations use only latest equipment, reversal restores previous mapping',()=>{
  let b=allocate(allocate(newBuild(),'jewel_1'),'jewel_5');b=equipJewel(b,'jewel_1',instance('lethalpride','first',1,'Kaom'),40);b=equipJewel(b,'jewel_5',instance('gloriousvanity','second',9,'Doryani'),40);
- const a=CORE_NODES.find(n=>n.id==='jewel_1')!,c=CORE_NODES.find(n=>n.id==='jewel_5')!,overlap=getBuildTree(b).nodes.filter(n=>n.transformedBy&&Math.hypot(n.x-a.x,n.y-a.y)<=TIMELESS_RADIUS&&Math.hypot(n.x-c.x,n.y-c.y)<=TIMELESS_RADIUS);assert.ok(overlap.length>0);assert.ok(overlap.every(n=>n.transformedBy==='second'));
- const reverted=getBuildTree(unequipJewel(b,'jewel_5',40));for(const n of overlap)assert.equal(reverted.nodes.find(v=>v.id===n.id)!.transformedBy,'first');
+ // The nearest-eight sets of the production sockets need not overlap. Exercise the rule
+ // using two co-located sockets so it cannot pass vacuously after density changes.
+ const socket=CORE_NODES.find(n=>n.id==='jewel_1')!,fixture=CORE_NODES.map(n=>n.id==='jewel_5'?{...n,x:socket.x,y:socket.y}:n);
+ const helpers={make:(v:any)=>v,describe:()=>[],keys:Object.keys(passiveBuild(newBuild()))};
+ const resolved=resolveJewelTree(fixture,CORE_EDGES,b,helpers),overlap=resolved.nodes.filter(n=>n.transformedBy);
+ assert.equal(overlap.length,8);assert.ok(overlap.every(n=>n.transformedBy==='second'));
+ const reverted=resolveJewelTree(fixture,CORE_EDGES,{...b,jewels:b.jewels!.filter(j=>j.socketId!=='jewel_5')},helpers);
+ for(const n of overlap)assert.equal(reverted.nodes.find(v=>v.id===n.id)!.transformedBy,'first');
 });
 
 test('Large10 Medium5 Small3 create exactly798 server-derived nodes and refunds enforce subtree ownership',()=>{

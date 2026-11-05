@@ -4,7 +4,7 @@ namespace IslandGame {
  [RequireComponent(typeof(Camera))]
  public sealed class SkillTreeCameraController : MonoBehaviour {
   public Vector2 MinPanBounds=new Vector2(9980,9980),MaxPanBounds=new Vector2(10020,10020);
-  public float MinOrthographicSize=1.2f,MaxOrthographicSize=22,DefaultOrthographicSize=4.5f,Smoothing=14;
+  public float MinOrthographicSize=1.2f,MaxOrthographicSize=42,DefaultOrthographicSize=4.5f,Smoothing=14;
   public Camera TreeCamera {get;private set;}
   public Vector2 TargetPosition {get;private set;}
   public float TargetSize {get;private set;}

@@ -1,5 +1,5 @@
 {
-  "capturedAtUTC": "2026-11-05T17:26:39.663445+00:00",
+  "capturedAtUTC": "2026-11-05T18:53:19.775444+00:00",
   "localRoot": "G:\\new_project\\IslandGame",
   "baseline": "a92b9bde8ed507dd18b77574760dc89e3e191364",
   "files": [
@@ -283,7 +283,7 @@
       "source": "Assets/Island/Runtime/SkillTreeCameraController.cs",
       "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/SkillTreeCameraController.cs",
       "bytes": 2934,
-      "sha256": "9a666a2e3589034722eb225632969863af43071ba18775fbf49e065c906930b9"
+      "sha256": "ae01bec5954ab069b4c153e2edc220e3a202f12662e0bb46b8e6fed1bf4fca86"
     },
     {
       "source": "Assets/Island/Runtime/SkillTreeCameraController.cs.meta",
@@ -294,8 +294,8 @@
     {
       "source": "Assets/Island/Runtime/SkillTreeManager.cs",
       "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/SkillTreeManager.cs",
-      "bytes": 9162,
-      "sha256": "4eed19b4b286363954476e296de967c53f3ce1ae9616f41fe5110e366fee77f1"
+      "bytes": 9200,
+      "sha256": "5e1335e73e65ac61ed0ee061db38b4332c7649a43d582166f34c85a046905858"
     },
     {
       "source": "Assets/Island/Runtime/SkillTreeManager.cs.meta",
@@ -500,6 +500,18 @@
       "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Assets/Island/Resources/Battle3DAssets.asset",
       "bytes": 2307,
       "sha256": "6815d6c62ff084c4ec13bc45cf30c27b7607c85f015be23a5112e544e73347eb"
+    },
+    {
+      "source": "Assets/Island/Runtime/SkillTreeLayout.cs",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/SkillTreeLayout.cs",
+      "bytes": 3178,
+      "sha256": "38af9014324188e26445c756cb4ce1096aa1cd3cdda363a527f16634d8d13c47"
+    },
+    {
+      "source": "Assets/Island/Runtime/SkillTreeLayout.cs.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/SkillTreeLayout.cs.meta",
+      "bytes": 59,
+      "sha256": "166271b9d1518fc341d10fbf3091ef30e5bcfd38ba19c5b7d0659ba53ee72666"
     }
   ],
   "localOnlyModels": [

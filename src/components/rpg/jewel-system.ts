@@ -1,7 +1,13 @@
 import type {BuildState,CoreNode,PassiveStats} from './hunt-build';
 import {forbiddenIdentity,forbiddenSeed,type CharacterIdentity} from './character-identities';
 import {JEWELS_BY_ID,type JewelDefinition} from './jewel-catalog';
-export const TIMELESS_RADIUS=310,MAX_LARGE_CLUSTERS=2,MAX_JEWEL_PLACEMENTS=40;
+export const TIMELESS_RADIUS=310,MAX_TIMELESS_TARGETS=8,MAX_LARGE_CLUSTERS=2,MAX_JEWEL_PLACEMENTS=40;
+/** Canonical positions determine effects, never collision-adjusted display positions.
+ * Nearest eight eligible base passives win; ID breaks ties independently of array order. */
+export function timelessTargets(nodes:readonly CoreNode[],socket:Pick<CoreNode,'x'|'y'>):CoreNode[]{
+ return nodes.filter(n=>!n.startFor&&n.kind!=='socket'&&n.kind!=='keystone'&&!n.clusterId&&Math.hypot(n.x-socket.x,n.y-socket.y)<=TIMELESS_RADIUS)
+  .sort((a,b)=>Math.hypot(a.x-socket.x,a.y-socket.y)-Math.hypot(b.x-socket.x,b.y-socket.y)||(a.id<b.id?-1:a.id>b.id?1:0)).slice(0,MAX_TIMELESS_TARGETS);
+}
 export type JewelInstance={instanceId:string;jewelId:string;seed:number;conqueror?:string};
 export type JewelPlacement=JewelInstance&{socketId:string;order:number};
 type Helpers={make:(v:any)=>CoreNode;describe:(s:Partial<PassiveStats>)=>string[];keys:readonly string[]};
@@ -67,9 +73,10 @@ export function resolveJewelTree(baseNodes:readonly CoreNode[],baseEdges:readonl
  }if(!progressed)throw Error('군주얼 부모 소켓이 없거나 잘못된 중첩입니다.');}
  const borrowedIdentity=pairs.flame&&pairs.flesh&&forbiddenSeed(pairs.flame.seed)===forbiddenSeed(pairs.flesh.seed)?forbiddenIdentity(build.start??'hong',pairs.flame.seed):undefined;if(borrowedIdentity)jewelStats.push({...borrowedIdentity.stats});
  const timeless=placements.filter(p=>JEWELS_BY_ID.get(p.jewelId)!.kind==='timeless').sort((a,b)=>a.order-b.order),transformations:ResolvedBuildTree['transformations']=[];
+ const targets=new Map(timeless.map(p=>[p.instanceId,new Set(timelessTargets(baseNodes,byId.get(p.socketId)!).map(n=>n.id))]));
  for(let i=0;i<baseNodes.length;i++){
   const n=baseNodes[i];if(n.startFor||n.kind==='socket'||n.kind==='keystone')continue;
-  let winner:JewelPlacement|undefined;for(const p of timeless){const socket=byId.get(p.socketId)!;if(Math.hypot(n.x-socket.x,n.y-socket.y)<=TIMELESS_RADIUS)winner=p;}
+  let winner:JewelPlacement|undefined;for(const p of timeless)if(targets.get(p.instanceId)!.has(n.id))winner=p;
   if(winner){nodes[i]=transformed(n,winner,helpers);byId.set(n.id,nodes[i]);transformations.push({nodeId:n.id,jewelId:winner.jewelId,instanceId:winner.instanceId,before:n.description,after:nodes[i].description});}
  }
  const grantedSkills=[...new Set(nodes.filter(n=>allocated.has(n.id)&&n.grantsSkill).map(n=>n.grantsSkill!))].slice(0,4);

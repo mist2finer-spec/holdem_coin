@@ -18,6 +18,7 @@ namespace IslandGame {
   public string[] PreviewPath {get;private set;}=new string[0];
   public int PreviewCost {get;private set;}
   public bool HasLiveBuild {get;private set;}
+  readonly SkillTreeLayout layout=new SkillTreeLayout();
   readonly Dictionary<string,SkillTreeNode> nodes=new Dictionary<string,SkillTreeNode>();
   readonly HashSet<string> acquired=new HashSet<string>();
   readonly List<string> acquiredOrder=new List<string>();
@@ -39,10 +40,11 @@ namespace IslandGame {
    var tree=build?["tree"] as JObject??fallback;var list=tree?["nodes"] as JArray;var edges=tree?["edges"] as JArray;if(list==null||edges==null)return false;
    StartID=(string)build?["start"]?["nodeId"]??"root";Remaining=build?.Value<int?>("remaining")??0;Budget=build?.Value<int?>("budget")??Remaining;
    acquired.Clear();acquiredOrder.Clear();foreach(var id in (build?["state"]?["nodes"] as JArray??new JArray()).Values<string>())if(acquired.Add(id))acquiredOrder.Add(id);
+   var displayPositions=layout.Build(list);
    var present=new HashSet<string>();Vector2 min=new Vector2(float.PositiveInfinity,float.PositiveInfinity),max=new Vector2(float.NegativeInfinity,float.NegativeInfinity);
    foreach(var source in list.OfType<JObject>()){
     string id=(string)source["id"];if(string.IsNullOrEmpty(id)||!present.Add(id))continue;
-    string kind=(string)source["kind"];bool start=id==StartID;var pos=new Vector2((source.Value<float?>("x")??0)*.01f,-(source.Value<float?>("y")??0)*.01f);
+    string kind=(string)source["kind"];bool start=id==StartID;var pos=displayPositions[id];
     var data=new SkillTreeNodeData{ID=id,Name=nameResolver==null?(string)source["name"]:nameResolver(source),Description=(string)source["description"]??"",Attribute=(string)source["attribute"],Type=start?SkillTreeNodeType.Start:kind=="socket"?SkillTreeNodeType.Socket:kind=="keystone"?SkillTreeNodeType.Keystone:kind=="notable"?SkillTreeNodeType.Notable:SkillTreeNodeType.Small,Acquired=acquired.Contains(id),IsStart=start,Transformed=source["transformedBy"]?.Type==JTokenType.String,AllocationCost=Mathf.Max(1,source.Value<int?>("allocationCost")??1),Position=pos};
     SkillTreeNode node;if(!nodes.TryGetValue(id,out node)){var go=new GameObject("Node · "+id,typeof(SpriteRenderer),typeof(CircleCollider2D),typeof(SkillTreeNode));go.transform.SetParent(transform,false);go.layer=gameObject.layer;node=go.GetComponent<SkillTreeNode>();nodes[id]=node;}
     node.transform.localPosition=new Vector3(pos.x,pos.y,0);node.Bind(data,ring);min=Vector2.Min(min,pos);max=Vector2.Max(max,pos);

@@ -1,0 +1,59 @@
+{
+  "status": "PASS",
+  "nodes": 780,
+  "pairsChecked": 303810,
+  "minimumCenterDistance": 0.9001667,
+  "layoutMilliseconds": 89.7882,
+  "timelessDisplayNeighborhoods": {
+    "jewel_1": 8,
+    "jewel_2": 8,
+    "jewel_3": 8,
+    "jewel_4": 8,
+    "jewel_5": 8,
+    "jewel_6": 8,
+    "jewel_7": 8,
+    "jewel_8": 8
+  },
+  "orderIndependent": true,
+  "clusterBaseStable": true,
+  "canonicalUnchanged": true,
+  "inputProfiles": [
+    {
+      "width": 1080,
+      "height": 1920,
+      "checks": 18,
+      "status": "PASS"
+    },
+    {
+      "width": 1080,
+      "height": 2340,
+      "checks": 18,
+      "status": "PASS"
+    },
+    {
+      "width": 1080,
+      "height": 2520,
+      "checks": 18,
+      "status": "PASS"
+    }
+  ],
+  "expandedCluster": {
+    "status": "PASS",
+    "nodes": 798,
+    "minimumCenterDistance": 0.9001667,
+    "baseStable": true
+  },
+  "serverRegression": {
+    "status": "PASS",
+    "tests": 58,
+    "failed": 0,
+    "skipped": 0
+  },
+  "unityCompilation": {
+    "status": "PASS",
+    "errors": 0,
+    "warnings": 0
+  },
+  "sceneSha256": "7ad746ca1498a7623219d8e6ddd3873472b1ee61982eac0f4cd3ede71f5b71e1",
+  "serverDeployment": "NOT DEPLOYED; live server still has original transform radius rules"
+}

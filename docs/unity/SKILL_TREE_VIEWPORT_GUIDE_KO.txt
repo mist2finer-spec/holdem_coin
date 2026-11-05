@@ -59,7 +59,7 @@ RectMask2D는 RawImage 출력만 자르며 월드 카메라의 CullingMask를 �
 Content에만 ContentSizeFitter를 두고 중첩 VerticalLayoutGroup은 부모에 선호 크기를 보고합니다.
 
 카메라 인터페이스
-MinOrthographicSize=1.2, Max=22, Default=4.5, Smoothing=14.
+MinOrthographicSize=1.2, Max=42, Default=4.5, Smoothing=14.
 Pan(viewportDelta), Zoom(factor,anchorUV), FocusNode(worldPosition), ResetView(worldPosition).
 Manager.FocusStart()는 시작점을 보여줄 뿐 플레이 캐릭터 시작점을 변경하지 않습니다.
 Pan Bounds는 실제 그래프 좌표에 3unit 여백을 더합니다.
@@ -73,7 +73,7 @@ Pan Bounds는 실제 그래프 좌표에 3unit 여백을 더합니다.
 
 데이터/서버
 SkillTreeNodeData: ID, Type, ConnectedNodeIDs, Acquired, AllocationCost 등.
-월드 좌표는 원본 x×0.01, -y×0.01에 SkillTreeWorld 원점을 더합니다.
+표시 월드 좌표는 SkillTreeLayout.Build가 원본 x/y 앵커를 0.016배로 넓힌 뒤 최소 간격 0.9와 소켓 주변 표시 밀도 제한을 적용하고, SkillTreeWorld 원점을 더합니다. 원본 좌표는 서버 판정용으로 보존합니다.
 정적 displayX/displayY 캐시 대신 서버 build.tree.nodes/edges를 사용합니다.
 buildRevision 변경 시 습득·연결·좌표·변환 이름·군주얼 노드를 갱신합니다.
 RpgSession.Command("core-allocate-ID"), "core-path-ID", "core-refund-ID", "core-reset"을 사용합니다.
@@ -87,3 +87,5 @@ UI가 먼저 습득 상태를 바꾸지 않으며 실제 승인·포인트·능�
 .island-tools/ui-tree/: 원본 서버 oracle, 메모리 서버, Editor 입력/그래프 검사.
 운영 계정의 노드를 테스트로 할당하지 않았으며 별도 메모리 서비스에서 검증했습니다.
 실제 모바일 OS 멀티터치, 노치, 발열·배터리·GPU 성능, 플랫폼 빌드는 미검증입니다.
+
+후속 노드 배치/변환 8개 제한 및 운영 미배포 경계: TREE_DENSITY_20261105_KO.md
