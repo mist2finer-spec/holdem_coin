@@ -1,0 +1,71 @@
+{
+  "status": "PASS for scoped Editor checks",
+  "compiled": {
+    "errors": 0,
+    "warnings": 0
+  },
+  "resolutions": [
+    {
+      "resolution": "1080x1920",
+      "checks": 45,
+      "horizontalWidth": 12.0,
+      "pixelAspectRatio": 1.0
+    },
+    {
+      "resolution": "1080x2340",
+      "checks": 45,
+      "horizontalWidth": 12.0,
+      "pixelAspectRatio": 1.0
+    },
+    {
+      "resolution": "1080x2400",
+      "checks": 45,
+      "horizontalWidth": 12.0,
+      "pixelAspectRatio": 1.0
+    },
+    {
+      "resolution": "1080x2520",
+      "checks": 45,
+      "horizontalWidth": 12.0,
+      "pixelAspectRatio": 1.0
+    },
+    {
+      "resolution": "1536x2048",
+      "checks": 45,
+      "horizontalWidth": 12.0,
+      "pixelAspectRatio": 1.0
+    },
+    {
+      "resolution": "360x640",
+      "checks": 45,
+      "horizontalWidth": 12.0,
+      "pixelAspectRatio": 1.0
+    }
+  ],
+  "layoutChecks": 270,
+  "transitions": {
+    "status": "PASS",
+    "transitions": 24,
+    "dungeonReturn": true,
+    "growthNodes": 780,
+    "direct": true
+  },
+  "skillTreeInputChecks": 18,
+  "currentConsole": {
+    "errors": 0,
+    "warnings": 0
+  },
+  "finalState": "Play stopped; auto tick off; background override removed; Game View selection restored; production URL unchanged",
+  "notVerified": [
+    "Android/iOS builds",
+    "physical multitouch/notches",
+    "device GPU/fps/battery",
+    "URP migration"
+  ],
+  "previousResults": {
+    "modelPoseSamples": 95,
+    "treeOracleComparisons": 2340,
+    "previousMobileInputChecks": 54
+  },
+  "previousResultsAreNotRerunClaims": true
+}

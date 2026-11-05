@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bd897306a692644e9958cbd2fbc0e61, type: 3}
+  m_Name: Battle3DAssets
+  m_EditorClassIdentifier: 
+  hero: {fileID: -8148156210950934553, guid: fd70a1c477ed69f4591837cea84ee64f, type: 3}
+  slime: {fileID: 8771091787928289351, guid: a16d17319b7bc7141a44c054198f398b, type: 3}
+  heroMaterial: {fileID: 2100000, guid: b7d759c283334154ab80e1183430e672, type: 2}
+  slimeMaterial: {fileID: 2100000, guid: 565c9bf00ef54d146959d279de3a3c65, type: 2}
+  idle: {fileID: 412187754814777847, guid: fd70a1c477ed69f4591837cea84ee64f, type: 3}
+  run: {fileID: 1396513020575543376, guid: e442526946a4f61439f5d1d11cff9355, type: 3}
+  jumpStart: {fileID: 801839167046436797, guid: ba049ac98af31ce439e24624e3cdffd3, type: 3}
+  jumpLoop: {fileID: -8382879343553823431, guid: e19e658ca32a80c4bb7e8fae0d186092, type: 3}
+  jumpLand: {fileID: 9051629942799393790, guid: c5e6161f7c88d3548801667c3cbef0aa, type: 3}
+  roll: {fileID: 3179481391351805513, guid: 1a85d6c59c06dbc4693f28f8f6470f18, type: 3}
+  slide: {fileID: -4734657233686446323, guid: 96049a9b8dd2b124a8f1cae2de7b8108, type: 3}
+  death: {fileID: 3065992380904858723, guid: a8a13bfd9815d3a44a65ca00434177df, type: 3}
+  hit: {fileID: -5645037370960705071, guid: 0e77bf5878bd9e94da6e4ba157339830, type: 3}
+  attack1: {fileID: 8281000523186880796, guid: 6cb213f96e3c2324d8823c15e9ac86e9, type: 3}
+  attack2: {fileID: -64788122414679188, guid: 4185940edfe251f44bbfdacda79b3323, type: 3}
+  attack3: {fileID: -499983777062707597, guid: 9e7ec676899d74b4a97671a3abad343a, type: 3}
+  combo: {fileID: 7141673958509246279, guid: ef4b40573b2196340b018c06ea8a334e, type: 3}
+  heavy: {fileID: 6074603800563357229, guid: f165857fb9a9f2e49abe6743c09bbeda, type: 3}
+  dash: {fileID: 8911759075650635229, guid: f30fb67cfbcaf9b4fba52648b775870a, type: 3}
+  spell: {fileID: 477063007838702429, guid: 48e1f853d0fe53a4499d1290602e7498, type: 3}
+  slimeIdle: {fileID: -9057470511964926544, guid: a16d17319b7bc7141a44c054198f398b, type: 3}
+  heroHeight: 1.3
+  slimeHeight: 0.62
+  heroYaw: 90

@@ -1,0 +1,607 @@
+{
+  "capturedAtUTC": "2026-11-05T17:26:39.663445+00:00",
+  "localRoot": "G:\\new_project\\IslandGame",
+  "baseline": "a92b9bde8ed507dd18b77574760dc89e3e191364",
+  "files": [
+    {
+      "source": "Assets/Island/Runtime/Battle3DAssets.cs",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/Battle3DAssets.cs",
+      "bytes": 1311,
+      "sha256": "e956736138cd0d7067d211ff633a76c5b3a1389aff27c67de0e99c35b9ee518c"
+    },
+    {
+      "source": "Assets/Island/Runtime/Battle3DAssets.cs.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/Battle3DAssets.cs.meta",
+      "bytes": 59,
+      "sha256": "1659c5950a266e0edf6dc44d14d554efd3335a3c93a8c1798cbbc014caa88ce7"
+    },
+    {
+      "source": "Assets/Island/Runtime/Battle3DView.cs",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/Battle3DView.cs",
+      "bytes": 10632,
+      "sha256": "0f20c136d08f1169ededa4f11c74d2204718cb1d92d28347a07685e0a4772f25"
+    },
+    {
+      "source": "Assets/Island/Runtime/Battle3DView.cs.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/Battle3DView.cs.meta",
+      "bytes": 59,
+      "sha256": "de3d28d04dc2d52839b62b4d63dfe9d36dee8897eaeade593b0a13edb4636402"
+    },
+    {
+      "source": "Assets/Island/Runtime/BossTrials/BossTrialController.cs",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/BossTrials/BossTrialController.cs",
+      "bytes": 16602,
+      "sha256": "5d2f6d17f825e19fc91ce22d2aebf775de1011f2fde5d7c5604ae2a5c10d4db8"
+    },
+    {
+      "source": "Assets/Island/Runtime/BossTrials/BossTrialController.cs.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/BossTrials/BossTrialController.cs.meta",
+      "bytes": 59,
+      "sha256": "533b5ba86aaf4bc6ca068b8a5c651960de54e489f6e40af6a9c589268fad9dcb"
+    },
+    {
+      "source": "Assets/Island/Runtime/BossTrials/BossTrialModel.cs",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/BossTrials/BossTrialModel.cs",
+      "bytes": 32481,
+      "sha256": "badbe4462ac4eceae6bd455d7f97405f28cafdaf7fd9672b187aae691d222007"
+    },
+    {
+      "source": "Assets/Island/Runtime/BossTrials/BossTrialModel.cs.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/BossTrials/BossTrialModel.cs.meta",
+      "bytes": 59,
+      "sha256": "7af6eb813c3dc93c16cf5dcf31c6a346eafbc9850072248ed67c7fb20da88a23"
+    },
+    {
+      "source": "Assets/Island/Runtime/BossTrials/BossTrialRenderer.cs",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/BossTrials/BossTrialRenderer.cs",
+      "bytes": 22725,
+      "sha256": "29ee68034f0390ccdeb53b33b2ae21fe76a93fece2d30ac58268a7bfbbe16386"
+    },
+    {
+      "source": "Assets/Island/Runtime/BossTrials/BossTrialRenderer.cs.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/BossTrials/BossTrialRenderer.cs.meta",
+      "bytes": 59,
+      "sha256": "e24ce8a99f052fd5ca21ec7f1f7c73c5354027a3aa8f4a7aed33f5c9468de590"
+    },
+    {
+      "source": "Assets/Island/Runtime/CameraHorizontalWidthLock.cs",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/CameraHorizontalWidthLock.cs",
+      "bytes": 851,
+      "sha256": "1f76ca0c5d3ddd07cbe693d10ce23620d4c87adb9e5f027b33b1a64a79f9fba8"
+    },
+    {
+      "source": "Assets/Island/Runtime/CameraHorizontalWidthLock.cs.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/CameraHorizontalWidthLock.cs.meta",
+      "bytes": 59,
+      "sha256": "6f7c06ac166365cd74c9d45a7bccb60633e0e4646edfcbf164d6e4b86e4fdda8"
+    },
+    {
+      "source": "Assets/Island/Runtime/IslandApp.cs",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/IslandApp.cs",
+      "bytes": 15748,
+      "sha256": "fce3efebae9131280e52bbbd7698f788c38cdf600369e315ec31e0dee9adbd9b"
+    },
+    {
+      "source": "Assets/Island/Runtime/IslandApp.cs.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/IslandApp.cs.meta",
+      "bytes": 59,
+      "sha256": "00af7a7397139fc7797d11d0574e107c7e857e3c06f844a25811b96fdff636fd"
+    },
+    {
+      "source": "Assets/Island/Runtime/IslandAudio.cs",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/IslandAudio.cs",
+      "bytes": 997,
+      "sha256": "e6c9c26a6680564081f3946f547a6dbd59e8a87a08f8dc45375fea61ea8c87dc"
+    },
+    {
+      "source": "Assets/Island/Runtime/IslandAudio.cs.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/IslandAudio.cs.meta",
+      "bytes": 59,
+      "sha256": "9541dec0aed2c8c05b7703c80c76fc2a118aecb56ef4102c19751e6890b16129"
+    },
+    {
+      "source": "Assets/Island/Runtime/IslandBattleBridge.cs",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/IslandBattleBridge.cs",
+      "bytes": 2313,
+      "sha256": "297b33ef53ee45c0c2371e099f861bbb17d05419d73131da2d62bb5a80e44124"
+    },
+    {
+      "source": "Assets/Island/Runtime/IslandBattleBridge.cs.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/IslandBattleBridge.cs.meta",
+      "bytes": 59,
+      "sha256": "f0a833cbf9efe0af416f6add79a31af5d7f40c661fb61c22c8b2c41535b2d647"
+    },
+    {
+      "source": "Assets/Island/Runtime/IslandBattleHud.cs",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/IslandBattleHud.cs",
+      "bytes": 26970,
+      "sha256": "68d5ca9b1c6617a03da625e433d2095953cf3c5c979a93152c043ae711f0a3fb"
+    },
+    {
+      "source": "Assets/Island/Runtime/IslandBattleHud.cs.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/IslandBattleHud.cs.meta",
+      "bytes": 59,
+      "sha256": "2414fc55571f94f4d4b2ffb138f466fcbcda94cc160c841a65f37f05787cb0b6"
+    },
+    {
+      "source": "Assets/Island/Runtime/IslandBossTrialBridge.cs",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/IslandBossTrialBridge.cs",
+      "bytes": 1536,
+      "sha256": "665fda49e2be9f27953b1088cae958b57ccdd2f85971bc49cf22c75283910dc5"
+    },
+    {
+      "source": "Assets/Island/Runtime/IslandBossTrialBridge.cs.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/IslandBossTrialBridge.cs.meta",
+      "bytes": 59,
+      "sha256": "2a9fc3f3f0517ffe119a9052517a511ca6479d866b3280207fd17222ad932e60"
+    },
+    {
+      "source": "Assets/Island/Runtime/IslandGrowthPanel.cs",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/IslandGrowthPanel.cs",
+      "bytes": 17235,
+      "sha256": "09b4563773970e2958fa26f026423739e855ab70bad999ac3a68a25b657e2e22"
+    },
+    {
+      "source": "Assets/Island/Runtime/IslandGrowthPanel.cs.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/IslandGrowthPanel.cs.meta",
+      "bytes": 59,
+      "sha256": "538379f838a12f22d7b2e52bac2252c0f449e77129b135749c6d8c34f80c75e0"
+    },
+    {
+      "source": "Assets/Island/Runtime/IslandHudArt.cs",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/IslandHudArt.cs",
+      "bytes": 3784,
+      "sha256": "adb32c31e32973264b6a072884f98d19e26a79b0e83c77d4d3bc18a86dcd15eb"
+    },
+    {
+      "source": "Assets/Island/Runtime/IslandHudArt.cs.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/IslandHudArt.cs.meta",
+      "bytes": 59,
+      "sha256": "8ffe7aa0ed1005d72e88be6550efd4f36b65fced1867d44fe79fd4be0ee52a33"
+    },
+    {
+      "source": "Assets/Island/Runtime/IslandHudStick.cs",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/IslandHudStick.cs",
+      "bytes": 1080,
+      "sha256": "058ab02788c6eadaf5a089a4aa24c4d9461c93b6ca7785c53c308fcbc840d333"
+    },
+    {
+      "source": "Assets/Island/Runtime/IslandHudStick.cs.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/IslandHudStick.cs.meta",
+      "bytes": 59,
+      "sha256": "5d3ab3e3419070a69ab61952e0a3388e26368796e147f5f0082c3b7c56ee3efe"
+    },
+    {
+      "source": "Assets/Island/Runtime/IslandPrototype.cs",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/IslandPrototype.cs",
+      "bytes": 1000,
+      "sha256": "988432869fe51e9b804e76feeed021251ec29814219e8b8319b96a5bb601809a"
+    },
+    {
+      "source": "Assets/Island/Runtime/IslandPrototype.cs.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/IslandPrototype.cs.meta",
+      "bytes": 59,
+      "sha256": "794803173627e99a074784d8161e40703c4321c1b73bd3933fc3ca8b273fa69b"
+    },
+    {
+      "source": "Assets/Island/Runtime/IslandRpgPresentation.cs",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/IslandRpgPresentation.cs",
+      "bytes": 23976,
+      "sha256": "dbc152a578705d713b2e5b005805cb2cf5165c886d31b86eda52ab77406f33df"
+    },
+    {
+      "source": "Assets/Island/Runtime/IslandRpgPresentation.cs.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/IslandRpgPresentation.cs.meta",
+      "bytes": 59,
+      "sha256": "9617c7cab447e20abe555f60afe4c07c80a7802048c4215d6e59e6e609e45bcc"
+    },
+    {
+      "source": "Assets/Island/Runtime/NativeBattle.cs",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/NativeBattle.cs",
+      "bytes": 15218,
+      "sha256": "6bb2c8bc22b9f130a95c51547c9bb694d0c7ad2f52a78e790811d6eebe57c0aa"
+    },
+    {
+      "source": "Assets/Island/Runtime/NativeBattle.cs.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/NativeBattle.cs.meta",
+      "bytes": 59,
+      "sha256": "9ec0ce09c1f418603f47036782ac0fc257db6a604a2deee1d4887ef8723d84fe"
+    },
+    {
+      "source": "Assets/Island/Runtime/NativeCombatPresentation.cs",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/NativeCombatPresentation.cs",
+      "bytes": 6451,
+      "sha256": "1707e8c75d8e684d2b4357943c78b57310a02c4aeee5b2f0a70a3a52d76c085a"
+    },
+    {
+      "source": "Assets/Island/Runtime/NativeCombatPresentation.cs.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/NativeCombatPresentation.cs.meta",
+      "bytes": 59,
+      "sha256": "11ebd8a35d40ef6770c59489ac0bb927dbde53372e3fa2cd6f8e3aaedfa928b8"
+    },
+    {
+      "source": "Assets/Island/Runtime/PokerHandEvaluator.cs",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/PokerHandEvaluator.cs",
+      "bytes": 10379,
+      "sha256": "128406efebf6a4cbf62a3adfc4d82ecd598eb2e9f6691fafb94893a0f72e4449"
+    },
+    {
+      "source": "Assets/Island/Runtime/PokerHandEvaluator.cs.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/PokerHandEvaluator.cs.meta",
+      "bytes": 59,
+      "sha256": "8bb6f36cc7ac6069bd41f4a3fcd4b629b82dbf45b77dd7dd9dd10754f6f0a1f8"
+    },
+    {
+      "source": "Assets/Island/Runtime/PollingSocket.cs",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/PollingSocket.cs",
+      "bytes": 3409,
+      "sha256": "189695e2049a84f20734a0c75a18a7fd8ac6af8e14e0f064b17b43b5f364d793"
+    },
+    {
+      "source": "Assets/Island/Runtime/PollingSocket.cs.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/PollingSocket.cs.meta",
+      "bytes": 59,
+      "sha256": "65de1bbdd513497740e7727600c8d3754fa5042a258683724282c0950371e554"
+    },
+    {
+      "source": "Assets/Island/Runtime/RpgContracts.cs",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/RpgContracts.cs",
+      "bytes": 6176,
+      "sha256": "ff798c7fb0ebdfd07630a9a7d083ffffcee67c4fd896810d89842bdc83fb934e"
+    },
+    {
+      "source": "Assets/Island/Runtime/RpgContracts.cs.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/RpgContracts.cs.meta",
+      "bytes": 59,
+      "sha256": "4623d9efd663aecb5069a83a7bde042309c1a4212e5080be098ea179239c78b5"
+    },
+    {
+      "source": "Assets/Island/Runtime/RpgSession.cs",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/RpgSession.cs",
+      "bytes": 4297,
+      "sha256": "e7a98fce0f470d9e87a7b8632941227b2c0f844149cb735aec0f506a34ae06b8"
+    },
+    {
+      "source": "Assets/Island/Runtime/RpgSession.cs.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/RpgSession.cs.meta",
+      "bytes": 59,
+      "sha256": "9b91f20ad5cbf5bd973f5c59552db82832266bf41d3de5a9b43d3345cfb19ad9"
+    },
+    {
+      "source": "Assets/Island/Runtime/ShowdownSelection.cs",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/ShowdownSelection.cs",
+      "bytes": 1051,
+      "sha256": "0e32b319b253fd97ecf6f95761b62da6e5a03fef10b7720247f6da2592d9d249"
+    },
+    {
+      "source": "Assets/Island/Runtime/ShowdownSelection.cs.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/ShowdownSelection.cs.meta",
+      "bytes": 59,
+      "sha256": "a89053180675c65643aa45693561b784321ab2c34f713a1dce84a69808886040"
+    },
+    {
+      "source": "Assets/Island/Runtime/SkillTreeCameraController.cs",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/SkillTreeCameraController.cs",
+      "bytes": 2934,
+      "sha256": "9a666a2e3589034722eb225632969863af43071ba18775fbf49e065c906930b9"
+    },
+    {
+      "source": "Assets/Island/Runtime/SkillTreeCameraController.cs.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/SkillTreeCameraController.cs.meta",
+      "bytes": 59,
+      "sha256": "1d4a450173cd76586acb08314087d9cf0c29e620164b3b5285fd2f8404a7ff3a"
+    },
+    {
+      "source": "Assets/Island/Runtime/SkillTreeManager.cs",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/SkillTreeManager.cs",
+      "bytes": 9162,
+      "sha256": "4eed19b4b286363954476e296de967c53f3ce1ae9616f41fe5110e366fee77f1"
+    },
+    {
+      "source": "Assets/Island/Runtime/SkillTreeManager.cs.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/SkillTreeManager.cs.meta",
+      "bytes": 59,
+      "sha256": "4a576b7917aa2dcc2daa397ebc7a6190cf405319e9241b20fdf649f9a268664e"
+    },
+    {
+      "source": "Assets/Island/Runtime/SkillTreeNode.cs",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/SkillTreeNode.cs",
+      "bytes": 1760,
+      "sha256": "ed4b030883624ea174c4491efc5cc80828cddfc7622fde52cfe24427f0b3b4ce"
+    },
+    {
+      "source": "Assets/Island/Runtime/SkillTreeNode.cs.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/SkillTreeNode.cs.meta",
+      "bytes": 59,
+      "sha256": "997e734217057c176d1886d668744e72a51073a649a461810c9c161dcf8d44e7"
+    },
+    {
+      "source": "Assets/Island/Runtime/SkillTreeViewportInput.cs",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/SkillTreeViewportInput.cs",
+      "bytes": 6820,
+      "sha256": "bcaa27f9abd5136a9f7cabb32973711bca59af280783c2efd4d722045e71358b"
+    },
+    {
+      "source": "Assets/Island/Runtime/SkillTreeViewportInput.cs.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/SkillTreeViewportInput.cs.meta",
+      "bytes": 59,
+      "sha256": "99be6fe642929b9047f85e4c76a111a578952a67757659e6660b60d876c0189b"
+    },
+    {
+      "source": "Assets/Island/Runtime/SocketFrames.cs",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/SocketFrames.cs",
+      "bytes": 1597,
+      "sha256": "3d8f82b4859fd96cc3c9ef82d4e79d0bc7f68b4518080d06d0fe9a3985250c67"
+    },
+    {
+      "source": "Assets/Island/Runtime/SocketFrames.cs.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/SocketFrames.cs.meta",
+      "bytes": 59,
+      "sha256": "c6e1e38443b595e8b2625c5f11a7ad00db2826c62eea1ab96a22c8c94815095f"
+    },
+    {
+      "source": "Assets/Island/Runtime/UnityDisplayNames.cs",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/UnityDisplayNames.cs",
+      "bytes": 3858,
+      "sha256": "3b924dc418fb4d5483eb9edb7b02a2e7b37afb8aa989a5948656f808989d7a8e"
+    },
+    {
+      "source": "Assets/Island/Runtime/UnityDisplayNames.cs.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/UnityDisplayNames.cs.meta",
+      "bytes": 59,
+      "sha256": "90dc1ce7f3cba7f4ccf54772110e46c4c63ad5fc45c4c2c5efd62d6df19e7fd4"
+    },
+    {
+      "source": "Assets/Island/Editor/BattleHudReview.cs",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Editor/BattleHudReview.cs",
+      "bytes": 5959,
+      "sha256": "21d4c0617cbbea373cf79a66a7f5afa8bbdb1a739918a4e1f375e2210917536d"
+    },
+    {
+      "source": "Assets/Island/Editor/BattleHudReview.cs.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Editor/BattleHudReview.cs.meta",
+      "bytes": 59,
+      "sha256": "199f334df658a273d0d8782abbc94b92c029b4f22f259ac25f2965ffd6a99207"
+    },
+    {
+      "source": "Assets/Island/Editor/BossTrialExistingContractChecks.cs",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Editor/BossTrialExistingContractChecks.cs",
+      "bytes": 9626,
+      "sha256": "61ddbc69cd24d62c03977bf1c16eb40de7f7fbf3a1f76ba9968bfffb5f09e590"
+    },
+    {
+      "source": "Assets/Island/Editor/BossTrialExistingContractChecks.cs.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Editor/BossTrialExistingContractChecks.cs.meta",
+      "bytes": 59,
+      "sha256": "64cfe483c73ea23e3d64aa06d4af9d928a97b9c03f1def62dde80f4523e08108"
+    },
+    {
+      "source": "Assets/Island/Editor/BossTrialExistingModelChecks.cs",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Editor/BossTrialExistingModelChecks.cs",
+      "bytes": 12815,
+      "sha256": "3ee411a9e63dbeb70550f39a36c8491e0ff33b17cb33f2b411480ab23d3c85a7"
+    },
+    {
+      "source": "Assets/Island/Editor/BossTrialExistingModelChecks.cs.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Editor/BossTrialExistingModelChecks.cs.meta",
+      "bytes": 59,
+      "sha256": "05b9b593ca4e096e8a7b7352312104d3988b6a14d2b96451136bb4bb9b66f8d5"
+    },
+    {
+      "source": "Assets/Island/Editor/BossTrialPatternReview.cs",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Editor/BossTrialPatternReview.cs",
+      "bytes": 5857,
+      "sha256": "53101beffab59521f420812cba0a6920a8ecbcc34b8d58d3be58ff7ef72ad085"
+    },
+    {
+      "source": "Assets/Island/Editor/BossTrialPatternReview.cs.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Editor/BossTrialPatternReview.cs.meta",
+      "bytes": 59,
+      "sha256": "33e51a2f99ae5d627181363bd52ac1242e69496ef1210c4d7e3032a00ec8d857"
+    },
+    {
+      "source": "Assets/Island/Editor/BossTrialPlayReview.cs",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Editor/BossTrialPlayReview.cs",
+      "bytes": 5216,
+      "sha256": "da9eec036b98965771bdaa161e9580585f2a9f298ee153817a76161a073faaac"
+    },
+    {
+      "source": "Assets/Island/Editor/BossTrialPlayReview.cs.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Editor/BossTrialPlayReview.cs.meta",
+      "bytes": 59,
+      "sha256": "340280392d2027710b6ba5eab4622364d2c9b56d0ed49e2bcc795e1f44f1c9bf"
+    },
+    {
+      "source": "Assets/Island/Editor/BossTrialTestMenu.cs",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Editor/BossTrialTestMenu.cs",
+      "bytes": 1471,
+      "sha256": "1d2fffaede9dbb5752711c2e25a7b3b222fe73e048fe628be1c59461d597b426"
+    },
+    {
+      "source": "Assets/Island/Editor/BossTrialTestMenu.cs.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Editor/BossTrialTestMenu.cs.meta",
+      "bytes": 59,
+      "sha256": "08bd45ecdbe535fbc133ec8070519eebcb19e48af13e29fa413b96b2b3bd48f3"
+    },
+    {
+      "source": "Assets/Island/Editor/CombatMotionReview.cs",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Editor/CombatMotionReview.cs",
+      "bytes": 5355,
+      "sha256": "b7bf9e9cd52a68c71581fa95cd34bf9f003189f2a1412119310e2b0458152883"
+    },
+    {
+      "source": "Assets/Island/Editor/CombatMotionReview.cs.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Editor/CombatMotionReview.cs.meta",
+      "bytes": 59,
+      "sha256": "03924ac53202a3a5e4cde3338cf28c51bb4762f6dace03b6ee0e6fea6f029680"
+    },
+    {
+      "source": "Assets/Island/Editor/IslandProject.cs",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Editor/IslandProject.cs",
+      "bytes": 2999,
+      "sha256": "a331d2dcbd53b737c0a1d599f620ae1560fadf6d713363c2d0fa3757f351a89c"
+    },
+    {
+      "source": "Assets/Island/Editor/IslandProject.cs.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Editor/IslandProject.cs.meta",
+      "bytes": 59,
+      "sha256": "be7b2a140bb95a0631e2c98d48a012049f829975bab323a0d493f1d21bb819af"
+    },
+    {
+      "source": "Assets/Island/Editor/SkillTreeSceneSetup.cs",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Editor/SkillTreeSceneSetup.cs",
+      "bytes": 902,
+      "sha256": "ba593a6d913cacef8b1ea16eb601da36177b12c364be4bcb28da53511c3de17f"
+    },
+    {
+      "source": "Assets/Island/Editor/SkillTreeSceneSetup.cs.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Editor/SkillTreeSceneSetup.cs.meta",
+      "bytes": 59,
+      "sha256": "2034b3e9473e0f83a940bea31e1c55f653b936ac3da96cac80624d4bf8f0cc4c"
+    },
+    {
+      "source": "Packages/manifest.json",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Packages/manifest.json",
+      "bytes": 891,
+      "sha256": "a119189c301eab14c1110c866ba9d1180e001bde22fb15ce3e9782301afe5559"
+    },
+    {
+      "source": "Packages/packages-lock.json",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Packages/packages-lock.json",
+      "bytes": 6883,
+      "sha256": "e41f0462fac32f93f2377af6f4d8d7d067b74935df8f1ad717fd57a07ed47563"
+    },
+    {
+      "source": "ProjectSettings/ProjectVersion.txt",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/ProjectSettings/ProjectVersion.txt",
+      "bytes": 85,
+      "sha256": "f55357417191efac9dcba2068adf2a05ab76ec0de30eae3402c257669e98b75e"
+    },
+    {
+      "source": "ProjectSettings/TagManager.asset",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/ProjectSettings/TagManager.asset",
+      "bytes": 420,
+      "sha256": "a8bdaac188507b9b1ffa86922f9845c1b66db386b2d1f39f493ad9052d5bba2d"
+    },
+    {
+      "source": "Assets/Island/Scenes/Island.unity",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Assets/Island/Scenes/Island.unity",
+      "bytes": 4858,
+      "sha256": "7ad746ca1498a7623219d8e6ddd3873472b1ee61982eac0f4cd3ede71f5b71e1"
+    },
+    {
+      "source": "Assets/Island/Scenes/Island.unity.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Assets/Island/Scenes/Island.unity.meta",
+      "bytes": 155,
+      "sha256": "17102fa3172c35b1a55dd599198dc6e7d7a33f2f425996d0e107796c3ccd9a74"
+    },
+    {
+      "source": "Assets/Island/Resources/Battle3DAssets.asset",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Assets/Island/Resources/Battle3DAssets.asset",
+      "bytes": 2307,
+      "sha256": "6815d6c62ff084c4ec13bc45cf30c27b7607c85f015be23a5112e544e73347eb"
+    }
+  ],
+  "localOnlyModels": [
+    {
+      "path": "Assets/Island/Art/Battle3D/PinkGlass/death01.glb",
+      "bytes": 1567648,
+      "sha256": "cfbfc866224bb53d6a6359dc577065fd9094a237acf9def306ef1435ee6e431e"
+    },
+    {
+      "path": "Assets/Island/Art/Battle3D/PinkGlass/hit_chest.glb",
+      "bytes": 1485916,
+      "sha256": "852d4ad146ff565ee63ca3498228338f10f22ec759bb93b36f2bfda3e8b902b1"
+    },
+    {
+      "path": "Assets/Island/Art/Battle3D/PinkGlass/idle_loop.glb",
+      "bytes": 1570584,
+      "sha256": "622f0645173099ef5673475dba2c02ee0b78bdbe2d012cd1c57d8dc21f365916"
+    },
+    {
+      "path": "Assets/Island/Art/Battle3D/PinkGlass/jog_fwd_loop.glb",
+      "bytes": 1509628,
+      "sha256": "8d4fc9fb7a36f5104e8349d3907033c7aac93caf1ec3e1b7ad03d8c44974ce77"
+    },
+    {
+      "path": "Assets/Island/Art/Battle3D/PinkGlass/jump_land.glb",
+      "bytes": 1522812,
+      "sha256": "fd06e003652d63e334695d985b72891dc1221e900ffb69c729be16fdd7f7ccd5"
+    },
+    {
+      "path": "Assets/Island/Art/Battle3D/PinkGlass/jump_loop.glb",
+      "bytes": 1570620,
+      "sha256": "8c83e770119e5a4cb8848c1fa64a2f86b84b86c391cd0ab4e1afce1e3181c05c"
+    },
+    {
+      "path": "Assets/Island/Art/Battle3D/PinkGlass/jump_start.glb",
+      "bytes": 1525420,
+      "sha256": "94b1ba560cf542c5fa4b39d57da8cb5f1ce7d74f87d5660ac51c95770b263050"
+    },
+    {
+      "path": "Assets/Island/Art/Battle3D/PinkGlass/roll.glb",
+      "bytes": 1530648,
+      "sha256": "6a6149dafd01cfa197e6f31b4706964ee52d8497a288815ab7435cefe78e6070"
+    },
+    {
+      "path": "Assets/Island/Art/Battle3D/PinkGlass/slide_loop.glb",
+      "bytes": 1550624,
+      "sha256": "83c7d37b85c75d0ebe05a2c9c0ccbf183398f31b9693d7c42e19fba1e63525fc"
+    },
+    {
+      "path": "Assets/Island/Art/Battle3D/PinkGlass/spell_simple_shoot.glb",
+      "bytes": 1491556,
+      "sha256": "f6466828c6e3965af2fba73913dbc65099ccffe2b722ce09e8917914558549fb"
+    },
+    {
+      "path": "Assets/Island/Art/Battle3D/PinkGlass/sword_dash.glb",
+      "bytes": 1534608,
+      "sha256": "dccd919d1660183e8474094f81f3fcf0711284149650b9eb4d07ef44e298f337"
+    },
+    {
+      "path": "Assets/Island/Art/Battle3D/PinkGlass/sword_heavy_combo.glb",
+      "bytes": 1644028,
+      "sha256": "21e41d9dd9cbadc967d333b7fba0bf305fe08a4f9ce639c8e63b94bbe9acaa78"
+    },
+    {
+      "path": "Assets/Island/Art/Battle3D/PinkGlass/sword_idle.glb",
+      "bytes": 1538632,
+      "sha256": "cce01607d99775c441276d03831ab35e1ba7737759d5b58f8f55d8e25e642324"
+    },
+    {
+      "path": "Assets/Island/Art/Battle3D/PinkGlass/sword_regular_a.glb",
+      "bytes": 1489852,
+      "sha256": "f131d5e89f18294001286ee516cf90b14bfec77e7382c9e2e4d732a9a812225f"
+    },
+    {
+      "path": "Assets/Island/Art/Battle3D/PinkGlass/sword_regular_b.glb",
+      "bytes": 1493736,
+      "sha256": "e05fd66b2e84bbc5c97ff631dda50d63dd3fb2d7c7effc000b8adece6dc40b31"
+    },
+    {
+      "path": "Assets/Island/Art/Battle3D/PinkGlass/sword_regular_c.glb",
+      "bytes": 1550604,
+      "sha256": "6b7d1172ec41d5dfbc7b3cb2bc9afd74980506d1414b2c714b608674f4494884"
+    },
+    {
+      "path": "Assets/Island/Art/Battle3D/PinkGlass/sword_regular_combo.glb",
+      "bytes": 1590124,
+      "sha256": "1e8e03e9e8e45ff23bed76a1aa22931df5b72e2fa9e09d12a50f1a15b894f0cb"
+    },
+    {
+      "path": "Assets/Island/Art/Battle3D/PinkGlass/walk_loop.glb",
+      "bytes": 1525448,
+      "sha256": "2a8eb2947dea0651863927aaf8ab366d56b06daccef7596a4af68228b5c9a3a6"
+    },
+    {
+      "path": "Assets/Island/Art/Battle3D/Slime/Slime_1.glb",
+      "bytes": 7484796,
+      "sha256": "e07c95eba8b18affc538525d95710239fa945a32d8468cad3486a1498b862223"
+    },
+    {
+      "path": "Assets/Island/Art/Battle3D/Slime/slime_rigged_animated.glb",
+      "bytes": 1149816,
+      "sha256": "035d641d74999d0b383de2dbe78f17c9eab249d8bf04385db07eb02640d555af"
+    }
+  ]
+}

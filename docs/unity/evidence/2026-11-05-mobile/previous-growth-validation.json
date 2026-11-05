@@ -1,0 +1,217 @@
+{
+  "status": "PASS for scoped Editor and integration checks; real-device and URP builds not run",
+  "sourceRevision": "a92b9bde8ed507dd18b77574760dc89e3e191364",
+  "references": [
+    "Live Chrome mobile navigation: lobby -> hunt -> Hong -> start -> growth",
+    "Repository AGENTS.md and Unity instructions",
+    "Unity 6000.0 coordinate APIs and uGUI 2.0 ScrollRect documentation"
+  ],
+  "layout": {
+    "resolution": "390x844",
+    "previousBattleHeight": 351.56,
+    "newBattleHeight": 538,
+    "previousPercent": 41.65,
+    "newPercent": 63.74,
+    "controls": "Compact bottom console; joystick on left and jump/slide/evade buttons on right",
+    "camera": "Existing orthographic battle camera reframed for larger portrait viewport"
+  },
+  "checks": {
+    "compile": {
+      "errors": 0,
+      "warnings": 0
+    },
+    "graphOracle": {
+      "status": "PASS",
+      "nodes": 780,
+      "comparisons": 2340,
+      "serverPathAllocation": {
+        "before": 11,
+        "cost": 3,
+        "after": 8
+      },
+      "middleRefundBlocked": true
+    },
+    "dynamicGraph": {
+      "status": "PASS",
+      "added": true,
+      "position": true,
+      "transformed": true,
+      "removed": true,
+      "sourceUnchanged": true
+    },
+    "input": [
+      {
+        "resolution": "390x844",
+        "status": "PASS",
+        "count": 18,
+        "checks": [
+          "Screen/UV round trip",
+          "uGUI raycast reaches RawImage",
+          "Parent locked on pointer acquisition",
+          "2D raycast selects expected node once",
+          "Parent restored after tap",
+          "Single finger pan changes target",
+          "Dragging does not select nodes",
+          "Two fingers own viewport",
+          "Pinch out zooms in",
+          "Parent stays locked until last finger",
+          "Pinch to one-finger pan continues without jump",
+          "Pinch release restores parent without tap",
+          "Cancel restores parent",
+          "Originally disabled parent remains disabled",
+          "Disabling input restores parent",
+          "Minimum zoom clamp",
+          "Maximum zoom clamp",
+          "Pan bounds clamp"
+        ],
+        "nodes": 780,
+        "texture": "SkillTree Viewport RT"
+      },
+      {
+        "resolution": "360x640",
+        "status": "PASS",
+        "count": 18,
+        "checks": [
+          "Screen/UV round trip",
+          "uGUI raycast reaches RawImage",
+          "Parent locked on pointer acquisition",
+          "2D raycast selects expected node once",
+          "Parent restored after tap",
+          "Single finger pan changes target",
+          "Dragging does not select nodes",
+          "Two fingers own viewport",
+          "Pinch out zooms in",
+          "Parent stays locked until last finger",
+          "Pinch to one-finger pan continues without jump",
+          "Pinch release restores parent without tap",
+          "Cancel restores parent",
+          "Originally disabled parent remains disabled",
+          "Disabling input restores parent",
+          "Minimum zoom clamp",
+          "Maximum zoom clamp",
+          "Pan bounds clamp"
+        ],
+        "nodes": 780,
+        "texture": "SkillTree Viewport RT"
+      },
+      {
+        "resolution": "430x932",
+        "status": "PASS",
+        "count": 18,
+        "checks": [
+          "Screen/UV round trip",
+          "uGUI raycast reaches RawImage",
+          "Parent locked on pointer acquisition",
+          "2D raycast selects expected node once",
+          "Parent restored after tap",
+          "Single finger pan changes target",
+          "Dragging does not select nodes",
+          "Two fingers own viewport",
+          "Pinch out zooms in",
+          "Parent stays locked until last finger",
+          "Pinch to one-finger pan continues without jump",
+          "Pinch release restores parent without tap",
+          "Cancel restores parent",
+          "Originally disabled parent remains disabled",
+          "Disabling input restores parent",
+          "Minimum zoom clamp",
+          "Maximum zoom clamp",
+          "Pan bounds clamp"
+        ],
+        "nodes": 780,
+        "texture": "SkillTree Viewport RT"
+      }
+    ],
+    "layouts": [
+      {
+        "resolution": "390x844",
+        "outside": [],
+        "eventSystems": 1,
+        "koreanGlyphs": true
+      },
+      {
+        "resolution": "360x640",
+        "outside": [],
+        "eventSystems": 1,
+        "koreanGlyphs": true
+      },
+      {
+        "resolution": "430x932",
+        "outside": [],
+        "eventSystems": 1,
+        "koreanGlyphs": true
+      }
+    ],
+    "training": {
+      "before": {
+        "level": 0,
+        "gold": "802"
+      },
+      "after": {
+        "level": 1,
+        "gold": "678",
+        "notice": ""
+      },
+      "notes": "Pointer raycast/down/up/click; level 0 -> 1; idle income also accrues, so net gold delta is not asserted as exact cost."
+    },
+    "productionReadOnly": {
+      "status": "PASS",
+      "server": "https://holdem-coin-tavern.onrender.com",
+      "cycles": 12,
+      "sameTexture": true,
+      "treeTextures": 1,
+      "nodes": 780,
+      "eventSystems": 1,
+      "paused": true
+    },
+    "lifecycle": "12 open/close cycles reuse same RT instance; 1 texture, 780 nodes, 1 EventSystem; 0 tree worlds after Play stops",
+    "legacyGUI": "No additional legacy OnGUI render passes while growth Canvas was visible",
+    "finalEditor": "Play stopped; auto tick disabled; runInBackground override removed; original Game View size restored; stored production URL unchanged"
+  },
+  "implementation": [
+    "SkillTreeViewportInput.cs",
+    "SkillTreeCameraController.cs",
+    "SkillTreeNode.cs",
+    "SkillTreeManager.cs",
+    "IslandGrowthPanel.cs",
+    "Editor/SkillTreeSceneSetup.cs"
+  ],
+  "modified": [
+    "IslandBattleHud.cs",
+    "IslandBattleBridge.cs",
+    "IslandApp.cs",
+    "NativeBattle.cs",
+    "Battle3DView.cs",
+    "ProjectSettings/TagManager.asset",
+    "Packages/manifest.json",
+    "Packages/packages-lock.json"
+  ],
+  "preserved": [
+    "RpgSession transport and sequence contract",
+    "Node server, progression formulas and equipment rules",
+    "Spine 4.2 and existing 3D assets",
+    "Island.unity file and existing local changes"
+  ],
+  "notes": [
+    "Current pipeline remains Built-in; no whole-project URP migration",
+    "Physics2D built-in module added for node raycasts; SkillTree layer 31; isolated origin 10000,10000",
+    "World node sprites plus one batched edge mesh; no 780-node uGUI Canvas hierarchy",
+    "Live production used for read-only tree viewing; all allocate/refund/path/reset/training mutations used the original RogueService in a separate memory fixture",
+    "Initial web inspection waited for dynamic loading; default growth click was intercepted by web sound control, so DOM activation was used only for visual inspection",
+    "Input tests simulate EventSystem fingers in the real Editor; not a claim of physical-device multitouch verification",
+    "Fixed a low-level test harness path error, a claim-button encoding issue, bottom-caption clipping, and RenderTexture reallocation on reopen; failure history retained",
+    "Found RT cache reset on reopening during lifecycle test; fixed and verified identical texture instance across all 12 cycles."
+  ],
+  "limitations": [
+    "URP conversion and platform builds not performed",
+    "Mobile packaged Korean TMP font, notch/multitouch hardware, battery/GPU performance need device validation",
+    "Jewel socket display/dynamic cluster binding included; full jewel inventory/equip UI not included",
+    "Existing 3D monochrome models and placeholder forest remain"
+  ],
+  "skills": [
+    "unity ui -> ui-ugui + scrollview-setup",
+    "unity-cli",
+    "unity-package-management for physics2d"
+  ],
+  "formalVerification": "Not run: no authoritative gameplay/protocol change; domain oracle and real UI integration checks used instead."
+}

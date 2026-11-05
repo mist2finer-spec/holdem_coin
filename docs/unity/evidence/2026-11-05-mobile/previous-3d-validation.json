@@ -1,0 +1,82 @@
+{
+  "status": "PASS (implementation and scoped runtime checks; art approval pending)",
+  "githubRevision": "a92b9bde8ed507dd18b77574760dc89e3e191364",
+  "server": "https://holdem-coin-tavern.onrender.com",
+  "scene": "Assets/Island/Scenes/Island.unity",
+  "pipeline": "Built-in",
+  "implementation": [
+    "NativeBattle.cs: optional 3D adapter, existing Spine fallback",
+    "Battle3DAssets.cs: model and action mapping configuration",
+    "Battle3DView.cs: model sampling, ground alignment, terrain, camera",
+    "Resources/Battle3DAssets.asset",
+    "Art/Battle3D: 18 player GLBs, 2 slime GLBs, 2 materials",
+    "Packages manifest and lock: glTFast 6.20.0 and dependencies"
+  ],
+  "preserved": [
+    "RpgSession.cs",
+    "IslandApp.cs",
+    "IslandRpgPresentation.cs",
+    "IslandBattleHud.cs",
+    "Island.unity",
+    "source motion/reference assets",
+    "Spine 4.2"
+  ],
+  "checks": {
+    "import": {
+      "models": 20,
+      "clips": 19,
+      "poseSamples": 95,
+      "result": "PASS"
+    },
+    "runtime": "Live remote session; server attack mapped to imported clips; 6 unequipped CanCast false; jump airHeight 8.301228 observed",
+    "movement": "Initial direct HudMove overwritten by HUD; real BattleHudReview.Stick pointer path passed, HeroWorldX 4636.26953 -> 4615.05957; jog_fwd_loop_fit observed",
+    "pause": {
+      "startFrame": 8920,
+      "endFrame": 11944,
+      "visualBoth": 127.246918,
+      "clipBoth": "idle_loop_fit",
+      "sampleBoth": 0.05
+    },
+    "compile": "success; 0 errors, 0 warnings",
+    "sceneHashUnchanged": "7AD746CA1498A7623219D8E6DDD3873472B1EE61982EAC0F4CD3EDE71F5B71E1",
+    "finalLive": {
+      "frame": 1944,
+      "active": true,
+      "uses3D": true,
+      "clip": "sword_regular_combo_fit",
+      "sample": 0.9333286,
+      "groundError": 0.0
+    },
+    "facing": "Yaw +90 verified using LeftFoot -> LeftToeBase direction; server facing +1 corresponds to positive X.",
+    "finalEditor": "Play stopped; auto tick off; runInBackground override removed; Game View size index restored."
+  },
+  "limitations": [
+    "Source player GLBs have no UV textures; single pink material is prototype styling",
+    "Nature Free / LOWPOLY MEDIEVAL packages absent; background is a procedural placeholder",
+    "Slime_RigAction actually previewed at five times: squash/wobble, no attack or locomotion; additional attack bounce is presentation only",
+    "Other monster species retain Spine visuals; weapon appearance is sword prototype, not an equipment art system",
+    "3D contact point uses clip 45% as provisional hit pose; individual contact poses and all weapon/skill art need tuning",
+    "Mobile builds and hardware performance not tested; no deployment or server changes",
+    "Importer reports unsupported KHR_materials_emissive_strength (source value zero); old Spine PMA/font warnings remain",
+    "A first capture command failed due to output path; subsequent supported screen captures succeeded; history retained"
+  ],
+  "visualScorecard": {
+    "palette": 3,
+    "style": 3,
+    "lighting": 3,
+    "silhouette": 3,
+    "ui": 4,
+    "feedback": 3
+  },
+  "skillReferences": [
+    "unity-cli and playmode-verification-loop",
+    "unity-package-management",
+    "craft-game-floors: character-motion, camera-rigs, scene-lighting, placeholder-assets, visual-scorecard"
+  ],
+  "scopeNotes": "Kept existing follow camera and Built-in; did not migrate to URP or add Cinemachine. Formal verification skipped: presentation-only change.",
+  "screenshots": [
+    "final-combat-430x932.png",
+    "final-idle-430x932.png",
+    "motion-preview.jpg"
+  ]
+}

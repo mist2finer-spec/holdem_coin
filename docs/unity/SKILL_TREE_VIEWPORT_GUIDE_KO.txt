@@ -1,0 +1,89 @@
+IslandGame — RenderTexture 성장 성좌 설정 / 2026-11-05
+
+실행: Island 씬 → Play → 미궁 사냥 입장 → 성장 → 성좌 트리.
+훈련·특성 탭도 같은 성장 Canvas의 ScrollRect를 사용합니다.
+현재 Built-in을 유지했습니다. URP 전용 API에 의존하지 않는 구조지만 URP 빌드는 별도 검증이 필요합니다.
+
+런타임 계층
+IslandApp
+  RpgBattleCanvas (기존 전투/HUD)
+  GrowthCanvas (Overlay, sortingOrder=40, GraphicRaycaster, CanvasScaler 390×844/Match 0.5)
+    SafeArea
+      GrowthFrame
+        GrowthTitle / CloseGrowth / Tabarts / Tabtraits / Tabtree
+        GrowthScroll (ScrollRect: Vertical, Clamped)
+          Viewport (Image + RectMask2D)
+            Content (VerticalLayoutGroup + ContentSizeFitter: Vertical Preferred)
+              BuildSummary
+              ConstellationSection (VerticalLayoutGroup)
+                TreeTools (− / + / 내 시작점)
+                SkillTreeViewport (RawImage + SkillTreeViewportInput)
+                TreeLegend
+              TrainingAndTraits
+        NodeOverlay (이름·설명·배우기·경로·회수·전체 회수)
+  SkillTreeWorld (10000,10000,0; Layer SkillTree)
+    SkillTreeManager
+    SkillTreeCamera (Orthographic + SkillTreeCameraController)
+    Constellation links (단일 MeshRenderer)
+    Node · ID (SpriteRenderer + CircleCollider2D + SkillTreeNode) ×780
+
+Layer/씬 설정 C#
+  IslandGame.Editor.SkillTreeSceneSetup.ConfigureLayer();
+또는 메뉴 Island > Configure SkillTree Layer를 실행합니다.
+현재 31번 SkillTree를 사용합니다. 설정 메뉴는 다른 레이어를 덮지 않고 빈 사용자 레이어를 찾습니다.
+기존 전투용 30번은 이름이 비어 있어도 예약합니다.
+트리 카메라와 2D Raycast의 마스크는 SkillTree만 포함합니다.
+게임 카메라에서는 SkillTree를 제외하세요. 현재 배경 카메라=0, 전투 카메라=1<<30입니다.
+Physics2D 모듈 com.unity.modules.physics2d 1.0.0이 필요합니다.
+
+RenderTexture
+RawImage 실측 크기 × Canvas.scaleFactor ×1.5, 32px 단위로 크기를 정합니다.
+너비 256~1024, 높이 256~1536, ARGB32, depth=0, AA=1.
+Bilinear, Clamp, mipmap 끔. 같은 크기에서는 재할당하지 않습니다.
+카메라 aspect는 RawImage 비율이며 uvRect는 (0,0,1,1)을 사용합니다.
+닫히면 카메라를 끄고 텍스처는 재사용합니다. 파괴 시 Release/Destroy합니다.
+저사양에서는 배율을 1.0으로 낮춘 뒤 실제 GPU 시간을 계측하세요.
+
+입력/마스킹
+RawImage raycastTarget=true, 장식·텍스트는 false.
+Canvas에 GraphicRaycaster, 씬에 EventSystem 한 개가 필요합니다.
+첫 포인터부터 부모 ScrollRect를 잠그고 마지막 포인터 종료 시 원래 enabled 상태로 복원합니다.
+핀치에는 영역 안에서 시작한 두 터치가 참여합니다. 한 손가락만 남으면 팬으로 이어집니다.
+취소·비활성화·포커스 상실 시에도 복원하고 관성 스크롤은 중단합니다.
+마우스 드래그/휠도 지원합니다. 다른 영역에서는 부모 세로 스크롤이 작동합니다.
+ScreenPointToLocalPointInRectangle에는 pressEventCamera를 전달합니다. Overlay는 null입니다.
+화면 → 로컬 → UV → ViewportToWorldPoint / Physics2D Raycast 순서입니다.
+작은 노드는 18px 반경에서 가장 가까운 노드를 보조 선택합니다.
+RectMask2D에 의해 잘린 영역에서는 포인터를 받지 않습니다.
+RectMask2D는 RawImage 출력만 자르며 월드 카메라의 CullingMask를 대신하지 않습니다.
+Content에만 ContentSizeFitter를 두고 중첩 VerticalLayoutGroup은 부모에 선호 크기를 보고합니다.
+
+카메라 인터페이스
+MinOrthographicSize=1.2, Max=22, Default=4.5, Smoothing=14.
+Pan(viewportDelta), Zoom(factor,anchorUV), FocusNode(worldPosition), ResetView(worldPosition).
+Manager.FocusStart()는 시작점을 보여줄 뿐 플레이 캐릭터 시작점을 변경하지 않습니다.
+Pan Bounds는 실제 그래프 좌표에 3unit 여백을 더합니다.
+화면이 한 축의 전체 경계보다 크면 해당 축을 가운데로 고정합니다.
+
+메인 UI 이벤트 예시
+  Tree.OnNodeSelected += SelectNode;
+  void SelectNode(SkillTreeNodeData data) {
+      // 이름·설명·습득/회수 버튼 갱신
+  }
+
+데이터/서버
+SkillTreeNodeData: ID, Type, ConnectedNodeIDs, Acquired, AllocationCost 등.
+월드 좌표는 원본 x×0.01, -y×0.01에 SkillTreeWorld 원점을 더합니다.
+정적 displayX/displayY 캐시 대신 서버 build.tree.nodes/edges를 사용합니다.
+buildRevision 변경 시 습득·연결·좌표·변환 이름·군주얼 노드를 갱신합니다.
+RpgSession.Command("core-allocate-ID"), "core-path-ID", "core-refund-ID", "core-reset"을 사용합니다.
+UI가 먼저 습득 상태를 바꾸지 않으며 실제 승인·포인트·능력치는 서버 응답으로 반영합니다.
+경로와 회수 가능 여부는 원본 BFS/연결성 규칙을 표시용으로 사용합니다.
+요청 중 중복 입력을 막고 서버 buildRevision 또는 오류를 기다립니다.
+주얼 소켓 습득과 주얼 아이템 장착은 별개입니다. 주얼 장착 패널 전체는 이번 범위가 아닙니다.
+
+검증
+.island-backups/ui-tree-20261105/: 변경 diff, 화면, 검사 결과.
+.island-tools/ui-tree/: 원본 서버 oracle, 메모리 서버, Editor 입력/그래프 검사.
+운영 계정의 노드를 테스트로 할당하지 않았으며 별도 메모리 서비스에서 검증했습니다.
+실제 모바일 OS 멀티터치, 노치, 발열·배터리·GPU 성능, 플랫폼 빌드는 미검증입니다.
