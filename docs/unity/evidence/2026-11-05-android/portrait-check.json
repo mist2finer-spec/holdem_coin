@@ -1,0 +1,38 @@
+{
+    "success":  true,
+    "command":  "command",
+    "data":  {
+                 "command":  "script run",
+                 "parameters":  {
+                                    "file":  "C:/Users/SHK/island-portrait-review/ValidatePortrait.cs",
+                                    "entry":  "ValidatePortrait.Main"
+                                },
+                 "result":  {
+                                "diagnostics":  [
+
+                                                ],
+                                "compileMs":  476,
+                                "executeMs":  11,
+                                "assemblyName":  "PipelineRunScript_ValidatePortrait_0deb1fb845a848aeaa81e6c8904a5c86",
+                                "success":  true,
+                                "result":  {
+                                               "status":  "PASS",
+                                               "resolution":  "1080x2340",
+                                               "count":  45,
+                                               "horizontalWidth":  12,
+                                               "pixelAspectRatio":  1
+                                           }
+                            },
+                 "target":  {
+                                "host":  "127.0.0.1",
+                                "port":  7800,
+                                "projectPath":  "G:\\new_project\\IslandGame"
+                            }
+             },
+    "errors":  [
+
+               ],
+    "warnings":  [
+
+                 ]
+}

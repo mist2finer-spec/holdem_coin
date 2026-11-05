@@ -15,7 +15,7 @@ namespace IslandGame {
   public string HudNotice=>notice;
   public bool BattleHudEnabled=>battleHud&&battleHud.enabled;
   public bool HudCanInput=>HudPage&&!HudPanelOpen&&rpg!=null&&rpg.State!=null&&rpg.Active&&!rpg.Paused;
-  void OnDestroy(){if(rpgSkin){rpgSkin.font=null;Destroy(rpgSkin);}if(rpgFont)Destroy(rpgFont);}
+  void OnDestroy(){if(rpgSkin){rpgSkin.font=null;Destroy(rpgSkin);}IslandFonts.ReleaseGuiFont(rpgFont);}
   void InitializeBattleHud(){EnsureCatalog();battleHud=gameObject.AddComponent<IslandBattleHud>();battleHud.Initialize(this);growthView=gameObject.AddComponent<IslandGrowthPanel>();growthView.Initialize(this,battleHud.RuntimeFont);}
   public void HudSkill(int slot){if(HudCanInput)Cast(slot);}
   public void HudAttack(){if(HudCanInput)rpg.Command("tick",new JObject{{campaign?"basic":"attack",true}});}

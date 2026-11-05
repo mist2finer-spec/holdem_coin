@@ -99,8 +99,8 @@ namespace IslandGame.BossTrials {
   void OnDisable() { StopTrial();Visible=false; }
   void EnsureStyles() {
    if(label!=null)return;
-   font=Font.CreateDynamicFontFromOSFont(new[]{"Malgun Gothic","Apple SD Gothic Neo","Noto Sans CJK KR","Arial"},14);
-   font.hideFlags=HideFlags.DontSave;
+   font=IslandFonts.CreateGuiFont();
+
    label=new GUIStyle(GUI.skin.label){font=font,fontSize=13,wordWrap=true};small=new GUIStyle(label){fontSize=11};title=new GUIStyle(label){fontSize=19,fontStyle=FontStyle.Bold};
   }
   void OnGUI() {
@@ -195,6 +195,6 @@ namespace IslandGame.BossTrials {
    if(!GUI.enabled||kind==EventType.MouseUp)held=false;
    else if(kind==EventType.MouseDown&&button==0)held=rect.Contains(point);
   }
-  void OnDestroy(){label=small=title=null;if(font)Destroy(font);font=null;}
+  void OnDestroy(){label=small=title=null;IslandFonts.ReleaseGuiFont(font);font=null;}
  }
 }

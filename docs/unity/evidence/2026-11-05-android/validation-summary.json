@@ -1,0 +1,73 @@
+{
+  "status": "PASS",
+  "apk": "C:\\Users\\SHK\\island-android-review\\IslandGame-Test-20261105.apk",
+  "bytes": 94761540,
+  "sha256": "9bb88ae186a81c084087f973fbaed44542ec6762fda54d1a26b785b7122b4df7",
+  "package": "com.mist2finer.islandgame.dev",
+  "architecture": "arm64-v8a",
+  "backend": "IL2CPP",
+  "zipIntegrity": true,
+  "signatureVerified": true,
+  "zipAlignment16K": true,
+  "internetPermission": true,
+  "deviceExecution": "UNAVAILABLE: no adb device connected",
+  "server": "https://holdem-coin-tavern.onrender.com",
+  "deliveryApk": "G:/new_project/IslandGame/Builds/Android/IslandGame-Test-20261105.apk",
+  "unityBuild": {
+    "result": "Succeeded",
+    "buildId": "build_cb6d96ee7d85",
+    "buildTimeMs": 76607,
+    "totalErrors": 0,
+    "totalWarnings": 0
+  },
+  "fontIncluded": true,
+  "fontEntries": [
+    {
+      "bundlePath": "264f449133037ab4880d2e0df82190d5",
+      "overheadBytes": 304,
+      "contents": [
+        {
+          "assetPath": "Assets/Island/Resources/Fonts/NotoSansCJKkr-Regular.otf",
+          "type": "Material",
+          "guid": "264f449133037ab4880d2e0df82190d5",
+          "sizeBytes": 148
+        },
+        {
+          "assetPath": "Assets/Island/Resources/Fonts/NotoSansCJKkr-Regular.otf",
+          "type": "Texture2D",
+          "guid": "264f449133037ab4880d2e0df82190d5",
+          "sizeBytes": 124
+        },
+        {
+          "assetPath": "Assets/Island/Resources/Fonts/NotoSansCJKkr-Regular.otf",
+          "type": "Font",
+          "guid": "264f449133037ab4880d2e0df82190d5",
+          "sizeBytes": 16433254
+        }
+      ]
+    }
+  ],
+  "editorVerification": {
+    "resolution": "1080x2340",
+    "battleLayoutChecks": 45,
+    "treeInputChecks": 18,
+    "frameProgress": "418 -> 419; subsequent frames continued",
+    "consoleErrors": 0,
+    "consoleWarnings": 0,
+    "guiFontShared": true,
+    "sharedSourceSurvivesRelease": true
+  },
+  "serverTests": {
+    "idle": 65,
+    "growth": 58,
+    "rpgTypecheck": "PASS"
+  },
+  "githubCI": {
+    "commit": "dc1a3970e2790b29ca255100794e45fdacf613f6",
+    "runId": 42099785213,
+    "conclusion": "success",
+    "node20Warning": false,
+    "ubuntuMigrationWarning": false
+  },
+  "sceneSha256": "7ad746ca1498a7623219d8e6ddd3873472b1ee61982eac0f4cd3ede71f5b71e1"
+}

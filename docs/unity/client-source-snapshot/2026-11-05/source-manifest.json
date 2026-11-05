@@ -1,5 +1,5 @@
 {
-  "capturedAtUTC": "2026-11-05T18:53:19.775444+00:00",
+  "capturedAtUTC": "2026-11-05T20:22:25.238736+00:00",
   "localRoot": "G:\\new_project\\IslandGame",
   "baseline": "a92b9bde8ed507dd18b77574760dc89e3e191364",
   "files": [
@@ -30,8 +30,8 @@
     {
       "source": "Assets/Island/Runtime/BossTrials/BossTrialController.cs",
       "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/BossTrials/BossTrialController.cs",
-      "bytes": 16602,
-      "sha256": "5d2f6d17f825e19fc91ce22d2aebf775de1011f2fde5d7c5604ae2a5c10d4db8"
+      "bytes": 16495,
+      "sha256": "a54b048b499b014de6a04a015b4bdbab462f476240546ef37b0947b8527d732e"
     },
     {
       "source": "Assets/Island/Runtime/BossTrials/BossTrialController.cs.meta",
@@ -102,8 +102,8 @@
     {
       "source": "Assets/Island/Runtime/IslandBattleBridge.cs",
       "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/IslandBattleBridge.cs",
-      "bytes": 2313,
-      "sha256": "297b33ef53ee45c0c2371e099f861bbb17d05419d73131da2d62bb5a80e44124"
+      "bytes": 2321,
+      "sha256": "898a4d2bb2b62b30c5ab587f73e951fb43011505f08f91639aa8f349cd6d28c8"
     },
     {
       "source": "Assets/Island/Runtime/IslandBattleBridge.cs.meta",
@@ -114,8 +114,8 @@
     {
       "source": "Assets/Island/Runtime/IslandBattleHud.cs",
       "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/IslandBattleHud.cs",
-      "bytes": 26970,
-      "sha256": "68d5ca9b1c6617a03da625e433d2095953cf3c5c979a93152c043ae711f0a3fb"
+      "bytes": 26700,
+      "sha256": "aecaa04679b7e7b005454eb264d960612c96713e9e3565fc706b5020d60f0477"
     },
     {
       "source": "Assets/Island/Runtime/IslandBattleHud.cs.meta",
@@ -186,8 +186,8 @@
     {
       "source": "Assets/Island/Runtime/IslandRpgPresentation.cs",
       "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/IslandRpgPresentation.cs",
-      "bytes": 23976,
-      "sha256": "dbc152a578705d713b2e5b005805cb2cf5165c886d31b86eda52ab77406f33df"
+      "bytes": 23858,
+      "sha256": "814ebdbd5449a485fe93982fd8155fefb48b3a67a918c886f2f7bbe652f85fdd"
     },
     {
       "source": "Assets/Island/Runtime/IslandRpgPresentation.cs.meta",
@@ -354,8 +354,8 @@
     {
       "source": "Assets/Island/Editor/BattleHudReview.cs",
       "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Editor/BattleHudReview.cs",
-      "bytes": 5959,
-      "sha256": "21d4c0617cbbea373cf79a66a7f5afa8bbdb1a739918a4e1f375e2210917536d"
+      "bytes": 6032,
+      "sha256": "9c5e8e5c91487f4a85edf3c29498b0144054c45f07cc0de1dd2aa36c848a0a47"
     },
     {
       "source": "Assets/Island/Editor/BattleHudReview.cs.meta",
@@ -512,6 +512,42 @@
       "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/SkillTreeLayout.cs.meta",
       "bytes": 59,
       "sha256": "166271b9d1518fc341d10fbf3091ef30e5bcfd38ba19c5b7d0659ba53ee72666"
+    },
+    {
+      "source": "Assets/Island/Runtime/IslandFonts.cs",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/IslandFonts.cs",
+      "bytes": 1321,
+      "sha256": "e45979a9e768712731c8153f263086e593261e4fa263da029447b92530478885"
+    },
+    {
+      "source": "Assets/Island/Runtime/IslandFonts.cs.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/IslandFonts.cs.meta",
+      "bytes": 59,
+      "sha256": "2333d908b67a954ce7c6c80cc18de63c18428fb254cc4389ffc25cafd545a9e3"
+    },
+    {
+      "source": "Assets/Island/Resources/Fonts.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Resources/Fonts.meta",
+      "bytes": 172,
+      "sha256": "bb90041279b42bd8d1bf8d0cf1c36c6f0c6c6e6d55d2312cdea40a1eeed151ed"
+    },
+    {
+      "source": "Assets/Island/Resources/Fonts/NotoSansCJKkr-Regular.otf.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Resources/Fonts/NotoSansCJKkr-Regular.otf.meta",
+      "bytes": 481,
+      "sha256": "2c19f1660859d2983509b874b6118791ca4e1eeea5d579e9da5f3f887168ffda"
+    },
+    {
+      "source": "Assets/Island/Resources/Fonts/OFL.txt",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Resources/Fonts/OFL.txt",
+      "bytes": 4301,
+      "sha256": "6a73f9541c2de74158c0e7cf6b0a58ef774f5a780bf191f2d7ec9cc53efe2bf2"
+    },
+    {
+      "source": "Assets/Island/Resources/Fonts/OFL.txt.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Resources/Fonts/OFL.txt.meta",
+      "bytes": 158,
+      "sha256": "002c3aa6b888ee3c0520ab3015b1395e1421584d8622c7db67881b2ee519c61f"
     }
   ],
   "localOnlyModels": [
@@ -615,5 +651,27 @@
       "bytes": 1149816,
       "sha256": "035d641d74999d0b383de2dbe78f17c9eab249d8bf04385db07eb02640d555af"
     }
-  ]
+  ],
+  "localOnlyFonts": [
+    {
+      "source": "Assets/Island/Resources/Fonts/NotoSansCJKkr-Regular.otf",
+      "bytes": 16433112,
+      "sha256": "6bcb2a0703aa137e874fc2dffa85f6c21ba9a67fa329e81b8c801663af7e992a",
+      "download": "https://raw.githubusercontent.com/notofonts/noto-cjk/f8d157532fbfaeda587e826d4cd5b21a49186f7c/Sans/OTF/Korean/NotoSansCJKkr-Regular.otf",
+      "license": "SIL Open Font License 1.1; Resources/Fonts/OFL.txt"
+    }
+  ],
+  "androidTestBuildSettings": {
+    "applicationIdentifier": "com.mist2finer.islandgame.dev",
+    "productName": "IslandGame Test",
+    "bundleVersion": "0.1.0-test.20261105",
+    "versionCode": 2026110501,
+    "architecture": "ARM64",
+    "backend": "IL2CPP",
+    "graphicsAPI": "OpenGLES3",
+    "orientation": "Portrait",
+    "minSdk": 23,
+    "targetSdk": 36,
+    "fullPlayerSettings": "Local backup only; not exported"
+  }
 }

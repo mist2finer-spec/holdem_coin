@@ -1,0 +1,57 @@
+{
+    "success":  true,
+    "command":  "command",
+    "data":  {
+                 "command":  "script run",
+                 "parameters":  {
+                                    "file":  "C:/Users/SHK/island-ui-review/ValidateTreeInput.cs",
+                                    "entry":  "ValidateTreeInput.Main"
+                                },
+                 "result":  {
+                                "diagnostics":  [
+
+                                                ],
+                                "compileMs":  60,
+                                "executeMs":  26,
+                                "assemblyName":  "PipelineRunScript_ValidateTreeInput_386cb6034321408ea181f1b2562221b3",
+                                "success":  true,
+                                "result":  {
+                                               "status":  "PASS",
+                                               "count":  18,
+                                               "checks":  [
+                                                              "Screen/UV round trip",
+                                                              "uGUI raycast reaches RawImage",
+                                                              "Parent locked on pointer acquisition",
+                                                              "2D raycast selects expected node once",
+                                                              "Parent restored after tap",
+                                                              "Single finger pan changes target",
+                                                              "Dragging does not select nodes",
+                                                              "Two fingers own viewport",
+                                                              "Pinch out zooms in",
+                                                              "Parent stays locked until last finger",
+                                                              "Pinch to one-finger pan continues without jump",
+                                                              "Pinch release restores parent without tap",
+                                                              "Cancel restores parent",
+                                                              "Originally disabled parent remains disabled",
+                                                              "Disabling input restores parent",
+                                                              "Minimum zoom clamp",
+                                                              "Maximum zoom clamp",
+                                                              "Pan bounds clamp"
+                                                          ],
+                                               "nodes":  780,
+                                               "texture":  "SkillTree Viewport RT"
+                                           }
+                            },
+                 "target":  {
+                                "host":  "127.0.0.1",
+                                "port":  7800,
+                                "projectPath":  "G:\\new_project\\IslandGame"
+                            }
+             },
+    "errors":  [
+
+               ],
+    "warnings":  [
+
+                 ]
+}

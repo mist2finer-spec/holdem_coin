@@ -28,10 +28,7 @@ namespace IslandGame {
   public int UiDispatches{get;private set;}
   public string LastInput{get;private set;}
   public void Initialize(IslandApp owner){
-   app=owner;font=TMP_FontAsset.CreateFontAsset("Malgun Gothic","Regular",48);
-   if(!font)font=TMP_FontAsset.CreateFontAsset("Arial","Regular",48);
-   if(!font)throw new InvalidOperationException("No system font available for RPG HUD");
-   font.name="Island Korean Runtime SDF";font.hideFlags=HideFlags.DontSave;
+   app=owner;font=IslandFonts.CreateSdfFont();
    root=new GameObject("RpgBattleCanvas",typeof(RectTransform),typeof(Canvas),typeof(UnityEngine.UI.CanvasScaler),typeof(UnityEngine.UI.GraphicRaycaster));
    root.transform.SetParent(transform,false);canvas=root.GetComponent<Canvas>();canvas.renderMode=RenderMode.ScreenSpaceOverlay;canvas.sortingOrder=20;
    var scaler=root.GetComponent<UnityEngine.UI.CanvasScaler>();scaler.uiScaleMode=UnityEngine.UI.CanvasScaler.ScaleMode.ScaleWithScreenSize;scaler.referenceResolution=new Vector2(1080,2340);scaler.matchWidthOrHeight=0;

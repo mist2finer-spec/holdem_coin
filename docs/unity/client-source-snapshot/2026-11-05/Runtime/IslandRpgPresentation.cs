@@ -15,7 +15,7 @@ namespace IslandGame {
   void EnsureCatalog(){if(catalog!=null)return;var asset=Resources.Load<TextAsset>("RpgCatalog");if(!asset)return;catalog=JObject.Parse(asset.text);var names=Resources.Load<TextAsset>("UnityDisplayNames");displayNames=new UnityDisplayNames(names?JObject.Parse(names.text):null);catalog=displayNames.ApplyCatalog(catalog);
    foreach(var kind in new[]{"active","support"})foreach(var gem in catalog[kind] as JArray??new JArray()){var copy=(JObject)gem.DeepClone();copy["kind"]=kind;gems[(string)copy["id"]]=copy;}
    foreach(var node in catalog["tree"]?["nodes"] as JArray??new JArray())treePositions[(string)node["id"]]=new Vector2(node.Value<float>("displayX"),node.Value<float>("displayY"));
-   rpgFont=Font.CreateDynamicFontFromOSFont(new[]{"Malgun Gothic","Apple SD Gothic Neo","Noto Sans CJK KR","Arial"},14);rpgFont.hideFlags=HideFlags.DontSave;
+   rpgFont=IslandFonts.CreateGuiFont();
   }
   JObject Gem(string id){JObject result;return id!=null&&gems.TryGetValue(id,out result)?result:null;}
   string GemName(string id){return (string)Gem(id)?["name"]??id??"비어 있음";}

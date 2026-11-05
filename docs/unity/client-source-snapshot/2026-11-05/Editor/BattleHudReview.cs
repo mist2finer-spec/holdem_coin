@@ -13,7 +13,7 @@ namespace IslandGame.Editor {
    var singleton=typeof(ScriptableSingleton<>).MakeGenericType(sizesType);
    var sizes=singleton.GetProperty("instance",BindingFlags.Public|BindingFlags.Static|BindingFlags.FlattenHierarchy).GetValue(null);
    var groupType=assembly.GetType("UnityEditor.GameViewSizeGroupType");
-   var group=sizesType.GetMethod("GetGroup").Invoke(sizes,new[]{Enum.Parse(groupType,"Standalone")});
+   var group=sizesType.GetMethod("GetGroup").Invoke(sizes,new[]{Enum.Parse(groupType,EditorUserBuildSettings.activeBuildTarget==BuildTarget.Android?"Android":"Standalone")});
    var sizeType=assembly.GetType("UnityEditor.GameViewSize");var kind=assembly.GetType("UnityEditor.GameViewSizeType");
    var name="Island HUD "+width+"x"+height;
    var labels=(string[])group.GetType().GetMethod("GetDisplayTexts").Invoke(group,null);
