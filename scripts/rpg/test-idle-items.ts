@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mkdtempSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
-import path from 'node:path';
+import path from 'node:path';import {pathToFileURL} from 'node:url';
 import {createGameStorage} from '../../src/lib/game-storage';
 import {RpgItemsStore} from '../../src/lib/rpg-items';
 import {initializeIdleProfile} from '../../src/lib/rpg-idle-profile';
@@ -72,7 +72,7 @@ test('mileage gem redemption credits actual collection with player CAS, excludes
 
 test('two processes cannot both spend one ticket under the same revision',async()=>{
  const f=fixture();try{initialize(f.a);f.a.items.purchaseJewel(account,'lethalpride','race-purchase-00001','Kaom');f.a.items.awardCashWin('race-flush',account,{flushPlus:true});const before=f.a.items.view(account),{spawn}=await import('node:child_process');
-  const run=(nonce:string)=>new Promise<any>((resolve,reject)=>{const code=`const {RpgItemsStore}=require(${JSON.stringify(path.resolve('src/lib/rpg-items.ts'))});const s=new RpgItemsStore(${JSON.stringify(f.file)});try{s.rerollJewel('${account}','${before.jewels![0].instanceId}','${nonce}',${before.revision});console.log(JSON.stringify({ok:true}));}catch(e){console.log(JSON.stringify({ok:false,error:e.message}));}finally{s.close();}`;const child=spawn(process.execPath,['--import',path.resolve('mini-services/poker-server/node_modules/tsx/dist/loader.mjs'),'-e',code],{stdio:['ignore','pipe','pipe']});let out='',error='';child.stdout.on('data',d=>out+=d);child.stderr.on('data',d=>error+=d);child.on('error',reject);child.on('exit',n=>n?reject(Error(error)):resolve(JSON.parse(out.trim())));});
+  const run=(nonce:string)=>new Promise<any>((resolve,reject)=>{const code=`const {RpgItemsStore}=require(${JSON.stringify(path.resolve('src/lib/rpg-items.ts'))});const s=new RpgItemsStore(${JSON.stringify(f.file)});try{s.rerollJewel('${account}','${before.jewels![0].instanceId}','${nonce}',${before.revision});console.log(JSON.stringify({ok:true}));}catch(e){console.log(JSON.stringify({ok:false,error:e.message}));}finally{s.close();}`;const child=spawn(process.execPath,['--import',pathToFileURL(path.resolve('mini-services/poker-server/node_modules/tsx/dist/loader.mjs')).href,'-e',code],{stdio:['ignore','pipe','pipe']});let out='',error='';child.stdout.on('data',d=>out+=d);child.stderr.on('data',d=>error+=d);child.on('error',reject);child.on('exit',n=>n?reject(Error(error)):resolve(JSON.parse(out.trim())));});
   const results=await Promise.all([run('reroll-race-request-1'),run('reroll-race-request-2')]);assert.equal(results.filter(r=>r.ok).length,1);assert.equal(f.a.items.view(account).rerollTickets,0);assert.equal(f.a.items.view(account).revision,before.revision+1);
  }finally{f.close();}
 });
