@@ -12,7 +12,7 @@ export type {ActiveSkill,SkillTag,SkillElement,TriggerKind,SupportGem} from './b
 export type GemId=typeof GEMS[number]['id'];
 /** Optional fields extend v2 without invalidating or rewriting the old saved shape. */
 export type BuildState={version:2;weapon:'axe';nodes:string[];links:(GemId|null)[][];start?:string;activeIds?:string[];jewels?:JewelPlacement[];equipment?:EquipmentState};
-export type BuildAction=`gem-${number}-${number}-${string}`|`active-${number}-${string}`|`core-allocate-${string}`|`core-refund-${string}`|`core-start-${string}`|'core-reset';
+export type BuildAction=`gem-${number}-${number}-${string}`|`active-${number}-${string}`|`core-allocate-${string}`|`core-path-${string}`|`core-refund-${string}`|`core-start-${string}`|'core-reset';
 export const SUPPORT_SOCKETS=5,ACTIVE_SLOTS=6;
 export const buildBudget=(level=1)=>Math.min(90,12+Math.max(0,Math.floor(Number.isFinite(level)?level:1)-1));
 export type PassiveStats={damage:number;reduction:number;cooldown:number;area:number;moreDamage:number;moreArea:number;life:number;energyShield:number;regeneration:number;mana:number;manaRegen:number;movement:number;block:number;suppression:number;crit:number;critMultiplier:number;leech:number;dotDamage:number;duration:number;projectiles:number;chain:number;pierce:number;attackDamage:number;meleeDamage:number;projectileDamage:number;spellDamage:number;physicalDamage:number;chaosDamage:number;elementalDamage:number;fireDamage:number;coldDamage:number;lightningDamage:number;guard:number;aura:number;moreElemental:number;chaosImmune:boolean;maxLifeOne:boolean;noCritical:boolean;strength:number;dexterity:number;intelligence:number;devotion:number;lifeFlat:number;shieldFlat:number;manaFlat:number;armour:number;evasion:number;resistance:number;chaosResistance:number;attackSpeed:number;castSpeed:number;tripleChance:number;cull:number;manaBeforeLife:number;lowLifeSpellMore:number;farShot:number;dodge:number;spellDodge:number;energyToMana:boolean;noRegen:boolean;fireOnly:boolean;bloodMagic:boolean;ironReflexes:boolean};
@@ -120,6 +120,25 @@ export function connected(nodes:readonly string[],start='root',tree?:Pick<Return
  const graph=tree?new Map(tree.nodes.map(n=>[n.id,[] as string[]])):adjacency;if(tree)for(const [a,b] of tree.edges){graph.get(a)!.push(b);graph.get(b)!.push(a);}
  const seen=new Set([rootId]),queue=[rootId];for(let i=0;i<queue.length;i++)for(const id of graph.get(queue[i])??[])if(allowed.has(id)&&!seen.has(id)){seen.add(id);queue.push(id);}return nodes.every(id=>seen.has(id));
 }
+/** Find the shortest route from the current connected allocation, including its owned starting node. */
+export function findBuildPath(state:BuildState,target:string){
+ const {nodes,edges}=getBuildTree(state);
+ const graph=new Map(nodes.map(node=>[node.id,[] as string[]]));
+ for(const [a,b] of edges){graph.get(a)!.push(b);graph.get(b)!.push(a);}
+ const queue=[...state.nodes],parent=new Map<string,string|null>(queue.map(id=>[id,null]));
+ if(!graph.has(target)||parent.has(target))return null;
+ for(let i=0;i<queue.length&&!parent.has(target);i++){
+  for(const neighbor of graph.get(queue[i])??[]){
+   if(parent.has(neighbor))continue;
+   parent.set(neighbor,queue[i]);
+   queue.push(neighbor);
+  }
+ }
+ if(!parent.has(target))return null;
+ const path=[target];
+ for(let prev=parent.get(target);prev;prev=parent.get(prev))path.push(prev);
+ return path.reverse();
+}
 export function supportsActive(skill:ActiveSkill|string,gemId:string){
  const active=typeof skill==='string'?activesById.get(skill):skill,gem=gemsById.get(gemId);if(!active||!gem)return false;const tags=active.tags;
  return gem.tags.some(t=>tags.includes(t))&&(!gem.requireAll||gem.requireAll.every(t=>tags.includes(t)))&&(!gem.exclude||!gem.exclude.some(t=>tags.includes(t)))&&(!gem.trigger||!active.trigger);
@@ -138,7 +157,7 @@ export function isBuildAction(action:unknown):action is BuildAction{
  if(typeof action!=='string')return false;if(action==='core-reset')return true;
  const gem=/^gem-([0-5])-([0-4])-([a-z][a-z0-9]*)$/.exec(action);if(gem)return gem[3]==='empty'||gemsById.has(gem[3]);
  const active=/^active-([0-5])-([a-z][a-z0-9]*)$/.exec(action);if(active)return active[2]==='empty'||activesById.has(active[2]);
- const core=/^core-(allocate|refund)-([a-zA-Z0-9_]+)$/.exec(action);if(core)return nodesById.has(core[2])||/^cluster_[a-zA-Z0-9_]{1,64}_[0-9]$/.test(core[2]);
+ const core=/^core-(allocate|refund|path)-([a-zA-Z0-9_]+)$/.exec(action);if(core)return nodesById.has(core[2])||/^cluster_[a-zA-Z0-9_]{1,64}_[0-9]$/.test(core[2]);
  if(action.startsWith('core-start-'))return CHARACTER_STARTS.some(s=>s.id===action.slice('core-start-'.length));return false;
 }
 export function changeBuild(raw:BuildState|undefined,action:BuildAction,level=1):BuildState{
@@ -146,6 +165,13 @@ export function changeBuild(raw:BuildState|undefined,action:BuildAction,level=1)
  if(action.startsWith('gem-')){const [,i,j,id]=action.split('-');if(b.equipment){const item=equippedItems(b.equipment)[EQUIPMENT_SLOTS[Number(i)]],socket=Number(j)+1;if(socket>=item.gems.length)throw Error('장비의 실제 소켓 수를 초과했습니다.');item.gems[socket]=id==='empty'?null:id;}else b.links[Number(i)][Number(j)]=id==='empty'?null:id;}
  else if(action.startsWith('active-')){const [,slot,id]=action.split('-'),i=Number(slot);if(b.equipment){const item=equippedItems(b.equipment)[EQUIPMENT_SLOTS[i]];if(!item.gems.length)throw Error('이 장비에는 홈이 없습니다.');item.gems[0]=id==='empty'?null:id;item.gems=item.gems.map((g,j)=>j===0?g:id!=='empty'&&g!==null&&supports(i,g,b)?g:null);}else{if(id==='empty')throw Error('장비 소켓에서만 액티브를 제거할 수 있습니다.');b.activeIds=getActiveSkills(b).map(s=>s.id);b.activeIds[i]=id;b.links[i]=b.links[i].map(g=>g!==null&&supports(i,g,b)?g:null);}}
  else if(action.startsWith('core-start-')){const start=action.slice('core-start-'.length);if(start==='hong')delete b.start;else b.start=start;b.nodes=[buildStart(b).nodeId];delete b.jewels;}
+ else if(action.startsWith('core-path-')){
+  const target=action.slice('core-path-'.length);
+  if(b.nodes.includes(target))return b;
+  const path=findBuildPath(b,target);
+  if(!path)throw Error('연결된 경로가 없습니다.');
+  b.nodes.push(...path.slice(1));
+ }
  else if(action==='core-reset'){b.nodes=[buildStart(b).nodeId];delete b.jewels;}
  else{const [,verb,id]=action.split('-');if(id===buildStart(b).nodeId)throw Error('시작 코어는 변경할 수 없습니다.');if(verb==='allocate'){if(b.nodes.includes(id))throw Error('이미 배운 코어입니다.');b.nodes.push(id);}else{if(!b.nodes.includes(id))throw Error('아직 배우지 않은 코어입니다.');b.nodes=b.nodes.filter(n=>n!==id);}}
  validateBuild(b,level);return b;

@@ -22,3 +22,29 @@
 .gem-core .gem-tree .core-node.jewel-target{outline:2px solid #d2b8ff;outline-offset:4px}.gem-tree svg line{stroke-width:3}.gem-core .gem-tree-viewport{scrollbar-width:thin;scrollbar-color:#9d8a55 #10212b}.gem-core .tree-tools button{min-width:40px}
 
 .gem-tree-viewport{cursor:grab}.gem-tree-viewport:active{cursor:grabbing}
+
+.gem-tree svg line.path-guide {
+ stroke: #66ec9c;
+ stroke-width: 7;
+ stroke-dasharray: 12 8;
+ opacity: 1;
+}
+.gem-tree .core-node.path-guide-node {
+ outline: 2px solid #66ec9c;
+ outline-offset: 2px;
+}
+.core-detail .core-status {
+ display: table;
+ margin-bottom: 6px;
+ padding: 2px 8px;
+ border-radius: 4px;
+ background: #39444c;
+ color: #f1f4f5;
+}
+.core-detail .core-status.active {
+ background: #19513a;
+ color: #c2ffda;
+}
+.core-detail .core-path-summary {
+ color: #a7efc1;
+}

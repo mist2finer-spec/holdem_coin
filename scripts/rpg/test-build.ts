@@ -1,6 +1,6 @@
 import {HUNT_RULES} from '../../src/components/rpg/combat-rules';
 import test from 'node:test';import assert from 'node:assert/strict';
-import {newBuild,validateBuild,changeBuild,buildBudget,buildView,compileSkill,CORE_NODES,connected,GEMS,ACTIVE_SKILLS,supports,isBuildAction} from '../../src/components/rpg/hunt-build';
+import {newBuild,validateBuild,changeBuild,findBuildPath,buildBudget,buildView,compileSkill,CORE_NODES,connected,GEMS,ACTIVE_SKILLS,supports,isBuildAction} from '../../src/components/rpg/hunt-build';
 import {heroStats,newHuntProgress} from '../../src/components/rpg/hunt-progression';
 import {RpgStore} from '../../src/lib/rpg-store';import {RogueService} from '../../src/lib/rpg-rogue-service';
 import {RogueEngine} from '../../src/components/rpg/rogue/engine';
@@ -31,6 +31,22 @@ test('all 1000 prefix graphs: connectivity, points and bridge removal enforced',
  let b=newBuild();assert.throws(()=>changeBuild(b,'core-allocate-0_2'));for(let i=1;i<=9;i++)b=changeBuild(b,`core-allocate-0_${i}`);for(let i=1;i<=3;i++)b=changeBuild(b,`core-allocate-1_${i}`);assert.throws(()=>changeBuild(b,'core-allocate-1_4'));
  assert.equal(buildBudget(100),90);assert.deepEqual(changeBuild(b,'core-reset').nodes,['root']);
  const disconnected={...newBuild(),nodes:['root','0_2']};assert.throws(()=>validateBuild(disconnected));
+});
+test('guided allocation starts at the nearest owned node and rejects over-budget paths atomically',()=>{
+ const base=changeBuild(newBuild(),'core-allocate-0_1');
+ assert.deepEqual(findBuildPath(base,'0_3'),['0_1','0_2','0_3']);
+ assert.equal(findBuildPath(base,'0_1'),null);
+ assert.equal(findBuildPath(base,'missing'),null);
+ const path=changeBuild(base,'core-path-0_3');
+ assert.deepEqual(path.nodes,['root','0_1','0_2','0_3']);
+ assert.deepEqual(changeBuild(path,'core-path-0_3'),path);
+ assert.throws(()=>changeBuild(path,'core-refund-0_2'));
+
+ let full=changeBuild(newBuild(),'core-path-0_9');
+ full=changeBuild(full,'core-path-1_2');
+ const before=structuredClone(full);
+ assert.throws(()=>changeBuild(full,'core-path-1_4'));
+ assert.deepEqual(full,before);
 });
 test('SQLite old saves migrate, saved builds survive a new service, duplicates charge once and stale writer fails',()=>{
  const store=new RpgStore(':memory:');try{
