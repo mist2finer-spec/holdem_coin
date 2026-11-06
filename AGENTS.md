@@ -11,6 +11,7 @@
 | 홀덤 서버 | [`mini-services/poker-server/`](mini-services/poker-server/) | 홀덤 서버 로직과 서버 테스트 명령은 이 디렉터리에서 확인합니다. |
 | Unity | [`unity/IslandGame/`](unity/IslandGame/), [Unity 에이전트 안내](unity/IslandGame/AGENTS.md) | Unity Editor와 MCP 작업의 진입점입니다. 프로젝트 버전은 `ProjectSettings/ProjectVersion.txt`에서 확인합니다. |
 | 아트·모션 | [Pink Glass 모션 지시서](unity/IslandGame/지시서.md), [웹 정적 에셋](public/) | Pink Glass 원본 경로는 지시서에서 확인합니다. Unity 적용을 요청받으면 필요한 원본만 가져옵니다. |
+| 캐릭터 흐름·최적화 연구 | [Savage Wind 연구 인계](docs/unity/SAVAGEWIND_RESEARCH_HANDOFF_20261106_KO.md), [고정 소스](docs/research/savagewind-recomp/v0.2.0-alpha.2/README_KO.md) | 입력·시간·표시·캐시 연구 자료입니다. 게임 원본 캐릭터 코드나 Unity 적용 완료본이 아닙니다. |
 
 - 새 작업은 `main`을 기준으로 대상 경로부터 확인합니다. 라이브 동작을 판단할 때는 배포 리비전도 대조합니다.
 - 브랜치 정리 전에는 라이브 배포, 진행 중인 Unity 작업, 아트 원본과의 연결을 확인합니다. 이름이나 마지막 커밋 날짜만으로 사용 여부를 판단하지 않습니다.
