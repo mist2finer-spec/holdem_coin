@@ -16,5 +16,7 @@
   "bundleVersion": "0.1.0-test.20261105.4",
   "versionCode": 2026110504,
   "protocol": "island-stage-v1",
-  "productionStageBackendDeployed": false
+  "productionStageBackendDeployed": true,
+  "productionRevision": "774c9d6a09e09ec8c5f087316724cc28e342d2eb",
+  "productionVerification": "docs/unity/stage-sync-production-validation-20261105.json"
 }

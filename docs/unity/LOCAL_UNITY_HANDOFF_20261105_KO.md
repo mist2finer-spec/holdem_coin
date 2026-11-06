@@ -1,6 +1,6 @@
 # IslandGame — 최신 로컬 Unity 통합 인계
 
-**최신 Unity 적용·APK: [구역 통신/로컬 전투 인계](STAGE_SYNC_20261105_KO.md). assets/unity-lowpoly-combat 브랜치, 버전 .4 / 2026110504. 운영 서버 배포 전에는 기존 폴링 호환 모드입니다. 아래 이전 기록보다 이 인계를 우선합니다.**
+**최신 Unity 적용·APK: [구역 통신/로컬 전투 인계](STAGE_SYNC_20261105_KO.md). assets/unity-lowpoly-combat 브랜치, 버전 .4 / 2026110504. 운영 서버 `774c9d6` 배포 및 구역 통신 검증 완료. [운영 배포 기록](STAGE_SYNC_DEPLOY_20261105_KO.md) 참조. 아래 이전 기록보다 이 인계를 우선합니다.**
 
 기록일: 2026-11-05. **다음 에이전트는 이 문서부터 읽고 실제 Editor/파일 상태를 확인하세요.**
 이 문서는 3D 표시, 모바일 전투 UI, 성장 성좌 및 후속 노드 겹침 수정을 합친 상태입니다. 최신 상태는 [Android APK·CI 인계](ANDROID_TEST_BUILD_20261105_KO.md), 노드 배치 경계는 [성좌 후속 인계](TREE_DENSITY_20261105_KO.md)를 확인하세요.

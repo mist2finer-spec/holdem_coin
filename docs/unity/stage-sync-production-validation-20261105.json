@@ -1,0 +1,48 @@
+{
+  "url": "https://holdem-coin-tavern.onrender.com",
+  "kernel": "23065421e8959b198df629426b1bda0fa3a8cf62329d66f097211a1619f2102b",
+  "checks": {
+    "stageNegotiation": true,
+    "entryIdempotent": true,
+    "realCombatClear": true,
+    "settlementIdempotent": true,
+    "nextZoneResumes": true,
+    "legacyStart": true
+  },
+  "at": "2026-11-06T01:33:52.641Z",
+  "health": {
+    "status": "ok",
+    "web": true,
+    "poker": true
+  },
+  "release": {
+    "revision": "774c9d6a09e09ec8c5f087316724cc28e342d2eb",
+    "storage": {
+      "provider": "sqlite",
+      "persistence": "ephemeral",
+      "atomicWallet": true
+    }
+  },
+  "combat": {
+    "kills": 50,
+    "elapsed": 35.90000000000001,
+    "from": 0,
+    "to": 1,
+    "goldAward": 432,
+    "goldAfter": 432
+  },
+  "status": "PASS",
+  "render": {
+    "serviceId": "srv-dbb816bbc2fs73dds24g",
+    "deployId": "dep-dbmipvrncjis73a24vu0",
+    "status": "live",
+    "trigger": "main fast-forward / automatic new_commit deploy",
+    "dashboard": "https://dashboard.render.com/web/srv-dbb816bbc2fs73dds24g/deploys/dep-dbmipvrncjis73a24vu0"
+  },
+  "limits": [
+    "Guest account isolated from user cookies; real shared engine simulated one normal zone.",
+    "S25 device execution was not performed.",
+    "Existing ephemeral SQLite persistence and service plan were left unchanged.",
+    "Full replay anti-cheat remains deferred."
+  ]
+}
