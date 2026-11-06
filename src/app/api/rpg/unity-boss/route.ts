@@ -1,0 +1,17 @@
+import {NextRequest,NextResponse} from 'next/server';
+import {randomBytes} from 'node:crypto';
+import {gameStorage} from '../../../../lib/game-storage';
+import {UnityBossService} from '../../../../lib/rpg-unity-boss-service';
+export const runtime='nodejs';
+const scope=globalThis as unknown as {unityBossService?:UnityBossService};
+export async function POST(req:NextRequest){
+ try{
+  const origin=req.headers.get('origin');if(origin&&new URL(origin).host!==req.headers.get('host'))return NextResponse.json({error:'�ٸ� ��ó ��û�� ������ �ʽ��ϴ�.'},{status:403});
+  const reader=req.body?.getReader();if(!reader)throw Error('Missing body');let size=0;const chunks:Uint8Array[]=[];
+  for(;;){const p=await reader.read();if(p.done)break;size+=p.value.byteLength;if(size>4096){await reader.cancel();return NextResponse.json({error:'Request too large'},{status:413});}chunks.push(p.value);}
+  const body=JSON.parse(Buffer.concat(chunks).toString('utf8'));let account=req.cookies.get('rpg_guest')?.value;if(!account||!/^[a-f0-9]{64}$/.test(account))account=randomBytes(32).toString('hex');
+  const storage=gameStorage(),service=scope.unityBossService??(scope.unityBossService=new UnityBossService(storage.progress,storage.items));
+  const value=body.action==='start'?service.start(account):service.command(account,body.id,body.sequence,body.input,body.action,body.knownBuildRevision);
+  const response=NextResponse.json(value,{headers:{'Cache-Control':'no-store'}});response.cookies.set('rpg_guest',account,{httpOnly:true,sameSite:'strict',secure:process.env.NODE_ENV==='production',path:'/api/rpg',maxAge:31536000});return response;
+ }catch(e){const message=e instanceof Error&&/[��-�R]/.test(e.message)?e.message:'Unity ���� ��û�� ó������ ���߽��ϴ�.';return NextResponse.json({error:message},{status:400,headers:{'Cache-Control':'no-store'}});}
+}
