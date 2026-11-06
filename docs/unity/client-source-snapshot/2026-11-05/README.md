@@ -11,3 +11,8 @@
 폴더 전체를 기존 Assets나 원격 Unity 소스 위에 덮어쓰지 마세요.
 
 최신 상태: [통합 인계](../../LOCAL_UNITY_HANDOFF_20261105_KO.md).
+
+구역 통신/로컬 전투 추가: [설정·검증·Android 경계](../../STAGE_SYNC_20261105_KO.md).
+`Plugins/StageRuntime`에는 관리 DLL의 메타데이터·라이선스·해시만 있다. 실제 DLL은
+`python scripts/unity/restore-stage-runtime.py --project <실제 Unity 프로젝트>`로 공식 NuGet에서 복원한다.
+Unity 커널과 서버의 `src/lib/generated/rogue-stage-kernel.json`은 같은 버전이어야 한다.

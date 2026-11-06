@@ -23,8 +23,10 @@ export type RogueEncounter=Omit<ReturnType<typeof dungeonProfile>,'hpScale'|'att
 export type RogueSnapshot={dungeonLevel:number;encounter:RogueEncounter;progression:RogueProgression;rewards:RogueReward[];combat:{attack:string;crit:number;critMultiplier:number;traits:HybridTraits};compiled:CompiledBuild;effects:ReturnType<CombatEffects['snapshot']>;enemyCombat:ReturnType<EnemyAttackSystem['view']>;debuff:{stunned:number};defense:{shield:string;maxShield:string;shieldPercent:number;chaosImmune:boolean;guard:number};resources:{mana:number;maxMana:number;costs:readonly number[];potions:Record<PotionKind,number>;potionCooldowns:Record<PotionKind,number>};paused:boolean;wave:HordeWave;choices:(RogueGate&{ready:boolean;near:boolean})[];route:number[];elapsed:number;hero:Point&{elevation:number;airHeight:number;hp:number;maxHP:number;bigHP?:string;bigMaxHP?:string;action:string;serial:number;facing:number;direction:Point;motion:RogueMotion|null;hitUntil:number};mobs:RogueMob[];visited:number[];cleared:number[];room:number;status:'playing'|'dead'|'won';kills:number;gold:number;cooldowns:number[];cooldownTotals:number[];pendingSkill:number|null;jumpReady:boolean;dodgeReady:boolean;slideReady:boolean;autoRoom:number;autoOrder:number[];auto:boolean;fx:RogueFx[];phase:'combat'|'exit-ready'|'traversing'|'complete';gate:(RogueGate&{ready:boolean;near:boolean})|null;transitions:number[]};
 const dist=(a:Point,b:Point)=>Math.hypot(a.x-b.x,a.y-b.y);
 const unit=(x:number,y:number)=>{const d=Math.hypot(x,y);return d?{x:x/d,y:y/d}:{x:1,y:0};};
-/** Server-authoritative combat. The service settles cumulative rewards into account progress. */
+/** Shared combat core. The hosting service settles rewards; Unity stage mode runs combat locally. */
 export class RogueEngine{
+ /** Opt-in client boundary: stop before AI/damage for the newly entered zone. Legacy callers keep stepping. */
+ pauseAtRoomBoundary=false;
  mana:number=MANA.maximum;maxMana:number=MANA.maximum;potions:Record<PotionKind,number>={health:POTIONS.charges,mana:POTIONS.charges};private potionAt:Record<PotionKind,number>={health:0,mana:0};
  build:BuildState=newBuild();transcended:Record<string,TranscendOutcome>={};
  private growth=heroStats(newHuntProgress());
@@ -54,7 +56,7 @@ export class RogueEngine{
  }
  private manaCost(slot:number){return MANA.cost[this.compiled(slot).baseIndex]*this.compiled(slot).mana;}
  private scheduleTrigger(input:RogueInput){if(this.hero.motion)return false;for(let i=0;i<6;i++){const c=this.compiled(i);if(this.cooldowns[i]>0||!this.afford(i)||!this.effects.triggerReady(c,this.elapsed))continue;if(this.command({...input,skill:i},true,true)){this.effects.consumeTrigger(c,this.elapsed);return true;}}return false;}
- /** Public for deterministic damage tests; only server logic calls this in production. */
+ /** Public for deterministic damage tests and the shared combat host. */
  receiveDamage(amount:BigSource,element='physical',penetration=0){this.syncDefense();if(this.chaosImmune&&element==='chaos')return big(0);let damage=big(amount);if(damage.lte(0))return big(0);const defense=this.compiledBuild.passive,defenses=penetration>0?{...defense,resistance:hybridResistance(defense.resistance,penetration),chaosResistance:hybridResistance(defense.chaosResistance,penetration)}:defense;damage=damage.mul(mitigation(defenses,element,()=>hash(this.map.seed+ ++this.rollSerial)%10000/10000));if(damage.lte(0))return big(0);
   let applied=big(0);this.lastDamage=this.elapsed;
   if(this.elapsed<this.guardUntil&&this.guard.gt(0)){const used=this.guard.lt(damage)?this.guard:damage;this.guard=this.guard.sub(used);damage=damage.sub(used);applied=applied.add(used);}
@@ -210,6 +212,7 @@ export class RogueEngine{
   const direction={x:Math.sign(goal.x-this.hero.x),y:0},travel=Math.min(distance,ROGUE_PACE.moveSpeed*(1+this.compiledBuild.passive.movement)*dt);this.hero.direction=direction;this.hero.facing=direction.x;this.heroMove(direction.x*travel,0);this.pose('run1');
  }
  step(dt:number,input:RogueInput){
+  const previousRoom=this.room;
   this.paused=!!input.paused;if(this.status!=='playing'||this.paused)return;this.auto=input.auto;dt=Math.max(0,Math.min(Number.isFinite(dt)?dt:0,.025));this.elapsed+=dt;this.syncDefense();const passive=this.compiledBuild.passive;this.mana=Math.min(this.maxMana,this.mana+MANA.regen*(1+passive.manaRegen)*dt);
   if(this.shieldEnabled&&this.elapsed-this.lastDamage>=4)healBig(this.shield,big(this.shield.bigMaxHP!).mul(.2*dt));const regen=this.effects.regeneration(this.compiledBuild,this.elapsed);if(regen>0)healBig(this.hero,big(this.hero.bigMaxHP!).mul(regen*dt));
   for(const dot of this.dots){if(dot.left>0&&this.elapsed>=dot.next){const target=this.mobs.find(e=>e.id===dot.mob&&e.hp>0);if(target)this.hit(target,dot.damage,dot.cull,dot.element,dot.traits,dot.penetration);dot.next+=.5;dot.left--;}}this.dots=this.dots.filter(d=>d.left>0&&this.mobs.some(m=>m.id===d.mob&&m.hp>0));this.cooldowns=this.cooldowns.map(c=>Math.max(0,c-dt));this.fx=this.fx.filter(f=>this.elapsed-f.born<(f.kind==='damage'||f.kind==='gold'?1:.65)).slice(-96);
@@ -259,6 +262,7 @@ export class RogueEngine{
    if(length>.1){this.hero.direction=move;if(Math.abs(move.x)>.15)this.hero.facing=Math.sign(move.x);this.heroMove(move.x*ROGUE_PACE.moveSpeed*(1+passive.movement)*length*dt,move.y*ROGUE_PACE.moveSpeed*(1+passive.movement)*length*dt);this.pose('run1');}
    else if(input.attack)this.attack();else if(input.auto)this.autoHunt(dt,input);else this.pose('stay1');
   }
+  if(this.pauseAtRoomBoundary&&this.room!==previousRoom)return;
   if(!this.cleared.has(this.room)&&this.waves.get(this.room)!.spawned>=this.waves.get(this.room)!.target&&!this.mobs.some(e=>e.room===this.room&&e.hp>0)){
    this.cleared.add(this.room);this.autoOrder.push(this.room);this.autoRoom=routeFrom(this.map,this.room)?.nextRoom??9;
   }

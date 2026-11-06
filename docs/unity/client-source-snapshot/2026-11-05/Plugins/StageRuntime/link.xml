@@ -1,0 +1,5 @@
+<linker>
+  <assembly fullname="Jint" preserve="all" />
+  <assembly fullname="Acornima" preserve="all" />
+  <assembly fullname="System.Runtime.CompilerServices.Unsafe" preserve="all" />
+</linker>

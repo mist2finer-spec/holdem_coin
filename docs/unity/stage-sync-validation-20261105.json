@@ -1,0 +1,269 @@
+{
+  "status": "PASS",
+  "scope": "normal Rogue dungeon / local isolated server, Editor Play Mode; not production or device",
+  "protocol": "island-stage-v1",
+  "kernel": {
+    "protocol": "island-stage-v1",
+    "sha256": "23065421e8959b198df629426b1bda0fa3a8cf62329d66f097211a1619f2102b",
+    "bytes": 329165,
+    "sourceFiles": [
+      "node_modules/break_infinity.js/dist/break_infinity.esm.js",
+      "node_modules/pad-end/index.js",
+      "node_modules/rot-js/lib/MinHeap.js",
+      "node_modules/rot-js/lib/color.js",
+      "node_modules/rot-js/lib/constants.js",
+      "node_modules/rot-js/lib/display/backend.js",
+      "node_modules/rot-js/lib/display/canvas.js",
+      "node_modules/rot-js/lib/display/display.js",
+      "node_modules/rot-js/lib/display/hex.js",
+      "node_modules/rot-js/lib/display/rect.js",
+      "node_modules/rot-js/lib/display/term.js",
+      "node_modules/rot-js/lib/display/tile-gl.js",
+      "node_modules/rot-js/lib/display/tile.js",
+      "node_modules/rot-js/lib/engine.js",
+      "node_modules/rot-js/lib/eventqueue.js",
+      "node_modules/rot-js/lib/fov/discrete-shadowcasting.js",
+      "node_modules/rot-js/lib/fov/fov.js",
+      "node_modules/rot-js/lib/fov/index.js",
+      "node_modules/rot-js/lib/fov/precise-shadowcasting.js",
+      "node_modules/rot-js/lib/fov/recursive-shadowcasting.js",
+      "node_modules/rot-js/lib/index.js",
+      "node_modules/rot-js/lib/lighting.js",
+      "node_modules/rot-js/lib/map/arena.js",
+      "node_modules/rot-js/lib/map/cellular.js",
+      "node_modules/rot-js/lib/map/digger.js",
+      "node_modules/rot-js/lib/map/dividedmaze.js",
+      "node_modules/rot-js/lib/map/dungeon.js",
+      "node_modules/rot-js/lib/map/ellermaze.js",
+      "node_modules/rot-js/lib/map/features.js",
+      "node_modules/rot-js/lib/map/iceymaze.js",
+      "node_modules/rot-js/lib/map/index.js",
+      "node_modules/rot-js/lib/map/map.js",
+      "node_modules/rot-js/lib/map/rogue.js",
+      "node_modules/rot-js/lib/map/uniform.js",
+      "node_modules/rot-js/lib/noise/index.js",
+      "node_modules/rot-js/lib/noise/noise.js",
+      "node_modules/rot-js/lib/noise/simplex.js",
+      "node_modules/rot-js/lib/path/astar.js",
+      "node_modules/rot-js/lib/path/dijkstra.js",
+      "node_modules/rot-js/lib/path/index.js",
+      "node_modules/rot-js/lib/path/path.js",
+      "node_modules/rot-js/lib/rng.js",
+      "node_modules/rot-js/lib/scheduler/action.js",
+      "node_modules/rot-js/lib/scheduler/index.js",
+      "node_modules/rot-js/lib/scheduler/scheduler.js",
+      "node_modules/rot-js/lib/scheduler/simple.js",
+      "node_modules/rot-js/lib/scheduler/speed.js",
+      "node_modules/rot-js/lib/stringgenerator.js",
+      "node_modules/rot-js/lib/text.js",
+      "node_modules/rot-js/lib/util.js",
+      "src/components/rpg/combat-big.ts",
+      "src/components/rpg/combat-effects.ts",
+      "src/components/rpg/combat-profile.json",
+      "src/components/rpg/data/enemy-attack-metadata.json",
+      "src/components/rpg/hunt-actions.ts",
+      "src/components/rpg/hunt-math.ts",
+      "src/components/rpg/hybrid-balance.ts",
+      "src/components/rpg/rogue-stage/client-kernel.ts",
+      "src/components/rpg/rogue-stage/compiled-build.ts",
+      "src/components/rpg/rogue-stage/compiled-growth.ts",
+      "src/components/rpg/rogue/encounters.ts",
+      "src/components/rpg/rogue/enemy-attacks.ts",
+      "src/components/rpg/rogue/engine.ts",
+      "src/components/rpg/rogue/map.ts",
+      "src/components/rpg/rogue/pace.ts",
+      "src/components/rpg/rogue/resources.ts",
+      "src/components/rpg/rogue/traversal.ts",
+      "src/components/rpg/transcendence.ts",
+      "stage-data:labyrinth"
+    ]
+  },
+  "typecheck": {
+    "command": "npm run check:rpg",
+    "status": "PASS"
+  },
+  "newTests": {
+    "command": "npm run test:rpg:stage",
+    "pass": 8,
+    "fail": 0
+  },
+  "regression": {
+    "files": [
+      "test-hybrid-service.ts",
+      "test-hybrid-runtime.ts",
+      "test-rogue.ts",
+      "test-enemy-attacks.ts"
+    ],
+    "pass": 51,
+    "fail": 0
+  },
+  "offlineFirstBoundary": {
+    "frame": 3327,
+    "active": true,
+    "local": true,
+    "requests": 6,
+    "steps": 1627,
+    "dropped": 4.045581370359281,
+    "maxBatchMs": 225.4635,
+    "waiting": true,
+    "room": 1,
+    "kills": 50,
+    "elapsed": 32.53999999999949,
+    "hp": 9786.413210177,
+    "status": "playing",
+    "gold": 0
+  },
+  "recoveredFirst": {
+    "frame": 7626,
+    "active": true,
+    "local": true,
+    "requests": 9,
+    "steps": 2903,
+    "dropped": 7.695528467902928,
+    "maxBatchMs": 300.137,
+    "waiting": false,
+    "room": 1,
+    "kills": 81,
+    "elapsed": 58.06000000000348,
+    "hp": 9621.515000000001,
+    "status": "playing",
+    "gold": 432,
+    "note": "Intermediate capture while waiting for delayed retry; final first recovery is proven by second boundary gold=432 and second recovery gold=864."
+  },
+  "offlineSecondBoundary": {
+    "frame": 8865,
+    "active": true,
+    "local": true,
+    "requests": 13,
+    "steps": 3471,
+    "dropped": 8.864452361473838,
+    "maxBatchMs": 300.137,
+    "waiting": true,
+    "room": 3,
+    "kills": 100,
+    "elapsed": 69.42000000000333,
+    "hp": 9640.213210177,
+    "status": "playing",
+    "gold": 432
+  },
+  "recoveredSecond": {
+    "frame": 10525,
+    "active": true,
+    "local": true,
+    "requests": 14,
+    "steps": 4066,
+    "dropped": 17.89186543158258,
+    "maxBatchMs": 389.5794,
+    "waiting": false,
+    "room": 3,
+    "kills": 111,
+    "elapsed": 81.120000000001,
+    "hp": 9371.055710177,
+    "status": "playing",
+    "gold": 864
+  },
+  "httpEvents": {
+    "events": [
+      {
+        "action": "start",
+        "at": 1793925638217,
+        "offline": false
+      },
+      {
+        "action": "stage-settle",
+        "at": 1793925674931,
+        "offline": true
+      },
+      {
+        "action": "stage-settle",
+        "at": 1793925675944,
+        "offline": true
+      },
+      {
+        "action": "stage-settle",
+        "at": 1793925677961,
+        "offline": true
+      },
+      {
+        "action": "stage-settle",
+        "at": 1793925681978,
+        "offline": true
+      },
+      {
+        "action": "stage-settle",
+        "at": 1793925690008,
+        "offline": true
+      },
+      {
+        "action": "stage-settle",
+        "at": 1793925706028,
+        "offline": true
+      },
+      {
+        "action": "stage-settle",
+        "at": 1793925736055,
+        "offline": false
+      },
+      {
+        "action": "stage-settle",
+        "at": 1793925828116,
+        "offline": false
+      },
+      {
+        "action": "stage-settle",
+        "at": 1793925869871,
+        "offline": true
+      },
+      {
+        "action": "stage-settle",
+        "at": 1793925870970,
+        "offline": true
+      },
+      {
+        "action": "stage-settle",
+        "at": 1793925872987,
+        "offline": true
+      },
+      {
+        "action": "stage-settle",
+        "at": 1793925877014,
+        "offline": true
+      },
+      {
+        "action": "stage-settle",
+        "at": 1793925885046,
+        "offline": false
+      }
+    ],
+    "gold": 864
+  },
+  "observed": {
+    "normalCombatTickRequests": 0,
+    "fixedGoldPerClearedZone": 432,
+    "settledZones": 2,
+    "goldAfterRetryAndTwoClears": 864,
+    "droppedReplyAfterFirstCommit": true,
+    "editorErrorPause": "Curl 52 from deliberate response loss paused Editor; explicitly resumed. No combat exception.",
+    "frameCountAdvanced": true
+  },
+  "limits": [
+    "No connected Android device; S25 FPS/CPU/GC not measured.",
+    "Editor stress records dropped accumulated simulation time and worker batches up to 389.5794 ms; these are not frame times or Android benchmarks.",
+    "Full replay anti-cheat intentionally deferred; valid-looking fabricated clear claims remain possible.",
+    "Legacy production server requires deployment of stage route before client local mode is negotiated.",
+    "Formal proof omitted: same-connection SQLite transaction plus actual commit fault injection, durable receipt reopen, malformed and duplicate HTTP/service tests cover the selected invariant. No existing formal model was changed."
+  ],
+  "androidBuild": {
+    "status": "PASS",
+    "versionCode": 2026110504,
+    "bytes": 100717769,
+    "sha256": "d04d8302765baa0980b3439d0ea4bc353125572c8389e7f55a31a5e0f3c185fc",
+    "buildMs": 289454,
+    "initialBuildFailure": "Unity Bee temporary response file was not generated; source compilation emitted only pre-existing unused field warning. Identical retry succeeded."
+  },
+  "dependencyRestore": {
+    "status": "PASS",
+    "verifiedDlls": 3,
+    "target": "isolated local project fixture; official NuGet DLL hashes matched"
+  }
+}

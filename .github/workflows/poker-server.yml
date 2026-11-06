@@ -23,5 +23,6 @@ jobs:
       - run: npm test --prefix mini-services/poker-server
       - run: npm run test:rpg:build
       - run: npm run test:rpg:hybrid
+      - run: npm run test:rpg:stage
       - run: npm run test:rpg:idle
       - run: node scripts/test-server-smoke.mjs

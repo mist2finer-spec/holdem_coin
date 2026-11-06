@@ -1,5 +1,5 @@
 {
-  "capturedAtUTC": "2026-11-05T23:39:17.116444+00:00",
+  "capturedAtUTC": "2026-11-06T00:53:10.111261+00:00",
   "localRoot": "G:\\new_project\\IslandGame",
   "baseline": "a92b9bde8ed507dd18b77574760dc89e3e191364",
   "files": [
@@ -102,8 +102,8 @@
     {
       "source": "Assets/Island/Runtime/IslandBattleBridge.cs",
       "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/IslandBattleBridge.cs",
-      "bytes": 2321,
-      "sha256": "898a4d2bb2b62b30c5ab587f73e951fb43011505f08f91639aa8f349cd6d28c8"
+      "bytes": 2315,
+      "sha256": "83709db47945532b308684f73cc9adfcdf78e0779e927ba5202923a9878edbc3"
     },
     {
       "source": "Assets/Island/Runtime/IslandBattleBridge.cs.meta",
@@ -258,8 +258,8 @@
     {
       "source": "Assets/Island/Runtime/RpgSession.cs",
       "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/RpgSession.cs",
-      "bytes": 4297,
-      "sha256": "e7a98fce0f470d9e87a7b8632941227b2c0f844149cb735aec0f506a34ae06b8"
+      "bytes": 4692,
+      "sha256": "26608310481791b60df070471efe040907427601efebf9875c227d535e60a572"
     },
     {
       "source": "Assets/Island/Runtime/RpgSession.cs.meta",
@@ -740,6 +740,144 @@
       "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Art/Battle3D/LowPoly.meta",
       "bytes": 172,
       "sha256": "317e066f67d36f3d4b6db181a59e8af01afcdf07e35ea0b43ba11d9a075194f9"
+    },
+    {
+      "source": "Assets/Island/Plugins.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Plugins.meta",
+      "bytes": 172,
+      "sha256": "24371fb517c6005f3b0dfd44af1077e03105f214b5942531de59ae0e07b24cd5"
+    },
+    {
+      "source": "Assets/Island/Plugins/StageRuntime.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Plugins/StageRuntime.meta",
+      "bytes": 172,
+      "sha256": "581d30925209051ac1da7bb59c25fd95e4ddcebd5d31de7a6ad55f4a40c9e3c3"
+    },
+    {
+      "source": "Assets/Island/Plugins/StageRuntime/Acornima.dll.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Plugins/StageRuntime/Acornima.dll.meta",
+      "bytes": 59,
+      "sha256": "71b61ccd5ab585b9e0d46d3ff9ba0bb214519df35ca40794b3f10e4c80326938"
+    },
+    {
+      "source": "Assets/Island/Plugins/StageRuntime/Jint.dll.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Plugins/StageRuntime/Jint.dll.meta",
+      "bytes": 59,
+      "sha256": "d8616910ed0c4f689339f7a61f6f46f0662f4be694abdb6dcdd5799f9b85954f"
+    },
+    {
+      "source": "Assets/Island/Plugins/StageRuntime/System.Runtime.CompilerServices.Unsafe.dll.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Plugins/StageRuntime/System.Runtime.CompilerServices.Unsafe.dll.meta",
+      "bytes": 59,
+      "sha256": "fb7d64cf17a52995dcf3bf598b3af677aaa513cf3e80287b14f583905fdacf3c"
+    },
+    {
+      "source": "Assets/Island/Plugins/StageRuntime/acornima-LICENSE.txt",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Plugins/StageRuntime/acornima-LICENSE.txt",
+      "bytes": 1539,
+      "sha256": "4182d3e7ce42f69b01f35c6ed27d075d26794a3c2f0b0182aa475be6ca565bab"
+    },
+    {
+      "source": "Assets/Island/Plugins/StageRuntime/acornima-LICENSE.txt.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Plugins/StageRuntime/acornima-LICENSE.txt.meta",
+      "bytes": 158,
+      "sha256": "a951211340d23e3ab9037d0d39eb80c52c2acda21b820808a0ef5c9b53889613"
+    },
+    {
+      "source": "Assets/Island/Plugins/StageRuntime/dependencies.json",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Plugins/StageRuntime/dependencies.json",
+      "bytes": 1010,
+      "sha256": "630172909b788a75eae8ec9a73119dfb23c21e87fee40b207ef1a787920b8cc1"
+    },
+    {
+      "source": "Assets/Island/Plugins/StageRuntime/dependencies.json.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Plugins/StageRuntime/dependencies.json.meta",
+      "bytes": 158,
+      "sha256": "7756b87eeb9d08191e4edc423f311f76ff5a2825c53cdd9e368ad9d8559a2461"
+    },
+    {
+      "source": "Assets/Island/Plugins/StageRuntime/jint-LICENSE.txt",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Plugins/StageRuntime/jint-LICENSE.txt",
+      "bytes": 1313,
+      "sha256": "7fd0f56c1bc3ac00b50e44fc9b93eeeaeb6905b62a272eb310590b68d4a5c3ff"
+    },
+    {
+      "source": "Assets/Island/Plugins/StageRuntime/jint-LICENSE.txt.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Plugins/StageRuntime/jint-LICENSE.txt.meta",
+      "bytes": 158,
+      "sha256": "5064d35e1b83a292a87d8bd2427bb6168cef228ee77b79c233fcf0ceb90e9373"
+    },
+    {
+      "source": "Assets/Island/Plugins/StageRuntime/link.xml",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Plugins/StageRuntime/link.xml",
+      "bytes": 195,
+      "sha256": "1601834a35a708a681e77854064ac62ed59553bcaff14c4a23c8f7fed315b216"
+    },
+    {
+      "source": "Assets/Island/Plugins/StageRuntime/link.xml.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Plugins/StageRuntime/link.xml.meta",
+      "bytes": 158,
+      "sha256": "4d6833e4de814f80ce7dcd3cc8efe41a3e9ce4da22ec8a3e785a1ad535d572d0"
+    },
+    {
+      "source": "Assets/Island/Plugins/StageRuntime/unsafe-LICENSE.TXT",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Plugins/StageRuntime/unsafe-LICENSE.TXT",
+      "bytes": 1139,
+      "sha256": "d7a68596ab69b06f51ca278a6545148e4269a9381c26d597c13df5d88e08cf5b"
+    },
+    {
+      "source": "Assets/Island/Plugins/StageRuntime/unsafe-LICENSE.TXT.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Plugins/StageRuntime/unsafe-LICENSE.TXT.meta",
+      "bytes": 158,
+      "sha256": "91c078cbad291a3f0909871660eb3e3b34008afd1255881c1f7ec4e9d8a96a1c"
+    },
+    {
+      "source": "Assets/Island/Plugins/StageRuntime/unsafe-THIRD-PARTY-NOTICES.TXT",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Plugins/StageRuntime/unsafe-THIRD-PARTY-NOTICES.TXT",
+      "bytes": 46990,
+      "sha256": "a6344bfb229bc08d1071cec400eea216e307439f961c5943ec1b56d2245acb95"
+    },
+    {
+      "source": "Assets/Island/Plugins/StageRuntime/unsafe-THIRD-PARTY-NOTICES.TXT.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Plugins/StageRuntime/unsafe-THIRD-PARTY-NOTICES.TXT.meta",
+      "bytes": 158,
+      "sha256": "05fad5e7f9f35ef2be92ec3186381e02e0d57be1dcc09422031272d7008816b2"
+    },
+    {
+      "source": "Assets/Island/Resources/RogueStageKernel.js.txt",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Resources/RogueStageKernel.js.txt",
+      "bytes": 329165,
+      "sha256": "23065421e8959b198df629426b1bda0fa3a8cf62329d66f097211a1619f2102b"
+    },
+    {
+      "source": "Assets/Island/Resources/RogueStageKernel.js.txt.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Resources/RogueStageKernel.js.txt.meta",
+      "bytes": 158,
+      "sha256": "d7b9d2fd6f7149d429ec50d48ea7d55cf75e71e3c16927dbeef47742d055ebd3"
+    },
+    {
+      "source": "Assets/Island/Runtime/RpgLocalStageSession.cs",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/RpgLocalStageSession.cs",
+      "bytes": 9468,
+      "sha256": "41e6e0dc1aed9b7af9ff7fbb341c7bd0e66114e3629a1c5b00c461303ab8d728"
+    },
+    {
+      "source": "Assets/Island/Runtime/RpgLocalStageSession.cs.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/RpgLocalStageSession.cs.meta",
+      "bytes": 59,
+      "sha256": "f92d72986b90e33057cc261cb0442851eba18c43676931167b21acb7a06f6963"
+    },
+    {
+      "source": "Assets/Island/Runtime/StageCombatWorker.cs",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/StageCombatWorker.cs",
+      "bytes": 3782,
+      "sha256": "838ef6216b5ebdd57cb1b8048a3e932dc47c2ef35d9dba0a31e354ddabd9f924"
+    },
+    {
+      "source": "Assets/Island/Runtime/StageCombatWorker.cs.meta",
+      "snapshot": "docs/unity/client-source-snapshot/2026-11-05/Runtime/StageCombatWorker.cs.meta",
+      "bytes": 59,
+      "sha256": "98712e7c00662591cc513dbabf37bace394a11a7ce698a598153416752a59217"
     }
   ],
   "localOnlyModels": [
@@ -870,8 +1008,8 @@
   "androidTestBuildSettings": {
     "applicationIdentifier": "com.mist2finer.islandgame.dev",
     "productName": "IslandGame Test",
-    "bundleVersion": "0.1.0-test.20261105.3",
-    "versionCode": 2026110503,
+    "bundleVersion": "0.1.0-test.20261105.4",
+    "versionCode": 2026110504,
     "architecture": "ARM64",
     "backend": "IL2CPP",
     "graphicsAPI": "OpenGLES3",
@@ -954,6 +1092,112 @@
       "sha256": "ea1f4510a95d56cf5dc254c8508e55bdf6a3bf49aab80fee9198dbbe70164e21"
     }
   ],
-  "latestIntegrationBase": "d9cf41fbe12a5a72c1283fc099ce5e4be4fe5b73",
-  "presentationVersion": 2
+  "latestIntegrationBase": "f28f3e8f35cb39976475b6c62c10f5659ec62ce6",
+  "presentationVersion": 2,
+  "stageProtocol": "island-stage-v1",
+  "stageKernel": {
+    "protocol": "island-stage-v1",
+    "sha256": "23065421e8959b198df629426b1bda0fa3a8cf62329d66f097211a1619f2102b",
+    "bytes": 329165,
+    "sourceFiles": [
+      "node_modules/break_infinity.js/dist/break_infinity.esm.js",
+      "node_modules/pad-end/index.js",
+      "node_modules/rot-js/lib/MinHeap.js",
+      "node_modules/rot-js/lib/color.js",
+      "node_modules/rot-js/lib/constants.js",
+      "node_modules/rot-js/lib/display/backend.js",
+      "node_modules/rot-js/lib/display/canvas.js",
+      "node_modules/rot-js/lib/display/display.js",
+      "node_modules/rot-js/lib/display/hex.js",
+      "node_modules/rot-js/lib/display/rect.js",
+      "node_modules/rot-js/lib/display/term.js",
+      "node_modules/rot-js/lib/display/tile-gl.js",
+      "node_modules/rot-js/lib/display/tile.js",
+      "node_modules/rot-js/lib/engine.js",
+      "node_modules/rot-js/lib/eventqueue.js",
+      "node_modules/rot-js/lib/fov/discrete-shadowcasting.js",
+      "node_modules/rot-js/lib/fov/fov.js",
+      "node_modules/rot-js/lib/fov/index.js",
+      "node_modules/rot-js/lib/fov/precise-shadowcasting.js",
+      "node_modules/rot-js/lib/fov/recursive-shadowcasting.js",
+      "node_modules/rot-js/lib/index.js",
+      "node_modules/rot-js/lib/lighting.js",
+      "node_modules/rot-js/lib/map/arena.js",
+      "node_modules/rot-js/lib/map/cellular.js",
+      "node_modules/rot-js/lib/map/digger.js",
+      "node_modules/rot-js/lib/map/dividedmaze.js",
+      "node_modules/rot-js/lib/map/dungeon.js",
+      "node_modules/rot-js/lib/map/ellermaze.js",
+      "node_modules/rot-js/lib/map/features.js",
+      "node_modules/rot-js/lib/map/iceymaze.js",
+      "node_modules/rot-js/lib/map/index.js",
+      "node_modules/rot-js/lib/map/map.js",
+      "node_modules/rot-js/lib/map/rogue.js",
+      "node_modules/rot-js/lib/map/uniform.js",
+      "node_modules/rot-js/lib/noise/index.js",
+      "node_modules/rot-js/lib/noise/noise.js",
+      "node_modules/rot-js/lib/noise/simplex.js",
+      "node_modules/rot-js/lib/path/astar.js",
+      "node_modules/rot-js/lib/path/dijkstra.js",
+      "node_modules/rot-js/lib/path/index.js",
+      "node_modules/rot-js/lib/path/path.js",
+      "node_modules/rot-js/lib/rng.js",
+      "node_modules/rot-js/lib/scheduler/action.js",
+      "node_modules/rot-js/lib/scheduler/index.js",
+      "node_modules/rot-js/lib/scheduler/scheduler.js",
+      "node_modules/rot-js/lib/scheduler/simple.js",
+      "node_modules/rot-js/lib/scheduler/speed.js",
+      "node_modules/rot-js/lib/stringgenerator.js",
+      "node_modules/rot-js/lib/text.js",
+      "node_modules/rot-js/lib/util.js",
+      "src/components/rpg/combat-big.ts",
+      "src/components/rpg/combat-effects.ts",
+      "src/components/rpg/combat-profile.json",
+      "src/components/rpg/data/enemy-attack-metadata.json",
+      "src/components/rpg/hunt-actions.ts",
+      "src/components/rpg/hunt-math.ts",
+      "src/components/rpg/hybrid-balance.ts",
+      "src/components/rpg/rogue-stage/client-kernel.ts",
+      "src/components/rpg/rogue-stage/compiled-build.ts",
+      "src/components/rpg/rogue-stage/compiled-growth.ts",
+      "src/components/rpg/rogue/encounters.ts",
+      "src/components/rpg/rogue/enemy-attacks.ts",
+      "src/components/rpg/rogue/engine.ts",
+      "src/components/rpg/rogue/map.ts",
+      "src/components/rpg/rogue/pace.ts",
+      "src/components/rpg/rogue/resources.ts",
+      "src/components/rpg/rogue/traversal.ts",
+      "src/components/rpg/transcendence.ts",
+      "stage-data:labyrinth"
+    ]
+  },
+  "localOnlyStageRuntimeLibraries": [
+    {
+      "path": "Assets/Island/Plugins/StageRuntime/Jint.dll",
+      "sha256": "ad85a5ca684cc5eed19c25c8b4d4a3107161e0aac733151ded3a2b8b65f94a40",
+      "package": "jint",
+      "version": "4.17.0",
+      "framework": "netstandard2.1",
+      "source": "https://api.nuget.org/v3-flatcontainer/jint/4.17.0/jint.4.17.0.nupkg",
+      "restore": "python scripts/unity/restore-stage-runtime.py --project G:/new_project/IslandGame"
+    },
+    {
+      "path": "Assets/Island/Plugins/StageRuntime/Acornima.dll",
+      "sha256": "7a4e3e81699539161f8e8c8fd738c32feacc1a0f34b69dfd90a4d1c33d57905b",
+      "package": "acornima",
+      "version": "1.7.0",
+      "framework": "netstandard2.1",
+      "source": "https://api.nuget.org/v3-flatcontainer/acornima/1.7.0/acornima.1.7.0.nupkg",
+      "restore": "python scripts/unity/restore-stage-runtime.py --project G:/new_project/IslandGame"
+    },
+    {
+      "path": "Assets/Island/Plugins/StageRuntime/System.Runtime.CompilerServices.Unsafe.dll",
+      "sha256": "01748200f2400c742aa689f1f5101bd6298efdfd92c00c18f4fa473847235ba9",
+      "package": "system.runtime.compilerservices.unsafe",
+      "version": "6.0.0",
+      "framework": "netstandard2.0",
+      "source": "https://api.nuget.org/v3-flatcontainer/system.runtime.compilerservices.unsafe/6.0.0/system.runtime.compilerservices.unsafe.6.0.0.nupkg",
+      "restore": "python scripts/unity/restore-stage-runtime.py --project G:/new_project/IslandGame"
+    }
+  ]
 }
