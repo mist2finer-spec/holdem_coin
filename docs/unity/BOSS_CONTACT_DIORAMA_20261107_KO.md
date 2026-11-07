@@ -15,7 +15,7 @@
 
 ## 확인 결과
 
-- **PASS — 서버:** 보스·route·접촉 테스트 33개. 유효 구간, 높이/방향, 실제 점프, 무적, pause, 중복 피해, 몸체 이동, 경계 겹침, 투척 ID/시간 포함. RPG 타입 검사 통과. 확장 RPG 135개, stage sync 8개, 포커 245개 및 20핸드 시뮬레이션도 통과. Windows에서는 POSIX 환경변수/실행기 명령만 동등한 환경으로 치환했다. stage 생성물의 코드 해시는 일치하지만 node_modules junction의 메타데이터 경로 차이로 로컬 생성물 check는 실패했으므로 Linux CI의 표준 명령 결과를 별도 확인한다.
+- **PASS — 서버:** 보스·route·접촉 테스트 33개. 유효 구간, 높이/방향, 실제 점프, 무적, pause, 중복 피해, 몸체 이동, 경계 겹침, 투척 ID/시간 포함. RPG 타입 검사 통과. 확장 RPG 135개, stage sync 8개, 포커 245개 및 20핸드 시뮬레이션도 통과. Windows에서는 POSIX 환경변수/실행기 명령만 동등한 환경으로 치환했다. stage 생성물의 코드 해시는 일치하지만 node_modules junction의 메타데이터 경로 차이로 로컬 생성물 check는 실패했으므로 Linux CI의 표준 명령도 최종 PASS로 확인했다.
 - **PASS — Unity:** 실제 뼈/추출 곡선 164개 대조, 최대 위치 차이 0.00000123m. 최종 Play Mode 몸체 접근 2,295프레임, 최소 간격 162.20, 관통 0, 오류 0.
 - **PASS — 피격 연출:** 이벤트 중복 소비 방지, 공격 ID/시간 일치, Flash 복원, 공유 재질 사용자 격리, 카메라 오프셋 범위, AudioSource/Listener 연결 검증. 소리의 최종 체감은 사용자 기기 확인 대상이다.
 - **PASS — 원본 보존:** 실제 프로젝트와 미리보기의 GLB/애니메이션 파일 33개 해시 일치.
@@ -78,7 +78,7 @@
 | draw / SetPass 평균 | 345.9 / 270.3 | 428.5 / 49.5 |
 | 33.3ms 초과 / 50ms 초과 | 1 / 0 | 2 / 0 |
 
-SetPass는 감소했지만 draw와 GC는 증가했다. 이를 전 항목 성능 개선으로 보고하지 않는다. 기존 프레임 안정성은 이 Unity 구간에서 유지됐고, Android GPU/발열/장시간 메모리는 실기 확인이 남아 있다. 같은 구도의 분리된 draw/메모리 대조는 `Evidence/fixed-diorama.json`을 참조한다.
+SetPass는 감소했지만 draw와 GC는 증가했다. 이를 전 항목 성능 개선으로 보고하지 않는다. 기존 프레임 안정성은 이 Unity 구간에서 유지됐고, Android GPU/발열/장시간 메모리는 실기 확인이 남아 있다. 같은 구도·카메라 대조에서는 draw 122→223, SetPass 106→29였다. Editor used 메모리는 785.3→784.5MB, reserved는 1212.3MB로 같았다. 그림자·후처리 패스와 가림 처리 차이가 포함되며 메모리 절감으로 주장하지 않는다. [고정 구도 결과](client-source-snapshot/2026-11-07-contact/Evidence/fixed-diorama.json)를 참조한다.
 
 ## 빌드·배포
 
@@ -93,4 +93,15 @@ SetPass는 감소했지만 draw와 GC는 증가했다. 이를 전 항목 성능 
 5. 재입장·복원·품질 토글을 검사한 뒤 main/서버/API/Unity 연결과 APK를 검증한다.
 6. 사용자 실기 피드백을 다음 수정의 근거로 삼는다. Editor 결과를 실기 결과로 바꾸어 표기하지 않는다.
 
+전투 APK 검증: PASS, 106,934,784 bytes, SHA-256 `eb2240c862aa22e451ffa5f0bfd68f7d950e5057289252f9d09bf033dcbe0236`.
+
 미리보기 APK 검증: PASS, 106,934,275 bytes, SHA-256 `d2854a67eab37f5256633b1722c210fd25a72a614660a32439f04dd3f78bb372`.
+
+## 배포 확인
+
+- main 소스: [`611190d`](https://github.com/mist2finer-spec/holdem_coin/commit/611190d36350022f099d3d0d0694e13f2bbff001).
+- Render Testplace / holdem-coin-tavern: `dep-dbnm9pp42hec73cjngr0` **LIVE**. `/healthz` 200, `/api/release` 리비전 일치.
+- [GitHub CI](https://github.com/mist2finer-spec/holdem_coin/actions/runs/42398285444) **PASS**. 포커·RPG·Unity boss·stage 생성물·서버 smoke 포함.
+- 운영 API **PASS**: 144회 요청, 접촉 리비전 `boss-contact-v1`, 입력 ACK, 공격 ID/시간 일치, 경고→폭발 2초, 넉다운→기상, tick 쿠키 재저장 0. 별도 훈련 세션으로 영구 보상 없음.
+- [최종 APK 2개와 비교 화면·영상·검증 자료](https://github.com/mist2finer-spec/holdem_coin/releases/tag/unity-boss-contact-diorama-20261107.3). 두 APK의 ZIP·서명·16KB 정렬·패키지·ARM64 IL2CPP 검증 PASS.
+- 실제 Unity 운영 연결 **PASS**: 152개 스냅샷, 순서 역행 0, 오류 0, 접촉 리비전 및 승인 Nilo 활성 확인.

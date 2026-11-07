@@ -1,0 +1,14 @@
+{
+  "commit": {
+    "createdAt": "2026-11-07T17:53:12Z",
+    "id": "611190d36350022f099d3d0d0694e13f2bbff001",
+    "message": "Align boss damage with animated contacts and integrate approved Nilo diorama"
+  },
+  "createdAt": "2026-11-07T17:50:31.814023Z",
+  "finishedAt": "2026-11-07T17:53:05.548082Z",
+  "id": "dep-dbnm9pp42hec73cjngr0",
+  "startedAt": "2026-11-07T17:50:31.788594Z",
+  "status": "live",
+  "trigger": "new_commit",
+  "updatedAt": "2026-11-07T17:53:05.548378Z"
+}

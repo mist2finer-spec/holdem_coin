@@ -7,6 +7,6 @@ public static class RecordApprovedPreview {
    while(Time.realtimeSinceStartupAsDouble-start<8){yield return new WaitForEndOfFrame();times.Add(Time.realtimeSinceStartupAsDouble-start);var image=ScreenCapture.CaptureScreenshotAsTexture();File.WriteAllBytes(folder+"/"+(frame++).ToString("D4")+".png",image.EncodeToPNG());UnityEngine.Object.Destroy(image);yield return new WaitForSecondsRealtime(.1f);}
    File.WriteAllText(folder+"/timestamps.json",Newtonsoft.Json.JsonConvert.SerializeObject(times));
   }
-  stage.animate=false;stage.GetComponent<DioramaPreviewControls>().visible=true;File.WriteAllText(Dir+"complete.json","{\"captured\":true,\"secondsPerView\":8,\"postEffects\":false,\"performanceBenchmark\":false}");
+  stage.animate=false;stage.GetComponent<DioramaPreviewControls>().visible=true;File.WriteAllText(Dir+"complete.json","{\"captured\":true,\"secondsPerView\":8,\"postEffects\":true,\"performanceBenchmark\":false}");
  }
 }

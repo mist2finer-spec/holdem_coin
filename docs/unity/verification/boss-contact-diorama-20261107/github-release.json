@@ -1,0 +1,37 @@
+{
+  "url": "https://github.com/mist2finer-spec/holdem_coin/releases/tag/unity-boss-contact-diorama-20261107.3",
+  "tag": "unity-boss-contact-diorama-20261107.3",
+  "commit": "611190d36350022f099d3d0d0694e13f2bbff001",
+  "assets": [
+    {
+      "name": "apk-validation.json",
+      "bytes": 613,
+      "url": "https://github.com/mist2finer-spec/holdem_coin/releases/download/unity-boss-contact-diorama-20261107.3/apk-validation.json",
+      "digest": "sha256:03d193c85ffc43f60ed0c70f10d2722877a8736be560e9c706602aca65b87329"
+    },
+    {
+      "name": "Island-Contact-Diorama-Evidence-20261107.zip",
+      "bytes": 63916318,
+      "url": "https://github.com/mist2finer-spec/holdem_coin/releases/download/unity-boss-contact-diorama-20261107.3/Island-Contact-Diorama-Evidence-20261107.zip",
+      "digest": "sha256:ba8d21ad7fb0cf68b13a0c68e4c2763e2c3c29e06130d752a4b0603664d3c302"
+    },
+    {
+      "name": "Island-Diorama-Preview-20261107.apk",
+      "bytes": 106934275,
+      "url": "https://github.com/mist2finer-spec/holdem_coin/releases/download/unity-boss-contact-diorama-20261107.3/Island-Diorama-Preview-20261107.apk",
+      "digest": "sha256:d2854a67eab37f5256633b1722c210fd25a72a614660a32439f04dd3f78bb372"
+    },
+    {
+      "name": "IslandGame-Boss-Contact-Diorama-20261107.apk",
+      "bytes": 106934784,
+      "url": "https://github.com/mist2finer-spec/holdem_coin/releases/download/unity-boss-contact-diorama-20261107.3/IslandGame-Boss-Contact-Diorama-20261107.apk",
+      "digest": "sha256:eb2240c862aa22e451ffa5f0bfd68f7d950e5057289252f9d09bf033dcbe0236"
+    },
+    {
+      "name": "preview-apk-validation.json",
+      "bytes": 612,
+      "url": "https://github.com/mist2finer-spec/holdem_coin/releases/download/unity-boss-contact-diorama-20261107.3/preview-apk-validation.json",
+      "digest": "sha256:b4bcbf44e9e4cf9679fc6d12331ed1ac2e557d8c2cbf9b13901ad13fc42ce33f"
+    }
+  ]
+}

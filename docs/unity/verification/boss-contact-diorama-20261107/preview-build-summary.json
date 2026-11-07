@@ -1,0 +1,20 @@
+{
+  "status": "completed",
+  "buildId": "build_fcd304d112d5",
+  "result": "Succeeded",
+  "platform": "Android",
+  "outputPath": "C:/Users/SHK/island-contact-diorama-20261107/Builds/Island-Diorama-Preview-20261107.apk",
+  "totalSizeBytes": 1306156322,
+  "buildTimeMs": 121544,
+  "buildStartedAt": "2026-11-07T22:47:36.6239819Z",
+  "buildEndedAt": "2026-11-07T22:49:38.1682192Z",
+  "totalWarnings": 1,
+  "totalErrors": 0,
+  "errors": [],
+  "warnings": [
+    {
+      "message": "warning CS0414: The field 'IslandApp.lastDeal' is assigned but its value is never used",
+      "file": "Assets\\Island\\Runtime\\IslandApp.cs"
+    }
+  ]
+}
