@@ -1,71 +1,80 @@
-> **후속 수정: 보스 런타임·Nature 원본 맵 (2026-11-06)**
->
-> 이전 검증은 선택된 클립 이름을 확인했으므로 보스 본의 실제 재생을 증명하지 못했습니다. 실제로 콤보·투척의 `rig_v001/Root/...`와 Boss1 프리팹의 `Root/...`가 불일치했습니다. 아래 이전 기록의 “보스 모션 확인”은 이 후속 검증으로 대체합니다.
+# Unity 보스 모션·조작·Nature 맵 수정 — 2026-11-06 최종
 
-## 후속 구현
+상태: **PASS** — 실제 Unity 프로젝트 적용, PC 독립 Player 본 변화, 세로 Play 조작, 서버 배포, Android APK 빌드·서명 검증 완료. **UNAVAILABLE** — Android 실기기 실행·발열·장시간 성능 검증(ADB 기기 미연결).
 
-- `RuntimeAnimationPlayer`: 샘플링 대상 루트에 Animator를 확보하고 수동 PlayableGraph로 서버 시간의 포즈를 평가합니다. 플레이어·슬라임·보스 런타임의 `SampleAnimation` 호출을 제거했습니다. 원본 GLB는 보존하고 보스 클립의 바인딩 접두사만 제거한 별도 `.anim`을 사용합니다.
-- 공격은 제공된 콤보·투척을 유지합니다. 제공 파일에 없는 대기·걷기는 공격 준비 자세에서 파생한 임시 애니메이션을 추가했으며, 보스 전환은 0.18초간 블렌딩합니다. 별도 Hit/Death/Roar 원본을 확보했다는 의미는 아닙니다.
-- 보스 높이 13 → 6.5m, 충돌 반경 2.8 → 1.4m, 훅 거리 9 → 4.5m, 폭발 반경 2.4 → 1.2m. 훅 두 타격 및 2초 경고, 피격 후 날아감·쓰러짐·일어나기는 유지합니다.
-- Side25D 입력은 좌우 한 축, QuarterView 입력은 카메라 기준 두 축입니다. 서버는 대각선 속도를 정규화하고 공격·원형 폭발·구르기·점프·슬라이드·넉백에 평면 좌표를 사용합니다. 쿼터뷰의 스틱에 `360°`를 표시합니다.
-- Nature Free의 `Environment_Free.unity` 중앙 Terrain, 실제 다리, 나무·소품 배치를 가져왔습니다. Unity 보스 모드에서는 임시 절차 지형, 바닥 큐브, 절벽 블록, 임의 나무 배치가 생성되지 않습니다. 다리 원본 크기는 유지하며, 슬라임 처치 후 다리를 완전히 건너야 보스가 나타납니다.
-- 원본 중앙 지형의 높이와 나무 위치를 서버용 데이터로 추출했습니다. 플레이어의 보스 구역 이동 범위는 원본 맵 동쪽 영역(X 26.7~87m, Z -38~53m)입니다. 지형 높이를 추적하고 나무 기둥 충돌을 처리합니다.
-- 나무 525개는 원본 배치를 유지한 12m 단위 프리팹으로 나눠 38m 이내부터 비동기 로드하고 52m 밖 인스턴스를 해제합니다. 60fps의 65%(10.83ms) 예산 정책에 따라 식생 LOD·그림자·풀 거리 및 생성 작업을 조절합니다. 모든 모바일에서 이 시간을 보장한다는 의미는 아닙니다.
-- 원본 에셋 대신 복사 재질의 잎 투과광과 바람을 낮춰 보스·플레이어와 밝기 차이를 완화했습니다. Terrain과 Terrain Physics 기본 모듈을 활성화했습니다.
+작업 프로젝트는 `G:/new_project/IslandGame`, Unity 6000.0.62f1, Built-in 렌더러다. 웹 화면·웹 RogueEngine·경제 규칙은 변경하지 않았다. 서버 수정은 Unity 전용 `/api/rpg/unity-boss` 엔진에 한정한다.
 
-## 검증 현황
+## 적용 결과
 
-- 에디터 실제 본 검사: 9개 클립 통과. 콤보·투척 각각 18개 본 회전, 최대 변화 약 123.47° / 87.52°. 바인딩 누락 0개. [검증 JSON](verification/boss-runtime-20261106/editor-poses.json).
-- Unity 전용 서버: 22개 테스트 통과. 기존 성장 58, 하이브리드 30, 방치 65, 스테이지 동기화 8, 포커 245, 프로필 3개 테스트도 통과했습니다. RPG/포커/UI TypeScript 검사 통과.
-- 스테이지 번들 재생성 결과 원본 SHA-256과 바이트가 일치합니다. 로컬 전체 `--check`의 메타데이터 비교는 node_modules 정션 경로 차이로 실패하며, 실제 코드 번들·동기화 테스트와 구분합니다.
-- 독립 Player 본 검사, 최종 Play 화면·조이스틱 및 Android APK는 진행 중이며 최종 결과를 이 절에 추가합니다. Android 실기기는 ADB에 연결되어 있지 않습니다.
-- 실제 프로젝트 변경 전 파일은 `.island-backups/boss-runtime-fix-20261106/`에 보관했습니다. 현재 씬 저장 전 디스크 원본과 열린 씬 복사본도 각각 보관했습니다.
+- 보스의 T포즈 원인은 실제로 `rig_v001/Root/...` 클립 바인딩과 `Root/...` 프리팹의 불일치였다. 원본 GLB는 보존하고, 바인딩 접두부를 제거한 별도 `_Bound.anim`을 생성했다.
+- `RuntimeAnimationPlayer`가 대상 루트에 Animator를 확보하고 수동 PlayableGraph로 서버 시간의 자세를 평가한다. 플레이어·슬라임·보스의 런타임 `SampleAnimation` 호출을 제거했다. 두 입력 AnimationMixer로 공격 전환을 0.18초(보스) / 0.12초(일반 모델) 동안 블렌딩한다.
+- 기존 검증은 클립 이름만 확인했으므로 실제 본 재생의 증거가 부족했다. 이번에는 Editor와 독립 Player 모두 본 Transform의 변화 및 누락 바인딩을 검사했다. 이전 문서의 ‘보스 모션 확인’ 주장은 이 결과로 대체한다.
+- 제공된 hook combo와 throw 모션을 사용한다. 원본에 없는 Idle/Walk는 공격 준비 자세에서 파생한 임시 호흡·걷기 모션이다. 별도 Hit/Death/Roar 원본을 추가했다고 주장하지 않는다.
+- 보스 높이 13 → **6.5m**, 충돌 반경 2.8 → **1.4m**, 훅 도달 거리 9 → **4.5m**, 폭발 반경 2.4 → **1.2m**로 줄였다. 훅은 2.2초 동안 0.85/1.55초에 일반 공격 두 번이다.
+- 투척은 노란 원을 표시하고 **2초 후** 원 안의 플레이어에게 스킬 피해를 준다. 0.45초 비행, 1.2초까지 넘어짐, 총 1.8초에 기상한다. 기존 Pink Glass 리타깃 피격 클립을 사용한다. 체력은 플레이어 100만(최소 1), 보스 10억의 훈련 설정이며 영구 보상은 지급하지 않는다.
 
-웹 UI·웹 RogueEngine·경제 규칙은 변경하지 않습니다. 서버 변경은 Unity 전용 `/api/rpg/unity-boss` 경로의 전투 엔진에 한정합니다. 소스는 [현재 스냅샷](client-source-snapshot/2026-11-06/)에 반영합니다. Polytope 원본 패키지는 기존 설치가 필요합니다.
+## 2D / 쿼터뷰 조작
 
----
+Side25D에서는 스틱의 X 성분만 이동에 사용한다. 좌상/좌하로 밀어도 깊이 방향으로 움직이지 않는다. QuarterView에서는 스틱을 카메라 기준 좌우·전후의 평면 벡터로 변환한다. 대각선 속도는 정규화하고, 공격·구르기·점프·슬라이드·넉백에도 평면 방향을 전달한다. 보스의 추적과 폭발 판정도 X/Z 두 축을 사용한다.
 
-# Unity 2.5D 카메라·다리·거대 보스 적용
+보스 구역 진입 시 `360°` 스틱으로 전환한다. 중앙 스틱과 11시/1시 구르기, 7시 점프/5시 슬라이드의 넓은 배치는 유지했다. 보스에서 멀어지면 카메라의 보스 가중치를 점차 줄여 플레이어가 맵을 돌아다닐 때 화면 밖으로 벗어나지 않도록 했다.
 
-실제 프로젝트 `G:/new_project/IslandGame`, Unity 6000.0.62f1, Built-in 렌더러. 웹 UI와 기존 RogueEngine/전투 커널은 수정하지 않았다. 최신 전체 C# 코드는 [소스 스냅샷](client-source-snapshot/2026-11-06/README.md), 카메라 전체 구현은 [BattleCameraController.cs](client-source-snapshot/2026-11-06/Runtime/BattleCameraController.cs)에 있다.
+## 원본 Nature 맵과 구역 흐름
 
-## 적용 흐름과 두 가지 구성안
+`Low Poly Environment - Nature Free - LOWPOLY MEDIEVAL FANTASY SERIES`의 `Environment_Free.unity` 중앙 Terrain, 원래 다리·강·소품·나무 배치를 사용한다. 주변에 반복된 Terrain 타일 8개는 제외한다. 원본 패키지와 원본 씬은 보존했다. Unity 보스 모드에서는 임시 상자 지형, 생성 절벽·바닥, 배경 블록 및 임의 나무 배치를 만들지 않는다.
 
-**현재 적용안: 런타임 지형 보강 + 서버 전투 판정.** NativeBattle이 CameraPivot → Main Camera를 생성하고 Battle3DView가 매 프레임 캐릭터 표시 직후 카메라를 갱신한다. 기존 Nature 스트리밍·풀·3개 재질 배치를 재사용한다. 새 Unity 전용 `/api/rpg/unity-boss`가 20ms 고정 스텝으로 두 구역의 전투를 판정한다. 기존 Jint 경로에서 관측된 시뮬레이션 지연을 새 시험 전투에서는 제거했다. 영구 보상은 지급하지 않는 훈련 모드다. 장비/성장 메타데이터는 기존 저장 경로를 사용한다.
+플레이어 시작 X=12m → 슬라임 평지(좌우 이동) → 원본 다리 X=21.758~26.242m → X=26.7m에서 보스 생성·QuarterView 전환. 다리를 늘리거나 별도 무대를 연결하지 않는다. 보스 구역 이동 범위는 원본 동쪽 맵 **X=26.7~87m, Z=-38~53m**다. 원본 Terrain 높이와 나무 기둥 장애물을 서버 판정에 연결했다.
 
-**대안: 아트 제작 단계에서 완성 지형 + 구역별 콘텐츠 로드.** 섬·절벽·다리를 하나의 모듈로 만들고 실루엣과 지형 충돌을 저작한 뒤 Addressables/추가 씬 단위로 구역을 요청·공유·해제한다. 외형과 접합 품질은 좋지만 기존 씬·에셋 저작과 로딩 실패/취소 처리 검증이 더 필요하다. 현재 요청의 빠른 시험에는 첫 안을 적용했으며, 두 번째 안을 구현했다고 주장하지 않는다.
+원본 나무 525개는 원래 위치를 유지한 12m 단위 69개 프리팹으로 나눴다. 38m 안쪽 구역을 비동기 요청하고 52m 밖의 인스턴스를 해제한다. 프레임당 최대 한 묶음 생성과 10.83ms 예산 제어를 적용한다. 원거리 인스턴스 해제가 즉각적인 전체 에셋 메모리 해제를 보장하는 것은 아니다.
 
-## 카메라 설정
+식생의 복사 재질에서 과한 투과광과 바람을 낮추고, 주요 광원·보조 광원을 조정했다. 보스 재질은 약간 따뜻하게 하고 광택을 줄였다. 결과 화면은 아래 증거에 첨부했다. 미술 완성도에 대한 최종 판단은 플레이 감상과 별개다.
 
-- Side25D: Pitch 10°, Yaw 0°, 기준 수직 FOV 18°, Local Z -28, 기본 오프셋 Y +2. 카메라의 실제 전투 viewport 하단 18%에 발밑 바닥을 배치하도록 높이를 계산한다. 따라서 화면 비율에 따라 최종 오프셋은 보정된다.
-- 기준 화면 9:16, 전투 viewport 높이까지 고려해 가로 시야폭을 유지한다. 긴 화면에서는 수직 FOV가 18°보다 커지는 것이 정상이다. 1080×2340 실제 플레이에서 약 21.85°였다. 이전 CameraHorizontalWidthLock은 이 경로에서 비활성화한다.
-- 방향 선행 2.8m, 방향 확정 0.12초 또는 이동 0.35m, 속도 추가 선행 최대 2m. 캐릭터가 화면 밖으로 밀리지 않게 가시폭과 여백 0.75m로 제한한다. 가속/감속 SmoothDamp 0.18/0.35초.
-- 높이 데드존 1.2m, 바닥 높이는 별도로 0.15초 추적한다. `SetChamberBounds(minX,maxX,active)`로 전투 중 제한하고 다리에서는 해제한다.
-- `SetViewMode(ViewMode.QuarterView,bossTransform)`은 1.2초 SmoothStep/Slerp 전환, Pitch 42°/Yaw 12°/FOV 35°, 오프셋 (0,1.2,2.5), 중심 가중치 플레이어 0.65/보스 0.35다. 기본 거리 20, 기본 최대 거리 32다.
-- 실제 13m 보스와 1.3m 플레이어를 도입부부터 함께 담기 위해 NativeBattle 씬 설정의 최대 거리는 64로 보정했다. 실제 보스전 거리 약 45m이며, 렌더러 경계 8개 꼭짓점으로 화면 맞춤 거리를 계산한다. 32로 강제하면 큰 보스가 잘린다.
-- `SetViewMode(ViewMode.Side25D)`로 기존 추적 방식으로 복귀한다. TopDown1945 프리셋도 별도 상태로 제공한다. 호출은 즉시 전환을 시작하고 화면은 부드럽게 보간한다.
-- Pitch 25° 이상에서 layer30의 전경 장애물이 카메라-플레이어 선을 가리고 Z가 플레이어보다 1m 앞이면 렌더러를 일시 비활성화한다. 풀 반환/시점 복귀 때 원래 상태를 복구한다. 공용 재질이나 충돌체를 바꾸지 않는다.
+## 카메라 및 바닥 세팅 가이드
 
-## 바닥 및 다리 씬 세팅
+전체 코드는 [BattleCameraController.cs](client-source-snapshot/2026-11-06/Runtime/BattleCameraController.cs)에 있다. `CameraPivot → Main Camera` 리그와 `ViewMode { Side25D, QuarterView, TopDown1945 }`를 유지한다.
 
-자동 적용은 NatureTerrainBatch의 전면·후면·측면·바닥을 닫은 메시다. Side 전면 깊이 4m, Quarter 전면 32m, 후면 24m, 절벽 치마 깊이 12m. 쿼터뷰 가장자리와 구역 사이에도 빈 하늘이 하단에 비치지 않도록 깊은 흙 배경 메시를 추가했다. 단순 Clear Color 변경으로 가리지 않았다.
+- Side25D: Perspective 기준 FOV 18°, Pitch 10°, 거리 -28, 기본 피벗 Y +2. 실제 전투 viewport 하단 18%에 발밑 바닥이 놓이도록 보정한다. 9:16보다 좁은 화면에서도 가로 가시 폭을 보존하도록 수직 FOV를 역산한다.
+- 좌우 선행 2.8m, 방향 확인 0.12초 또는 이동 0.35m, 속도 추가 선행 최대 2m. SmoothDamp 가속/감속 0.18/0.35초, 작은 점프 데드존 1.2m, 바닥 높이 추적 0.15초다.
+- `SetChamberBounds(minX,maxX,active)`로 전투 구역을 제한한다. 다리 이동에서는 제한을 풀고 다음 구역으로 넘긴다.
+- `SetViewMode(ViewMode.QuarterView,bossTarget)`는 1.2초 전환, Pitch 42°/Yaw 12°/FOV 35°, 피벗 (0,1.2,2.5)다. 근접 시 플레이어 0.65/보스 0.35 가중 중심과 렌더러 경계로 거리를 맞춘다. 이 6.5m 보스 씬의 최대 거리는 40m로 조정했다.
+- 보스와 12m 이내에서는 듀얼 프레이밍, 12~24m에서는 보스 영향이 점차 줄고 먼 탐색에서는 플레이어를 따른다. `SetViewMode(ViewMode.Side25D)`로 좌우 선행 추적으로 돌아간다.
+- Pitch 25° 이상에서 플레이어를 가리는 전경 식생·구조물의 렌더러를 일시 숨기고 복원한다. 원본 재질이나 충돌 판정은 변경하지 않는다.
 
-수동 구성 시 Ground의 잔디 윗면은 유지하고 전면 모서리 정점을 아래로 12m 복제해 앞면을 연결한다. 양 끝과 바닥도 닫고 노멀/바운드를 갱신한다. 전면 Z 깊이를 위 수치만큼 늘리고 가장 좁고 긴 화면·최대 줌아웃에서 확인한다. 장식용 치마에는 Collider가 필요 없다. 이동 판정은 별도의 평면/경로를 사용한다.
+**현재 씬:** Nature의 충분한 깊이를 가진 실제 Terrain을 사용하므로 별도 Skirt Mesh는 생성하지 않는다. 이전 절차식 바닥 보강은 이 모드에서 비활성화되어 있다. 하단 UI 뒤까지 Terrain이 보이는지는 Side/Quarter 실제 화면으로 확인했다.
 
-슬라임 구역 worldX 0~19.2m → 다리 19.2~28.8m → 보스 평지 28.8~67.2m. `PT_Wooden_Bridge_02.prefab`을 복제한 BridgeWalkway를 사용하며 원본 Polytope 패키지는 보존했다. 다리 상판의 실제 삼각형에서 33개 높이를 추출해 클라이언트·서버에 동일한 곡선을 적용했다. 양 끝 경계는 평지와 연속이며 가운데 높이는 약 1.07m다. 다른 구역은 이 Unity 전용 모드에 포함되지 않는다.
+**다른 얇은 Ground 메시를 다시 쓸 경우:** 지면 윗면은 유지하고 카메라 방향 Z 깊이를 확보한 후, 전면 가장자리 정점을 아래로 약 12m 복제해 세로 면과 양 끝을 연결한다. 법선·bounds를 갱신하고 길쭉한 세로 화면과 최대 줌아웃에서 확인한다. 장식용 치마에는 Collider가 필요 없다. 현재 Nature 맵에는 이 수동 절차를 중복 적용하지 않는다.
 
-## 보스와 피격 모션
+## 재생성 / 연결
 
-사용자 제공 boss1 GLB의 텍스처/20본 스켈레톤을 유지했다. 보스 높이 13m. Hook combo는 2.2초에 0.85/1.55초 두 번 일반 공격, throw는 1.65초 모션이다. 노란 경고 원 반경 2.4m, 생성 2초 뒤 서버가 폭발을 판정한다. 범위를 벗어나거나 회피하면 맞지 않는다. 피격 시 0.45초 비행, 1.2초까지 넘어짐, 총 1.8초 뒤 기상 완료. 피해 분류는 스킬이다.
+실제 프로젝트의 기존 Pink Glass, glTFast, Polytope 패키지와 GUID를 유지한다. 원격 `unity/IslandGame` 최소 프로젝트로 전체 덮어쓰지 않는다. [소스 스냅샷](client-source-snapshot/2026-11-06/)은 독립 실행 프로젝트가 아니다.
 
-플레이어 체력 100만(훈련 중 최소 1), 보스 10억. 구르기는 슬라이드와 같은 0.65초로 유지해 빠르게 끊기지 않게 했다. 원본 stickman 피격은 Humanoid 중간 리그를 이용해 현재 Pink Glass 65본에 베이크했다. 60Hz·1.8초, 실제 텍스처 캐릭터의 넘어짐과 기존 idle로 기상을 연결한다. 이동은 서버가 담당하므로 클립의 XZ 루트 이동은 제거했다. 구르기·점프·슬라이드 버튼의 기존 넓은 배치도 유지한다.
+1. Terrain 및 Terrain Physics 모듈을 사용한다. 스냅샷 `Packages`는 실제 프로젝트의 참고 설정이다.
+2. `Editor/PrepareAnimations.cs`의 `PrepareAnimations.Main`으로 바인딩을 교정하고 임시 Idle/Walk 및 `UnityBossAssets` 참조를 만든다.
+3. `Editor/PrepareMap.cs`의 `PrepareNatureMap.Main`, 다음 `PreparePalette.Main`을 실행한다. 원본 맵을 보존한 프리팹·나무 묶음·복사 재질을 생성한다.
+4. 생성한 `nature-map.json`의 높이/다리/장애물 데이터를 서버 `src/lib/generated/unity-nature-map.json`에 함께 반영한다. 클라이언트와 서버의 좌표/높이 버전을 맞춘다.
+5. 실행 예: `unity command script run --project-path G:/new_project/IslandGame --caller plugin --skill unity-cli --format json -- --file <스크립트 경로> --entry PrepareAnimations.Main`. CLI의 외부 success 외에 내부 스크립트 success도 확인한다.
 
-## 검증과 한계
+## 검증 증거
 
-카메라 23개 자동 검증 PASS. 새 전투/재시도/계정 격리/보상 불변성/60초 헤드리스 검증 PASS. 기존 단계·전투 회귀 30개, 성장·하이브리드·아이템·영구 저장 회귀 153개 PASS. `npm run check:rpg` 및 Next webpack 프로덕션 빌드 PASS. 로컬 node_modules가 다른 worktree에 연결되어 Turbopack 빌드가 경로 제약으로 실패해 webpack으로 빌드를 검증했다. 서버 배포 시 원래 빌드 설정을 유지한다.
+- [Editor 본 검사](verification/boss-runtime-20261106/editor-poses.json): 9개 클립 PASS, 누락 바인딩 0. 콤보/투척 각각 18개 본 변화.
+- [Windows 독립 Player](verification/boss-runtime-20261106/player-poses.json): `isEditor=false`, 9개 클립 PASS, 오류 0. 콤보 18본/123.609°, 투척 18본/87.592° 변화. Editor에서만 작동하는지의 문제를 별도로 확인했다.
+- [1080×2340 Play 검사](verification/boss-runtime-20261106/play-review.json): 68초·3,826프레임, 터치 대각선 Side 이동·Quarter 전후/좌우 이동·실제 보스 팔 회전·6개 전투 상태·오류 없음 검사 모두 PASS.
+- PC Editor 계측 p95 CPU 4.990ms / GPU 4.551ms. 최대 CPU 359.878ms / GPU 135.334ms에는 초기 로드와 동기 화면 캡처가 포함되므로 모든 프레임이 10.83ms 이하라는 뜻은 아니다. Android 60fps·발열 목표는 실기기 계측이 남아 있다.
+- Unity 서버 22개, 성장 58, 하이브리드 30, 방치 65, 스테이지 동기화 8, 포커 245, 프로필 3개 테스트 PASS. RPG/포커/UI TypeScript 및 실제 HTTP/Socket.IO smoke PASS.
+- [GitHub CI](https://github.com/mist2finer-spec/holdem_coin/actions/runs/42332121025) PASS. Linux CI의 stage kernel 생성 일치 검사도 통과했다. 로컬 junction 경로 때문에 발생했던 메타데이터 차이는 런타임 번들 변경이 아니었다.
+- [운영 서버 smoke](verification/boss-runtime-20261106/production-smoke.json): health 200, 151요청, 슬라임→다리→보스→경고→폭발→넘어짐→기상 PASS. 경고부터 폭발까지 2초. 체력 유지·훈련 모드·영구 보상 없음 확인.
+- [APK 검사](verification/boss-runtime-20261106/apk-validation.json): Android ARM64 IL2CPP, Development, Portrait, 버전 `0.1.0-test.20261106.2` / `2026110602`. 빌드 오류/경고 0, ZIP CRC·서명·16KB ZIP 정렬·인터넷 권한 PASS. Android 실기기 실행은 ADB 기기 미연결로 미검증이다.
 
-70초 실제 Editor 플레이에서 Side/다리/Quarter/경고/넘어짐/기상 캡처 6개 및 서버 판정 연결을 확인했다. 4,073프레임의 CPU 활성 시간 p95 1.0513ms, GPU p95 0.18432ms, CPU 최대 16.196ms. 60fps의 65% 목표 10.83ms보다 p95는 낮지만 단발성 최대 초과는 존재한다. 이는 PC Editor 계측이며 Android 실기기 60fps 보장이 아니다. 풀링과 적응형 예산 제어도 단일 Unity 리소스 업로드의 최대 소요 시간을 강제로 잘라낼 수는 없다.
+화면: [Side](verification/boss-runtime-20261106/side.png) · [다리](verification/boss-runtime-20261106/bridge.png) · [Quarter](verification/boss-runtime-20261106/quarter.png) · [경고](verification/boss-runtime-20261106/warning.png) · [넘어짐](verification/boss-runtime-20261106/knockdown.png) · [기상](verification/boss-runtime-20261106/getup.png).
 
-서버와 텍스트 소스는 연결된 GitHub 앱으로 main에 반영했고 Render Test place의 최종 서버 리비전 `99898dfbeecdb45033efdef641cc8678bacbc32d` 배포가 live임을 확인했다. 운영 HTTP 전투 검사와 Unity의 직접 운영 서버 플레이도 통과했다. 직접 연결 플레이는 약 35.6초 동안 2,076프레임 진행하며 보스 경고·넘어짐·기상과 캐릭터 접지 오차 0을 확인했다. 상세 결과는 [배포 기록](BOSS_CAMERA_DEPLOY_20261106_KO.md)을 확인한다.
+## 배포 / 전달
 
-Android APK는 `G:/new_project/IslandGame/Builds/Android/IslandGame-Test-Boss-Camera-20261106.apk` (114,711,012 bytes, 약 109.4 MiB)다. ARM64 IL2CPP, 버전 `0.1.0-test.20261106` / `2026110601`, 서명·ZIP·16KB 정렬 검사 PASS. 실기기 실행은 adb 기기가 없어 미검증이다. APK는 Git 대용량 객체로 넣지 않았다. 원본 GLB·큰 베이크 애니메이션·grounding JSON·해시 매니페스트도 Windows Git 인증 확인 후 일반 Git으로 업로드했다. 원본 씬 파일과 미저장 상태를 보존했고 테스트 계정 설정·GameView 크기·Editor 강제 tick/background 설정을 복원했다.
+[PR #7](https://github.com/mist2finer-spec/holdem_coin/pull/7)이 main에 병합되었다. 코드와 운영 서버 리비전은 `ffde9d1a33b1931c3aa09fe72bc5ef7f4df8213c`다. Render **Test place**의 `dep-dbn9bdm8bjmc73a1gq2g`는 live이며 `/api/release`에서 동일 리비전을 확인했다. 이 문서와 검증 증거의 후속 커밋은 런타임 변경 없이 `[skip render]`로 보관한다.
+
+설치 파일: `G:/new_project/IslandGame/Builds/Android/IslandGame-Test-Boss-Nature-Fix-20261106.apk` — 116,909,567 bytes (약 111.5 MiB).
+
+SHA-256: `ae8dc59086f1816d933462e93550f05d7bc5b4ae14ef7ee0e13c492c2daf713a`.
+
+보고서: `G:/new_project/meele_ref/Unity_Boss_Runtime_Fix_20261106.pdf`. 전체 카메라 코드도 같은 폴더의 `BattleCameraController.cs`에 전달한다. 이전 APK/PDF는 기록으로 보존하고 이번 Nature-Fix APK를 사용한다.
+
+변경 전 파일은 `.island-backups/boss-runtime-fix-20261106/`에 보관했다. 미저장 씬은 디스크 원본과 열린 상태를 각각 백업한 뒤 저장했다. 테스트 계정/서버 설정과 GameView 크기를 복원하고 Play를 종료했다. 강제 tick/background override도 해제했다.

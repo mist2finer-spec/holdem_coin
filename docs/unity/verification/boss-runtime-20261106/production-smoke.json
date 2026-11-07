@@ -1,0 +1,37 @@
+{
+  "status": "PASS",
+  "health": 200,
+  "release": {
+    "revision": "ffde9d1a33b1931c3aa09fe72bc5ef7f4df8213c",
+    "storage": {
+      "provider": "sqlite",
+      "persistence": "ephemeral",
+      "atomicWallet": true
+    }
+  },
+  "protocol": "island-unity-boss-v2",
+  "requests": 151,
+  "seconds": 23.748,
+  "simulationSeconds": 24.059999999999576,
+  "observed": [
+    "combat",
+    "attack1",
+    "attack2",
+    "attack3",
+    "stay1",
+    "bridge",
+    "run1",
+    "boss",
+    "boss-room",
+    "warning",
+    "knockback",
+    "explosion",
+    "knockdown",
+    "getup"
+  ],
+  "warningToExplosionSeconds": 1.9999999999999574,
+  "playerHP": 988000,
+  "bossHP": 999999520,
+  "training": true,
+  "permanentReward": false
+}

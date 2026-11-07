@@ -1,0 +1,12 @@
+{
+  "status": "live",
+  "workspace": "Test place",
+  "workspaceId": "tea-dbb806nf3r2c73e6b5ag",
+  "serviceId": "srv-dbb816bbc2fs73dds24g",
+  "deployId": "dep-dbn9bdm8bjmc73a1gq2g",
+  "revision": "ffde9d1a33b1931c3aa09fe72bc5ef7f4df8213c",
+  "health": 200,
+  "smoke": "PASS",
+  "pullRequest": "https://github.com/mist2finer-spec/holdem_coin/pull/7",
+  "ci": "https://github.com/mist2finer-spec/holdem_coin/actions/runs/42332121025"
+}

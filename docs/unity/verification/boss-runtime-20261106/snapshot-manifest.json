@@ -991,17 +991,86 @@
   },
   {
     "path": "docs/unity/verification/boss-runtime-20261106/editor-poses.json",
-    "sha256": "b6a561f5edf8da4b01930e2f596b8eedeb96357fe4684ef5caf5ecd551f883f9",
-    "bytes": 1599
+    "sha256": "6f3b552a60249ce4c6f24814ff3179bf4c8fd6a6dc48be27ca3f4b05f4e3cb1f",
+    "bytes": 1526,
+    "localBytes": 1599,
+    "localSha256": "b6a561f5edf8da4b01930e2f596b8eedeb96357fe4684ef5caf5ecd551f883f9"
   },
   {
     "path": "docs/unity/verification/boss-runtime-20261106/player-poses.json",
-    "sha256": "19585b001501bc61e56018a5d6781855272f4da7b9d3fc8bfddc77941beefa3e",
-    "bytes": 1615
+    "sha256": "a2e7d591529367d91489b475a18a1711e77b2a6bedb06c53541fde46233b598b",
+    "bytes": 1543,
+    "localBytes": 1615,
+    "localSha256": "19585b001501bc61e56018a5d6781855272f4da7b9d3fc8bfddc77941beefa3e"
   },
   {
     "path": "docs/unity/verification/boss-runtime-20261106/play-review.json",
-    "sha256": "d56d7764242b705eeace28b24d76d9c46007e9fa4589933da09021eb63e61cc5",
-    "bytes": 1088
+    "sha256": "ac446792a153e1620869af3a92ac4baf37928f1f2393a89f736661f8f5cc0b94",
+    "bytes": 1035,
+    "localBytes": 1088,
+    "localSha256": "d56d7764242b705eeace28b24d76d9c46007e9fa4589933da09021eb63e61cc5"
+  },
+  {
+    "path": "docs/unity/verification/boss-runtime-20261106/android-build.json",
+    "bytes": 349,
+    "sha256": "05b1c6d0c43720470b3d11304b8c8aa804aad2b2dcdb57ad4b014730ca227f14",
+    "localBytes": 360,
+    "localSha256": "fa9b4c5eaea27b1ea433396e7d67d6632039793ef86fb95082025e10734b7a95"
+  },
+  {
+    "path": "docs/unity/verification/boss-runtime-20261106/apk-validation.json",
+    "bytes": 673,
+    "sha256": "bd22ee0195b61edaefe39e48ad8d2b174c0c64b9a8d2cb329c26dffb9bc63bec",
+    "localBytes": 692,
+    "localSha256": "3a92bbdebeebbc3e43657ae888f4a9b6a0d7be4ada16f6659921a7d97c20c101"
+  },
+  {
+    "path": "docs/unity/verification/boss-runtime-20261106/bridge.png",
+    "bytes": 1974876,
+    "sha256": "b1551107f944e17f4f22dac7b704fa479bb2f14326bdbb9e9649eb612dcebd5b"
+  },
+  {
+    "path": "docs/unity/verification/boss-runtime-20261106/compiled-source-check.json",
+    "bytes": 1792,
+    "sha256": "420ce3d5321124ef6a93708fc377ebea968f5b4296fcfd8aefc04405e32b0536",
+    "localBytes": 1849,
+    "localSha256": "393d4005944e5f9962933ba7ba0689dddea8d1db374f02d8e73f74b4248d4087"
+  },
+  {
+    "path": "docs/unity/verification/boss-runtime-20261106/deployment.json",
+    "bytes": 433,
+    "sha256": "9f14222e3a844194cac6fa5ecf27f8c56c6557fb0ac086d7ad8f28f8ba2e8bcf",
+    "localBytes": 445,
+    "localSha256": "1608e5442e3705eb2836d6e2ae169dbec1be84709345001b734c82b68fd98937"
+  },
+  {
+    "path": "docs/unity/verification/boss-runtime-20261106/getup.png",
+    "bytes": 2135977,
+    "sha256": "427a5fe8d80dbb8d03c1931678219f5899bc43991258d2653bb4118643803867"
+  },
+  {
+    "path": "docs/unity/verification/boss-runtime-20261106/knockdown.png",
+    "bytes": 2140577,
+    "sha256": "652f1817d064ff40d373bfef55218f57db84cee8161de1ae7c8131025b9f6dc4"
+  },
+  {
+    "path": "docs/unity/verification/boss-runtime-20261106/production-smoke.json",
+    "bytes": 722,
+    "sha256": "3ea2c02668217955b5e6716bf08f8b646d0e7eab43da5c2ecfc86f44a450569c"
+  },
+  {
+    "path": "docs/unity/verification/boss-runtime-20261106/quarter.png",
+    "bytes": 2142667,
+    "sha256": "5a2da44c3bd83bebdab9e23f30b064f7832a2d48832f787b6bfc9b9a2fae9a4e"
+  },
+  {
+    "path": "docs/unity/verification/boss-runtime-20261106/side.png",
+    "bytes": 2155007,
+    "sha256": "2ccc898b3d862b79b9554a0db203550c18d8c9b895d03d0f0715dcbc2a822312"
+  },
+  {
+    "path": "docs/unity/verification/boss-runtime-20261106/warning.png",
+    "bytes": 2116384,
+    "sha256": "af9b40943587f3d1155258900927fbd96993fe29cf079584c2ea1a0872e5304d"
   }
 ]

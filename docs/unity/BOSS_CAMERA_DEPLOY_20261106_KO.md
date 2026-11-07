@@ -1,3 +1,5 @@
+> 최신 상태: [보스 모션·360° 조작·Nature 맵 수정 및 APK 검증](BOSS_CAMERA_20261106_KO.md). 코드/배포 ffde9d1, APK 버전 2026110602. 아래는 이전 시점의 기록입니다.
+
 # Unity 보스 카메라 배포·Android 기록
 
 대상 프로젝트 `G:/new_project/IslandGame`, 서버 Render **Test place** / holdem-coin-tavern.

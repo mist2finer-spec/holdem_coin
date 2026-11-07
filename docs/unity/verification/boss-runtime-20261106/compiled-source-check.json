@@ -1,0 +1,57 @@
+{
+  "status": "PASS",
+  "files": [
+    {
+      "file": "AnimationRuntimeProbe.cs",
+      "sha256": "7f70486e459a1b9d9c5491296014fb6f63fb19cecd614e28ebb710e8ebbc7350"
+    },
+    {
+      "file": "Battle3DView.cs",
+      "sha256": "8eaa615bf13f89d0b628a9326a19a13151e9d2b218a8887ca038a48774661201"
+    },
+    {
+      "file": "BattleCameraController.cs",
+      "sha256": "4427c66360514697f3c2f9ad8721a4a5248a269456f20a617086079233830cbc"
+    },
+    {
+      "file": "IslandBattleBridge.cs",
+      "sha256": "3165b78bb43ca61110521f40bfd2fe964060921ee94783788344a01e97f188b5"
+    },
+    {
+      "file": "IslandBattleHud.cs",
+      "sha256": "6cadbda7bdd759bc61ac2ed256a9ca68285c4f3fb963dd962adecca99c6f4878"
+    },
+    {
+      "file": "IslandHudStick.cs",
+      "sha256": "09a36267cd732be191974bc3dcf57b75bc49ae2aeaa2c7bfd0d332144fc26014"
+    },
+    {
+      "file": "NativeBattle.cs",
+      "sha256": "8a88f56a5de2c2e9a830bf0647fb0f71dba75326a862155863ab81619df4ec9e"
+    },
+    {
+      "file": "NativeCombatPresentation.cs",
+      "sha256": "79dab1e76af7721a6108fab00e01758d673429ea4310f6aae5b1e6970d9bea5d"
+    },
+    {
+      "file": "NatureAuthoredEnvironment.cs",
+      "sha256": "694c6416cb91ddea4fa184d56b25dca0bf220c07393559f0e70ccd8a54317d1c"
+    },
+    {
+      "file": "RpgSession.cs",
+      "sha256": "9719895f99fbe6b38a7285b3b3d254c3ef87918110585f0e8eb9a0d0cee4537e"
+    },
+    {
+      "file": "RuntimeAnimationPlayer.cs",
+      "sha256": "7e956f5c872535e5bfae354edb76a4de97e6b33057247838037479bb951c03ce"
+    },
+    {
+      "file": "UnityBossAssets.cs",
+      "sha256": "32bcbc8ca0218ae41d5335a5d2b2a97877fb31248e674ae04b675f4a94418b0f"
+    },
+    {
+      "file": "UnityBossPresentation.cs",
+      "sha256": "1d26048b9b98f6a654f0066cd6cb894a6e3933d61b18c3854b6fd7ddd1793747"
+    }
+  ]
+}

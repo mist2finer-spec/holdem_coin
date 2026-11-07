@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "apk": "G:\\new_project\\IslandGame\\Builds\\Android\\IslandGame-Test-Boss-Nature-Fix-20261106.apk",
+  "bytes": 116909567,
+  "sha256": "ae8dc59086f1816d933462e93550f05d7bc5b4ae14ef7ee0e13c492c2daf713a",
+  "package": "com.mist2finer.islandgame.dev",
+  "architecture": "arm64-v8a",
+  "backend": "IL2CPP",
+  "zipIntegrity": true,
+  "signatureVerified": true,
+  "zipAlignment16K": true,
+  "internetPermission": true,
+  "deviceExecution": "UNAVAILABLE: no adb device connected",
+  "server": "https://holdem-coin-tavern.onrender.com",
+  "versionCode": 2026110602,
+  "versionName": "0.1.0-test.20261106.2",
+  "portrait": true,
+  "developmentBuild": true
+}

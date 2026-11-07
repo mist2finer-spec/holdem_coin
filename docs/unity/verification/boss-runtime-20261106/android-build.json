@@ -1,0 +1,11 @@
+{
+  "status": "completed",
+  "buildId": "build_b597876b108c",
+  "result": "Succeeded",
+  "platform": "Android",
+  "outputPath": "G:/new_project/IslandGame/Builds/Android/IslandGame-Test-Boss-Nature-Fix-20261106.apk",
+  "buildTimeMs": 361593,
+  "totalWarnings": 0,
+  "totalErrors": 0,
+  "sourceRevision": "ffde9d1a33b1931c3aa09fe72bc5ef7f4df8213c"
+}
