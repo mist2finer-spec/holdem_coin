@@ -1,4 +1,4 @@
-**2026-11-06 최신 Unity: [2.5D/거대 보스 카메라 및 다리 적용](BOSS_CAMERA_20261106_KO.md), [배포·APK 결과](BOSS_CAMERA_DEPLOY_20261106_KO.md)를 먼저 확인하세요. 현재 일반 사냥은 Unity 전용 두 구역 훈련 API `/api/rpg/unity-boss`를 사용하며 웹 게임은 유지합니다. 바이너리 자산 Git 푸시는 별도 인증 대기입니다.**
+**2026-11-06 최신 Unity: [2.5D/거대 보스 카메라 및 다리 적용](BOSS_CAMERA_20261106_KO.md), [배포·APK 결과](BOSS_CAMERA_DEPLOY_20261106_KO.md)를 먼저 확인하세요. 현재 일반 사냥은 Unity 전용 두 구역 훈련 API `/api/rpg/unity-boss`를 사용하며 웹 게임은 유지합니다. 모델·애니메이션을 포함한 자산 스냅샷은 Git 인증 확인 후 함께 반영했습니다.**
 
 # IslandGame — 최신 로컬 Unity 통합 인계
 
