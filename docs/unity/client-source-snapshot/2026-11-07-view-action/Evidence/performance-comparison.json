@@ -1,0 +1,90 @@
+{
+  "platform": "Unity Editor, Android target; no physical device",
+  "render": "GameView + diagnostic URP SingleCameraRequest",
+  "seconds": 60,
+  "seed": 111,
+  "rttMs": 150,
+  "rows": [
+    {
+      "metric": "프레임 p95",
+      "before": 23.46430000034161,
+      "after": 23.654399999941234,
+      "unit": "ms",
+      "percent": 0.8101669327312377
+    },
+    {
+      "metric": "프레임 p99",
+      "before": 25.716299998748582,
+      "after": 26.163100003032014,
+      "unit": "ms",
+      "percent": 1.7374194744390614
+    },
+    {
+      "metric": "CPU 평균",
+      "before": 4.160839149888141,
+      "after": 4.288916970036407,
+      "unit": "ms",
+      "percent": 3.0781728284716037
+    },
+    {
+      "metric": "CPU p95",
+      "before": 6.7736,
+      "after": 7.352099999999999,
+      "unit": "ms",
+      "percent": 8.540510216133201
+    },
+    {
+      "metric": "GPU 평균",
+      "before": 1.6692379060402691,
+      "after": 1.4805748171380526,
+      "unit": "ms",
+      "percent": -11.302348707726095
+    },
+    {
+      "metric": "GPU p95",
+      "before": 2.662656,
+      "after": 2.622464,
+      "unit": "ms",
+      "percent": -1.5094702432458473
+    },
+    {
+      "metric": "GC 할당 평균",
+      "before": 97.19851418309564,
+      "after": 107.43504587738029,
+      "unit": "KiB/frame",
+      "percent": 10.531572195642624
+    },
+    {
+      "metric": "GC 할당 p95",
+      "before": 701.5654296875,
+      "after": 707.625,
+      "unit": "KiB/frame",
+      "percent": 0.863721337466572
+    },
+    {
+      "metric": "Draw 평균",
+      "before": 426.8498322147651,
+      "after": 451.26519182301877,
+      "unit": "",
+      "percent": 5.719894390392843
+    },
+    {
+      "metric": "Draw p95",
+      "before": 790.0,
+      "after": 863.0,
+      "unit": "",
+      "percent": 9.240506329113929
+    },
+    {
+      "metric": "SetPass 평균",
+      "before": 51.47623042505593,
+      "after": 49.8336600392047,
+      "unit": "",
+      "percent": -3.19092981806941
+    }
+  ],
+  "errors": [],
+  "androidPhysical": "UNAVAILABLE",
+  "memoryComparison": "not recorded in this run",
+  "finalCaptureInterruptedRunExcluded": true
+}

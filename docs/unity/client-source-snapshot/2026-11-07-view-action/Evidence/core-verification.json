@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "assertions": 6457,
+  "maxHeroWeaponErrorMeters": 6.664002E-08,
+  "maxBossContactErrorMeters": 1.22878123E-06,
+  "profileSwitchGraphCreations": 0,
+  "runtimeBakeMesh": 0,
+  "scope": "automated Unity pose/body/transition checks, not user play approval"
+}

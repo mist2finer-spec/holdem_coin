@@ -1,0 +1,13 @@
+{
+  "bossContactTests": 40,
+  "rpgRegressionTests": 135,
+  "pokerRegressionTests": 245,
+  "stageRuntimeTests": 8,
+  "rpgTypecheck": "PASS",
+  "checkoutFixtureFix": "13 fixtures restored to exact Git blob bytes; initial 5 Windows CRLF hash/atlas failures resolved",
+  "stageGeneratedCheckLocal": "UNAVAILABLE: Windows/junction-dependent esbuild metadata differs; unchanged kernel, Linux CI remains required",
+  "coreUnityAssertions": 6457,
+  "feedbackAssertions": 13,
+  "liveFrames": 3583,
+  "physicalAndroid": "UNAVAILABLE; user will test APK"
+}

@@ -1,0 +1,20 @@
+[
+  {
+    "iteration": 0,
+    "activeGraphs": 10,
+    "feedbackRoots": 4,
+    "profile": "Side"
+  },
+  {
+    "iteration": 1,
+    "activeGraphs": 10,
+    "feedbackRoots": 4,
+    "profile": "Side"
+  },
+  {
+    "iteration": 2,
+    "activeGraphs": 10,
+    "feedbackRoots": 4,
+    "profile": "Side"
+  }
+]

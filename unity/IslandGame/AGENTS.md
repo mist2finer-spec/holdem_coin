@@ -1,3 +1,5 @@
+> 최신 2026-11-07.4: [횡스크롤·쿼터뷰 액션/공통 접촉/보스 간격/전환 검증](../../docs/unity/COMBAT_VIEW_ACTION_20261107_KO.md). 기존 카메라·서버·수정 Nilo 룩을 확장. 새 참고 스냅샷으로 실제 로컬 후속 수정을 덮어쓰지 마세요.
+
 > 최신 2026-11-07 후속: [보스 접촉 판정·URP 미리보기·테스트 APK](../../docs/unity/BOSS_CONTACT_DIORAMA_20261107_KO.md). 전투 안정화 유지, 사용자 승인한 수정 Nilo/URP 통합, 약한 Bloom 적용. 후속 작업도 같은 공격 ID/시간·실행 검증·고정 부하 전후 비교를 유지합니다.
 
 > 2026-11-07 배포 완료: [main·Render LIVE·APK·운영 Unity 연결 검증](../../docs/unity/COMBAT_STABILITY_DEPLOY_20261107_KO.md). 운영 소스 7adb404, APK 2026110701.
