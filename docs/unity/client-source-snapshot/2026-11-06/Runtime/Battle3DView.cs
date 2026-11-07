@@ -7,7 +7,7 @@ namespace IslandGame {
  // Visual adapter only. The existing server, presentation clock and HUD own gameplay/time.
  public sealed class Battle3DView : MonoBehaviour {
   sealed class Actor {
-   public GameObject root, model;
+   public GameObject root, model;public RuntimeAnimationPlayer animation;
    public SkinnedMeshRenderer skin;
    public BattleGroundingProfile.Model grounding;
    public int lastSampleSlot=int.MinValue,phase;public bool placed;
@@ -31,7 +31,7 @@ namespace IslandGame {
   public int ThrottledSamples {get;private set;}
   readonly List<UnityEngine.Object> owned=new List<UnityEngine.Object>();
   readonly Dictionary<PrimitiveType,Mesh> displayMeshes=new Dictionary<PrimitiveType,Mesh>();
-  Transform world;
+  Transform world;NatureAuthoredEnvironment authored;public float HeroDepth,HeroHeading;public bool Planar;
   public NatureEnvironmentStream Stream{get;private set;}
   UnityBossPresentation bossView;UnityBossAssets bossAssets;
   public Transform BossTarget=>bossView!=null?bossView.BossTarget:null;
@@ -42,7 +42,7 @@ namespace IslandGame {
   public float HeroGroundError {get;private set;}
   public int ActorCount=>actors.Count;
   Material ground,edge,bark,leaves,rock,steel,grip,shadow;
-  public void Clear(){if(bossView!=null){bossView.Dispose();bossView=null;}if(Stream!=null){Stream.Dispose();Stream=null;}actors.Clear();slimePool.Clear();displayMeshes.Clear();world=null;hasFrustum=false;foreach(var o in owned)if(o)Destroy(o);owned.Clear();}
+  public void Clear(){foreach(var a in actors.Values)a.animation?.Dispose();foreach(var a in slimePool)a.animation?.Dispose();if(authored){Destroy(authored.gameObject);authored=null;}if(bossView!=null){bossView.Dispose();bossView=null;}if(Stream!=null){Stream.Dispose();Stream=null;}actors.Clear();slimePool.Clear();displayMeshes.Clear();world=null;hasFrustum=false;foreach(var o in owned)if(o)Destroy(o);owned.Clear();}
   Material Mat(string name,Color color,float metallic=0){var m=new Material(Shader.Find("Standard")){name=name,color=color};m.SetFloat("_Glossiness",.2f);m.SetFloat("_Metallic",metallic);owned.Add(m);return m;}
   GameObject Shape(string name,PrimitiveType type,Transform parent,Vector3 p,Vector3 scale,Material material){
    Mesh mesh;if(!displayMeshes.TryGetValue(type,out mesh)){mesh=IslandDisplayMeshes.Create(type);displayMeshes.Add(type,mesh);owned.Add(mesh);}
@@ -57,11 +57,13 @@ namespace IslandGame {
    bark=Mat("Bark · walnut",new Color(.23f,.16f,.12f));leaves=Mat("Canopy · pine",new Color(.13f,.28f,.22f));rock=Mat("Stone · blue slate",new Color(.32f,.39f,.40f));
    steel=Mat("Sword · silver",new Color(.73f,.83f,.84f),.55f);grip=Mat("Sword · leather",new Color(.22f,.10f,.15f));shadow=Mat("Contact shadow · moss",new Color(.13f,.21f,.14f));
    var sun=new GameObject("Battle 3D · warm key");sun.transform.SetParent(root,false);sun.transform.rotation=Quaternion.Euler(42,-32,0);
-   var light=sun.AddComponent<Light>();light.type=LightType.Directional;light.color=new Color(1,.89f,.73f);light.intensity=1.15f;light.shadows=LightShadows.Soft;light.cullingMask=1<<30;
-   var fill=new GameObject("Battle 3D · cool fill");fill.transform.SetParent(root,false);fill.transform.rotation=Quaternion.Euler(35,150,0);var fl=fill.AddComponent<Light>();fl.type=LightType.Directional;fl.color=new Color(.58f,.75f,.84f);fl.intensity=.55f;fl.cullingMask=1<<30;
+   var light=sun.AddComponent<Light>();light.type=LightType.Directional;light.color=new Color(1,.89f,.73f);light.intensity=.85f;light.shadows=LightShadows.Soft;light.cullingMask=1<<30;
+   var fill=new GameObject("Battle 3D · cool fill");fill.transform.SetParent(root,false);fill.transform.rotation=Quaternion.Euler(35,150,0);var fl=fill.AddComponent<Light>();fl.type=LightType.Directional;fl.color=new Color(.58f,.75f,.84f);fl.intensity=.35f;fl.cullingMask=1<<30;
    var environmentAssets=Resources.Load<NatureEnvironmentAssets>("NatureEnvironmentAssets");
-   if(environmentAssets)Stream=new NatureEnvironmentStream(root,map,environmentAssets);
-   if(Stream==null){
+   bool authoredMap=(bool?)map?["unityBossMode"]==true;
+   if(authoredMap){var scenery=new GameObject("Authored Nature Free map");scenery.transform.SetParent(root,false);authored=scenery.AddComponent<NatureAuthoredEnvironment>();authored.Initialize();}
+   if(!authoredMap&&environmentAssets)Stream=new NatureEnvironmentStream(root,map,environmentAssets);
+   if(Stream==null&&!authoredMap){
    if(map?["rooms"] is JArray rooms){
     for(int i=0;i<rooms.Count;i++){
      var r=rooms[i];float a=NativeCombatPresentation.N(r["x1"])*.48f,b=(NativeCombatPresentation.N(r["x2"])+1)*.48f,y=NativeCombatPresentation.N(r["elevation"])/100;
@@ -78,8 +80,8 @@ namespace IslandGame {
    }else Floor(-10,60,0);
    }
    var nature=Resources.Load<NatureEnvironmentAssets>("NatureEnvironmentAssets");camera.backgroundColor=nature?nature.skyColor:new Color(.52f,.63f,.64f);if(!camera.GetComponentInParent<BattleCameraController>())camera.transform.rotation=Quaternion.Euler(9,0,0);camera.nearClipPlane=.1f;camera.farClipPlane=180;
-   if((bool?)map?["unityBossMode"]==true&&bossAssets)bossView=new UnityBossPresentation(root,bossAssets);
-   if((bool?)map?["unityBossMode"]==true)Shape("Deep world skirt backing",PrimitiveType.Cube,root,new Vector3(33.6f,-14,0),new Vector3(150,12,160),environmentAssets?environmentAssets.earth:edge);
+   if((bool?)map?["unityBossMode"]==true&&bossAssets)bossView=new UnityBossPresentation(root,bossAssets,map);
+   
    IslandFrameBudget.Current.BindScenery(null);
   }
   void Floor(float a,float b,float y){
@@ -94,12 +96,12 @@ namespace IslandGame {
    foreach(var t in model.GetComponentsInChildren<Transform>(true))t.gameObject.layer=30;root.layer=30;
    foreach(var animator in model.GetComponentsInChildren<Animator>())animator.enabled=false;
    var skin=model.GetComponentInChildren<SkinnedMeshRenderer>();
-   var clip=hero?assets.idle:assets.slimeIdle;if(clip)clip.SampleAnimation(model,0);
+   var animation=new RuntimeAnimationPlayer(model);var clip=hero?assets.idle:assets.slimeIdle;if(clip)animation.Sample(clip,0);
    var profile=hero?groundingProfile?.Hero:groundingProfile?.Slime;
    if(profile!=null&&profile.Vertices!=skin.sharedMesh.vertexCount)profile=null;
    var bound=skin.localBounds;float height=Mathf.Max(.001f,profile!=null?profile.ReferenceHeight:bound.size.y*Mathf.Abs(skin.transform.lossyScale.y));
    if(profile!=null)skin.localBounds=profile.Bounds;
-   var a=new Actor{root=root,model=model,skin=skin,grounding=profile,phase=Phase(id),scale=(hero?assets.heroHeight:assets.slimeHeight)/height};CreatedModels++;
+   var a=new Actor{root=root,model=model,skin=skin,animation=animation,grounding=profile,phase=Phase(id),scale=(hero?assets.heroHeight:assets.slimeHeight)/height};CreatedModels++;
    foreach(var renderer in model.GetComponentsInChildren<Renderer>()){
     renderer.sharedMaterial=hero?assets.heroMaterial:assets.slimeMaterial;
     renderer.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.On;renderer.receiveShadows=true;
@@ -124,7 +126,7 @@ namespace IslandGame {
   }
   static int Phase(string id){unchecked{int h=17;foreach(char c in id)h=h*31+c;return h&0x7fffffff;}}
   public bool ShouldPresent(float coreX)=>!battleCamera||Mathf.Abs(coreX/100-battleCamera.transform.position.x)<14;
-  public void BeginFrame(float heroX){if(Stream!=null){var rig=battleCamera.GetComponentInParent<BattleCameraController>();Stream.ConfigureGround(rig&&rig.Mode!=ViewMode.Side25D?32:4,24,12);Stream.Tick(rig?rig.FocusWorldX:heroX/100,IslandFrameBudget.Current,rig?rig.VisibleGroundHalfWidth:6);}if(!battleCamera)return;GeometryUtility.CalculateFrustumPlanes(battleCamera,frustum);hasFrustum=true;}
+  public void BeginFrame(float heroX){if(authored)authored.Tick(new Vector3(heroX/100,0,HeroDepth),battleCamera);if(Stream!=null){var rig=battleCamera.GetComponentInParent<BattleCameraController>();Stream.ConfigureGround(rig&&rig.Mode!=ViewMode.Side25D?32:4,24,12);Stream.Tick(rig?rig.FocusWorldX:heroX/100,IslandFrameBudget.Current,rig?rig.VisibleGroundHalfWidth:6);}if(!battleCamera)return;GeometryUtility.CalculateFrustumPlanes(battleCamera,frustum);hasFrustum=true;}
   public float Draw(string id,string action,float x,float elevation,float facing,string serial,float age,float duration,float hitAt,string kind,float advance,float visualTime){
    bool hero=id=="hero";Actor a;if(!actors.TryGetValue(id,out a))a=Create(id,hero);if(a==null)return 0;
    var clip=hero&&bossAssets&&bossAssets.knockback&&(action=="knockback"||action=="knockdown"||action=="getup")?bossAssets.knockback:hero?assets.HeroClip(action):assets.slimeIdle;if(!clip)return 0;
@@ -133,7 +135,7 @@ namespace IslandGame {
    if(a.clip!=clip||(!loop&&a.serial!=serial))a.time=0;
    a.clip=clip;a.serial=serial;
    // Distance-driven gait avoids skating at partial stick deflection and preserves phase on turns.
-   float gaitAdvance=hero&&clip==assets.run&&a.placed?Mathf.Min(Mathf.Abs(x/100-a.root.transform.position.x)/2.1f,Mathf.Max(0,advance)*2):advance;
+   float gaitAdvance=hero&&clip==assets.run&&a.placed?Mathf.Min(Vector2.Distance(new Vector2(x/100,HeroDepth),new Vector2(a.root.transform.position.x,a.root.transform.position.z))/2.1f,Mathf.Max(0,advance)*2):advance;
    a.time+=Mathf.Max(0,gaitAdvance);
    float sample=loop?Mathf.Repeat(hero?a.time:visualTime,clip.length):Mathf.Min(a.time,clip.length);
    if(hero&&kind=="knockback"&&bossAssets&&clip==bossAssets.knockback)sample=Mathf.Clamp(age,0,clip.length);
@@ -141,7 +143,7 @@ namespace IslandGame {
     if(kind=="attack"||kind=="skill")sample=NativeCombatPresentation.MotionTime(age,duration,hitAt,clip.length,clip.length*.45f);
     else if(kind=="rush"||kind=="dodge"||kind=="slide")sample=Mathf.Clamp01(age/duration)*clip.length;
    }
-   var target=new Vector3(x/100,elevation/100,0);
+   var target=new Vector3(x/100,elevation/100,hero?HeroDepth:0);
    if(hero||!a.placed||Vector3.Distance(a.root.transform.position,target)>3)a.root.transform.position=target;
    else a.root.transform.position=Vector3.Lerp(a.root.transform.position,target,1-Mathf.Exp(-Mathf.Max(0,advance)*18));
    a.placed=true;a.root.transform.localScale=Vector3.one;
@@ -157,10 +159,10 @@ namespace IslandGame {
     if(budget&&!budget.AllowOptionalPose()){ThrottledSamples++;return sample;}a.lastSampleSlot=slot;
    }
    long poseStart=System.Diagnostics.Stopwatch.GetTimestamp();
-   clip.SampleAnimation(a.model,sample);SampleCalls++;if(!hero&&budget)budget.RecordPose(poseStart);
+   a.animation.Sample(clip,sample,advance);SampleCalls++;if(!hero&&budget)budget.RecordPose(poseStart);
    // Mirror the side-on presentation without rotating the asymmetric rig through its back view.
-   a.model.transform.localScale=new Vector3(a.scale,a.scale,a.scale*(hero&&facing<0?-1:1));
-   a.model.transform.localRotation=Quaternion.Euler(0,hero?assets.heroYaw:0,0);
+   a.model.transform.localScale=new Vector3(a.scale,a.scale,a.scale*(hero&&!Planar&&facing<0?-1:1));
+   a.model.transform.localRotation=Quaternion.Euler(0,hero?(Planar?HeroHeading:assets.heroYaw):0,0);
    a.model.transform.localPosition=Vector3.zero;
    float feet=a.baseFoot*a.scale,sourceHeight=0;
    bool cached=a.grounding!=null&&a.grounding.TryHeight(clip,sample,out sourceHeight);
@@ -183,7 +185,7 @@ namespace IslandGame {
   static Transform Find(Transform root,string name){foreach(var t in root.GetComponentsInChildren<Transform>())if(t.name==name)return t;return null;}
   public void ShowOnly(HashSet<string> shown){
    retired.Clear();foreach(var pair in actors){if(shown.Contains(pair.Key)){if(!pair.Value.root.activeSelf)pair.Value.root.SetActive(true);continue;}if(pair.Key=="hero"){pair.Value.root.SetActive(false);continue;}retired.Add(pair.Key);}
-   foreach(var id in retired){var a=actors[id];actors.Remove(id);a.root.SetActive(false);if(slimePool.Count<MaximumPooledSlimes)slimePool.Push(a);else Destroy(a.root);}
+   foreach(var id in retired){var a=actors[id];actors.Remove(id);a.root.SetActive(false);if(slimePool.Count<MaximumPooledSlimes)slimePool.Push(a);else {a.animation.Dispose();Destroy(a.root);}}
   }
   public void Follow(Camera camera,float x,float elevation,float delta){
    var rig=camera.GetComponentInParent<BattleCameraController>();if(rig){rig.Tick(delta);return;}

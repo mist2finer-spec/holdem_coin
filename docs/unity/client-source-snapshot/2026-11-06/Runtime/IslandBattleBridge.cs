@@ -24,7 +24,14 @@ namespace IslandGame {
   public void HudSlide(){if(HudCanInput)rpg.Command("tick",campaign?new JObject{{"dodge",1}}:new JObject{{"slide",true}});}
   public void HudEvade(int direction){if(HudCanInput)Evade(direction);}
   public void HudDrink(string kind){if(HudCanInput)Drink(kind);}
-  public void HudMove(float direction){if(rpg!=null)rpg.Move=HudCanInput?direction:0;}
+  public bool HudPlanarMovement=>rpg!=null&&rpg.PlanarMovement;
+  public void HudMove(float direction)=>HudMove(new Vector2(direction,0));
+  public void HudMove(Vector2 direction){
+   if(rpg==null)return;if(!HudCanInput)direction=Vector2.zero;
+   if(!HudPlanarMovement)direction.y=0;
+   else if(battle&&battle.BattleCamera){var camera=battle.BattleCamera.transform;var forward=Vector3.ProjectOnPlane(camera.forward,Vector3.up).normalized;var right=Vector3.ProjectOnPlane(camera.right,Vector3.up).normalized;var world=right*direction.x+forward*direction.y;direction=new Vector2(world.x,world.z);}
+   direction=Vector2.ClampMagnitude(direction,1);rpg.Move=direction.x;rpg.MoveY=direction.y;
+  }
   public void HudAuto(){if(HudCanInput)rpg.Auto=!rpg.Auto;}
   public void HudMenu(string panel){if(panel=="lobby"){Lobby();return;}if(panel=="tavern"){rpg.Close();battle.Clear();Poker("poker6");return;}if(rpg.State==null&&panel!="")return;SetPanel(panel);}
   public void HudRetry(){SetPanel("");notice="";rpg.Open(server,campaign);}

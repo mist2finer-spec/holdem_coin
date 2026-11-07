@@ -1,0 +1,347 @@
+[
+  {
+    "path": "NatureAuthoredChunks/3_4",
+    "x": 42.0,
+    "z": 54.0
+  },
+  {
+    "path": "NatureAuthoredChunks/5_4",
+    "x": 66.0,
+    "z": 54.0
+  },
+  {
+    "path": "NatureAuthoredChunks/4_4",
+    "x": 54.0,
+    "z": 54.0
+  },
+  {
+    "path": "NatureAuthoredChunks/7_3",
+    "x": 90.0,
+    "z": 42.0
+  },
+  {
+    "path": "NatureAuthoredChunks/7_2",
+    "x": 90.0,
+    "z": 30.0
+  },
+  {
+    "path": "NatureAuthoredChunks/7_-3",
+    "x": 90.0,
+    "z": -30.0
+  },
+  {
+    "path": "NatureAuthoredChunks/6_1",
+    "x": 78.0,
+    "z": 18.0
+  },
+  {
+    "path": "NatureAuthoredChunks/-1_4",
+    "x": -6.0,
+    "z": 54.0
+  },
+  {
+    "path": "NatureAuthoredChunks/0_2",
+    "x": 6.0,
+    "z": 30.0
+  },
+  {
+    "path": "NatureAuthoredChunks/0_1",
+    "x": 6.0,
+    "z": 18.0
+  },
+  {
+    "path": "NatureAuthoredChunks/1_2",
+    "x": 18.0,
+    "z": 30.0
+  },
+  {
+    "path": "NatureAuthoredChunks/-1_3",
+    "x": -6.0,
+    "z": 42.0
+  },
+  {
+    "path": "NatureAuthoredChunks/1_3",
+    "x": 18.0,
+    "z": 42.0
+  },
+  {
+    "path": "NatureAuthoredChunks/-1_2",
+    "x": -6.0,
+    "z": 30.0
+  },
+  {
+    "path": "NatureAuthoredChunks/-1_1",
+    "x": -6.0,
+    "z": 18.0
+  },
+  {
+    "path": "NatureAuthoredChunks/0_3",
+    "x": 6.0,
+    "z": 42.0
+  },
+  {
+    "path": "NatureAuthoredChunks/1_1",
+    "x": 18.0,
+    "z": 18.0
+  },
+  {
+    "path": "NatureAuthoredChunks/3_1",
+    "x": 42.0,
+    "z": 18.0
+  },
+  {
+    "path": "NatureAuthoredChunks/2_3",
+    "x": 30.0,
+    "z": 42.0
+  },
+  {
+    "path": "NatureAuthoredChunks/2_2",
+    "x": 30.0,
+    "z": 30.0
+  },
+  {
+    "path": "NatureAuthoredChunks/4_1",
+    "x": 54.0,
+    "z": 18.0
+  },
+  {
+    "path": "NatureAuthoredChunks/3_3",
+    "x": 42.0,
+    "z": 42.0
+  },
+  {
+    "path": "NatureAuthoredChunks/3_2",
+    "x": 42.0,
+    "z": 30.0
+  },
+  {
+    "path": "NatureAuthoredChunks/4_2",
+    "x": 54.0,
+    "z": 30.0
+  },
+  {
+    "path": "NatureAuthoredChunks/5_3",
+    "x": 66.0,
+    "z": 42.0
+  },
+  {
+    "path": "NatureAuthoredChunks/6_3",
+    "x": 78.0,
+    "z": 42.0
+  },
+  {
+    "path": "NatureAuthoredChunks/5_2",
+    "x": 66.0,
+    "z": 30.0
+  },
+  {
+    "path": "NatureAuthoredChunks/6_2",
+    "x": 78.0,
+    "z": 30.0
+  },
+  {
+    "path": "NatureAuthoredChunks/5_1",
+    "x": 66.0,
+    "z": 18.0
+  },
+  {
+    "path": "NatureAuthoredChunks/4_3",
+    "x": 54.0,
+    "z": 42.0
+  },
+  {
+    "path": "NatureAuthoredChunks/6_4",
+    "x": 78.0,
+    "z": 54.0
+  },
+  {
+    "path": "NatureAuthoredChunks/-1_-4",
+    "x": -6.0,
+    "z": -42.0
+  },
+  {
+    "path": "NatureAuthoredChunks/-1_-3",
+    "x": -6.0,
+    "z": -30.0
+  },
+  {
+    "path": "NatureAuthoredChunks/0_-3",
+    "x": 6.0,
+    "z": -30.0
+  },
+  {
+    "path": "NatureAuthoredChunks/0_-4",
+    "x": 6.0,
+    "z": -42.0
+  },
+  {
+    "path": "NatureAuthoredChunks/-1_-1",
+    "x": -6.0,
+    "z": -6.0
+  },
+  {
+    "path": "NatureAuthoredChunks/-1_-2",
+    "x": -6.0,
+    "z": -18.0
+  },
+  {
+    "path": "NatureAuthoredChunks/1_-4",
+    "x": 18.0,
+    "z": -42.0
+  },
+  {
+    "path": "NatureAuthoredChunks/1_-2",
+    "x": 18.0,
+    "z": -18.0
+  },
+  {
+    "path": "NatureAuthoredChunks/0_-2",
+    "x": 6.0,
+    "z": -18.0
+  },
+  {
+    "path": "NatureAuthoredChunks/1_-3",
+    "x": 18.0,
+    "z": -30.0
+  },
+  {
+    "path": "NatureAuthoredChunks/0_-1",
+    "x": 6.0,
+    "z": -6.0
+  },
+  {
+    "path": "NatureAuthoredChunks/1_-1",
+    "x": 18.0,
+    "z": -6.0
+  },
+  {
+    "path": "NatureAuthoredChunks/4_0",
+    "x": 54.0,
+    "z": 6.0
+  },
+  {
+    "path": "NatureAuthoredChunks/3_0",
+    "x": 42.0,
+    "z": 6.0
+  },
+  {
+    "path": "NatureAuthoredChunks/5_-2",
+    "x": 66.0,
+    "z": -18.0
+  },
+  {
+    "path": "NatureAuthoredChunks/4_-2",
+    "x": 54.0,
+    "z": -18.0
+  },
+  {
+    "path": "NatureAuthoredChunks/3_-2",
+    "x": 42.0,
+    "z": -18.0
+  },
+  {
+    "path": "NatureAuthoredChunks/5_-1",
+    "x": 66.0,
+    "z": -6.0
+  },
+  {
+    "path": "NatureAuthoredChunks/4_-1",
+    "x": 54.0,
+    "z": -6.0
+  },
+  {
+    "path": "NatureAuthoredChunks/2_-2",
+    "x": 30.0,
+    "z": -18.0
+  },
+  {
+    "path": "NatureAuthoredChunks/3_-3",
+    "x": 42.0,
+    "z": -30.0
+  },
+  {
+    "path": "NatureAuthoredChunks/2_-3",
+    "x": 30.0,
+    "z": -30.0
+  },
+  {
+    "path": "NatureAuthoredChunks/6_0",
+    "x": 78.0,
+    "z": 6.0
+  },
+  {
+    "path": "NatureAuthoredChunks/6_-2",
+    "x": 78.0,
+    "z": -18.0
+  },
+  {
+    "path": "NatureAuthoredChunks/6_-3",
+    "x": 78.0,
+    "z": -30.0
+  },
+  {
+    "path": "NatureAuthoredChunks/5_-3",
+    "x": 66.0,
+    "z": -30.0
+  },
+  {
+    "path": "NatureAuthoredChunks/4_-3",
+    "x": 54.0,
+    "z": -30.0
+  },
+  {
+    "path": "NatureAuthoredChunks/6_-1",
+    "x": 78.0,
+    "z": -6.0
+  },
+  {
+    "path": "NatureAuthoredChunks/2_-1",
+    "x": 30.0,
+    "z": -6.0
+  },
+  {
+    "path": "NatureAuthoredChunks/2_0",
+    "x": 30.0,
+    "z": 6.0
+  },
+  {
+    "path": "NatureAuthoredChunks/3_-1",
+    "x": 42.0,
+    "z": -6.0
+  },
+  {
+    "path": "NatureAuthoredChunks/1_0",
+    "x": 18.0,
+    "z": 6.0
+  },
+  {
+    "path": "NatureAuthoredChunks/0_0",
+    "x": 6.0,
+    "z": 6.0
+  },
+  {
+    "path": "NatureAuthoredChunks/2_1",
+    "x": 30.0,
+    "z": 18.0
+  },
+  {
+    "path": "NatureAuthoredChunks/7_-2",
+    "x": 90.0,
+    "z": -18.0
+  },
+  {
+    "path": "NatureAuthoredChunks/0_4",
+    "x": 6.0,
+    "z": 54.0
+  },
+  {
+    "path": "NatureAuthoredChunks/5_0",
+    "x": 66.0,
+    "z": 6.0
+  },
+  {
+    "path": "NatureAuthoredChunks/2_-4",
+    "x": 30.0,
+    "z": -42.0
+  }
+]

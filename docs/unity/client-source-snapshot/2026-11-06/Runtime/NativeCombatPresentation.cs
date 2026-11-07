@@ -30,7 +30,7 @@ namespace IslandGame {
    return duration==hit?clipDuration:contact+(t-hit)/(duration-hit)*(clipDuration-contact);
   }
   static bool Finite(float n)=>!float.IsNaN(n)&&!float.IsInfinity(n);
-  public static JObject ProjectHero(JObject state,JObject map,float visualTime,float move,bool auto){
+  public static JObject ProjectHero(JObject state,JObject map,float visualTime,float move,bool auto,float moveY=0){
    var source=state?["hero"] as JObject;if(source==null)return null;var hero=(JObject)source.DeepClone();
    if((string)state["status"]!="playing")return hero;
    var motion=hero["motion"] as JObject;
@@ -41,8 +41,19 @@ namespace IslandGame {
      hero["x"]=Mathf.Lerp(N(motion["from"]?["x"]),N(motion["to"]?["x"]),t);hero["y"]=Mathf.Lerp(N(motion["from"]?["y"]),N(motion["to"]?["y"]),t);hero["airHeight"]=kind=="jump"?400*t*(1-t):0;
      if(kind=="jump")hero["action"]=JumpClip(t);if(kind=="slide")hero["action"]=t<.7f?"sliding1":"sliding2";
     }else if(kind=="knockback"){
-     float flight=Mathf.Clamp01(age/.45f);hero["x"]=Mathf.Lerp(N(motion["from"]?["x"]),N(motion["to"]?["x"]),flight);hero["airHeight"]=age<.45f?4*210*flight*(1-flight):0;hero["action"]=age<.45f?"knockback":age<1.2f?"knockdown":"getup";
+     float flight=Mathf.Clamp01(age/.45f);hero["x"]=Mathf.Lerp(N(motion["from"]?["x"]),N(motion["to"]?["x"]),flight);hero["y"]=Mathf.Lerp(N(motion["from"]?["y"]),N(motion["to"]?["y"]),flight);hero["airHeight"]=age<.45f?4*210*flight*(1-flight):0;hero["action"]=age<.45f?"knockback":age<1.2f?"knockdown":"getup";
     }else if(kind=="rush"){float desired=Mathf.Lerp(N(motion["from"]?["x"]),N(motion["to"]?["x"]),t);hero["x"]=PreviewWalk(map,state,N(hero["x"]),desired-N(hero["x"]));}
+    return hero;
+   }
+   if((bool?)state["unityBossMode"]==true){
+    bool planar=(string)state["cameraMode"]=="QuarterView";
+    var input=Vector2.ClampMagnitude(new Vector2(move,planar?moveY:0),1);
+    if(input.magnitude>.1f){
+     float lead=Mathf.Clamp(visualTime-N(state["elapsed"]),0,.15f);float px=N(hero["x"])+input.x*210*lead,py=N(hero["y"])+input.y*210*lead;
+     var bounds=state["walkBounds"];px=Mathf.Clamp(px,N(bounds?["minX"]),N(bounds?["maxX"]));py=planar?Mathf.Clamp(py,N(bounds?["minY"]),N(bounds?["maxY"])):N(map?["laneY"],192);
+     bool blocked=false;foreach(var o in map?["obstacles"] as JArray??new JArray())if(Vector2.Distance(new Vector2(px,py),new Vector2(N(o["x"]),N(o["y"])))<N(o["radius"])+18){blocked=true;break;}
+     if(!blocked){hero["x"]=px;hero["y"]=py;}if(Mathf.Abs(input.x)>.01f)hero["facing"]=Mathf.Sign(input.x);hero["direction"]=new JObject{{"x",input.normalized.x},{"y",input.normalized.y}};hero["action"]="run1";
+    }else if(!auto)hero["action"]="stay1";
     return hero;
    }
    if(Mathf.Abs(move)>.1f||!auto){
@@ -72,7 +83,12 @@ namespace IslandGame {
     if(blocked)break;x=next;
    }return x;
   }
-  public static float UnityGroundHeight(JObject map,float x){var bridge=map?["bridge"] as JObject;var heights=bridge?["heightCore"] as JArray;if(heights==null||heights.Count<2)return 0;float from=N(bridge["from"]),to=N(bridge["to"]);if(x<from||x>to||to<=from)return 0;float index=Mathf.Clamp01((x-from)/(to-from))*(heights.Count-1);int a=Mathf.FloorToInt(index);return Mathf.Lerp(N(heights[a]),N(heights[Mathf.Min(a+1,heights.Count-1)]),index-a);}
+  public static float UnityGroundHeight(JObject map,float x,float z=0){
+   var terrain=map?["terrain"] as JObject;float ground=0;
+   if(terrain?["heights"] is JArray grid){int width=(int)N(terrain["width"]),height=(int)N(terrain["height"]);float gx=Mathf.Clamp((x/100-N(terrain["originX"]))/N(terrain["step"],1),0,width-1),gz=Mathf.Clamp((z-N(terrain["originZ"]))/N(terrain["step"],1),0,height-1);int ix=Mathf.Min((int)gx,width-2),iz=Mathf.Min((int)gz,height-2);ground=100*Mathf.Lerp(Mathf.Lerp(N(grid[iz*width+ix]),N(grid[iz*width+ix+1]),gx-ix),Mathf.Lerp(N(grid[(iz+1)*width+ix]),N(grid[(iz+1)*width+ix+1]),gx-ix),gz-iz);}
+   return Mathf.Max(ground,BridgeHeight(map,x,z,ground));
+  }
+  static float BridgeHeight(JObject map,float x,float z,float fallback){var bridge=map?["bridge"] as JObject;var heights=bridge?["heightCore"] as JArray;if(heights==null||heights.Count<2||Mathf.Abs(z)>.65f)return fallback;float from=N(bridge["from"]),to=N(bridge["to"]);if(x<from||x>to||to<=from)return fallback;float index=Mathf.Clamp01((x-from)/(to-from))*(heights.Count-1);int a=Mathf.FloorToInt(index);return Mathf.Lerp(N(heights[a]),N(heights[Mathf.Min(a+1,heights.Count-1)]),index-a);}
   static bool Walkable(JObject map,float x,float y){
    if(!Finite(x)||!Finite(y))return false;int width=(int)N(map["width"]),height=(int)N(map["height"]);var tiles=map["tiles"] as JArray;if(tiles==null)return false;
    for(int ty=Mathf.FloorToInt((y-12)/48);ty<=Mathf.FloorToInt((y+12)/48);ty++)for(int tx=Mathf.FloorToInt((x-12)/48);tx<=Mathf.FloorToInt((x+12)/48);tx++){

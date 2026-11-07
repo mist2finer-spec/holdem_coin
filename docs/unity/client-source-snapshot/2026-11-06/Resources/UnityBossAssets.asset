@@ -14,9 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   boss: {fileID: 544776907127692386, guid: ae0238aa991575348a4ed7f16783cf8b, type: 3}
   bridge: {fileID: 6172836832147703342, guid: 303769818e174c14b815f3819c350a2a, type: 3}
-  combo: {fileID: -1606068525066514965, guid: 30095fed5c9beb9409f0a29d8c64912f, type: 3}
-  throwClip: {fileID: -6890555576459641339, guid: 28b67625ce6aa1645a7e0bf9a1d2ec68, type: 3}
+  combo: {fileID: 7400000, guid: 9902bf78713ee2d4e82dd1e0f3e4b5d7, type: 2}
+  throwClip: {fileID: 7400000, guid: 355f8821538e37a4d881674fcfc6f1e4, type: 2}
   knockback: {fileID: 7400000, guid: e749a91bedea76349a9244cb777e5412, type: 2}
+  idle: {fileID: 7400000, guid: e981e27a31252b94a8878108b9e63cee, type: 2}
+  walk: {fileID: 7400000, guid: ecc891f3e9077fe4e888a2174fa124db, type: 2}
   bossMaterial: {fileID: 2100000, guid: 57abab231de83264e923ffcbeb902a76, type: 2}
   bridgeMaterial: {fileID: 0}
   telegraphMaterial: {fileID: 2100000, guid: f600e0f2a7e00d440ae97f6cbcaf68a1, type: 2}
@@ -1008,7 +1010,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  bossHeight: 13
+  bossHeight: 6.5
   bossReferenceHeight: 1.6499999
   bossYaw: 90
   bridgeDeckHeight: 0

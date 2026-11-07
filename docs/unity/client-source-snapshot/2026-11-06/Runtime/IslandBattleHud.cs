@@ -22,7 +22,7 @@ namespace IslandGame {
   readonly Dictionary<string,Sprite> sprites=new Dictionary<string,Sprite>();
   IslandHudArt hpOrb,manaOrb;TextMeshProUGUI title,gold,chamber,objective,hpText,manaText,modeText,autoText,notice,overlayText;
   UnityEngine.UI.Button autoButton,jump,slide,evadeLeft,evadeRight,hpPotion,manaPotion,retry;
-  TextMeshProUGUI hpPotionText,manaPotionText;IslandHudStick stick;RectTransform knob;
+  TextMeshProUGUI hpPotionText,manaPotionText,directionText;IslandHudStick stick;RectTransform knob;
   RectTransform hpBox,manaBox,flasks;GameObject overlay;UnityEngine.UI.Image stageTap;
   readonly Vector3[] viewportCorners=new Vector3[4];
   float oldWidth=-1,oldHeight=-1;Rect oldSafe;bool ownsEventSystem;GameObject events;
@@ -66,7 +66,7 @@ namespace IslandGame {
    evadeLeft=RoundButton("EvadeLeft","‹",()=>app.HudEvade(-1));evadeRight=RoundButton("EvadeRight","›",()=>app.HudEvade(1));
    var stickRect=Rect("MovementStick",controls);Art(stickRect,IslandHudArt.Kind.Circle,Color.white).raycastTarget=true;
    stick=stickRect.gameObject.AddComponent<IslandHudStick>();stick.app=app;knob=Rect("Knob",stickRect);Art(knob,IslandHudArt.Kind.Circle,Color.white);stick.knob=knob;
-   var arrow=Label(stickRect,"Direction","‹   ›",20,TextAlignmentOptions.Center);Stretch((RectTransform)arrow.transform);
+   directionText=Label(stickRect,"Direction","‹   ›",20,TextAlignmentOptions.Center);Stretch((RectTransform)directionText.transform);
    footer=Rect("Footer",frame);Fill(footer,new Color(.055f,.125f,.16f));
    var panels=new[]{"growth","equipment","tavern","dungeon","summon","bag"};var names=new[]{"성장","소지품","주점","던전","소환","가방"};
    for(int i=0;i<6;i++){string panel=panels[i];Button(footer,"Menu"+panel,names[i],()=>{stick.ResetInput();app.HudMenu(panel);},new Color(.08f,.18f,.21f));}
@@ -94,6 +94,7 @@ namespace IslandGame {
    if(!show)return;
    if(dungeon){LayoutDungeon();return;}
    Layout();ConfigureBattleOutput();Refresh();
+   if(directionText)directionText.text=app.HudPlanarMovement?"360°":"‹   ›";
    if(!app.HudCanInput){stick.ResetInput();return;}
    if(Input.GetKeyDown(KeyCode.Space))Dispatch("keyboard:attack",app.HudAttack);
    if(Input.GetKeyDown(KeyCode.W)||Input.GetKeyDown(KeyCode.J)||Input.GetKeyDown(KeyCode.UpArrow))Dispatch("keyboard:jump",app.HudJump);
@@ -102,7 +103,7 @@ namespace IslandGame {
    if(Input.GetKeyDown(KeyCode.Q))Dispatch("keyboard:evade-left",()=>app.HudEvade(-1));if(Input.GetKeyDown(KeyCode.E))Dispatch("keyboard:evade-right",()=>app.HudEvade(1));
    if(Input.GetKeyDown(KeyCode.Z)&&hpPotion.interactable)Dispatch("keyboard:health",()=>app.HudDrink("health"));if(Input.GetKeyDown(KeyCode.X)&&manaPotion.interactable)Dispatch("keyboard:mana",()=>app.HudDrink("mana"));
    for(int i=0;i<6;i++)if(Input.GetKeyDown((KeyCode)((int)KeyCode.Alpha1+i))&&skillButtons[i].interactable){int slot=i;Dispatch("keyboard:skill"+slot,()=>app.HudSkill(slot));}
-   float keyboard=(Input.GetKey(KeyCode.A)||Input.GetKey(KeyCode.LeftArrow)?-1:0)+(Input.GetKey(KeyCode.D)||Input.GetKey(KeyCode.RightArrow)?1:0);app.HudMove(stick.IsPressed?stick.Value:keyboard);
+   float keyboard=(Input.GetKey(KeyCode.A)||Input.GetKey(KeyCode.LeftArrow)?-1:0)+(Input.GetKey(KeyCode.D)||Input.GetKey(KeyCode.RightArrow)?1:0);float vertical=app.HudPlanarMovement?((Input.GetKey(KeyCode.W)||Input.GetKey(KeyCode.UpArrow)?1:0)-(Input.GetKey(KeyCode.S)||Input.GetKey(KeyCode.DownArrow)?1:0)):0;app.HudMove(stick.IsPressed?stick.Vector:Vector2.ClampMagnitude(new Vector2(keyboard,vertical),1));
   }
   void LayoutDungeon(){
    var screenSafe=Screen.safeArea;safe.anchorMin=new Vector2(screenSafe.x/Screen.width,screenSafe.y/Screen.height);safe.anchorMax=new Vector2(screenSafe.xMax/Screen.width,screenSafe.yMax/Screen.height);safe.offsetMin=safe.offsetMax=Vector2.zero;
