@@ -1,0 +1,1022 @@
+[
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\IslandApp.cs",
+    "snapshot": "Runtime\\IslandApp.cs",
+    "bytes": 15651,
+    "sha256": "f540adfa296c32a1b7070a036b6693ae603872800d0da50e03a48f324c97e1c7"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\IslandAudio.cs",
+    "snapshot": "Runtime\\IslandAudio.cs",
+    "bytes": 3177,
+    "sha256": "b0eb7bfcd8c22346992b6772d47ecdc3107fe80d0d99c580a4077a89201c5bdf"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\IslandRpgPresentation.cs",
+    "snapshot": "Runtime\\IslandRpgPresentation.cs",
+    "bytes": 23858,
+    "sha256": "814ebdbd5449a485fe93982fd8155fefb48b3a67a918c886f2f7bbe652f85fdd"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\NativeBattle.cs",
+    "snapshot": "Runtime\\NativeBattle.cs",
+    "bytes": 17822,
+    "sha256": "82e76d5b87f11bf3405eeb2e0175d79e1bb40682702e5a634effa220af762588"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\PokerHandEvaluator.cs",
+    "snapshot": "Runtime\\PokerHandEvaluator.cs",
+    "bytes": 10379,
+    "sha256": "128406efebf6a4cbf62a3adfc4d82ecd598eb2e9f6691fafb94893a0f72e4449"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\PollingSocket.cs",
+    "snapshot": "Runtime\\PollingSocket.cs",
+    "bytes": 3409,
+    "sha256": "189695e2049a84f20734a0c75a18a7fd8ac6af8e14e0f064b17b43b5f364d793"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\RpgContracts.cs",
+    "snapshot": "Runtime\\RpgContracts.cs",
+    "bytes": 6176,
+    "sha256": "ff798c7fb0ebdfd07630a9a7d083ffffcee67c4fd896810d89842bdc83fb934e"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\RpgSession.cs",
+    "snapshot": "Runtime\\RpgSession.cs",
+    "bytes": 4843,
+    "sha256": "66d98a5fa594409a76f05b8bb635c86654c490a90bc51bf74afd28d8c11964b4"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\ShowdownSelection.cs",
+    "snapshot": "Runtime\\ShowdownSelection.cs",
+    "bytes": 1051,
+    "sha256": "0e32b319b253fd97ecf6f95761b62da6e5a03fef10b7720247f6da2592d9d249"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\SocketFrames.cs",
+    "snapshot": "Runtime\\SocketFrames.cs",
+    "bytes": 1597,
+    "sha256": "3d8f82b4859fd96cc3c9ef82d4e79d0bc7f68b4518080d06d0fe9a3985250c67"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\PollingSocket.cs.meta",
+    "snapshot": "Runtime\\PollingSocket.cs.meta",
+    "bytes": 59,
+    "sha256": "65de1bbdd513497740e7727600c8d3754fa5042a258683724282c0950371e554"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\IslandApp.cs.meta",
+    "snapshot": "Runtime\\IslandApp.cs.meta",
+    "bytes": 59,
+    "sha256": "00af7a7397139fc7797d11d0574e107c7e857e3c06f844a25811b96fdff636fd"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\PokerHandEvaluator.cs.meta",
+    "snapshot": "Runtime\\PokerHandEvaluator.cs.meta",
+    "bytes": 59,
+    "sha256": "8bb6f36cc7ac6069bd41f4a3fcd4b629b82dbf45b77dd7dd9dd10754f6f0a1f8"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\RpgSession.cs.meta",
+    "snapshot": "Runtime\\RpgSession.cs.meta",
+    "bytes": 59,
+    "sha256": "9b91f20ad5cbf5bd973f5c59552db82832266bf41d3de5a9b43d3345cfb19ad9"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\IslandAudio.cs.meta",
+    "snapshot": "Runtime\\IslandAudio.cs.meta",
+    "bytes": 59,
+    "sha256": "9541dec0aed2c8c05b7703c80c76fc2a118aecb56ef4102c19751e6890b16129"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\RpgContracts.cs.meta",
+    "snapshot": "Runtime\\RpgContracts.cs.meta",
+    "bytes": 59,
+    "sha256": "4623d9efd663aecb5069a83a7bde042309c1a4212e5080be098ea179239c78b5"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\SocketFrames.cs.meta",
+    "snapshot": "Runtime\\SocketFrames.cs.meta",
+    "bytes": 59,
+    "sha256": "c6e1e38443b595e8b2625c5f11a7ad00db2826c62eea1ab96a22c8c94815095f"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\IslandRpgPresentation.cs.meta",
+    "snapshot": "Runtime\\IslandRpgPresentation.cs.meta",
+    "bytes": 59,
+    "sha256": "9617c7cab447e20abe555f60afe4c07c80a7802048c4215d6e59e6e609e45bcc"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\ShowdownSelection.cs.meta",
+    "snapshot": "Runtime\\ShowdownSelection.cs.meta",
+    "bytes": 59,
+    "sha256": "a89053180675c65643aa45693561b784321ab2c34f713a1dce84a69808886040"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\NativeBattle.cs.meta",
+    "snapshot": "Runtime\\NativeBattle.cs.meta",
+    "bytes": 59,
+    "sha256": "9ec0ce09c1f418603f47036782ac0fc257db6a604a2deee1d4887ef8723d84fe"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\IslandPrototype.cs",
+    "snapshot": "Runtime\\IslandPrototype.cs",
+    "bytes": 1000,
+    "sha256": "988432869fe51e9b804e76feeed021251ec29814219e8b8319b96a5bb601809a"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\IslandPrototype.cs.meta",
+    "snapshot": "Runtime\\IslandPrototype.cs.meta",
+    "bytes": 59,
+    "sha256": "794803173627e99a074784d8161e40703c4321c1b73bd3933fc3ca8b273fa69b"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\IslandBattleBridge.cs",
+    "snapshot": "Runtime\\IslandBattleBridge.cs",
+    "bytes": 2315,
+    "sha256": "83709db47945532b308684f73cc9adfcdf78e0779e927ba5202923a9878edbc3"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\IslandHudArt.cs",
+    "snapshot": "Runtime\\IslandHudArt.cs",
+    "bytes": 3784,
+    "sha256": "adb32c31e32973264b6a072884f98d19e26a79b0e83c77d4d3bc18a86dcd15eb"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\IslandHudStick.cs",
+    "snapshot": "Runtime\\IslandHudStick.cs",
+    "bytes": 1543,
+    "sha256": "096ff29008fe7089e316921118cb83501688726ec97797853a4dae4094419684"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\IslandBattleHud.cs",
+    "snapshot": "Runtime\\IslandBattleHud.cs",
+    "bytes": 28545,
+    "sha256": "363a5859045cfd8cee0076e23acaa4c82b20331b2bbb7e7d233376b0a171b6b2"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\IslandBattleBridge.cs.meta",
+    "snapshot": "Runtime\\IslandBattleBridge.cs.meta",
+    "bytes": 59,
+    "sha256": "f0a833cbf9efe0af416f6add79a31af5d7f40c661fb61c22c8b2c41535b2d647"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\IslandHudArt.cs.meta",
+    "snapshot": "Runtime\\IslandHudArt.cs.meta",
+    "bytes": 59,
+    "sha256": "8ffe7aa0ed1005d72e88be6550efd4f36b65fced1867d44fe79fd4be0ee52a33"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\IslandBattleHud.cs.meta",
+    "snapshot": "Runtime\\IslandBattleHud.cs.meta",
+    "bytes": 59,
+    "sha256": "2414fc55571f94f4d4b2ffb138f466fcbcda94cc160c841a65f37f05787cb0b6"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\IslandHudStick.cs.meta",
+    "snapshot": "Runtime\\IslandHudStick.cs.meta",
+    "bytes": 59,
+    "sha256": "5d3ab3e3419070a69ab61952e0a3388e26368796e147f5f0082c3b7c56ee3efe"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\NativeCombatPresentation.cs",
+    "snapshot": "Runtime\\NativeCombatPresentation.cs",
+    "bytes": 7322,
+    "sha256": "7c8a1333c0b1cabc7bcf2f3f3aff4e4e5ee89dbb799470c91954901df4a219e5"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\NativeCombatPresentation.cs.meta",
+    "snapshot": "Runtime\\NativeCombatPresentation.cs.meta",
+    "bytes": 59,
+    "sha256": "11ebd8a35d40ef6770c59489ac0bb927dbde53372e3fa2cd6f8e3aaedfa928b8"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\UnityDisplayNames.cs",
+    "snapshot": "Runtime\\UnityDisplayNames.cs",
+    "bytes": 3858,
+    "sha256": "3b924dc418fb4d5483eb9edb7b02a2e7b37afb8aa989a5948656f808989d7a8e"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\IslandBossTrialBridge.cs",
+    "snapshot": "Runtime\\IslandBossTrialBridge.cs",
+    "bytes": 1536,
+    "sha256": "665fda49e2be9f27953b1088cae958b57ccdd2f85971bc49cf22c75283910dc5"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\IslandBossTrialBridge.cs.meta",
+    "snapshot": "Runtime\\IslandBossTrialBridge.cs.meta",
+    "bytes": 59,
+    "sha256": "2a9fc3f3f0517ffe119a9052517a511ca6479d866b3280207fd17222ad932e60"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\BossTrials.meta",
+    "snapshot": "Runtime\\BossTrials.meta",
+    "bytes": 172,
+    "sha256": "2f24d2e09e016154ebc07f23d70b0668c10648b6f64d59f27124126a92f306ff"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\UnityDisplayNames.cs.meta",
+    "snapshot": "Runtime\\UnityDisplayNames.cs.meta",
+    "bytes": 59,
+    "sha256": "90dc1ce7f3cba7f4ccf54772110e46c4c63ad5fc45c4c2c5efd62d6df19e7fd4"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\Battle3DAssets.cs",
+    "snapshot": "Runtime\\Battle3DAssets.cs",
+    "bytes": 1311,
+    "sha256": "e956736138cd0d7067d211ff633a76c5b3a1389aff27c67de0e99c35b9ee518c"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\Battle3DView.cs",
+    "snapshot": "Runtime\\Battle3DView.cs",
+    "bytes": 16272,
+    "sha256": "60fb205ad5bb9580606378a1e526e45902844856e9aa19684d1364fdfa8437a2"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\Battle3DAssets.cs.meta",
+    "snapshot": "Runtime\\Battle3DAssets.cs.meta",
+    "bytes": 59,
+    "sha256": "1659c5950a266e0edf6dc44d14d554efd3335a3c93a8c1798cbbc014caa88ce7"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\Battle3DView.cs.meta",
+    "snapshot": "Runtime\\Battle3DView.cs.meta",
+    "bytes": 59,
+    "sha256": "de3d28d04dc2d52839b62b4d63dfe9d36dee8897eaeade593b0a13edb4636402"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\SkillTreeViewportInput.cs",
+    "snapshot": "Runtime\\SkillTreeViewportInput.cs",
+    "bytes": 7026,
+    "sha256": "d89fab4752f1af7ec6a5af12b9235a4fb33a2c68a9d37e6999d73fb2c65424c1"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\SkillTreeCameraController.cs",
+    "snapshot": "Runtime\\SkillTreeCameraController.cs",
+    "bytes": 3808,
+    "sha256": "f3b9bcd9b19b38cf6d66dd19d50b7579f0b69e14a8a0eb40c374fabf70eabd09"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\SkillTreeNode.cs",
+    "snapshot": "Runtime\\SkillTreeNode.cs",
+    "bytes": 2276,
+    "sha256": "5d7ac2b66a32cf396ae8a59413b1622f2a577f467a899c4781cdc3acc9cbaaa6"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\SkillTreeManager.cs",
+    "snapshot": "Runtime\\SkillTreeManager.cs",
+    "bytes": 11217,
+    "sha256": "a6ca214c2b9b5cad4f89d84a8a42cb3e9b4626ad9f219ed76cefc4f6acf9a44a"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\IslandGrowthPanel.cs",
+    "snapshot": "Runtime\\IslandGrowthPanel.cs",
+    "bytes": 18231,
+    "sha256": "ec257374b5987e39c15f1598ebad5ec59f6be46ee140b5567e97f2cc0cf9903e"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\SkillTreeNode.cs.meta",
+    "snapshot": "Runtime\\SkillTreeNode.cs.meta",
+    "bytes": 59,
+    "sha256": "997e734217057c176d1886d668744e72a51073a649a461810c9c161dcf8d44e7"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\SkillTreeManager.cs.meta",
+    "snapshot": "Runtime\\SkillTreeManager.cs.meta",
+    "bytes": 59,
+    "sha256": "4a576b7917aa2dcc2daa397ebc7a6190cf405319e9241b20fdf649f9a268664e"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\IslandGrowthPanel.cs.meta",
+    "snapshot": "Runtime\\IslandGrowthPanel.cs.meta",
+    "bytes": 59,
+    "sha256": "538379f838a12f22d7b2e52bac2252c0f449e77129b135749c6d8c34f80c75e0"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\SkillTreeViewportInput.cs.meta",
+    "snapshot": "Runtime\\SkillTreeViewportInput.cs.meta",
+    "bytes": 59,
+    "sha256": "99be6fe642929b9047f85e4c76a111a578952a67757659e6660b60d876c0189b"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\SkillTreeCameraController.cs.meta",
+    "snapshot": "Runtime\\SkillTreeCameraController.cs.meta",
+    "bytes": 59,
+    "sha256": "1d4a450173cd76586acb08314087d9cf0c29e620164b3b5285fd2f8404a7ff3a"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\CameraHorizontalWidthLock.cs",
+    "snapshot": "Runtime\\CameraHorizontalWidthLock.cs",
+    "bytes": 851,
+    "sha256": "1f76ca0c5d3ddd07cbe693d10ce23620d4c87adb9e5f027b33b1a64a79f9fba8"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\CameraHorizontalWidthLock.cs.meta",
+    "snapshot": "Runtime\\CameraHorizontalWidthLock.cs.meta",
+    "bytes": 59,
+    "sha256": "6f7c06ac166365cd74c9d45a7bccb60633e0e4646edfcbf164d6e4b86e4fdda8"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\SkillTreeLayout.cs",
+    "snapshot": "Runtime\\SkillTreeLayout.cs",
+    "bytes": 7068,
+    "sha256": "44f336a92e50127f5ce5a452ea69caff55f35c7337113b7950e65be1ba3b7bcb"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\SkillTreeLayout.cs.meta",
+    "snapshot": "Runtime\\SkillTreeLayout.cs.meta",
+    "bytes": 59,
+    "sha256": "166271b9d1518fc341d10fbf3091ef30e5bcfd38ba19c5b7d0659ba53ee72666"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\IslandFonts.cs",
+    "snapshot": "Runtime\\IslandFonts.cs",
+    "bytes": 1321,
+    "sha256": "e45979a9e768712731c8153f263086e593261e4fa263da029447b92530478885"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\IslandFonts.cs.meta",
+    "snapshot": "Runtime\\IslandFonts.cs.meta",
+    "bytes": 59,
+    "sha256": "2333d908b67a954ce7c6c80cc18de63c18428fb254cc4389ffc25cafd545a9e3"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\IslandDisplayMeshes.cs",
+    "snapshot": "Runtime\\IslandDisplayMeshes.cs",
+    "bytes": 2852,
+    "sha256": "aef11066b2e197a12b45f2723e338c329ad12b6968790f310d4a7fe76f67b801"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\IslandDisplayMeshes.cs.meta",
+    "snapshot": "Runtime\\IslandDisplayMeshes.cs.meta",
+    "bytes": 59,
+    "sha256": "90e9ece9786b153ab5ae4216d795413627ead2dbbb437a6903de15256b4c1289"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\IslandPokerBridge.cs",
+    "snapshot": "Runtime\\IslandPokerBridge.cs",
+    "bytes": 2447,
+    "sha256": "b2e31a2689b29c44725681a788cdca96ad0192f4fa4cec449f020f717cc971df"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\IslandPokerHud.cs",
+    "snapshot": "Runtime\\IslandPokerHud.cs",
+    "bytes": 27861,
+    "sha256": "df219309438d063ff18dea59f31e8c1ff15bb6e8944637d7b095472a375bb299"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\IslandPokerPanel.cs",
+    "snapshot": "Runtime\\IslandPokerPanel.cs",
+    "bytes": 1223,
+    "sha256": "e21b852acbb4a24ea07b16ce1d08873a4c95ce8c80b7e879bf79e5eb172be1f3"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\IslandPokerHud.cs.meta",
+    "snapshot": "Runtime\\IslandPokerHud.cs.meta",
+    "bytes": 59,
+    "sha256": "c490ce39365623f1c3ffcad768c9afc9ec736548f5d41327c264f036ff7afec6"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\IslandPokerPanel.cs.meta",
+    "snapshot": "Runtime\\IslandPokerPanel.cs.meta",
+    "bytes": 59,
+    "sha256": "0d56a1faa6b9697a95bde46d2d12f08db23b28328d1d0c96285fe1676469691e"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\IslandPokerBridge.cs.meta",
+    "snapshot": "Runtime\\IslandPokerBridge.cs.meta",
+    "bytes": 59,
+    "sha256": "eb7884d918dec20acf2c61a364d0196200b2b58a41487ad248153a844b2e9dee"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\IslandPokerTableSurface.cs",
+    "snapshot": "Runtime\\IslandPokerTableSurface.cs",
+    "bytes": 1659,
+    "sha256": "c6f46d0bc985b3ec93d2fae2ffa4ebea075452ab2547a3a3063ee4e209d92f12"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\IslandPokerTableSurface.cs.meta",
+    "snapshot": "Runtime\\IslandPokerTableSurface.cs.meta",
+    "bytes": 59,
+    "sha256": "be8586be1d3d8d55964adbc7e184e278b1ce7b5b0bcff18013d3f2e831c3a8bf"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\BattleGroundingProfile.cs",
+    "snapshot": "Runtime\\BattleGroundingProfile.cs",
+    "bytes": 1789,
+    "sha256": "b2b483915f739a72fe032b96ba0f9c9ac4319f167cc9861cd5f0a045618e18bc"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\BattleGroundingProfile.cs.meta",
+    "snapshot": "Runtime\\BattleGroundingProfile.cs.meta",
+    "bytes": 59,
+    "sha256": "906d8f9e55841e86e53f35c299b2ce45d33a23c9f6ef92a2556b0ef747f4ba9b"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\RpgLocalStageSession.cs",
+    "snapshot": "Runtime\\RpgLocalStageSession.cs",
+    "bytes": 10351,
+    "sha256": "9c77fc2b7c2052207f8b03166fc9dee3920d710a4f62b687d95229802e2697e5"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\StageCombatWorker.cs",
+    "snapshot": "Runtime\\StageCombatWorker.cs",
+    "bytes": 4190,
+    "sha256": "99b42f809ad5ef3723c34faaf22b51dee00c4f5d3aba4c364199b416e32fdf84"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\StageCombatWorker.cs.meta",
+    "snapshot": "Runtime\\StageCombatWorker.cs.meta",
+    "bytes": 59,
+    "sha256": "98712e7c00662591cc513dbabf37bace394a11a7ce698a598153416752a59217"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\RpgLocalStageSession.cs.meta",
+    "snapshot": "Runtime\\RpgLocalStageSession.cs.meta",
+    "bytes": 59,
+    "sha256": "f92d72986b90e33057cc261cb0442851eba18c43676931167b21acb7a06f6963"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\NatureEnvironmentAssets.cs",
+    "snapshot": "Runtime\\NatureEnvironmentAssets.cs",
+    "bytes": 542,
+    "sha256": "8d40dd4269cc3ed8fcccd6679de9a601926543b460d5e9d45f3aef1156eca8c7"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\NatureEnvironmentBuilder.cs",
+    "snapshot": "Runtime\\NatureEnvironmentBuilder.cs",
+    "bytes": 6556,
+    "sha256": "f3c8c016fb28d6c748f9c0293129ec41bcc0e51084b2876eeefa959cf78250cf"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\NatureEnvironmentAssets.cs.meta",
+    "snapshot": "Runtime\\NatureEnvironmentAssets.cs.meta",
+    "bytes": 59,
+    "sha256": "2522f7d5608e0e07e50a6a3b7b388add50f4ec91f1b59333dea2e71477a61465"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\NatureEnvironmentBuilder.cs.meta",
+    "snapshot": "Runtime\\NatureEnvironmentBuilder.cs.meta",
+    "bytes": 59,
+    "sha256": "665838422b1e7b7f2a818dc9d97c3675c9df0375a048714136efcf327db129da"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\IslandFrameBudget.cs",
+    "snapshot": "Runtime\\IslandFrameBudget.cs",
+    "bytes": 4122,
+    "sha256": "5fd3b73ca474eb46edaef9ed9e8ffd6f47dbf26fa564cca1e2086e2e9101bde0"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\IslandFrameBudget.cs.meta",
+    "snapshot": "Runtime\\IslandFrameBudget.cs.meta",
+    "bytes": 59,
+    "sha256": "a6e9bf70a6dea0891dbdd31ea05cdbe804ec0a702deea36aed8c3d7bdcdea965"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\NativeHeroWalkFilter.cs",
+    "snapshot": "Runtime\\NativeHeroWalkFilter.cs",
+    "bytes": 1815,
+    "sha256": "002f05820fe22a3b9c851dd8efd741eccaa4b8b0e86a93b0522be10846adae80"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\NativeHeroWalkFilter.cs.meta",
+    "snapshot": "Runtime\\NativeHeroWalkFilter.cs.meta",
+    "bytes": 59,
+    "sha256": "7e508db96876fe3605274178fa60e188eaffb6702384c56f701ec2f17102a268"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\NatureStreamPlan.cs",
+    "snapshot": "Runtime\\NatureStreamPlan.cs",
+    "bytes": 3915,
+    "sha256": "4fd4e1652ddcda1a63b2d7fe11533b92ccacfc8e3a540af9f7878d896647f523"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\NaturePropCache.cs",
+    "snapshot": "Runtime\\NaturePropCache.cs",
+    "bytes": 4403,
+    "sha256": "a8368705d21deeb04a35a97c626bdd775ef86912d55a63a58e488873b8923a1c"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\NatureEnvironmentStream.cs",
+    "snapshot": "Runtime\\NatureEnvironmentStream.cs",
+    "bytes": 6766,
+    "sha256": "bdb971495ffef99fa02754184c83f05cc2ee5f000b4ed8ac4833ba76180491ef"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\NativeHeroRollPresentation.cs",
+    "snapshot": "Runtime\\NativeHeroRollPresentation.cs",
+    "bytes": 1299,
+    "sha256": "4d680b670b8606fe83a0e5b263126767e6156a64647e7b41e42987f9e26d6093"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\NatureEnvironmentStream.cs.meta",
+    "snapshot": "Runtime\\NatureEnvironmentStream.cs.meta",
+    "bytes": 59,
+    "sha256": "ae5065dbe25de7aae770558d11302401902fba894ea1bd4604939bd0b70b03d6"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\NativeHeroRollPresentation.cs.meta",
+    "snapshot": "Runtime\\NativeHeroRollPresentation.cs.meta",
+    "bytes": 59,
+    "sha256": "08d6e0643042dcfc782e2c0ac8f8e90ae3c00e7005be938135e06d991cf07384"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\NatureStreamPlan.cs.meta",
+    "snapshot": "Runtime\\NatureStreamPlan.cs.meta",
+    "bytes": 59,
+    "sha256": "852fc1d3d231a15b1c0cbc308c3263f50fc827d7aa847214ba3896c616206954"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\NaturePropCache.cs.meta",
+    "snapshot": "Runtime\\NaturePropCache.cs.meta",
+    "bytes": 59,
+    "sha256": "aa65bd7462f350cbadeda71551ce7b062032b66584258df1f88c0705d7c1a876"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\NatureTerrainBatch.cs",
+    "snapshot": "Runtime\\NatureTerrainBatch.cs",
+    "bytes": 3925,
+    "sha256": "8570cec4dd48ba9e10c52a8eccdb9d7fa88dd929411867f47423feb72a300bce"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\NatureTerrainBatch.cs.meta",
+    "snapshot": "Runtime\\NatureTerrainBatch.cs.meta",
+    "bytes": 59,
+    "sha256": "047b114c87b85ccdb3334bc0f0eb6bfb73f53c0888b712dcb8a7d87d533fb7d1"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\StageSnapshotCadence.cs",
+    "snapshot": "Runtime\\StageSnapshotCadence.cs",
+    "bytes": 385,
+    "sha256": "63c3c89517a15d549c9621f0cdccf993efb5511cf4a6838fef2325b6c24fdb55"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\StageSnapshotCadence.cs.meta",
+    "snapshot": "Runtime\\StageSnapshotCadence.cs.meta",
+    "bytes": 59,
+    "sha256": "e07a23328288d994dde0a84672ece3c915dc034b47ceceee5928cf5c46a4016e"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\BattleCameraController.cs",
+    "snapshot": "Runtime\\BattleCameraController.cs",
+    "bytes": 10128,
+    "sha256": "35a3247185a823624a77b68bd438220c86011f2948d1560dd10cf669e733a6e8"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\UnityBossAssets.cs",
+    "snapshot": "Runtime\\UnityBossAssets.cs",
+    "bytes": 604,
+    "sha256": "84d941c6ea883f317778343fc6d3c920d0ba0f29f187029e3c99fb1e4f6f297d"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\BattleCameraController.cs.meta",
+    "snapshot": "Runtime\\BattleCameraController.cs.meta",
+    "bytes": 59,
+    "sha256": "c9c43e66bc6337e435b797c2b8013406ee4871108597097e88b88a71d0e9dde9"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\UnityBossAssets.cs.meta",
+    "snapshot": "Runtime\\UnityBossAssets.cs.meta",
+    "bytes": 59,
+    "sha256": "db24f0c761ad2a8db8ff7a5441380da0deaa1aa5f2aeba3f1e528b32b46062f7"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\BattleForegroundOcclusion.cs",
+    "snapshot": "Runtime\\BattleForegroundOcclusion.cs",
+    "bytes": 1825,
+    "sha256": "bf2c09a3d288672a8fbe0856343485ac341516ef3bc84a355062e5a500c0d73e"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\UnityBossPresentation.cs",
+    "snapshot": "Runtime\\UnityBossPresentation.cs",
+    "bytes": 6121,
+    "sha256": "30cfefd209b01b2e40db2f08f152ce9027c2ca6097d4ac4e54e2e86ea7fa3380"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\BattleForegroundOcclusion.cs.meta",
+    "snapshot": "Runtime\\BattleForegroundOcclusion.cs.meta",
+    "bytes": 59,
+    "sha256": "b72b89212b686eab3775777deef54a21c8d65e54d57f09646bba342fff911e77"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\UnityBossPresentation.cs.meta",
+    "snapshot": "Runtime\\UnityBossPresentation.cs.meta",
+    "bytes": 59,
+    "sha256": "66a9525ca28dc593369459e2491edbe97b7689b12e732b4b7d1d1d24efa9d251"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\BossTrials\\BossTrialController.cs",
+    "snapshot": "Runtime\\BossTrials\\BossTrialController.cs",
+    "bytes": 16495,
+    "sha256": "a54b048b499b014de6a04a015b4bdbab462f476240546ef37b0947b8527d732e"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\BossTrials\\BossTrialModel.cs",
+    "snapshot": "Runtime\\BossTrials\\BossTrialModel.cs",
+    "bytes": 32481,
+    "sha256": "badbe4462ac4eceae6bd455d7f97405f28cafdaf7fd9672b187aae691d222007"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\BossTrials\\BossTrialRenderer.cs",
+    "snapshot": "Runtime\\BossTrials\\BossTrialRenderer.cs",
+    "bytes": 22725,
+    "sha256": "29ee68034f0390ccdeb53b33b2ae21fe76a93fece2d30ac58268a7bfbbe16386"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\BossTrials\\BossTrialController.cs.meta",
+    "snapshot": "Runtime\\BossTrials\\BossTrialController.cs.meta",
+    "bytes": 59,
+    "sha256": "533b5ba86aaf4bc6ca068b8a5c651960de54e489f6e40af6a9c589268fad9dcb"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\BossTrials\\BossTrialRenderer.cs.meta",
+    "snapshot": "Runtime\\BossTrials\\BossTrialRenderer.cs.meta",
+    "bytes": 59,
+    "sha256": "e24ce8a99f052fd5ca21ec7f1f7c73c5354027a3aa8f4a7aed33f5c9468de590"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Runtime\\BossTrials\\BossTrialModel.cs.meta",
+    "snapshot": "Runtime\\BossTrials\\BossTrialModel.cs.meta",
+    "bytes": 59,
+    "sha256": "7af6eb813c3dc93c16cf5dcf31c6a346eafbc9850072248ed67c7fb20da88a23"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Editor\\IslandProject.cs",
+    "snapshot": "Editor\\IslandProject.cs",
+    "bytes": 2999,
+    "sha256": "a331d2dcbd53b737c0a1d599f620ae1560fadf6d713363c2d0fa3757f351a89c"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Editor\\IslandProject.cs.meta",
+    "snapshot": "Editor\\IslandProject.cs.meta",
+    "bytes": 59,
+    "sha256": "be7b2a140bb95a0631e2c98d48a012049f829975bab323a0d493f1d21bb819af"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Editor\\BattleHudReview.cs",
+    "snapshot": "Editor\\BattleHudReview.cs",
+    "bytes": 6032,
+    "sha256": "9c5e8e5c91487f4a85edf3c29498b0144054c45f07cc0de1dd2aa36c848a0a47"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Editor\\BattleHudReview.cs.meta",
+    "snapshot": "Editor\\BattleHudReview.cs.meta",
+    "bytes": 59,
+    "sha256": "199f334df658a273d0d8782abbc94b92c029b4f22f259ac25f2965ffd6a99207"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Editor\\CombatMotionReview.cs",
+    "snapshot": "Editor\\CombatMotionReview.cs",
+    "bytes": 5355,
+    "sha256": "b7bf9e9cd52a68c71581fa95cd34bf9f003189f2a1412119310e2b0458152883"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Editor\\CombatMotionReview.cs.meta",
+    "snapshot": "Editor\\CombatMotionReview.cs.meta",
+    "bytes": 59,
+    "sha256": "03924ac53202a3a5e4cde3338cf28c51bb4762f6dace03b6ee0e6fea6f029680"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Editor\\BossTrialTestMenu.cs",
+    "snapshot": "Editor\\BossTrialTestMenu.cs",
+    "bytes": 1471,
+    "sha256": "1d2fffaede9dbb5752711c2e25a7b3b222fe73e048fe628be1c59461d597b426"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Editor\\BossTrialExistingModelChecks.cs",
+    "snapshot": "Editor\\BossTrialExistingModelChecks.cs",
+    "bytes": 12815,
+    "sha256": "3ee411a9e63dbeb70550f39a36c8491e0ff33b17cb33f2b411480ab23d3c85a7"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Editor\\BossTrialTestMenu.cs.meta",
+    "snapshot": "Editor\\BossTrialTestMenu.cs.meta",
+    "bytes": 59,
+    "sha256": "08bd45ecdbe535fbc133ec8070519eebcb19e48af13e29fa413b96b2b3bd48f3"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Editor\\BossTrialExistingModelChecks.cs.meta",
+    "snapshot": "Editor\\BossTrialExistingModelChecks.cs.meta",
+    "bytes": 59,
+    "sha256": "05b9b593ca4e096e8a7b7352312104d3988b6a14d2b96451136bb4bb9b66f8d5"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Editor\\BossTrialExistingContractChecks.cs",
+    "snapshot": "Editor\\BossTrialExistingContractChecks.cs",
+    "bytes": 9626,
+    "sha256": "61ddbc69cd24d62c03977bf1c16eb40de7f7fbf3a1f76ba9968bfffb5f09e590"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Editor\\BossTrialPlayReview.cs",
+    "snapshot": "Editor\\BossTrialPlayReview.cs",
+    "bytes": 5216,
+    "sha256": "da9eec036b98965771bdaa161e9580585f2a9f298ee153817a76161a073faaac"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Editor\\BossTrialPlayReview.cs.meta",
+    "snapshot": "Editor\\BossTrialPlayReview.cs.meta",
+    "bytes": 59,
+    "sha256": "340280392d2027710b6ba5eab4622364d2c9b56d0ed49e2bcc795e1f44f1c9bf"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Editor\\BossTrialExistingContractChecks.cs.meta",
+    "snapshot": "Editor\\BossTrialExistingContractChecks.cs.meta",
+    "bytes": 59,
+    "sha256": "64cfe483c73ea23e3d64aa06d4af9d928a97b9c03f1def62dde80f4523e08108"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Editor\\BossTrialPatternReview.cs",
+    "snapshot": "Editor\\BossTrialPatternReview.cs",
+    "bytes": 5857,
+    "sha256": "53101beffab59521f420812cba0a6920a8ecbcc34b8d58d3be58ff7ef72ad085"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Editor\\BossTrialPatternReview.cs.meta",
+    "snapshot": "Editor\\BossTrialPatternReview.cs.meta",
+    "bytes": 59,
+    "sha256": "33e51a2f99ae5d627181363bd52ac1242e69496ef1210c4d7e3032a00ec8d857"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Editor\\SkillTreeSceneSetup.cs",
+    "snapshot": "Editor\\SkillTreeSceneSetup.cs",
+    "bytes": 902,
+    "sha256": "ba593a6d913cacef8b1ea16eb601da36177b12c364be4bcb28da53511c3de17f"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Editor\\SkillTreeSceneSetup.cs.meta",
+    "snapshot": "Editor\\SkillTreeSceneSetup.cs.meta",
+    "bytes": 59,
+    "sha256": "2034b3e9473e0f83a940bea31e1c55f653b936ac3da96cac80624d4bf8f0cc4c"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Resources\\UnityBossAssets.asset",
+    "snapshot": "Resources\\UnityBossAssets.asset",
+    "bytes": 32746,
+    "sha256": "88c0e540fb8a241763249390e2afe43e1d763842a82327b5dee4e66b5005df48"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Resources\\UnityBossAssets.asset.meta",
+    "snapshot": "Resources\\UnityBossAssets.asset.meta",
+    "bytes": 189,
+    "sha256": "e8b5e09bdf0172a22b50c0475eb5b78891fc22b21ad4cedff92fa6d23384016a"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Resources\\NatureEnvironmentAssets.asset",
+    "snapshot": "Resources\\NatureEnvironmentAssets.asset",
+    "bytes": 5344,
+    "sha256": "ea10b11238c6c57fb0be7cf29a4dc43f4ef8a081d25da109bfe3d60a6f759944"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Resources\\NatureEnvironmentAssets.asset.meta",
+    "snapshot": "Resources\\NatureEnvironmentAssets.asset.meta",
+    "bytes": 189,
+    "sha256": "d0afdda8209edbe6ce71ee6d13b41ab11a74085d38a97e2834cfd761c05b1c89"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Resources\\Battle3DAssets.asset",
+    "snapshot": "Resources\\Battle3DAssets.asset",
+    "bytes": 2314,
+    "sha256": "d31e33f1fa63e663e6f9618288ee67b7bb17474d56b999de8b008472886d27a3"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Resources\\Battle3DAssets.asset.meta",
+    "snapshot": "Resources\\Battle3DAssets.asset.meta",
+    "bytes": 189,
+    "sha256": "d04e6d8d429c340891de4c9970b63cf4ba842315d95e045bda65170214aaa5a2"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Resources\\BattleGroundingProfile.json",
+    "snapshot": "Resources\\BattleGroundingProfile.json",
+    "bytes": 179081,
+    "sha256": "2d720009aca0babbb57912976a27338d1ffaf3076584cd2b237300502ef5db52"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Resources\\BattleGroundingProfile.json.meta",
+    "snapshot": "Resources\\BattleGroundingProfile.json.meta",
+    "bytes": 158,
+    "sha256": "3e9bfbe03d8519e3cb2b93ff7446c6216de5a0c258707333aed8fe7306af388c"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Art\\Battle3D\\UnityBoss\\boss1_rig.glb",
+    "snapshot": "Art\\UnityBoss\\boss1_rig.glb",
+    "bytes": 1959828,
+    "sha256": "85038f1b522567f2b53d5b6f8913819ba11a805b0ff9d92e671c96be034ed59a"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Art\\Battle3D\\UnityBoss\\boss_melee_hook_combo.glb",
+    "snapshot": "Art\\UnityBoss\\boss_melee_hook_combo.glb",
+    "bytes": 1998088,
+    "sha256": "4b3849d059ffd05da0a1a743f194f73c8971c075ad7f8ae7b9a85eb854a15c76"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Art\\Battle3D\\UnityBoss\\boss_overhand_throw.glb",
+    "snapshot": "Art\\UnityBoss\\boss_overhand_throw.glb",
+    "bytes": 1992036,
+    "sha256": "5a10537d86f63822e214e0fc20ef26fbde4b51cedc00df31e223805b423e315a"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Art\\Battle3D\\UnityBoss\\boss_textured.glb",
+    "snapshot": "Art\\UnityBoss\\boss_textured.glb",
+    "bytes": 1289240,
+    "sha256": "ca7d0d6680cb75a21c9748a175564d64e69044a4640a39fe6706116dc7615b95"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Art\\Battle3D\\UnityBoss\\hit_knockback_anim_only.glb",
+    "snapshot": "Art\\UnityBoss\\hit_knockback_anim_only.glb",
+    "bytes": 169932,
+    "sha256": "f117e076565090b75b0698ac8c398a2897cf0b6ea72231a5111271592425116e"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Art\\Battle3D\\UnityBoss\\boss_melee_hook_combo.glb.meta",
+    "snapshot": "Art\\UnityBoss\\boss_melee_hook_combo.glb.meta",
+    "bytes": 720,
+    "sha256": "79c595d3bada55e74bc528c800883470419e85625d0482bf6dee28fa05ced716"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Art\\Battle3D\\UnityBoss\\hit_knockback_anim_only.glb.meta",
+    "snapshot": "Art\\UnityBoss\\hit_knockback_anim_only.glb.meta",
+    "bytes": 720,
+    "sha256": "0f891d5ae6611c53c54b480b6b6caada546697c27af5cac5f514ff2794878fa4"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Art\\Battle3D\\UnityBoss\\boss_overhand_throw.glb.meta",
+    "snapshot": "Art\\UnityBoss\\boss_overhand_throw.glb.meta",
+    "bytes": 720,
+    "sha256": "5a60acbffd1364867317846d17ebf4a3420e5f845c0e8f7d888b0c59f5a0432e"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Art\\Battle3D\\UnityBoss\\boss_textured.glb.meta",
+    "snapshot": "Art\\UnityBoss\\boss_textured.glb.meta",
+    "bytes": 720,
+    "sha256": "79acf7e59fb422533fdb74c985df95e9ee604a1ed5e80529ed22834b6acc8fb2"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Art\\Battle3D\\UnityBoss\\boss1_rig.glb.meta",
+    "snapshot": "Art\\UnityBoss\\boss1_rig.glb.meta",
+    "bytes": 720,
+    "sha256": "35edaa89ebc98d4dd08b54b51a5dabc65aa38ca5f785e7cbc9f8b20fbc06839c"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Art\\Battle3D\\UnityBoss\\Boss1_Textured.mat",
+    "snapshot": "Art\\UnityBoss\\Boss1_Textured.mat",
+    "bytes": 2277,
+    "sha256": "8603236758dd5bceb8f3cbd2b24edb53569f870043203c667fbbf8b22be8d817"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Art\\Battle3D\\UnityBoss\\Boss1_Textured.mat.meta",
+    "snapshot": "Art\\UnityBoss\\Boss1_Textured.mat.meta",
+    "bytes": 188,
+    "sha256": "5ad09998a662e7b725711d9e8a632f0d7403291020c46731b6e1e88c569d82b9"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Art\\Battle3D\\UnityBoss\\Boss1.prefab.meta",
+    "snapshot": "Art\\UnityBoss\\Boss1.prefab.meta",
+    "bytes": 154,
+    "sha256": "a25b2be435bddf3724f07a7e860a2de47876b2dfb97e975cd6b57a28c74c8924"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Art\\Battle3D\\UnityBoss\\Bridge_PT_Buildings_mat.mat.meta",
+    "snapshot": "Art\\UnityBoss\\Bridge_PT_Buildings_mat.mat.meta",
+    "bytes": 188,
+    "sha256": "1e0499f079b46f51c2711d35ca539023fd03b4e106673afffa3960aa4ad6136a"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Art\\Battle3D\\UnityBoss\\BridgeWalkway.prefab.meta",
+    "snapshot": "Art\\UnityBoss\\BridgeWalkway.prefab.meta",
+    "bytes": 154,
+    "sha256": "ff0454c9bc89750caa13943a737e5e8e2d93279176f6ba2119f53a65bb00e4e3"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Art\\Battle3D\\UnityBoss\\PinkGlass_Knockback_Fall_GetUp.anim.meta",
+    "snapshot": "Art\\UnityBoss\\PinkGlass_Knockback_Fall_GetUp.anim.meta",
+    "bytes": 188,
+    "sha256": "c6855f7d8d2d3d5fc4acfd9eaf6f63db73e5761eaa9bbf968b083be19617bfd0"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Art\\Battle3D\\UnityBoss\\BossTelegraph.shader",
+    "snapshot": "Art\\UnityBoss\\BossTelegraph.shader",
+    "bytes": 606,
+    "sha256": "50b8187191a895a381ec337c33a6d605b68e2b055d383ad289d8775b367f1036"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Art\\Battle3D\\UnityBoss\\BossTelegraph.shader.meta",
+    "snapshot": "Art\\UnityBoss\\BossTelegraph.shader.meta",
+    "bytes": 204,
+    "sha256": "2fe9af6f34e666b4ce94f644be09ff1469cb76c0352d78a5e2d985d76259c876"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Art\\Battle3D\\UnityBoss\\BossWarning.mat",
+    "snapshot": "Art\\UnityBoss\\BossWarning.mat",
+    "bytes": 800,
+    "sha256": "747054a798ecdac57a15b356164400faa458c5ad6f9e50c6398bfa0061e71071"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Art\\Battle3D\\UnityBoss\\BossWarning.mat.meta",
+    "snapshot": "Art\\UnityBoss\\BossWarning.mat.meta",
+    "bytes": 188,
+    "sha256": "ce9abf569323cf5913e6bf6a520c68f3e640d62a152092b1ee92c0e80f3e04e8"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Art\\Battle3D\\UnityBoss\\BossExplosion.mat",
+    "snapshot": "Art\\UnityBoss\\BossExplosion.mat",
+    "bytes": 802,
+    "sha256": "1e66f392f5407643fc3f4027ca636476c65a708a912803ff31475b3e9074530e"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Art\\Battle3D\\UnityBoss\\BossExplosion.mat.meta",
+    "snapshot": "Art\\UnityBoss\\BossExplosion.mat.meta",
+    "bytes": 188,
+    "sha256": "97d602b7ed07d3201167149edbee40a92ab4453062d2f5ca0ae2bb41939b3107"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Art\\Battle3D\\UnityBoss\\PinkGlass_Knockback_Fall_GetUp.anim",
+    "snapshot": "Art\\UnityBoss\\PinkGlass_Knockback_Fall_GetUp.anim",
+    "bytes": 5808679,
+    "sha256": "c4d2bfb0df9911b480f35ea601701320fa71f5cd3499b35edf13c01cfce3ea5b"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Art\\Battle3D\\UnityBoss\\Boss1.prefab",
+    "snapshot": "Art\\UnityBoss\\Boss1.prefab",
+    "bytes": 23128,
+    "sha256": "d6a835d6a942357d7b7f3254634c3dc39b9d828a86b47dda4ab9445601435468"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Art\\Battle3D\\UnityBoss\\BridgeWalkway.prefab",
+    "snapshot": "Art\\UnityBoss\\BridgeWalkway.prefab",
+    "bytes": 6761,
+    "sha256": "7a58ea04893a174f407087fba558f9074bbb832c1d01880628b983ac2656ca99"
+  },
+  {
+    "source": "G:\\new_project\\IslandGame\\Assets\\Island\\Art\\Battle3D\\UnityBoss\\Bridge_PT_Buildings_mat.mat",
+    "snapshot": "Art\\UnityBoss\\Bridge_PT_Buildings_mat.mat",
+    "bytes": 4269,
+    "sha256": "43330c121b5e10ac065647a4a183d059d73b65f63fabf1154ec5175ce77c9684"
+  },
+  {
+    "source": "C:\\Users\\SHK\\island-boss-camera-review\\ImportBoss.cs",
+    "snapshot": "Tools\\ImportBoss.cs",
+    "bytes": 769,
+    "sha256": "058c8d0e0d57e4fe32c7fe982b87b4369c77c7d0127fc86f8f7bd1b7304c1c9e"
+  },
+  {
+    "source": "C:\\Users\\SHK\\island-boss-camera-review\\PrepareBossAssets.cs",
+    "snapshot": "Tools\\PrepareBossAssets.cs",
+    "bytes": 7045,
+    "sha256": "aea713a689f2faa2560486f41e095fa57f11db497627b6cb6f0fdcaa9874ebea"
+  },
+  {
+    "source": "C:\\Users\\SHK\\island-boss-camera-review\\RetargetKnockback.cs",
+    "snapshot": "Tools\\RetargetKnockback.cs",
+    "bytes": 7275,
+    "sha256": "a42a51daa1936e8b863ac235197c18f6fa265b8db45e6717a162b8173fa357be"
+  },
+  {
+    "source": "C:\\Users\\SHK\\island-boss-camera-review\\TestCamera.cs",
+    "snapshot": "Tools\\TestCamera.cs",
+    "bytes": 6353,
+    "sha256": "f30d770b3d5a06fcac76d1318f0bffa9d09118bc98280fa2eee0ff255cc2757b"
+  },
+  {
+    "source": "C:\\Users\\SHK\\island-boss-camera-review\\ReviewLive.cs",
+    "snapshot": "Tools\\ReviewLive.cs",
+    "bytes": 3614,
+    "sha256": "2af1520cd03c8a35a0897f4d1ca41a79174e8447f300458016c6f5f27bed11e4"
+  },
+  {
+    "source": "C:\\Users\\SHK\\island-boss-camera-review\\BuildBossAndroid.cs",
+    "snapshot": "Tools\\BuildBossAndroid.cs",
+    "bytes": 1531,
+    "sha256": "1ddb01552b2ac7885312f50b413f457829b8316076c831bb22c7117c8808999e"
+  },
+  {
+    "source": "C:\\Users\\SHK\\island-boss-camera-review\\camera-tests.json",
+    "snapshot": "Evidence\\camera-tests.json",
+    "bytes": 2218,
+    "sha256": "4833619fd93789587f2f576e155515e4be7e0e7c7c78354c37d25154eb03a48b"
+  },
+  {
+    "source": "C:\\Users\\SHK\\island-boss-camera-review\\live-review.json",
+    "snapshot": "Evidence\\live-review.json",
+    "bytes": 27174,
+    "sha256": "19338abdd29836f1d784b78f984feac20ec75f4d9b777286fbf93b4bf927071d"
+  },
+  {
+    "source": "C:\\Users\\SHK\\island-boss-camera-review\\retarget.json",
+    "snapshot": "Evidence\\retarget.json",
+    "bytes": 203,
+    "sha256": "05ce96fbdb8602f225948d9e0311879cf40b658d39605fed56d7dc707b8092e9"
+  },
+  {
+    "source": "C:\\Users\\SHK\\island-boss-camera-review\\unity-assets.json",
+    "snapshot": "Evidence\\unity-assets.json",
+    "bytes": 33687,
+    "sha256": "1ed3395f5d0c0fb40dfb1936205b0e4f04bcdd7992f5f4b39d50dd42221c8e07"
+  },
+  {
+    "source": "C:\\Users\\SHK\\island-boss-camera-review\\bridge-profile.json",
+    "snapshot": "Evidence\\bridge-profile.json",
+    "bytes": 578,
+    "sha256": "728c9a3d7ddce7943612b215ab0baee0e4797ddf95693f3199eeab2e3b4a7167"
+  }
+]

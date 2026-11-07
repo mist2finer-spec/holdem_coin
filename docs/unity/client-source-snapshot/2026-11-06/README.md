@@ -8,6 +8,6 @@ Runtime/ contains the full current runtime, including prior controls, skin, stre
 
 See ../../BOSS_CAMERA_20261106_KO.md for setup and validation. SHA-256 files are in source-manifest.json. Tools are review/rebuild helpers with explicit local paths; do not run review preference changes against a live player session.
 
-## Published files and local assets
+## Local asset completion
 
-This text publication includes current runtime C# and scene setup/configuration. Binary GLBs, the large baked animation, the large grounding JSON and the full local manifest are retained in the local commit `189ebfa` pending normal Git authentication. No file-by-file Base64/Blob binary fallback was used. The full authoritative source manifest remains on this PC. Missing assets must be retained from the actual local project.
+This follow-up adds the user-provided raw boss GLBs, baked retarget animation, grounding JSON and complete source manifest through normal Git. Preserve the licensed external Polytope assets and local hero resources. This remains a reference snapshot rather than a standalone project.
