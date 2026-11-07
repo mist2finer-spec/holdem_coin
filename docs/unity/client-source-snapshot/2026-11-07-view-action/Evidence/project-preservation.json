@@ -1,0 +1,8 @@
+{
+  "Packages/manifest.json": true,
+  "Packages/packages-lock.json": true,
+  "ProjectSettings/GraphicsSettings.asset": true,
+  "ProjectSettings/QualitySettings.asset": true,
+  "Assets/Island/Scenes/Island.unity": true,
+  "Assets/Island/LevelDesign/ForestOverview/ForestMapOverview.unity": true
+}

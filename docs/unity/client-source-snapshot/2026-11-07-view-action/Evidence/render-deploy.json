@@ -1,0 +1,16 @@
+{
+  "commit": {
+    "createdAt": "2026-11-07T23:02:50Z",
+    "id": "37339d0e9d9f619ca2da8cfbaa906df63910d09f",
+    "message": "feat: coordinate combat view presentation and authoritative contact timelines"
+  },
+  "createdAt": "2026-11-07T23:03:36.479036Z",
+  "finishedAt": "2026-11-07T23:05:41.781476Z",
+  "id": "dep-dbnqsi142hec73cp1te0",
+  "startedAt": "2026-11-07T23:03:36.453275Z",
+  "status": "live",
+  "trigger": "new_commit",
+  "updatedAt": "2026-11-07T23:05:41.781715Z",
+  "serviceId": "srv-dbb816bbc2fs73dds24g",
+  "url": "https://holdem-coin-tavern.onrender.com"
+}

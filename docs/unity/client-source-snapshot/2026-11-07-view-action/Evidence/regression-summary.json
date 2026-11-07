@@ -9,5 +9,7 @@
   "coreUnityAssertions": 6457,
   "feedbackAssertions": 13,
   "liveFrames": 3583,
-  "physicalAndroid": "UNAVAILABLE; user will test APK"
+  "physicalAndroid": "UNAVAILABLE; user will test APK",
+  "stageGeneratedCheckLinuxCI": "PASS",
+  "mainCI": "PASS"
 }

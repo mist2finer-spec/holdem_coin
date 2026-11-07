@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "apk": "G:\\new_project\\IslandGame\\Builds\\Android\\IslandGame-ViewAction-20261107.apk",
+  "bytes": 106970535,
+  "sha256": "ef28eef640ddcebacd27e438673620a27c1b4218fb7e1ab792a8f5d411985de5",
+  "package": "com.mist2finer.islandgame.dev",
+  "architecture": "arm64-v8a",
+  "backend": "IL2CPP",
+  "zipIntegrity": true,
+  "signatureVerified": true,
+  "zipAlignment16K": true,
+  "internetPermission": true,
+  "deviceExecution": "DEFERRED BY USER: Unity tests used for this delivery; user will test APK on device",
+  "server": "https://holdem-coin-tavern.onrender.com"
+}

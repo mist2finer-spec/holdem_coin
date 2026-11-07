@@ -62,3 +62,14 @@
 | SetPass 평균 () | 51.48 | 49.83 | -3.2% |
 
 프레임 p95/p99는 각각 약 0.19/0.45ms 증가했다. CPU 평균은 약 3.1%, GC 평균은 약 10.5%, Draw 평균은 약 5.7% 증가했으므로 비용이 없거나 성능이 개선됐다고 판단하지 않는다. GPU 감소도 가시 장면 변화와 Editor 계측을 포함하므로 셰이더 최적화 성과로 해석하지 않는다. 단일 실행 비교이며 장기 안정성·Android 실측·이번 실행의 메모리 전후 비교는 미검증이다. 도중에 Editor 검사 명령이 들어간 측정은 별도로 보관하고 이 표에서는 제외했다.
+
+## 배포와 다운로드
+
+- [테스트 릴리스·APK·비교 영상](https://github.com/mist2finer-spec/holdem_coin/releases/tag/unity-view-action-20261107.4)
+- 운영 코드/main 반영: `37339d0e9d9f619ca2da8cfbaa906df63910d09f`. [main CI](https://github.com/mist2finer-spec/holdem_coin/actions/runs/42423477647)와 작업 브랜치 CI 모두 통과했다. Windows에서 생성 메타데이터 비교가 달랐던 stage kernel 검사는 Linux CI에서 통과했다. 기존 커널은 수정하지 않았다.
+- Render 기존 `holdem-coin-tavern` / Testplace, 배포 `dep-dbnqsi142hec73cp1te0` LIVE. `/api/release` 리비전과 실제 전투 서버 응답에서 `combat-view-v1`, `world-xz`를 확인했다. 서버 교체·요금제·DB 변경은 없다.
+- APK `IslandGame-ViewAction-20261107.apk`, 버전 `0.1.0-test.20261107.4`, code `2026110704`, 기존 패키지 `com.mist2finer.islandgame.dev`. ARM64 IL2CPP, 서명·ZIP·16KB 정렬·인터넷 권한 검사 통과. 빌드 오류 0, 기존 `IslandApp.lastDeal` 미사용 경고 1건.
+- APK 실제 크기 106,970,535 bytes. SHA-256 `ef28eef640ddcebacd27e438673620a27c1b4218fb7e1ab792a8f5d411985de5`.
+- 운영 HTTP 시험 172회 요청, 69회 몸체 거리 검사, 최소 182.800 core. 경고→폭발 2.00초, attackId/contactAt 일치, bridge→boss→throw→knockdown/getup 확인. 훈련 전투이며 영구 보상은 지급하지 않았다.
+- 운영 서버에 연결한 Unity 회피 비교 344캡처 프레임, 오류 0건. `DodgeTransitions.mp4`에 Side/Quarter/회피 도중 전환을 추가했다. 최종 제출 영상은 총 5개이며 오디오 미포함 화면 캡처다.
+- 플레이어 가림 실루엣의 메시·본 공유와 셰이더 컴파일을 확인했다. 동일 프레임 UnityStats draw 차이가 0으로 표시됐지만 동기 카운터 갱신 제약이 있으므로 추가 패스가 무료라고 해석하지 않는다. 실루엣은 추가 SkinnedMeshRenderer 한 개를 사용한다.

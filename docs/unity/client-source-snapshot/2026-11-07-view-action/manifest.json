@@ -192,8 +192,16 @@
     "sha256": "f32e254f4ee1e2b35c19c54e07f1ab8d7b588a91ea1f0c37de31a21870dbd7e2"
   },
   {
+    "path": "Tools/VerifyHeroReadability.cs",
+    "sha256": "23c520325d4544e28f1828ed15ce961e5d0583fa8ba8a910083052fd429336c6"
+  },
+  {
     "path": "Tools/RecordViewLive.cs",
     "sha256": "dfb22f2bce755b1deb7e93e84d5e5a766ee63142d8a81bc27faccb3000d1b695"
+  },
+  {
+    "path": "Tools/RecordProductionDodge.cs",
+    "sha256": "61abb657993b2f6b9f0dfb8284f73c381d2efedf225cadea5c94f960af3c7349"
   },
   {
     "path": "Tools/PrepareViewBuild.cs",
@@ -209,7 +217,7 @@
   },
   {
     "path": "Tools/encode-videos.py",
-    "sha256": "4652ec52bc17e0867ec4065d415251c72ab132e3c7212640aab79cf712f84bd2"
+    "sha256": "fb7ce1a9dbbac8ad9fde6d16261192713bf839b24c6a8f6e52783fd78cbb010f"
   },
   {
     "path": "Tools/local-server.cjs",
@@ -256,16 +264,44 @@
     "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
   },
   {
+    "path": "Evidence/apk-validation.json",
+    "sha256": "96e89e9c9d392a96e60a5f1728df38b5c256e868f614e3ea22a952329fc70b64"
+  },
+  {
+    "path": "Evidence/main-build-summary.json",
+    "sha256": "795fa2ed1cf9f286c5eb4a0af8fad13257726584a9972710d000fbb33dc7410d"
+  },
+  {
+    "path": "Evidence/production-smoke.json",
+    "sha256": "3db0cc79dd70779b751fbf79aebf6ef918d699ee14995a4254f950f13083fe8f"
+  },
+  {
+    "path": "Evidence/production-editor.json",
+    "sha256": "54019d4421c68b82dcf6e80dc84857357c66490ea250caff9918216f79990a6e"
+  },
+  {
+    "path": "Evidence/github-ci.json",
+    "sha256": "fba5294a2eb2a31b34a15222c55b7635e4d516cf5e608cbf118c898e75c8c5dd"
+  },
+  {
+    "path": "Evidence/render-deploy.json",
+    "sha256": "81597923cfa2d77fd0590d0d4805c01c712de8bfe37f2e08a3968405b2186ae9"
+  },
+  {
     "path": "Evidence/readability-verification.json",
     "sha256": "6ac8fd217d4ff06cd1c5d7c8c892bc4e899ca284b7d87f3401a03303c5f5feb9"
   },
   {
     "path": "Evidence/regression-summary.json",
-    "sha256": "b407d95c5be0e8b1eaec63c813254dac38afe346d63b11037f7fc1df0912f745"
+    "sha256": "f7cd7627253a0cee2ee0031f2dbec50586945d5fb288cd2cd73a901a489b2312"
   },
   {
     "path": "Evidence/performance-comparison.json",
     "sha256": "4d90b523611776ba8c7ad9c1bac4fbfa912d6d6a23bf163875b658c78da75cf6"
+  },
+  {
+    "path": "Evidence/project-preservation.json",
+    "sha256": "18ed82241ec5f25560a63b3f49c4851bb0ed92c7b4cd778e76aaca7ff7854d8c"
   },
   {
     "path": "Evidence/SideAction.jpg",
