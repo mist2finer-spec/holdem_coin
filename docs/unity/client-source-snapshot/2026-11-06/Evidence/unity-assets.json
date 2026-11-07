@@ -1,0 +1,958 @@
+[
+  {
+    "file": "boss1_rig.glb",
+    "exists": true,
+    "transforms": [
+      {
+        "name": "boss1_rig",
+        "path": "",
+        "position": "(0.0000, 0.0000, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "temp_mesh.ply",
+        "path": "temp_mesh.ply",
+        "position": "(0.0000, 0.0000, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "Root",
+        "path": "Root",
+        "position": "(0.0000, 0.0000, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "Hips",
+        "path": "Root/Hips",
+        "position": "(0.0000, 0.7425, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "Spine",
+        "path": "Root/Hips/Spine",
+        "position": "(0.0000, 0.0825, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "Chest",
+        "path": "Root/Hips/Spine/Chest",
+        "position": "(0.0000, 0.0990, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "Neck",
+        "path": "Root/Hips/Spine/Chest/Neck",
+        "position": "(0.0000, 0.1485, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "Head",
+        "path": "Root/Hips/Spine/Chest/Neck/Head",
+        "position": "(0.0000, 0.1403, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "Clavicle.L",
+        "path": "Root/Hips/Spine/Chest/Clavicle.L",
+        "position": "(0.0000, 0.1485, 0.0000)",
+        "rotation": "(270.0, 90.0, 0.0)"
+      },
+      {
+        "name": "UpperArm.L",
+        "path": "Root/Hips/Spine/Chest/Clavicle.L/UpperArm.L",
+        "position": "(0.0000, 0.2586, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "Forearm.L",
+        "path": "Root/Hips/Spine/Chest/Clavicle.L/UpperArm.L/Forearm.L",
+        "position": "(0.0000, 0.2586, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "Hand.L",
+        "path": "Root/Hips/Spine/Chest/Clavicle.L/UpperArm.L/Forearm.L/Hand.L",
+        "position": "(0.0000, 0.2873, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "Clavicle.R",
+        "path": "Root/Hips/Spine/Chest/Clavicle.R",
+        "position": "(0.0000, 0.1485, 0.0000)",
+        "rotation": "(270.0, 270.0, 0.0)"
+      },
+      {
+        "name": "UpperArm.R",
+        "path": "Root/Hips/Spine/Chest/Clavicle.R/UpperArm.R",
+        "position": "(0.0000, 0.2586, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "Forearm.R",
+        "path": "Root/Hips/Spine/Chest/Clavicle.R/UpperArm.R/Forearm.R",
+        "position": "(0.0000, 0.2586, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "Hand.R",
+        "path": "Root/Hips/Spine/Chest/Clavicle.R/UpperArm.R/Forearm.R/Hand.R",
+        "position": "(0.0000, 0.2873, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "Thigh.L",
+        "path": "Root/Hips/Thigh.L",
+        "position": "(-0.1628, 0.0000, 0.0000)",
+        "rotation": "(1.7, 188.0, 188.0)"
+      },
+      {
+        "name": "Shin.L",
+        "path": "Root/Hips/Thigh.L/Shin.L",
+        "position": "(0.0000, 0.3600, 0.0000)",
+        "rotation": "(7.3, 5.1, 354.1)"
+      },
+      {
+        "name": "Foot.L",
+        "path": "Root/Hips/Thigh.L/Shin.L/Foot.L",
+        "position": "(0.0000, 0.2635, 0.0000)",
+        "rotation": "(298.4, 5.8, 355.6)"
+      },
+      {
+        "name": "Thigh.R",
+        "path": "Root/Hips/Thigh.R",
+        "position": "(0.1628, 0.0000, 0.0000)",
+        "rotation": "(1.7, 172.0, 172.0)"
+      },
+      {
+        "name": "Shin.R",
+        "path": "Root/Hips/Thigh.R/Shin.R",
+        "position": "(0.0000, 0.3600, 0.0000)",
+        "rotation": "(7.3, 354.9, 5.9)"
+      },
+      {
+        "name": "Foot.R",
+        "path": "Root/Hips/Thigh.R/Shin.R/Foot.R",
+        "position": "(0.0000, 0.2635, 0.0000)",
+        "rotation": "(298.4, 354.2, 4.4)"
+      }
+    ],
+    "skins": [
+      {
+        "mesh": "temp_mesh.ply.001",
+        "bones": 20,
+        "bounds": "Center: (0.00, 0.75, 0.04), Extents: (0.96, 0.90, 0.36)",
+        "materials": [
+          {
+            "name": "Material_0",
+            "shader": "glTF/PbrMetallicRoughness",
+            "texture": "Image_0"
+          }
+        ]
+      }
+    ],
+    "clips": []
+  },
+  {
+    "file": "boss_melee_hook_combo.glb",
+    "exists": true,
+    "transforms": [
+      {
+        "name": "boss_melee_hook_combo",
+        "path": "",
+        "position": "(0.0000, 0.0000, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "rig_v001",
+        "path": "rig_v001",
+        "position": "(0.0000, 0.0000, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "temp_mesh.ply",
+        "path": "rig_v001/temp_mesh.ply",
+        "position": "(0.0000, 0.0000, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "Root",
+        "path": "rig_v001/Root",
+        "position": "(0.0000, 0.0000, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "Hips",
+        "path": "rig_v001/Root/Hips",
+        "position": "(0.0000, 0.7425, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "Spine",
+        "path": "rig_v001/Root/Hips/Spine",
+        "position": "(0.0000, 0.0825, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "Chest",
+        "path": "rig_v001/Root/Hips/Spine/Chest",
+        "position": "(0.0000, 0.0990, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "Neck",
+        "path": "rig_v001/Root/Hips/Spine/Chest/Neck",
+        "position": "(0.0000, 0.1485, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "Head",
+        "path": "rig_v001/Root/Hips/Spine/Chest/Neck/Head",
+        "position": "(0.0000, 0.1403, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "Clavicle.L",
+        "path": "rig_v001/Root/Hips/Spine/Chest/Clavicle.L",
+        "position": "(0.0000, 0.1485, 0.0000)",
+        "rotation": "(270.0, 90.0, 0.0)"
+      },
+      {
+        "name": "UpperArm.L",
+        "path": "rig_v001/Root/Hips/Spine/Chest/Clavicle.L/UpperArm.L",
+        "position": "(0.0000, 0.2586, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "Forearm.L",
+        "path": "rig_v001/Root/Hips/Spine/Chest/Clavicle.L/UpperArm.L/Forearm.L",
+        "position": "(0.0000, 0.2586, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "Hand.L",
+        "path": "rig_v001/Root/Hips/Spine/Chest/Clavicle.L/UpperArm.L/Forearm.L/Hand.L",
+        "position": "(0.0000, 0.2873, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "Clavicle.R",
+        "path": "rig_v001/Root/Hips/Spine/Chest/Clavicle.R",
+        "position": "(0.0000, 0.1485, 0.0000)",
+        "rotation": "(270.0, 270.0, 0.0)"
+      },
+      {
+        "name": "UpperArm.R",
+        "path": "rig_v001/Root/Hips/Spine/Chest/Clavicle.R/UpperArm.R",
+        "position": "(0.0000, 0.2586, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "Forearm.R",
+        "path": "rig_v001/Root/Hips/Spine/Chest/Clavicle.R/UpperArm.R/Forearm.R",
+        "position": "(0.0000, 0.2586, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "Hand.R",
+        "path": "rig_v001/Root/Hips/Spine/Chest/Clavicle.R/UpperArm.R/Forearm.R/Hand.R",
+        "position": "(0.0000, 0.2873, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "Thigh.L",
+        "path": "rig_v001/Root/Hips/Thigh.L",
+        "position": "(-0.1628, 0.0000, 0.0000)",
+        "rotation": "(1.7, 188.0, 188.0)"
+      },
+      {
+        "name": "Shin.L",
+        "path": "rig_v001/Root/Hips/Thigh.L/Shin.L",
+        "position": "(0.0000, 0.3600, 0.0000)",
+        "rotation": "(7.3, 5.1, 354.1)"
+      },
+      {
+        "name": "Foot.L",
+        "path": "rig_v001/Root/Hips/Thigh.L/Shin.L/Foot.L",
+        "position": "(0.0000, 0.2635, 0.0000)",
+        "rotation": "(298.4, 5.8, 355.6)"
+      },
+      {
+        "name": "Thigh.R",
+        "path": "rig_v001/Root/Hips/Thigh.R",
+        "position": "(0.1628, 0.0000, 0.0000)",
+        "rotation": "(1.7, 172.0, 172.0)"
+      },
+      {
+        "name": "Shin.R",
+        "path": "rig_v001/Root/Hips/Thigh.R/Shin.R",
+        "position": "(0.0000, 0.3600, 0.0000)",
+        "rotation": "(7.3, 354.9, 5.9)"
+      },
+      {
+        "name": "Foot.R",
+        "path": "rig_v001/Root/Hips/Thigh.R/Shin.R/Foot.R",
+        "position": "(0.0000, 0.2635, 0.0000)",
+        "rotation": "(298.4, 354.2, 4.4)"
+      }
+    ],
+    "skins": [
+      {
+        "mesh": "temp_mesh.ply.001",
+        "bones": 20,
+        "bounds": "Center: (0.00, 0.75, 0.04), Extents: (0.96, 0.90, 0.36)",
+        "materials": [
+          {
+            "name": "Material_0",
+            "shader": "glTF/PbrMetallicRoughness",
+            "texture": "Image_0"
+          }
+        ]
+      }
+    ],
+    "clips": [
+      {
+        "name": "Boss_MeleeHook_RL_Combo",
+        "length": 1.63,
+        "legacy": false,
+        "bindings": [
+          "rig_v001/Root.m_LocalRotation.x",
+          "rig_v001/Root.m_LocalRotation.y",
+          "rig_v001/Root.m_LocalRotation.z",
+          "rig_v001/Root.m_LocalRotation.w",
+          "rig_v001/Root/Hips.m_LocalRotation.x"
+        ]
+      }
+    ]
+  },
+  {
+    "file": "boss_overhand_throw.glb",
+    "exists": true,
+    "transforms": [
+      {
+        "name": "boss_overhand_throw",
+        "path": "",
+        "position": "(0.0000, 0.0000, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "rig_v001",
+        "path": "rig_v001",
+        "position": "(0.0000, 0.0000, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "temp_mesh.ply",
+        "path": "rig_v001/temp_mesh.ply",
+        "position": "(0.0000, 0.0000, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "Root",
+        "path": "rig_v001/Root",
+        "position": "(0.0000, 0.0000, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "Hips",
+        "path": "rig_v001/Root/Hips",
+        "position": "(0.0000, 0.7425, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "Spine",
+        "path": "rig_v001/Root/Hips/Spine",
+        "position": "(0.0000, 0.0825, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "Chest",
+        "path": "rig_v001/Root/Hips/Spine/Chest",
+        "position": "(0.0000, 0.0990, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "Neck",
+        "path": "rig_v001/Root/Hips/Spine/Chest/Neck",
+        "position": "(0.0000, 0.1485, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "Head",
+        "path": "rig_v001/Root/Hips/Spine/Chest/Neck/Head",
+        "position": "(0.0000, 0.1403, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "Clavicle.L",
+        "path": "rig_v001/Root/Hips/Spine/Chest/Clavicle.L",
+        "position": "(0.0000, 0.1485, 0.0000)",
+        "rotation": "(270.0, 90.0, 0.0)"
+      },
+      {
+        "name": "UpperArm.L",
+        "path": "rig_v001/Root/Hips/Spine/Chest/Clavicle.L/UpperArm.L",
+        "position": "(0.0000, 0.2586, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "Forearm.L",
+        "path": "rig_v001/Root/Hips/Spine/Chest/Clavicle.L/UpperArm.L/Forearm.L",
+        "position": "(0.0000, 0.2586, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "Hand.L",
+        "path": "rig_v001/Root/Hips/Spine/Chest/Clavicle.L/UpperArm.L/Forearm.L/Hand.L",
+        "position": "(0.0000, 0.2873, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "Clavicle.R",
+        "path": "rig_v001/Root/Hips/Spine/Chest/Clavicle.R",
+        "position": "(0.0000, 0.1485, 0.0000)",
+        "rotation": "(270.0, 270.0, 0.0)"
+      },
+      {
+        "name": "UpperArm.R",
+        "path": "rig_v001/Root/Hips/Spine/Chest/Clavicle.R/UpperArm.R",
+        "position": "(0.0000, 0.2586, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "Forearm.R",
+        "path": "rig_v001/Root/Hips/Spine/Chest/Clavicle.R/UpperArm.R/Forearm.R",
+        "position": "(0.0000, 0.2586, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "Hand.R",
+        "path": "rig_v001/Root/Hips/Spine/Chest/Clavicle.R/UpperArm.R/Forearm.R/Hand.R",
+        "position": "(0.0000, 0.2873, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "Thigh.L",
+        "path": "rig_v001/Root/Hips/Thigh.L",
+        "position": "(-0.1628, 0.0000, 0.0000)",
+        "rotation": "(1.7, 188.0, 188.0)"
+      },
+      {
+        "name": "Shin.L",
+        "path": "rig_v001/Root/Hips/Thigh.L/Shin.L",
+        "position": "(0.0000, 0.3600, 0.0000)",
+        "rotation": "(7.3, 5.1, 354.1)"
+      },
+      {
+        "name": "Foot.L",
+        "path": "rig_v001/Root/Hips/Thigh.L/Shin.L/Foot.L",
+        "position": "(0.0000, 0.2635, 0.0000)",
+        "rotation": "(298.4, 5.8, 355.6)"
+      },
+      {
+        "name": "Thigh.R",
+        "path": "rig_v001/Root/Hips/Thigh.R",
+        "position": "(0.1628, 0.0000, 0.0000)",
+        "rotation": "(1.7, 172.0, 172.0)"
+      },
+      {
+        "name": "Shin.R",
+        "path": "rig_v001/Root/Hips/Thigh.R/Shin.R",
+        "position": "(0.0000, 0.3600, 0.0000)",
+        "rotation": "(7.3, 354.9, 5.9)"
+      },
+      {
+        "name": "Foot.R",
+        "path": "rig_v001/Root/Hips/Thigh.R/Shin.R/Foot.R",
+        "position": "(0.0000, 0.2635, 0.0000)",
+        "rotation": "(298.4, 354.2, 4.4)"
+      }
+    ],
+    "skins": [
+      {
+        "mesh": "temp_mesh.ply.001",
+        "bones": 20,
+        "bounds": "Center: (0.00, 0.75, 0.04), Extents: (0.96, 0.90, 0.36)",
+        "materials": [
+          {
+            "name": "Material_0",
+            "shader": "glTF/PbrMetallicRoughness",
+            "texture": "Image_0"
+          }
+        ]
+      }
+    ],
+    "clips": [
+      {
+        "name": "Boss_OverhandThrow",
+        "length": 1.33333337,
+        "legacy": false,
+        "bindings": [
+          "rig_v001/Root.m_LocalRotation.x",
+          "rig_v001/Root.m_LocalRotation.y",
+          "rig_v001/Root.m_LocalRotation.z",
+          "rig_v001/Root.m_LocalRotation.w",
+          "rig_v001/Root/Hips.m_LocalRotation.x"
+        ]
+      }
+    ]
+  },
+  {
+    "file": "hit_knockback_anim_only.glb",
+    "exists": true,
+    "transforms": [
+      {
+        "name": "hit_knockback_anim_only",
+        "path": "",
+        "position": "(0.0000, 0.0000, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "Armature",
+        "path": "Armature",
+        "position": "(0.0000, 0.0000, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "root",
+        "path": "Armature/root",
+        "position": "(0.0000, 0.0000, 0.0000)",
+        "rotation": "(270.0, 0.0, 0.0)"
+      },
+      {
+        "name": "ik_hand_root",
+        "path": "Armature/root/ik_hand_root",
+        "position": "(0.0000, 0.0000, 0.0000)",
+        "rotation": "(90.0, 0.0, 0.0)"
+      },
+      {
+        "name": "ik_hand_gun",
+        "path": "Armature/root/ik_hand_root/ik_hand_gun",
+        "position": "(0.0000, 0.0000, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "ik_hand_l",
+        "path": "Armature/root/ik_hand_root/ik_hand_gun/ik_hand_l",
+        "position": "(-0.7936, 1.4408, -0.0654)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "ik_hand_r",
+        "path": "Armature/root/ik_hand_root/ik_hand_gun/ik_hand_r",
+        "position": "(0.7936, 1.4408, -0.0654)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "pelvis",
+        "path": "Armature/root/pelvis",
+        "position": "(0.0000, 0.0501, 0.9167)",
+        "rotation": "(75.5, 180.0, 180.0)"
+      },
+      {
+        "name": "spine_01",
+        "path": "Armature/root/pelvis/spine_01",
+        "position": "(0.0000, 0.1382, 0.0000)",
+        "rotation": "(352.6, 0.0, 0.0)"
+      },
+      {
+        "name": "spine_02",
+        "path": "Armature/root/pelvis/spine_01/spine_02",
+        "position": "(0.0000, 0.1240, 0.0000)",
+        "rotation": "(351.1, 0.0, 0.0)"
+      },
+      {
+        "name": "spine_03",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03",
+        "position": "(0.0000, 0.1413, 0.0000)",
+        "rotation": "(360.0, 0.0, 0.0)"
+      },
+      {
+        "name": "clavicle_l",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/clavicle_l",
+        "position": "(-0.0188, 0.1406, 0.0809)",
+        "rotation": "(271.8, 359.0, 60.5)"
+      },
+      {
+        "name": "upperarm_l",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/clavicle_l/upperarm_l",
+        "position": "(0.0301, 0.2186, -0.0170)",
+        "rotation": "(29.5, 270.0, 360.0)"
+      },
+      {
+        "name": "lowerarm_l",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/clavicle_l/upperarm_l/lowerarm_l",
+        "position": "(0.0000, 0.2744, 0.0000)",
+        "rotation": "(2.0, 0.0, 0.0)"
+      },
+      {
+        "name": "hand_l",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/clavicle_l/upperarm_l/lowerarm_l/hand_l",
+        "position": "(0.0000, 0.2726, 0.0000)",
+        "rotation": "(359.0, 0.0, 0.0)"
+      },
+      {
+        "name": "index_01_l",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/clavicle_l/upperarm_l/lowerarm_l/hand_l/index_01_l",
+        "position": "(-0.0020, 0.1199, 0.0309)",
+        "rotation": "(0.0, 270.0, 0.0)"
+      },
+      {
+        "name": "index_02_l",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/clavicle_l/upperarm_l/lowerarm_l/hand_l/index_01_l/index_02_l",
+        "position": "(0.0000, 0.0407, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "index_03_l",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/clavicle_l/upperarm_l/lowerarm_l/hand_l/index_01_l/index_02_l/index_03_l",
+        "position": "(0.0000, 0.0348, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "index_04_leaf_l",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/clavicle_l/upperarm_l/lowerarm_l/hand_l/index_01_l/index_02_l/index_03_l/index_04_leaf_l",
+        "position": "(0.0000, 0.0301, 0.0000)",
+        "rotation": "(0.0, 180.0, 0.0)"
+      },
+      {
+        "name": "middle_01_l",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/clavicle_l/upperarm_l/lowerarm_l/hand_l/middle_01_l",
+        "position": "(0.0004, 0.1216, 0.0052)",
+        "rotation": "(0.0, 270.0, 2.7)"
+      },
+      {
+        "name": "middle_02_l",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/clavicle_l/upperarm_l/lowerarm_l/hand_l/middle_01_l/middle_02_l",
+        "position": "(0.0000, 0.0423, 0.0000)",
+        "rotation": "(0.0, 0.0, 359.8)"
+      },
+      {
+        "name": "middle_03_l",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/clavicle_l/upperarm_l/lowerarm_l/hand_l/middle_01_l/middle_02_l/middle_03_l",
+        "position": "(0.0000, 0.0339, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.1)"
+      },
+      {
+        "name": "middle_04_leaf_l",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/clavicle_l/upperarm_l/lowerarm_l/hand_l/middle_01_l/middle_02_l/middle_03_l/middle_04_leaf_l",
+        "position": "(0.0000, 0.0344, 0.0000)",
+        "rotation": "(0.0, 180.0, 0.0)"
+      },
+      {
+        "name": "pinky_01_l",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/clavicle_l/upperarm_l/lowerarm_l/hand_l/pinky_01_l",
+        "position": "(-0.0016, 0.1077, -0.0408)",
+        "rotation": "(0.0, 270.0, 3.8)"
+      },
+      {
+        "name": "pinky_02_l",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/clavicle_l/upperarm_l/lowerarm_l/hand_l/pinky_01_l/pinky_02_l",
+        "position": "(0.0000, 0.0403, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.1)"
+      },
+      {
+        "name": "pinky_03_l",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/clavicle_l/upperarm_l/lowerarm_l/hand_l/pinky_01_l/pinky_02_l/pinky_03_l",
+        "position": "(0.0000, 0.0277, 0.0000)",
+        "rotation": "(0.0, 0.0, 359.9)"
+      },
+      {
+        "name": "pinky_04_leaf_l",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/clavicle_l/upperarm_l/lowerarm_l/hand_l/pinky_01_l/pinky_02_l/pinky_03_l/pinky_04_leaf_l",
+        "position": "(0.0000, 0.0282, 0.0000)",
+        "rotation": "(0.0, 180.0, 0.0)"
+      },
+      {
+        "name": "ring_01_l",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/clavicle_l/upperarm_l/lowerarm_l/hand_l/ring_01_l",
+        "position": "(0.0001, 0.1191, -0.0171)",
+        "rotation": "(0.0, 270.0, 2.0)"
+      },
+      {
+        "name": "ring_02_l",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/clavicle_l/upperarm_l/lowerarm_l/hand_l/ring_01_l/ring_02_l",
+        "position": "(0.0000, 0.0393, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "ring_03_l",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/clavicle_l/upperarm_l/lowerarm_l/hand_l/ring_01_l/ring_02_l/ring_03_l",
+        "position": "(0.0000, 0.0309, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.1)"
+      },
+      {
+        "name": "ring_04_leaf_l",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/clavicle_l/upperarm_l/lowerarm_l/hand_l/ring_01_l/ring_02_l/ring_03_l/ring_04_leaf_l",
+        "position": "(0.0000, 0.0318, 0.0000)",
+        "rotation": "(0.0, 180.0, 0.0)"
+      },
+      {
+        "name": "thumb_01_l",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/clavicle_l/upperarm_l/lowerarm_l/hand_l/thumb_01_l",
+        "position": "(-0.0228, 0.0273, 0.0336)",
+        "rotation": "(339.0, 192.5, 328.4)"
+      },
+      {
+        "name": "thumb_02_l",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/clavicle_l/upperarm_l/lowerarm_l/hand_l/thumb_01_l/thumb_02_l",
+        "position": "(0.0000, 0.0430, 0.0000)",
+        "rotation": "(360.0, 0.0, 0.0)"
+      },
+      {
+        "name": "thumb_03_l",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/clavicle_l/upperarm_l/lowerarm_l/hand_l/thumb_01_l/thumb_02_l/thumb_03_l",
+        "position": "(0.0000, 0.0491, 0.0000)",
+        "rotation": "(0.0, 360.0, 0.1)"
+      },
+      {
+        "name": "thumb_04_leaf_l",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/clavicle_l/upperarm_l/lowerarm_l/hand_l/thumb_01_l/thumb_02_l/thumb_03_l/thumb_04_leaf_l",
+        "position": "(0.0000, 0.0409, 0.0000)",
+        "rotation": "(0.0, 299.2, 0.0)"
+      },
+      {
+        "name": "clavicle_r",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/clavicle_r",
+        "position": "(0.0188, 0.1406, 0.0809)",
+        "rotation": "(271.8, 1.0, 299.5)"
+      },
+      {
+        "name": "upperarm_r",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/clavicle_r/upperarm_r",
+        "position": "(-0.0301, 0.2186, -0.0170)",
+        "rotation": "(29.5, 90.0, 0.0)"
+      },
+      {
+        "name": "lowerarm_r",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/clavicle_r/upperarm_r/lowerarm_r",
+        "position": "(0.0000, 0.2744, 0.0000)",
+        "rotation": "(2.0, 0.0, 0.0)"
+      },
+      {
+        "name": "hand_r",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/clavicle_r/upperarm_r/lowerarm_r/hand_r",
+        "position": "(0.0000, 0.2726, 0.0000)",
+        "rotation": "(359.0, 0.0, 0.0)"
+      },
+      {
+        "name": "index_01_r",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/clavicle_r/upperarm_r/lowerarm_r/hand_r/index_01_r",
+        "position": "(0.0020, 0.1199, 0.0309)",
+        "rotation": "(0.0, 90.0, 0.0)"
+      },
+      {
+        "name": "index_02_r",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/clavicle_r/upperarm_r/lowerarm_r/hand_r/index_01_r/index_02_r",
+        "position": "(0.0000, 0.0407, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "index_03_r",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/clavicle_r/upperarm_r/lowerarm_r/hand_r/index_01_r/index_02_r/index_03_r",
+        "position": "(0.0000, 0.0348, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "index_04_leaf_r",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/clavicle_r/upperarm_r/lowerarm_r/hand_r/index_01_r/index_02_r/index_03_r/index_04_leaf_r",
+        "position": "(0.0000, 0.0301, 0.0000)",
+        "rotation": "(0.0, 180.0, 0.0)"
+      },
+      {
+        "name": "middle_01_r",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/clavicle_r/upperarm_r/lowerarm_r/hand_r/middle_01_r",
+        "position": "(-0.0004, 0.1216, 0.0052)",
+        "rotation": "(0.0, 90.0, 357.3)"
+      },
+      {
+        "name": "middle_02_r",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/clavicle_r/upperarm_r/lowerarm_r/hand_r/middle_01_r/middle_02_r",
+        "position": "(0.0000, 0.0423, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.2)"
+      },
+      {
+        "name": "middle_03_r",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/clavicle_r/upperarm_r/lowerarm_r/hand_r/middle_01_r/middle_02_r/middle_03_r",
+        "position": "(0.0000, 0.0339, 0.0000)",
+        "rotation": "(0.0, 0.0, 359.9)"
+      },
+      {
+        "name": "middle_04_leaf_r",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/clavicle_r/upperarm_r/lowerarm_r/hand_r/middle_01_r/middle_02_r/middle_03_r/middle_04_leaf_r",
+        "position": "(0.0000, 0.0344, 0.0000)",
+        "rotation": "(0.0, 180.0, 0.0)"
+      },
+      {
+        "name": "pinky_01_r",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/clavicle_r/upperarm_r/lowerarm_r/hand_r/pinky_01_r",
+        "position": "(0.0016, 0.1077, -0.0408)",
+        "rotation": "(0.0, 90.0, 356.2)"
+      },
+      {
+        "name": "pinky_02_r",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/clavicle_r/upperarm_r/lowerarm_r/hand_r/pinky_01_r/pinky_02_r",
+        "position": "(0.0000, 0.0403, 0.0000)",
+        "rotation": "(0.0, 0.0, 359.9)"
+      },
+      {
+        "name": "pinky_03_r",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/clavicle_r/upperarm_r/lowerarm_r/hand_r/pinky_01_r/pinky_02_r/pinky_03_r",
+        "position": "(0.0000, 0.0277, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.1)"
+      },
+      {
+        "name": "pinky_04_leaf_r",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/clavicle_r/upperarm_r/lowerarm_r/hand_r/pinky_01_r/pinky_02_r/pinky_03_r/pinky_04_leaf_r",
+        "position": "(0.0000, 0.0282, 0.0000)",
+        "rotation": "(0.0, 180.0, 0.0)"
+      },
+      {
+        "name": "ring_01_r",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/clavicle_r/upperarm_r/lowerarm_r/hand_r/ring_01_r",
+        "position": "(-0.0001, 0.1191, -0.0171)",
+        "rotation": "(0.0, 90.0, 358.0)"
+      },
+      {
+        "name": "ring_02_r",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/clavicle_r/upperarm_r/lowerarm_r/hand_r/ring_01_r/ring_02_r",
+        "position": "(0.0000, 0.0393, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "ring_03_r",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/clavicle_r/upperarm_r/lowerarm_r/hand_r/ring_01_r/ring_02_r/ring_03_r",
+        "position": "(0.0000, 0.0309, 0.0000)",
+        "rotation": "(0.0, 0.0, 359.9)"
+      },
+      {
+        "name": "ring_04_leaf_r",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/clavicle_r/upperarm_r/lowerarm_r/hand_r/ring_01_r/ring_02_r/ring_03_r/ring_04_leaf_r",
+        "position": "(0.0000, 0.0318, 0.0000)",
+        "rotation": "(0.0, 180.0, 0.0)"
+      },
+      {
+        "name": "thumb_01_r",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/clavicle_r/upperarm_r/lowerarm_r/hand_r/thumb_01_r",
+        "position": "(0.0228, 0.0273, 0.0336)",
+        "rotation": "(339.0, 167.5, 31.6)"
+      },
+      {
+        "name": "thumb_02_r",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/clavicle_r/upperarm_r/lowerarm_r/hand_r/thumb_01_r/thumb_02_r",
+        "position": "(0.0000, 0.0430, 0.0000)",
+        "rotation": "(360.0, 360.0, 0.0)"
+      },
+      {
+        "name": "thumb_03_r",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/clavicle_r/upperarm_r/lowerarm_r/hand_r/thumb_01_r/thumb_02_r/thumb_03_r",
+        "position": "(0.0000, 0.0491, 0.0000)",
+        "rotation": "(0.0, 0.0, 359.9)"
+      },
+      {
+        "name": "thumb_04_leaf_r",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/clavicle_r/upperarm_r/lowerarm_r/hand_r/thumb_01_r/thumb_02_r/thumb_03_r/thumb_04_leaf_r",
+        "position": "(0.0000, 0.0409, 0.0000)",
+        "rotation": "(0.0, 60.8, 0.0)"
+      },
+      {
+        "name": "neck_01",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/neck_01",
+        "position": "(0.0000, 0.1729, 0.0000)",
+        "rotation": "(12.7, 0.0, 0.0)"
+      },
+      {
+        "name": "Head",
+        "path": "Armature/root/pelvis/spine_01/spine_02/spine_03/neck_01/Head",
+        "position": "(0.0000, 0.0826, 0.0000)",
+        "rotation": "(351.0, 0.0, 0.0)"
+      },
+      {
+        "name": "thigh_l",
+        "path": "Armature/root/pelvis/thigh_l",
+        "position": "(-0.0890, 0.0278, 0.0460)",
+        "rotation": "(14.1, 180.0, 180.0)"
+      },
+      {
+        "name": "calf_l",
+        "path": "Armature/root/pelvis/thigh_l/calf_l",
+        "position": "(0.0000, 0.4003, 0.0000)",
+        "rotation": "(4.2, 0.0, 0.0)"
+      },
+      {
+        "name": "foot_l",
+        "path": "Armature/root/pelvis/thigh_l/calf_l/foot_l",
+        "position": "(0.0000, 0.4295, 0.0000)",
+        "rotation": "(296.1, 0.1, 359.9)"
+      },
+      {
+        "name": "ball_l",
+        "path": "Armature/root/pelvis/thigh_l/calf_l/foot_l/ball_l",
+        "position": "(0.0000, 0.1733, 0.0000)",
+        "rotation": "(30.7, 179.9, 0.0)"
+      },
+      {
+        "name": "ball_leaf_l",
+        "path": "Armature/root/pelvis/thigh_l/calf_l/foot_l/ball_l/ball_leaf_l",
+        "position": "(0.0000, 0.0789, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "thigh_r",
+        "path": "Armature/root/pelvis/thigh_r",
+        "position": "(0.0890, 0.0278, 0.0460)",
+        "rotation": "(14.1, 180.0, 180.0)"
+      },
+      {
+        "name": "calf_r",
+        "path": "Armature/root/pelvis/thigh_r/calf_r",
+        "position": "(0.0000, 0.4003, 0.0000)",
+        "rotation": "(4.2, 0.0, 0.0)"
+      },
+      {
+        "name": "foot_r",
+        "path": "Armature/root/pelvis/thigh_r/calf_r/foot_r",
+        "position": "(0.0000, 0.4295, 0.0000)",
+        "rotation": "(296.1, 0.1, 359.9)"
+      },
+      {
+        "name": "ball_r",
+        "path": "Armature/root/pelvis/thigh_r/calf_r/foot_r/ball_r",
+        "position": "(0.0000, 0.1733, 0.0000)",
+        "rotation": "(30.7, 179.9, 0.0)"
+      },
+      {
+        "name": "ball_leaf_r",
+        "path": "Armature/root/pelvis/thigh_r/calf_r/foot_r/ball_r/ball_leaf_r",
+        "position": "(0.0000, 0.0789, 0.0000)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      },
+      {
+        "name": "socket_offhand",
+        "path": "Armature/root/socket_offhand",
+        "position": "(0.0000, 0.0000, 0.0000)",
+        "rotation": "(90.0, 0.0, 0.0)"
+      },
+      {
+        "name": "socket_offhand_grip",
+        "path": "Armature/root/socket_offhand/socket_offhand_grip",
+        "position": "(-0.7936, 1.4408, -0.0654)",
+        "rotation": "(0.0, 0.0, 0.0)"
+      }
+    ],
+    "skins": [],
+    "clips": [
+      {
+        "name": "hit_knockback",
+        "length": 0.8333333,
+        "legacy": false,
+        "bindings": [
+          "Armature/root.m_LocalRotation.x",
+          "Armature/root.m_LocalRotation.y",
+          "Armature/root.m_LocalRotation.z",
+          "Armature/root.m_LocalRotation.w",
+          "Armature/root/pelvis.m_LocalRotation.x"
+        ]
+      }
+    ]
+  }
+]
