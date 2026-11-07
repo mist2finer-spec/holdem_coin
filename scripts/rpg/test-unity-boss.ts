@@ -5,6 +5,18 @@ import {UnityBossEngine,UNITY_BOSS_RULES} from '../../src/lib/rpg-unity-boss-eng
 import {UnityBossService} from '../../src/lib/rpg-unity-boss-service';
 import {createGameStorage} from '../../src/lib/game-storage';
 const idle={x:0,y:0,auto:false};
+test('movement ACK belongs to its sequence, remains immutable and never includes one-shot actions',()=>{
+ const storage=createGameStorage(':memory:');let now=2e12;
+ try{const service=new UnityBossService(storage.progress,storage.items,()=>now),account='d'.repeat(64);const start=service.start(account);
+  assert.deepEqual(start.acceptedInput,{x:0,y:0,auto:true,paused:false});now+=150;
+  const input={x:-.7,y:.4,auto:false,attack:true};const first=service.command(account,start.id,1,input,'tick',start.buildRevision);
+  assert.deepEqual(first.acceptedInput,{x:-.7,y:.4,auto:false,paused:false});assert.equal(first.sequence,1);
+  assert.strictEqual(service.command(account,start.id,1,input,'tick',start.buildRevision),first);
+  now+=150;const second=service.command(account,start.id,2,{...idle,x:1,paused:true},'tick',start.buildRevision);
+  assert.deepEqual(second.acceptedInput,{x:1,y:0,auto:false,paused:true});assert.equal(first.acceptedInput.x,-.7);
+  assert.throws(()=>service.command(account,start.id,2,idle,'tick',start.buildRevision),/같은 명령 번호/);
+ }finally{storage.close();}
+});
 test('roll lasts as long as sliding and stays active through the old cutoff',()=>{const roll=new UnityBossEngine(),slide=new UnityBossEngine();assert.ok(roll.command({...idle,dodge:true}));assert.ok(slide.command({...idle,slide:true}));assert.equal(roll.hero.motion!.duration,slide.hero.motion!.duration);assert.equal(roll.hero.motion!.duration,.65);for(let i=0;i<20;i++)roll.step(.02,idle);assert.equal(roll.hero.motion?.kind,'dodge');for(let i=0;i<13;i++)roll.step(.02,idle);assert.equal(roll.hero.motion,null);});
 function steps(g:UnityBossEngine,n:number,input=idle){for(let i=0;i<n;i++)g.step(.02,input);}
 function arena(g=new UnityBossEngine()){for(let i=0;i<3000&&g.room!==1;i++)g.step(.02,{...idle,auto:true});assert.equal(g.room,1);return g;}

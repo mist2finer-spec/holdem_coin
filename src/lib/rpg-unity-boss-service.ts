@@ -30,6 +30,8 @@ export class UnityBossService {
  }
  private snapshot(s:Session,full:boolean){
   const m=s.metadata;const metadata=full?m:{...m,compiled:undefined,build:{...m.build,tree:undefined},progress:{...m.progress,equipment:undefined,gemCollection:undefined,gacha:undefined,legacyBuild:undefined}};
-  return {id:s.id,sequence:s.sequence,...s.game.view(),...metadata,...(full?{map:s.game.map}:{})};
+  // ACK the held movement separately from one-shot actions. The client can reconcile
+  // display prediction without replaying attack/dodge or changing combat authority.
+  return {id:s.id,sequence:s.sequence,acceptedInput:{x:s.input.x,y:s.input.y??0,auto:s.input.auto,paused:!!s.input.paused},...s.game.view(),...metadata,...(full?{map:s.game.map}:{})};
  }
 }

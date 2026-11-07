@@ -1,0 +1,1522 @@
+{
+  "mode": "Explicit Camera.Render in Editor; submission time is not GPU time or normal frame FPS",
+  "width": 1080,
+  "height": 1170,
+  "renderers": 429,
+  "materials": [
+    {
+      "material": "Muted_PT_Pine_Tree_Leaves_Mat",
+      "shader": "Polytope Studio/PT_Vegetation_Foliage_Shader",
+      "instancing": true,
+      "renderers": 258
+    },
+    {
+      "material": "PT_Pine_Tree_Trunk_Mat",
+      "shader": "Polytope Studio/PT_Vegetation_Opaque_Shader",
+      "instancing": true,
+      "renderers": 258
+    },
+    {
+      "material": "Muted_PT_Generic_Tree_Leaves_mat",
+      "shader": "Polytope Studio/PT_Vegetation_Foliage_Shader",
+      "instancing": true,
+      "renderers": 63
+    },
+    {
+      "material": "PT_Generic_Tree_Trunk_mat",
+      "shader": "Polytope Studio/PT_Vegetation_Opaque_Shader",
+      "instancing": true,
+      "renderers": 63
+    },
+    {
+      "material": "PT_Buildings_mat",
+      "shader": "Polytope Studio/ PT_Medieval Buildings Shader PBR",
+      "instancing": false,
+      "renderers": 44
+    },
+    {
+      "material": "Muted_PT_Fruit_Tree_Foliage_Mat",
+      "shader": "Polytope Studio/PT_Vegetation_Foliage_Shader",
+      "instancing": true,
+      "renderers": 39
+    },
+    {
+      "material": "PT_Fruit_Tree_Opaque_mat",
+      "shader": "Polytope Studio/PT_Vegetation_Opaque_Shader",
+      "instancing": true,
+      "renderers": 39
+    },
+    {
+      "material": "PT_Mushrooms_mat",
+      "shader": "Polytope Studio/PT_Vegetation_Opaque_Shader",
+      "instancing": true,
+      "renderers": 8
+    },
+    {
+      "material": "Default-Material",
+      "shader": "Standard",
+      "instancing": false,
+      "renderers": 4
+    },
+    {
+      "material": "Sword · silver",
+      "shader": "Standard",
+      "instancing": false,
+      "renderers": 2
+    },
+    {
+      "material": "Boss warning yellow",
+      "shader": "Island/BossTelegraph",
+      "instancing": false,
+      "renderers": 1
+    },
+    {
+      "material": "Muted_PT_High_Grass_Mat",
+      "shader": "Polytope Studio/PT_Vegetation_Plants_Shader",
+      "instancing": true,
+      "renderers": 1
+    }
+  ],
+  "rows": [
+    {
+      "frame": 7302,
+      "renderSubmitMs": 1.4888,
+      "drawCalls": 103,
+      "batches": 103,
+      "setPass": 92,
+      "triangles": 472637
+    },
+    {
+      "frame": 7303,
+      "renderSubmitMs": 0.9286,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 177,
+      "triangles": 941804
+    },
+    {
+      "frame": 7304,
+      "renderSubmitMs": 0.9122,
+      "drawCalls": 200,
+      "batches": 200,
+      "setPass": 176,
+      "triangles": 937678
+    },
+    {
+      "frame": 7305,
+      "renderSubmitMs": 0.9445,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7306,
+      "renderSubmitMs": 1.2133,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7307,
+      "renderSubmitMs": 0.9771,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7308,
+      "renderSubmitMs": 1.1338,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7309,
+      "renderSubmitMs": 0.9108,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7310,
+      "renderSubmitMs": 1.208,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7311,
+      "renderSubmitMs": 0.9416,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7312,
+      "renderSubmitMs": 1.1621,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7313,
+      "renderSubmitMs": 0.9476,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7314,
+      "renderSubmitMs": 1.0712,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7315,
+      "renderSubmitMs": 0.9808,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7316,
+      "renderSubmitMs": 1.0768,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7317,
+      "renderSubmitMs": 1.3861,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 934171
+    },
+    {
+      "frame": 7318,
+      "renderSubmitMs": 1.0291,
+      "drawCalls": 194,
+      "batches": 194,
+      "setPass": 170,
+      "triangles": 933742
+    },
+    {
+      "frame": 7319,
+      "renderSubmitMs": 0.9193,
+      "drawCalls": 194,
+      "batches": 194,
+      "setPass": 170,
+      "triangles": 933742
+    },
+    {
+      "frame": 7320,
+      "renderSubmitMs": 1.454,
+      "drawCalls": 194,
+      "batches": 194,
+      "setPass": 170,
+      "triangles": 933742
+    },
+    {
+      "frame": 7321,
+      "renderSubmitMs": 1.0257,
+      "drawCalls": 194,
+      "batches": 194,
+      "setPass": 170,
+      "triangles": 933742
+    },
+    {
+      "frame": 7322,
+      "renderSubmitMs": 0.8864,
+      "drawCalls": 194,
+      "batches": 194,
+      "setPass": 170,
+      "triangles": 933742
+    },
+    {
+      "frame": 7323,
+      "renderSubmitMs": 1.2234,
+      "drawCalls": 194,
+      "batches": 194,
+      "setPass": 170,
+      "triangles": 933742
+    },
+    {
+      "frame": 7324,
+      "renderSubmitMs": 1.2581,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 933742
+    },
+    {
+      "frame": 7325,
+      "renderSubmitMs": 1.1728,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 933742
+    },
+    {
+      "frame": 7326,
+      "renderSubmitMs": 0.863,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 933742
+    },
+    {
+      "frame": 7327,
+      "renderSubmitMs": 0.9993,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 930664
+    },
+    {
+      "frame": 7328,
+      "renderSubmitMs": 1.3517,
+      "drawCalls": 194,
+      "batches": 194,
+      "setPass": 170,
+      "triangles": 927586
+    },
+    {
+      "frame": 7329,
+      "renderSubmitMs": 1.0665,
+      "drawCalls": 194,
+      "batches": 194,
+      "setPass": 170,
+      "triangles": 927586
+    },
+    {
+      "frame": 7330,
+      "renderSubmitMs": 1.0183,
+      "drawCalls": 194,
+      "batches": 194,
+      "setPass": 170,
+      "triangles": 927586
+    },
+    {
+      "frame": 7331,
+      "renderSubmitMs": 0.9323,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 930664
+    },
+    {
+      "frame": 7332,
+      "renderSubmitMs": 0.9046,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 933742
+    },
+    {
+      "frame": 7333,
+      "renderSubmitMs": 1.0119,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 933742
+    },
+    {
+      "frame": 7334,
+      "renderSubmitMs": 0.9561,
+      "drawCalls": 194,
+      "batches": 194,
+      "setPass": 170,
+      "triangles": 933742
+    },
+    {
+      "frame": 7335,
+      "renderSubmitMs": 0.9493,
+      "drawCalls": 194,
+      "batches": 194,
+      "setPass": 170,
+      "triangles": 933742
+    },
+    {
+      "frame": 7336,
+      "renderSubmitMs": 0.9081,
+      "drawCalls": 194,
+      "batches": 194,
+      "setPass": 170,
+      "triangles": 933742
+    },
+    {
+      "frame": 7337,
+      "renderSubmitMs": 0.9555,
+      "drawCalls": 194,
+      "batches": 194,
+      "setPass": 170,
+      "triangles": 933742
+    },
+    {
+      "frame": 7338,
+      "renderSubmitMs": 0.9708,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 934171
+    },
+    {
+      "frame": 7339,
+      "renderSubmitMs": 0.9793,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7340,
+      "renderSubmitMs": 0.9275,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7341,
+      "renderSubmitMs": 1.0602,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7342,
+      "renderSubmitMs": 0.9247,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7343,
+      "renderSubmitMs": 0.9524,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7344,
+      "renderSubmitMs": 1.2506,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7345,
+      "renderSubmitMs": 0.9314,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7346,
+      "renderSubmitMs": 0.8223,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7347,
+      "renderSubmitMs": 0.9923,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7348,
+      "renderSubmitMs": 0.8843,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7349,
+      "renderSubmitMs": 0.9252,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7350,
+      "renderSubmitMs": 1.0461,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7351,
+      "renderSubmitMs": 0.9371,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7352,
+      "renderSubmitMs": 1.0236,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7353,
+      "renderSubmitMs": 0.9928,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7354,
+      "renderSubmitMs": 0.888,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7355,
+      "renderSubmitMs": 0.9095,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7356,
+      "renderSubmitMs": 0.8206,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7357,
+      "renderSubmitMs": 0.9454,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7358,
+      "renderSubmitMs": 0.9487,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7359,
+      "renderSubmitMs": 1.0082,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7360,
+      "renderSubmitMs": 1.0009,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7361,
+      "renderSubmitMs": 0.9828,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7362,
+      "renderSubmitMs": 0.9105,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7363,
+      "renderSubmitMs": 0.8896,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7364,
+      "renderSubmitMs": 1.0905,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7365,
+      "renderSubmitMs": 0.9668,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7366,
+      "renderSubmitMs": 0.8722,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7367,
+      "renderSubmitMs": 1.2269,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7368,
+      "renderSubmitMs": 0.9554,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7369,
+      "renderSubmitMs": 0.9185,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7370,
+      "renderSubmitMs": 0.8443,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7371,
+      "renderSubmitMs": 0.906,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7372,
+      "renderSubmitMs": 0.9507,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7373,
+      "renderSubmitMs": 0.9192,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7374,
+      "renderSubmitMs": 1.1967,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7375,
+      "renderSubmitMs": 0.9476,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7376,
+      "renderSubmitMs": 0.9615,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7377,
+      "renderSubmitMs": 0.8301,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7378,
+      "renderSubmitMs": 0.8665,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7379,
+      "renderSubmitMs": 0.9803,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7380,
+      "renderSubmitMs": 1.0016,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7381,
+      "renderSubmitMs": 0.9095,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7382,
+      "renderSubmitMs": 0.9792,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7383,
+      "renderSubmitMs": 1.1107,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7384,
+      "renderSubmitMs": 0.9035,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7385,
+      "renderSubmitMs": 0.9704,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7386,
+      "renderSubmitMs": 0.8733,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7387,
+      "renderSubmitMs": 0.8554,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934600
+    },
+    {
+      "frame": 7388,
+      "renderSubmitMs": 0.8376,
+      "drawCalls": 199,
+      "batches": 199,
+      "setPass": 175,
+      "triangles": 934664
+    },
+    {
+      "frame": 7389,
+      "renderSubmitMs": 1.0769,
+      "drawCalls": 200,
+      "batches": 200,
+      "setPass": 176,
+      "triangles": 934728
+    },
+    {
+      "frame": 7390,
+      "renderSubmitMs": 0.8708,
+      "drawCalls": 200,
+      "batches": 200,
+      "setPass": 176,
+      "triangles": 934728
+    },
+    {
+      "frame": 7391,
+      "renderSubmitMs": 0.8978,
+      "drawCalls": 200,
+      "batches": 200,
+      "setPass": 176,
+      "triangles": 934728
+    },
+    {
+      "frame": 7392,
+      "renderSubmitMs": 0.9031,
+      "drawCalls": 200,
+      "batches": 200,
+      "setPass": 176,
+      "triangles": 934728
+    },
+    {
+      "frame": 7393,
+      "renderSubmitMs": 0.9466,
+      "drawCalls": 200,
+      "batches": 200,
+      "setPass": 176,
+      "triangles": 934728
+    },
+    {
+      "frame": 7394,
+      "renderSubmitMs": 0.8668,
+      "drawCalls": 200,
+      "batches": 200,
+      "setPass": 176,
+      "triangles": 934728
+    },
+    {
+      "frame": 7395,
+      "renderSubmitMs": 0.851,
+      "drawCalls": 200,
+      "batches": 200,
+      "setPass": 176,
+      "triangles": 934728
+    },
+    {
+      "frame": 7396,
+      "renderSubmitMs": 0.9663,
+      "drawCalls": 200,
+      "batches": 200,
+      "setPass": 176,
+      "triangles": 934728
+    },
+    {
+      "frame": 7397,
+      "renderSubmitMs": 1.1377,
+      "drawCalls": 200,
+      "batches": 200,
+      "setPass": 176,
+      "triangles": 934728
+    },
+    {
+      "frame": 7398,
+      "renderSubmitMs": 0.9319,
+      "drawCalls": 200,
+      "batches": 200,
+      "setPass": 176,
+      "triangles": 934728
+    },
+    {
+      "frame": 7399,
+      "renderSubmitMs": 0.8782,
+      "drawCalls": 200,
+      "batches": 200,
+      "setPass": 176,
+      "triangles": 934728
+    },
+    {
+      "frame": 7400,
+      "renderSubmitMs": 1.0964,
+      "drawCalls": 200,
+      "batches": 200,
+      "setPass": 176,
+      "triangles": 934728
+    },
+    {
+      "frame": 7401,
+      "renderSubmitMs": 0.922,
+      "drawCalls": 200,
+      "batches": 200,
+      "setPass": 176,
+      "triangles": 934728
+    },
+    {
+      "frame": 7402,
+      "renderSubmitMs": 0.8626,
+      "drawCalls": 200,
+      "batches": 200,
+      "setPass": 176,
+      "triangles": 934728
+    },
+    {
+      "frame": 7403,
+      "renderSubmitMs": 0.9721,
+      "drawCalls": 200,
+      "batches": 200,
+      "setPass": 176,
+      "triangles": 934728
+    },
+    {
+      "frame": 7404,
+      "renderSubmitMs": 1.0081,
+      "drawCalls": 200,
+      "batches": 200,
+      "setPass": 176,
+      "triangles": 934728
+    },
+    {
+      "frame": 7405,
+      "renderSubmitMs": 0.9853,
+      "drawCalls": 200,
+      "batches": 200,
+      "setPass": 176,
+      "triangles": 934728
+    },
+    {
+      "frame": 7406,
+      "renderSubmitMs": 0.9464,
+      "drawCalls": 200,
+      "batches": 200,
+      "setPass": 176,
+      "triangles": 934728
+    },
+    {
+      "frame": 7407,
+      "renderSubmitMs": 0.9329,
+      "drawCalls": 200,
+      "batches": 200,
+      "setPass": 176,
+      "triangles": 934728
+    },
+    {
+      "frame": 7408,
+      "renderSubmitMs": 1.1492,
+      "drawCalls": 200,
+      "batches": 200,
+      "setPass": 176,
+      "triangles": 934728
+    },
+    {
+      "frame": 7409,
+      "renderSubmitMs": 0.9293,
+      "drawCalls": 200,
+      "batches": 200,
+      "setPass": 176,
+      "triangles": 934728
+    },
+    {
+      "frame": 7410,
+      "renderSubmitMs": 0.8585,
+      "drawCalls": 200,
+      "batches": 200,
+      "setPass": 176,
+      "triangles": 934728
+    },
+    {
+      "frame": 7411,
+      "renderSubmitMs": 2.4497,
+      "drawCalls": 200,
+      "batches": 200,
+      "setPass": 176,
+      "triangles": 934728
+    },
+    {
+      "frame": 7412,
+      "renderSubmitMs": 0.8829,
+      "drawCalls": 200,
+      "batches": 200,
+      "setPass": 176,
+      "triangles": 934728
+    },
+    {
+      "frame": 7413,
+      "renderSubmitMs": 0.83,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 934299
+    },
+    {
+      "frame": 7414,
+      "renderSubmitMs": 0.8369,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 933870
+    },
+    {
+      "frame": 7415,
+      "renderSubmitMs": 0.9843,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 933870
+    },
+    {
+      "frame": 7416,
+      "renderSubmitMs": 0.8637,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 933870
+    },
+    {
+      "frame": 7417,
+      "renderSubmitMs": 0.9022,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 933870
+    },
+    {
+      "frame": 7418,
+      "renderSubmitMs": 1.2617,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 933870
+    },
+    {
+      "frame": 7419,
+      "renderSubmitMs": 0.8771,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 933870
+    },
+    {
+      "frame": 7420,
+      "renderSubmitMs": 1.1259,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 933870
+    },
+    {
+      "frame": 7421,
+      "renderSubmitMs": 1.1629,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 933870
+    },
+    {
+      "frame": 7422,
+      "renderSubmitMs": 0.8996,
+      "drawCalls": 200,
+      "batches": 200,
+      "setPass": 176,
+      "triangles": 933870
+    },
+    {
+      "frame": 7423,
+      "renderSubmitMs": 1.2116,
+      "drawCalls": 200,
+      "batches": 200,
+      "setPass": 176,
+      "triangles": 933870
+    },
+    {
+      "frame": 7424,
+      "renderSubmitMs": 0.9069,
+      "drawCalls": 200,
+      "batches": 200,
+      "setPass": 176,
+      "triangles": 933870
+    },
+    {
+      "frame": 7425,
+      "renderSubmitMs": 0.9337,
+      "drawCalls": 200,
+      "batches": 200,
+      "setPass": 176,
+      "triangles": 933870
+    },
+    {
+      "frame": 7426,
+      "renderSubmitMs": 0.8699,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 930792
+    },
+    {
+      "frame": 7427,
+      "renderSubmitMs": 1.0154,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 927714
+    },
+    {
+      "frame": 7428,
+      "renderSubmitMs": 0.8261,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 927714
+    },
+    {
+      "frame": 7429,
+      "renderSubmitMs": 0.9771,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 927714
+    },
+    {
+      "frame": 7430,
+      "renderSubmitMs": 0.984,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 927714
+    },
+    {
+      "frame": 7431,
+      "renderSubmitMs": 1.1317,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 926688
+    },
+    {
+      "frame": 7432,
+      "renderSubmitMs": 1.0254,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 925662
+    },
+    {
+      "frame": 7433,
+      "renderSubmitMs": 1.0658,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 925662
+    },
+    {
+      "frame": 7434,
+      "renderSubmitMs": 0.8908,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 925662
+    },
+    {
+      "frame": 7435,
+      "renderSubmitMs": 1.138,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 925662
+    },
+    {
+      "frame": 7436,
+      "renderSubmitMs": 0.9382,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 925662
+    },
+    {
+      "frame": 7437,
+      "renderSubmitMs": 0.8693,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 925662
+    },
+    {
+      "frame": 7438,
+      "renderSubmitMs": 0.8378,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 925662
+    },
+    {
+      "frame": 7439,
+      "renderSubmitMs": 0.8819,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 925662
+    },
+    {
+      "frame": 7440,
+      "renderSubmitMs": 1.1347,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 925662
+    },
+    {
+      "frame": 7441,
+      "renderSubmitMs": 0.8372,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 925662
+    },
+    {
+      "frame": 7442,
+      "renderSubmitMs": 0.9034,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 925662
+    },
+    {
+      "frame": 7443,
+      "renderSubmitMs": 0.9032,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 925662
+    },
+    {
+      "frame": 7444,
+      "renderSubmitMs": 0.9256,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 925662
+    },
+    {
+      "frame": 7445,
+      "renderSubmitMs": 0.8417,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 925662
+    },
+    {
+      "frame": 7446,
+      "renderSubmitMs": 0.9552,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 925662
+    },
+    {
+      "frame": 7447,
+      "renderSubmitMs": 0.9302,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 925662
+    },
+    {
+      "frame": 7448,
+      "renderSubmitMs": 0.8136,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 925662
+    },
+    {
+      "frame": 7449,
+      "renderSubmitMs": 0.8571,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 925662
+    },
+    {
+      "frame": 7450,
+      "renderSubmitMs": 0.8905,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 925662
+    },
+    {
+      "frame": 7451,
+      "renderSubmitMs": 0.9182,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 925662
+    },
+    {
+      "frame": 7452,
+      "renderSubmitMs": 0.8846,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 925662
+    },
+    {
+      "frame": 7453,
+      "renderSubmitMs": 0.9482,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 925662
+    },
+    {
+      "frame": 7454,
+      "renderSubmitMs": 0.8665,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 925662
+    },
+    {
+      "frame": 7455,
+      "renderSubmitMs": 0.8988,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 925662
+    },
+    {
+      "frame": 7456,
+      "renderSubmitMs": 1.263,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 925662
+    },
+    {
+      "frame": 7457,
+      "renderSubmitMs": 0.9295,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 925662
+    },
+    {
+      "frame": 7458,
+      "renderSubmitMs": 0.8488,
+      "drawCalls": 194,
+      "batches": 194,
+      "setPass": 170,
+      "triangles": 922584
+    },
+    {
+      "frame": 7459,
+      "renderSubmitMs": 0.8148,
+      "drawCalls": 192,
+      "batches": 192,
+      "setPass": 168,
+      "triangles": 919506
+    },
+    {
+      "frame": 7460,
+      "renderSubmitMs": 0.9029,
+      "drawCalls": 192,
+      "batches": 192,
+      "setPass": 168,
+      "triangles": 919506
+    },
+    {
+      "frame": 7461,
+      "renderSubmitMs": 1.0234,
+      "drawCalls": 192,
+      "batches": 192,
+      "setPass": 168,
+      "triangles": 919506
+    },
+    {
+      "frame": 7462,
+      "renderSubmitMs": 0.8813,
+      "drawCalls": 192,
+      "batches": 192,
+      "setPass": 168,
+      "triangles": 919506
+    },
+    {
+      "frame": 7463,
+      "renderSubmitMs": 0.9769,
+      "drawCalls": 192,
+      "batches": 192,
+      "setPass": 168,
+      "triangles": 919506
+    },
+    {
+      "frame": 7464,
+      "renderSubmitMs": 0.9365,
+      "drawCalls": 192,
+      "batches": 192,
+      "setPass": 168,
+      "triangles": 919506
+    },
+    {
+      "frame": 7465,
+      "renderSubmitMs": 1.0918,
+      "drawCalls": 192,
+      "batches": 192,
+      "setPass": 168,
+      "triangles": 919506
+    },
+    {
+      "frame": 7466,
+      "renderSubmitMs": 0.8976,
+      "drawCalls": 192,
+      "batches": 192,
+      "setPass": 168,
+      "triangles": 919506
+    },
+    {
+      "frame": 7467,
+      "renderSubmitMs": 0.9584,
+      "drawCalls": 192,
+      "batches": 192,
+      "setPass": 168,
+      "triangles": 919506
+    },
+    {
+      "frame": 7468,
+      "renderSubmitMs": 0.9177,
+      "drawCalls": 192,
+      "batches": 192,
+      "setPass": 168,
+      "triangles": 919506
+    },
+    {
+      "frame": 7469,
+      "renderSubmitMs": 1.1301,
+      "drawCalls": 192,
+      "batches": 192,
+      "setPass": 168,
+      "triangles": 919506
+    },
+    {
+      "frame": 7470,
+      "renderSubmitMs": 1.116,
+      "drawCalls": 192,
+      "batches": 192,
+      "setPass": 168,
+      "triangles": 919506
+    },
+    {
+      "frame": 7471,
+      "renderSubmitMs": 1.2691,
+      "drawCalls": 192,
+      "batches": 192,
+      "setPass": 168,
+      "triangles": 919506
+    },
+    {
+      "frame": 7472,
+      "renderSubmitMs": 1.1948,
+      "drawCalls": 194,
+      "batches": 194,
+      "setPass": 170,
+      "triangles": 922584
+    },
+    {
+      "frame": 7473,
+      "renderSubmitMs": 0.8744,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 925662
+    },
+    {
+      "frame": 7474,
+      "renderSubmitMs": 0.9242,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 926688
+    },
+    {
+      "frame": 7475,
+      "renderSubmitMs": 0.9552,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 927714
+    },
+    {
+      "frame": 7476,
+      "renderSubmitMs": 1.0823,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 930792
+    },
+    {
+      "frame": 7477,
+      "renderSubmitMs": 0.8705,
+      "drawCalls": 200,
+      "batches": 200,
+      "setPass": 176,
+      "triangles": 933870
+    },
+    {
+      "frame": 7478,
+      "renderSubmitMs": 0.872,
+      "drawCalls": 198,
+      "batches": 198,
+      "setPass": 174,
+      "triangles": 933870
+    },
+    {
+      "frame": 7479,
+      "renderSubmitMs": 0.9839,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 933870
+    },
+    {
+      "frame": 7480,
+      "renderSubmitMs": 0.8676,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 933870
+    },
+    {
+      "frame": 7481,
+      "renderSubmitMs": 0.8791,
+      "drawCalls": 196,
+      "batches": 196,
+      "setPass": 172,
+      "triangles": 933870
+    }
+  ]
+}

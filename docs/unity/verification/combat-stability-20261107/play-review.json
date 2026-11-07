@@ -1,0 +1,54 @@
+{
+  "passed": true,
+  "frames": 4033,
+  "elapsed": 68.0083966000002,
+  "checks": [
+    {
+      "name": "side diagonal touch moves left only",
+      "pass": true,
+      "delta": "(-136.31, 0.00)"
+    },
+    {
+      "name": "quarter vertical touch changes depth",
+      "pass": true,
+      "delta": "(35.80, 168.44)"
+    },
+    {
+      "name": "quarter horizontal touch changes world position",
+      "pass": true,
+      "delta": "(261.34, 17.45)"
+    },
+    {
+      "name": "live boss arm rotations change during attacks",
+      "pass": true,
+      "maximumFrameDeltaDegrees": 80.89541
+    },
+    {
+      "name": "all encounter states rendered",
+      "pass": true
+    },
+    {
+      "name": "no runtime errors",
+      "pass": true
+    }
+  ],
+  "errors": [],
+  "captures": [
+    "side",
+    "bridge",
+    "quarter",
+    "warning",
+    "knockdown",
+    "getup"
+  ],
+  "cpu": {
+    "samples": 4022,
+    "p95": 2.4729,
+    "max": 14.588
+  },
+  "gpu": {
+    "samples": 4022,
+    "p95": 0.15872,
+    "max": 3.387136
+  }
+}

@@ -1,0 +1,41 @@
+[
+  {
+    "rttMs": 50,
+    "jitterMs": 20,
+    "dropEveryAttempt": 11,
+    "active": true,
+    "acceptedSnapshots": 79,
+    "sequenceRegressions": 0,
+    "movementAck": true,
+    "cookieSaves": 0,
+    "serverDroppedResponses": 7,
+    "errors": [],
+    "passed": true
+  },
+  {
+    "rttMs": 150,
+    "jitterMs": 20,
+    "dropEveryAttempt": 11,
+    "active": true,
+    "acceptedSnapshots": 51,
+    "sequenceRegressions": 0,
+    "movementAck": true,
+    "cookieSaves": 0,
+    "serverDroppedResponses": 13,
+    "errors": [],
+    "passed": true
+  },
+  {
+    "rttMs": 300,
+    "jitterMs": 20,
+    "dropEveryAttempt": 11,
+    "active": true,
+    "acceptedSnapshots": 30,
+    "sequenceRegressions": 0,
+    "movementAck": true,
+    "cookieSaves": 0,
+    "serverDroppedResponses": 16,
+    "errors": [],
+    "passed": true
+  }
+]
