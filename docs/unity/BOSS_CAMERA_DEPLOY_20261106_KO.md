@@ -12,8 +12,8 @@
 - 카메라 자동23, 새 전투14, 기존 단계/전투30, 성장/아이템/저장153, 포커245, 포커 UI3 테스트 및 관련 타입 검사 PASS. PR #3/#4/#5 전체 CI 통과. 실제 70초 Editor 화면/부하 기록은 Evidence/live-review.json 참조.
 - PC Editor CPU 활성 p95 1.0513ms/GPU p95 0.18432ms. 단발성 CPU 최대16.196ms가 있으므로 모든 프레임이 10.83ms 이내라고 주장하지 않는다.
 - PDF와 전체 카메라 코드: `G:/new_project/meele_ref/Unity_Boss_Camera_Guide_20261106.pdf`, `G:/new_project/meele_ref/BattleCameraController.cs`.
-- C#·텍스트 설정은 GitHub main에 있다. 원본 GLB, 큰 베이크 애니메이션/grounding JSON/전체 해시 매니페스트는 별도 로컬 자산 커밋으로 준비했으나 Windows Git 인증 부재로 푸시 대기다. `C:/Users/SHK/island-boss-camera-review/asset-publish-repo`, 브랜치 `codex/unity-boss-assets-20261106`에서 일반 Git 푸시 후 병합하면 된다. 바이너리 Base64/Blob 업로드로 우회하지 않았다. 기존 라이선스 패키지와 로컬 플레이어 에셋은 그대로 보존한다.
+- C#·텍스트 설정과 원본 GLB·베이크 애니메이션·grounding JSON·전체 해시 매니페스트를 GitHub에 함께 보관했다. Windows Git 인증 후 일반 Git으로 전송했으며 원본 해시, GLB 헤더/길이, Unity GUID 메타데이터를 검사했다. 검사 결과는 Evidence/asset-publish-validation.json을 참조한다. 기존 라이선스 패키지와 로컬 플레이어 에셋은 그대로 보존한다.
 
 검증 JSON은 [Evidence](client-source-snapshot/2026-11-06/Evidence/)에서 확인한다. APK는 대용량 Git 객체로 넣지 않았다.
 
-최종 확인: Render 배포 dep-dbn6t0nb9u1s73f33os0 live, /healthz 200, /api/release 리비전 일치, 한글 세션 오류 메시지 정상. 실제 Unity 운영 연결도 PASS (production-unity.json). 대기 중인 자산 커밋은 ee7a14f1b1017a51e904db8b16fc3c20daff72d2.
+최종 확인: Render 배포 dep-dbn6t0nb9u1s73f33os0 live, /healthz 200, /api/release 리비전 일치, 한글 세션 오류 메시지 정상. 실제 Unity 운영 연결도 PASS (production-unity.json). 바이너리 자산의 인증 대기는 해소됐다.

@@ -41,4 +41,4 @@
 
 서버와 텍스트 소스는 연결된 GitHub 앱으로 main에 반영했고 Render Test place의 최종 서버 리비전 `99898dfbeecdb45033efdef641cc8678bacbc32d` 배포가 live임을 확인했다. 운영 HTTP 전투 검사와 Unity의 직접 운영 서버 플레이도 통과했다. 직접 연결 플레이는 약 35.6초 동안 2,076프레임 진행하며 보스 경고·넘어짐·기상과 캐릭터 접지 오차 0을 확인했다. 상세 결과는 [배포 기록](BOSS_CAMERA_DEPLOY_20261106_KO.md)을 확인한다.
 
-Android APK는 `G:/new_project/IslandGame/Builds/Android/IslandGame-Test-Boss-Camera-20261106.apk` (114,711,012 bytes, 약 109.4 MiB)다. ARM64 IL2CPP, 버전 `0.1.0-test.20261106` / `2026110601`, 서명·ZIP·16KB 정렬 검사 PASS. 실기기 실행은 adb 기기가 없어 미검증이다. APK는 Git 대용량 객체로 넣지 않았다. 원본 GLB·큰 베이크 애니메이션·grounding JSON·해시 매니페스트는 별도 로컬 커밋에 보존했으며 Windows Git 로그인 후 일반 푸시가 필요하다. 원본 씬 파일과 미저장 상태를 보존했고 테스트 계정 설정·GameView 크기·Editor 강제 tick/background 설정을 복원했다.
+Android APK는 `G:/new_project/IslandGame/Builds/Android/IslandGame-Test-Boss-Camera-20261106.apk` (114,711,012 bytes, 약 109.4 MiB)다. ARM64 IL2CPP, 버전 `0.1.0-test.20261106` / `2026110601`, 서명·ZIP·16KB 정렬 검사 PASS. 실기기 실행은 adb 기기가 없어 미검증이다. APK는 Git 대용량 객체로 넣지 않았다. 원본 GLB·큰 베이크 애니메이션·grounding JSON·해시 매니페스트도 Windows Git 인증 확인 후 일반 Git으로 업로드했다. 원본 씬 파일과 미저장 상태를 보존했고 테스트 계정 설정·GameView 크기·Editor 강제 tick/background 설정을 복원했다.
