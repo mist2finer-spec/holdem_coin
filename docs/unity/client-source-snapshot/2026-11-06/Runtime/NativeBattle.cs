@@ -41,7 +41,7 @@ namespace IslandGame {
   }
   void Awake(){var data=Resources.Load<TextAsset>("AssetIndex");if(data)index=JObject.Parse(data.text);var profile=Resources.Load<TextAsset>("VardianCombatProfile");if(profile)combatProfile=JObject.Parse(profile.text);Output=new RenderTexture(720,720,24);owned.Add(Output);
    var pivotObject=new GameObject("CameraPivot");pivotObject.transform.SetParent(transform,false);var cameraObject=new GameObject("Main Camera");cameraObject.transform.SetParent(pivotObject.transform,false);view=cameraObject.AddComponent<Camera>();view.orthographic=true;view.orthographicSize=3.2f;view.backgroundColor=new Color(.025f,.035f,.03f);view.clearFlags=CameraClearFlags.SolidColor;view.targetTexture=Output;view.cullingMask=1<<30;
-   var models=Resources.Load<Battle3DAssets>("Battle3DAssets");if(models&&models.hero&&models.slime){threeD=gameObject.AddComponent<Battle3DView>();threeD.assets=models;widthLock=cameraObject.AddComponent<CameraHorizontalWidthLock>();widthLock.enabled=false;CameraRig=pivotObject.AddComponent<BattleCameraController>();CameraRig.externallyDriven=true;CameraRig.maxBossDistance=64;CameraRig.Bind(view);}
+   var models=Resources.Load<Battle3DAssets>("Battle3DAssets");if(models&&models.hero&&models.slime){threeD=gameObject.AddComponent<Battle3DView>();threeD.assets=models;widthLock=cameraObject.AddComponent<CameraHorizontalWidthLock>();widthLock.enabled=false;CameraRig=pivotObject.AddComponent<BattleCameraController>();CameraRig.externallyDriven=true;CameraRig.maxBossDistance=40;CameraRig.Bind(view);}
   }
   public void Clear(){cameraPoseReady=false;if(CameraRig){CameraRig.SetViewMode(ViewMode.Side25D);CameraRig.ResetPose();}rollPresentation.Reset();walkFilter.Reset();landingMesh=null;if(threeD)threeD.Clear();if(world)Destroy(world);actors.Clear();actorPaths.Clear();actorData.Clear();keys.Clear();bodyHeights.Clear();clock=new NativeCombatClock();lastSnapshot=null;lastVisual=0;foreach(var item in owned)if(item&&item!=Output)Destroy(item);owned.RemoveAll(item=>item!=Output);sessionId=null;}
   void NewWorld(){Clear();world=new GameObject("Authoritative battle view");world.transform.SetParent(transform);sessionId=(string)session.State["id"];
@@ -101,23 +101,27 @@ namespace IslandGame {
    var state=session.State;bool campaign=!(state["hero"] is JObject),playing=session.Active&&!session.Paused&&(bool?)state["paused"]!=true&&(string)state["status"]!="dead"&&(string)state["status"]!="won";
    double now=Time.unscaledTimeAsDouble;float elapsed=NativeCombatPresentation.N(state["elapsed"]);if(!ReferenceEquals(lastSnapshot,state)||lastPlaying!=playing){clock.Receive(elapsed,now,playing);lastSnapshot=state;lastPlaying=playing;}
    double visual=clock.Sample(now);frameAdvance=Mathf.Clamp((float)(visual-lastVisual),0,.05f);lastVisual=visual;AuthorityTime=elapsed;VisualTime=(float)visual;
-   float previewMove=session.Paused?0:session.Move;
-   if((bool?)state["unityBossMode"]==true&&Mathf.Abs(previewMove)<.1f&&(bool?)state["auto"]==true&&(string)state["hero"]?["action"]=="run1")previewMove=NativeCombatPresentation.N(state["hero"]?["facing"],1);
-   var hero=campaign?state:NativeCombatPresentation.ProjectHero(state,session.Map,VisualTime,previewMove,session.Auto);
-   if(!campaign)walkFilter.Apply(hero,state,session.Map,previewMove,session.Auto,frameAdvance,session.Paused);
+   float previewMove=session.Paused?0:session.Move,previewDepth=session.Paused?0:session.MoveY;
+   if((bool?)state["unityBossMode"]==true&&new Vector2(previewMove,previewDepth).magnitude<.1f&&(bool?)state["auto"]==true&&(string)state["hero"]?["action"]=="run1"){previewMove=NativeCombatPresentation.N(state["hero"]?["direction"]?["x"],1);previewDepth=NativeCombatPresentation.N(state["hero"]?["direction"]?["y"]);}
+   var hero=campaign?state:NativeCombatPresentation.ProjectHero(state,session.Map,VisualTime,previewMove,session.Auto,previewDepth);
+   if(!campaign&&(bool?)state["unityBossMode"]!=true)walkFilter.Apply(hero,state,session.Map,previewMove,session.Auto,frameAdvance,session.Paused);
    if(!campaign&&Uses3D)rollPresentation.Apply(hero,state,VisualTime);
    float x=NativeCombatPresentation.N(hero["x"]),e=NativeCombatPresentation.N(hero["elevation"]),air=NativeCombatPresentation.N(hero["airHeight"]);
    string weapon=campaign?state.Value<string>("weapon")??"axe":state["progress"]?.Value<string>("weaponType")??"axe",path=index["heroes"]?[weapon]?.Value<string>()??"characters/hong/native-axe/hong";
    var motion=(campaign?state["motion"]:hero["motion"]) as JObject;float start=motion?.Value<float?>(campaign?"startedAt":"start")??elapsed,duration=motion?.Value<float?>("duration")??0;
    if(Uses3D){
-    if((bool?)state["unityBossMode"]==true)e=NativeCombatPresentation.UnityGroundHeight(session.Map,x);
+    float depth=NativeCombatPresentation.N(hero["y"])-NativeCombatPresentation.N(session.Map?["laneY"],192);
+    bool unity=(bool?)state["unityBossMode"]==true;
+    if(unity)e=NativeCombatPresentation.UnityGroundHeight(session.Map,x,depth/100);
+    threeD.HeroDepth=unity?depth/100:0;threeD.Planar=session.PlanarMovement;
+    threeD.HeroHeading=Mathf.Atan2(NativeCombatPresentation.N(hero["direction"]?["x"],1),NativeCombatPresentation.N(hero["direction"]?["y"]))*Mathf.Rad2Deg;
     threeD.UpdateEncounter(state,VisualTime);
     if(CameraRig){
      bool quarter=(string)state["cameraMode"]=="QuarterView";CameraRig.SetViewMode(quarter?ViewMode.QuarterView:ViewMode.Side25D,quarter?threeD.BossTarget:null);
      int chamber=(int)NativeCombatPresentation.N(state["room"]);var chamberData=session.Map?["rooms"]?[chamber];bool combat=(string)state["phase"]=="combat"||(string)state["phase"]=="boss";
      CameraRig.SetChamberBounds(NativeCombatPresentation.N(chamberData?["x1"])*.48f,(NativeCombatPresentation.N(chamberData?["x2"])+1)*.48f,combat);
      float speed=cameraPoseReady?(x-previousCameraHeroX)/100/Mathf.Max(.001f,Time.unscaledDeltaTime):0;previousCameraHeroX=x;cameraPoseReady=true;
-     CameraRig.SetPose(new Vector3(x/100,(e+air)/100,0),NativeCombatPresentation.N(hero["facing"],1),e/100,Mathf.Clamp(speed,-20,20));
+     CameraRig.SetPose(new Vector3(x/100,(e+air)/100,threeD.HeroDepth),NativeCombatPresentation.N(hero["facing"],1),e/100,Mathf.Clamp(speed,-20,20));
     }
     threeD.BeginFrame(x);
    }
@@ -127,7 +131,7 @@ namespace IslandGame {
     if(!campaign&&(int)NativeCombatPresentation.N(m["room"])!=(int)NativeCombatPresentation.N(state["room"]))continue;
     bool dead=NativeCombatPresentation.N(m["hp"])<=0;if(dead&&elapsed-NativeCombatPresentation.N(m["until"])>.5f)continue;
     int species=m.Value<int?>(campaign?"actorType":"species")??0;var profile=index["monsters"]?[species.ToString()];if(profile==null)continue;
-    float mx=NativeCombatPresentation.N(m["x"]),height=0;if(!campaign)height=NativeCombatPresentation.N(session.Map?["rooms"]?[(int)NativeCombatPresentation.N(m["room"])]?["elevation"]);
+    float mx=NativeCombatPresentation.N(m["x"]),height=NativeCombatPresentation.N(m["elevation"]);if(!campaign&&(bool?)state["unityBossMode"]!=true)height=NativeCombatPresentation.N(session.Map?["rooms"]?[(int)NativeCombatPresentation.N(m["room"])]?["elevation"]);
     string id="mob"+(m["id"]??m["slot"]??0),mode=m.Value<string>("state")??"idle",clip=dead?(string)profile["clips"]?["death"]:m.Value<string>("castClip")??profile["clips"]?[mode=="windup"?"attack":mode=="walk"?"move":"idle"]?.Value<string>()??"stay1";
     if(Uses3D&&!threeD.ShouldPresent(mx))continue;
     DrawActor(id,profile.Value<string>("skeleton"),clip??"stay1",mx,height,m.Value<bool?>("boss")==true?94:species==1102?68:40,mx>x?-1:1,mode+(mode=="windup"?m["until"]?.ToString():""));shown.Add(id);

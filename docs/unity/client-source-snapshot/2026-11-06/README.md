@@ -1,3 +1,5 @@
+> 보스 T포즈/Player 샘플링 오류 후속 수정과 Nature 원본 맵이 이 스냅샷에 반영되었습니다. [후속 구현·검증](../../BOSS_CAMERA_20261106_KO.md)을 먼저 읽으세요. `Editor/PrepareMap.cs`, `PreparePalette.cs`, `PrepareAnimations.cs`는 원본 패키지가 설치된 실제 프로젝트에서 CLI script run으로 재생성할 수 있습니다. `Packages` 파일은 Terrain 모듈 추가를 포함한 실제 프로젝트 참고이며, 최소 원격 Unity 프로젝트를 무조건 덮어쓰는 용도가 아닙니다.
+
 # 2026-11-06 Unity boss-camera snapshot
 
 Actual project: `G:/new_project/IslandGame`, Unity 6000.0.62f1, Built-in renderer.

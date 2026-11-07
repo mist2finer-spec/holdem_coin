@@ -1,0 +1,74 @@
+[
+  {
+    "clip": "Boss_MeleeHook_RL_Combo_Bound",
+    "missingBindings": 0,
+    "changedBones": 18,
+    "maxAngle": 123.470016,
+    "maxPosition": 0.0340817,
+    "passed": true
+  },
+  {
+    "clip": "Boss_OverhandThrow_Bound",
+    "missingBindings": 0,
+    "changedBones": 18,
+    "maxAngle": 87.5188141,
+    "maxPosition": 0.2525767,
+    "passed": true
+  },
+  {
+    "clip": "Boss_AdaptedIdle",
+    "missingBindings": 0,
+    "changedBones": 1,
+    "maxAngle": 1.36140108,
+    "maxPosition": 0.003406167,
+    "passed": true
+  },
+  {
+    "clip": "Boss_AdaptedWalk",
+    "missingBindings": 0,
+    "changedBones": 5,
+    "maxAngle": 17.031105,
+    "maxPosition": 0.0,
+    "passed": true
+  },
+  {
+    "clip": "idle_loop",
+    "missingBindings": 0,
+    "changedBones": 8,
+    "maxAngle": 1.30023515,
+    "maxPosition": 0.00723994523,
+    "passed": true
+  },
+  {
+    "clip": "jog_fwd_loop",
+    "missingBindings": 0,
+    "changedBones": 19,
+    "maxAngle": 85.0206757,
+    "maxPosition": 2.5782342,
+    "passed": true
+  },
+  {
+    "clip": "sword_regular_a",
+    "missingBindings": 0,
+    "changedBones": 35,
+    "maxAngle": 94.5722,
+    "maxPosition": 0.7235695,
+    "passed": true
+  },
+  {
+    "clip": "PinkGlass_Knockback_Fall_GetUp",
+    "missingBindings": 0,
+    "changedBones": 17,
+    "maxAngle": 119.158417,
+    "maxPosition": 0.809614062,
+    "passed": true
+  },
+  {
+    "clip": "Slime_RigAction",
+    "missingBindings": 0,
+    "changedBones": 0,
+    "maxAngle": 0.0,
+    "maxPosition": 0.0639947355,
+    "passed": true
+  }
+]

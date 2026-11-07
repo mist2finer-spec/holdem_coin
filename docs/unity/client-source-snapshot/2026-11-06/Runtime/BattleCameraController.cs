@@ -77,12 +77,13 @@ namespace IslandGame {
     target.y+=framedY-current.pivotOffset.y;
    }
    if(Mode==ViewMode.QuarterView&&boss){
-    Vector3 center=Vector3.Lerp(new Vector3(pose.x,ground,pose.z),boss.position,bossWeight);
+    float separation=Vector3.Distance(new Vector3(pose.x,ground,pose.z),boss.position);float bossInfluence=1-Mathf.SmoothStep(0,1,Mathf.InverseLerp(12,24,separation));
+    Vector3 center=Vector3.Lerp(new Vector3(pose.x,ground,pose.z),boss.position,bossWeight*bossInfluence);
     target=center+current.pivotOffset;
     // The giant's bounds determine zoom; root-only distance misses its head and shoulders.
     var heroBounds=new Bounds(new Vector3(pose.x,ground+.65f,pose.z),new Vector3(.9f,1.5f,.7f));
     float required=RequiredDistance(heroBounds,target,transform.rotation,view.fieldOfView,view.aspect);
-    foreach(var r in bossRenderers)if(r&&r.enabled)required=Mathf.Max(required,RequiredDistance(r.bounds,target,transform.rotation,view.fieldOfView,view.aspect));
+    foreach(var r in bossRenderers)if(r&&r.enabled)required=Mathf.Max(required,Mathf.Lerp(current.distance,RequiredDistance(r.bounds,target,transform.rotation,view.fieldOfView,view.aspect),bossInfluence));
     distance=Mathf.Clamp(Mathf.Max(current.distance,required),current.distance,maxBossDistance);
    }
    if(initialized&&t<1){target=Vector3.Lerp(transitionFromPosition,target,t);distance=Mathf.Lerp(from.distance,distance,t);}

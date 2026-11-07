@@ -1,0 +1,73 @@
+{
+  "passed": true,
+  "isEditor": false,
+  "platform": "WindowsPlayer",
+  "unity": "6000.0.62f1",
+  "frames": 11,
+  "poses": [
+    {
+      "clip": "Boss_MeleeHook_RL_Combo_Bound",
+      "changedBones": 18,
+      "maxAngle": 123.609077,
+      "maxPosition": 0.0340817,
+      "pass": true
+    },
+    {
+      "clip": "Boss_OverhandThrow_Bound",
+      "changedBones": 18,
+      "maxAngle": 87.59195,
+      "maxPosition": 0.2525767,
+      "pass": true
+    },
+    {
+      "clip": "Boss_AdaptedIdle",
+      "changedBones": 1,
+      "maxAngle": 1.36140108,
+      "maxPosition": 0.003406167,
+      "pass": true
+    },
+    {
+      "clip": "Boss_AdaptedWalk",
+      "changedBones": 5,
+      "maxAngle": 17.031105,
+      "maxPosition": 0.0,
+      "pass": true
+    },
+    {
+      "clip": "idle_loop",
+      "changedBones": 8,
+      "maxAngle": 1.30023515,
+      "maxPosition": 0.00723994523,
+      "pass": true
+    },
+    {
+      "clip": "jog_fwd_loop",
+      "changedBones": 19,
+      "maxAngle": 85.0206757,
+      "maxPosition": 2.5782342,
+      "pass": true
+    },
+    {
+      "clip": "sword_regular_a",
+      "changedBones": 35,
+      "maxAngle": 94.5722,
+      "maxPosition": 0.7235695,
+      "pass": true
+    },
+    {
+      "clip": "PinkGlass_Knockback_Fall_GetUp",
+      "changedBones": 17,
+      "maxAngle": 119.158417,
+      "maxPosition": 0.809614062,
+      "pass": true
+    },
+    {
+      "clip": "Slime_RigAction",
+      "changedBones": 0,
+      "maxAngle": 0.0,
+      "maxPosition": 0.0639947355,
+      "pass": true
+    }
+  ],
+  "errors": []
+}
