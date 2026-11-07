@@ -1,3 +1,5 @@
+> 2026-11-07 배포 완료: [main·Render LIVE·APK·운영 Unity 연결 검증](../../docs/unity/COMBAT_STABILITY_DEPLOY_20261107_KO.md). 운영 소스 7adb404, APK 2026110701.
+
 > 최신 2026-11-07: [전투 끊김 안정화·Unity 실측·변경 소스](../../docs/unity/COMBAT_STABILITY_20261107_KO.md). 사용자 요청으로 Editor 렉을 우선 검증했으며 Android 실기 수치는 미검증입니다. 아래 이전 기록보다 이 결과를 먼저 확인하세요.
 
 # IslandGame 에이전트 안내

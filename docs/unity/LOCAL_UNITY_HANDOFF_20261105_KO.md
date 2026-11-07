@@ -1,3 +1,5 @@
+> 2026-11-07 배포 완료: [main·Render LIVE·APK·운영 Unity 연결 검증](COMBAT_STABILITY_DEPLOY_20261107_KO.md). 운영 소스 7adb404, APK 2026110701.
+
 > 최신 2026-11-07: [전투 끊김 안정화·Unity 실측·변경 소스](COMBAT_STABILITY_20261107_KO.md). 사용자 요청으로 Editor 렉을 우선 검증했으며 Android 실기 수치는 미검증입니다. 아래 이전 기록보다 이 결과를 먼저 확인하세요.
 
 > 최신 상태: [보스 모션·360° 조작·Nature 맵 수정 및 APK 검증](BOSS_CAMERA_20261106_KO.md). 코드/배포 ffde9d1, APK 버전 2026110602. 아래는 이전 시점의 기록입니다.

@@ -45,7 +45,7 @@
 
 할당 평균 약 95% 감소, p95 프레임 시간 약 38% 감소다. 평균 FPS만으로 동일하다고 판단하지 않고 긴 프레임과 할당을 비교했다. 드로우콜은 사실상 동일하므로 draw call 절감의 성과로 해석하지 않는다. 나무 재질은 이미 GPU 인스턴싱이 켜져 있었다. `NatureAuthoredEnvironment`의 실제 청크는 `IslandFrameBudget.BindScenery(transform)`에 연결되어 있었다. 원거리 LOD/그림자 정책을 중복 구현하지 않았다. 단발성 40ms 프레임과 16.7ms 초과는 남아 있으므로 모든 프레임의 60FPS 예산 달성을 주장하지 않는다.
 
-APK 해시와 GitHub/Render 배포 리비전은 별도 릴리즈 검증 기록으로 추가한다.
+APK 해시와 main·Render LIVE·운영 전투 검증은 [배포 기록](COMBAT_STABILITY_DEPLOY_20261107_KO.md)에 보관한다.
 
 ## 서버 유지 및 M2 후속 설계
 

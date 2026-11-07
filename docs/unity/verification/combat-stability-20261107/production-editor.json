@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "server": "https://holdem-coin-tavern.onrender.com",
+  "seconds": 18,
+  "active": true,
+  "acceptedSnapshots": 146,
+  "movementAck": true,
+  "sequenceRegressions": 0,
+  "cookieSavesIncludingNewGuestEntry": 1,
+  "errors": []
+}

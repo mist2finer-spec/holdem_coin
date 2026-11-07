@@ -16,11 +16,13 @@ SHA-256: `6cf0f554799b1f4fd9ec5b7a79ad0a00d1dfaa976c819b0f1dd325d877b75996`
 
 ## main·Render 상태
 
-**승인 대기:** 자동 승인 검토가 main 푸시를 거부했다. 사유는 “GitHub 푸시 요청은 있지만 기본 main 반영까지 명시적 승인이 없다”는 판단이다. 사용자에게 검증된 커밋의 main 반영 및 Test place 자동 배포 승인을 요청했다. 우회 실행하지 않았다.
+**PASS — main 반영·운영 배포 완료.** 사용자의 명시적 main 승인 후 소스 커밋 `7adb404f47ea73383f26651a8eaaa261ed4bc823`을 fast-forward 푸시했다. [main 회귀 검사](https://github.com/mist2finer-spec/holdem_coin/actions/runs/42381712229)도 성공했다.
 
-확인 시점 main은 `a2be2d9087b7e478f3988581b1fedba3875cf857`, Render Test place의 `holdem-coin-tavern`은 기존 `ffde9d1a33b1931c3aa09fe72bc5ef7f4df8213c` / `dep-dbn9bdm8bjmc73a1gq2g`가 live다. 서버 변경 코드는 `fix/combat-stability-20261107`에 푸시되어 있다. 새 ACK·쿠키 변경의 운영 배포 및 운영 재검증은 아직 완료되지 않았다. APK는 구 서버의 ACK 생략에 대응하는 표시 fallback을 포함한다.
+Render **Test place** / `holdem-coin-tavern`의 자동 배포 `dep-dbnjaqvb9u1s73cnuh2g`가 2026-11-07 14:30:11 UTC에 **LIVE**가 됐다. `/api/release`에서 소스 SHA 일치를 확인했고 `/healthz`는 200이다. 서버 종류·인스턴스·플랜·DB 설정은 변경하지 않았다. 이후 기록 전용 커밋은 `[skip render]`로 푸시해 검증된 소스 배포를 유지한다.
 
-승인 후 순서: 검증 소스 커밋을 main으로 fast-forward → 기존 자동 배포를 LIVE까지 확인 → `/api/release`의 리비전과 `/healthz` 확인 → 새 격리 게스트로 실제 훈련 전투·ACK·tick 쿠키 생략 및 Editor 통신 확인 → 배포 기록 갱신. 중복 수동 Render 배포를 생성하지 않는다.
+**PASS — 운영 전투:** 새 격리 게스트로 129개 요청, 24.2초를 실행했다. 다리·보스 구역·경고·폭발·넉다운·기상을 관찰했고 경고→폭발은 2.00초다. 입력 ACK와 sequence 진행을 확인했으며 tick 응답의 쿠키 재전송은 0회였다. 기존 보상 없는 훈련 모드이며 사용자 계정을 사용하지 않았다.
+
+**PASS — 실제 Unity→운영 서버:** 18초 동안 146개 스냅샷을 수신했다. 세션 유지, ACK 확인, sequence 역전 0, 세션 오류 0. 새 게스트 최초 입장 쿠키 저장 1회 이후 반복 저장이 없었다. 검사 후 Play를 종료하고 테스트 전 계정·쿠키·서버 설정과 Game View 크기, 백그라운드 실행 설정을 복원했다.
 
 ## 검증 자료와 남은 범위
 

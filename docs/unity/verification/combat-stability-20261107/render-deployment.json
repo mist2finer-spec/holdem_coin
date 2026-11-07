@@ -1,0 +1,14 @@
+{
+  "commit": {
+    "createdAt": "2026-11-07T14:18:18Z",
+    "id": "7adb404f47ea73383f26651a8eaaa261ed4bc823",
+    "message": "Stabilize Unity combat allocation and network presentation"
+  },
+  "createdAt": "2026-11-07T14:27:55.220423Z",
+  "finishedAt": "2026-11-07T14:30:11.310969Z",
+  "id": "dep-dbnjaqvb9u1s73cnuh2g",
+  "startedAt": "2026-11-07T14:27:55.195613Z",
+  "status": "live",
+  "trigger": "new_commit",
+  "updatedAt": "2026-11-07T14:31:01.038379Z"
+}
