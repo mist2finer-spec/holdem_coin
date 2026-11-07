@@ -28,6 +28,7 @@
     "test:poker:profiles": "node --import ./mini-services/poker-server/node_modules/tsx/dist/loader.mjs --test scripts/poker/test-profile-ui.tsx",
     "test:audio": "node --import ./mini-services/poker-server/node_modules/tsx/dist/loader.mjs --test scripts/test-poker-audio.ts",
     "rpg:restore": "python scripts/rpg/restore_battle.py",
+    "test:rpg:unity-boss": "node --import ./mini-services/poker-server/node_modules/tsx/dist/loader.mjs --test scripts/rpg/test-unity-boss.ts",
     "check:rpg": "tsc -p tsconfig.rpg-check.json --pretty false",
     "rpg:restore:stats": "python3 scripts/rpg/restore_combat_stats.py",
     "test:rpg:reference": "python3 -m unittest discover -s scripts/rpg -p \"test_reference*.py\"",
