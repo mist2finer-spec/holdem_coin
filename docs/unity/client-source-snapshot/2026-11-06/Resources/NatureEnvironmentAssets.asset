@@ -1,0 +1,121 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00bf16a1aa1c15742960e6105a82703c, type: 3}
+  m_Name: NatureEnvironmentAssets
+  m_EditorClassIdentifier: 
+  trees:
+  - prefab: {fileID: 0}
+    resourcePath: NatureStream/PT_Fruit_Tree_01_green
+    bounds:
+      m_Center: {x: -0.053788185, y: 3.1455173, z: -0.5286331}
+      m_Extent: {x: 3.559371, y: 3.4376907, z: 3.9109616}
+  - prefab: {fileID: 0}
+    resourcePath: NatureStream/PT_Fruit_Tree_01_apples
+    bounds:
+      m_Center: {x: -0.053788185, y: 3.1455173, z: -0.5286331}
+      m_Extent: {x: 3.559371, y: 3.4376907, z: 3.9109616}
+  - prefab: {fileID: 0}
+    resourcePath: NatureStream/PT_Fruit_Tree_01_plums
+    bounds:
+      m_Center: {x: -0.053788185, y: 3.1455173, z: -0.5286331}
+      m_Extent: {x: 3.559371, y: 3.4376907, z: 3.9109616}
+  pines:
+  - prefab: {fileID: 0}
+    resourcePath: NatureStream/PT_Pine_Tree_03_green
+    bounds:
+      m_Center: {x: -0.0307765, y: 4.058229, z: 0.007450819}
+      m_Extent: {x: 1.6027479, y: 4.5826335, z: 1.5162947}
+  rocks:
+  - prefab: {fileID: 0}
+    resourcePath: NatureStream/PT_Generic_Rock_01
+    bounds:
+      m_Center: {x: -0.005520433, y: 0.12129615, z: 0.002885133}
+      m_Extent: {x: 0.12596148, y: 0.115782335, z: 0.108847044}
+  - prefab: {fileID: 0}
+    resourcePath: NatureStream/PT_River_Rock_Pile_02
+    bounds:
+      m_Center: {x: -0.02303201, y: 0.089582376, z: -0.0035108328}
+      m_Extent: {x: 0.41043985, y: 0.09767995, z: 0.5238975}
+  - prefab: {fileID: 0}
+    resourcePath: NatureStream/PT_Ore_Rock_01
+    bounds:
+      m_Center: {x: 0.077176064, y: 0.22327052, z: 0.010519326}
+      m_Extent: {x: 0.31626716, y: 0.23481824, z: 0.261527}
+  shrubs:
+  - prefab: {fileID: 0}
+    resourcePath: NatureStream/PT_Generic_Shrub_01_green
+    bounds:
+      m_Center: {x: 0.045613825, y: 0.75981563, z: 0.011344552}
+      m_Extent: {x: 0.88560206, y: 0.8664846, z: 0.9303088}
+  grass:
+  - prefab: {fileID: 0}
+    resourcePath: NatureStream/PT_Grass_02
+    bounds:
+      m_Center: {x: -0.11682665, y: 0.33101153, z: -0.10278517}
+      m_Extent: {x: 0.6203222, y: 0.36647218, z: 0.52360785}
+  flowers:
+  - prefab: {fileID: 0}
+    resourcePath: NatureStream/PT_Poppy_02
+    bounds:
+      m_Center: {x: -0.015125722, y: 0.32196435, z: -0.0362404}
+      m_Extent: {x: 0.31584245, y: 0.42566434, z: 0.27603596}
+  mushrooms:
+  - prefab: {fileID: 0}
+    resourcePath: NatureStream/PT_Caesars_Mushroom_01
+    bounds:
+      m_Center: {x: -0.0024181306, y: 0.12496347, z: 0.0038491488}
+      m_Extent: {x: 0.16710028, y: 0.14296865, z: 0.17706703}
+  logs:
+  - prefab: {fileID: 0}
+    resourcePath: NatureStream/PT_Fruit_Tree_01_logs
+    bounds:
+      m_Center: {x: -0.104887486, y: 0.24180855, z: -0.21317124}
+      m_Extent: {x: 1.3534948, y: 0.33664405, z: 1.0863295}
+  - prefab: {fileID: 0}
+    resourcePath: NatureStream/PT_Fruit_Tree_01_stump
+    bounds:
+      m_Center: {x: -0.033596873, y: 0.16585454, z: -0.05133146}
+      m_Extent: {x: 0.6189001, y: 0.4580281, z: 0.48181516}
+  fences:
+  - prefab: {fileID: 0}
+    resourcePath: NatureStream/PT_Modular_Fence_Wood_01
+    bounds:
+      m_Center: {x: 0.95073205, y: 0.70772517, z: 0.02841881}
+      m_Extent: {x: 1.1001154, y: 0.8689383, z: 0.12250084}
+  ground: {fileID: 2100000, guid: 1db52e8c12eb71b489c6a3cb774b4cd6, type: 2}
+  trail: {fileID: 2100000, guid: a01798b96677a14469ace87d1849efc7, type: 2}
+  earth: {fileID: 2100000, guid: 560824ea986a26844bba995fadd29be0, type: 2}
+  sourceMaterials:
+  - {fileID: 2100000, guid: 3922c043c1c52cb47a7b1bfed562a4b6, type: 2}
+  - {fileID: 2100000, guid: 0a1f44318dd467a45bfef81ad0e8855a, type: 2}
+  - {fileID: 2100000, guid: 823cb446423dd7747b7454d5cf133e75, type: 2}
+  - {fileID: 2100000, guid: f43a7dc4f39c5654a8211b83259e32a9, type: 2}
+  - {fileID: 2100000, guid: 93415edde47040648869ae6638d33ced, type: 2}
+  - {fileID: 2100000, guid: 066ded06e6a8eb240893ea7b8efb66b4, type: 2}
+  - {fileID: 2100000, guid: e6ce4253a748b0849a04b87f33cc539d, type: 2}
+  - {fileID: 2100000, guid: 09473d06882d1414b84b1fdb7a095516, type: 2}
+  - {fileID: 2100000, guid: 67c85a5a0248e2a4a98e653c8e7eeb9e, type: 2}
+  - {fileID: 2100000, guid: c522ec7c62be0c145bc320ad11705a67, type: 2}
+  - {fileID: 2100000, guid: d55b08511377b684395dab1b9fba6a16, type: 2}
+  displayMaterials:
+  - {fileID: 2100000, guid: b55c2b47e68278942946bad68ba57390, type: 2}
+  - {fileID: 2100000, guid: ebe05187ade994240b8d1e6dda3df0f1, type: 2}
+  - {fileID: 2100000, guid: 8cda048e37e976e46b482f377c77f6ab, type: 2}
+  - {fileID: 2100000, guid: 9c5e423d3ce43874c9af793ff0a4ee28, type: 2}
+  - {fileID: 2100000, guid: a76e9749dccf7524bbde67b701f97431, type: 2}
+  - {fileID: 2100000, guid: b5084e74bac5a4242bdb00b827b8f153, type: 2}
+  - {fileID: 2100000, guid: d75c21e748cdcdd46a0b364c13d98eeb, type: 2}
+  - {fileID: 2100000, guid: aa2b8ef9a703bbb42a66d8f796abaf91, type: 2}
+  - {fileID: 2100000, guid: 6d71419f7bab7f644b8886767db97d4c, type: 2}
+  - {fileID: 2100000, guid: 265221e82b6664b409e308bfb2190b6f, type: 2}
+  - {fileID: 2100000, guid: f12ba89fbd062704e945e439a044ab31, type: 2}
+  skyColor: {r: 0.47, g: 0.62, b: 0.6, a: 1}

@@ -1,0 +1,97 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "name": "perspective camera and pivot-child rig",
+      "pass": true
+    },
+    {
+      "name": "side preset 18 degree FOV / pitch10 / distance28",
+      "pass": true
+    },
+    {
+      "name": "ground row solved to 18 percent",
+      "pass": true
+    },
+    {
+      "name": "narrow portrait keeps horizontal view width",
+      "pass": true
+    },
+    {
+      "name": "narrow portrait increases vertical FOV",
+      "pass": true
+    },
+    {
+      "name": "turn delay rejects brief facing change",
+      "pass": true
+    },
+    {
+      "name": "confirmed facing switches after 120ms",
+      "pass": true
+    },
+    {
+      "name": "left look-ahead converges to -2.8",
+      "pass": true
+    },
+    {
+      "name": "travel confirms turn before delay",
+      "pass": true
+    },
+    {
+      "name": "velocity boost remains bounded and leaves actor margin",
+      "pass": true
+    },
+    {
+      "name": "deceleration smoothly removes velocity boost",
+      "pass": true
+    },
+    {
+      "name": "one meter jump stays inside vertical deadzone",
+      "pass": true
+    },
+    {
+      "name": "floor elevation tracks independently of jump deadzone",
+      "pass": true
+    },
+    {
+      "name": "combat chamber clamps camera X",
+      "pass": true
+    },
+    {
+      "name": "crossing bridge releases chamber clamp",
+      "pass": true
+    },
+    {
+      "name": "quarter preset rotation converges smoothly",
+      "pass": true
+    },
+    {
+      "name": "quarter weighted midpoint uses 65/35",
+      "pass": true
+    },
+    {
+      "name": "giant bounds and player fit in one perspective frame",
+      "pass": true
+    },
+    {
+      "name": "boss zoom has a finite configured cap",
+      "pass": true
+    },
+    {
+      "name": "foreground obstacle hides without colliders",
+      "pass": true
+    },
+    {
+      "name": "foreground obstacle restores in side view",
+      "pass": true
+    },
+    {
+      "name": "top-down state exists and transitions",
+      "pass": true
+    },
+    {
+      "name": "return to side view restores ground framing",
+      "pass": true
+    }
+  ]
+}
