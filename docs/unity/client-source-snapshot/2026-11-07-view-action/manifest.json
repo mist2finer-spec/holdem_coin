@@ -245,7 +245,7 @@
   },
   {
     "path": "Evidence/final-rendered.json",
-    "sha256": "63522882c848915fc72cd7d535460ab03798ed131b2f353202d45046b372d7e1"
+    "sha256": "534c3fb2de02684b5d7f84ddb39f2e68c6a7df9ae7149b6e732f967764f79776"
   },
   {
     "path": "Evidence/core-verification.json",
@@ -269,11 +269,11 @@
   },
   {
     "path": "Evidence/apk-validation.json",
-    "sha256": "96e89e9c9d392a96e60a5f1728df38b5c256e868f614e3ea22a952329fc70b64"
+    "sha256": "c4fb6562c2612b42356f43f019a297972edf33fdd8dc7d2c4394668058438cb7"
   },
   {
     "path": "Evidence/main-build-summary.json",
-    "sha256": "795fa2ed1cf9f286c5eb4a0af8fad13257726584a9972710d000fbb33dc7410d"
+    "sha256": "14eba67e45696abe97d92196cf548d2bce4ec9c5bdbd0279899161b273d581b8"
   },
   {
     "path": "Evidence/production-smoke.json",
@@ -281,11 +281,11 @@
   },
   {
     "path": "Evidence/production-editor.json",
-    "sha256": "391c91b3476c469f764bb1fe7a606b3d9eef21f2fa525d3b1292512e0072d2af"
+    "sha256": "9c0f02d7b19a1e1bc9474fec557d5b1f5f7525e13269fd59a3a9860b960835e4"
   },
   {
     "path": "Evidence/github-ci.json",
-    "sha256": "fba5294a2eb2a31b34a15222c55b7635e4d516cf5e608cbf118c898e75c8c5dd"
+    "sha256": "1180e7129435acf456483f167439ebbcd72b7ccf2c473c5d39e36af50b0f320c"
   },
   {
     "path": "Evidence/render-deploy.json",
@@ -301,7 +301,7 @@
   },
   {
     "path": "Evidence/performance-comparison.json",
-    "sha256": "2417587ca75eeb98f70480f7cfd335179b144bc37a377570881fe20b27c45c20"
+    "sha256": "a3d4e3be1b77c8af4ecd17da5c5a22ffb07fec417c5353675dde91837db4f00c"
   },
   {
     "path": "Evidence/project-preservation.json",
@@ -313,19 +313,19 @@
   },
   {
     "path": "Evidence/SideAction.jpg",
-    "sha256": "219bdc9707369615e2d6b24d29fa5d1b7b4264b1c97afc4e35fffdcf890b80cb"
+    "sha256": "e127f3d6031878fa12d83753a19b83c2b33b4e6c4c433ce9c4ee4a5c00a2a0b0"
   },
   {
     "path": "Evidence/QuarterAction.jpg",
-    "sha256": "a18d6eff296587ab2f8e8583b10f644cc0e0f09e9d671a2466b6dc5234822891"
+    "sha256": "fc4ea6b96122c079cdc618704d1fe6a7169d65db9ceb07f80454f6fd83ad4e33"
   },
   {
     "path": "Evidence/AttackTransitions.jpg",
-    "sha256": "eec894aaab94c5042500041f450757c0958d028fa66b104ac0c97d621d6b5b8d"
+    "sha256": "f1b63bc0638ada934a0171102cc9ea389fd4889e39269e307f3e82fc2bc3532a"
   },
   {
     "path": "Evidence/HitboxHurtbox.jpg",
-    "sha256": "ec7b796b0d82dc63db9160ff6979984c1a12b88b99392288da09b94a00cb434a"
+    "sha256": "cfa9af7cc938ccd8b92e97c1bb3c4d9463a91aca7905189d70b8a68df02df942"
   },
   {
     "path": "Evidence/model-preservation.json",

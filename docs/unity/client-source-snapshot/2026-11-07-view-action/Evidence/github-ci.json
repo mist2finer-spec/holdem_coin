@@ -1,18 +1,10 @@
 [
   {
-    "id": 42423477647,
+    "id": 42424576892,
     "name": "Poker server regressions",
-    "sha": "37339d0e9d9f619ca2da8cfbaa906df63910d09f",
+    "sha": "2d4e50842af2dba72f7ee2f7a310376732a02791",
     "status": "completed",
     "conclusion": "success",
-    "url": "https://github.com/mist2finer-spec/holdem_coin/actions/runs/42423477647"
-  },
-  {
-    "id": 42423175550,
-    "name": "Poker server regressions",
-    "sha": "37339d0e9d9f619ca2da8cfbaa906df63910d09f",
-    "status": "completed",
-    "conclusion": "success",
-    "url": "https://github.com/mist2finer-spec/holdem_coin/actions/runs/42423175550"
+    "url": "https://github.com/mist2finer-spec/holdem_coin/actions/runs/42424576892"
   }
 ]
