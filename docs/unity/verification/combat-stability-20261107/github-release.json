@@ -1,0 +1,19 @@
+{
+  "url": "https://github.com/mist2finer-spec/holdem_coin/releases/tag/unity-combat-stability-20261107.1",
+  "tag": "unity-combat-stability-20261107.1",
+  "commit": "7adb404f47ea73383f26651a8eaaa261ed4bc823",
+  "assets": [
+    {
+      "name": "apk-validation.json",
+      "bytes": 563,
+      "url": "https://github.com/mist2finer-spec/holdem_coin/releases/download/unity-combat-stability-20261107.1/apk-validation.json",
+      "digest": "sha256:db16f96f11646cb843c3d9ec4d8e936e8182cf463836e35ef6977400af3b44a2"
+    },
+    {
+      "name": "IslandGame-Combat-Stability-20261107.apk",
+      "bytes": 100482614,
+      "url": "https://github.com/mist2finer-spec/holdem_coin/releases/download/unity-combat-stability-20261107.1/IslandGame-Combat-Stability-20261107.apk",
+      "digest": "sha256:6cf0f554799b1f4fd9ec5b7a79ad0a00d1dfaa976c819b0f1dd325d877b75996"
+    }
+  ]
+}

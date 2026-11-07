@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "apk": "G:\\new_project\\IslandGame\\Builds\\Android\\IslandGame-Combat-Stability-20261107.apk",
+  "bytes": 100482614,
+  "sha256": "6cf0f554799b1f4fd9ec5b7a79ad0a00d1dfaa976c819b0f1dd325d877b75996",
+  "package": "com.mist2finer.islandgame.dev",
+  "architecture": "arm64-v8a",
+  "backend": "IL2CPP",
+  "zipIntegrity": true,
+  "signatureVerified": true,
+  "zipAlignment16K": true,
+  "internetPermission": true,
+  "deviceExecution": "UNAVAILABLE: no adb device connected",
+  "server": "https://holdem-coin-tavern.onrender.com"
+}

@@ -1,0 +1,45 @@
+{
+  "status": "PASS",
+  "files": [
+    {
+      "file": "Runtime/BossMovementPresentation.cs",
+      "sha256": "5a7fe218b4130496887cbefe89ee8d783390a68210a117f98a3ae332aef4bf6e",
+      "liveMatchesGit": true
+    },
+    {
+      "file": "Runtime/IslandBattleHud.cs",
+      "sha256": "955a3674d554b6ff1a8a1e2ee6fc164008ab050a544d5d738fd2d03c289fbbb2",
+      "liveMatchesGit": true
+    },
+    {
+      "file": "Runtime/NativeBattle.cs",
+      "sha256": "cca9972fd3fb4b27637fa34dd85db2b3e5acdca3154bec70e735cce9e297b4f4",
+      "liveMatchesGit": true
+    },
+    {
+      "file": "Runtime/NativeCombatPresentation.cs",
+      "sha256": "e8b6ced0b21c86077df825b6da720e5c4c9be35f1fd8cc3bf762ff79a656e428",
+      "liveMatchesGit": true
+    },
+    {
+      "file": "Runtime/NativeHeroProjection.cs",
+      "sha256": "22546a02f788b480f19269c7a13aaf67b6ed3f75cf060b2069e884fc44569322",
+      "liveMatchesGit": true
+    },
+    {
+      "file": "Runtime/RpgContracts.cs",
+      "sha256": "e7571c0eacd537b1e7aac461d48a389b30e0397897c0c3c7bdbfad4ecd814508",
+      "liveMatchesGit": true
+    },
+    {
+      "file": "Runtime/RpgLocalStageSession.cs",
+      "sha256": "e9546ecaf5554dbc046b457c1e6d57045bb124ebc7f2b3443a27693c116a8026",
+      "liveMatchesGit": true
+    },
+    {
+      "file": "Runtime/RpgSession.cs",
+      "sha256": "8c1e3b32415d32a7896a5d403dd327482c9a902efb506805246248e1ef659e26",
+      "liveMatchesGit": true
+    }
+  ]
+}

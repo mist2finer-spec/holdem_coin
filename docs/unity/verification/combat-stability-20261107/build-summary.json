@@ -1,0 +1,20 @@
+{
+  "status": "completed",
+  "buildId": "build_9f7a61f741dd",
+  "result": "Succeeded",
+  "platform": "Android",
+  "outputPath": "G:/new_project/IslandGame/Builds/Android/IslandGame-Combat-Stability-20261107.apk",
+  "buildTimeMs": 429947,
+  "totalWarnings": 1,
+  "totalErrors": 0,
+  "errors": [],
+  "warnings": [
+    {
+      "message": "warning CS0414: The field 'IslandApp.lastDeal' is assigned but its value is never used",
+      "file": "Assets\\Island\\Runtime\\IslandApp.cs"
+    }
+  ],
+  "developmentBuild": false,
+  "allowDebugging": false,
+  "connectWithProfiler": false
+}
