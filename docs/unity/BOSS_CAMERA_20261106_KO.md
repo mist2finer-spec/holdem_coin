@@ -39,4 +39,6 @@
 
 70초 실제 Editor 플레이에서 Side/다리/Quarter/경고/넘어짐/기상 캡처 6개 및 서버 판정 연결을 확인했다. 4,073프레임의 CPU 활성 시간 p95 1.0513ms, GPU p95 0.18432ms, CPU 최대 16.196ms. 60fps의 65% 목표 10.83ms보다 p95는 낮지만 단발성 최대 초과는 존재한다. 이는 PC Editor 계측이며 Android 실기기 60fps 보장이 아니다. 풀링과 적응형 예산 제어도 단일 Unity 리소스 업로드의 최대 소요 시간을 강제로 잘라낼 수는 없다.
 
-서버 푸시·Render 운영 반영·Android 결과는 별도 배포 기록을 확인한다. Git 로그인 완료 전에는 운영 반영 완료로 간주하지 않는다. APK는 Git에 대용량 파일로 넣지 않고 로컬 Build 경로로 전달한다. 원본 씬과 계정 설정은 보존하며 테스트 서버 설정·GameView 크기는 검증 종료 후 복원했다.
+서버와 텍스트 소스는 연결된 GitHub 앱으로 main에 반영했고 Render Test place의 최종 서버 리비전 `99898dfbeecdb45033efdef641cc8678bacbc32d` 배포가 live임을 확인했다. 운영 HTTP 전투 검사와 Unity의 직접 운영 서버 플레이도 통과했다. 직접 연결 플레이는 약 35.6초 동안 2,076프레임 진행하며 보스 경고·넘어짐·기상과 캐릭터 접지 오차 0을 확인했다. 상세 결과는 [배포 기록](BOSS_CAMERA_DEPLOY_20261106_KO.md)을 확인한다.
+
+Android APK는 `G:/new_project/IslandGame/Builds/Android/IslandGame-Test-Boss-Camera-20261106.apk` (114,711,012 bytes, 약 109.4 MiB)다. ARM64 IL2CPP, 버전 `0.1.0-test.20261106` / `2026110601`, 서명·ZIP·16KB 정렬 검사 PASS. 실기기 실행은 adb 기기가 없어 미검증이다. APK는 Git 대용량 객체로 넣지 않았다. 원본 GLB·큰 베이크 애니메이션·grounding JSON·해시 매니페스트는 별도 로컬 커밋에 보존했으며 Windows Git 로그인 후 일반 푸시가 필요하다. 원본 씬 파일과 미저장 상태를 보존했고 테스트 계정 설정·GameView 크기·Editor 강제 tick/background 설정을 복원했다.
