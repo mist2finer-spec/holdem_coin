@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "boneComparisons": 164,
+  "maxWorldErrorMeters": 1.22878123E-06,
+  "bodySeparationCoreUnits": 162.009766,
+  "runtimeBakeMeshCalls": 0,
+  "globalTimeScale": 1.0,
+  "profileClip": "Boss_MeleeHook_RL_Combo_Bound",
+  "height": 6.5
+}

@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b6d88232434bdd4586a6a0a40bb5705, type: 3}
+  m_Name: BattleDioramaSettings
+  m_EditorClassIdentifier: 
+  hero: {fileID: 2100000, guid: aed648c281871594882c0727fbdc95c8, type: 2}
+  boss: {fileID: 2100000, guid: 225d6c7bcba13b743b70f229c2038cac, type: 2}
+  lit: {fileID: 2100000, guid: 876b01634f3854442ada3cccd009c51b, type: 2}
+  cutout: {fileID: 2100000, guid: 139afe77d49146c429518063d2b93e9d, type: 2}
+  normal: {fileID: 2100000, guid: 81c7d2fa6abe0e14280dbb0051e3be93, type: 2}
+  transparent: {fileID: 2100000, guid: 8bdbbc964c2e38f439dcb62964d09b00, type: 2}
+  terrain: {fileID: 2100000, guid: f8f8819ad69d748469bf109a9f056dac, type: 2}
+  groundPalette: {fileID: 15600000, guid: 28ddb6d381491a9478859e47cfaa172c, type: 2}
+  volume: {fileID: 11400000, guid: 30ccf891424b462448370b619987fb32, type: 2}
+  keyColor: {r: 1, g: 0.87, b: 0.69, a: 1}
+  fillColor: {r: 0.48, g: 0.65, b: 0.87, a: 1}
+  sky: {r: 0.34, g: 0.4, b: 0.51, a: 1}
+  equator: {r: 0.24, g: 0.28, b: 0.34, a: 1}
+  ground: {r: 0.17, g: 0.14, b: 0.13, a: 1}
+  farColor: {r: 0.23, g: 0.36, b: 0.39, a: 1}
+  keyIntensity: 1.12
+  fillIntensity: 0.12
+  fogStart: 30
+  fogEnd: 85

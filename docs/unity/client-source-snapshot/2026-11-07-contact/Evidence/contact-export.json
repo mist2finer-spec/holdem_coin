@@ -1,0 +1,14 @@
+{
+  "bones": [
+    "UpperArm.L",
+    "Forearm.L",
+    "Hand.L",
+    "UpperArm.R",
+    "Forearm.R",
+    "Hand.R"
+  ],
+  "samples": 197,
+  "runtimeBakeMesh": false,
+  "scale": 3.93939424,
+  "sole": 0.335432827
+}

@@ -1,0 +1,19 @@
+{
+  "source": "Assets/Island/Art/Battle3D/UnityBoss/boss1_rig.glb",
+  "roles": [
+    "armor",
+    "cloth",
+    "leather",
+    "skin",
+    "core"
+  ],
+  "pixels": [
+    204028,
+    0,
+    51636,
+    0,
+    6480
+  ],
+  "method": "color regions, reviewable prototype",
+  "originalPreserved": true
+}

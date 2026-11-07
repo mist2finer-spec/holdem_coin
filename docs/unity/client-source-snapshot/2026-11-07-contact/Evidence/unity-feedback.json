@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "flashed": true,
+  "isolated": true,
+  "impact": true,
+  "restored": true,
+  "deduped": true,
+  "audio": true,
+  "timeScale": 1.0
+}

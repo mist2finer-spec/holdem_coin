@@ -1,0 +1,12 @@
+using System;using System.IO;using System.Collections;using System.Collections.Generic;using UnityEngine;using UnityEditor;using UnityEngine.Rendering;using IslandGame.Diorama;
+public static class CompareDiorama {
+ const string Dir="C:/Users/SHK/island-contact-diorama-20261107/evidence/comparison/";
+ public static object Main(){Directory.CreateDirectory(Dir);IslandGame.Editor.BattleHudReview.SetSize(1080,1920);EditorWindow.GetWindow(typeof(EditorWindow).Assembly.GetType("UnityEditor.GameView")).Focus();Application.runInBackground=true;EditorApplication.isPaused=false;var stage=UnityEngine.Object.FindFirstObjectByType<DioramaPreviewStage>();stage.StartCoroutine(Run(stage));return new{started=true};}
+ static IEnumerator Run(DioramaPreviewStage stage){var urp=GraphicsSettings.defaultRenderPipeline;stage.GetComponent<DioramaPreviewControls>().visible=false;stage.animate=false;stage.bloom=stage.depthOfField=stage.vignette=stage.rim=stage.outline=false;var report=new List<object>();
+  foreach(DioramaSurface surface in Enum.GetValues(typeof(DioramaSurface))){stage.RestoreMaterials();GraphicsSettings.defaultRenderPipeline=surface==DioramaSurface.BuiltInBaseline?null:urp;QualitySettings.renderPipeline=GraphicsSettings.defaultRenderPipeline;stage.surface=surface;
+   foreach(DioramaView shot in Enum.GetValues(typeof(DioramaView))){stage.shot=shot;stage.ResetSample(.55f);stage.RefreshLook();for(int i=0;i<75;i++)yield return null;yield return new WaitForEndOfFrame();string name=shot+"-"+surface;var image=ScreenCapture.CaptureScreenshotAsTexture();File.WriteAllBytes(Dir+name+".png",image.EncodeToPNG());UnityEngine.Object.Destroy(image);var camera=stage.previewCamera;report.Add(new{shot=shot.ToString(),surface=surface.ToString(),frame=Time.frameCount,cameraPosition=camera.transform.position,cameraRotation=camera.transform.rotation,fieldOfView=camera.fieldOfView,aspect=camera.aspect,post=false,materials=stage.ConvertedMaterials,drawCalls=UnityStats.drawCalls,setPass=UnityStats.setPassCalls,memory=UnityEngine.Profiling.Profiler.GetTotalAllocatedMemoryLong()});}
+  }
+  GraphicsSettings.defaultRenderPipeline=urp;QualitySettings.renderPipeline=urp;stage.surface=DioramaSurface.UrpLit;stage.shot=DioramaView.BossQuarter;stage.RefreshLook();stage.GetComponent<DioramaPreviewControls>().visible=true;
+  File.WriteAllText(Dir+"captures.json",Newtonsoft.Json.JsonConvert.SerializeObject(report,Newtonsoft.Json.Formatting.Indented,new Newtonsoft.Json.JsonSerializerSettings{ReferenceLoopHandling=Newtonsoft.Json.ReferenceLoopHandling.Ignore}));
+ }
+}

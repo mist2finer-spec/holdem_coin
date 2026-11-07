@@ -1,0 +1,416 @@
+[
+  {
+    "shot": "ForestSide",
+    "surface": "BuiltInBaseline",
+    "frame": 2137,
+    "cameraPosition": {
+      "x": 17.84427,
+      "y": 8.94440651,
+      "z": -21.66142,
+      "normalized": {
+        "x": 0.6058005,
+        "y": 0.30365634,
+        "z": -0.735390067,
+        "magnitude": 1.0,
+        "sqrMagnitude": 1.0
+      },
+      "magnitude": 29.4556885,
+      "sqrMagnitude": 867.6376
+    },
+    "cameraRotation": {
+      "x": 0.156053409,
+      "y": -0.06889766,
+      "z": 0.0109123169,
+      "w": 0.9852824,
+      "eulerAngles": {
+        "x": 18.0000019,
+        "y": 352.0,
+        "z": 0.0,
+        "normalized": {
+          "x": 0.05106964,
+          "y": 0.9986951,
+          "z": 0.0,
+          "magnitude": 1.0,
+          "sqrMagnitude": 0.99999994
+        },
+        "magnitude": 352.45993,
+        "sqrMagnitude": 124228.0
+      }
+    },
+    "fieldOfView": 24.0,
+    "aspect": 0.5625,
+    "post": false,
+    "materials": 0,
+    "drawCalls": 197,
+    "setPass": 155,
+    "memory": 543099769
+  },
+  {
+    "shot": "BossQuarter",
+    "surface": "BuiltInBaseline",
+    "frame": 2212,
+    "cameraPosition": {
+      "x": 28.1057281,
+      "y": 22.6152916,
+      "z": -20.76097,
+      "normalized": {
+        "x": 0.675259352,
+        "y": 0.543347836,
+        "z": -0.4987965,
+        "magnitude": 1.0,
+        "sqrMagnitude": 1.0
+      },
+      "magnitude": 41.6221237,
+      "sqrMagnitude": 1732.40125
+    },
+    "cameraRotation": {
+      "x": 0.3564048,
+      "y": 0.09758573,
+      "z": -0.0374596566,
+      "w": 0.9284662,
+      "eulerAngles": {
+        "x": 42.0000038,
+        "y": 12.0,
+        "z": 0.0,
+        "normalized": {
+          "x": 0.96152395,
+          "y": 0.2747211,
+          "z": 0.0,
+          "magnitude": 1.0,
+          "sqrMagnitude": 1.0
+        },
+        "magnitude": 43.6806641,
+        "sqrMagnitude": 1908.00037
+      }
+    },
+    "fieldOfView": 35.0,
+    "aspect": 0.5625,
+    "post": false,
+    "materials": 0,
+    "drawCalls": 267,
+    "setPass": 124,
+    "memory": 544364268
+  },
+  {
+    "shot": "DarkArea",
+    "surface": "BuiltInBaseline",
+    "frame": 2287,
+    "cameraPosition": {
+      "x": 17.84427,
+      "y": 8.94440651,
+      "z": -21.66142,
+      "normalized": {
+        "x": 0.6058005,
+        "y": 0.30365634,
+        "z": -0.735390067,
+        "magnitude": 1.0,
+        "sqrMagnitude": 1.0
+      },
+      "magnitude": 29.4556885,
+      "sqrMagnitude": 867.6376
+    },
+    "cameraRotation": {
+      "x": 0.156053409,
+      "y": -0.06889766,
+      "z": 0.0109123169,
+      "w": 0.9852824,
+      "eulerAngles": {
+        "x": 18.0000019,
+        "y": 352.0,
+        "z": 0.0,
+        "normalized": {
+          "x": 0.05106964,
+          "y": 0.9986951,
+          "z": 0.0,
+          "magnitude": 1.0,
+          "sqrMagnitude": 0.99999994
+        },
+        "magnitude": 352.45993,
+        "sqrMagnitude": 124228.0
+      }
+    },
+    "fieldOfView": 24.0,
+    "aspect": 0.5625,
+    "post": false,
+    "materials": 0,
+    "drawCalls": 197,
+    "setPass": 155,
+    "memory": 544439571
+  },
+  {
+    "shot": "ForestSide",
+    "surface": "UrpLit",
+    "frame": 2362,
+    "cameraPosition": {
+      "x": 17.84427,
+      "y": 8.94440651,
+      "z": -21.66142,
+      "normalized": {
+        "x": 0.6058005,
+        "y": 0.30365634,
+        "z": -0.735390067,
+        "magnitude": 1.0,
+        "sqrMagnitude": 1.0
+      },
+      "magnitude": 29.4556885,
+      "sqrMagnitude": 867.6376
+    },
+    "cameraRotation": {
+      "x": 0.156053409,
+      "y": -0.06889766,
+      "z": 0.0109123169,
+      "w": 0.9852824,
+      "eulerAngles": {
+        "x": 18.0000019,
+        "y": 352.0,
+        "z": 0.0,
+        "normalized": {
+          "x": 0.05106964,
+          "y": 0.9986951,
+          "z": 0.0,
+          "magnitude": 1.0,
+          "sqrMagnitude": 0.99999994
+        },
+        "magnitude": 352.45993,
+        "sqrMagnitude": 124228.0
+      }
+    },
+    "fieldOfView": 24.0,
+    "aspect": 0.5625,
+    "post": false,
+    "materials": 22,
+    "drawCalls": 179,
+    "setPass": 25,
+    "memory": 545067580
+  },
+  {
+    "shot": "BossQuarter",
+    "surface": "UrpLit",
+    "frame": 2437,
+    "cameraPosition": {
+      "x": 28.1057281,
+      "y": 22.6152916,
+      "z": -20.76097,
+      "normalized": {
+        "x": 0.675259352,
+        "y": 0.543347836,
+        "z": -0.4987965,
+        "magnitude": 1.0,
+        "sqrMagnitude": 1.0
+      },
+      "magnitude": 41.6221237,
+      "sqrMagnitude": 1732.40125
+    },
+    "cameraRotation": {
+      "x": 0.3564048,
+      "y": 0.09758573,
+      "z": -0.0374596566,
+      "w": 0.9284662,
+      "eulerAngles": {
+        "x": 42.0000038,
+        "y": 12.0,
+        "z": 0.0,
+        "normalized": {
+          "x": 0.96152395,
+          "y": 0.2747211,
+          "z": 0.0,
+          "magnitude": 1.0,
+          "sqrMagnitude": 1.0
+        },
+        "magnitude": 43.6806641,
+        "sqrMagnitude": 1908.00037
+      }
+    },
+    "fieldOfView": 35.0,
+    "aspect": 0.5625,
+    "post": false,
+    "materials": 22,
+    "drawCalls": 171,
+    "setPass": 18,
+    "memory": 545315794
+  },
+  {
+    "shot": "DarkArea",
+    "surface": "UrpLit",
+    "frame": 2512,
+    "cameraPosition": {
+      "x": 17.84427,
+      "y": 8.94440651,
+      "z": -21.66142,
+      "normalized": {
+        "x": 0.6058005,
+        "y": 0.30365634,
+        "z": -0.735390067,
+        "magnitude": 1.0,
+        "sqrMagnitude": 1.0
+      },
+      "magnitude": 29.4556885,
+      "sqrMagnitude": 867.6376
+    },
+    "cameraRotation": {
+      "x": 0.156053409,
+      "y": -0.06889766,
+      "z": 0.0109123169,
+      "w": 0.9852824,
+      "eulerAngles": {
+        "x": 18.0000019,
+        "y": 352.0,
+        "z": 0.0,
+        "normalized": {
+          "x": 0.05106964,
+          "y": 0.9986951,
+          "z": 0.0,
+          "magnitude": 1.0,
+          "sqrMagnitude": 0.99999994
+        },
+        "magnitude": 352.45993,
+        "sqrMagnitude": 124228.0
+      }
+    },
+    "fieldOfView": 24.0,
+    "aspect": 0.5625,
+    "post": false,
+    "materials": 22,
+    "drawCalls": 179,
+    "setPass": 24,
+    "memory": 545516935
+  },
+  {
+    "shot": "ForestSide",
+    "surface": "SoftNilo",
+    "frame": 2587,
+    "cameraPosition": {
+      "x": 17.84427,
+      "y": 8.94440651,
+      "z": -21.66142,
+      "normalized": {
+        "x": 0.6058005,
+        "y": 0.30365634,
+        "z": -0.735390067,
+        "magnitude": 1.0,
+        "sqrMagnitude": 1.0
+      },
+      "magnitude": 29.4556885,
+      "sqrMagnitude": 867.6376
+    },
+    "cameraRotation": {
+      "x": 0.156053409,
+      "y": -0.06889766,
+      "z": 0.0109123169,
+      "w": 0.9852824,
+      "eulerAngles": {
+        "x": 18.0000019,
+        "y": 352.0,
+        "z": 0.0,
+        "normalized": {
+          "x": 0.05106964,
+          "y": 0.9986951,
+          "z": 0.0,
+          "magnitude": 1.0,
+          "sqrMagnitude": 0.99999994
+        },
+        "magnitude": 352.45993,
+        "sqrMagnitude": 124228.0
+      }
+    },
+    "fieldOfView": 24.0,
+    "aspect": 0.5625,
+    "post": false,
+    "materials": 22,
+    "drawCalls": 180,
+    "setPass": 26,
+    "memory": 545704715
+  },
+  {
+    "shot": "BossQuarter",
+    "surface": "SoftNilo",
+    "frame": 2662,
+    "cameraPosition": {
+      "x": 28.1057281,
+      "y": 22.6152916,
+      "z": -20.76097,
+      "normalized": {
+        "x": 0.675259352,
+        "y": 0.543347836,
+        "z": -0.4987965,
+        "magnitude": 1.0,
+        "sqrMagnitude": 1.0
+      },
+      "magnitude": 41.6221237,
+      "sqrMagnitude": 1732.40125
+    },
+    "cameraRotation": {
+      "x": 0.3564048,
+      "y": 0.09758573,
+      "z": -0.0374596566,
+      "w": 0.9284662,
+      "eulerAngles": {
+        "x": 42.0000038,
+        "y": 12.0,
+        "z": 0.0,
+        "normalized": {
+          "x": 0.96152395,
+          "y": 0.2747211,
+          "z": 0.0,
+          "magnitude": 1.0,
+          "sqrMagnitude": 1.0
+        },
+        "magnitude": 43.6806641,
+        "sqrMagnitude": 1908.00037
+      }
+    },
+    "fieldOfView": 35.0,
+    "aspect": 0.5625,
+    "post": false,
+    "materials": 22,
+    "drawCalls": 173,
+    "setPass": 22,
+    "memory": 545931593
+  },
+  {
+    "shot": "DarkArea",
+    "surface": "SoftNilo",
+    "frame": 2737,
+    "cameraPosition": {
+      "x": 17.84427,
+      "y": 8.94440651,
+      "z": -21.66142,
+      "normalized": {
+        "x": 0.6058005,
+        "y": 0.30365634,
+        "z": -0.735390067,
+        "magnitude": 1.0,
+        "sqrMagnitude": 1.0
+      },
+      "magnitude": 29.4556885,
+      "sqrMagnitude": 867.6376
+    },
+    "cameraRotation": {
+      "x": 0.156053409,
+      "y": -0.06889766,
+      "z": 0.0109123169,
+      "w": 0.9852824,
+      "eulerAngles": {
+        "x": 18.0000019,
+        "y": 352.0,
+        "z": 0.0,
+        "normalized": {
+          "x": 0.05106964,
+          "y": 0.9986951,
+          "z": 0.0,
+          "magnitude": 1.0,
+          "sqrMagnitude": 0.99999994
+        },
+        "magnitude": 352.45993,
+        "sqrMagnitude": 124228.0
+      }
+    },
+    "fieldOfView": 24.0,
+    "aspect": 0.5625,
+    "post": false,
+    "materials": 22,
+    "drawCalls": 180,
+    "setPass": 26,
+    "memory": 544685369
+  }
+]

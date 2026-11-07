@@ -1,0 +1,20 @@
+{
+  "status": "completed",
+  "buildId": "build_6b70eaa3078c",
+  "result": "Succeeded",
+  "platform": "Android",
+  "outputPath": "G:/new_project/IslandGame/Builds/Android/IslandGame-Boss-Contact-20261107.apk",
+  "totalSizeBytes": 1046435307,
+  "buildTimeMs": 263207,
+  "buildStartedAt": "2026-11-07T22:00:55.8691061Z",
+  "buildEndedAt": "2026-11-07T22:05:19.0763534Z",
+  "totalWarnings": 1,
+  "totalErrors": 0,
+  "errors": [],
+  "warnings": [
+    {
+      "message": "warning CS0414: The field 'IslandApp.lastDeal' is assigned but its value is never used",
+      "file": "Assets\\Island\\Runtime\\IslandApp.cs"
+    }
+  ]
+}

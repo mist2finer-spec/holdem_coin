@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "bodyChecks": 2034,
+  "minimumSeparation": 162.199951,
+  "overlaps": 0,
+  "bodyCapture": true,
+  "hookCapture": true,
+  "errors": []
+}

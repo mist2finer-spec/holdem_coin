@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 117bb6aa58e9897428994fa0626edaac, type: 3}
+  m_Name: BossQuarterLighting
+  m_EditorClassIdentifier: 
+  keyColor: {r: 1, g: 0.87, b: 0.69, a: 1}
+  fillColor: {r: 0.48, g: 0.65, b: 0.87, a: 1}
+  sky: {r: 0.34, g: 0.4, b: 0.51, a: 1}
+  equator: {r: 0.24, g: 0.28, b: 0.34, a: 1}
+  ground: {r: 0.17, g: 0.14, b: 0.13, a: 1}
+  farColor: {r: 0.23, g: 0.36, b: 0.39, a: 1}
+  keyIntensity: 1.12
+  fillIntensity: 0.12
+  fogStart: 30
+  fogEnd: 85

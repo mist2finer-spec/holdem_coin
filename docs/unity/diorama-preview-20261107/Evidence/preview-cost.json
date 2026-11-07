@@ -1,0 +1,415 @@
+{
+  "editor": true,
+  "resolution": "1080x1920",
+  "postEffects": false,
+  "deviceTest": "Deferred by user; Unity verification requested",
+  "gpuCaveat": "Editor diagnostic timing only; not Android GPU certification",
+  "runs": [
+    {
+      "view": "ForestSide",
+      "surface": "BuiltInBaseline",
+      "seconds": 10,
+      "samples": 600,
+      "frameMs": {
+        "mean": 16.667061333333397,
+        "p95": 19.158600000082515,
+        "p99": 20.29210000000603,
+        "max": 25.110699999913777
+      },
+      "cpuActiveMs": {
+        "mean": 2.8924471666666696,
+        "p95": 5.1894,
+        "p99": 5.5385,
+        "max": 13.1932
+      },
+      "gpuDiagnosticMs": {
+        "mean": 0.29351936000000012,
+        "p95": 0.193536,
+        "p99": 4.96896,
+        "max": 5.373696
+      },
+      "gcBytes": {
+        "mean": 18108.643333333333,
+        "p95": 18056.0,
+        "p99": 18214.0,
+        "max": 46853.0
+      },
+      "drawCalls": {
+        "mean": 200.45,
+        "p95": 212.0,
+        "p99": 212.0,
+        "max": 213.0
+      },
+      "setPass": {
+        "mean": 157.11333333333334,
+        "p95": 165.0,
+        "p99": 165.0,
+        "max": 166.0
+      },
+      "usedBytes": 527906928,
+      "reservedBytes": 848093184,
+      "maxAdaptiveQualityLevel": 0
+    },
+    {
+      "view": "BossQuarter",
+      "surface": "BuiltInBaseline",
+      "seconds": 10,
+      "samples": 601,
+      "frameMs": {
+        "mean": 16.666142096505951,
+        "p95": 17.9196999999931,
+        "p99": 19.399900000053094,
+        "max": 28.859900000043126
+      },
+      "cpuActiveMs": {
+        "mean": 2.0897241264559061,
+        "p95": 4.5373,
+        "p99": 5.0718,
+        "max": 5.7307
+      },
+      "gpuDiagnosticMs": {
+        "mean": 0.25108488519134758,
+        "p95": 0.190464,
+        "p99": 4.48512,
+        "max": 4.773376
+      },
+      "gcBytes": {
+        "mean": 18242.692179700498,
+        "p95": 18056.0,
+        "p99": 18220.0,
+        "max": 77484.0
+      },
+      "drawCalls": {
+        "mean": 270.40765391014975,
+        "p95": 274.0,
+        "p99": 274.0,
+        "max": 274.0
+      },
+      "setPass": {
+        "mean": 126.32778702163061,
+        "p95": 128.0,
+        "p99": 128.0,
+        "max": 128.0
+      },
+      "usedBytes": 527776286,
+      "reservedBytes": 848093184,
+      "maxAdaptiveQualityLevel": 0
+    },
+    {
+      "view": "DarkArea",
+      "surface": "BuiltInBaseline",
+      "seconds": 10,
+      "samples": 601,
+      "frameMs": {
+        "mean": 16.666058069883583,
+        "p95": 18.476699999837365,
+        "p99": 20.092199999908189,
+        "max": 21.79189999992559
+      },
+      "cpuActiveMs": {
+        "mean": 2.9328292845257877,
+        "p95": 5.2122,
+        "p99": 5.6197,
+        "max": 10.1566
+      },
+      "gpuDiagnosticMs": {
+        "mean": 0.21858268219633953,
+        "p95": 0.189696,
+        "p99": 0.196352,
+        "max": 4.99584
+      },
+      "gcBytes": {
+        "mean": 18145.086522462563,
+        "p95": 18056.0,
+        "p99": 18214.0,
+        "max": 46181.0
+      },
+      "drawCalls": {
+        "mean": 200.44093178036604,
+        "p95": 212.0,
+        "p99": 212.0,
+        "max": 213.0
+      },
+      "setPass": {
+        "mean": 157.108153078203,
+        "p95": 165.0,
+        "p99": 165.0,
+        "max": 166.0
+      },
+      "usedBytes": 530296888,
+      "reservedBytes": 848093184,
+      "maxAdaptiveQualityLevel": 0
+    },
+    {
+      "view": "ForestSide",
+      "surface": "UrpLit",
+      "seconds": 10,
+      "samples": 601,
+      "frameMs": {
+        "mean": 16.666712978369148,
+        "p95": 17.877600000019811,
+        "p99": 18.606600000111939,
+        "max": 23.606199999903765
+      },
+      "cpuActiveMs": {
+        "mean": 0.56152562396006689,
+        "p95": 0.7783,
+        "p99": 1.3408,
+        "max": 3.4347
+      },
+      "gpuDiagnosticMs": {
+        "mean": 0.18550202995008302,
+        "p95": 0.187392,
+        "p99": 0.190976,
+        "max": 1.774592
+      },
+      "gcBytes": {
+        "mean": 18157.276206322796,
+        "p95": 18104.0,
+        "p99": 18221.0,
+        "max": 46712.0
+      },
+      "drawCalls": {
+        "mean": 180.08485856905159,
+        "p95": 185.0,
+        "p99": 186.0,
+        "max": 186.0
+      },
+      "setPass": {
+        "mean": 23.0,
+        "p95": 23.0,
+        "p99": 23.0,
+        "max": 23.0
+      },
+      "usedBytes": 528581115,
+      "reservedBytes": 848093184,
+      "maxAdaptiveQualityLevel": 0
+    },
+    {
+      "view": "BossQuarter",
+      "surface": "UrpLit",
+      "seconds": 10,
+      "samples": 601,
+      "frameMs": {
+        "mean": 16.664692179700541,
+        "p95": 17.831399999977293,
+        "p99": 18.785799999932351,
+        "max": 20.443899999918358
+      },
+      "cpuActiveMs": {
+        "mean": 0.60413161397670523,
+        "p95": 1.0512,
+        "p99": 2.8994,
+        "max": 4.8996999999999993
+      },
+      "gpuDiagnosticMs": {
+        "mean": 0.19756086522462543,
+        "p95": 0.187904,
+        "p99": 1.838592,
+        "max": 1.989376
+      },
+      "gcBytes": {
+        "mean": 18150.599001663893,
+        "p95": 18104.0,
+        "p99": 18268.0,
+        "max": 42872.0
+      },
+      "drawCalls": {
+        "mean": 174.93178036605659,
+        "p95": 181.0,
+        "p99": 181.0,
+        "max": 181.0
+      },
+      "setPass": {
+        "mean": 18.089850249584028,
+        "p95": 18.0,
+        "p99": 20.0,
+        "max": 20.0
+      },
+      "usedBytes": 529260281,
+      "reservedBytes": 848093184,
+      "maxAdaptiveQualityLevel": 0
+    },
+    {
+      "view": "DarkArea",
+      "surface": "UrpLit",
+      "seconds": 10,
+      "samples": 600,
+      "frameMs": {
+        "mean": 16.667799666666571,
+        "p95": 17.845399999941947,
+        "p99": 18.173299999943993,
+        "max": 21.586200000001554
+      },
+      "cpuActiveMs": {
+        "mean": 0.54563533333333325,
+        "p95": 0.6771,
+        "p99": 1.1837,
+        "max": 3.4795
+      },
+      "gpuDiagnosticMs": {
+        "mean": 0.17517440000000004,
+        "p95": 0.18432,
+        "p99": 0.187392,
+        "max": 0.193536
+      },
+      "gcBytes": {
+        "mean": 18106.745,
+        "p95": 18104.0,
+        "p99": 18194.0,
+        "max": 18262.0
+      },
+      "drawCalls": {
+        "mean": 180.09,
+        "p95": 185.0,
+        "p99": 186.0,
+        "max": 186.0
+      },
+      "setPass": {
+        "mean": 24.0,
+        "p95": 24.0,
+        "p99": 24.0,
+        "max": 24.0
+      },
+      "usedBytes": 530062571,
+      "reservedBytes": 848093184,
+      "maxAdaptiveQualityLevel": 0
+    },
+    {
+      "view": "ForestSide",
+      "surface": "SoftNilo",
+      "seconds": 10,
+      "samples": 601,
+      "frameMs": {
+        "mean": 16.665155074875102,
+        "p95": 17.931699999962802,
+        "p99": 18.748100000038903,
+        "max": 19.65939999990951
+      },
+      "cpuActiveMs": {
+        "mean": 0.60010898502495846,
+        "p95": 0.8459,
+        "p99": 2.6529,
+        "max": 7.3988999999999994
+      },
+      "gpuDiagnosticMs": {
+        "mean": 0.1953556871880196,
+        "p95": 0.189184,
+        "p99": 1.653248,
+        "max": 1.79968
+      },
+      "gcBytes": {
+        "mean": 18135.898502495842,
+        "p95": 18104.0,
+        "p99": 18221.0,
+        "max": 35590.0
+      },
+      "drawCalls": {
+        "mean": 181.08652246256239,
+        "p95": 186.0,
+        "p99": 187.0,
+        "max": 187.0
+      },
+      "setPass": {
+        "mean": 26.0,
+        "p95": 26.0,
+        "p99": 26.0,
+        "max": 26.0
+      },
+      "usedBytes": 530765091,
+      "reservedBytes": 848093184,
+      "maxAdaptiveQualityLevel": 0
+    },
+    {
+      "view": "BossQuarter",
+      "surface": "SoftNilo",
+      "seconds": 10,
+      "samples": 600,
+      "frameMs": {
+        "mean": 16.66795650000002,
+        "p95": 17.926699999861739,
+        "p99": 19.234799999821917,
+        "max": 27.403099999901315
+      },
+      "cpuActiveMs": {
+        "mean": 0.66412566666666661,
+        "p95": 1.3147,
+        "p99": 3.1191,
+        "max": 3.6146
+      },
+      "gpuDiagnosticMs": {
+        "mean": 0.20500309333333339,
+        "p95": 0.187904,
+        "p99": 1.913344,
+        "max": 2.06208
+      },
+      "gcBytes": {
+        "mean": 18147.33,
+        "p95": 18104.0,
+        "p99": 18221.0,
+        "max": 39650.0
+      },
+      "drawCalls": {
+        "mean": 175.93666666666667,
+        "p95": 182.0,
+        "p99": 182.0,
+        "max": 182.0
+      },
+      "setPass": {
+        "mean": 21.086666666666666,
+        "p95": 21.0,
+        "p99": 23.0,
+        "max": 23.0
+      },
+      "usedBytes": 528183173,
+      "reservedBytes": 848093184,
+      "maxAdaptiveQualityLevel": 0
+    },
+    {
+      "view": "DarkArea",
+      "surface": "SoftNilo",
+      "seconds": 10,
+      "samples": 601,
+      "frameMs": {
+        "mean": 16.665688685524358,
+        "p95": 17.811899999969683,
+        "p99": 18.863499999952182,
+        "max": 22.628899999972418
+      },
+      "cpuActiveMs": {
+        "mean": 0.59044309484193069,
+        "p95": 0.9971,
+        "p99": 2.2656,
+        "max": 4.6864
+      },
+      "gpuDiagnosticMs": {
+        "mean": 0.185428339434276,
+        "p95": 0.18432,
+        "p99": 0.193536,
+        "max": 1.744896
+      },
+      "gcBytes": {
+        "mean": 18107.632279534111,
+        "p95": 18104.0,
+        "p99": 18194.0,
+        "max": 18221.0
+      },
+      "drawCalls": {
+        "mean": 181.08153078202994,
+        "p95": 186.0,
+        "p99": 187.0,
+        "max": 187.0
+      },
+      "setPass": {
+        "mean": 26.0,
+        "p95": 26.0,
+        "p99": 26.0,
+        "max": 26.0
+      },
+      "usedBytes": 529044771,
+      "reservedBytes": 848093184,
+      "maxAdaptiveQualityLevel": 0
+    }
+  ],
+  "errors": []
+}

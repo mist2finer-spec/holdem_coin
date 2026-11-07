@@ -1,0 +1,28 @@
+{
+  "restoreWorked": true,
+  "counts": [
+    {
+      "path": "Assets/DioramaPreview/ForestSide.unity",
+      "stages": 1,
+      "cameras": 1,
+      "volumes": 1
+    },
+    {
+      "path": "Assets/DioramaPreview/BossQuarter.unity",
+      "stages": 1,
+      "cameras": 1,
+      "volumes": 1
+    },
+    {
+      "path": "Assets/DioramaPreview/DarkArea.unity",
+      "stages": 1,
+      "cameras": 1,
+      "volumes": 1
+    }
+  ],
+  "shaderErrors": [],
+  "templates": 7,
+  "postEffects": true,
+  "approvedSurface": "SoftNilo",
+  "bloomIntensity": 0.1
+}

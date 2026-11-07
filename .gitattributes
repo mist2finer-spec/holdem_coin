@@ -1,3 +1,4 @@
 
 # Preserve reference snapshot bytes, including generated Unity YAML whitespace.
 docs/unity/client-source-snapshot/** -text whitespace=-blank-at-eol,-blank-at-eof
+docs/unity/diorama-preview-20261107/** -text whitespace=-blank-at-eol,-blank-at-eof
