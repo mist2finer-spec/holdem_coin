@@ -8,7 +8,7 @@ namespace IslandGame {
  public sealed class Battle3DView : MonoBehaviour {
   sealed class Actor {
    public GameObject root, model;public Transform presentationRoot,weapon;public RuntimeAnimationPlayer animation;
-   public SkinnedMeshRenderer skin;
+   public SkinnedMeshRenderer skin,occlusionSkin;
    public BattleGroundingProfile.Model grounding;
    public int lastSampleSlot=int.MinValue,phase;public bool placed;
    public Transform leftFoot,rightFoot,pelvis;
@@ -49,6 +49,13 @@ namespace IslandGame {
   public BossContactDebug ContactDebug=>contactDebug;
   public Transform HeroTarget=>actors.TryGetValue("hero",out var actor)?actor.root.transform:null;
   public void UpdateContact(JObject state,float visualTime){if(bossView==null||!HeroTarget)return;if(diorama)diorama.ProtectAttack(bossView.ContactPoint(1),bossView.ContactPoint(3),bossView.WarningTarget,bossView.BossVisible&&bossView.HookActive);if(contactFeedback==null)contactFeedback=new CombatFeedbackRouter(gameObject,battleCamera.GetComponentInParent<BattleCameraController>(),Presentation??(Presentation=new ViewPresentationCoordinator()),FeedbackTarget);contactFeedback.Update(state,visualTime);
+   if(actors.TryGetValue("hero",out var readable)&&readable.occlusionSkin){
+    // Imported skinned bounds include the full animation envelope and falsely cover nearby heroes.
+    // Use the calibrated torso volume as a conservative gate; the shader checks actual rendered depth.
+    bool blocked=false;if(bossView.BossVisible&&BossTarget&&battleCamera){var cameraPosition=battleCamera.transform.position;float height=bossAssets?bossAssets.bossHeight:6.5f;float radius=NativeCombatPresentation.N(state["bodyRadius"],140)/100;var bounds=new Bounds(BossTarget.position+Vector3.up*(height*.5f),new Vector3(radius*2,height,radius*2));
+     for(int i=0;i<3&&!blocked;i++){var delta=HeroTarget.position+Vector3.up*(.2f+i*.4f)-cameraPosition;float distance=delta.magnitude;blocked=distance>.01f&&bounds.IntersectRay(new Ray(cameraPosition,delta/distance),out float near)&&near<distance-.15f;}
+    }readable.occlusionSkin.enabled=blocked;
+   }
    contactFeedback.Smear(0,HeroAttackId,HeroAttackActive,HeroWeaponTip,visualTime);
    var bm=BossContactProfile.Boss(state)?["motion"] as JObject;int bid=(int?)bm?["attackId"]??0;float bp=bm==null?0:(visualTime-NativeCombatPresentation.N(bm["start"]))/Mathf.Max(.001f,NativeCombatPresentation.N(bm["duration"]));
    for(int h=0;h<2;h++)contactFeedback.Smear(h+1,bid,bossView.BossVisible&&bossView.HookActive&&BossContactProfile.Active(bp,h),bossView.ContactPoint(h*2+1),visualTime);if(contactDebug==null)contactDebug=new BossContactDebug(world);contactDebug.Update(state,visualTime,bossView.BossTarget,HeroTarget,bossView.ContactPoint(0),bossView.ContactPoint(1),bossView.ContactPoint(2),bossView.ContactPoint(3),HeroWeaponBase,HeroWeaponTip,HeroAttackId,HeroAttackProgress,HeroAttackActive,Presentation.State.ToString());}
@@ -149,7 +156,7 @@ namespace IslandGame {
     // Reuse the original skin/bones. Depth-only visibility keeps the hero readable behind the boss.
     // Created once per actor; never BakeMesh, no extra animation graph or gameplay transform.
     var overlay=new GameObject("Occluded hero silhouette");overlay.layer=30;overlay.transform.SetParent(skin.transform,false);
-    var silhouette=overlay.AddComponent<SkinnedMeshRenderer>();silhouette.sharedMesh=skin.sharedMesh;silhouette.bones=skin.bones;silhouette.rootBone=skin.rootBone;silhouette.localBounds=skin.localBounds;silhouette.quality=skin.quality;silhouette.updateWhenOffscreen=false;
+    var silhouette=overlay.AddComponent<SkinnedMeshRenderer>();a.occlusionSkin=silhouette;silhouette.enabled=false;silhouette.sharedMesh=skin.sharedMesh;silhouette.bones=skin.bones;silhouette.rootBone=skin.rootBone;silhouette.localBounds=skin.localBounds;silhouette.quality=skin.quality;silhouette.updateWhenOffscreen=false;
     var materials=new Material[skin.sharedMesh.subMeshCount];for(int i=0;i<materials.Length;i++)materials[i]=mat;silhouette.sharedMaterials=materials;
     silhouette.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;silhouette.receiveShadows=false;silhouette.lightProbeUsage=UnityEngine.Rendering.LightProbeUsage.Off;silhouette.reflectionProbeUsage=UnityEngine.Rendering.ReflectionProbeUsage.Off;
    }}actors[id]=a;return a;

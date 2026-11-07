@@ -7,6 +7,7 @@ Shader "Island/Combat Occluded Hero" {
    Tags { "LightMode"="SRPDefaultUnlit" }
    Blend SrcAlpha OneMinusSrcAlpha
    ZWrite Off ZTest Greater Cull Back
+   Offset -1, -1
    HLSLPROGRAM
    #pragma vertex Vert
    #pragma fragment Frag

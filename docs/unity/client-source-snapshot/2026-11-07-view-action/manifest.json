@@ -1,7 +1,7 @@
 [
   {
     "path": "Runtime/Battle3DView.cs",
-    "sha256": "7fb95d3f6f40732cacea484376d8e0a5c1f02ceac52d997b5022a9a3141814f0"
+    "sha256": "6a012e69337d5e4ec9387a938140b98f4d555cd38b5f5b0b33b1708ade80aeee"
   },
   {
     "path": "Runtime/Battle3DView.cs.meta",
@@ -157,7 +157,7 @@
   },
   {
     "path": "Shaders/CombatOccludedHero.shader",
-    "sha256": "0d9e664b3812e83ee4246c1f387e2f7f572aca9e50fa2e1c376638ad87091309"
+    "sha256": "8e646d3126f7c4e9d47e8be123cebbd3893ddeca6f18715e1d092cc59bda2eeb"
   },
   {
     "path": "Shaders/CombatOccludedHero.shader.meta",
@@ -196,12 +196,16 @@
     "sha256": "23c520325d4544e28f1828ed15ce961e5d0583fa8ba8a910083052fd429336c6"
   },
   {
+    "path": "Tools/VerifyVisibilityGate.cs",
+    "sha256": "3763c51c0ea613b4333f945bb1f8d5ef3357e3cc5a0be73c650e21a1f0970530"
+  },
+  {
     "path": "Tools/RecordViewLive.cs",
     "sha256": "dfb22f2bce755b1deb7e93e84d5e5a766ee63142d8a81bc27faccb3000d1b695"
   },
   {
     "path": "Tools/RecordProductionDodge.cs",
-    "sha256": "61abb657993b2f6b9f0dfb8284f73c381d2efedf225cadea5c94f960af3c7349"
+    "sha256": "279f32cf3c6ec1afc846a8bfb7f3e776b2dc83b454ed987f107cd823b294c0bb"
   },
   {
     "path": "Tools/PrepareViewBuild.cs",
@@ -241,7 +245,7 @@
   },
   {
     "path": "Evidence/final-rendered.json",
-    "sha256": "1fac546d5e4f2f577261e789c1ba87c06cfdba09d3ef5c3593045188a7b8097c"
+    "sha256": "63522882c848915fc72cd7d535460ab03798ed131b2f353202d45046b372d7e1"
   },
   {
     "path": "Evidence/core-verification.json",
@@ -277,7 +281,7 @@
   },
   {
     "path": "Evidence/production-editor.json",
-    "sha256": "54019d4421c68b82dcf6e80dc84857357c66490ea250caff9918216f79990a6e"
+    "sha256": "391c91b3476c469f764bb1fe7a606b3d9eef21f2fa525d3b1292512e0072d2af"
   },
   {
     "path": "Evidence/github-ci.json",
@@ -297,27 +301,31 @@
   },
   {
     "path": "Evidence/performance-comparison.json",
-    "sha256": "4d90b523611776ba8c7ad9c1bac4fbfa912d6d6a23bf163875b658c78da75cf6"
+    "sha256": "2417587ca75eeb98f70480f7cfd335179b144bc37a377570881fe20b27c45c20"
   },
   {
     "path": "Evidence/project-preservation.json",
     "sha256": "18ed82241ec5f25560a63b3f49c4851bb0ed92c7b4cd778e76aaca7ff7854d8c"
   },
   {
+    "path": "Evidence/visibility-gate.json",
+    "sha256": "da0c6106f388675f85567d1dafa73da2d5dbc10903d574b519e230b2d2e15693"
+  },
+  {
     "path": "Evidence/SideAction.jpg",
-    "sha256": "1071658af60e3325e472a2bdb01cceec5751a4386c30d4d3f69051bddcdfdd8a"
+    "sha256": "219bdc9707369615e2d6b24d29fa5d1b7b4264b1c97afc4e35fffdcf890b80cb"
   },
   {
     "path": "Evidence/QuarterAction.jpg",
-    "sha256": "9cf8dff95a32b0da9ecf9e7c1f57f403c53f873e87cb114fc6761914b34a391b"
+    "sha256": "a18d6eff296587ab2f8e8583b10f644cc0e0f09e9d671a2466b6dc5234822891"
   },
   {
     "path": "Evidence/AttackTransitions.jpg",
-    "sha256": "b8d1ff6e8d0b66dacf997357f3b8137f4be371aa0a7a8ea05d24e3800f70dc2d"
+    "sha256": "eec894aaab94c5042500041f450757c0958d028fa66b104ac0c97d621d6b5b8d"
   },
   {
     "path": "Evidence/HitboxHurtbox.jpg",
-    "sha256": "d57cbbdf985dab6f95ad47e0e62bf5f42d26d0cc0b06c88385abfbd80434c910"
+    "sha256": "ec7b796b0d82dc63db9160ff6979984c1a12b88b99392288da09b94a00cb434a"
   },
   {
     "path": "Evidence/model-preservation.json",
