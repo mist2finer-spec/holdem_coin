@@ -1,0 +1,32 @@
+[
+  {
+    "path": "Assets/Island/Runtime/BattleDioramaLook.cs",
+    "before": "76cea989885a123ea146a9b2899045950cb62d8af5c95eb33852097cd5b7c823",
+    "after": "e94d7cd12603cc41cce2fe8309a770f77b52b9b3466b9463eec5414696046dc4"
+  },
+  {
+    "path": "Assets/DioramaPreview/Settings/KeepTerrain.mat",
+    "before": "3509c55c6be74a469d517044ae5a9282385db57cef0019939e0c433f64c47ae5",
+    "after": "2bea39495555ca75d5445301dee561a30613788e4af2e84569ddbe1745e41633"
+  },
+  {
+    "path": "Assets/DioramaPreview/Resources/GroundPalette0.png.meta",
+    "before": "4238c91b6f13eae7c2df65fae488770e196975291da61db9efbe22cb9e6134ba",
+    "after": "58523da39e5ed1efae7326d2e4cb826cc4bbcce52d77bb6144e393284fce994e"
+  },
+  {
+    "path": "Assets/DioramaPreview/Resources/GroundPalette1.png.meta",
+    "before": "e2bd2b213db0f3ccf991163300127492e267ebd9ef04b3151735eca7a9cd487f",
+    "after": "0bb7d4567e11c0610231852aa38207840aa8156e120776d6af9ed406a9027493"
+  },
+  {
+    "path": "Assets/Island/Resources/TerrainMobileVariants.shadervariants",
+    "before": null,
+    "after": "0acc9106f8394bc7bf0461bc026d114089cf79498a792fc87b501cedbbb6b204"
+  },
+  {
+    "path": "Assets/Island/Resources/TerrainMobileVariants.shadervariants.meta",
+    "before": null,
+    "after": "87c619a3973b803b533e3d118c52a68ccac80231837ca27156af94d95712382a"
+  }
+]

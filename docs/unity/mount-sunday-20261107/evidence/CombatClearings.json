@@ -1,0 +1,48 @@
+{
+    "areas": [
+        {
+            "name": "Arena01 radius 8m",
+            "center": {
+                "x": -610.0,
+                "y": 16.7635555267334,
+                "z": 340.0
+            },
+            "radius": 8.0,
+            "heightRange": 0.028940200805664064,
+            "removedObstacles": 0
+        },
+        {
+            "name": "Arena02 radius 8m",
+            "center": {
+                "x": -520.0,
+                "y": 17.082767486572267,
+                "z": 320.0
+            },
+            "radius": 8.0,
+            "heightRange": 0.8970165252685547,
+            "removedObstacles": 1
+        },
+        {
+            "name": "Arena03 radius 8m",
+            "center": {
+                "x": -440.0,
+                "y": 26.537338256835939,
+                "z": 285.0
+            },
+            "radius": 8.0,
+            "heightRange": 1.7998332977294922,
+            "removedObstacles": 1
+        },
+        {
+            "name": "Arena04 radius 12m",
+            "center": {
+                "x": -650.0,
+                "y": 16.327911376953126,
+                "z": 385.0
+            },
+            "radius": 12.0,
+            "heightRange": 0.377685546875,
+            "removedObstacles": 1
+        }
+    ]
+}

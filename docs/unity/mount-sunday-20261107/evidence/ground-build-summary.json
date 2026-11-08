@@ -1,0 +1,20 @@
+{
+  "status": "completed",
+  "buildId": "build_a1c272fcadf6",
+  "result": "Succeeded",
+  "platform": "Android",
+  "outputPath": "C:/Users/SHK/mount-sunday-review-20261107/Builds/IslandGame-GroundReview-20261107.apk",
+  "totalSizeBytes": 1308128876,
+  "buildTimeMs": 700596,
+  "buildStartedAt": "2026-11-08T06:55:36.7302967Z",
+  "buildEndedAt": "2026-11-08T07:07:17.3268257Z",
+  "totalWarnings": 1,
+  "totalErrors": 0,
+  "errors": [],
+  "warnings": [
+    {
+      "message": "warning CS0414: The field 'IslandApp.lastDeal' is assigned but its value is never used",
+      "file": "Assets\\Island\\Runtime\\IslandApp.cs"
+    }
+  ]
+}

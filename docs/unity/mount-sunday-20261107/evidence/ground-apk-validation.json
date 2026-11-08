@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "apk": "C:\\Users\\SHK\\mount-sunday-review-20261107\\Builds\\IslandGame-GroundReview-20261107.apk",
+  "bytes": 107132394,
+  "sha256": "aa39015e5316ddc994c6956958fb9fc12c3a0f55cd2214f07f585a55c14a32c4",
+  "package": "com.mist2finer.islandgame.dev",
+  "versionCode": 2026110705,
+  "architecture": "arm64-v8a",
+  "backend": "IL2CPP",
+  "zipIntegrity": true,
+  "signatureVerified": true,
+  "zipAlignment16K": true,
+  "deviceExecution": "EXCLUDED BY USER",
+  "cyanFloorResolvedOnDevice": "UNAVAILABLE"
+}

@@ -1,0 +1,15 @@
+{
+  "status": "completed",
+  "buildId": "build_8c31b965287c",
+  "result": "Succeeded",
+  "platform": "Android",
+  "outputPath": "C:/Users/SHK/mount-sunday-review-20261107/Builds/MountSunday-Exploration-20261107.apk",
+  "totalSizeBytes": 1881286951,
+  "buildTimeMs": 456794,
+  "buildStartedAt": "2026-11-08T07:25:19.0775605Z",
+  "buildEndedAt": "2026-11-08T07:32:55.8721921Z",
+  "totalWarnings": 0,
+  "totalErrors": 0,
+  "errors": [],
+  "warnings": []
+}

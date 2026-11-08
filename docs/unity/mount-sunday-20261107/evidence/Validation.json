@@ -1,0 +1,53 @@
+{
+    "stageId": "mount_sunday",
+    "editorVersion": "6000.0.62f1",
+    "utc": "2026-11-08T01:38:32.2895621Z",
+    "assetDefinitions": 212,
+    "instanceCount": 840,
+    "routePoints": 9,
+    "builtPrefabs": 212,
+    "prefabRendererCount": 470,
+    "prefabColliderCount": 83,
+    "allLodPrefabTriangles": 13169717,
+    "errors": [],
+    "axisCalibration": {
+        "observedOrigin": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        },
+        "observedEast": {
+            "x": -1.0,
+            "y": 0.0,
+            "z": 0.0
+        },
+        "observedNorth": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": -1.0
+        },
+        "observedUp": {
+            "x": 0.0,
+            "y": 1.0,
+            "z": 0.0
+        },
+        "correctionPosition": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        },
+        "correctionScale": {
+            "x": -1.0,
+            "y": 1.0,
+            "z": 1.0
+        },
+        "correctionRotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+        },
+        "maximumCorrectedError": 0.0,
+        "handednessCorrection": true
+    }
+}

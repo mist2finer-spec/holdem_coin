@@ -81,3 +81,5 @@
 | 미생성 | 해당 없음 | 개발 도구·정책 연결 | 예제 smoke test 제외 | `UNAVAILABLE` | 해당 없음 | 형식 검증 미수행 |
 
 Unity 작업의 최신 실제 로컬 상태는 [2026-11-05 통합 인계](docs/unity/LOCAL_UNITY_HANDOFF_20261105_KO.md)를 먼저 읽습니다. 원격 최소 Unity 폴더와 로컬 검증 프로젝트를 구분합니다.
+
+Mount Sunday 독립 검토와 Android 지면 대응 후속 작업은 [2026-11-07 Mount Sunday 인계](docs/unity/MOUNT_SUNDAY_REVIEW_20261107_KO.md)를 함께 읽습니다. 기존 게임 연결과 실기 검사는 이번 범위에서 제외됐으며, `G:/new_project/IslandGame` 원본과 `C:/Users/SHK/mount-sunday-review-20261107` 격리 복사본을 혼동하지 않습니다.

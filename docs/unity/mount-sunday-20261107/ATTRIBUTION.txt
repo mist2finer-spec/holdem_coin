@@ -1,0 +1,26 @@
+TERRAIN
+Sourced from the LINZ Data Service and licensed by Toitū Te Whenua Land Information New Zealand, for re-use under CC BY 4.0.
+Canterbury survey data licensed by Environment Canterbury. Producer: Aerial Surveys.
+Dataset: Canterbury LiDAR 1m DEM (2020–2025), LINZ national DEM mosaic BX18.
+https://nz-elevation.s3.ap-southeast-2.amazonaws.com/new-zealand/new-zealand/dem_1m/2193/BX18.tiff
+https://nz-elevation.s3.ap-southeast-2.amazonaws.com/canterbury/canterbury_2020-2023/dem_1m/2193/collection.json
+License: https://creativecommons.org/licenses/by/4.0/
+Modifications: cropped, resampled; shifted by 510 vertical metres for game origin; authored road/terraces/channel applied ONLY to playable terrain. Vegetation and buildings are fictional additions.
+
+REFERENCE ORTHOPHOTO (Source package only)
+Canterbury 0.2m Rural Aerial Photos (2024). Environment Canterbury, hosted by LINZ. CC BY 4.0.
+https://nz-imagery.s3.ap-southeast-2.amazonaws.com/canterbury/canterbury_2024_0.2m/rgb/2193/collection.json
+Modifications: four tiles cropped/mosaicked/resampled to 2048x2048, 2km square.
+
+AUTHORING TOOL
+BlenderGIS: https://github.com/domlysz/BlenderGIS
+Pinned commit 2add45ffec547f419cc77563a7fe976fd6c8f0c4, GPL-3.0.
+Used as an external Blender authoring add-on. Its source code is not bundled in the Unity runtime.
+Blender 4.5.3 LTS.
+
+ORIGINAL CONTENT
+Nature models, architecture models, authored placement, Blender generation scripts, and Unity import/demo code were generated for this project. No third-party game models or textures were extracted. Source scripts are included for editing and regeneration.
+
+LOCATION REFERENCE
+https://www.doc.govt.nz/parks-and-recreation/places-to-go/canterbury/places/hakatere-conservation-park/things-to-do/tracks/mount-sunday-track/
+https://gazetteer.linz.govt.nz/place/31762
