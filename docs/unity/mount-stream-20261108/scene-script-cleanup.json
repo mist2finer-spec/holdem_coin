@@ -1,0 +1,42 @@
+[
+  {
+    "scene": "MountZone01.unity",
+    "removedComponents": 64
+  },
+  {
+    "scene": "MountZone02.unity",
+    "removedComponents": 0
+  },
+  {
+    "scene": "MountZone03.unity",
+    "removedComponents": 51
+  },
+  {
+    "scene": "MountZone04.unity",
+    "removedComponents": 13
+  },
+  {
+    "scene": "MountZone05.unity",
+    "removedComponents": 8
+  },
+  {
+    "scene": "MountZone06.unity",
+    "removedComponents": 76
+  },
+  {
+    "scene": "MountZone07.unity",
+    "removedComponents": 26
+  },
+  {
+    "scene": "MountZone08.unity",
+    "removedComponents": 21
+  },
+  {
+    "scene": "MountZone09.unity",
+    "removedComponents": 50
+  },
+  {
+    "scene": "MountZone10.unity",
+    "removedComponents": 6
+  }
+]

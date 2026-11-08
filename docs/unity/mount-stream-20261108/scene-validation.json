@@ -1,0 +1,29 @@
+{
+  "success": true,
+  "command": "command",
+  "data": {
+    "command": "script run",
+    "parameters": {
+      "file": "C:\\Users\\SHK\\mount-sunday-playtest-20261108\\ValidateMountScenes.cs",
+      "entry": "ValidateMountScenes.Run"
+    },
+    "result": {
+      "diagnostics": [],
+      "compileMs": 32,
+      "executeMs": 5074,
+      "assemblyName": "PipelineRunScript_ValidateMountScenes_6eed27b80f644b54a125d3d2bfd82f27",
+      "success": true,
+      "result": {
+        "missing": 0,
+        "zoneRoots": 10
+      }
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "G:\\new_project\\IslandGame"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

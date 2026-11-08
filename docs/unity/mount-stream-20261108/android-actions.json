@@ -1,0 +1,893 @@
+{
+  "status": "PASS",
+  "rows": [
+    {
+      "input": "jump",
+      "expected": "jump1",
+      "pass": true,
+      "trace": [
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 11,
+          "sequence": 111,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 13.159999999999808,
+          "hero": {
+            "x": -3995.4542062327864,
+            "y": 5043.524184702577,
+            "elevation": 2.5745450474793445,
+            "action": "stay1"
+          },
+          "active": 5
+        },
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 11,
+          "sequence": 112,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 13.239999999999807,
+          "hero": {
+            "x": -3995.4542062327864,
+            "y": 5043.524184702577,
+            "elevation": 2.5745450474793445,
+            "action": "jump1"
+          },
+          "active": 5
+        },
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 11,
+          "sequence": 112,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 13.239999999999807,
+          "hero": {
+            "x": -3995.4542062327864,
+            "y": 5043.524184702577,
+            "elevation": 2.5745450474793445,
+            "action": "jump1"
+          },
+          "active": 5
+        },
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 11,
+          "sequence": 113,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 13.359999999999804,
+          "hero": {
+            "x": -3957.739920518502,
+            "y": 5042.413043617936,
+            "elevation": 2.529287904622202,
+            "action": "jump1"
+          },
+          "active": 5
+        },
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 11,
+          "sequence": 113,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 13.359999999999804,
+          "hero": {
+            "x": -3957.739920518502,
+            "y": 5042.413043617936,
+            "elevation": 2.529287904622202,
+            "action": "jump1"
+          },
+          "active": 5
+        },
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 11,
+          "sequence": 114,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 13.459999999999802,
+          "hero": {
+            "x": -3926.3113490899314,
+            "y": 5041.487092714068,
+            "elevation": 2.4915736189079176,
+            "action": "jump1"
+          },
+          "active": 5
+        },
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 11,
+          "sequence": 115,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 13.5599999999998,
+          "hero": {
+            "x": -3894.88277766136,
+            "y": 5040.561141810201,
+            "elevation": 2.453859333193632,
+            "action": "jump1"
+          },
+          "active": 5
+        },
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 11,
+          "sequence": 115,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 13.5599999999998,
+          "hero": {
+            "x": -3894.88277766136,
+            "y": 5040.561141810201,
+            "elevation": 2.453859333193632,
+            "action": "jump1"
+          },
+          "active": 5
+        },
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 11,
+          "sequence": 116,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 13.659999999999798,
+          "hero": {
+            "x": -3863.454206232789,
+            "y": 5039.635190906333,
+            "elevation": 2.4161450474793464,
+            "action": "jump1"
+          },
+          "active": 5
+        },
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 11,
+          "sequence": 116,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 13.659999999999798,
+          "hero": {
+            "x": -3863.454206232789,
+            "y": 5039.635190906333,
+            "elevation": 2.4161450474793464,
+            "action": "jump1"
+          },
+          "active": 5
+        },
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 11,
+          "sequence": 117,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 13.779999999999795,
+          "hero": {
+            "x": -3825.7399205185047,
+            "y": 5038.524049821692,
+            "elevation": 2.3708879046222058,
+            "action": "jump1"
+          },
+          "active": 5
+        },
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 11,
+          "sequence": 117,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 13.779999999999795,
+          "hero": {
+            "x": -3825.7399205185047,
+            "y": 5038.524049821692,
+            "elevation": 2.3708879046222058,
+            "action": "jump1"
+          },
+          "active": 5
+        },
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 12,
+          "sequence": 118,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 13.899999999999793,
+          "hero": {
+            "x": -3788.0256348042194,
+            "y": 5037.446915618405,
+            "elevation": 2.3214422765536256,
+            "action": "jump1"
+          },
+          "active": 6
+        },
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 12,
+          "sequence": 118,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 13.899999999999793,
+          "hero": {
+            "x": -3788.0256348042194,
+            "y": 5037.446915618405,
+            "elevation": 2.3214422765536256,
+            "action": "jump1"
+          },
+          "active": 6
+        },
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 12,
+          "sequence": 119,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 14.01999999999979,
+          "hero": {
+            "x": -3775.4542062327864,
+            "y": 5037.113209840612,
+            "elevation": 2.3019919959467527,
+            "action": "stay1"
+          },
+          "active": 6
+        },
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 12,
+          "sequence": 119,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 14.01999999999979,
+          "hero": {
+            "x": -3775.4542062327864,
+            "y": 5037.113209840612,
+            "elevation": 2.3019919959467527,
+            "action": "stay1"
+          },
+          "active": 6
+        },
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 12,
+          "sequence": 120,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 14.139999999999787,
+          "hero": {
+            "x": -3775.4542062327864,
+            "y": 5037.113209840612,
+            "elevation": 2.3019919959467527,
+            "action": "stay1"
+          },
+          "active": 6
+        }
+      ]
+    },
+    {
+      "input": "slide",
+      "expected": "sliding1",
+      "pass": true,
+      "trace": [
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 12,
+          "sequence": 126,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 14.839999999999772,
+          "hero": {
+            "x": -3775.4542062327864,
+            "y": 5037.113209840612,
+            "elevation": 2.3019919959467527,
+            "action": "stay1"
+          },
+          "active": 6
+        },
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 12,
+          "sequence": 127,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 14.91999999999977,
+          "hero": {
+            "x": -3775.4542062327864,
+            "y": 5037.113209840612,
+            "elevation": 2.3019919959467527,
+            "action": "sliding1"
+          },
+          "active": 6
+        },
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 12,
+          "sequence": 127,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 14.91999999999977,
+          "hero": {
+            "x": -3775.4542062327864,
+            "y": 5037.113209840612,
+            "elevation": 2.3019919959467527,
+            "action": "sliding1"
+          },
+          "active": 6
+        },
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 12,
+          "sequence": 128,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 15.039999999999768,
+          "hero": {
+            "x": -3716.7875395661213,
+            "y": 5035.555916210913,
+            "elevation": 2.216391372150387,
+            "action": "sliding1"
+          },
+          "active": 6
+        },
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 12,
+          "sequence": 128,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 15.039999999999768,
+          "hero": {
+            "x": -3716.7875395661213,
+            "y": 5035.555916210913,
+            "elevation": 2.216391372150387,
+            "action": "sliding1"
+          },
+          "active": 6
+        },
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 12,
+          "sequence": 129,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 15.139999999999766,
+          "hero": {
+            "x": -3667.8986506772335,
+            "y": 5034.2581715194965,
+            "elevation": 2.1417862067796736,
+            "action": "sliding1"
+          },
+          "active": 6
+        },
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 12,
+          "sequence": 130,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 15.259999999999764,
+          "hero": {
+            "x": -3609.2319840105683,
+            "y": 5032.700877889798,
+            "elevation": 2.056384602036836,
+            "action": "sliding1"
+          },
+          "active": 6
+        },
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 12,
+          "sequence": 130,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 15.259999999999764,
+          "hero": {
+            "x": -3609.2319840105683,
+            "y": 5032.700877889798,
+            "elevation": 2.056384602036836,
+            "action": "sliding1"
+          },
+          "active": 6
+        },
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 12,
+          "sequence": 131,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 15.359999999999761,
+          "hero": {
+            "x": -3560.3430951216806,
+            "y": 5031.507300338519,
+            "elevation": 1.9723161111513219,
+            "action": "sliding1"
+          },
+          "active": 6
+        },
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 12,
+          "sequence": 131,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 15.359999999999761,
+          "hero": {
+            "x": -3560.3430951216806,
+            "y": 5031.507300338519,
+            "elevation": 1.9723161111513219,
+            "action": "sliding1"
+          },
+          "active": 6
+        },
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 12,
+          "sequence": 132,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 15.479999999999759,
+          "hero": {
+            "x": -3555.4542062327864,
+            "y": 5031.3904470578955,
+            "elevation": 1.9635394818074359,
+            "action": "stay1"
+          },
+          "active": 6
+        },
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 12,
+          "sequence": 132,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 15.479999999999759,
+          "hero": {
+            "x": -3555.4542062327864,
+            "y": 5031.3904470578955,
+            "elevation": 1.9635394818074359,
+            "action": "stay1"
+          },
+          "active": 6
+        },
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 12,
+          "sequence": 133,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 15.599999999999756,
+          "hero": {
+            "x": -3555.4542062327864,
+            "y": 5031.3904470578955,
+            "elevation": 1.9635394818074359,
+            "action": "stay1"
+          },
+          "active": 6
+        },
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 12,
+          "sequence": 133,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 15.599999999999756,
+          "hero": {
+            "x": -3555.4542062327864,
+            "y": 5031.3904470578955,
+            "elevation": 1.9635394818074359,
+            "action": "stay1"
+          },
+          "active": 6
+        },
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 12,
+          "sequence": 134,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 15.719999999999754,
+          "hero": {
+            "x": -3555.4542062327864,
+            "y": 5031.3904470578955,
+            "elevation": 1.9635394818074359,
+            "action": "stay1"
+          },
+          "active": 6
+        },
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 12,
+          "sequence": 134,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 15.719999999999754,
+          "hero": {
+            "x": -3555.4542062327864,
+            "y": 5031.3904470578955,
+            "elevation": 1.9635394818074359,
+            "action": "stay1"
+          },
+          "active": 6
+        },
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 12,
+          "sequence": 135,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 15.819999999999752,
+          "hero": {
+            "x": -3555.4542062327864,
+            "y": 5031.3904470578955,
+            "elevation": 1.9635394818074359,
+            "action": "stay1"
+          },
+          "active": 6
+        }
+      ]
+    },
+    {
+      "input": "roll",
+      "expected": "avoid1",
+      "pass": true,
+      "trace": [
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 12,
+          "sequence": 141,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 16.519999999999737,
+          "hero": {
+            "x": -3555.4542062327864,
+            "y": 5031.3904470578955,
+            "elevation": 1.9635394818074359,
+            "action": "stay1"
+          },
+          "active": 6
+        },
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 12,
+          "sequence": 142,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 16.599999999999735,
+          "hero": {
+            "x": -3555.4542062327864,
+            "y": 5031.3904470578955,
+            "elevation": 1.9635394818074359,
+            "action": "avoid1"
+          },
+          "active": 6
+        },
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 12,
+          "sequence": 142,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 16.599999999999735,
+          "hero": {
+            "x": -3555.4542062327864,
+            "y": 5031.3904470578955,
+            "elevation": 1.9635394818074359,
+            "action": "avoid1"
+          },
+          "active": 6
+        },
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 12,
+          "sequence": 143,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 16.719999999999732,
+          "hero": {
+            "x": -3614.1208728994516,
+            "y": 5032.830652358939,
+            "elevation": 2.063203091587444,
+            "action": "avoid1"
+          },
+          "active": 6
+        },
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 12,
+          "sequence": 143,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 16.719999999999732,
+          "hero": {
+            "x": -3614.1208728994516,
+            "y": 5032.830652358939,
+            "elevation": 2.063203091587444,
+            "action": "avoid1"
+          },
+          "active": 6
+        },
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 12,
+          "sequence": 144,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 16.81999999999973,
+          "hero": {
+            "x": -3663.0097617883393,
+            "y": 5034.1283970503555,
+            "elevation": 2.133989939451272,
+            "action": "avoid1"
+          },
+          "active": 6
+        },
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 12,
+          "sequence": 145,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 16.919999999999728,
+          "hero": {
+            "x": -3711.898650677227,
+            "y": 5035.426141741771,
+            "elevation": 2.209572882599764,
+            "action": "avoid1"
+          },
+          "active": 6
+        },
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 12,
+          "sequence": 145,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 16.919999999999728,
+          "hero": {
+            "x": -3711.898650677227,
+            "y": 5035.426141741771,
+            "elevation": 2.209572882599764,
+            "action": "avoid1"
+          },
+          "active": 6
+        },
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 12,
+          "sequence": 146,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 17.039999999999726,
+          "hero": {
+            "x": -3770.5653173438923,
+            "y": 5036.9834353714705,
+            "elevation": 2.294437061546682,
+            "action": "avoid1"
+          },
+          "active": 6
+        },
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 12,
+          "sequence": 146,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 17.039999999999726,
+          "hero": {
+            "x": -3770.5653173438923,
+            "y": 5036.9834353714705,
+            "elevation": 2.294437061546682,
+            "action": "avoid1"
+          },
+          "active": 6
+        },
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 12,
+          "sequence": 147,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 17.159999999999723,
+          "hero": {
+            "x": -3775.4542062327864,
+            "y": 5037.113209840612,
+            "elevation": 2.3019919959467527,
+            "action": "stay1"
+          },
+          "active": 6
+        },
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 12,
+          "sequence": 147,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 17.159999999999723,
+          "hero": {
+            "x": -3775.4542062327864,
+            "y": 5037.113209840612,
+            "elevation": 2.3019919959467527,
+            "action": "stay1"
+          },
+          "active": 6
+        },
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 12,
+          "sequence": 148,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 17.25999999999972,
+          "hero": {
+            "x": -3775.4542062327864,
+            "y": 5037.113209840612,
+            "elevation": 2.3019919959467527,
+            "action": "stay1"
+          },
+          "active": 6
+        },
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 12,
+          "sequence": 148,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 17.25999999999972,
+          "hero": {
+            "x": -3775.4542062327864,
+            "y": 5037.113209840612,
+            "elevation": 2.3019919959467527,
+            "action": "stay1"
+          },
+          "active": 6
+        },
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 12,
+          "sequence": 149,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 17.37999999999972,
+          "hero": {
+            "x": -3775.4542062327864,
+            "y": 5037.113209840612,
+            "elevation": 2.3019919959467527,
+            "action": "stay1"
+          },
+          "active": 6
+        },
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 12,
+          "sequence": 150,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 17.479999999999716,
+          "hero": {
+            "x": -3775.4542062327864,
+            "y": 5037.113209840612,
+            "elevation": 2.3019919959467527,
+            "action": "stay1"
+          },
+          "active": 6
+        },
+        {
+          "room": 0,
+          "kills": 6,
+          "spawned": 12,
+          "sequence": 150,
+          "status": "playing",
+          "auto": false,
+          "paused": false,
+          "elapsed": 17.479999999999716,
+          "hero": {
+            "x": -3775.4542062327864,
+            "y": 5037.113209840612,
+            "elevation": 2.3019919959467527,
+            "action": "stay1"
+          },
+          "active": 6
+        }
+      ]
+    }
+  ]
+}

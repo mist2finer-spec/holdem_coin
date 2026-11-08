@@ -1,0 +1,2 @@
+using UnityEngine;using UnityEditor;
+public static class FixSkyMaterials {public static string Run(){for(int i=1;i<=10;i++){var m=AssetDatabase.LoadAssetAtPath<Material>("Assets/Island/MountRuntime/Materials/Sky"+i.ToString("00")+".mat");var t=m.GetTexture("_Tex");m.shader=Shader.Find("Island/Mount/BakedSky");m.SetTexture("_Tex",t);EditorUtility.SetDirty(m);}AssetDatabase.SaveAssets();return "Corrected baked cubemap orientation in ten materials";}}

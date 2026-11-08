@@ -1,0 +1,11 @@
+✔ wallet test stock; prize once across database connections and never by spoofed name or bot (54.4349ms)
+✔ transcend is one-time, cost once on duplicate nonce and CAS prevents stale overwrite (7.6317ms)
+✔ two independent server processes serialize the same champion event and competing transcendence revisions (967.9288ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1452.0586

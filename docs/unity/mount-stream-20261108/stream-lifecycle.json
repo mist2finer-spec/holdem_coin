@@ -1,0 +1,45 @@
+{
+  "status": "PASS",
+  "rows": [
+    {
+      "phase": "ready",
+      "value": {
+        "loaded": 2,
+        "peak": 2,
+        "active": 0,
+        "graphs": 5,
+        "scenes": 3
+      }
+    },
+    {
+      "phase": "exit",
+      "value": {
+        "loaded": 0,
+        "peak": 2,
+        "active": -1,
+        "graphs": 0,
+        "scenes": 1
+      }
+    },
+    {
+      "phase": "cancel-and-reenter",
+      "value": {
+        "loaded": 2,
+        "peak": 2,
+        "active": 0,
+        "graphs": 5,
+        "scenes": 3
+      }
+    },
+    {
+      "phase": "final-exit",
+      "value": {
+        "loaded": 0,
+        "peak": 2,
+        "active": -1,
+        "graphs": 0,
+        "scenes": 1
+      }
+    }
+  ]
+}

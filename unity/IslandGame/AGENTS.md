@@ -1,3 +1,5 @@
+> 최신 2026-11-08.2: [Mount Sunday 10구역 이식·스프린트·BlueStacks PASS/FAIL](../../docs/unity/MOUNT_SUNDAY_STREAM_PLAYTEST_20261108_KO.md). 실제 로컬 프로젝트에 우선 적용했으며 서버 변경과 에셋 패치는 작업 브랜치에 있다. 운영 배포·main 병합은 별도다.
+
 > 최신 2026-11-07.4: [횡스크롤·쿼터뷰 액션/공통 접촉/보스 간격/전환 검증](../../docs/unity/COMBAT_VIEW_ACTION_20261107_KO.md). 기존 카메라·서버·수정 Nilo 룩을 확장. 새 참고 스냅샷으로 실제 로컬 후속 수정을 덮어쓰지 마세요.
 
 > 최신 2026-11-07 후속: [보스 접촉 판정·URP 미리보기·테스트 APK](../../docs/unity/BOSS_CONTACT_DIORAMA_20261107_KO.md). 전투 안정화 유지, 사용자 승인한 수정 Nilo/URP 통합, 약한 Bloom 적용. 후속 작업도 같은 공격 ID/시간·실행 검증·고정 부하 전후 비교를 유지합니다.

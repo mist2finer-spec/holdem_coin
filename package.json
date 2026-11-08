@@ -64,7 +64,8 @@
     "rpg:enemy:vfx": "python scripts/rpg/build_enemy_vfx.py",
     "test:rpg:jewel:e2e": "node scripts/rpg/smoke-jewel-shop.mjs",
     "test:rpg:idle:e2e": "node scripts/rpg/smoke-idle-economy.mjs",
-    "test:rpg:hybrid": "POKER_TEST_MODE=1 node --import ./mini-services/poker-server/node_modules/tsx/dist/loader.mjs --test scripts/rpg/test-hybrid-balance.ts scripts/rpg/test-hybrid-runtime.ts scripts/rpg/test-hybrid-service.ts scripts/rpg/test-sqlite-startup.ts"
+    "test:rpg:hybrid": "POKER_TEST_MODE=1 node --import ./mini-services/poker-server/node_modules/tsx/dist/loader.mjs --test scripts/rpg/test-hybrid-balance.ts scripts/rpg/test-hybrid-runtime.ts scripts/rpg/test-hybrid-service.ts scripts/rpg/test-sqlite-startup.ts",
+    "test:rpg:mount": "node --import ./mini-services/poker-server/node_modules/tsx/dist/loader.mjs --test scripts/rpg/test-mount-sunday.ts scripts/rpg/test-mount-route.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

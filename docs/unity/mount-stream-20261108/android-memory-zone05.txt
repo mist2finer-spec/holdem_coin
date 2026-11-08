@@ -1,0 +1,50 @@
+Total number of currently running services:0
+Applications Memory Usage (in Kilobytes):
+Uptime: 4837981 Realtime: 4837981
+
+** MEMINFO in pid 9775 [com.mist2finer.islandgame.dev] **
+                   Pss  Private  Private  SwapPss     Heap     Heap     Heap
+                 Total    Dirty    Clean    Dirty     Size    Alloc     Free
+                ------   ------   ------   ------   ------   ------   ------
+  Native Heap    56508    56384        0        0    68096    59849     8246
+  Dalvik Heap     1763     1676        0        0     4197     2099     2098
+ Dalvik Other     1173     1172        0        0                           
+        Stack       64       64        0        0                           
+       Ashmem    11292    11248        0        0                           
+    Other dev       12        0       12        0                           
+     .so mmap    90103     8220    74520        0                           
+    .apk mmap     7676     7292      176        0                           
+    .ttf mmap      324        0      180        0                           
+    .dex mmap     7342      248     5276        0                           
+    .oat mmap      265        0       92        0                           
+    .art mmap     8255     6156      956        0                           
+   Other mmap     5572       20     5528        0                           
+      Unknown   372794   372788        0        0                           
+        TOTAL   563143   465268    86740        0    72293    61948    10344
+ 
+ App Summary
+                       Pss(KB)
+                        ------
+           Java Heap:     8788
+         Native Heap:    56384
+                Code:    96004
+               Stack:       64
+            Graphics:        0
+       Private Other:   390768
+              System:    11135
+ 
+               TOTAL:   563143       TOTAL SWAP PSS:        0
+ 
+ Objects
+               Views:        9         ViewRootImpl:        1
+         AppContexts:        4           Activities:        1
+              Assets:        2        AssetManagers:        0
+       Local Binders:       16        Proxy Binders:       30
+       Parcel memory:        7         Parcel count:       28
+    Death Recipients:        0      OpenSSL Sockets:        0
+            WebViews:        0
+ 
+ SQL
+         MEMORY_USED:        0
+  PAGECACHE_OVERFLOW:        0          MALLOC_SIZE:        0
+ 

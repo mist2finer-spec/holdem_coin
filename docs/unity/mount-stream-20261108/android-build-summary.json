@@ -1,0 +1,15 @@
+{
+  "status": "completed",
+  "buildId": "build_355587d7e10a",
+  "result": "Succeeded",
+  "platform": "Android",
+  "outputPath": "G:/new_project/IslandGame/Builds/Android/IslandGame-MountSunday-20261108.apk",
+  "totalSizeBytes": 1438898295,
+  "buildTimeMs": 47530,
+  "buildStartedAt": "2026-11-09T01:35:39.8232025Z",
+  "buildEndedAt": "2026-11-09T01:36:27.3532870Z",
+  "totalWarnings": 0,
+  "totalErrors": 0,
+  "errors": [],
+  "warnings": []
+}
