@@ -1,0 +1,38 @@
+﻿{
+  "success": true,
+  "command": "command",
+  "data": {
+    "command": "console status",
+    "parameters": {},
+    "result": {
+      "entries": [],
+      "cursor": 148,
+      "session": "8811ca454a484b678e087758ea2f9c27",
+      "returned": 0,
+      "dropped": false,
+      "reset": false,
+      "counts": {
+        "error": 2,
+        "warn": 129,
+        "log": 17
+      },
+      "groundTruth": {
+        "sampledUtc": "2026-11-08T02:37:16.9486835Z",
+        "ageMs": 44,
+        "compilationFailed": false,
+        "compiling": false,
+        "consoleErrors": 0,
+        "consoleWarnings": 0,
+        "consoleLogs": 0,
+        "seeded": true
+      }
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7801,
+      "projectPath": "C:\\Users\\SHK\\mount-sunday-review-20261107\\MountSundayReview"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

@@ -1,0 +1,166 @@
+{
+  "scope": "Unity Editor DX11; 1280x720; same 622-point camera route; 10s warm-up plus 60s recording; renderScale1 MSAA2 VSync0 LODbias1; no simultaneous build/import; memory/GC include Editor and instrumentation",
+  "device": "Lenovo 82K2, Ryzen 5 5600H, GTX 1650",
+  "mobileMeasured": false,
+  "baseline-clean": {
+    "mode": "tour",
+    "label": "baseline-clean",
+    "status": "PASS",
+    "failure": "",
+    "device": "82K2 (LENOVO)",
+    "gpu": "NVIDIA GeForce GTX 1650",
+    "unity": "6000.0.62f1",
+    "width": 1280,
+    "height": 720,
+    "frames": 16783,
+    "roadPoints": 622,
+    "visited": 0,
+    "seconds": 70.00221252441406,
+    "travel": 0.0,
+    "cpuAvailable": true,
+    "gpuAvailable": true,
+    "teleportedDuringWalk": false,
+    "end": {
+      "x": -22.254146575927734,
+      "y": 101.67820739746094,
+      "z": -11.99233627319336
+    },
+    "statistics": {
+      "frameMs": {
+        "mean": 3.984887177352966,
+        "p50": 3.9152954816818237,
+        "p95": 5.763465619087219,
+        "max": 28.14330291748047
+      },
+      "cpuMs": {
+        "mean": 3.9771977865707036,
+        "p50": 3.9084500074386597,
+        "p95": 5.7435452222824095,
+        "max": 27.711299896240234
+      },
+      "gpuMs": {
+        "mean": 3.3942485609596384,
+        "p50": 3.380352020263672,
+        "p95": 5.114662432670593,
+        "max": 5.921023845672607
+      },
+      "gcBytes": {
+        "mean": 19028.421901979014,
+        "p50": 18883.0,
+        "p95": 18963.0,
+        "max": 1705026.0
+      },
+      "memoryBytes": {
+        "mean": 4227144080.511821,
+        "p50": 4222969468.0,
+        "p95": 4265164289.6,
+        "max": 4270599896.0
+      },
+      "draws": {
+        "mean": 257.00092973834506,
+        "p50": 251.0,
+        "p95": 426.0,
+        "max": 470.0
+      },
+      "setPass": {
+        "mean": 5.26696772479745,
+        "p50": 5.0,
+        "p95": 6.0,
+        "max": 6.0
+      },
+      "triangles": {
+        "mean": 3325589.219683889,
+        "p50": 3250932.0,
+        "p95": 5154125.0,
+        "max": 5345156.0
+      }
+    },
+    "sampleCount": 15058
+  },
+  "optimized-clean": {
+    "mode": "tour",
+    "label": "optimized-clean",
+    "status": "PASS",
+    "failure": "",
+    "device": "82K2 (LENOVO)",
+    "gpu": "NVIDIA GeForce GTX 1650",
+    "unity": "6000.0.62f1",
+    "width": 1280,
+    "height": 720,
+    "frames": 22974,
+    "roadPoints": 622,
+    "visited": 0,
+    "seconds": 70.00125885009766,
+    "travel": 0.0,
+    "cpuAvailable": true,
+    "gpuAvailable": true,
+    "teleportedDuringWalk": false,
+    "crossedBridgeDeck": false,
+    "end": {
+      "x": -22.254146575927734,
+      "y": 101.67820739746094,
+      "z": -11.99233627319336
+    },
+    "statistics": {
+      "frameMs": {
+        "mean": 2.9231553701532795,
+        "p50": 2.839604616165161,
+        "p95": 3.7221691370010386,
+        "max": 178.3166961669922
+      },
+      "cpuMs": {
+        "mean": 2.9139212309927984,
+        "p50": 2.833699941635132,
+        "p95": 3.6909399747848513,
+        "max": 178.84310913085938
+      },
+      "gpuMs": {
+        "mean": 2.123433511000599,
+        "p50": 2.120959997177124,
+        "p95": 2.875135898590088,
+        "max": 5.873663902282715
+      },
+      "gcBytes": {
+        "mean": 19290.924684561796,
+        "p50": 18883.0,
+        "p95": 18924.0,
+        "max": 7570622.0
+      },
+      "memoryBytes": {
+        "mean": 4162863983.6377454,
+        "p50": 4160687137.0,
+        "p95": 4201209447.4,
+        "max": 4210270849.0
+      },
+      "draws": {
+        "mean": 284.9554732790958,
+        "p50": 293.0,
+        "p95": 460.0,
+        "max": 504.0
+      },
+      "setPass": {
+        "mean": 6.373313197252399,
+        "p50": 6.0,
+        "p95": 7.0,
+        "max": 7.0
+      },
+      "triangles": {
+        "mean": 1852798.827690359,
+        "p50": 1755771.0,
+        "p95": 2646491.0,
+        "max": 2856146.0
+      }
+    },
+    "sampleCount": 20527
+  },
+  "meanChangePercent": {
+    "frameMs": -26.643961546358298,
+    "cpuMs": -26.73431427444055,
+    "gpuMs": -37.440247145593496,
+    "gcBytes": 1.3795299680394502,
+    "memoryBytes": -1.5206507194874819,
+    "draws": 10.87721494595819,
+    "setPass": 21.005358875585213,
+    "triangles": -44.28659989863465
+  }
+}

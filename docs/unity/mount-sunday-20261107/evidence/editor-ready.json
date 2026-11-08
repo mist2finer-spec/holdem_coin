@@ -1,0 +1,28 @@
+﻿{
+  "success": true,
+  "command": "command",
+  "data": {
+    "command": "script eval_file",
+    "parameters": {
+      "file": "C:/Users/SHK/mount-sunday-review-20261107/ReadyScene.cs"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": {
+        "scene": "Assets/MountSunday/Review/MountSunday_Exploration_Review.unity",
+        "dirty": false,
+        "playing": false,
+        "compiling": false
+      }
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7801,
+      "projectPath": "C:\\Users\\SHK\\mount-sunday-review-20261107\\MountSundayReview"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

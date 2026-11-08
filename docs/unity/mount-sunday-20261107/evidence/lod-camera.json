@@ -1,0 +1,190 @@
+{
+  "passed": true,
+  "scope": "Actual main camera, other SceneView cameras exclude fixture layer29; Renderer.isVisible and draw/triangle counters after 20 frames; no ForceLOD; final terrain uses source geometry without added LOD",
+  "results": [
+    {
+      "asset": "Beech_Tall_01_0291",
+      "relativeHeight": 1.2000000476837158,
+      "distance": 13.254823684692383,
+      "expected": 0,
+      "triangles": 43899,
+      "drawCalls": 8,
+      "rendered": [
+        0
+      ],
+      "pass": true
+    },
+    {
+      "asset": "Beech_Tall_01_0291",
+      "relativeHeight": 0.17000000178813934,
+      "distance": 93.56346893310547,
+      "expected": 1,
+      "triangles": 9205,
+      "drawCalls": 7,
+      "rendered": [
+        1
+      ],
+      "pass": true
+    },
+    {
+      "asset": "Beech_Tall_01_0291",
+      "relativeHeight": 0.05100000277161598,
+      "distance": 311.8782043457031,
+      "expected": 2,
+      "triangles": 3257,
+      "drawCalls": 6,
+      "rendered": [
+        2
+      ],
+      "pass": true
+    },
+    {
+      "asset": "Beech_Tall_01_0291",
+      "relativeHeight": 0.004800000227987766,
+      "distance": 3313.7060546875,
+      "expected": -1,
+      "triangles": 1881,
+      "drawCalls": 5,
+      "rendered": [],
+      "pass": true
+    },
+    {
+      "asset": "Rock_Boulder_01_0577",
+      "relativeHeight": 1.2000000476837158,
+      "distance": 3.5621514320373535,
+      "expected": 0,
+      "triangles": 2388,
+      "drawCalls": 8,
+      "rendered": [
+        0
+      ],
+      "pass": true
+    },
+    {
+      "asset": "Rock_Boulder_01_0577",
+      "relativeHeight": 0.12000000476837158,
+      "distance": 35.62151336669922,
+      "expected": 1,
+      "triangles": 2043,
+      "drawCalls": 7,
+      "rendered": [
+        1
+      ],
+      "pass": true
+    },
+    {
+      "asset": "Rock_Boulder_01_0577",
+      "relativeHeight": 0.03199999779462814,
+      "distance": 133.5806884765625,
+      "expected": 2,
+      "triangles": 1911,
+      "drawCalls": 6,
+      "rendered": [
+        2
+      ],
+      "pass": true
+    },
+    {
+      "asset": "Rock_Boulder_01_0577",
+      "relativeHeight": 0.001600000075995922,
+      "distance": 2671.613525390625,
+      "expected": -1,
+      "triangles": 1881,
+      "drawCalls": 5,
+      "rendered": [],
+      "pass": true
+    },
+    {
+      "asset": "Groundcover_10_20",
+      "relativeHeight": 1.2000000476837158,
+      "distance": 25.689163208007812,
+      "expected": 0,
+      "triangles": 76289,
+      "drawCalls": 6,
+      "rendered": [
+        0
+      ],
+      "pass": true
+    },
+    {
+      "asset": "Groundcover_10_20",
+      "relativeHeight": 0.5,
+      "distance": 61.653995513916016,
+      "expected": 1,
+      "triangles": 20597,
+      "drawCalls": 6,
+      "rendered": [
+        1
+      ],
+      "pass": true
+    },
+    {
+      "asset": "Groundcover_10_20",
+      "relativeHeight": 0.22500000894069672,
+      "distance": 137.0088653564453,
+      "expected": 2,
+      "triangles": 8825,
+      "drawCalls": 6,
+      "rendered": [
+        2
+      ],
+      "pass": true
+    },
+    {
+      "asset": "Groundcover_10_20",
+      "relativeHeight": 0.06000000238418579,
+      "distance": 513.7832641601562,
+      "expected": -1,
+      "triangles": 1881,
+      "drawCalls": 5,
+      "rendered": [],
+      "pass": true
+    },
+    {
+      "asset": "GoldenHall_0080",
+      "relativeHeight": 1.2000000476837158,
+      "distance": 34.312557220458984,
+      "expected": 0,
+      "triangles": 42762,
+      "drawCalls": 8,
+      "rendered": [
+        0
+      ],
+      "pass": true
+    },
+    {
+      "asset": "GoldenHall_0080",
+      "relativeHeight": 0.12000000476837158,
+      "distance": 343.1255798339844,
+      "expected": 1,
+      "triangles": 11088,
+      "drawCalls": 6,
+      "rendered": [
+        1
+      ],
+      "pass": true
+    },
+    {
+      "asset": "GoldenHall_0080",
+      "relativeHeight": 0.03199999779462814,
+      "distance": 1286.7210693359375,
+      "expected": 2,
+      "triangles": 3336,
+      "drawCalls": 6,
+      "rendered": [
+        2
+      ],
+      "pass": true
+    },
+    {
+      "asset": "GoldenHall_0080",
+      "relativeHeight": 0.001600000075995922,
+      "distance": 25734.41796875,
+      "expected": -1,
+      "triangles": 1881,
+      "drawCalls": 5,
+      "rendered": [],
+      "pass": true
+    }
+  ]
+}

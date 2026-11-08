@@ -1,0 +1,4 @@
+# Preserve reviewed source/patch bytes so SHA-256 manifests survive checkout.
+review-project/** -text -whitespace
+ground-patch/** -text -whitespace
+tools/** -text -whitespace

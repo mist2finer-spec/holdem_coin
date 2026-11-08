@@ -1,0 +1,6 @@
+﻿import json,numpy as np
+from pathlib import Path
+w=Path(r'C:\Users\SHK\mount-sunday-review-20261107/evidence');result={'scope':'Unity Editor DX11; 1280x720; same 622-point camera route; 10s warm-up plus 60s recording; renderScale1 MSAA2 VSync0 LODbias1; no simultaneous build/import; memory/GC include Editor and instrumentation','device':'Lenovo 82K2, Ryzen 5 5600H, GTX 1650','mobileMeasured':False}
+for label in ['baseline-clean','optimized-clean']:
+ d=json.loads((w/(label+'-tour.json')).read_text());s=d.pop('samples');d.pop('walkingTrace',None);d['statistics']={k:{'mean':float(np.mean([r[k] for r in s])),'p50':float(np.percentile([r[k] for r in s],50)),'p95':float(np.percentile([r[k] for r in s],95)),'max':float(max(r[k] for r in s))} for k in s[0]};d['sampleCount']=len(s);result[label]=d
+b=result['baseline-clean']['statistics'];a=result['optimized-clean']['statistics'];result['meanChangePercent']={k:(a[k]['mean']/b[k]['mean']-1)*100 for k in b if b[k]['mean']};(w/'performance-comparison.json').write_text(json.dumps(result,indent=2));print(json.dumps({label:{k:round(v['mean'],3) for k,v in result[label]['statistics'].items()} for label in ['baseline-clean','optimized-clean']}));print(result['meanChangePercent'])

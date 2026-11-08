@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "apk": "C:\\Users\\SHK\\mount-sunday-review-20261107\\Builds\\MountSunday-Exploration-20261107.apk",
+  "bytes": 279541715,
+  "sha256": "b56f196c02a156f9ab9a0c3fd3636580d350b8652d74caa1cab9e7bb7b67afbf",
+  "package": "com.mist2finer.mountsunday.review",
+  "versionCode": 2026110701,
+  "architecture": "arm64-v8a",
+  "backend": "IL2CPP",
+  "zipIntegrity": true,
+  "signatureVerified": true,
+  "zipAlignment16K": true,
+  "deviceExecution": "EXCLUDED BY USER",
+  "cyanFloorResolvedOnDevice": "UNAVAILABLE"
+}

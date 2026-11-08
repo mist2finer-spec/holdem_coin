@@ -1,0 +1,452 @@
+[
+  {
+    "path": "review-project/Assets/MountSunday/Editor/FinishReviewScene.cs",
+    "bytes": 2843,
+    "sha256": "04e91d82cf09aaa9cfdf3618fbc07c82f3b4224514fe17eabf4c67bcad6588ff"
+  },
+  {
+    "path": "review-project/Assets/MountSunday/Editor/FinishReviewScene.cs.meta",
+    "bytes": 59,
+    "sha256": "2f1af185cdef9892aca9dcf649df108d4e3b90efb4e0f3ce2925b0d1d8a6bc0e"
+  },
+  {
+    "path": "review-project/Assets/MountSunday/Editor/MountSundayAxisCalibration.cs",
+    "bytes": 5768,
+    "sha256": "ff27aff1b3923d5c6f9726a28e83fd5cc65e9b3f6abd90c84f90bff292cc223b"
+  },
+  {
+    "path": "review-project/Assets/MountSunday/Editor/MountSundayAxisCalibration.cs.meta",
+    "bytes": 59,
+    "sha256": "d3bf23309ec07f628a4b2a9b64185804c70f73253a35000516b5a76c90b5e3bf"
+  },
+  {
+    "path": "review-project/Assets/MountSunday/Editor/MountSundayModelImport.cs",
+    "bytes": 2110,
+    "sha256": "92db8b99e92b1684dcce9bca1c9502b724cd6ec847a5d6bf04fb48d03672b0a2"
+  },
+  {
+    "path": "review-project/Assets/MountSunday/Editor/MountSundayModelImport.cs.meta",
+    "bytes": 59,
+    "sha256": "327c0aec1a8a53a6a22524b1d95fafdaf42201d892fa0a9cbab9fffae66858cd"
+  },
+  {
+    "path": "review-project/Assets/MountSunday/Editor/MountSundayStageBuilder.cs",
+    "bytes": 28693,
+    "sha256": "75fbcfce02eb27ef9408e13aa0258750a5bbf0cb3384f43ed916a5087eded83b"
+  },
+  {
+    "path": "review-project/Assets/MountSunday/Editor/MountSundayStageBuilder.cs.meta",
+    "bytes": 59,
+    "sha256": "6b923ea92b6b3b6861804a89a65d3b63ed62f0631a03559221de6a940eb39630"
+  },
+  {
+    "path": "review-project/Assets/MountSunday/Editor/OptimizeStage.cs",
+    "bytes": 5137,
+    "sha256": "540a7708dced9720d75f2bc08ca400d2716a672340a75cbd23183fee31be48e6"
+  },
+  {
+    "path": "review-project/Assets/MountSunday/Editor/OptimizeStage.cs.meta",
+    "bytes": 59,
+    "sha256": "bb891ff9dab563591e442aa240e481ce6f68dbf1c7d2453820ad92dcedb1949d"
+  },
+  {
+    "path": "review-project/Assets/MountSunday/Editor/ReviewSetup.cs",
+    "bytes": 4361,
+    "sha256": "3c2c01c0e25182c5e16539da57b814ee039c4c17035dac24ed3866ed3997e7fb"
+  },
+  {
+    "path": "review-project/Assets/MountSunday/Editor/ReviewSetup.cs.meta",
+    "bytes": 59,
+    "sha256": "de792ef22c8fca6b5cc51c27ca70c446b511c7e69c26b17761a4d591100bd0e3"
+  },
+  {
+    "path": "review-project/Assets/MountSunday/Resources/MountSundayReviewRoad.json",
+    "bytes": 47651,
+    "sha256": "16ab15dd4393bdf68d9ce8431829a47fea3a1be2832222a943189c561f637f60"
+  },
+  {
+    "path": "review-project/Assets/MountSunday/Resources/MountSundayReviewRoad.json.meta",
+    "bytes": 158,
+    "sha256": "9262d074d6190caffa1d5ec715dfa6649107a25418b9db33be237d490637e4ef"
+  },
+  {
+    "path": "review-project/Assets/MountSunday/Resources/MountSundayWalkingRoad.json",
+    "bytes": 50236,
+    "sha256": "74316aab8ffa78db3e4b7f57485908be580daeafa29b1b9d43560e4ffbc7abc7"
+  },
+  {
+    "path": "review-project/Assets/MountSunday/Resources/MountSundayWalkingRoad.json.meta",
+    "bytes": 158,
+    "sha256": "3ddc9ac0d33081e41f0308530fdb97259b006d8a935ec5c1c17f152456a818b8"
+  },
+  {
+    "path": "review-project/Assets/MountSunday/Runtime/MountSundayFreeFlight.cs",
+    "bytes": 5233,
+    "sha256": "5a15a9b7cb6440973feb3325fd3f0698df8a2cf799176e7b5d9db80c065677de"
+  },
+  {
+    "path": "review-project/Assets/MountSunday/Runtime/MountSundayFreeFlight.cs.meta",
+    "bytes": 59,
+    "sha256": "c75ae045639871397956837dc0809ceeed02bce72e07c164d37fd42e56c60aec"
+  },
+  {
+    "path": "review-project/Assets/MountSunday/Runtime/MountSundayManifest.cs",
+    "bytes": 1834,
+    "sha256": "6d60b92c657c0a0b69d524a1cb9034f56a6743ba1f883336a935a54aa4bdb9ca"
+  },
+  {
+    "path": "review-project/Assets/MountSunday/Runtime/MountSundayManifest.cs.meta",
+    "bytes": 59,
+    "sha256": "31cc024e79113f167a87d81119e95717ea9de2aad679590435cf0cbe0bc75941"
+  },
+  {
+    "path": "review-project/Assets/MountSunday/Runtime/MountSundayRoute.cs",
+    "bytes": 854,
+    "sha256": "054b0094168640388365aadc551cfdf5bbc370bfb4640032ba92353f122348ea"
+  },
+  {
+    "path": "review-project/Assets/MountSunday/Runtime/MountSundayRoute.cs.meta",
+    "bytes": 59,
+    "sha256": "7100996e9e217b6ca30fd1d37dd859eb83db39cb6f7124a837007d1907e3a5d6"
+  },
+  {
+    "path": "review-project/Assets/MountSunday/Runtime/ReviewControls.cs",
+    "bytes": 4306,
+    "sha256": "a789ef88b788dbd04bcb53451f5cce6a97cda3a55945444c2325c064b15ca9f2"
+  },
+  {
+    "path": "review-project/Assets/MountSunday/Runtime/ReviewControls.cs.meta",
+    "bytes": 59,
+    "sha256": "ce8c031364c22cc6cd524e040b0587c83cd27916161e3a7b2ebc95ce2e4135d1"
+  },
+  {
+    "path": "review-project/Assets/MountSunday/Runtime/ReviewLodProbe.cs",
+    "bytes": 348,
+    "sha256": "933ef2166f36ab7f436d0094ba7423683a5fbd041c362937291a15c1b92d6d0e"
+  },
+  {
+    "path": "review-project/Assets/MountSunday/Runtime/ReviewLodProbe.cs.meta",
+    "bytes": 59,
+    "sha256": "5b0e0bd64d2067d5d353044a6847120592aa35b4f9c1a93c65de2128aaf621cc"
+  },
+  {
+    "path": "review-project/Assets/MountSunday/Runtime/ReviewLodVerification.cs",
+    "bytes": 3747,
+    "sha256": "ec380deace9f28c13e82fe9e4f3519509dadd98910027d06e224826eff6bc2b4"
+  },
+  {
+    "path": "review-project/Assets/MountSunday/Runtime/ReviewLodVerification.cs.meta",
+    "bytes": 59,
+    "sha256": "fb96ed1769ce503d7cdbca4c22f530e1ada63f9493f209b632e85f1f71931e05"
+  },
+  {
+    "path": "review-project/Assets/MountSunday/Runtime/ReviewRun.cs",
+    "bytes": 5550,
+    "sha256": "97cbf16ffb8a241884b2768285d382be3de15be33cfd9423a2e0f9b40e0064b1"
+  },
+  {
+    "path": "review-project/Assets/MountSunday/Runtime/ReviewRun.cs.meta",
+    "bytes": 59,
+    "sha256": "c84688090e0bd58ed34524075c93c1ffcf393eb30329f18e38164fd045b7f84a"
+  },
+  {
+    "path": "review-project/Assets/MountSunday/Runtime/ReviewVideo.cs",
+    "bytes": 1839,
+    "sha256": "28c6d5f37b303941631a38f1b5793c61f66bfc58ab0f35e57340c3f6d9506cec"
+  },
+  {
+    "path": "review-project/Assets/MountSunday/Runtime/ReviewVideo.cs.meta",
+    "bytes": 59,
+    "sha256": "e45f3e848c903ba7563c849ed41e40ae82ce664a3ffa6cc91b681bba28086c7b"
+  },
+  {
+    "path": "review-project/Assets/MountSunday/Shaders/MountSundayEnvironment.shader",
+    "bytes": 8753,
+    "sha256": "b874f6379c05149a94390fe6cc9f8a73c9c7e7b55f698288cbc6652c0c5af961"
+  },
+  {
+    "path": "review-project/Assets/MountSunday/Shaders/MountSundayEnvironment.shader.meta",
+    "bytes": 204,
+    "sha256": "1ff9579e5f8d22ec34f8171703df065abbb2ab77e41086a0979f27e992d26763"
+  },
+  {
+    "path": "review-project/Packages/manifest.json",
+    "bytes": 807,
+    "sha256": "2784fbd41dd9d079b8ee8120f915d2147e481a4410abab7559eb215298cad1b7"
+  },
+  {
+    "path": "review-project/Packages/packages-lock.json",
+    "bytes": 7817,
+    "sha256": "c11c8790a00e6a0d157958a0c6de86e1566e16bdadaec6eab672525c82264a4a"
+  },
+  {
+    "path": "review-project/ProjectSettings/AudioManager.asset",
+    "bytes": 443,
+    "sha256": "9a554916fe138ebcad8443ee9b079363ecc72795c39d0e80f5f7ca99e2c6f5e7"
+  },
+  {
+    "path": "review-project/ProjectSettings/ClusterInputManager.asset",
+    "bytes": 114,
+    "sha256": "40e65dd214bf254955d2c8829ca8ce2130fd3510485560ce012e9a1ddd93e623"
+  },
+  {
+    "path": "review-project/ProjectSettings/DynamicsManager.asset",
+    "bytes": 1436,
+    "sha256": "e969495f95f50d2e7396224384bd70c9d5d35eb8dad7cd51ab059d0703802d3e"
+  },
+  {
+    "path": "review-project/ProjectSettings/EditorBuildSettings.asset",
+    "bytes": 318,
+    "sha256": "16990a20f3a09fc988678cda19bb5185ec5f72ea42eaaee328dacd35f5f6994c"
+  },
+  {
+    "path": "review-project/ProjectSettings/EditorSettings.asset",
+    "bytes": 1563,
+    "sha256": "e6c7e89aac7e40eca750cb6363d8cb67882803ed18cbbe36d8c2d9387e01b90b"
+  },
+  {
+    "path": "review-project/ProjectSettings/GraphicsSettings.asset",
+    "bytes": 2554,
+    "sha256": "857b6a93469e6cad5863428cda3e0091a207480671869165d165d66c92e47dc3"
+  },
+  {
+    "path": "review-project/ProjectSettings/InputManager.asset",
+    "bytes": 9754,
+    "sha256": "60c83ae48e29a782141f99032eb38e803d18475124ff5224fbd1fd81b233f051"
+  },
+  {
+    "path": "review-project/ProjectSettings/MemorySettings.asset",
+    "bytes": 1192,
+    "sha256": "1e8379a461b10ae09f3f696911088c16875d63e87ed5f2d95df9e1892703f9fd"
+  },
+  {
+    "path": "review-project/ProjectSettings/MultiplayerManager.asset",
+    "bytes": 157,
+    "sha256": "aba89fd1a1ddad182727ad82727e536d27372e90328a8196da2a4560398983dd"
+  },
+  {
+    "path": "review-project/ProjectSettings/NavMeshAreas.asset",
+    "bytes": 1361,
+    "sha256": "7ebbf8f53b8033104e1878b95ca07a28d0954092d81c220f14196a42f651e658"
+  },
+  {
+    "path": "review-project/ProjectSettings/PackageManagerSettings.asset",
+    "bytes": 1044,
+    "sha256": "086f128f6494e76589adbedb3373660477284a2d059eb89d313e4076d4b19842"
+  },
+  {
+    "path": "review-project/ProjectSettings/Physics2DSettings.asset",
+    "bytes": 1820,
+    "sha256": "9b78fdd0bac0f486c052ca65ddc0e5022d322b12874931a49456d407c5bbfc00"
+  },
+  {
+    "path": "review-project/ProjectSettings/PresetManager.asset",
+    "bytes": 146,
+    "sha256": "29c125923fe6e29f90190d4fce1c82d660e7051546e2c9d02908d18c9cf2436c"
+  },
+  {
+    "path": "review-project/ProjectSettings/ProjectSettings.asset",
+    "bytes": 24797,
+    "sha256": "816d2cefcf6bdedf330ee8886b484295501763e1b7a17564f06ad5abed515064"
+  },
+  {
+    "path": "review-project/ProjectSettings/ProjectVersion.txt",
+    "bytes": 85,
+    "sha256": "f55357417191efac9dcba2068adf2a05ab76ec0de30eae3402c257669e98b75e"
+  },
+  {
+    "path": "review-project/ProjectSettings/QualitySettings.asset",
+    "bytes": 9986,
+    "sha256": "894bea2ca046e1ae1af639684c778f6ff47dd05ff24946de122710c2e5389b6a"
+  },
+  {
+    "path": "review-project/ProjectSettings/SceneTemplateSettings.json",
+    "bytes": 3535,
+    "sha256": "bb9098b3bfcde78d93e264b96f7b77b5430e64e8c57a7aad7f5a5d9c3945e16a"
+  },
+  {
+    "path": "review-project/ProjectSettings/ShaderGraphSettings.asset",
+    "bytes": 557,
+    "sha256": "83556175c6dccd540f2cac05e5c0f9fbb36c3c8d7a56bed2c7cf4d29e4c2ee2e"
+  },
+  {
+    "path": "review-project/ProjectSettings/TagManager.asset",
+    "bytes": 411,
+    "sha256": "da4b5eefc927f8b91bcf9e56a186d2b852f49d9cbe91d466638d26c79d6a83ce"
+  },
+  {
+    "path": "review-project/ProjectSettings/TimeManager.asset",
+    "bytes": 305,
+    "sha256": "3396f52fdc16d445024e01d7a2d99db6f0a37569d1d73c0302e9ffb857d90287"
+  },
+  {
+    "path": "review-project/ProjectSettings/UnityConnectSettings.asset",
+    "bytes": 943,
+    "sha256": "d6034acbef6c9e3179866486c31eab81fcbe5e7ed350ce71e0fa2b1449b77109"
+  },
+  {
+    "path": "review-project/ProjectSettings/URPProjectSettings.asset",
+    "bytes": 411,
+    "sha256": "596d5c8bf4f957b03684c949bebc252ae1918f25415a1147a00684c4b086efda"
+  },
+  {
+    "path": "review-project/ProjectSettings/VersionControlSettings.asset",
+    "bytes": 172,
+    "sha256": "e199cdfa6a8f2bf33cfd47e549198f13e3eb2a5099e908fdb4e0f14d939ccc6b"
+  },
+  {
+    "path": "review-project/ProjectSettings/VFXManager.asset",
+    "bytes": 492,
+    "sha256": "9378043da38a17f2198d52a10c17789161d30e3285a387ca3687a71551c32448"
+  },
+  {
+    "path": "review-project/README_REVIEW_KO.md",
+    "bytes": 2350,
+    "sha256": "80757209e18a686cc90067dcef9e90bafef1ec13ad2404860baccb7256005e35"
+  },
+  {
+    "path": "ground-patch/Assets/DioramaPreview/Resources/GroundPalette0.png.meta",
+    "bytes": 4794,
+    "sha256": "58523da39e5ed1efae7326d2e4cb826cc4bbcce52d77bb6144e393284fce994e"
+  },
+  {
+    "path": "ground-patch/Assets/DioramaPreview/Resources/GroundPalette1.png.meta",
+    "bytes": 4794,
+    "sha256": "0bb7d4567e11c0610231852aa38207840aa8156e120776d6af9ed406a9027493"
+  },
+  {
+    "path": "ground-patch/Assets/DioramaPreview/Settings/KeepTerrain.mat",
+    "bytes": 3081,
+    "sha256": "2bea39495555ca75d5445301dee561a30613788e4af2e84569ddbe1745e41633"
+  },
+  {
+    "path": "ground-patch/Assets/Island/Resources/TerrainMobileVariants.shadervariants",
+    "bytes": 1046,
+    "sha256": "0acc9106f8394bc7bf0461bc026d114089cf79498a792fc87b501cedbbb6b204"
+  },
+  {
+    "path": "ground-patch/Assets/Island/Resources/TerrainMobileVariants.shadervariants.meta",
+    "bytes": 189,
+    "sha256": "87c619a3973b803b533e3d118c52a68ccac80231837ca27156af94d95712382a"
+  },
+  {
+    "path": "ground-patch/Assets/Island/Runtime/BattleDioramaLook.cs",
+    "bytes": 10559,
+    "sha256": "e94d7cd12603cc41cce2fe8309a770f77b52b9b3466b9463eec5414696046dc4"
+  },
+  {
+    "path": "ground-patch/manifest.json",
+    "bytes": 1354,
+    "sha256": "aa7a9abe8fe4d29d51a18f33608b900873100b9fd5a106a3b0a46cc5591b72a0"
+  },
+  {
+    "path": "tools/AnimateProof.cs",
+    "bytes": 777,
+    "sha256": "24b2e4d13bd1747c32e8fb8f8e665f8cb29fbcee63ca4ca0c4dc795dc9e6a938"
+  },
+  {
+    "path": "tools/apply_ground_patch.py",
+    "bytes": 1894,
+    "sha256": "85594b321dc340d2a1b911721f6e00ea7292deba7adc7bef2bf2b21443929773"
+  },
+  {
+    "path": "tools/ApplyOptimize.cs",
+    "bytes": 94,
+    "sha256": "52c1b0fde667c85739d26960cbe1aab668984b9f9d4965a29a3d1eb2cbc8453f"
+  },
+  {
+    "path": "tools/bridge-route.py",
+    "bytes": 746,
+    "sha256": "dc5a40734c20e1e83a559f667ce104146074301e9f823ebb834d7052447bce38"
+  },
+  {
+    "path": "tools/capture-baseline.py",
+    "bytes": 1493,
+    "sha256": "6b692a45310ee5e7b9ae50ccd799809661be8b45ea0b2e1ba23ed6123284548b"
+  },
+  {
+    "path": "tools/capture-final.py",
+    "bytes": 1431,
+    "sha256": "f22f99c87d5d0a423c9804d8503c0db8fbf6d945c41993e0c42de13ae0ed7223"
+  },
+  {
+    "path": "tools/compare-performance.py",
+    "bytes": 1236,
+    "sha256": "282c1c86883dda313f78628923e2c50217e238e63e019427188be8da2d9e6698"
+  },
+  {
+    "path": "tools/DefaultLayout.cs",
+    "bytes": 446,
+    "sha256": "dce69606dc818fc0df8d13bb3b02f0b483d4074b415c8d014e38e1a81df16c32"
+  },
+  {
+    "path": "tools/encode-video.py",
+    "bytes": 1260,
+    "sha256": "2799ad046e03e831ad16dcb2cf0b2e841977ca7f36e0cfa61d93d97278de0366"
+  },
+  {
+    "path": "tools/FinishScene.cs",
+    "bytes": 104,
+    "sha256": "fe1c6550443f6d9c2f8158f9b432e7a8ebf032d6af8198cad0929a3bff7dbac8"
+  },
+  {
+    "path": "tools/FixGroundAssets.cs",
+    "bytes": 1205,
+    "sha256": "6d1c2da9fb16ed899d0a10e063bf7d57e09b10ae9981a2ae667317a83ccd95ee"
+  },
+  {
+    "path": "tools/GameSize.cs",
+    "bytes": 1113,
+    "sha256": "d357a7c0b087df8fd420301f6d0b398e8189e1b88a8ea776d6c6575719a44ddb"
+  },
+  {
+    "path": "tools/prepare-stage.py",
+    "bytes": 1044,
+    "sha256": "41c3091bf78af93ff9eaae3aacb4391181eedb335a6d66450ab42ee94530c6a7"
+  },
+  {
+    "path": "tools/PrepareGroundBuild.cs",
+    "bytes": 459,
+    "sha256": "ef2a0e7ecd08fe4d73d3b769a0798d59caebf7aec2b40c15a3235f1713fb59b3"
+  },
+  {
+    "path": "tools/PrepareStageBuild.cs",
+    "bytes": 703,
+    "sha256": "e1b4844e2353e29348408e855ab43a1d0d71b9069dce2ca521bd666cab9288a3"
+  },
+  {
+    "path": "tools/ReadyScene.cs",
+    "bytes": 391,
+    "sha256": "8936e646653c6ee7a9c452957e7253480df67562acdcaf090deee9200c631590"
+  },
+  {
+    "path": "tools/RunLOD.cs",
+    "bytes": 134,
+    "sha256": "6a7976426b85bf6984350235970fce1f83508e3406a45e6be356d9c0b1b78a89"
+  },
+  {
+    "path": "tools/StartOptimizedTour.cs",
+    "bytes": 190,
+    "sha256": "1a16851d6ea06e79a8e99cb41f9cb469efd3c24db9a978d38c727f1083b0ebe6"
+  },
+  {
+    "path": "tools/StartOptimizedWalk.cs",
+    "bytes": 184,
+    "sha256": "6e3fff8a6734d3c4119a9631c00f33272e046ca72824bfcf812cd2cba70abddb"
+  },
+  {
+    "path": "tools/verify-animation.py",
+    "bytes": 1519,
+    "sha256": "615d9efe16a18d0b05c730b331cc854fa63722c90e8fc7cea9bb54324f3bab65"
+  },
+  {
+    "path": "tools/verify-ground-apk.py",
+    "bytes": 1555,
+    "sha256": "938be9dd904a2cd5e4f4bce8e3cd00cec707f12579165751a15d272d9a2a2f82"
+  },
+  {
+    "path": "tools/verify-stage-apk.py",
+    "bytes": 1562,
+    "sha256": "3a17343bf25a4c14b3d0e78ef9e95a57f74bc3f686a88afd1c51fb253fa67e2a"
+  }
+]
