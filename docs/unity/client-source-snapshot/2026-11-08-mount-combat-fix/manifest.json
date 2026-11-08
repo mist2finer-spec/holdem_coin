@@ -1,0 +1,27 @@
+[
+  {
+    "path": "Assets/Island/Runtime/Battle3DView.cs",
+    "before": "d077d981e23688cee86951e48adda67cdac3b15d9c0574b6b6a77e0fa4d7cc4c",
+    "after": "ebcbd65fe7e92c33c2f88a7e8a7c11dabb5345b05eb868db80ea9b0bc47d4806"
+  },
+  {
+    "path": "Assets/Island/Runtime/NativeBattle.cs",
+    "before": "56362428656cca87c6eb3002dced0c21ebac71911d5ca2f8e17c22240da0d2ad",
+    "after": "3652bb86a07ecbb0a03a9b7b754b24b02eb725c11774f4bbaf5dc1f4c3e86793"
+  },
+  {
+    "path": "Assets/Island/Runtime/MountRoute.cs",
+    "before": "d45c5355df6c9aca23f5a28ba3ee270362a190bab6b0481f38e0c30c58ba85f7",
+    "after": "2b71f92212070fb0362288867f0587612cd58080d63c5eb8053a8ae2020a1330"
+  },
+  {
+    "path": "Assets/Island/MapMigration/Shaders/ZoneGround.shader",
+    "before": "bf11cffe102b1c06416f89ff49bdc0a8a55084c4fb8956c22a92876c3d57b016",
+    "after": "17d990ea9fc8821ae186cec28255423a341a5e2e074d3b3ff80c1b4a3df9646b"
+  },
+  {
+    "path": "Assets/Island/Runtime/BattleForegroundOcclusion.cs",
+    "before": "91f506978c5ecd09861390da3f4e5e9064d3e7b68513e2d6f48f613d3c5a0773",
+    "after": "9ce8ee163e8abd3a9072d56dbefd853c76c9547bac1f83aec3e9fe7a9a2db12c"
+  }
+]

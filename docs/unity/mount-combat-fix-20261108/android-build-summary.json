@@ -1,0 +1,15 @@
+{
+  "status": "completed",
+  "buildId": "build_5626c2aff689",
+  "result": "Succeeded",
+  "platform": "Android",
+  "outputPath": "G:/new_project/IslandGame/Builds/Android/IslandGame-MountFix-20261108.apk",
+  "totalSizeBytes": 1439248761,
+  "buildTimeMs": 45026,
+  "buildStartedAt": "2026-11-09T04:39:47.0988736Z",
+  "buildEndedAt": "2026-11-09T04:40:32.1255804Z",
+  "totalWarnings": 0,
+  "totalErrors": 0,
+  "errors": [],
+  "warnings": []
+}
