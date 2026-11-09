@@ -1,0 +1,441 @@
+{
+  "scope": "Static source/settings/importer audit; not runtime CPU/GPU capture",
+  "baseline": "de7a874c4beb4f39c0758aa306dfc6d598b209cf",
+  "files": [
+    {
+      "path": "Assets/Island/Runtime/NativeBattle.cs",
+      "sha256": "e2626615c7c22cc142ca06e9aa6221df15f628a906b627e54937eec612ca0e32",
+      "bytes": 22218,
+      "identicalTrackedSources": [
+        "docs/unity/client-source-snapshot/2026-11-09-contact-boss/ProjectPatch/Assets/Island/Runtime/NativeBattle.cs"
+      ]
+    },
+    {
+      "path": "Assets/Island/Runtime/Battle3DView.cs",
+      "sha256": "29838f4c17029d658b07b1e0981bfdde35d00eb6d9c5f8d2236bea6916cec5e0",
+      "bytes": 25338,
+      "identicalTrackedSources": [
+        "docs/unity/client-source-snapshot/2026-11-09-combo/ProjectPatch/Assets/Island/Runtime/Battle3DView.cs"
+      ]
+    },
+    {
+      "path": "Assets/Island/Runtime/RuntimeAnimationPlayer.cs",
+      "sha256": "3b4632b617bcb935578ab11923b12543cdf28fa9214ede2c55a9ffcc956960e2",
+      "bytes": 2815,
+      "identicalTrackedSources": [
+        "docs/unity/client-source-snapshot/2026-11-07-view-action/Runtime/RuntimeAnimationPlayer.cs"
+      ]
+    },
+    {
+      "path": "Assets/Island/Runtime/IslandFrameBudget.cs",
+      "sha256": "5fd3b73ca474eb46edaef9ed9e8ffd6f47dbf26fa564cca1e2086e2e9101bde0",
+      "bytes": 4122,
+      "identicalTrackedSources": []
+    },
+    {
+      "path": "Assets/Island/Runtime/MountZoneStream.cs",
+      "sha256": "8544451a2a43f425aecacbbbc1cf863c9ecdf7df67fa582aebd78eee7e6abd8c",
+      "bytes": 4646,
+      "identicalTrackedSources": [
+        "docs/unity/client-source-snapshot/2026-11-09-contact-boss/ProjectPatch/Assets/Island/Runtime/MountZoneStream.cs"
+      ]
+    },
+    {
+      "path": "Assets/Island/Runtime/MountZoneEnvironment.cs",
+      "sha256": "3dd83937e3cc632bca86cb3523b9ae70af5bde6653f31a22a91b71a568418c6e",
+      "bytes": 990,
+      "identicalTrackedSources": [
+        "docs/unity/client-source-snapshot/2026-11-08-mount-stream/ProjectPatch/Assets/Island/Runtime/MountZoneEnvironment.cs"
+      ]
+    },
+    {
+      "path": "Assets/Island/Runtime/NatureAuthoredEnvironment.cs",
+      "sha256": "d63d9f8e91469f8e4154079fab282d8531bcae01151d110c4ce6c6c5f7fedabc",
+      "bytes": 2785,
+      "identicalTrackedSources": [
+        "docs/unity/client-source-snapshot/2026-11-09-contact-boss/ProjectPatch/Assets/Island/Runtime/NatureAuthoredEnvironment.cs"
+      ]
+    },
+    {
+      "path": "Assets/Island/Runtime/NatureEnvironmentStream.cs",
+      "sha256": "bdb971495ffef99fa02754184c83f05cc2ee5f000b4ed8ac4833ba76180491ef",
+      "bytes": 6766,
+      "identicalTrackedSources": []
+    },
+    {
+      "path": "Assets/Island/Runtime/NaturePropCache.cs",
+      "sha256": "a8368705d21deeb04a35a97c626bdd775ef86912d55a63a58e488873b8923a1c",
+      "bytes": 4403,
+      "identicalTrackedSources": []
+    },
+    {
+      "path": "Assets/Island/Runtime/BattleDioramaLook.cs",
+      "sha256": "76cea989885a123ea146a9b2899045950cb62d8af5c95eb33852097cd5b7c823",
+      "bytes": 10314,
+      "identicalTrackedSources": [
+        "docs/unity/client-source-snapshot/2026-11-07-contact/Runtime/BattleDioramaLook.cs"
+      ]
+    },
+    {
+      "path": "Assets/Island/Runtime/CombatFeedbackRouter.cs",
+      "sha256": "1763552df6f500d3f3738e0d2937d200dc53eeafd581465c24725438853464a5",
+      "bytes": 7837,
+      "identicalTrackedSources": [
+        "docs/unity/client-source-snapshot/2026-11-07-view-action/Runtime/CombatFeedbackRouter.cs"
+      ]
+    },
+    {
+      "path": "Assets/Island/Runtime/CombatSnapshotBuffer.cs",
+      "sha256": "c46f5c588f93ac24b69e5dc34b28b0ee77d276420c30973242ac9120f58261b2",
+      "bytes": 3509,
+      "identicalTrackedSources": [
+        "docs/unity/client-source-snapshot/2026-11-09-combo/ProjectPatch/Assets/Island/Runtime/CombatSnapshotBuffer.cs"
+      ]
+    },
+    {
+      "path": "Assets/Island/Runtime/RpgSession.cs",
+      "sha256": "a4d2751edc6045658be3fe6138876cb856fe95015a00246c46d7a8955f89d10e",
+      "bytes": 7056,
+      "identicalTrackedSources": [
+        "docs/unity/client-source-snapshot/2026-11-09-contact-boss/ProjectPatch/Assets/Island/Runtime/RpgSession.cs"
+      ]
+    },
+    {
+      "path": "Assets/Island/Runtime/RpgContracts.cs",
+      "sha256": "e7571c0eacd537b1e7aac461d48a389b30e0397897c0c3c7bdbfad4ecd814508",
+      "bytes": 7591,
+      "identicalTrackedSources": [
+        "docs/unity/client-source-snapshot/2026-11-07/Runtime/RpgContracts.cs"
+      ]
+    },
+    {
+      "path": "Assets/Island/Runtime/IslandBattleHud.cs",
+      "sha256": "180613739522870311e2bd13c8b7117728c47783f4033386c808f2be5003c84d",
+      "bytes": 30824,
+      "identicalTrackedSources": [
+        "docs/unity/client-source-snapshot/2026-11-09-contact-boss/ProjectPatch/Assets/Island/Runtime/IslandBattleHud.cs"
+      ]
+    },
+    {
+      "path": "Assets/Island/Runtime/BattleForegroundOcclusion.cs",
+      "sha256": "9ce8ee163e8abd3a9072d56dbefd853c76c9547bac1f83aec3e9fe7a9a2db12c",
+      "bytes": 2347,
+      "identicalTrackedSources": [
+        "docs/unity/client-source-snapshot/2026-11-08-mount-combat-fix/ProjectPatch/Assets/Island/Runtime/BattleForegroundOcclusion.cs"
+      ]
+    },
+    {
+      "path": "Assets/Island/Runtime/BattleOccluder.cs",
+      "sha256": "de5a8b96f6f118a1552f8d4c0d948447ac0cb87e3b88a2ddc376f27ed47ff1d2",
+      "bytes": 850,
+      "identicalTrackedSources": [
+        "docs/unity/client-source-snapshot/2026-11-08-mount-stream/ProjectPatch/Assets/Island/Runtime/BattleOccluder.cs"
+      ]
+    },
+    {
+      "path": "Assets/Island/Runtime/MountDeviceProbe.cs",
+      "sha256": "439b7850f3e156ea9e295b434ccd03b0262664bbaa576b9f34205a751478a3c9",
+      "bytes": 6098,
+      "identicalTrackedSources": [
+        "docs/unity/client-source-snapshot/2026-11-09-combo/ProjectPatch/Assets/Island/Runtime/MountDeviceProbe.cs"
+      ]
+    },
+    {
+      "path": "Assets/Island/MapMigration/Runtime/MapReviewGrass.cs",
+      "sha256": "07d6682b5e8b2681a660e59f8188eafd7a5a6520a99f51f993e0456ffa6e4f39",
+      "bytes": 2027,
+      "identicalTrackedSources": [
+        "docs/unity/client-source-snapshot/2026-11-08-mount-stream/ProjectPatch/Assets/Island/MapMigration/Runtime/MapReviewGrass.cs"
+      ]
+    },
+    {
+      "path": "Assets/Island/MapMigration/Shaders/ZoneGrass.shader",
+      "sha256": "4a229abb9f19be186238e961756a6782a08645ff534aa5ee86895b1b3603f260",
+      "bytes": 1988,
+      "identicalTrackedSources": [
+        "docs/unity/client-source-snapshot/2026-11-08-mount-stream/ProjectPatch/Assets/Island/MapMigration/Shaders/ZoneGrass.shader"
+      ]
+    },
+    {
+      "path": "Assets/Island/Editor/IslandProject.cs",
+      "sha256": "a331d2dcbd53b737c0a1d599f620ae1560fadf6d713363c2d0fa3757f351a89c",
+      "bytes": 2999,
+      "identicalTrackedSources": [
+        "docs/unity/client-source-snapshot/2026-11-05/Editor/IslandProject.cs",
+        "docs/unity/client-source-snapshot/2026-11-06/Editor/IslandProject.cs"
+      ]
+    },
+    {
+      "path": "Assets/DioramaPreview/Settings/DioramaURP.asset",
+      "sha256": "fa33b36d35b3126df1b0ff5aaf7844a4e762ac2299f213fb3c2393306ab6985a",
+      "bytes": 4405,
+      "identicalTrackedSources": [
+        "docs/unity/client-source-snapshot/2026-11-07-contact/ApprovedDioramaAssets/DioramaPreview/Settings/DioramaURP.asset",
+        "docs/unity/diorama-preview-20261107/Assets/DioramaPreview/Settings/DioramaURP.asset"
+      ]
+    },
+    {
+      "path": "Assets/DioramaPreview/Settings/DioramaForwardRenderer.asset",
+      "sha256": "0f54106ff804f7a4b77a7d458010e36e093473bbbddd88cbeffb4c0cb2b7edd1",
+      "bytes": 1707,
+      "identicalTrackedSources": [
+        "docs/unity/client-source-snapshot/2026-11-07-contact/ApprovedDioramaAssets/DioramaPreview/Settings/DioramaForwardRenderer.asset",
+        "docs/unity/diorama-preview-20261107/Assets/DioramaPreview/Settings/DioramaForwardRenderer.asset"
+      ]
+    },
+    {
+      "path": "ProjectSettings/QualitySettings.asset",
+      "sha256": "d564a80c2da9d05e89c0b9ee494b6d56d64157142e85be6f0af33df6f7adf2c0",
+      "bytes": 9994,
+      "identicalTrackedSources": []
+    },
+    {
+      "path": "ProjectSettings/GraphicsSettings.asset",
+      "sha256": "ca695ed948df1741b8683fc9d1fbcbb602e6e856ff3e85032ecf6ce4ff4eef1a",
+      "bytes": 2554,
+      "identicalTrackedSources": []
+    },
+    {
+      "path": "ProjectSettings/ProjectVersion.txt",
+      "sha256": "f55357417191efac9dcba2068adf2a05ab76ec0de30eae3402c257669e98b75e",
+      "bytes": 85,
+      "identicalTrackedSources": [
+        "docs/unity/client-source-snapshot/2026-11-05/ProjectSettings/ProjectVersion.txt",
+        "docs/unity/mount-sunday-20261107/review-project/ProjectSettings/ProjectVersion.txt"
+      ]
+    },
+    {
+      "path": "Packages/manifest.json",
+      "sha256": "69d50dd0cb88bec1c750105e8cc95ce50e0dc883f3ef17c72a35e2d48cf26ebb",
+      "bytes": 1081,
+      "identicalTrackedSources": [
+        "docs/unity/client-source-snapshot/2026-11-08-mount-stream/ProjectPatch/Packages/manifest.json"
+      ]
+    },
+    {
+      "path": "Packages/packages-lock.json",
+      "sha256": "c9b9358f54e0ed5e3c7b4f09084da53b847c30eaaaff85c970fef6b3f7f71690",
+      "bytes": 9137,
+      "identicalTrackedSources": [
+        "docs/unity/client-source-snapshot/2026-11-08-mount-stream/ProjectPatch/Packages/packages-lock.json"
+      ]
+    },
+    {
+      "path": "ProjectSettings/ProjectSettings.asset",
+      "sha256": "91a08794ea3407223182206985b87707f68421674ce600c5c28d25554fb48df5",
+      "bytes": 24771,
+      "identicalTrackedSources": []
+    }
+  ],
+  "webAssetsTextureImporters": {
+    "count": 162,
+    "readable": 0,
+    "mipmapped": 0,
+    "types": {
+      "0": 162
+    },
+    "defaultCompression": {
+      "0": 162
+    },
+    "androidOverrideCount": 0
+  },
+  "bakedMountBackgrounds": [
+    {
+      "path": "Assets/Island/MountRuntime/Backgrounds/Zone01.asset",
+      "fileBytes": 3146858,
+      "header": {
+        "m_Name": "Zone01",
+        "m_Width": "256",
+        "m_Height": "256",
+        "m_CompleteImageSize": "262143",
+        "m_TextureFormat": "3",
+        "m_MipCount": "9",
+        "m_IsReadable": "1"
+      }
+    },
+    {
+      "path": "Assets/Island/MountRuntime/Backgrounds/Zone02.asset",
+      "fileBytes": 3146858,
+      "header": {
+        "m_Name": "Zone02",
+        "m_Width": "256",
+        "m_Height": "256",
+        "m_CompleteImageSize": "262143",
+        "m_TextureFormat": "3",
+        "m_MipCount": "9",
+        "m_IsReadable": "1"
+      }
+    },
+    {
+      "path": "Assets/Island/MountRuntime/Backgrounds/Zone03.asset",
+      "fileBytes": 3146858,
+      "header": {
+        "m_Name": "Zone03",
+        "m_Width": "256",
+        "m_Height": "256",
+        "m_CompleteImageSize": "262143",
+        "m_TextureFormat": "3",
+        "m_MipCount": "9",
+        "m_IsReadable": "1"
+      }
+    },
+    {
+      "path": "Assets/Island/MountRuntime/Backgrounds/Zone04.asset",
+      "fileBytes": 3146858,
+      "header": {
+        "m_Name": "Zone04",
+        "m_Width": "256",
+        "m_Height": "256",
+        "m_CompleteImageSize": "262143",
+        "m_TextureFormat": "3",
+        "m_MipCount": "9",
+        "m_IsReadable": "1"
+      }
+    },
+    {
+      "path": "Assets/Island/MountRuntime/Backgrounds/Zone05.asset",
+      "fileBytes": 3146858,
+      "header": {
+        "m_Name": "Zone05",
+        "m_Width": "256",
+        "m_Height": "256",
+        "m_CompleteImageSize": "262143",
+        "m_TextureFormat": "3",
+        "m_MipCount": "9",
+        "m_IsReadable": "1"
+      }
+    },
+    {
+      "path": "Assets/Island/MountRuntime/Backgrounds/Zone06.asset",
+      "fileBytes": 3146858,
+      "header": {
+        "m_Name": "Zone06",
+        "m_Width": "256",
+        "m_Height": "256",
+        "m_CompleteImageSize": "262143",
+        "m_TextureFormat": "3",
+        "m_MipCount": "9",
+        "m_IsReadable": "1"
+      }
+    },
+    {
+      "path": "Assets/Island/MountRuntime/Backgrounds/Zone07.asset",
+      "fileBytes": 3146858,
+      "header": {
+        "m_Name": "Zone07",
+        "m_Width": "256",
+        "m_Height": "256",
+        "m_CompleteImageSize": "262143",
+        "m_TextureFormat": "3",
+        "m_MipCount": "9",
+        "m_IsReadable": "1"
+      }
+    },
+    {
+      "path": "Assets/Island/MountRuntime/Backgrounds/Zone08.asset",
+      "fileBytes": 3146858,
+      "header": {
+        "m_Name": "Zone08",
+        "m_Width": "256",
+        "m_Height": "256",
+        "m_CompleteImageSize": "262143",
+        "m_TextureFormat": "3",
+        "m_MipCount": "9",
+        "m_IsReadable": "1"
+      }
+    },
+    {
+      "path": "Assets/Island/MountRuntime/Backgrounds/Zone09.asset",
+      "fileBytes": 3146858,
+      "header": {
+        "m_Name": "Zone09",
+        "m_Width": "256",
+        "m_Height": "256",
+        "m_CompleteImageSize": "262143",
+        "m_TextureFormat": "3",
+        "m_MipCount": "9",
+        "m_IsReadable": "1"
+      }
+    },
+    {
+      "path": "Assets/Island/MountRuntime/Backgrounds/Zone10.asset",
+      "fileBytes": 3146858,
+      "header": {
+        "m_Name": "Zone10",
+        "m_Width": "256",
+        "m_Height": "256",
+        "m_CompleteImageSize": "262143",
+        "m_TextureFormat": "3",
+        "m_MipCount": "9",
+        "m_IsReadable": "1"
+      }
+    }
+  ],
+  "spriteAtlasAssetsUnderAssets": 0,
+  "note": "Source/import settings and serialized file sizes do not prove built GPU memory/residency; inspect the Android Player.",
+  "authoredGrassCells": [
+    {
+      "scene": "MountZone01.unity",
+      "authoredClumps": 905,
+      "cells": 72,
+      "maximumClumpsPerCell": 23
+    },
+    {
+      "scene": "MountZone02.unity",
+      "authoredClumps": 1075,
+      "cells": 85,
+      "maximumClumpsPerCell": 24
+    },
+    {
+      "scene": "MountZone03.unity",
+      "authoredClumps": 1057,
+      "cells": 85,
+      "maximumClumpsPerCell": 25
+    },
+    {
+      "scene": "MountZone04.unity",
+      "authoredClumps": 1004,
+      "cells": 80,
+      "maximumClumpsPerCell": 23
+    },
+    {
+      "scene": "MountZone05.unity",
+      "authoredClumps": 1180,
+      "cells": 91,
+      "maximumClumpsPerCell": 22
+    },
+    {
+      "scene": "MountZone06.unity",
+      "authoredClumps": 1077,
+      "cells": 80,
+      "maximumClumpsPerCell": 23
+    },
+    {
+      "scene": "MountZone07.unity",
+      "authoredClumps": 1133,
+      "cells": 91,
+      "maximumClumpsPerCell": 24
+    },
+    {
+      "scene": "MountZone08.unity",
+      "authoredClumps": 1030,
+      "cells": 79,
+      "maximumClumpsPerCell": 28
+    },
+    {
+      "scene": "MountZone09.unity",
+      "authoredClumps": 1004,
+      "cells": 88,
+      "maximumClumpsPerCell": 24
+    },
+    {
+      "scene": "MountZone10.unity",
+      "authoredClumps": 942,
+      "cells": 74,
+      "maximumClumpsPerCell": 25
+    }
+  ],
+  "transitiveBurst": "1.8.30",
+  "frameTimingStatsConfigured": true,
+  "gpuSkinningConfigured": true
+}

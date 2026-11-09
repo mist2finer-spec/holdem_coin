@@ -1,0 +1,28 @@
+{
+  "status": "PASS",
+  "scope": "P0 documentation and evidence integrity only",
+  "runtimeAndSettingsHashesUnchanged": 29,
+  "relativeLinksChecked": 43,
+  "referenceTopics": 6,
+  "readonlySourceCopies": 3,
+  "newRuntimeTests": "NOT_RUN: documentation-only",
+  "devicePerformanceCapture": "NOT_RUN",
+  "documents": [
+    {
+      "path": "docs/unity/PERFORMANCE_ARCHITECTURE_20261109_KO.md",
+      "bytes": 25645
+    },
+    {
+      "path": "docs/unity/performance/UNITE2026_REFERENCE_KO.md",
+      "bytes": 10501
+    },
+    {
+      "path": "docs/unity/assets/PERFORMANCE_ASSET_CONTRACT_KO.md",
+      "bytes": 7825
+    },
+    {
+      "path": "docs/unity/performance/20261109/SOURCE_INDEX_KO.md",
+      "bytes": 6465
+    }
+  ]
+}
