@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "httpStatus": 206,
+  "contentSizeHeader": "bytes 0-0/135243838",
+  "sha256": "216322baee38d6940933e87ce783c2f4a15ece27535364d16eebb2dec8a51a02",
+  "digestVerifiedWithGitHub": true,
+  "url": "https://github.com/mist2finer-spec/holdem_coin/releases/download/unity-local-combat-20261109.6/IslandGame-LocalCombat-20261109.apk"
+}

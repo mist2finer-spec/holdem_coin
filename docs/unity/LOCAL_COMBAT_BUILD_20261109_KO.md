@@ -75,3 +75,7 @@ Android 최종 빌드·기기 결과는 아래 최종 부록에 기록한다. S2
 초기 .5 후보에서 발견한 패널 내 계정 명령 차단을 수정한 **.6이 최종 배포본**이다. 상세 이상 이동 검증·구역 서버 승인·영구 정산은 여전히 후속 작업이다. 운영 서버 코드는 변경하지 않았으며 `[skip render]` 커밋으로 클라이언트 소스/인계만 게시한다.
 
 [기기 결과](local-combat-20261109/android-complete.json), [APK 검사](local-combat-20261109/apk-validation.json), [실제 최종 화면](local-combat-20261109/android-complete.png).
+
+## 게시 완료
+
+소스 커밋 `cd670db`와 전체 기기 검증 커밋 `e8ea7f9`를 main에 반영했다. 테스트 릴리스 `unity-local-combat-20261109.6`의 APK 공개 다운로드 HTTP206, 파일 크기·GitHub digest·로컬 SHA-256 일치를 확인했다. [릴리스 기록](local-combat-20261109/github-release.json), [다운로드 검사](local-combat-20261109/release-download.json).

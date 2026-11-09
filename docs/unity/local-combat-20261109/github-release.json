@@ -1,0 +1,19 @@
+{
+  "url": "https://github.com/mist2finer-spec/holdem_coin/releases/tag/unity-local-combat-20261109.6",
+  "tag": "unity-local-combat-20261109.6",
+  "commit": "cd670db03e2a6dfb6e885e2a30b9dc2d4183205e",
+  "assets": [
+    {
+      "name": "apk-validation.json",
+      "bytes": 8444,
+      "digest": "sha256:e4b3656f5867f2bdc976c31f1655206ed03ed2207a99653ec3f680fd17f8a151",
+      "url": "https://github.com/mist2finer-spec/holdem_coin/releases/download/unity-local-combat-20261109.6/apk-validation.json"
+    },
+    {
+      "name": "IslandGame-LocalCombat-20261109.apk",
+      "bytes": 135243838,
+      "digest": "sha256:216322baee38d6940933e87ce783c2f4a15ece27535364d16eebb2dec8a51a02",
+      "url": "https://github.com/mist2finer-spec/holdem_coin/releases/download/unity-local-combat-20261109.6/IslandGame-LocalCombat-20261109.apk"
+    }
+  ]
+}
