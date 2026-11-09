@@ -20,7 +20,7 @@
 - 반복 소품은 sharedMesh/sharedMaterial, 셀 단위 instancing 또는 static 결합 후보로 제작한다. 각 인스턴스에 독립 material/texture를 복사하지 않는다. 같은 재질·variant로 묶되 그림자/투명/소팅을 실제 Frame Debugger로 확인한다.
 - LOD는 silhouette와 UV/pivot/뿌리 위치를 유지한다. 먼 소품·풀에는 shadow를 기본 제공하지 않고 필요성을 검토한다. 맵 전체 결합으로 부분 컬링/해제를 잃지 않는다.
 - 리그는 실제 필요한 bone만, deformation 관절 주변에 정점 집중, skin weight 수/vertex와 skinned mesh/submesh 수를 기록한다. 본/UV/normal을 함부로 제거해 승인된 외형을 깨뜨리지 않는다.
-- 플레이어1.30m·슬라임.31m, 공격 원본 클립·루트·검 길이를 변경하면 기존 접촉 계약과 함께 재검토한다. 시각 LOD가 서버 피격체를 바꾸지 않는다.
+- 플레이어1.30m·슬라임.31m, 공격 원본 클립·루트·검 길이를 변경하면 기존 접촉 계약과 함께 재검토한다. 시각 LOD가 전투 코어의 피격체를 바꾸지 않는다. 로컬 실행 이관 방향은 [권한 정정](../LOCAL_COMBAT_AUTHORITY_20261109_KO.md)을 따른다.
 - 풀에는 Animator를 넣지 않는다. 고정 배치 seed와 작은 공용 near/far mesh, shader 바람/눌림, 셀 bounds 최대 변위, batch 분할 조건을 제출한다.
 
 ## 3. 텍스처·아틀라스

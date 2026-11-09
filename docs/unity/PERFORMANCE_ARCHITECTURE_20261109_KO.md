@@ -1,3 +1,5 @@
+> 권한 방향 정정: [로컬 전투·구역 경계 서버 검증](LOCAL_COMBAT_AUTHORITY_20261109_KO.md). 기존 Stage Sync와 M2 지침을 따른다. 아래 서버 실시간 경로는 현재 구현의 진단이며 최종 유지 목표가 아니다.
+
 # Unity 콘텐츠 확장 대비 성능 구조·작업 인계
 
 기록: 2026-11-09. 기준 main `de7a874c4beb4f39c0758aa306dfc6d598b209cf`, 실제 프로젝트 `G:/new_project/IslandGame`. **이번 작업은 구조 감사와 문서 게시다. 런타임·임포터·품질 설정·에셋을 수정하거나 새 APK를 만들지 않았다.**
@@ -11,6 +13,7 @@
 - [사용자 제공 영상 6개 주제와 적용 시 주의점](performance/UNITE2026_REFERENCE_KO.md)
 - [아트·이펙트 담당 반입 계약과 제출 양식](assets/PERFORMANCE_ASSET_CONTRACT_KO.md)
 - [실제 소스·설정 감사 및 해시](performance/20261109/audit.json), [소스 찾아가기](performance/20261109/SOURCE_INDEX_KO.md)
+- [기존 로컬 전투/구역 정산 구현](STAGE_SYNC_20261105_KO.md), [싱글 RPG 로컬화 지침 M2](../../unity/IslandGame/RPG_COMBAT_STABILIZATION_20261107_KO.md)
 - [현재 전투/배포/검증 인계](COMBO_DEPLOY_20261109_KO.md), [영상 스타일·Tripo·원본 PDF 인계](assets/video-style/ASSET_AGENT_HANDOFF_20261109_KO.md)
 
 현재 전투는 **Unity 6000.0.62f1 / URP 17.0.4 / Universal Forward Renderer + 3D 스킨 캐릭터**다. 측면 시점이어도 URP 2D Renderer가 아니다. Unity 6.3/6.4 기능을 이용하기 위해 먼저 엔진을 올리거나 렌더러를 교체하는 계획으로 바꾸지 않는다.
@@ -60,8 +63,10 @@ SRP Batcher는 같은 variant의 드로 준비·제출 CPU 비용을 낮춘다. 
 
 ```mermaid
 flowchart TD
-  S[서버 판정 · attackId · contactAt] --> N[수신 스냅샷 · 변환 1회]
-  N --> P[표시 시간축 · 접촉 프레임 보존]
+  S[서버 입장 ticket · 규칙/맵 버전 · 로드아웃] --> N[로컬 고정 스텝 · AI/이동/공격/피격]
+  N --> P[로컬 상태 · 접촉 이벤트 · 렌더 보간]
+  N --> B[구역 경계 결과 · 증거]
+  B --> C[서버 검증 · 다음 구역/정산 승인]
   P --> A[주인공 · 보스 · 일반 적 표시]
   P --> F[우선순위별 피드백과 장식 효과]
   Z[구역 전환 조정자] --> E[Mount 씬 / authored 청크 / legacy 청크 어댑터]
@@ -71,11 +76,11 @@ flowchart TD
   Q --> E
 ```
 
-이 그림의 수신1회 변환·VFX 관리자·통합 어댑터는 **제안 구조**이며 모두 구현됐다는 뜻이 아니다. 파일·형식 이름은 후속 구현자가 기존 API와 맞춘다.
+이 그림은 **목표 구조**다. 기존 일반 미궁에는 로컬 Stage Sync가 있으나 Mount/Boss 로컬 이관, VFX 관리자, 통합 어댑터는 아직 완료되지 않았다. 파일·형식 이름은 후속 구현자가 기존 API와 맞춘다.
 
-- **게임플레이**: 충돌·피해·점프 가능 높이·착지 공간·일반 모션당 적1회는 서버 규칙이다. 낮은 품질/컬링/이펙트 부족이 피해·AI tick·이동 속도를 바꾸면 안 된다.
+- **게임플레이**: 규칙 버전과 입장 로드아웃은 서버가 관리하고, 싱글 RPG의 충돌·피해·점프 가능 높이·착지 공간·일반 모션당 적1회 계산은 로컬 전투로 이관하는 것이 목표다. 현재 Mount/Boss는 아직 서버 실행 경로다. 낮은 품질/컬링/이펙트 부족이 피해·AI tick·이동 속도를 바꾸면 안 된다.
 - **공유 자산**: prefab/mesh/material/texture/atlas를 canonical key로 취득하고 누가 마지막 참조를 해제하는지 정의한다. pool이 asset을 계속 참조한다는 점까지 메모리 계산에 포함한다. `Destroy(instance)`와 공유 texture 해제를 혼동하지 않는다.
-- **구역**: 현재+다음을 기본으로 하되 둘의 합산 메모리/업로드 peak를 예산화한다. 준비에는 IO 완료뿐 아니라 Instantiate·GPU 업로드·충돌·카메라/환경 연결을 포함한다. 준비되지 않으면 기존 서버 ready 계약으로 대기한다.
+- **구역**: 현재+다음을 기본으로 하되 둘의 합산 메모리/업로드 peak를 예산화한다. 준비에는 IO 완료뿐 아니라 Instantiate·GPU 업로드·충돌·카메라/환경 연결을 포함한다. 준비되지 않으면 대기한다. 현재 readyZone/readyBoss 계약은 이관 시 구역 경계 승인과 환경 준비의 결합으로 유지하며 매 전투 tick에 의존하지 않게 한다.
 - **비동기 수명**: 세션/구역 generation을 붙여 이전 요청 완료가 새 구역에 붙지 않게 한다. 취소 불가능한 Resources/Scene 작업은 완료 후 정리한다. `allowSceneActivation=false`로 여러 씬을 오래 정지시키는 설계는 피한다.
 - **정적 배치**: 동일 재질·가시성 셀 안에서 합치거나 인스턴싱한다. 마을 전체를 하나의 거대 mesh로 합쳐 컬링과 부분 해제를 잃지 않는다. 이동/상호작용/충돌 proxy는 분리한다.
 - **캐시**: global resident/UI screen/zone/encounter/frame 수명을 구분한다. 재질 변환 cache와 flash target 사전에 제거 경로를 추가할 계획을 먼저 세운다. 무한 풀 대신 타입별 개수·전체 개수·보관 bytes·최근 사용 시간으로 제한한다.
@@ -92,19 +97,19 @@ flowchart TD
 | P1 전투 강조 | 주요 스킬 궤적, 대표 타격 spark, 핵심 사운드 | emit 수·수명·trail 점 수를 줄이고 같은 표적/프레임 장식만 합칠 수 있음 |
 | P2 장식 | 잔불·먼지·추가 연기·꽃가루·장식광·카메라 흔들림 | 거리/화면 점유/동시 수 초과 시 생략 또는 회수 |
 
-`CombatFeedbackRouter`의 현재 spark6/trail3은 타격 피드백용 시작점이다. 이것을 모든 스킬 동시 수의 충분한 예산으로 간주하지 않는다. 후속 전역 VFX 관리자는 effect key, priority, owner/session/zone, lifetime, bounds, pooled bytes, particle cap, transparent coverage를 관리한다. pool 고갈 시 P2 거절→P1 경량 대체→P0 예약 자원 순서를 시험한다. VFX 효과 삭제가 서버 damage 이벤트 삭제로 이어져서는 안 된다.
+`CombatFeedbackRouter`의 현재 spark6/trail3은 타격 피드백용 시작점이다. 이것을 모든 스킬 동시 수의 충분한 예산으로 간주하지 않는다. 후속 전역 VFX 관리자는 effect key, priority, owner/session/zone, lifetime, bounds, pooled bytes, particle cap, transparent coverage를 관리한다. pool 고갈 시 P2 거절→P1 경량 대체→P0 예약 자원 순서를 시험한다. VFX 효과 삭제가 전투 코어의 damage 이벤트 삭제로 이어져서는 안 된다. 이 코어는 현재 Mount/Boss에서는 서버에서 실행되고, 목표 구조에서는 로컬에서 실행된다.
 
 프리웜은 로딩 중 작은 작업으로 분할한다. 한 프레임에 모든 prefab/particle/material을 준비하지 않는다. 반환 시 ParticleSystem/Trail/Audio/PropertyBlock/콜백/구역 참조를 초기화하고, 완료 콜백 중복 반환을 막는다. 한 효과마다 MonoBehaviour.Update나 실시간 Light를 붙이는 기본 템플릿을 만들지 않는다.
 
-수십 개 피해 숫자는 현재24개 pool을 유지하고 표현 집약을 검토한다. 숫자를 합쳐도 서버 로그·타격ID·실제 피해를 합치거나 누락시키지 않는다. 후처리 Bloom·왜곡·depth/opaque texture의 추가 패스는 개별 토글로 전후 측정한다.
+수십 개 피해 숫자는 현재24개 pool을 유지하고 표현 집약을 검토한다. 숫자를 합쳐도 전투 기록·타격ID·실제 피해를 합치거나 누락시키지 않는다. 후처리 Bloom·왜곡·depth/opaque texture의 추가 패스는 개별 토글로 전후 측정한다.
 
 ## 6. 품질 단계·잔디·에셋 예산
 
 현재 단계0~3은 주로 frame timing 반응형 표현 정책이다. 별도의 Low/Medium/High **콘텐츠 품질 프로필**과 연결하되 무조건 같은 숫자로 묶지 않는다. 정적 profile은 텍스처/mesh/그림자 선택, 동적 pressure는 장식·sample rate·preload를 줄이는 역할을 맡긴다.
 
 - 먼저 줄일 것: 화면 밖 장식, 먼 풀 밀도/거리, 작은 소품 shadow, 추가 light, VFX emit/수명, Bloom/장식 trail. 해상도는 GPU 병목 확인 후 별도로 비교한다.
-- 유지할 것: 주인공·보스 공격 접촉·위험 표시·터치 반응·충돌 공간·서버 시간·일반 공격1/2/3 규칙. silhouette/가림 처리는 저품질에서도 판독 가능해야 한다.
-- 실제30FPS 옵션은 입력·시뮬레이션 tick와 분리한 제품 선택이다. 단순히 CPU가 바쁘다는 이유로 서버 진행을 늦추지 않는다. 발열 장시간 검사와 30/60 목표를 함께 기록한다.
+- 유지할 것: 주인공·보스 공격 접촉·위험 표시·터치 반응·충돌 공간·고정 스텝 전투 시간·일반 공격1/2/3 규칙. silhouette/가림 처리는 저품질에서도 판독 가능해야 한다.
+- 실제30FPS 옵션은 입력·시뮬레이션 tick와 분리한 제품 선택이다. 단순히 CPU가 바쁘다는 이유로 전투 시뮬레이션 진행을 늦추지 않는다. 발열 장시간 검사와 30/60 목표를 함께 기록한다.
 - 잔디 위치는 고정 시드·저장 데이터 유지. 밀도 하향은 각 셀의 동일한 subset을 선택해 깜빡임을 막는다. near/far가 같은 뿌리 위치를 유지하고 바람/눌림 최대 변위까지 bounds에 포함한다.
 - 현재10개 씬은 구역별905~1180군락, 최대 셀28개다. 이는 정적 저장 개수로 동시에 그리는 수가 아니다. 밀도 확대 시 Renderer API batch 상한을 먼저 검사한다. Unity6.0 RenderMeshInstanced는 데이터 구성에 따라 상한이 달라지며 기본 양방향 행렬 구성은511개다. 자동 분할 없는 현재 cell 호출에 대량을 몰아넣지 않는다. [API 조건](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Graphics.RenderMeshInstanced.html).
 - 모델별 수치는 기존 Tripo 인계의 시작 예산을 따른다. 삼각형만 맞춰도 submesh·material·bones·shadow pass·화면 점유가 크면 반려한다. 전체 visible scene 예산은 S20 기준선 후 확정한다.
@@ -145,18 +150,19 @@ flowchart TD
 | 우선순위 | 작업 묶음 | 완료 근거 |
 |---|---|---|
 | P0 | 실기 baseline, route/zone별 로딩·VFX·버퍼·pose marker, timing 유효성, bounded 진단기 | 위 시나리오 raw capture와 캡처 조건; 프로파일러/계측 부하 구분 |
+| P1-0 | 기존 Stage Sync 계약에 Mount/Boss 로컬 전투 이관, 경계 검증/정산, 후속 이상 이동 정의 | 전투 중 combat tick HTTP0, 규칙 동치·입력 반응·경계/재시도 검증. [상세 방향](LOCAL_COMBAT_AUTHORITY_20261109_KO.md) |
 | P1-A | WebAssets importer 용도 분리, Android 포맷 preset, Cubemap Readable/format, 화면별 atlas 공급자 | 기기 texture/메모리 diff + 아이콘·그라데이션 시각 비교 + 재임포트 후 설정 보존 |
 | P1-B | Mount scene·authored 청크 품질 등록, create/upload slice와 generation, cache/target 수명 | 최대2씬+전환 memory peak, 반복 입장 후 재질/graph/참조 회수, ready 계약 유지 |
 | P1-C | 공통 VFX 예산·우선순위·pool/reset·장식 생략·필수 경고 fallback | 동시 cast 부하와 overflow 시험에서 판정/위험표시/일반3모션 접촉 유지 |
 | P2 | 병목이 확인된 경우 typed 표시 버퍼·ID index, 3D 리그/LOD/그림자 최적화 | GC Alloc/CPU·GPU 전후,59개 서버 회귀 및234포즈/접촉 barrier 검사 재사용 범위 확인 |
 | P3 | 큰 콘텐츠/다운로드 요구가 생긴 뒤 Addressables 등 배포·로딩 계층 선택, 엔진 업그레이드 별도 검토 | 현재 ownership 계약과 동등성/메모리·전환 개선을 비교. 패키지 설치 자체를 최적화 완료로 보지 않음 |
 
-계측 담당은 숫자와 재현 조건, 시스템 담당은 소유권·상한·fallback, 아트 담당은 에셋 manifest와 silhouette/화질, VFX 담당은 겹침/수명/priority, 통합 담당은 서버 권한·전환·회귀를 책임진다. 이번 문서는 다른 에이전트를 실행하거나 별도 서비스로 메시지를 보낸 결과가 아니다.
+계측 담당은 숫자와 재현 조건, 시스템 담당은 소유권·상한·fallback, 아트 담당은 에셋 manifest와 silhouette/화질, VFX 담당은 겹침/수명/priority, 통합 담당은 로컬 전투와 서버 입장/검증/정산 경계·전환·회귀를 책임진다. 이번 문서는 다른 에이전트를 실행하거나 별도 서비스로 메시지를 보낸 결과가 아니다.
 
 ## 9. 유지할 계약과 이번 완료 범위
 
 - 일반10구역 측면, 보스11번째 구역만 쿼터뷰. 회전 때문에 측면 배경 카드가 노출되지 않도록 한다.
-- 작은 슬라임 .31m, 기존 플레이어1.30m·보스·원본 클립 보존. 일반3모션 각 attackId당 적1회, 스킬 별도. 성능 때문에 hitbox/루트 scale/서버 step을 바꾸지 않는다.
+- 작은 슬라임 .31m, 기존 플레이어1.30m·보스·원본 클립 보존. 일반3모션 각 attackId당 적1회, 스킬 별도. 성능 때문에 hitbox/루트 scale/고정 step을 바꾸지 않는다.
 - 승인된 수정 Nilo 룩, 새 에셋 제작 보류, 기존 PDF·PR#9 인계를 유지한다. 낮은 품질에서도 전경 가림과 보스 경고가 읽혀야 한다.
 - **PASS**: 정적 코드/설정/임포터 감사,6개 주제 매핑, 출처·소스 해시·작업 우선순위·에셋 제출 기준 문서화 및 링크 검사.
 - **UNAVAILABLE/미실행**: 이번 턴의 CPU/GPU capture, S20 실기, 발열/배터리, Memory Profiler snapshot, 새로운 미술 비교·최대 부하 검증. runtime 개선/신규 에셋/빌드·운영 배포는 이번 문서 작업에서 실행하지 않았다.
