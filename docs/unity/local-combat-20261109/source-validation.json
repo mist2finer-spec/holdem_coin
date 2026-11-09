@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "unityFilesMatched": 8,
+  "relativeLinks": 4,
+  "bundleSha256": "c5668bad4de75c84d142ff8fd279ea825c899d5c136f04d7bebcd5c97d308b52",
+  "sharedCombatRulesChanged": false,
+  "scope": "Source integrity and existing plus local execution regression"
+}

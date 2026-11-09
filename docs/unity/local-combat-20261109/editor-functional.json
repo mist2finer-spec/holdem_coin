@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "pauseSecondsUnchanged": [
+    203.96000000003053,
+    203.96000000003053
+  ],
+  "requestsBefore": 3,
+  "after": {
+    "NetworkRequestCount": 3,
+    "LocalSteps": 10801,
+    "UsesLocalTraining": true,
+    "WrongAttackPose": 0,
+    "ConfirmedAttackContacts": 116,
+    "AttackMotionContacts": {
+      "hero-attack1": 39,
+      "hero-attack2": 39,
+      "hero-attack3": 38
+    }
+  }
+}

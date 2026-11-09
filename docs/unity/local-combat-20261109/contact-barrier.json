@@ -1,0 +1,5 @@
+{
+  "status": "PASS",
+  "checks": 7,
+  "scope": "266ms render hitch, two target contacts, no rewind/duplicate, pause, session reset"
+}

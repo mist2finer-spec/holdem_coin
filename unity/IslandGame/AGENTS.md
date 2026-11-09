@@ -1,3 +1,5 @@
+> 최신 실행 경로: [로컬 전투 테스트 빌드 인계](../../docs/unity/LOCAL_COMBAT_BUILD_20261109_KO.md). 무보상 Mount/Boss 전투는 로컬이며 구역 서버 검증·영구 정산은 후속 작업이다. 과거 실시간 HTTP 구현으로 되돌리지 않는다.
+
 > 전투 실행 방향: [로컬 전투·구역 경계 서버 검증 정정](../../docs/unity/LOCAL_COMBAT_AUTHORITY_20261109_KO.md). 기존 일반 미궁 Stage Sync와 M2 지침이 기준이며 Mount/Boss의 서버 실시간 처리는 아직 이관되지 않은 현재 상태입니다.
 
 > 콘텐츠 확장 전 확인: [현재 성능 구조·영상6개 주제·에셋/이펙트 예산·측정/다음 작업](../../docs/unity/PERFORMANCE_ARCHITECTURE_20261109_KO.md). 2026-11-09 정적 감사 문서이며 런타임 최적화 적용 완료를 뜻하지 않습니다.

@@ -1,0 +1,50 @@
+[
+  {
+    "path": "Assets/Island/Runtime/RpgSession.cs",
+    "beforeSha256": "a4d2751edc6045658be3fe6138876cb856fe95015a00246c46d7a8955f89d10e",
+    "afterSha256": "59dca9410cad7d89540186f9c2120edad4d539ecf748616990d2b542c1728d79",
+    "bytes": 7140
+  },
+  {
+    "path": "Assets/Island/Runtime/RpgLocalStageSession.cs",
+    "beforeSha256": "e9546ecaf5554dbc046b457c1e6d57045bb124ebc7f2b3443a27693c116a8026",
+    "afterSha256": "4598d8512bfeb74224d37b125743824013357f7652aca53d90fd9395ff1e3804",
+    "bytes": 10513
+  },
+  {
+    "path": "Assets/Island/Runtime/StageCombatWorker.cs",
+    "beforeSha256": "99b42f809ad5ef3723c34faaf22b51dee00c4f5d3aba4c364199b416e32fdf84",
+    "afterSha256": "6a80afa8a22a142588a04bc43abbb6522bcb0070da8d94a7603942f18b7944a1",
+    "bytes": 4353
+  },
+  {
+    "path": "Assets/Island/Runtime/CombatSnapshotBuffer.cs",
+    "beforeSha256": "c46f5c588f93ac24b69e5dc34b28b0ee77d276420c30973242ac9120f58261b2",
+    "afterSha256": "30d2e7e7f2efc40f8002696b4aac82d76930e59a0388d2c85fea9617b442b90f",
+    "bytes": 3566
+  },
+  {
+    "path": "Assets/Island/Runtime/NativeBattle.cs",
+    "beforeSha256": "e2626615c7c22cc142ca06e9aa6221df15f628a906b627e54937eec612ca0e32",
+    "afterSha256": "db54ce68721d65310b7c467d471bfd456645fa3f7e6f33ae672af0e7d034a171",
+    "bytes": 22282
+  },
+  {
+    "path": "Assets/Island/Runtime/MountDeviceProbe.cs",
+    "beforeSha256": "439b7850f3e156ea9e295b434ccd03b0262664bbaa576b9f34205a751478a3c9",
+    "afterSha256": "3401e81a7d8071c786fe13d9a3cf9d2c155a633119ed167d8861dcf0d51cabd1",
+    "bytes": 6557
+  },
+  {
+    "path": "Assets/Island/Runtime/RpgLocalTrainingSession.cs",
+    "beforeSha256": null,
+    "afterSha256": "fa53f48cad551b4d29cbd4f8a12a110ce749953403e4acb1ddb4dab8bd3f8232",
+    "bytes": 4402
+  },
+  {
+    "path": "Assets/Island/Resources/TrainingCombatKernel.js.txt",
+    "beforeSha256": null,
+    "afterSha256": "c5668bad4de75c84d142ff8fd279ea825c899d5c136f04d7bebcd5c97d308b52",
+    "bytes": 478862
+  }
+]

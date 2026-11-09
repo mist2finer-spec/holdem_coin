@@ -1,0 +1,53 @@
+{
+  "status": "PASS",
+  "before": {
+    "Active": true,
+    "Paused": true,
+    "UsesLocalTraining": true,
+    "NetworkRequestCount": 1,
+    "busy": false,
+    "elapsed": 12.739999999999815,
+    "x": -4055.378283294832,
+    "room": 0
+  },
+  "refreshed": {
+    "Active": true,
+    "Paused": true,
+    "UsesLocalTraining": true,
+    "NetworkRequestCount": 2,
+    "busy": false,
+    "elapsed": 12.739999999999815,
+    "x": -4055.378283294832,
+    "room": 0
+  },
+  "rejected": {
+    "Active": true,
+    "Paused": true,
+    "UsesLocalTraining": true,
+    "NetworkRequestCount": 3,
+    "busy": false,
+    "elapsed": 12.739999999999815,
+    "x": -4055.378283294832,
+    "room": 0
+  },
+  "after": {
+    "Active": true,
+    "Paused": true,
+    "UsesLocalTraining": true,
+    "NetworkRequestCount": 4,
+    "busy": false,
+    "elapsed": 12.739999999999815,
+    "x": -4055.378283294832,
+    "room": 0
+  },
+  "resumed": {
+    "Active": true,
+    "Paused": false,
+    "UsesLocalTraining": true,
+    "NetworkRequestCount": 4,
+    "busy": false,
+    "elapsed": 13.839999999999794,
+    "x": -4247.263775264571,
+    "room": 0
+  }
+}

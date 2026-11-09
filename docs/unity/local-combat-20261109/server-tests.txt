@@ -1,0 +1,80 @@
+✔ bone curve is fixed, finite, uses original clip and two bounded active windows (1.7902ms)
+✔ capsule distance handles crossing, parallel and zero-length segments (0.6843ms)
+✔ actual hand contact hits in full 3D, horizontal/vertical misses stay misses at rotated headings (1.1809ms)
+✔ each successful strike applies damage and one event with the same attack/time only once (3.2027ms)
+✔ inactive phase, dodge invulnerability, pause and out-of-height contacts never damage (2.95ms)
+✔ body blocks walking, slide and roll without crossing and separates an initially overlapping hero (5.5283ms)
+✔ legal jump trajectory contacts a hand without artificial height or bone changes (1.7981ms)
+✔ throw warning, explosion and damage carry one attack ID and scheduled contact time (11.7641ms)
+✔ initial overlap near arena boundary resolves outside body and within legal bounds (2.6226ms)
+✔ original weapon tracks have finite samples and contact-only windows (1.8774ms)
+✔ weapon capsule matches a rotated original blade and rejects height/depth misses (1.6865ms)
+✔ view metadata never changes held input, movement limits or command identity (20.9557ms)
+✔ all motion instances have stable IDs and immutable shared contact windows (3.1034ms)
+✔ each weapon contact has one damage event at the authoritative phase, with no late duplicate (6.1666ms)
+✔ cancelled attack and dead boss cannot emit residual hook damage (3.4517ms)
+✔ hook -> visible idle -> chase window -> throw uses bounded gaps and pauses freeze cadence (6.7413ms)
+attack1 -1 [ 30, 35, 40, 45, 50, 55 ]
+attack2 -1 [
+  30, 35, 40, 45, 50,
+  55, 60, 65, 70
+]
+attack3 -1 [ 30, 35, 40, 45, 50, 55 ]
+attack1 1 [ 30, 35, 40, 45, 50, 55 ]
+attack2 1 [
+  30, 35, 40, 45, 50,
+  55, 60, 65, 70
+]
+attack3 1 [ 30, 35, 40, 45, 50, 55 ]
+✔ all three swings touch a small slime in both side facings (24.5904ms)
+✔ three successive normal motions have separate IDs and one damage per target per motion (11.8925ms)
+✔ dodge or skill IDs do not skip the next normal combo motion (3.7718ms)
+✔ mount API retains secure session, exact retries, restart invalidation and input validation (121.7035ms)
+{"history":[{"zone":1,"kills":30,"spawned":30,"elapsed":44.22000000000131},{"zone":2,"kills":30,"spawned":30,"elapsed":89.97999999999924},{"zone":3,"kills":30,"spawned":30,"elapsed":135.17999999999535},{"zone":4,"kills":30,"spawned":30,"elapsed":179.54000000001804},{"zone":5,"kills":30,"spawned":30,"elapsed":229.74000000004372},{"zone":6,"kills":30,"spawned":30,"elapsed":272.3000000000423},{"zone":7,"kills":30,"spawned":30,"elapsed":316.12000000000245},{"zone":8,"kills":30,"spawned":30,"elapsed":359.97999999996256},{"zone":9,"kills":30,"spawned":30,"elapsed":404.6999999999219}],"final":{"status":"playing","room":10,"kills":300,"zoneKills":30,"spawned":30,"hero":{"x":3035.0844902584877,"y":5603.783607759294,"elevation":-188.84673398208608,"airHeight":0,"facing":1,"direction":{"x":1,"y":0},"hp":88835,"maxHP":100000,"action":"run1","serial":607,"motion":null},"mobs":[]},"seconds":447.9799999998825,"maximum":6}
+✔ ten terrain contracts retain valid path heights and bounded play corridors (3.4042ms)
+✔ pause and readiness prevent hidden combat; hints cannot skip zones (11.0744ms)
+✔ sprint moves six metres per second without diagonal advantage (1.4458ms)
+✔ fixed seed spawns on both sides over time, never thirty at once (66.3887ms)
+✔ all ten zones clear through ordinary auto combat with exactly thirty kills each (743.0234ms)
+✔ all ordinary zones stay side view and ignore depth input (1.2541ms)
+✔ slime pursuit speed is half the previous 230 and body size is halved (0.4074ms)
+✔ live slime blocks walking and sliding; death releases the lane (2.5144ms)
+✔ dodge crosses live slime; jump crosses low body and tall obstacle blocks jump (10.741ms)
+✔ landing nudges a monster minimally and cannot push it through a wall or boundary (1.7538ms)
+✔ mount normal attack damages each contacted slime once per attack ID and never on a miss (10.1235ms)
+✔ boss waits for readiness, uses quarter view, is beatable and grants no permanent currency (55.2234ms)
+✔ blocked landing retreats to free path instead of overlapping a wall or occupied origin (0.4933ms)
+✔ landing cannot nudge through a narrow wall; unknown obstacle heights remain solid (0.5278ms)
+✔ actual jump landing makes space beside a live slime without overlapping bodies (1.3652ms)
+✔ Unity boss cookie is set at entry and not rewritten for every combat tick (114.8528ms)
+✔ movement ACK belongs to its sequence, remains immutable and never includes one-shot actions (48.8398ms)
+✔ roll lasts as long as sliding and stays active through the old cutoff (2.2005ms)
+✔ Unity route contains only slime chamber, bridge and boss chamber (0.7687ms)
+✔ uncleared slime chamber is locked; auto combat clears it and walks across bridge (26.9303ms)
+✔ authored bridge and terrain height join without a visible step (1.7205ms)
+✔ hook combo keeps timing but emits no phantom contacts on a stationary low target (29.3827ms)
+✔ throw circle warns for two seconds then applies skill damage and knockback (29.2685ms)
+✔ walking out of the warning radius avoids the explosion (25.6195ms)
+✔ blast flight, knockdown and getup block actions then restore control (21.5689ms)
+✔ training HP stays high and cannot be killed by the encounter (126.8661ms)
+✔ unprepared skills remain disabled; pause freezes combat and warning timers (13.6392ms)
+✔ boss defeat restores side view and completes the two-chamber run (16.7952ms)
+✔ server retries are idempotent and reject sequence/account forgery (12.2597ms)
+✔ Unity combat ticks do not credit or mutate permanent economy (74.1499ms)
+✔ fixed-step headless encounter advances 60 seconds without dropping simulation time (31.465ms)
+✔ side view rejects vertical input and diagonal walking stays on its lane (1.1978ms)
+✔ boss remains absent until the player crosses the authored bridge (1.201ms)
+✔ quarter movement supports all directions and normalizes diagonal speed (18.2934ms)
+✔ quarter slide follows vertical joystick direction (18.26ms)
+✔ leaving a warning in depth avoids the circular explosion (15.2445ms)
+✔ warning targets the current depth and a stationary target is hit (11.715ms)
+✔ basic attacks cannot hit targets distant along depth (9.5554ms)
+✔ tree trunks block walking and sliding without tunnelling (11.8381ms)
+ℹ tests 59
+ℹ suites 0
+ℹ pass 59
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1806.4647

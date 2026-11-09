@@ -5,7 +5,8 @@
     "src/components/rpg/**/*.tsx",
     "src/app/hunt/**/*.tsx",
     "src/app/api/rpg/**/*.ts",
-    "src/lib/rpg-*.ts"
+    "src/lib/rpg-*.ts",
+    "src/lib/training-client-kernel.ts"
   ],
   "exclude": [
     "node_modules",
