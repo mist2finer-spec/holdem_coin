@@ -1,0 +1,13 @@
+{
+  "expected": "2bdd5f18676e8fdb8a915ecddb5fdb30743ff360",
+  "release": {
+    "revision": "2bdd5f18676e8fdb8a915ecddb5fdb30743ff360",
+    "storage": {
+      "provider": "sqlite",
+      "persistence": "ephemeral",
+      "atomicWallet": true
+    }
+  },
+  "healthStatus": 200,
+  "checkedAtUtc": "2026-11-09T05:42:02Z"
+}

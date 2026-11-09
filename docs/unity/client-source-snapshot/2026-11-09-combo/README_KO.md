@@ -9,3 +9,11 @@
 StartMountTest의 테스트 origin은 메모리에서만 유지한다. 일반 앱 재시작은 온라인 origin을 사용한다. 이전 island-mount-server 키는 Awake에서 제거하며 사용자 계정·세이브는 지우지 않는다.
 
 검증/배포/다운로드 기록: [최신 인계](../../COMBO_DEPLOY_20261109_KO.md).
+
+## 재현 도구와 프레임 지연 보정
+
+`Tools/ExportComboContact.cs`의 `ExportComboContact.Run`은 기존 프로젝트 리소스를 읽어 정상/낮은 적 프로파일을 `Temp/hero-contact-export.json`에 추출한다. 컴파일 완료 후 Unity CLI script run으로 실행한다. 726포즈 재추출과 저장 프로파일의 오차0을 확인했다. 원본 클립을 수정하지 않는다.
+
+`VerifyComboPlayback.Run`은 Mount 테스트 Play 상태에서234개 실제 검 포즈와45개 버퍼 검사를 실행한다. `VerifyContactBarrier.Run`은 편집 모드에서도 프레임 지연과 연속 접촉, 중복/역재생 방지, 일시정지, 세션 교체를 검사한다. 결과 출력 경로는 도구의 마지막 줄에 있는 작업 폴더 경로를 현재 환경에 맞게 바꾼다.
+
+최종 CombatSnapshotBuffer는 이미 서버가 확정한 접촉을 프레임 지연으로 건너뛰지 않게 최초 접촉에서 한 프레임 보여준다. 다음 프레임부터 전진하고, 지난 접촉으로 되감거나 클라이언트가 피해를 만들지 않는다. 네트워크가 너무 늦어 이미 표시 시점이 지난 사건을 받는 경우는 이 보정의 범위 밖이다.

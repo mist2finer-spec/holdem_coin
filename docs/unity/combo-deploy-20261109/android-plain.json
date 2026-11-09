@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "version": "0.1.0-test.20261109.4",
+  "launch": "force-stop then MAIN/LAUNCHER without extras",
+  "entry": "lobby -> village hunt entry",
+  "observedZone": "01/10",
+  "observedKills": 10,
+  "configuredOnlineOrigin": "https://holdem-coin-tavern.onrender.com",
+  "originEvidence": "android-plain-origin.png",
+  "battleEvidence": "android-plain.png",
+  "removedReversePorts": [
+    18108,
+    18110,
+    18111
+  ],
+  "unrelatedReversePortRetained": 18109,
+  "privatePreferencesRead": "unavailable: BlueStacks run-as permission denied; Editor key absence was separately verified"
+}

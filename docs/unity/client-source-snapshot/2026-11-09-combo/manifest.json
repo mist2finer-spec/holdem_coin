@@ -23,5 +23,10 @@
     "path": "Assets/Island/Runtime/HeroMeleePose.cs",
     "before": null,
     "after": "36d4eca181dad9f57691e7756be5a6c334f22e16487399a34256eafadc0a1027"
+  },
+  {
+    "path": "Assets/Island/Runtime/CombatSnapshotBuffer.cs",
+    "before": "c83d577ddc510160325e0d2920fef63b47873bf1a6c40af6fbf52fc1f514d9c6",
+    "after": "c46f5c588f93ac24b69e5dc34b28b0ee77d276420c30973242ac9120f58261b2"
   }
 ]

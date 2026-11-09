@@ -1,0 +1,20 @@
+{
+  "status": "completed",
+  "buildId": "build_c759ed3f3c0c",
+  "result": "Succeeded",
+  "platform": "Android",
+  "outputPath": "G:/new_project/IslandGame/Builds/Android/IslandGame-Combo-20261109.apk",
+  "totalSizeBytes": 1439962618,
+  "buildTimeMs": 129067,
+  "buildStartedAt": "2026-11-09T10:47:49.3568604Z",
+  "buildEndedAt": "2026-11-09T10:49:58.4248440Z",
+  "totalWarnings": 1,
+  "totalErrors": 0,
+  "errors": [],
+  "warnings": [
+    {
+      "message": "warning CS0414: The field 'IslandApp.lastDeal' is assigned but its value is never used",
+      "file": "Assets\\Island\\Runtime\\IslandApp.cs"
+    }
+  ]
+}

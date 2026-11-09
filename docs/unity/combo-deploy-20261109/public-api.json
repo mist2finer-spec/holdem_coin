@@ -1,0 +1,420 @@
+{
+  "origin": "https://holdem-coin-tavern.onrender.com",
+  "startStatus": 200,
+  "initialRoom": 0,
+  "initialCamera": "Side25D",
+  "revision": "2bdd5f18676e8fdb8a915ecddb5fdb30743ff360",
+  "elapsedWallSeconds": 35.0102629000321,
+  "requests": 188,
+  "finalStatus": 200,
+  "normalContacts": {
+    "hero-attack1": 17,
+    "hero-attack2": 17,
+    "hero-attack3": 16
+  },
+  "normalHits": [
+    {
+      "id": 1,
+      "attackId": 1,
+      "definitionId": "hero-attack1",
+      "target": "mob1",
+      "value": 60,
+      "contactAt": 2.1000000000000014
+    },
+    {
+      "id": 2,
+      "attackId": 2,
+      "definitionId": "hero-attack2",
+      "target": "mob1",
+      "value": 60,
+      "contactAt": 2.6266666666666687
+    },
+    {
+      "id": 3,
+      "attackId": 3,
+      "definitionId": "hero-attack3",
+      "target": "mob2",
+      "value": 60,
+      "contactAt": 4.337777777777773
+    },
+    {
+      "id": 4,
+      "attackId": 4,
+      "definitionId": "hero-attack1",
+      "target": "mob2",
+      "value": 60,
+      "contactAt": 4.819999999999985
+    },
+    {
+      "id": 5,
+      "attackId": 5,
+      "definitionId": "hero-attack2",
+      "target": "mob4",
+      "value": 60,
+      "contactAt": 6.2044444444444
+    },
+    {
+      "id": 6,
+      "attackId": 6,
+      "definitionId": "hero-attack3",
+      "target": "mob4",
+      "value": 60,
+      "contactAt": 6.922222222222162
+    },
+    {
+      "id": 7,
+      "attackId": 7,
+      "definitionId": "hero-attack1",
+      "target": "mob3",
+      "value": 60,
+      "contactAt": 7.582222222222148
+    },
+    {
+      "id": 8,
+      "attackId": 8,
+      "definitionId": "hero-attack2",
+      "target": "mob3",
+      "value": 60,
+      "contactAt": 8.10444444444436
+    },
+    {
+      "id": 9,
+      "attackId": 9,
+      "definitionId": "hero-attack3",
+      "target": "mob6",
+      "value": 60,
+      "contactAt": 9.215555555555447
+    },
+    {
+      "id": 10,
+      "attackId": 10,
+      "definitionId": "hero-attack1",
+      "target": "mob6",
+      "value": 60,
+      "contactAt": 9.699999999999882
+    },
+    {
+      "id": 11,
+      "attackId": 11,
+      "definitionId": "hero-attack2",
+      "target": "mob7",
+      "value": 60,
+      "contactAt": 10.248888888888759
+    },
+    {
+      "id": 12,
+      "attackId": 12,
+      "definitionId": "hero-attack3",
+      "target": "mob7",
+      "value": 60,
+      "contactAt": 10.97555555555541
+    },
+    {
+      "id": 13,
+      "attackId": 13,
+      "definitionId": "hero-attack1",
+      "target": "mob8",
+      "value": 60,
+      "contactAt": 11.479999999999844
+    },
+    {
+      "id": 14,
+      "attackId": 14,
+      "definitionId": "hero-attack2",
+      "target": "mob8",
+      "value": 60,
+      "contactAt": 12.002222222222056
+    },
+    {
+      "id": 15,
+      "attackId": 15,
+      "definitionId": "hero-attack3",
+      "target": "mob11",
+      "value": 60,
+      "contactAt": 13.435555555555357
+    },
+    {
+      "id": 16,
+      "attackId": 16,
+      "definitionId": "hero-attack1",
+      "target": "mob11",
+      "value": 60,
+      "contactAt": 13.922222222222015
+    },
+    {
+      "id": 17,
+      "attackId": 17,
+      "definitionId": "hero-attack2",
+      "target": "mob10",
+      "value": 60,
+      "contactAt": 15.088888888888656
+    },
+    {
+      "id": 18,
+      "attackId": 18,
+      "definitionId": "hero-attack3",
+      "target": "mob10",
+      "value": 60,
+      "contactAt": 15.817777777777529
+    },
+    {
+      "id": 19,
+      "attackId": 19,
+      "definitionId": "hero-attack1",
+      "target": "mob5",
+      "value": 60,
+      "contactAt": 16.31999999999974
+    },
+    {
+      "id": 20,
+      "attackId": 20,
+      "definitionId": "hero-attack2",
+      "target": "mob5",
+      "value": 60,
+      "contactAt": 16.844444444444175
+    },
+    {
+      "id": 21,
+      "attackId": 21,
+      "definitionId": "hero-attack3",
+      "target": "mob9",
+      "value": 60,
+      "contactAt": 17.59777777777749
+    },
+    {
+      "id": 22,
+      "attackId": 22,
+      "definitionId": "hero-attack1",
+      "target": "mob9",
+      "value": 60,
+      "contactAt": 18.079999999999703
+    },
+    {
+      "id": 23,
+      "attackId": 23,
+      "definitionId": "hero-attack2",
+      "target": "mob12",
+      "value": 60,
+      "contactAt": 18.62888888888858
+    },
+    {
+      "id": 24,
+      "attackId": 24,
+      "definitionId": "hero-attack3",
+      "target": "mob13",
+      "value": 60,
+      "contactAt": 19.35555555555523
+    },
+    {
+      "id": 25,
+      "attackId": 25,
+      "definitionId": "hero-attack1",
+      "target": "mob13",
+      "value": 60,
+      "contactAt": 19.84222222222189
+    },
+    {
+      "id": 26,
+      "attackId": 26,
+      "definitionId": "hero-attack2",
+      "target": "mob12",
+      "value": 60,
+      "contactAt": 20.38888888888854
+    },
+    {
+      "id": 27,
+      "attackId": 27,
+      "definitionId": "hero-attack3",
+      "target": "mob15",
+      "value": 60,
+      "contactAt": 21.157777777777415
+    },
+    {
+      "id": 28,
+      "attackId": 28,
+      "definitionId": "hero-attack1",
+      "target": "mob15",
+      "value": 60,
+      "contactAt": 21.644444444444073
+    },
+    {
+      "id": 29,
+      "attackId": 29,
+      "definitionId": "hero-attack2",
+      "target": "mob17",
+      "value": 60,
+      "contactAt": 22.364444444444057
+    },
+    {
+      "id": 30,
+      "attackId": 30,
+      "definitionId": "hero-attack3",
+      "target": "mob17",
+      "value": 60,
+      "contactAt": 23.09555555555515
+    },
+    {
+      "id": 31,
+      "attackId": 31,
+      "definitionId": "hero-attack1",
+      "target": "mob18",
+      "value": 60,
+      "contactAt": 23.60222222222181
+    },
+    {
+      "id": 32,
+      "attackId": 32,
+      "definitionId": "hero-attack2",
+      "target": "mob18",
+      "value": 60,
+      "contactAt": 24.12444444444402
+    },
+    {
+      "id": 33,
+      "attackId": 33,
+      "definitionId": "hero-attack3",
+      "target": "mob14",
+      "value": 60,
+      "contactAt": 24.87999999999956
+    },
+    {
+      "id": 34,
+      "attackId": 34,
+      "definitionId": "hero-attack1",
+      "target": "mob14",
+      "value": 60,
+      "contactAt": 25.35999999999955
+    },
+    {
+      "id": 35,
+      "attackId": 35,
+      "definitionId": "hero-attack2",
+      "target": "mob16",
+      "value": 60,
+      "contactAt": 25.908888888888423
+    },
+    {
+      "id": 36,
+      "attackId": 36,
+      "definitionId": "hero-attack3",
+      "target": "mob16",
+      "value": 60,
+      "contactAt": 26.63999999999952
+    },
+    {
+      "id": 37,
+      "attackId": 37,
+      "definitionId": "hero-attack1",
+      "target": "mob19",
+      "value": 60,
+      "contactAt": 27.459999999999503
+    },
+    {
+      "id": 38,
+      "attackId": 38,
+      "definitionId": "hero-attack2",
+      "target": "mob19",
+      "value": 60,
+      "contactAt": 27.984444444443938
+    },
+    {
+      "id": 39,
+      "attackId": 39,
+      "definitionId": "hero-attack3",
+      "target": "mob20",
+      "value": 60,
+      "contactAt": 28.739999999999476
+    },
+    {
+      "id": 40,
+      "attackId": 40,
+      "definitionId": "hero-attack1",
+      "target": "mob20",
+      "value": 60,
+      "contactAt": 29.219999999999466
+    },
+    {
+      "id": 41,
+      "attackId": 41,
+      "definitionId": "hero-attack2",
+      "target": "mob21",
+      "value": 60,
+      "contactAt": 29.76888888888834
+    },
+    {
+      "id": 42,
+      "attackId": 42,
+      "definitionId": "hero-attack3",
+      "target": "mob21",
+      "value": 60,
+      "contactAt": 30.49999999999944
+    },
+    {
+      "id": 43,
+      "attackId": 43,
+      "definitionId": "hero-attack1",
+      "target": "mob22",
+      "value": 60,
+      "contactAt": 30.999999999999428
+    },
+    {
+      "id": 44,
+      "attackId": 44,
+      "definitionId": "hero-attack2",
+      "target": "mob22",
+      "value": 60,
+      "contactAt": 31.526666666666085
+    },
+    {
+      "id": 45,
+      "attackId": 45,
+      "definitionId": "hero-attack3",
+      "target": "mob23",
+      "value": 60,
+      "contactAt": 32.275555555555
+    },
+    {
+      "id": 46,
+      "attackId": 46,
+      "definitionId": "hero-attack1",
+      "target": "mob23",
+      "value": 60,
+      "contactAt": 32.75999999999952
+    },
+    {
+      "id": 47,
+      "attackId": 47,
+      "definitionId": "hero-attack2",
+      "target": "mob24",
+      "value": 60,
+      "contactAt": 33.3088888888885
+    },
+    {
+      "id": 48,
+      "attackId": 48,
+      "definitionId": "hero-attack3",
+      "target": "mob24",
+      "value": 60,
+      "contactAt": 34.0377777777775
+    },
+    {
+      "id": 49,
+      "attackId": 49,
+      "definitionId": "hero-attack1",
+      "target": "mob25",
+      "value": 60,
+      "contactAt": 34.54222222222202
+    },
+    {
+      "id": 50,
+      "attackId": 50,
+      "definitionId": "hero-attack2",
+      "target": "mob25",
+      "value": 60,
+      "contactAt": 35.06444444444433
+    }
+  ],
+  "duplicateCommandIdentical": true,
+  "duplicateAttackTargetHits": 0,
+  "kills": 25
+}

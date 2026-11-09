@@ -1,0 +1,109 @@
+{
+  "platform": "Android",
+  "device": "OnePlus NE2211",
+  "gpu": "Adreno (TM) 650",
+  "resolution": "900x1600",
+  "unity": "6000.0.62f1",
+  "version": "0.1.0-test.20261109.3",
+  "age": 31.6129036,
+  "status": "playing",
+  "routeStage": "mount",
+  "camera": "Side25D",
+  "ConfirmedAttackContacts": 41,
+  "AttackMotionContacts": {
+    "hero-attack1": 14,
+    "hero-attack2": 14,
+    "hero-attack3": 13
+  },
+  "WrongAttackPose": 1,
+  "MaxContactDelay": 0.140000343,
+  "room": 0,
+  "kills": 20,
+  "steady": {
+    "samples": 982,
+    "meanMs": 16.9212513,
+    "averageFps": 59.0972862,
+    "p50": 16.6667442,
+    "p95": 16.6676445,
+    "p99": 16.6715984,
+    "max": 266.683167,
+    "over50ms": 1,
+    "over100ms": 1
+  },
+  "transition": {
+    "samples": 0
+  },
+  "zones": {
+    "0": {
+      "samples": 982,
+      "meanMs": 16.9212513,
+      "averageFps": 59.0972862,
+      "p50": 16.6667442,
+      "p95": 16.6676445,
+      "p99": 16.6715984,
+      "max": 266.683167,
+      "over50ms": 1,
+      "over100ms": 1
+    }
+  },
+  "ScenePeak": 2,
+  "GraphPeak": 7,
+  "GroundSamples": 1714,
+  "GroundMisses": 0,
+  "MaxGroundGap": 4.15090472e-05,
+  "Errors": 0,
+  "samples": [
+    {
+      "age": 1.58838058,
+      "zone": 0,
+      "kills": 0,
+      "spawned": 0,
+      "active": 0,
+      "loaded": 0,
+      "managed": 29863936,
+      "allocated": 203137066,
+      "reserved": 354603008,
+      "rtt": 1526.0171929985513,
+      "phase": "combat"
+    },
+    {
+      "age": 11.5992146,
+      "zone": 0,
+      "kills": 5,
+      "spawned": 8,
+      "active": 5,
+      "loaded": 2,
+      "managed": 49446912,
+      "allocated": 239431543,
+      "reserved": 398643200,
+      "rtt": 48.86285200336715,
+      "phase": "combat"
+    },
+    {
+      "age": 21.6083183,
+      "zone": 0,
+      "kills": 12,
+      "spawned": 17,
+      "active": 7,
+      "loaded": 2,
+      "managed": 41725952,
+      "allocated": 239505257,
+      "reserved": 398643200,
+      "rtt": 31.890650003333576,
+      "phase": "combat"
+    },
+    {
+      "age": 31.6126785,
+      "zone": 0,
+      "kills": 20,
+      "spawned": 26,
+      "active": 6,
+      "loaded": 2,
+      "managed": 53383168,
+      "allocated": 239618743,
+      "reserved": 398643200,
+      "rtt": 92.4001160019543,
+      "phase": "combat"
+    }
+  ]
+}
