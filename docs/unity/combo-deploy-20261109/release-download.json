@@ -1,0 +1,13 @@
+{
+  "status": 206,
+  "bytes": 135053999,
+  "assetUrl": "https://github.com/mist2finer-spec/holdem_coin/releases/download/unity-combo-20261109.4/IslandGame-Combo-20261109.apk",
+  "digest": "sha256:d04edece41b5ff79f94ad95b9909034d6243bd3395a61066e51b7911a2690646",
+  "serverRevisionAfterDocumentationPush": "2bdd5f18676e8fdb8a915ecddb5fdb30743ff360",
+  "checkedAtUtc": "2026-11-09T05:59:13Z",
+  "method": "GET",
+  "range": "bytes=0-0",
+  "downloadedBytes": 1,
+  "initialHeadAttempt": "HTTP504; range request subsequently passed",
+  "checksumVerification": "GitHub asset SHA-256 equals the full local APK SHA-256; remote APK was not fully redownloaded"
+}

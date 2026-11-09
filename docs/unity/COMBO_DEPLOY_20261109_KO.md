@@ -65,3 +65,9 @@ S20은 현재 ADB에 연결되어 있지 않다. 최종 APK를 S20에 업데이�
 4. 세 모션 모두 유효해진 처치 속도의 전투 밸런스 검토. 사거리·피격체를 늘려 강제로 맞추지 않는다.
 5. 일반10구역 후 보스 전용11번째 전투로 진입한다. 보스 구역만 쿼터뷰이며 이전 접촉·점프·회피·전경 가림 패치가 main에 함께 반영됐다.
 6. 새 에셋은 이번에 추가하지 않았다. 영상/Tripo 제작은 [원본과 통합 에셋 인계](assets/video-style/ASSET_AGENT_HANDOFF_20261109_KO.md), 코드 이식은 최신 증분 스냅샷과 before/after manifest를 대조한다. 전체 프로젝트를 과거 Git 스냅샷으로 덮어쓰지 않는다.
+
+## 게시 확인
+
+- 최종 클라이언트 스냅샷 커밋 `f0d3a9f5842dd357110111e94d5470b83f31ea33`를 main에 푸시했다. GitHub Release `unity-combo-20261109.4`가 이 커밋을 가리킨다.
+- APK 공개 다운로드 Range GET HTTP206, 크기135,053,999bytes, GitHub asset digest와 로컬 SHA-256 일치. [릴리스 근거](combo-deploy-20261109/github-release.json), [다운로드 검사](combo-deploy-20261109/release-download.json).
+- 증거/인계만 추가한 이후에도 운영 서버 revision은 `2bdd5f1`임을 재확인했다. 서버 코드가 변경되지 않은 문서·Unity 스냅샷 커밋은 Render 재배포를 생략했다.

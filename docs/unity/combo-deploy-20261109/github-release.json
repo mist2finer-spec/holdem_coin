@@ -1,0 +1,19 @@
+{
+  "url": "https://github.com/mist2finer-spec/holdem_coin/releases/tag/unity-combo-20261109.4",
+  "tag": "unity-combo-20261109.4",
+  "commit": "f0d3a9f5842dd357110111e94d5470b83f31ea33",
+  "assets": [
+    {
+      "name": "apk-validation.json",
+      "bytes": 8438,
+      "url": "https://github.com/mist2finer-spec/holdem_coin/releases/download/unity-combo-20261109.4/apk-validation.json",
+      "digest": "sha256:d61a8592674de62687433b7c36d8f6e4c904d388de1bbc1243e48e1f4f66a21c"
+    },
+    {
+      "name": "IslandGame-Combo-20261109.apk",
+      "bytes": 135053999,
+      "url": "https://github.com/mist2finer-spec/holdem_coin/releases/download/unity-combo-20261109.4/IslandGame-Combo-20261109.apk",
+      "digest": "sha256:d04edece41b5ff79f94ad95b9909034d6243bd3395a61066e51b7911a2690646"
+    }
+  ]
+}
