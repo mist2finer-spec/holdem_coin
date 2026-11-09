@@ -56,3 +56,22 @@ Android 최종 빌드·기기 결과는 아래 최종 부록에 기록한다. S2
 5. 중간 구역 상태 복구, 초기 입장 지연, 오랜 훈련 중 서버 계정 명령 세션 만료 대응을 후속 검토한다. 지금은 입장 시 기존 서버 세션 수명을 그대로 따른다.
 
 형식 검증은 새 서버 정산 프로토콜/다중 소유 상태 머신을 도입하지 않고 기존 단일 worker 구조를 재사용하므로 별도 모델을 만들지 않았다. 실행 동치·기존 회귀·실제 런타임 검사를 우선했다.
+
+## 최종 Android .6 · BlueStacks 검증
+
+[테스트 APK 다운로드](https://github.com/mist2finer-spec/holdem_coin/releases/tag/unity-local-combat-20261109.6)
+
+- 버전 `0.1.0-test.20261109.6`, versionCode `2026110906`, 기존 패키지 `com.mist2finer.islandgame.dev`·개발 서명 유지. ARM64 IL2CPP Development.
+- APK `Builds/Android/IslandGame-LocalCombat-20261109.apk`, 135,243,838 bytes. ZIP·서명·16KB 정렬 PASS. SHA-256 `216322baee38d6940933e87ce783c2f4a15ece27535364d16eebb2dec8a51a02`. Unity BuildReport의 totalSizeBytes는 APK 파일 크기와 구분한다.
+- 빌드 오류 0. 기존 `IslandApp.lastDeal` 미사용 필드 경고 1개.
+- 블루스택에서 최종 APK 실제 실행: **일반 10구역 300처치 → 보스 진입 → 승리**. 보상 수치 변경이나 임의 좌표/체력 조작 없이 자동 전투 입력으로 진행했다.
+- 입장 HTTP **1회**, 전체 전투 중 추가 RpgSession 요청 **0회**. `localCombat=true`, 로컬 스텝 24,193. 다른 앱 서비스 통신까지 0회라는 주장은 아니다.
+- 일반 공격별 기록된 접촉 199/202/199, 포즈 불일치 0, 실행 오류 0. 이 계측은 일반 몬스터 접촉을 세며 보스 피해 횟수를 뜻하지 않는다.
+- Android HOME→복귀 시 전투 중단/재개 및 요청 수 유지 PASS. [기록](local-combat-20261109/android-pause.json).
+- [소스 커밋 CI 성공](https://github.com/mist2finer-spec/holdem_coin/actions/runs/42654069124). 문서/증거 후속 커밋과 소스 검증 커밋을 구분한다.
+
+성능 한계: 이번 전체 진행 기록은 앱 백그라운드/복귀를 포함한다. 프레임 통계에 최대 4.38초 간격이 포함돼 평균 FPS를 순수 전투 성능으로 사용하지 않는다. worker 최대 배치 벽시계 시간 1.52초와 누적 큐 초과 시간 5.910초도 기록됐으며, pause/OS 스케줄링과 활성 전투 CPU 비용을 분리한 후속 계측이 필요하다. 이는 기능 검증 PASS이며 S20의 지속 성능 보장이 아니다. S20은 미연결이다.
+
+초기 .5 후보에서 발견한 패널 내 계정 명령 차단을 수정한 **.6이 최종 배포본**이다. 상세 이상 이동 검증·구역 서버 승인·영구 정산은 여전히 후속 작업이다. 운영 서버 코드는 변경하지 않았으며 `[skip render]` 커밋으로 클라이언트 소스/인계만 게시한다.
+
+[기기 결과](local-combat-20261109/android-complete.json), [APK 검사](local-combat-20261109/apk-validation.json), [실제 최종 화면](local-combat-20261109/android-complete.png).

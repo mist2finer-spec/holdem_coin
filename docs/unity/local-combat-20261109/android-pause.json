@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "beforeSteps": 4500,
+  "pausedSteps": 4976,
+  "stillPausedSteps": 4976,
+  "resumedSteps": 5481,
+  "networkRequests": 1,
+  "version": "0.1.0-test.20261109.6"
+}

@@ -1,0 +1,20 @@
+{
+  "status": "completed",
+  "buildId": "build_c08293d47027",
+  "result": "Succeeded",
+  "platform": "Android",
+  "outputPath": "G:/new_project/IslandGame/Builds/Android/IslandGame-LocalCombat-20261109.apk",
+  "totalSizeBytes": 1441016556,
+  "buildTimeMs": 195425,
+  "buildStartedAt": "2026-11-09T21:21:12.8620020Z",
+  "buildEndedAt": "2026-11-09T21:24:28.2877625Z",
+  "totalWarnings": 1,
+  "totalErrors": 0,
+  "errors": [],
+  "warnings": [
+    {
+      "message": "warning CS0414: The field 'IslandApp.lastDeal' is assigned but its value is never used",
+      "file": "Assets\\Island\\Runtime\\IslandApp.cs"
+    }
+  ]
+}
