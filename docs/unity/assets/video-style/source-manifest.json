@@ -1,0 +1,24 @@
+{
+  "original": {
+    "local": "G:\\new_project\\IslandGame_영상스타일_로드맵_Tripo에셋.pdf",
+    "file": "IslandGame_영상스타일_로드맵_Tripo에셋.pdf",
+    "bytes": 871970,
+    "sha256": "ad61f63a496479a845b33f7c68078f7bac7d03055ddb5904aa1af9f3e106213b"
+  },
+  "pr9": {
+    "url": "https://github.com/mist2finer-spec/holdem_coin/pull/9",
+    "head": "6791bf088e39a162d0d44b7c9584dd168680e612"
+  },
+  "references": [
+    {
+      "file": "G:\\new_project\\map_forest\\map_ref1.mp4",
+      "sha256": "f3c7bb4f75f11c984272478b6cf9d7e6994ea7149f2da0e0417caa8cf09b94f4",
+      "bytes": 3382935
+    },
+    {
+      "file": "G:\\new_project\\map_forest\\map_ref2.mp4",
+      "sha256": "fb6a1170d599f96117e90037cb7cbc13b8a3f95dfc5e8047ecfaf2119e876959",
+      "bytes": 3044806
+    }
+  ]
+}

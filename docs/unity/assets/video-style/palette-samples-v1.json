@@ -1,0 +1,94 @@
+{
+  "status": "sampled reference pixels; lighting/compression included; not approved material albedo",
+  "frame": "map_ref1-4.png",
+  "timeSeconds": 4,
+  "sha256": "fe8296da97d416014f233ae61cef6e013666940575bbdc4b26bf196cad02b37a",
+  "width": 1018,
+  "height": 640,
+  "samples": [
+    {
+      "name": "sky",
+      "center": [
+        305,
+        26
+      ],
+      "patchSize": 9,
+      "rgb": [
+        12,
+        149,
+        240
+      ],
+      "hex": "#0C95F0"
+    },
+    {
+      "name": "distant_mountain",
+      "center": [
+        356,
+        115
+      ],
+      "patchSize": 9,
+      "rgb": [
+        126,
+        199,
+        223
+      ],
+      "hex": "#7EC7DF"
+    },
+    {
+      "name": "orange_canopy",
+      "center": [
+        508,
+        243
+      ],
+      "patchSize": 9,
+      "rgb": [
+        246,
+        183,
+        109
+      ],
+      "hex": "#F6B76D"
+    },
+    {
+      "name": "cream_canvas",
+      "center": [
+        508,
+        383
+      ],
+      "patchSize": 9,
+      "rgb": [
+        200,
+        176,
+        121
+      ],
+      "hex": "#C8B079"
+    },
+    {
+      "name": "ochre_path",
+      "center": [
+        763,
+        492
+      ],
+      "patchSize": 9,
+      "rgb": [
+        242,
+        193,
+        107
+      ],
+      "hex": "#F2C16B"
+    },
+    {
+      "name": "foreground_grass",
+      "center": [
+        305,
+        575
+      ],
+      "patchSize": 9,
+      "rgb": [
+        60,
+        136,
+        40
+      ],
+      "hex": "#3C8828"
+    }
+  ]
+}

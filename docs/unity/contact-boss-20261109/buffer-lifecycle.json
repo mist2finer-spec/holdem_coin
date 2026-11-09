@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "checks": [
+    "stalled snapshot cannot advance past confirmed time",
+    "monotonic presentation time",
+    "pause holds authority time",
+    "routeStage boss resets elapsed time"
+  ],
+  "execution": "Unity Play script eval; results recorded in session"
+}

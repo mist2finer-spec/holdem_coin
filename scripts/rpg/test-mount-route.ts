@@ -9,6 +9,7 @@ test('mount API retains secure session, exact retries, restart invalidation and 
  const tick=await POST(req(body,cookie)),data=await tick.json();assert.equal(tick.status,200);assert.equal(tick.headers.get('set-cookie'),null);assert.equal(data.map,undefined);
  const retry=await POST(req(body,cookie));assert.deepEqual(await retry.json(),data);
  assert.equal((await POST(req({...body,input:{...body.input,readyZone:1}},cookie))).status,400);
+ assert.equal((await POST(req({...body,input:{...body.input,readyBoss:true}},cookie))).status,400);
  assert.equal((await POST(req({...body,sequence:3},cookie))).status,400);
  assert.equal((await POST(req({...body,sequence:2},'rpg_guest='+'a'.repeat(64)))).status,400);
  assert.equal((await POST(req(body,cookie,{origin:'https://evil.example'}))).status,403);

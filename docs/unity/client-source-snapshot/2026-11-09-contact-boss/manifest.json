@@ -1,0 +1,68 @@
+[
+  {
+    "path": "Assets/DioramaPreview/Settings/KeepTerrain.mat",
+    "before": "3509c55c6be74a469d517044ae5a9282385db57cef0019939e0c433f64c47ae5",
+    "after": "83ddfdd555926f9590457134f34e70b5636bfca0ba8baebc8bf11e25ed3ebb02",
+    "metaSha256": "7b9c5480cee9db25055460275ec6232ba5ae9ebdfb4601cebed611f3f2390530"
+  },
+  {
+    "path": "Assets/Island/Runtime/Battle3DView.cs",
+    "before": "ebcbd65fe7e92c33c2f88a7e8a7c11dabb5345b05eb868db80ea9b0bc47d4806",
+    "after": "2f42ce9b0f446d15c9108a474002eb0b1dd10d5c48b338ff5552123f1374e18e",
+    "metaSha256": "de3d28d04dc2d52839b62b4d63dfe9d36dee8897eaeade593b0a13edb4636402"
+  },
+  {
+    "path": "Assets/Island/Runtime/CombatSnapshotBuffer.cs",
+    "before": null,
+    "after": "c83d577ddc510160325e0d2920fef63b47873bf1a6c40af6fbf52fc1f514d9c6",
+    "metaSha256": "7bdb272440ef6cd6429edfa6f91593cc800ae49e54d689c84faa2635a8cce9f3"
+  },
+  {
+    "path": "Assets/Island/Runtime/IslandBattleHud.cs",
+    "before": "5ec271259759d631e96a204bd5a6b49541df12810e82656faac95140e5eddf28",
+    "after": "180613739522870311e2bd13c8b7117728c47783f4033386c808f2be5003c84d",
+    "metaSha256": "2414fc55571f94f4d4b2ffb138f466fcbcda94cc160c841a65f37f05787cb0b6"
+  },
+  {
+    "path": "Assets/Island/Runtime/MountDeviceProbe.cs",
+    "before": "cf5266801761ed15792fa4143f9402f265a1e32be6a6b8b124d20f096f4eaece",
+    "after": "6436f2cfcc396e0586afe80a49d14761550b88463876237008b3cc5d2f53c6eb",
+    "metaSha256": "5d22fccaac3c9b0eb5e06d5eadf32923cafaa1b84dd1a3b6ce36b7fb94337198"
+  },
+  {
+    "path": "Assets/Island/Runtime/MountZoneStream.cs",
+    "before": "bdb5d0faa15217719205398741339bb08c8da7a557402e92756b55c3d80579bc",
+    "after": "8544451a2a43f425aecacbbbc1cf863c9ecdf7df67fa582aebd78eee7e6abd8c",
+    "metaSha256": "ac3a4931104a44048a6c6587854fcdb2452dc81e0eaf789508cc676e0762b4c8"
+  },
+  {
+    "path": "Assets/Island/Runtime/NativeBattle.cs",
+    "before": "3652bb86a07ecbb0a03a9b7b754b24b02eb725c11774f4bbaf5dc1f4c3e86793",
+    "after": "e2626615c7c22cc142ca06e9aa6221df15f628a906b627e54937eec612ca0e32",
+    "metaSha256": "9ec0ce09c1f418603f47036782ac0fc257db6a604a2deee1d4887ef8723d84fe"
+  },
+  {
+    "path": "Assets/Island/Runtime/NativeCombatPresentation.cs",
+    "before": "aa92cd272467d31f1267004fff63ad9da81124782740c56b135717828661f888",
+    "after": "5aae9848979c77c669db9fc1a54d35834f7ffb74298cf12403c49761b06403cf",
+    "metaSha256": "11ebd8a35d40ef6770c59489ac0bb927dbde53372e3fa2cd6f8e3aaedfa928b8"
+  },
+  {
+    "path": "Assets/Island/Runtime/NatureAuthoredEnvironment.cs",
+    "before": "14ce7b356837c759524834f62b5b50f4dfefa12be46eaf0ef16243ad71a24cd0",
+    "after": "d63d9f8e91469f8e4154079fab282d8531bcae01151d110c4ce6c6c5f7fedabc",
+    "metaSha256": "0e6a18e8758cc48cf80352daade31b7b0f4e409173a7f27a0ce92f57c6dcd67a"
+  },
+  {
+    "path": "Assets/Island/Runtime/RpgSession.cs",
+    "before": "1a79e79b2bfcfab31098caa1f9bb245ec726750884db9b0abab4e715d1efb12d",
+    "after": "a4d2751edc6045658be3fe6138876cb856fe95015a00246c46d7a8955f89d10e",
+    "metaSha256": "9b91f20ad5cbf5bd973f5c59552db82832266bf41d3de5a9b43d3345cfb19ad9"
+  },
+  {
+    "path": "Assets/Island/Editor/RuntimeTerrainBuildSupport.cs",
+    "before": null,
+    "after": "8bc55d1496b88035e8dc8cbc7f93db98729d7bd8b0b554ed043eb085e3872831",
+    "metaSha256": "a53016b0c842db8b06f0c1f1680b59267d0983d5cdb8bf861c137213e2ce497b"
+  }
+]

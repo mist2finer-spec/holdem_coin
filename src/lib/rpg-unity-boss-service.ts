@@ -18,7 +18,7 @@ export class UnityBossService {
   if(!isRogueAction(action))throw Error('잘못된 명령입니다.');const input=parseRogueInput(raw);
   const s=this.sessions.get(account);if(!s||s.id!==id||s.expires<this.now())throw Error('사냥 세션이 바뀌었습니다. 다시 입장해 주세요.');
   if(!Number.isSafeInteger(sequence)||sequence<1)throw Error('명령 순서가 올바르지 않습니다.');
-  const digest=createHash('sha256').update(JSON.stringify({sequence,input,action,knownBuildRevision,...(s.game.acceptClientHints?{readyZone:(raw as any)?.readyZone}: {})})).digest('hex');
+  const digest=createHash('sha256').update(JSON.stringify({sequence,input,action,knownBuildRevision,...(s.game.acceptClientHints?{readyZone:(raw as any)?.readyZone,readyBoss:(raw as any)?.readyBoss}: {})})).digest('hex');
   if(sequence===s.sequence){if(digest!==s.digest)throw Error('같은 명령 번호의 내용이 다릅니다.');return s.response;}
   if(sequence!==s.sequence+1)throw Error('명령 순서가 올바르지 않습니다.');
   s.game.acceptClientHints?.(raw);

@@ -1,0 +1,733 @@
+{
+  "before": {
+    "cameraMode": "Side25D",
+    "movementMode": "lane",
+    "mobs": [
+      {
+        "x": -4164.191893721298,
+        "y": 5048.970906332703,
+        "radius": 12.5,
+        "hp": 90
+      }
+    ],
+    "room": 0,
+    "kills": 0,
+    "spawned": 30,
+    "sequence": 93,
+    "status": "playing",
+    "auto": false,
+    "paused": false,
+    "elapsed": 11.17999999999985,
+    "hero": {
+      "x": -4129.365,
+      "y": 5047.844251767195,
+      "elevation": 2.683745214187425,
+      "action": "stay1"
+    },
+    "active": 1
+  },
+  "after": {
+    "cameraMode": "Side25D",
+    "movementMode": "lane",
+    "mobs": [
+      {
+        "x": -4286.0163731919165,
+        "y": 5053.173863679548,
+        "radius": 12.5,
+        "hp": 90
+      }
+    ],
+    "room": 0,
+    "kills": 0,
+    "spawned": 30,
+    "sequence": 106,
+    "status": "playing",
+    "auto": false,
+    "paused": false,
+    "elapsed": 12.659999999999819,
+    "hero": {
+      "x": -4349.365,
+      "y": 5055.414966947697,
+      "elevation": 2.808549760626507,
+      "action": "stay1"
+    },
+    "active": 1
+  },
+  "trace": [
+    {
+      "cameraMode": "Side25D",
+      "movementMode": "lane",
+      "mobs": [
+        {
+          "x": -4164.191893721298,
+          "y": 5048.970906332703,
+          "radius": 12.5,
+          "hp": 90
+        }
+      ],
+      "room": 0,
+      "kills": 0,
+      "spawned": 30,
+      "sequence": 94,
+      "status": "playing",
+      "auto": false,
+      "paused": false,
+      "elapsed": 11.299999999999848,
+      "hero": {
+        "x": -4129.365,
+        "y": 5047.844251767195,
+        "elevation": 2.683745214187425,
+        "action": "stay1"
+      },
+      "active": 1
+    },
+    {
+      "cameraMode": "Side25D",
+      "movementMode": "lane",
+      "mobs": [
+        {
+          "x": -4164.191893721298,
+          "y": 5048.970906332703,
+          "radius": 12.5,
+          "hp": 90
+        }
+      ],
+      "room": 0,
+      "kills": 0,
+      "spawned": 30,
+      "sequence": 95,
+      "status": "playing",
+      "auto": false,
+      "paused": false,
+      "elapsed": 11.399999999999846,
+      "hero": {
+        "x": -4129.365,
+        "y": 5047.844251767195,
+        "elevation": 2.683745214187425,
+        "action": "avoid1"
+      },
+      "active": 1
+    },
+    {
+      "cameraMode": "Side25D",
+      "movementMode": "lane",
+      "mobs": [
+        {
+          "x": -4164.191893721298,
+          "y": 5048.970906332703,
+          "radius": 12.5,
+          "hp": 90
+        }
+      ],
+      "room": 0,
+      "kills": 0,
+      "spawned": 30,
+      "sequence": 95,
+      "status": "playing",
+      "auto": false,
+      "paused": false,
+      "elapsed": 11.399999999999846,
+      "hero": {
+        "x": -4129.365,
+        "y": 5047.844251767195,
+        "elevation": 2.683745214187425,
+        "action": "avoid1"
+      },
+      "active": 1
+    },
+    {
+      "cameraMode": "Side25D",
+      "movementMode": "lane",
+      "mobs": [
+        {
+          "x": -4164.191893721298,
+          "y": 5048.970906332703,
+          "radius": 12.5,
+          "hp": 90
+        }
+      ],
+      "room": 0,
+      "kills": 0,
+      "spawned": 30,
+      "sequence": 96,
+      "status": "playing",
+      "auto": false,
+      "paused": false,
+      "elapsed": 11.519999999999843,
+      "hero": {
+        "x": -4188.031666666664,
+        "y": 5049.742126104541,
+        "elevation": 2.730437678616286,
+        "action": "avoid1"
+      },
+      "active": 1
+    },
+    {
+      "cameraMode": "Side25D",
+      "movementMode": "lane",
+      "mobs": [
+        {
+          "x": -4164.191893721298,
+          "y": 5048.970906332703,
+          "radius": 12.5,
+          "hp": 90
+        }
+      ],
+      "room": 0,
+      "kills": 0,
+      "spawned": 30,
+      "sequence": 96,
+      "status": "playing",
+      "auto": false,
+      "paused": false,
+      "elapsed": 11.519999999999843,
+      "hero": {
+        "x": -4188.031666666664,
+        "y": 5049.742126104541,
+        "elevation": 2.730437678616286,
+        "action": "avoid1"
+      },
+      "active": 1
+    },
+    {
+      "cameraMode": "Side25D",
+      "movementMode": "lane",
+      "mobs": [
+        {
+          "x": -4164.191893721298,
+          "y": 5048.970906332703,
+          "radius": 12.5,
+          "hp": 90
+        }
+      ],
+      "room": 0,
+      "kills": 0,
+      "spawned": 30,
+      "sequence": 96,
+      "status": "playing",
+      "auto": false,
+      "paused": false,
+      "elapsed": 11.519999999999843,
+      "hero": {
+        "x": -4188.031666666664,
+        "y": 5049.742126104541,
+        "elevation": 2.730437678616286,
+        "action": "avoid1"
+      },
+      "active": 1
+    },
+    {
+      "cameraMode": "Side25D",
+      "movementMode": "lane",
+      "mobs": [
+        {
+          "x": -4168.789234097822,
+          "y": 5049.119630894987,
+          "radius": 12.5,
+          "hp": 90
+        }
+      ],
+      "room": 0,
+      "kills": 0,
+      "spawned": 30,
+      "sequence": 97,
+      "status": "playing",
+      "auto": false,
+      "paused": false,
+      "elapsed": 11.63999999999984,
+      "hero": {
+        "x": -4246.69833333333,
+        "y": 5051.782897654487,
+        "elevation": 2.758679333333332,
+        "action": "avoid1"
+      },
+      "active": 1
+    },
+    {
+      "cameraMode": "Side25D",
+      "movementMode": "lane",
+      "mobs": [
+        {
+          "x": -4168.789234097822,
+          "y": 5049.119630894987,
+          "radius": 12.5,
+          "hp": 90
+        }
+      ],
+      "room": 0,
+      "kills": 0,
+      "spawned": 30,
+      "sequence": 97,
+      "status": "playing",
+      "auto": false,
+      "paused": false,
+      "elapsed": 11.63999999999984,
+      "hero": {
+        "x": -4246.69833333333,
+        "y": 5051.782897654487,
+        "elevation": 2.758679333333332,
+        "action": "avoid1"
+      },
+      "active": 1
+    },
+    {
+      "cameraMode": "Side25D",
+      "movementMode": "lane",
+      "mobs": [
+        {
+          "x": -4180.282360796126,
+          "y": 5049.491435046406,
+          "radius": 12.5,
+          "hp": 90
+        }
+      ],
+      "room": 0,
+      "kills": 0,
+      "spawned": 30,
+      "sequence": 98,
+      "status": "playing",
+      "auto": false,
+      "paused": false,
+      "elapsed": 11.739999999999839,
+      "hero": {
+        "x": -4295.587222222219,
+        "y": 5053.512454460777,
+        "elevation": 2.7782348888888873,
+        "action": "avoid1"
+      },
+      "active": 1
+    },
+    {
+      "cameraMode": "Side25D",
+      "movementMode": "lane",
+      "mobs": [
+        {
+          "x": -4191.775301658093,
+          "y": 5049.863233185995,
+          "radius": 12.5,
+          "hp": 90
+        }
+      ],
+      "room": 0,
+      "kills": 0,
+      "spawned": 30,
+      "sequence": 99,
+      "status": "playing",
+      "auto": false,
+      "paused": false,
+      "elapsed": 11.839999999999836,
+      "hero": {
+        "x": -4344.476111111106,
+        "y": 5055.242011267068,
+        "elevation": 2.805753089564424,
+        "action": "avoid1"
+      },
+      "active": 1
+    },
+    {
+      "cameraMode": "Side25D",
+      "movementMode": "lane",
+      "mobs": [
+        {
+          "x": -4191.775301658093,
+          "y": 5049.863233185995,
+          "radius": 12.5,
+          "hp": 90
+        }
+      ],
+      "room": 0,
+      "kills": 0,
+      "spawned": 30,
+      "sequence": 99,
+      "status": "playing",
+      "auto": false,
+      "paused": false,
+      "elapsed": 11.839999999999836,
+      "hero": {
+        "x": -4344.476111111106,
+        "y": 5055.242011267068,
+        "elevation": 2.805753089564424,
+        "action": "avoid1"
+      },
+      "active": 1
+    },
+    {
+      "cameraMode": "Side25D",
+      "movementMode": "lane",
+      "mobs": [
+        {
+          "x": -4191.775301658093,
+          "y": 5049.863233185995,
+          "radius": 12.5,
+          "hp": 90
+        }
+      ],
+      "room": 0,
+      "kills": 0,
+      "spawned": 30,
+      "sequence": 99,
+      "status": "playing",
+      "auto": false,
+      "paused": false,
+      "elapsed": 11.839999999999836,
+      "hero": {
+        "x": -4344.476111111106,
+        "y": 5055.242011267068,
+        "elevation": 2.805753089564424,
+        "action": "avoid1"
+      },
+      "active": 1
+    },
+    {
+      "cameraMode": "Side25D",
+      "movementMode": "lane",
+      "mobs": [
+        {
+          "x": -4205.566700973652,
+          "y": 5050.327771626501,
+          "radius": 12.5,
+          "hp": 90
+        }
+      ],
+      "room": 0,
+      "kills": 0,
+      "spawned": 30,
+      "sequence": 100,
+      "status": "playing",
+      "auto": false,
+      "paused": false,
+      "elapsed": 11.959999999999834,
+      "hero": {
+        "x": -4349.365,
+        "y": 5055.414966947697,
+        "elevation": 2.808549760626507,
+        "action": "stay1"
+      },
+      "active": 1
+    },
+    {
+      "cameraMode": "Side25D",
+      "movementMode": "lane",
+      "mobs": [
+        {
+          "x": -4205.566700973652,
+          "y": 5050.327771626501,
+          "radius": 12.5,
+          "hp": 90
+        }
+      ],
+      "room": 0,
+      "kills": 0,
+      "spawned": 30,
+      "sequence": 100,
+      "status": "playing",
+      "auto": false,
+      "paused": false,
+      "elapsed": 11.959999999999834,
+      "hero": {
+        "x": -4349.365,
+        "y": 5055.414966947697,
+        "elevation": 2.808549760626507,
+        "action": "stay1"
+      },
+      "active": 1
+    },
+    {
+      "cameraMode": "Side25D",
+      "movementMode": "lane",
+      "mobs": [
+        {
+          "x": -4219.358073353926,
+          "y": 5050.815673121309,
+          "radius": 12.5,
+          "hp": 90
+        }
+      ],
+      "room": 0,
+      "kills": 0,
+      "spawned": 30,
+      "sequence": 101,
+      "status": "playing",
+      "auto": false,
+      "paused": false,
+      "elapsed": 12.079999999999831,
+      "hero": {
+        "x": -4349.365,
+        "y": 5055.414966947697,
+        "elevation": 2.808549760626507,
+        "action": "stay1"
+      },
+      "active": 1
+    },
+    {
+      "cameraMode": "Side25D",
+      "movementMode": "lane",
+      "mobs": [
+        {
+          "x": -4219.358073353926,
+          "y": 5050.815673121309,
+          "radius": 12.5,
+          "hp": 90
+        }
+      ],
+      "room": 0,
+      "kills": 0,
+      "spawned": 30,
+      "sequence": 101,
+      "status": "playing",
+      "auto": false,
+      "paused": false,
+      "elapsed": 12.079999999999831,
+      "hero": {
+        "x": -4349.365,
+        "y": 5055.414966947697,
+        "elevation": 2.808549760626507,
+        "action": "stay1"
+      },
+      "active": 1
+    },
+    {
+      "cameraMode": "Side25D",
+      "movementMode": "lane",
+      "mobs": [
+        {
+          "x": -4230.850883670821,
+          "y": 5051.222257700316,
+          "radius": 12.5,
+          "hp": 90
+        }
+      ],
+      "room": 0,
+      "kills": 0,
+      "spawned": 30,
+      "sequence": 102,
+      "status": "playing",
+      "auto": false,
+      "paused": false,
+      "elapsed": 12.17999999999983,
+      "hero": {
+        "x": -4349.365,
+        "y": 5055.414966947697,
+        "elevation": 2.808549760626507,
+        "action": "stay1"
+      },
+      "active": 1
+    },
+    {
+      "cameraMode": "Side25D",
+      "movementMode": "lane",
+      "mobs": [
+        {
+          "x": -4230.850883670821,
+          "y": 5051.222257700316,
+          "radius": 12.5,
+          "hp": 90
+        }
+      ],
+      "room": 0,
+      "kills": 0,
+      "spawned": 30,
+      "sequence": 102,
+      "status": "playing",
+      "auto": false,
+      "paused": false,
+      "elapsed": 12.17999999999983,
+      "hero": {
+        "x": -4349.365,
+        "y": 5055.414966947697,
+        "elevation": 2.808549760626507,
+        "action": "stay1"
+      },
+      "active": 1
+    },
+    {
+      "cameraMode": "Side25D",
+      "movementMode": "lane",
+      "mobs": [
+        {
+          "x": -4230.850883670821,
+          "y": 5051.222257700316,
+          "radius": 12.5,
+          "hp": 90
+        }
+      ],
+      "room": 0,
+      "kills": 0,
+      "spawned": 30,
+      "sequence": 102,
+      "status": "playing",
+      "auto": false,
+      "paused": false,
+      "elapsed": 12.17999999999983,
+      "hero": {
+        "x": -4349.365,
+        "y": 5055.414966947697,
+        "elevation": 2.808549760626507,
+        "action": "stay1"
+      },
+      "active": 1
+    },
+    {
+      "cameraMode": "Side25D",
+      "movementMode": "lane",
+      "mobs": [
+        {
+          "x": -4244.642256051095,
+          "y": 5051.710159195124,
+          "radius": 12.5,
+          "hp": 90
+        }
+      ],
+      "room": 0,
+      "kills": 0,
+      "spawned": 30,
+      "sequence": 103,
+      "status": "playing",
+      "auto": false,
+      "paused": false,
+      "elapsed": 12.299999999999827,
+      "hero": {
+        "x": -4349.365,
+        "y": 5055.414966947697,
+        "elevation": 2.808549760626507,
+        "action": "stay1"
+      },
+      "active": 1
+    },
+    {
+      "cameraMode": "Side25D",
+      "movementMode": "lane",
+      "mobs": [
+        {
+          "x": -4244.642256051095,
+          "y": 5051.710159195124,
+          "radius": 12.5,
+          "hp": 90
+        }
+      ],
+      "room": 0,
+      "kills": 0,
+      "spawned": 30,
+      "sequence": 103,
+      "status": "playing",
+      "auto": false,
+      "paused": false,
+      "elapsed": 12.299999999999827,
+      "hero": {
+        "x": -4349.365,
+        "y": 5055.414966947697,
+        "elevation": 2.808549760626507,
+        "action": "stay1"
+      },
+      "active": 1
+    },
+    {
+      "cameraMode": "Side25D",
+      "movementMode": "lane",
+      "mobs": [
+        {
+          "x": -4258.433628431369,
+          "y": 5052.1980606899315,
+          "radius": 12.5,
+          "hp": 90
+        }
+      ],
+      "room": 0,
+      "kills": 0,
+      "spawned": 30,
+      "sequence": 104,
+      "status": "playing",
+      "auto": false,
+      "paused": false,
+      "elapsed": 12.419999999999824,
+      "hero": {
+        "x": -4349.365,
+        "y": 5055.414966947697,
+        "elevation": 2.808549760626507,
+        "action": "stay1"
+      },
+      "active": 1
+    },
+    {
+      "cameraMode": "Side25D",
+      "movementMode": "lane",
+      "mobs": [
+        {
+          "x": -4258.433628431369,
+          "y": 5052.1980606899315,
+          "radius": 12.5,
+          "hp": 90
+        }
+      ],
+      "room": 0,
+      "kills": 0,
+      "spawned": 30,
+      "sequence": 104,
+      "status": "playing",
+      "auto": false,
+      "paused": false,
+      "elapsed": 12.419999999999824,
+      "hero": {
+        "x": -4349.365,
+        "y": 5055.414966947697,
+        "elevation": 2.808549760626507,
+        "action": "stay1"
+      },
+      "active": 1
+    },
+    {
+      "cameraMode": "Side25D",
+      "movementMode": "lane",
+      "mobs": [
+        {
+          "x": -4272.2250008116425,
+          "y": 5052.68596218474,
+          "radius": 12.5,
+          "hp": 90
+        }
+      ],
+      "room": 0,
+      "kills": 0,
+      "spawned": 30,
+      "sequence": 105,
+      "status": "playing",
+      "auto": false,
+      "paused": false,
+      "elapsed": 12.539999999999822,
+      "hero": {
+        "x": -4349.365,
+        "y": 5055.414966947697,
+        "elevation": 2.808549760626507,
+        "action": "stay1"
+      },
+      "active": 1
+    },
+    {
+      "cameraMode": "Side25D",
+      "movementMode": "lane",
+      "mobs": [
+        {
+          "x": -4272.2250008116425,
+          "y": 5052.68596218474,
+          "radius": 12.5,
+          "hp": 90
+        }
+      ],
+      "room": 0,
+      "kills": 0,
+      "spawned": 30,
+      "sequence": 105,
+      "status": "playing",
+      "auto": false,
+      "paused": false,
+      "elapsed": 12.539999999999822,
+      "hero": {
+        "x": -4349.365,
+        "y": 5055.414966947697,
+        "elevation": 2.808549760626507,
+        "action": "stay1"
+      },
+      "active": 1
+    }
+  ]
+}

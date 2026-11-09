@@ -1,6 +1,7 @@
 // Unity-only training encounter. The web RogueEngine, economy and its stage kernel stay unchanged.
 import {BOSS_CONTACT,hookContact} from './rpg-boss-contact';
 import {HERO_CONTACT,heroAttackDefinition,weaponContact} from './rpg-hero-contact';
+import {blocksAt,clearLanding,settleLanding} from './rpg-traversal';
 import natureMap from './generated/unity-nature-map.json';
 export const UNITY_BOSS_PROTOCOL='island-unity-boss-v2';
 export type UnityInput={x:number;y:number;auto:boolean;paused?:boolean;attack?:boolean;jump?:boolean;slide?:boolean;dodge?:boolean;skill?:number;potion?:'health'|'mana'};
@@ -30,13 +31,14 @@ export class UnityBossEngine {
   this.hero.elevation=this.groundAt(this.hero.x,this.hero.y);this.boss.elevation=this.groundAt(this.boss.x,this.boss.y);
 
  }
+ enterArena(){this.slimes=[];this.room=1;this.phase='boss';this.hero.x=this.boss.x-240;this.hero.y=this.boss.y;this.hero.elevation=this.groundAt(this.hero.x,this.hero.y);this.bossIdleUntil=this.elapsed+.9;this.bossChaseUntil=this.elapsed+2.25;this.bossAt=this.elapsed+2.5;}
  private effect(kind:string,x:number,value?:number,extra:any={}){this.fx.push({id:++this.effectSerial,kind,x,room:this.room,born:this.elapsed,value,...extra});if(this.fx.length>48)this.fx.splice(0,this.fx.length-48);}
  get slimeCleared(){return this.slimes.every(m=>m.hp<=0);}
  private bounds(){return this.room===1?{minX:ARENA_X,maxX:8700,minY:1200,maxY:10300}:this.slimeCleared?{minX:1100,maxX:8700,minY:LANE_Y,maxY:LANE_Y}:{minX:1100,maxX:2140,minY:LANE_Y,maxY:LANE_Y};}
  private blocked(x:number,y:number,radius=18){return this.map.obstacles.some((o:any)=>Math.hypot(o.x-x,o.y-y)<o.radius+radius);}
- private heroBlocked(x:number,y:number){return this.blocked(x,y)||this.room===1&&this.boss.hp>0&&Math.hypot(x-this.boss.x,y-this.boss.y)<BOSS_CONTACT.bodyRadius+BOSS_CONTACT.heroRadius;}
+ private heroBlocked(x:number,y:number){const kind=this.hero.motion?.kind;if(kind==='dodge')return false;const feet=this.groundAt(x,y)+this.hero.airHeight;if(kind==='jump')return this.map.obstacles.some((o:any)=>blocksAt(x,y,feet,o,(a,b)=>this.groundAt(a,b)))||this.room===1&&this.boss.hp>0&&blocksAt(x,y,feet,{...this.boss,bodyHeight:650},(a,b)=>this.groundAt(a,b));return this.blocked(x,y)||this.room===1&&this.boss.hp>0&&Math.hypot(x-this.boss.x,y-this.boss.y)<BOSS_CONTACT.bodyRadius+BOSS_CONTACT.heroRadius;}
  private separateBody(){
-  if(this.room!==1||this.boss.hp<=0)return;
+  if(this.room!==1||this.boss.hp<=0||this.hero.motion?.kind==='dodge')return;
   const dx=this.hero.x-this.boss.x,dy=this.hero.y-this.boss.y,r=BOSS_CONTACT.bodyRadius+BOSS_CONTACT.heroRadius,d=Math.hypot(dx,dy);if(d>=r)return;
   const angle=d>1e-6?Math.atan2(dy,dx):Math.atan2(-this.boss.direction.y,-this.boss.direction.x),bounds=this.bounds();
   // A radial correction may be outside the arena or inside a tree. Search a bounded ring,
@@ -92,11 +94,11 @@ export class UnityBossEngine {
  private stepHero(dt:number,input:UnityInput){
   const m=this.hero.motion;
   if(m){const age=this.elapsed-m.start,t=clamp(age/m.duration,0,1);
-   if(['jump','slide','dodge'].includes(m.kind)){this.moveHero(m.from.x+(m.to.x-m.from.x)*t,m.from.y+(m.to.y-m.from.y)*t);this.hero.airHeight=m.kind==='jump'?400*t*(1-t):0;if(m.kind==='slide')this.hero.action=t<.7?'sliding1':'sliding2';}
+   if(['jump','slide','dodge'].includes(m.kind)){this.hero.airHeight=m.kind==='jump'?400*t*(1-t):0;this.moveHero(m.from.x+(m.to.x-m.from.x)*t,m.from.y+(m.to.y-m.from.y)*t);if(m.kind==='slide')this.hero.action=t<.7?'sliding1':'sliding2';}
    else if(m.kind==='knockback'){const flight=clamp(age/.45,0,1);this.moveHero(m.from.x+(m.to.x-m.from.x)*flight,m.from.y+(m.to.y-m.from.y)*flight);this.hero.airHeight=age<.45?4*210*flight*(1-flight):0;this.hero.action=age<.45?'knockback':age<1.2?'knockdown':'getup';}
    else if(m.kind==='attack')this.stepWeapon(dt);
    else if(age>=m.hitAt&&!m.done){m.done=1;this.heroHit(m.kind==='skill');}
-   if(t>=1){this.hero.motion=null;this.hero.airHeight=0;this.hero.action='stay1';}return;
+   if(t>=1){if(m.kind==='dodge'||m.kind==='jump'){settleLanding(this.hero,m.from,this.room===1?[this.boss]:this.slimes,this.map.obstacles,this.bounds(),(x,y)=>this.groundAt(x,y),this.room===1);}this.hero.motion=null;this.hero.airHeight=0;this.hero.action='stay1';}return;
   }
   let direction=this.inputDirection(input);
   if(this.auto&&Math.hypot(direction.x,direction.y)<.1&&this.elapsed<this.rollRecoveryUntil){this.hero.action='stay1';return;}

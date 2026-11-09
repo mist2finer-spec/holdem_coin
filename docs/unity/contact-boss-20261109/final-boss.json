@@ -1,0 +1,71 @@
+{
+  "platform": "Android",
+  "device": "OnePlus NE2211",
+  "gpu": "Adreno (TM) 650",
+  "resolution": "900x1600",
+  "unity": "6000.0.62f1",
+  "version": "0.1.0-test.20261109.2",
+  "age": 11.8422308,
+  "status": "playing",
+  "routeStage": "boss",
+  "camera": "QuarterView",
+  "ConfirmedAttackContacts": 0,
+  "WrongAttackPose": 0,
+  "MaxContactDelay": 0.0,
+  "room": 1,
+  "kills": 300,
+  "steady": {
+    "samples": 0
+  },
+  "transition": {
+    "samples": 0
+  },
+  "zones": {},
+  "ScenePeak": 1,
+  "GraphPeak": 2,
+  "GroundSamples": 456,
+  "GroundMisses": 0,
+  "MaxGroundGap": 3.031455e-06,
+  "Errors": 0,
+  "samples": [
+    {
+      "age": 0.649104357,
+      "zone": 9,
+      "kills": 300,
+      "spawned": 30,
+      "active": 0,
+      "loaded": 0,
+      "managed": 29065216,
+      "allocated": 201669194,
+      "reserved": 335728640,
+      "rtt": 569.9042549968003,
+      "phase": "combat"
+    },
+    {
+      "age": 1.836767,
+      "zone": 1,
+      "kills": 300,
+      "spawned": null,
+      "active": 1,
+      "loaded": 1,
+      "managed": 40632320,
+      "allocated": 238053250,
+      "reserved": 381865984,
+      "rtt": 65.45781000022544,
+      "phase": "boss-loading"
+    },
+    {
+      "age": 11.8417673,
+      "zone": 1,
+      "kills": 300,
+      "spawned": null,
+      "active": 1,
+      "loaded": 0,
+      "managed": 43155456,
+      "allocated": 250354658,
+      "reserved": 381865984,
+      "rtt": 47.77139799989527,
+      "phase": "boss"
+    }
+  ]
+}

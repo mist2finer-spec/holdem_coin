@@ -1,0 +1,11 @@
+{
+  "room": 1,
+  "stage": "boss",
+  "phase": "boss",
+  "ready": true,
+  "loaded": 0,
+  "boss": true,
+  "mode": "QuarterView",
+  "hero": "(31.93, 0.00, 0.00)",
+  "hp": "[\r\n  {\r\n    \"id\": 9001,\r\n    \"species\": 9001,\r\n    \"unityBoss\": true,\r\n    \"room\": 1,\r\n    \"x\": 3374.6000000000104,\r\n    \"y\": 5000,\r\n    \"elevation\": 0.311,\r\n    \"hp\": 1320,\r\n    \"maxHP\": 1800,\r\n    \"radius\": 140,\r\n    \"direction\": {\r\n      \"x\": -1,\r\n      \"y\": 0\r\n    },\r\n    \"state\": \"idle\",\r\n    \"action\": \"idle\",\r\n    \"facing\": -1,\r\n    \"motion\": null\r\n  }\r\n]"
+}
