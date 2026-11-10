@@ -24,7 +24,9 @@ namespace IslandGame {
   public bool DirectPresentationActive {get;private set;}
   public Camera BattleCamera=>view;
   public bool OverridePresentationView;public ViewMode PresentationView=ViewMode.Side25D;
-  public void SetPresentationView(ViewMode? mode){OverridePresentationView=mode.HasValue;if(mode.HasValue)PresentationView=mode.Value;}
+  // Encounter policy is fixed: normal areas are side-on, only the boss arena is quarter view.
+  public static ViewMode EncounterView(JObject state)=> (bool?)state?["unityBossMode"]==true&&(bool?)state?["mountSunday"]!=true&&(int?)state?["room"]==1?ViewMode.QuarterView:ViewMode.Side25D;
+  public void SetPresentationView(ViewMode? mode){OverridePresentationView=false;PresentationView=EncounterView(session?.State);}
   public ViewPresentationCoordinator ViewPresentation=>threeD?threeD.Presentation:null;
   public void ConfigureViewport(float aspect){
    if(!view||!Output||aspect<=0)return;RestoreTexturePresentation();
@@ -126,10 +128,11 @@ namespace IslandGame {
     bool unity=(bool?)state["unityBossMode"]==true;
     if(unity)e=NativeCombatPresentation.UnityGroundHeight(session.Map,x,depth/100);
     threeD.HeroDepth=unity?depth/100:0;threeD.Planar=session.PlanarMovement;
+    threeD.HeroRequestedSpeed=playing?Mathf.Clamp01(new Vector2(previewMove,session.PlanarMovement?previewDepth:0).magnitude)*NativeCombatPresentation.N(state["movementSpeed"],210)/100:0;
     threeD.HeroHeading=Mathf.Atan2(NativeCombatPresentation.N(hero["direction"]?["x"],1),NativeCombatPresentation.N(hero["direction"]?["y"]))*Mathf.Rad2Deg;
     
     if(CameraRig){
-     bool bossZone=(bool?)state["mountSunday"]!=true&&(int?)state["room"]==1;bool quarter=(bool?)state["unityBossMode"]==true;CameraRig.SetViewMode(OverridePresentationView?PresentationView:quarter?ViewMode.QuarterView:ViewMode.Side25D,(bool?)state["bossVisible"]==true?threeD.BossTarget:null);
+     CameraRig.SetViewMode(EncounterView(state),(bool?)state["bossVisible"]==true?threeD.BossTarget:null);
      CameraRig.FacingWorld=new Vector2(NativeCombatPresentation.N(hero["direction"]?["x"],1),NativeCombatPresentation.N(hero["direction"]?["y"]));
      CameraRig.PrepareTransition(frameAdvance);threeD.PreparePresentation(state,hero,VisualTime,CameraRig);
      var warning=state["warning"] as JObject;CameraRig.WarningActive=warning!=null;

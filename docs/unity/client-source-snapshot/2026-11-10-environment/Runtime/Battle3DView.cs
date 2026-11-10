@@ -165,6 +165,7 @@ namespace IslandGame {
   static int Phase(string id){unchecked{int h=17;foreach(char c in id)h=h*31+c;return h&0x7fffffff;}}
   public bool ShouldPresent(float coreX)=>!battleCamera||Mathf.Abs(coreX/100-battleCamera.transform.position.x)<14;
   public void BeginFrame(float heroX){if(authored)authored.Tick(new Vector3(heroX/100,0,HeroDepth),battleCamera);if(Stream!=null){var rig=battleCamera.GetComponentInParent<BattleCameraController>();Stream.ConfigureGround(rig&&rig.Mode!=ViewMode.Side25D?32:4,24,12);Stream.Tick(rig?rig.FocusWorldX:heroX/100,IslandFrameBudget.Current,rig?rig.VisibleGroundHalfWidth:6);}if(!battleCamera)return;GeometryUtility.CalculateFrustumPlanes(battleCamera,frustum);hasFrustum=true;}
+  public float HeroRequestedSpeed;
   public float Draw(string id,string action,float x,float elevation,float facing,string serial,float age,float duration,float hitAt,string kind,float advance,float visualTime){
    bool hero=id=="hero";Actor a;if(!actors.TryGetValue(id,out a))a=Create(id,hero);if(a==null)return 0;
    var clip=hero&&bossAssets&&bossAssets.knockback&&(action=="knockback"||action=="knockdown"||action=="getup")?bossAssets.knockback:hero?assets.HeroClip(action):assets.slimeIdle;if(!clip)return 0;
@@ -172,8 +173,10 @@ namespace IslandGame {
    bool changed=a.clip!=clip||a.serial!=serial;
    if(a.clip!=clip||(!loop&&a.serial!=serial))a.time=0;
    a.clip=clip;a.serial=serial;
-   // Distance-driven gait avoids skating at partial stick deflection and preserves phase on turns.
-   float gaitAdvance=hero&&clip==assets.run&&a.placed?Mathf.Min(Vector2.Distance(new Vector2(x/100,HeroDepth),new Vector2(a.root.transform.position.x,a.root.transform.position.z))/3.8f,Mathf.Max(0,advance)*2):advance;
+   // Use intended stride as a floor: collision stops translation, not a held run cycle.
+   // Partial stick input scales cadence; idle/action clips and pause keep their own clocks.
+   float gaitAdvance=advance;
+   if(hero&&clip==assets.run&&a.placed){float dt=Mathf.Max(0,advance);float distance=Vector2.Distance(new Vector2(x/100,HeroDepth),new Vector2(a.root.transform.position.x,a.root.transform.position.z));gaitAdvance=Mathf.Min(Mathf.Max(distance,HeroRequestedSpeed*dt)/3.8f,dt*2);}
    a.time+=Mathf.Max(0,gaitAdvance);
    float sample=loop?Mathf.Repeat(hero?a.time:visualTime,clip.length):Mathf.Min(a.time,clip.length);
    if(hero&&kind=="knockback"&&bossAssets&&clip==bossAssets.knockback)sample=Mathf.Clamp(age,0,clip.length);

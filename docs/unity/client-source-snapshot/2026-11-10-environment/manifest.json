@@ -5,8 +5,8 @@
     {
       "projectPath": "Assets/Island/Runtime/NativeBattle.cs",
       "snapshotPath": "Runtime/NativeBattle.cs",
-      "bytes": 22237,
-      "sha256": "8800c928a33bf6ae8a706582cdc79425841eb01bc34b8eb035e09795518c4680",
+      "bytes": 22522,
+      "sha256": "9070ef4bd35c1ca0f1ac9a04c36d4122589900a838b3ebd9ae53f8fe08d18ba2",
       "beforeSha256": "db54ce68721d65310b7c467d471bfd456645fa3f7e6f33ae672af0e7d034a171"
     },
     {
@@ -19,8 +19,8 @@
     {
       "projectPath": "Assets/Island/Runtime/Battle3DView.cs",
       "snapshotPath": "Runtime/Battle3DView.cs",
-      "bytes": 25422,
-      "sha256": "42815193b434bb8b6c9a2419983cf65342d1a98d2503973962ad6d4b05973061",
+      "bytes": 25632,
+      "sha256": "4638fca3e412e9e30b13dfe1fb9a800a824b6d7b251a70090050018085674cd9",
       "beforeSha256": "29838f4c17029d658b07b1e0981bfdde35d00eb6d9c5f8d2236bea6916cec5e0"
     },
     {
@@ -48,7 +48,7 @@
       "projectPath": "Assets/Island/Runtime/RpgLocalTrainingSession.cs",
       "snapshotPath": "Runtime/RpgLocalTrainingSession.cs",
       "bytes": 4439,
-      "sha256": "b88682848bb2166b6f7e6c7ffcf4638f551d000c9e949291d7897ce54de46aba",
+      "sha256": "dee9333c2870e1a61d4c14abc6dd6ab7321358cb1e6b632f924618599e50c4df",
       "beforeSha256": "fa53f48cad551b4d29cbd4f8a12a110ce749953403e4acb1ddb4dab8bd3f8232"
     },
     {
@@ -159,8 +159,8 @@
     {
       "projectPath": "Assets/Island/Runtime/SourceEnvironmentProbe.cs",
       "snapshotPath": "Runtime/SourceEnvironmentProbe.cs",
-      "bytes": 5230,
-      "sha256": "9b1cef0d0714d566d167abddaf2a6ebedae6385be0a9bbf35036499f8b8c9630",
+      "bytes": 5799,
+      "sha256": "9b5cad7c9901ad7d3db96fcc2e10c03c8ce0453ecef0f45421efa1d08b10bfd2",
       "beforeSha256": null
     },
     {
@@ -187,8 +187,8 @@
     {
       "projectPath": "Assets/Island/Editor/SourceEnvironmentBuild.cs",
       "snapshotPath": "Editor/SourceEnvironmentBuild.cs",
-      "bytes": 2227,
-      "sha256": "6b725cbc4d4af46057b1333d68b75ff6f05cbc9ca7c2ee862d8cd3542e1d8354",
+      "bytes": 2247,
+      "sha256": "6482f19a04972e5346d672d50474860bb6a56ba87b5a0df210ec7f5d94f6504c",
       "beforeSha256": null
     },
     {
@@ -950,9 +950,38 @@
     {
       "projectPath": "Assets/Island/Resources/TrainingCombatKernel.js.txt",
       "snapshotPath": "Resources/TrainingCombatKernel.js.txt",
-      "bytes": 479728,
-      "sha256": "d44b2afe8525157b2bfe9e57880de338945e80530991dc410355935083410b91",
+      "bytes": 479725,
+      "sha256": "c50fada219225ea83973ab69339ddfec1b39300af39caf7135e3ece8fc6e65ff",
       "beforeSha256": "c5668bad4de75c84d142ff8fd279ea825c899d5c136f04d7bebcd5c97d308b52"
+    },
+    {
+      "projectPath": "Assets/Island/Runtime/IslandBattleHud.cs",
+      "snapshotPath": "Runtime/IslandBattleHud.cs",
+      "bytes": 30774,
+      "sha256": "b282d7b64a60908661f7a793f1687ce88593819409745fa91289b4530ea76628",
+      "beforeSha256": "180613739522870311e2bd13c8b7117728c47783f4033386c808f2be5003c84d"
+    },
+    {
+      "projectPath": "Assets/Island/Runtime/IslandBattleHud.cs.meta",
+      "snapshotPath": "Runtime/IslandBattleHud.cs.meta",
+      "bytes": 59,
+      "sha256": "2414fc55571f94f4d4b2ffb138f466fcbcda94cc160c841a65f37f05787cb0b6",
+      "beforeSha256": null
+    },
+    {
+      "projectPath": "Assets/Island/Runtime/IslandBattleBridge.cs",
+      "snapshotPath": "Runtime/IslandBattleBridge.cs",
+      "bytes": 2814,
+      "sha256": "0a015549050630e8f8f579fdfde7aa5be0e85a12b4ed23787e03d945a1f448fe",
+      "beforeSha256": "ddb0fc97bc493c97baddfc5d5c470e0b7456dbb58fe7af126073708bd3a8241c"
+    },
+    {
+      "projectPath": "Assets/Island/Runtime/IslandBattleBridge.cs.meta",
+      "snapshotPath": "Runtime/IslandBattleBridge.cs.meta",
+      "bytes": 59,
+      "sha256": "f0a833cbf9efe0af416f6add79a31af5d7f40c661fb61c22c8b2c41535b2d647",
+      "beforeSha256": null
     }
-  ]
+  ],
+  "latestCorrection": "2026-11-10: normal Side25D / boss QuarterView; held-input gait; source-run-v2 at 2/3 speed"
 }

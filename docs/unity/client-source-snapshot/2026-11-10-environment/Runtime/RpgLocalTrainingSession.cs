@@ -23,7 +23,7 @@ namespace IslandGame {
    if((bool?)response["training"]!=true||response["id"]==null){Active=false;Failed?.Invoke("로컬 훈련 입장 응답을 확인하지 못했습니다.");yield break;}
    runId=(string)response["id"];id=runId;trainingServerSequence=(int?)response["sequence"]??0;
    SetTrainingMetadata(response);
-   var boot=new JObject{{"mode",mountSundayPreview?"mount":"boss"},{"seed",111},{"traversalProfile","source-run-v1"},{"build",response["build"]?.DeepClone()}};
+   var boot=new JObject{{"mode",mountSundayPreview?"mount":"boss"},{"seed",111},{"traversalProfile","source-run-v2"},{"build",response["build"]?.DeepClone()}};
    localCombat=new StageCombatWorker(localSource,boot.ToString(Newtonsoft.Json.Formatting.None),20);
   }
   void SetTrainingMetadata(JObject response){
