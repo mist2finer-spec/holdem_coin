@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74bdf544760169b49912a1f76f98c523, type: 3}
+  m_Name: SourceEnvironmentAssets
+  m_EditorClassIdentifier: 
+  grassLods:
+  - {fileID: 4300000, guid: 7fbdf102a1ec6854ebdbe79358d9a012, type: 2}
+  - {fileID: 4300000, guid: 0b9586301fc004142817dcf0e443b204, type: 2}
+  - {fileID: 4300000, guid: e19525b32f203f646b4b0d4baba4096f, type: 2}
+  - {fileID: 4300000, guid: 5d024c2a1bec5f54c900404f80ab3462, type: 2}
+  grassMaterial: {fileID: 2100000, guid: 22321dead9da1c94aaf3d69511df07dd, type: 2}
+  zones:
+  - {fileID: 4900000, guid: fea740ed97726c74c923685e934dc903, type: 3}
+  - {fileID: 4900000, guid: c4909851bbfa3234289609f4dd12b20e, type: 3}
+  - {fileID: 4900000, guid: 9641eaf169327514ba2632620f8207c2, type: 3}
+  - {fileID: 4900000, guid: af9f7fd182d7f9245a02028d399b31db, type: 3}
+  - {fileID: 4900000, guid: 666819097b2498d4d9ed32d84728f9cf, type: 3}
+  - {fileID: 4900000, guid: 6a2271e6a573f0d468845eae52de6910, type: 3}
+  - {fileID: 4900000, guid: 7b210e9cdbc90df41906ea5ccfc44492, type: 3}
+  - {fileID: 4900000, guid: 1f23c4d3179779d409345630d042aefa, type: 3}
+  - {fileID: 4900000, guid: 993b0b53b1d9b75449f93c6c99014eb4, type: 3}
+  - {fileID: 4900000, guid: e7a9230d5dde76645ae8043e223c7f2e, type: 3}
+  trees:
+  - {fileID: 2372231406731595919, guid: bccdeeb920bb6b44bb2b5acf974d7ca0, type: 3}
+  - {fileID: 6793382284569762995, guid: ae16419297b5fdf4d9951b7647a83d5f, type: 3}
+  rocks:
+  - {fileID: 9144551551377477529, guid: 6fa9564da8e24f74da7e261270050bf0, type: 3}
+  - {fileID: 6840586200017941274, guid: 694fc3ecd17e7c4408ed5ac282bb9572, type: 3}
+  bossGrass: {fileID: 4900000, guid: 15947eec754df0049b83c7134442fe73, type: 3}

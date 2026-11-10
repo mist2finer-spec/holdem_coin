@@ -1,6 +1,6 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';import vm from 'node:vm';
 import {MountSundayEngine} from '../../src/lib/rpg-mount-sunday-engine';import {UnityBossEngine} from '../../src/lib/rpg-unity-boss-engine';
-const source=readFileSync('docs/unity/client-source-snapshot/2026-11-09-local/Resources/TrainingCombatKernel.js.txt','utf8');
+const source=readFileSync('docs/unity/client-source-snapshot/2026-11-10-environment/Resources/TrainingCombatKernel.js.txt','utf8');
 function kernel(mode='mount'){const c:any=vm.createContext({});vm.runInContext(source,c);const initial=JSON.parse(c.stageInitialize(JSON.stringify({mode,seed:111})));return {c,initial,step(steps:number,input:any,commands:any[]=[]){return JSON.parse(c.stageAdvance(JSON.stringify({steps,input,commands,snapshot:true})));}};}
 function equal(actual:any,expected:any){for(const key of Object.keys(expected))assert.deepEqual(actual[key],JSON.parse(JSON.stringify(expected[key])),key);}
 test('training bundle uses original engines through ten zones and boss, with no network globals',()=>{

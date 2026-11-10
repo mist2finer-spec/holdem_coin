@@ -1,0 +1,14 @@
+{
+  "result": "Succeeded",
+  "totalErrors": 0,
+  "totalWarnings": 1,
+  "seconds": 283.9584709,
+  "output": "G:/holdem_coin-workspace/island-genshin-localcombat-20261110/builds/IslandGame-GenshinEnvironment-20261110.apk",
+  "apkBytes": 139036198,
+  "messages": [
+    {
+      "type": "Warning",
+      "content": "Assets\\Island\\Runtime\\IslandApp.cs(10,205): warning CS0414: The field 'IslandApp.lastDeal' is assigned but its value is never used"
+    }
+  ]
+}

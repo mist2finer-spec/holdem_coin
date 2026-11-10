@@ -13,7 +13,9 @@ const LANE_Y=5000,ARENA_X=2670;
 const point=(x:number,y=LANE_Y)=>({x,y});
 const distance=(a:{x:number;y:number},b:{x:number;y:number})=>Math.hypot(a.x-b.x,a.y-b.y);
 const normalized=(x:number,y:number)=>{const n=Math.hypot(x,y);return n>1e-8?{x:x/n,y:y/n}:{x:1,y:0};};
+import {type TraversalProfile,jumpDuration,jumpHeight,actionDistance} from './rpg-traversal-profile';
 export class UnityBossEngine {
+ public traversal?:TraversalProfile;
  readonly rules:UnityRules;readonly map:any;elapsed=0;room=0;kills=0;status='playing';phase='combat';paused=false;auto=true;
  hero={x:1200,y:LANE_Y,elevation:0,airHeight:0,facing:1,direction:{x:1,y:0},hp:0,maxHP:0,action:'stay1',serial:0,motion:null as Motion|null};
  boss={id:9001,species:9001,unityBoss:true,room:1,x:3500,y:LANE_Y,elevation:0,hp:0,maxHP:0,radius:140,direction:{x:-1,y:0},state:'idle',action:'idle',facing:-1,motion:null as Motion|null};
@@ -36,7 +38,7 @@ export class UnityBossEngine {
  get slimeCleared(){return this.slimes.every(m=>m.hp<=0);}
  private bounds(){return this.room===1?{minX:ARENA_X,maxX:8700,minY:1200,maxY:10300}:this.slimeCleared?{minX:1100,maxX:8700,minY:LANE_Y,maxY:LANE_Y}:{minX:1100,maxX:2140,minY:LANE_Y,maxY:LANE_Y};}
  private blocked(x:number,y:number,radius=18){return this.map.obstacles.some((o:any)=>Math.hypot(o.x-x,o.y-y)<o.radius+radius);}
- private heroBlocked(x:number,y:number){const kind=this.hero.motion?.kind;if(kind==='dodge')return false;const feet=this.groundAt(x,y)+this.hero.airHeight;if(kind==='jump')return this.map.obstacles.some((o:any)=>blocksAt(x,y,feet,o,(a,b)=>this.groundAt(a,b)))||this.room===1&&this.boss.hp>0&&blocksAt(x,y,feet,{...this.boss,bodyHeight:650},(a,b)=>this.groundAt(a,b));return this.blocked(x,y)||this.room===1&&this.boss.hp>0&&Math.hypot(x-this.boss.x,y-this.boss.y)<BOSS_CONTACT.bodyRadius+BOSS_CONTACT.heroRadius;}
+ private heroBlocked(x:number,y:number){const kind=this.hero.motion?.kind;if(kind==='dodge')return this.traversal?this.blocked(x,y):false;const feet=this.groundAt(x,y)+this.hero.airHeight;if(kind==='jump')return this.map.obstacles.some((o:any)=>blocksAt(x,y,feet,o,(a,b)=>this.groundAt(a,b)))||this.room===1&&this.boss.hp>0&&blocksAt(x,y,feet,{...this.boss,bodyHeight:650},(a,b)=>this.groundAt(a,b));return this.blocked(x,y)||this.room===1&&this.boss.hp>0&&Math.hypot(x-this.boss.x,y-this.boss.y)<BOSS_CONTACT.bodyRadius+BOSS_CONTACT.heroRadius;}
  private separateBody(){
   if(this.room!==1||this.boss.hp<=0||this.hero.motion?.kind==='dodge')return;
   const dx=this.hero.x-this.boss.x,dy=this.hero.y-this.boss.y,r=BOSS_CONTACT.bodyRadius+BOSS_CONTACT.heroRadius,d=Math.hypot(dx,dy);if(d>=r)return;
@@ -66,8 +68,8 @@ export class UnityBossEngine {
   if(this.hero.motion)return false;
   if(input.jump||input.slide||input.dodge){
    if(input.jump?this.elapsed<this.jumpAt:this.elapsed<this.dodgeAt)return false;
-   const inputDir=this.inputDirection(input),dir=Math.hypot(inputDir.x,inputDir.y)>.1?normalized(inputDir.x,inputDir.y):this.room===1?this.hero.direction:{x:this.hero.facing,y:0};const kind=input.jump?'jump':input.slide?'slide':'dodge',duration=input.jump ? .86 : .65;
-   const b=this.bounds(),distance=input.jump?150:input.slide?200:120;
+   const inputDir=this.inputDirection(input),dir=Math.hypot(inputDir.x,inputDir.y)>.1?normalized(inputDir.x,inputDir.y):this.room===1?this.hero.direction:{x:this.hero.facing,y:0};const kind=input.jump?'jump':input.slide?'slide':'dodge',duration=input.jump ? (this.traversal?jumpDuration(this.traversal):.86) : .65;
+   const b=this.bounds(),distance=this.traversal?actionDistance(this.traversal,kind,duration):input.jump?150:input.slide?200:120;
    this.hero.motion={kind,attackId:++this.attackSerial,definitionId:'hero-'+kind,timeline:{active:[],cancelFrom:1},start:this.elapsed,duration,hitAt:0,from:point(this.hero.x,this.hero.y),to:point(clamp(this.hero.x+dir.x*distance,b.minX,b.maxX),clamp(this.hero.y+dir.y*distance,b.minY,b.maxY))};this.faceHero(dir.x,dir.y);this.hero.action=input.jump?'jump1':input.slide?'sliding1':'avoid1';this.hero.serial++;
    if(input.jump)this.jumpAt=this.elapsed+1.05;else this.dodgeAt=this.elapsed+1.2;if(input.dodge)this.rollRecoveryUntil=this.elapsed+.72;return true;
   }
@@ -94,7 +96,7 @@ export class UnityBossEngine {
  private stepHero(dt:number,input:UnityInput){
   const m=this.hero.motion;
   if(m){const age=this.elapsed-m.start,t=clamp(age/m.duration,0,1);
-   if(['jump','slide','dodge'].includes(m.kind)){this.hero.airHeight=m.kind==='jump'?400*t*(1-t):0;this.moveHero(m.from.x+(m.to.x-m.from.x)*t,m.from.y+(m.to.y-m.from.y)*t);if(m.kind==='slide')this.hero.action=t<.7?'sliding1':'sliding2';}
+   if(['jump','slide','dodge'].includes(m.kind)){this.hero.airHeight=m.kind==='jump'?(this.traversal?jumpHeight(this.traversal,age):400*t*(1-t)):0;this.moveHero(m.from.x+(m.to.x-m.from.x)*t,m.from.y+(m.to.y-m.from.y)*t);if(m.kind==='slide')this.hero.action=t<.7?'sliding1':'sliding2';}
    else if(m.kind==='knockback'){const flight=clamp(age/.45,0,1);this.moveHero(m.from.x+(m.to.x-m.from.x)*flight,m.from.y+(m.to.y-m.from.y)*flight);this.hero.airHeight=age<.45?4*210*flight*(1-flight):0;this.hero.action=age<.45?'knockback':age<1.2?'knockdown':'getup';}
    else if(m.kind==='attack')this.stepWeapon(dt);
    else if(age>=m.hitAt&&!m.done){m.done=1;this.heroHit(m.kind==='skill');}
@@ -104,7 +106,7 @@ export class UnityBossEngine {
   if(this.auto&&Math.hypot(direction.x,direction.y)<.1&&this.elapsed<this.rollRecoveryUntil){this.hero.action='stay1';return;}
   if(this.auto&&Math.hypot(direction.x,direction.y)<.1){const target=this.room===0?this.slimes.filter(m=>m.hp>0).sort((a,b)=>distance(a,this.hero)-distance(b,this.hero))[0]:this.boss.hp>0?this.boss:null;
    if(target){if(distance(target,this.hero)<(target.unityBoss?185:95)){this.command({...input,attack:true});return;}direction=normalized(target.x-this.hero.x,this.room===1?target.y-this.hero.y:0);}else if(this.room===0&&this.slimeCleared)direction={x:1,y:0};}
-  if(Math.hypot(direction.x,direction.y)>.1){this.moveHero(this.hero.x+direction.x*210*dt,this.hero.y+direction.y*210*dt);this.faceHero(direction.x,direction.y);this.hero.action='run1';}else this.hero.action='stay1';
+  if(Math.hypot(direction.x,direction.y)>.1){this.moveHero(this.hero.x+direction.x*(this.traversal?.run??210)*dt,this.hero.y+direction.y*(this.traversal?.run??210)*dt);this.faceHero(direction.x,direction.y);this.hero.action='run1';}else this.hero.action='stay1';
 
  }
  private stepSlimes(dt:number){if(this.room!==0)return;for(const m of this.slimes){if(m.hp<=0)continue;const delta=this.hero.x-m.x;if(Math.abs(delta)>70){m.x=clamp(m.x+Math.sign(delta)*75*dt,1150,2120);m.state='walk';}else{m.state='attack';if(this.elapsed>=m.nextAttack){m.nextAttack=this.elapsed+1.5;this.damageHero(50,'attack');}}m.facing=Math.sign(delta)||-1;m.elevation=this.groundAt(m.x,m.y);}}
@@ -147,5 +149,5 @@ export class UnityBossEngine {
   const low=a[iz*101+ix]+(a[iz*101+ix+1]-a[iz*101+ix])*(gx-ix),high=a[(iz+1)*101+ix]+(a[(iz+1)*101+ix+1]-a[(iz+1)*101+ix])*(gx-ix);let ground=(low+(high-low)*(gz-iz))*100;
   const b=this.map.bridge;if(x>=b.from&&x<=b.to&&Math.abs(z)<=.65){const heights=b.heightCore as number[],i=(x-b.from)/(b.to-b.from)*(heights.length-1),n=Math.floor(i);ground=Math.max(ground,heights[n]+(heights[Math.min(n+1,heights.length-1)]-heights[n])*(i-n));}return ground;
  }
- view(){const b=this.bounds();return {presentationRevision:'combat-view-v1',inputSpace:'world-xz',movementMode:this.room===1?'plane':'lane',bossCadence:{idleUntil:this.bossIdleUntil,chaseUntil:this.bossChaseUntil,nextAttackAt:this.bossAt},contactRevision:BOSS_CONTACT.revision,bodyRadius:BOSS_CONTACT.bodyRadius,heroRadius:BOSS_CONTACT.heroRadius,heroHeight:BOSS_CONTACT.heroHeight,unityBossMode:true,protocol:UNITY_BOSS_PROTOCOL,totalRooms:2,training:true,room:this.room,status:this.status,phase:this.phase,elapsed:this.elapsed,paused:this.paused,auto:this.auto,kills:this.kills,gold:0,hero:{...this.hero,direction:{...this.hero.direction},motion:this.hero.motion?JSON.parse(JSON.stringify(this.hero.motion)):null},mobs:[...this.slimes.map(m=>({...m})),{...this.boss,motion:this.boss.motion?JSON.parse(JSON.stringify(this.boss.motion)):null}],warning:this.warning?{...this.warning}:null,fx:this.fx.map(f=>({...f})),walkBounds:b,cleared:this.slimeCleared?[0]:[],visited:this.room===1?[0,1]:[0],cameraMode:this.room===1&&this.boss.hp>0?'QuarterView':'Side25D',bossVisible:this.room===1,resources:JSON.parse(JSON.stringify(this.resources)),cooldowns:[...this.cooldowns],cooldownTotals:[...this.cooldownTotals],jumpReady:this.elapsed>=this.jumpAt&&!this.hero.motion,dodgeReady:this.elapsed>=this.dodgeAt&&!this.hero.motion,slideReady:this.elapsed>=this.dodgeAt&&!this.hero.motion};}
+ view(){const b=this.bounds();return {...(this.traversal?{traversalProfile:this.traversal.id,movementSpeed:this.traversal.run}:{}),presentationRevision:'combat-view-v1',inputSpace:'world-xz',movementMode:this.room===1?'plane':'lane',bossCadence:{idleUntil:this.bossIdleUntil,chaseUntil:this.bossChaseUntil,nextAttackAt:this.bossAt},contactRevision:BOSS_CONTACT.revision,bodyRadius:BOSS_CONTACT.bodyRadius,heroRadius:BOSS_CONTACT.heroRadius,heroHeight:BOSS_CONTACT.heroHeight,unityBossMode:true,protocol:UNITY_BOSS_PROTOCOL,totalRooms:2,training:true,room:this.room,status:this.status,phase:this.phase,elapsed:this.elapsed,paused:this.paused,auto:this.auto,kills:this.kills,gold:0,hero:{...this.hero,direction:{...this.hero.direction},motion:this.hero.motion?JSON.parse(JSON.stringify(this.hero.motion)):null},mobs:[...this.slimes.map(m=>({...m})),{...this.boss,motion:this.boss.motion?JSON.parse(JSON.stringify(this.boss.motion)):null}],warning:this.warning?{...this.warning}:null,fx:this.fx.map(f=>({...f})),walkBounds:b,cleared:this.slimeCleared?[0]:[],visited:this.room===1?[0,1]:[0],cameraMode:this.room===1&&this.boss.hp>0?'QuarterView':'Side25D',bossVisible:this.room===1,resources:JSON.parse(JSON.stringify(this.resources)),cooldowns:[...this.cooldowns],cooldownTotals:[...this.cooldownTotals],jumpReady:this.elapsed>=this.jumpAt&&!this.hero.motion,dodgeReady:this.elapsed>=this.dodgeAt&&!this.hero.motion,slideReady:this.elapsed>=this.dodgeAt&&!this.hero.motion};}
 }

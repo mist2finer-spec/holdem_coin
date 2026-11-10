@@ -1,0 +1,96 @@
+{
+  "version": "0.1.0-test.20261109.6",
+  "platform": "WindowsEditor",
+  "resolution": "1080x2340",
+  "elapsed": 7.558529,
+  "errors": 0,
+  "stages": [
+    {
+      "name": "run",
+      "frames": 27,
+      "seconds": 0.459999919,
+      "distanceMeters": 2.31277347,
+      "peakMeters": 0.0,
+      "boneDelta": 82.33824
+    },
+    {
+      "name": "idle",
+      "frames": 30,
+      "seconds": 0.5400001,
+      "distanceMeters": 0.3469165,
+      "peakMeters": 0.0,
+      "boneDelta": 60.56395
+    },
+    {
+      "name": "jump",
+      "frames": 67,
+      "seconds": 1.11999989,
+      "distanceMeters": 5.62473869,
+      "peakMeters": 1.0499649,
+      "boneDelta": 88.5222
+    },
+    {
+      "name": "idle",
+      "frames": 22,
+      "seconds": 0.3800001,
+      "distanceMeters": 0.115637206,
+      "peakMeters": 0.0,
+      "boneDelta": 38.5797729
+    },
+    {
+      "name": "roll",
+      "frames": 45,
+      "seconds": 0.7199998,
+      "distanceMeters": 4.755637,
+      "peakMeters": 0.0,
+      "boneDelta": 121.2785
+    },
+    {
+      "name": "idle",
+      "frames": 40,
+      "seconds": 0.6800003,
+      "distanceMeters": 0.231276855,
+      "peakMeters": 0.0,
+      "boneDelta": 22.99025
+    },
+    {
+      "name": "slide",
+      "frames": 40,
+      "seconds": 0.6799998,
+      "distanceMeters": 1.70566893,
+      "peakMeters": 0.0,
+      "boneDelta": 64.7542343
+    },
+    {
+      "name": "settled",
+      "frames": 181,
+      "seconds": 3.0,
+      "distanceMeters": -0.115637206,
+      "peakMeters": 0.0,
+      "boneDelta": 35.0431366
+    }
+  ],
+  "clips": [
+    "idle_loop",
+    "PinkGlass_Sprint_Loop",
+    "jump_start",
+    "jump_loop",
+    "jump_land",
+    "roll",
+    "slide_loop"
+  ],
+  "grass": [
+    {
+      "SourceCount": 18867,
+      "VisibleCount": 4459,
+      "DrawCalls": 6
+    }
+  ],
+  "camera": "QuarterView",
+  "sun": "Battle 3D · warm key",
+  "networkRequests": 1,
+  "local": true,
+  "samples": 452,
+  "meanMs": 16.7127361,
+  "p95Ms": 22.8240986
+}

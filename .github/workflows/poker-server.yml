@@ -25,6 +25,7 @@ jobs:
       - run: npm run test:rpg:hybrid
       - run: npm run check:rpg
       - run: npm run test:rpg:local-training
+      - run: npm run test:rpg:source-traversal
       - run: npm run test:rpg:mount
       - run: npm run test:rpg:unity-boss
       - run: npm run test:rpg:stage

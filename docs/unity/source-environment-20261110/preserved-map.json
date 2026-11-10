@@ -1,0 +1,19 @@
+{
+  "baseApk": {
+    "path": "G:/new_project/IslandGame/Builds/Android/IslandGame-LocalCombat-20261109.apk",
+    "sha256": "216322baee38d6940933e87ce783c2f4a15ece27535364d16eebb2dec8a51a02"
+  },
+  "sceneHashes": {
+    "Assets\\Island\\MountRuntime\\Scenes\\MountZone01.unity": "11dd9905e93303946b73058fae8fa87a960dad127f3eddd9275258514f231207",
+    "Assets\\Island\\MountRuntime\\Scenes\\MountZone02.unity": "b7cc4ec320f6de7f0fce8b5da1d5f727911ded234fa94d370044224ff1cc2f79",
+    "Assets\\Island\\MountRuntime\\Scenes\\MountZone03.unity": "59224758ad3ffd24e2344fd8353a5a8dc5d12bc8233dac276a2ff9877723d628",
+    "Assets\\Island\\MountRuntime\\Scenes\\MountZone04.unity": "3445dc954bf5ae4a061c8c3e3e332dd59fab48c098be63fe3690ba9bcdecb073",
+    "Assets\\Island\\MountRuntime\\Scenes\\MountZone05.unity": "aa61fe0b58fc50915ba263183cc6b0bd28f317920abc3e3357896d6d2388674e",
+    "Assets\\Island\\MountRuntime\\Scenes\\MountZone06.unity": "d91f869e6874655ddacf558e7736d9ae542b87d79926ac4eef2076000cc2d731",
+    "Assets\\Island\\MountRuntime\\Scenes\\MountZone07.unity": "6efc684f952808428d11774f81bba15b01378ad6ca3212ad78ce731aa92afea2",
+    "Assets\\Island\\MountRuntime\\Scenes\\MountZone08.unity": "e42177adcc5022bad2cfdbf04812de4b03f37baf9e39e49c53a30e929ed2f1d7",
+    "Assets\\Island\\MountRuntime\\Scenes\\MountZone09.unity": "2edadaf85a3f7e00b2f278f146709401797aa182c1740ea3277997e716793281",
+    "Assets\\Island\\MountRuntime\\Scenes\\MountZone10.unity": "ac0c145cb4cc19e3d31288cb17f941ae9d47f57186b225d3269452f8f76db588"
+  },
+  "buildSettingsUnchanged": true
+}

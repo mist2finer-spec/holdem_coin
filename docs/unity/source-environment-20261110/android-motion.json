@@ -1,0 +1,104 @@
+{
+  "version": "0.1.0-test.20261110.1",
+  "platform": "Android",
+  "resolution": "900x1600",
+  "elapsed": 7.578039,
+  "errors": 0,
+  "stages": [
+    {
+      "name": "run",
+      "frames": 13,
+      "seconds": 0.340000033,
+      "distanceMeters": 1.85021973,
+      "peakMeters": 0.0,
+      "boneDelta": 63.8222427,
+      "movingMetersPerSecond": 5.46069336
+    },
+    {
+      "name": "idle",
+      "frames": 18,
+      "seconds": 0.519999862,
+      "distanceMeters": 0.578193367,
+      "peakMeters": 0.0,
+      "boneDelta": 84.34734,
+      "movingMetersPerSecond": 0.0
+    },
+    {
+      "name": "jump",
+      "frames": 44,
+      "seconds": 1.18000007,
+      "distanceMeters": 4.81526852,
+      "peakMeters": 1.0499649,
+      "boneDelta": 84.35229,
+      "movingMetersPerSecond": 0.0
+    },
+    {
+      "name": "idle",
+      "frames": 17,
+      "seconds": 0.340000153,
+      "distanceMeters": 0.0,
+      "peakMeters": 0.0,
+      "boneDelta": 6.16915655,
+      "movingMetersPerSecond": 0.0
+    },
+    {
+      "name": "roll",
+      "frames": 33,
+      "seconds": 0.7999997,
+      "distanceMeters": 3.25233388,
+      "peakMeters": 0.0,
+      "boneDelta": 118.525337,
+      "movingMetersPerSecond": 0.0
+    },
+    {
+      "name": "idle",
+      "frames": 34,
+      "seconds": 0.640000343,
+      "distanceMeters": 0.0,
+      "peakMeters": 0.0,
+      "boneDelta": 7.317929,
+      "movingMetersPerSecond": 0.0
+    },
+    {
+      "name": "slide",
+      "frames": 36,
+      "seconds": 0.6799998,
+      "distanceMeters": -0.296806633,
+      "peakMeters": 0.0,
+      "boneDelta": 69.632225,
+      "movingMetersPerSecond": 0.0
+    },
+    {
+      "name": "settled",
+      "frames": 171,
+      "seconds": 3.0,
+      "distanceMeters": 0.0,
+      "peakMeters": 0.0,
+      "boneDelta": 7.5968833,
+      "movingMetersPerSecond": 0.0
+    }
+  ],
+  "clips": [
+    "idle_loop",
+    "PinkGlass_Sprint_Loop",
+    "jump_start",
+    "jump_loop",
+    "jump_land",
+    "roll",
+    "slide_loop"
+  ],
+  "grass": [
+    {
+      "SourceCount": 18867,
+      "VisibleCount": 3066,
+      "DrawCalls": 4
+    }
+  ],
+  "camera": "QuarterView",
+  "sun": "Battle 3D \u00b7 warm key",
+  "networkRequests": 1,
+  "local": true,
+  "samples": 366,
+  "meanMs": 20.719593,
+  "p95Ms": 33.33461
+}
