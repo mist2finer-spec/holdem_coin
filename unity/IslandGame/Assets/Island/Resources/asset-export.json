@@ -1143,5 +1143,245 @@
     "source": "@current-web-catalog",
     "destination": "RpgCatalog.json",
     "sha256": "c80a244d53c1a259b52fb2a87ae720d5a38a7e5ccb76b7e76080e0bc3538b0cb"
+  },
+  {
+    "source": "public/ui/chips/Chip_01.png",
+    "destination": "WebAssets/ui/chips/Chip_01.png",
+    "sha256": "79d9037e711b7922b1ee43a617b9fa61daa1096dc10a4ac6b7b2388a366113b8"
+  },
+  {
+    "source": "public/ui/chips/Chip_01_a.png",
+    "destination": "WebAssets/ui/chips/Chip_01_a.png",
+    "sha256": "94c8f192480480dad43b5604fb7027e7454176a40cccf6b16d54bf0f1de23990"
+  },
+  {
+    "source": "public/ui/chips/Chip_01_b.png",
+    "destination": "WebAssets/ui/chips/Chip_01_b.png",
+    "sha256": "d7e3a097b2ffd23cd40e72b99f8db493ecbb0d4a2f3edd4d54ab033588966481"
+  },
+  {
+    "source": "public/ui/chips/Chip_02.png",
+    "destination": "WebAssets/ui/chips/Chip_02.png",
+    "sha256": "74e960614625dbf60ffeb101b18eb032ac7fb9af6c988de5c7ecd7853f850776"
+  },
+  {
+    "source": "public/ui/chips/Chip_03.png",
+    "destination": "WebAssets/ui/chips/Chip_03.png",
+    "sha256": "3d2f8f67aba3741745efb098dcbdaf051c52d81edaed34c32f03eb58be8c66e2"
+  },
+  {
+    "source": "public/ui/chips/Chip_04.png",
+    "destination": "WebAssets/ui/chips/Chip_04.png",
+    "sha256": "bce13ec5f957132ea152ababac040f2c442f65e8d63ff7fe90361368bce2beb1"
+  },
+  {
+    "source": "public/ui/chips/Chip_05.png",
+    "destination": "WebAssets/ui/chips/Chip_05.png",
+    "sha256": "c2bcaa6bde6c5550f09f9a04c422f2113b56f13512bf57f240fc4a5d6550aceb"
+  },
+  {
+    "source": "public/ui/chips/Chip_06.png",
+    "destination": "WebAssets/ui/chips/Chip_06.png",
+    "sha256": "5a37ed3e7b306f893a8f32aba146f4ff9930cfcc66594f9a1bb5f3a9ef632b01"
+  },
+  {
+    "source": "public/ui/chips/Chip_07.png",
+    "destination": "WebAssets/ui/chips/Chip_07.png",
+    "sha256": "825e37f7c4c175c3c20530e93838f90d44e3a981d63bb5980e548d3c04e0f4bf"
+  },
+  {
+    "source": "public/ui/chips/Chip_08.png",
+    "destination": "WebAssets/ui/chips/Chip_08.png",
+    "sha256": "22a5eb878597cc8e98347dab098dcb44d0b466b484f0adf63f6395fb8e9540e6"
+  },
+  {
+    "source": "public/ui/chips/Chip_09.png",
+    "destination": "WebAssets/ui/chips/Chip_09.png",
+    "sha256": "24dc702b642fe79db9aa31b3d4d43b0a3a105fad2f8fd01b7acc9654a0dd736b"
+  },
+  {
+    "source": "public/ui/chips/Chip_10.png",
+    "destination": "WebAssets/ui/chips/Chip_10.png",
+    "sha256": "9d71bcfda59968f2aa592bb80f5cf345d9ee4f52297005fbd386b42fb706e31b"
+  },
+  {
+    "source": "public/ui/chips/manifest.json",
+    "destination": "WebAssets/ui/chips/manifest.json",
+    "sha256": "c7540608916d4576f092426ca51a54a0d271a4a13057e6317c3ed329209fe7a9"
+  },
+  {
+    "source": "public/ui/currency/currency_bg.png",
+    "destination": "WebAssets/ui/currency/currency_bg.png",
+    "sha256": "5a2d366af76314ce4ccb1d500441d3c16e49309dd3d35976e87a34d1f99f6863"
+  },
+  {
+    "source": "public/ui/currency/currency_bg_x4.png",
+    "destination": "WebAssets/ui/currency/currency_bg_x4.png",
+    "sha256": "292d15dddc4fe61ea6eca7f78a337f1f7f11e3a5cb683e997ad8bfe2f6d14802"
+  },
+  {
+    "source": "public/ui/currency/plus_01.png",
+    "destination": "WebAssets/ui/currency/plus_01.png",
+    "sha256": "43faa9e45db8c88df903dca7af16dfe4dbf98a12219417bb17e6ad3a4116a424"
+  },
+  {
+    "source": "public/ui/leaderboard/gold_trim_horizontal.png",
+    "destination": "WebAssets/ui/leaderboard/gold_trim_horizontal.png",
+    "sha256": "ad038d19c11b0355fd2f1c7b6f17c80fa6a9cdaf16a0dfaf2bd3e9846d68a2a5"
+  },
+  {
+    "source": "public/ui/leaderboard/Leaderboard_1.png",
+    "destination": "WebAssets/ui/leaderboard/Leaderboard_1.png",
+    "sha256": "f8bc34ae6165ab897309bc5ee7074c876e54078404f3922e53639786533a4f4b"
+  },
+  {
+    "source": "public/ui/leaderboard/Leaderboard_1_x4.png",
+    "destination": "WebAssets/ui/leaderboard/Leaderboard_1_x4.png",
+    "sha256": "a47720f36cb8403ad447d80012d2a2ba1211381e7ea9f1d2d702fd51672a0112"
+  },
+  {
+    "source": "public/ui/shop/accessories/acce_1.png",
+    "destination": "WebAssets/ui/shop/accessories/acce_1.png",
+    "sha256": "53f2d2f228364de94b424d9accc1fdac714a9a3e8e36ceb468a279bfce5d0233"
+  },
+  {
+    "source": "public/ui/shop/armor/armor_1.png",
+    "destination": "WebAssets/ui/shop/armor/armor_1.png",
+    "sha256": "cd2650feeb61e211a3d06cfc304312348a9c03040f37e7f0d2d937112b84e353"
+  },
+  {
+    "source": "public/ui/shop/avatars/avatar_1.png",
+    "destination": "WebAssets/ui/shop/avatars/avatar_1.png",
+    "sha256": "e338f3c5d81bebbd95b4bd2a6ec15e51fe160f698ae5699b0cc9e5ac30ce9ebd"
+  },
+  {
+    "source": "public/ui/shop/weapons/weapone_1.jpg",
+    "destination": "WebAssets/ui/shop/weapons/weapone_1.jpg",
+    "sha256": "6b503f239dbc6569ae64ef0c9f2539d0ad0c895956d48811567326146e9dded1"
+  },
+  {
+    "source": "public/ui/store/store_01.png",
+    "destination": "WebAssets/ui/store/store_01.png",
+    "sha256": "329867831a721cff5a2cfa9e51f12be2fa20acbf9a25d726270f305a56190813"
+  },
+  {
+    "source": "public/ui-buttons/btn-blue.png",
+    "destination": "WebAssets/ui-buttons/btn-blue.png",
+    "sha256": "de81a1483cc652480317c80db7a8f5d95fa3497eea2c2bee8150269c2a6104fe"
+  },
+  {
+    "source": "public/ui-buttons/btn-purple.png",
+    "destination": "WebAssets/ui-buttons/btn-purple.png",
+    "sha256": "e9ba8a901320dca0f508f86cf84c10fe1e032214a3c938c112067352566fa4d3"
+  },
+  {
+    "source": "public/ui-buttons/btn-red.png",
+    "destination": "WebAssets/ui-buttons/btn-red.png",
+    "sha256": "fa83b770ca137bd5b6be1158c8357858550f4ffc046689b8c0cd2ca9afb78b2c"
+  },
+  {
+    "source": "public/rpg/FrameCombatArtSkillFrame.png",
+    "destination": "WebAssets/rpg/FrameCombatArtSkillFrame.png",
+    "sha256": "e28012772b438fc92b8e7aae64bc53bfcbb1ced74bcc523c61aec6a363ece194"
+  },
+  {
+    "source": "public/rpg/maps/candle-dungeon/scene.json",
+    "destination": "WebAssets/rpg/maps/candle-dungeon/scene.json",
+    "sha256": "f699c3e1975a8b37dba983684e9ca095e650f289d093509f2f2b22e88e2c2004"
+  },
+  {
+    "source": "public/rpg/maps/candle-dungeon/textures/16e48bb7221336dc.png",
+    "destination": "WebAssets/rpg/maps/candle-dungeon/textures/16e48bb7221336dc.png",
+    "sha256": "dfed7a16f7bbcc5382c7f580fd047de6722fd41eed82cfb26d4444c6ebc858c4"
+  },
+  {
+    "source": "public/rpg/maps/candle-dungeon/textures/1e17c3c8e5865a65.png",
+    "destination": "WebAssets/rpg/maps/candle-dungeon/textures/1e17c3c8e5865a65.png",
+    "sha256": "2e45827162500d502d95e18a3b29bce34f4d4bfdca61815f47d0f33d02553683"
+  },
+  {
+    "source": "public/rpg/maps/candle-dungeon/textures/2a5fa6602875c8d0.png",
+    "destination": "WebAssets/rpg/maps/candle-dungeon/textures/2a5fa6602875c8d0.png",
+    "sha256": "aa6c356e930057eb9cc3a8815965087f49eb41ddf38b832f5ba359fd3ed0b8e1"
+  },
+  {
+    "source": "public/rpg/maps/candle-dungeon/textures/3818887566c67f1f.png",
+    "destination": "WebAssets/rpg/maps/candle-dungeon/textures/3818887566c67f1f.png",
+    "sha256": "cc66800b3eaf6f1323e74130a538a7b7885f64abe8eda9e32d177bbb7190632b"
+  },
+  {
+    "source": "public/rpg/maps/candle-dungeon/textures/59b4fbe2cc97512c.png",
+    "destination": "WebAssets/rpg/maps/candle-dungeon/textures/59b4fbe2cc97512c.png",
+    "sha256": "b44272ab0c0d64c43ddcebfa99927080724b3a7c5a2b5031f82311c3f0cab323"
+  },
+  {
+    "source": "public/rpg/maps/candle-dungeon/textures/5d733d3b71f5a27f.png",
+    "destination": "WebAssets/rpg/maps/candle-dungeon/textures/5d733d3b71f5a27f.png",
+    "sha256": "15d12b01c60c188fa95b00c6a88ec75364ab57d18c6cfc16566f420476aaf502"
+  },
+  {
+    "source": "public/rpg/maps/candle-dungeon/textures/63fd965e93603a62.png",
+    "destination": "WebAssets/rpg/maps/candle-dungeon/textures/63fd965e93603a62.png",
+    "sha256": "a64ef3e571b9b39623160edd0affd97220c1c06fe94d2cc5f3557383fc410030"
+  },
+  {
+    "source": "public/rpg/maps/candle-dungeon/textures/746918fece0dec92.png",
+    "destination": "WebAssets/rpg/maps/candle-dungeon/textures/746918fece0dec92.png",
+    "sha256": "567b1b5772db75921aa82fb8a885ae7182d2e212795c67c7e904f6b4ef579de2"
+  },
+  {
+    "source": "public/rpg/maps/candle-dungeon/textures/7c8bd537db964e9d.png",
+    "destination": "WebAssets/rpg/maps/candle-dungeon/textures/7c8bd537db964e9d.png",
+    "sha256": "9541bf68f34ed6d33c16e5ccda543011aef95ce12ac930d079d3f29f26b2c45a"
+  },
+  {
+    "source": "public/rpg/maps/candle-dungeon/textures/81da1c091e05431a.png",
+    "destination": "WebAssets/rpg/maps/candle-dungeon/textures/81da1c091e05431a.png",
+    "sha256": "befd353504f70fdda3f553a269259e844adefca41b38fbef3a00f91218420545"
+  },
+  {
+    "source": "public/rpg/maps/candle-dungeon/textures/8fc6a24c9fa1201c.png",
+    "destination": "WebAssets/rpg/maps/candle-dungeon/textures/8fc6a24c9fa1201c.png",
+    "sha256": "85cba48b5cf2bbd8e347f05f2556e877fa70b2f2b9065d14fa1f0bba246951b6"
+  },
+  {
+    "source": "public/rpg/maps/candle-dungeon/textures/9da4fa96dfa3af8c.png",
+    "destination": "WebAssets/rpg/maps/candle-dungeon/textures/9da4fa96dfa3af8c.png",
+    "sha256": "9cd5c4aa27e0212c1b41f243efe0161b3ee3459b1ace9ac33d582715ad03562d"
+  },
+  {
+    "source": "public/rpg/maps/candle-dungeon/textures/cf858293a6ca56fd.png",
+    "destination": "WebAssets/rpg/maps/candle-dungeon/textures/cf858293a6ca56fd.png",
+    "sha256": "96c4e93fff21a803a33028fcf6579829ead6f2a608d44ee47da0198fbfd96041"
+  },
+  {
+    "source": "public/rpg/maps/candle-dungeon/textures/d68aa7b98a7a2b26.png",
+    "destination": "WebAssets/rpg/maps/candle-dungeon/textures/d68aa7b98a7a2b26.png",
+    "sha256": "8d4fab44599a3fe15980cdebff1920db0803f91d04dea068eeb098c20af71a2a"
+  },
+  {
+    "source": "@native-map-contract",
+    "destination": "BossTrials/map-contract.json",
+    "sha256": "db55ce49a8326d2a392157f28e63c84d152377231f7b6e50291543f8d1b85261"
+  },
+  {
+    "source": "unity/IslandGame/Assets/Island/Resources/BossTrials/bosses.json",
+    "destination": "BossTrials/bosses.json",
+    "sha256": "589789d03db05723f782083672893cfc9eb79a83b61bde5393fdd074329e3e94"
+  },
+  {
+    "source": "unity/IslandGame/Assets/Island/Resources/BossTrials/BossTrialRecoveredMap.shader",
+    "destination": "BossTrials/BossTrialRecoveredMap.shader",
+    "sha256": "ff410baeddce7976e8200e77a4401b2ddf6589934c6df41d02dad59f320c8c73"
+  },
+  {
+    "source": "unity/IslandGame/Assets/Island/Resources/UnityDisplayNames.json",
+    "destination": "UnityDisplayNames.json",
+    "sha256": "f437ec5fa0acba53e0058325f7c9a690c37285b1b6ce71685395781c6d2ef218"
+  },
+  {
+    "source": "@asset-index",
+    "destination": "AssetIndex.json",
+    "sha256": "8602b9b2286ed1f6c587552536ae7038b8e7b6035d2637b5462588462e47bb51"
   }
 ]

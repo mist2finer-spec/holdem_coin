@@ -102,3 +102,7 @@ mini-services/poker-server/data/
 
 # Shared illustrated poker profiles (runtime UI assets, not test screenshots).
 !/public/poker/profiles/*.png
+
+# Current complete Unity project assets
+!/unity/IslandGame/Assets/**/*.png
+!/unity/IslandGame/Assets/**/*.dll

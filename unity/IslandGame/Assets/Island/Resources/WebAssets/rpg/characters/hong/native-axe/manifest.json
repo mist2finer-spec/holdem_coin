@@ -1,0 +1,390 @@
+{
+  "version": 2,
+  "rig": "hong-native-axe-v2",
+  "spine": "4.2.43",
+  "bones": 45,
+  "clips": [
+    "attack1",
+    "attack2",
+    "attack3",
+    "attack4",
+    "attack5",
+    "avoid1",
+    "dash",
+    "defeat1",
+    "defeat2",
+    "die1",
+    "jump1",
+    "jump2",
+    "jump3",
+    "jump4",
+    "jump5",
+    "knockdown1",
+    "nstay1",
+    "rest1",
+    "run1",
+    "skill1",
+    "skill2",
+    "skill3",
+    "skill4",
+    "skill5",
+    "skill5_end",
+    "skill5_loop",
+    "sliding1",
+    "sliding2",
+    "stay1",
+    "victory1",
+    "victory2",
+    "wall1"
+  ],
+  "centerHeight": 31.5,
+  "legLengths": 13.8,
+  "skirtLift": 7,
+  "legWeightCap": 0.25,
+  "skirtVertices": 41,
+  "maxCombinedLegWeight": 0.24990249902499026,
+  "hairFlutter": true,
+  "textureUpgrade": {
+    "version": 1,
+    "size": [
+      2048,
+      1024
+    ],
+    "scale": 4,
+    "filter": "Linear",
+    "geometrySha256": "88dfad230d2fe6da175f41c264d6e9f43b9c292deb92dea5613f236b982c02ea",
+    "parts": {
+      "axe07": {
+        "source": "original axe07",
+        "nativeSourceSize": [
+          82,
+          172
+        ],
+        "limit": "No higher-resolution original weapon exists; lossless nearest enlargement."
+      },
+      "hair_back": {
+        "source": "source-parts-1280.png",
+        "cell": 14,
+        "nativeSourceSize": [
+          276,
+          314
+        ]
+      },
+      "hair_front": {
+        "source": "source-parts-1280.png",
+        "cell": 12,
+        "nativeSourceSize": [
+          297,
+          309
+        ]
+      },
+      "hair_side": {
+        "source": "source-parts-1280.png",
+        "cell": 13,
+        "nativeSourceSize": [
+          215,
+          311
+        ]
+      },
+      "hong_B_Larm": {
+        "source": "source-parts-1280.png",
+        "cell": 5,
+        "nativeSourceSize": [
+          75,
+          282
+        ]
+      },
+      "hong_B_Lleg1": {
+        "source": "source-parts-1280.png",
+        "cell": 10,
+        "nativeSourceSize": [
+          110,
+          279
+        ]
+      },
+      "hong_B_Lleg2": {
+        "source": "source-parts-1280.png",
+        "cell": 11,
+        "nativeSourceSize": [
+          108,
+          279
+        ]
+      },
+      "hong_B_Rarm": {
+        "source": "source-parts-1280.png",
+        "cell": 7,
+        "nativeSourceSize": [
+          204,
+          170
+        ]
+      },
+      "hong_B_Rleg": {
+        "source": "source-parts-1280.png",
+        "cell": 11,
+        "nativeSourceSize": [
+          108,
+          279
+        ]
+      },
+      "hong_B_body": {
+        "source": "source-parts-1280.png",
+        "cell": 1,
+        "nativeSourceSize": [
+          220,
+          262
+        ]
+      },
+      "hong_B_head": {
+        "source": "source-parts-1280.png",
+        "cell": 3,
+        "nativeSourceSize": [
+          210,
+          234
+        ]
+      },
+      "hong_Larm": {
+        "source": "source-parts-1280.png",
+        "cell": 4,
+        "nativeSourceSize": [
+          79,
+          283
+        ]
+      },
+      "hong_Larm_S": {
+        "source": "source-parts-1280.png",
+        "cell": 4,
+        "nativeSourceSize": [
+          79,
+          283
+        ]
+      },
+      "hong_Lleg1": {
+        "source": "source-parts-1280.png",
+        "cell": 8,
+        "nativeSourceSize": [
+          118,
+          282
+        ]
+      },
+      "hong_Lleg2": {
+        "source": "source-parts-1280.png",
+        "cell": 9,
+        "nativeSourceSize": [
+          119,
+          282
+        ]
+      },
+      "hong_Rarm": {
+        "source": "source-parts-1280.png",
+        "cell": 6,
+        "nativeSourceSize": [
+          216,
+          171
+        ]
+      },
+      "hong_Rleg": {
+        "source": "source-parts-1280.png",
+        "cell": 9,
+        "nativeSourceSize": [
+          119,
+          282
+        ]
+      },
+      "hong_S_head": {
+        "source": "source-parts-1280.png",
+        "cell": 2,
+        "nativeSourceSize": [
+          230,
+          252
+        ]
+      },
+      "hong_body": {
+        "source": "source-parts-1280.png",
+        "cell": 0,
+        "nativeSourceSize": [
+          229,
+          266
+        ]
+      },
+      "hong_head": {
+        "source": "original-face.png",
+        "nativeSourceSize": [
+          53,
+          54
+        ],
+        "limit": "Original face has only 53x54 pixels; nearest preserves existing eye design, no invented detail.",
+        "runtimeReplacement": "hong_head_joined: source-parts-1280.png cell 15"
+      }
+    },
+    "baselineGeometrySha256": "ff3b1c1eafcd0f4793a1fa311f8965259141fd54b4a73c6e0161cb382c09807b"
+  },
+  "armOrientation": {
+    "revision": 1,
+    "scope": "axe-only",
+    "method": "Cat UV shoulder/elbow/fist registration; frozen alpha silhouette",
+    "geometryChanged": false,
+    "thicknessChanged": false,
+    "parts": {
+      "Rarm": {
+        "cell": 6,
+        "source": [
+          [
+            0.16,
+            0.16
+          ],
+          [
+            0.4,
+            0.72
+          ],
+          [
+            0.89,
+            0.79
+          ]
+        ],
+        "target": [
+          [
+            0.2,
+            0.14
+          ],
+          [
+            0.48,
+            0.52
+          ],
+          [
+            0.78,
+            0.75
+          ]
+        ]
+      },
+      "B_Rarm": {
+        "cell": 7,
+        "mirror": true,
+        "source": [
+          [
+            0.16,
+            0.16
+          ],
+          [
+            0.4,
+            0.72
+          ],
+          [
+            0.89,
+            0.79
+          ]
+        ],
+        "target": [
+          [
+            0.18,
+            0.16
+          ],
+          [
+            0.46,
+            0.64
+          ],
+          [
+            0.81,
+            0.74
+          ]
+        ]
+      }
+    }
+  },
+  "connections": {
+    "revision": 2,
+    "hairStyle": "continuous-curtain",
+    "hairTipInfluence": 0.1,
+    "hairTopClearFraction": 0.4,
+    "pinned": 28,
+    "skirt": 14,
+    "rigidChest": 29,
+    "hipRange": [
+      -2,
+      0.5
+    ],
+    "skirtLegWeight": 0.45,
+    "hairBones": [
+      "head",
+      "bone2",
+      "cloak1",
+      "cloak2",
+      "cloak3"
+    ],
+    "headSource": "source-parts-1280.png front/side cells 15/2; continuous rear curtain cell 14",
+    "roundedLegCaps": 6,
+    "openedShoulderPixels": 321,
+    "joinedHeadRegions": [
+      "hong_head_joined",
+      "hong_S_head_joined",
+      "hong_B_head_joined"
+    ],
+    "headSourceSize": [
+      1254,
+      1254
+    ]
+  },
+  "proportions": {
+    "revision": 1,
+    "centerHeight": 31.5,
+    "legLength": 13.8,
+    "legAxis": 0.92,
+    "thighThickness": 1.08,
+    "shinThickness": 1.04,
+    "ankleThickness": 1.08,
+    "armLength": 0.92,
+    "armThickness": 0.85,
+    "gripTranslations": [
+      "Larm2",
+      "Rarm2",
+      "Rarm3",
+      "Rarm4",
+      "bone3",
+      "bone4",
+      "B_wp3"
+    ],
+    "kneeReach": {
+      "Lleg": {
+        "targetY": 5.672062177014489,
+        "reachRatio": 0.97
+      },
+      "Rleg": {
+        "targetY": 5.3840685945734315,
+        "reachRatio": 0.97
+      }
+    },
+    "legVertices": 237,
+    "armVertices": 180,
+    "textureVolume": {
+      "hong_B_Lleg1": {
+        "shaftWidthRatio": 1.250655021834061,
+        "shaftGain": 1.24,
+        "bootStart": 91
+      },
+      "hong_B_Lleg2": {
+        "shaftWidthRatio": 1.2523645743766123,
+        "shaftGain": 1.24,
+        "bootStart": 91
+      },
+      "hong_B_Rleg": {
+        "shaftWidthRatio": 1.2547279042840602,
+        "shaftGain": 1.24,
+        "bootStart": 94
+      },
+      "hong_Lleg1": {
+        "shaftWidthRatio": 1.2523787947439964,
+        "shaftGain": 1.24,
+        "bootStart": 97
+      },
+      "hong_Lleg2": {
+        "shaftWidthRatio": 1.25,
+        "shaftGain": 1.24,
+        "bootStart": 97
+      },
+      "hong_Rleg": {
+        "shaftWidthRatio": 1.251892346509672,
+        "shaftGain": 1.24,
+        "bootStart": 100
+      }
+    }
+  }
+}

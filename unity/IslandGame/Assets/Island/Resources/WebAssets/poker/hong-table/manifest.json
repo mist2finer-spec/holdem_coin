@@ -1,0 +1,73 @@
+{
+  "version": 1,
+  "character": "hong",
+  "source": "archive/poker/hong-table-source.png",
+  "views": {
+    "front": {
+      "cell": [
+        0,
+        0
+      ],
+      "sourceBounds": [
+        0,
+        21,
+        611,
+        639
+      ],
+      "size": [
+        256,
+        360
+      ]
+    },
+    "right": {
+      "cell": [
+        1,
+        0
+      ],
+      "sourceBounds": [
+        0,
+        19,
+        588,
+        643
+      ],
+      "size": [
+        256,
+        360
+      ]
+    },
+    "left": {
+      "cell": [
+        0,
+        1
+      ],
+      "sourceBounds": [
+        0,
+        0,
+        611,
+        643
+      ],
+      "size": [
+        256,
+        360
+      ]
+    },
+    "back": {
+      "cell": [
+        1,
+        1
+      ],
+      "sourceBounds": [
+        0,
+        0,
+        604,
+        643
+      ],
+      "size": [
+        256,
+        360
+      ]
+    }
+  },
+  "pose": "standing with hands resting toward table; no chair",
+  "scope": "single 8-seat visual prototype"
+}

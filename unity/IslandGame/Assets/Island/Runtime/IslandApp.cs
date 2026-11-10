@@ -11,34 +11,57 @@ namespace IslandGame {
   readonly Dictionary<string,Texture2D> textures=new Dictionary<string,Texture2D>();
   static readonly Vector2[] six={new Vector2(.5f,.83f),new Vector2(.88f,.61f),new Vector2(.88f,.36f),new Vector2(.5f,.12f),new Vector2(.12f,.36f),new Vector2(.12f,.61f)};
   static readonly Vector2[] eight={new Vector2(.5f,.84f),new Vector2(.89f,.66f),new Vector2(.89f,.46f),new Vector2(.89f,.28f),new Vector2(.5f,.1f),new Vector2(.11f,.28f),new Vector2(.11f,.46f),new Vector2(.11f,.66f)};
-  void Awake(){server=PlayerPrefs.GetString("island-server",server);soloServer=PlayerPrefs.GetString("island-solo-server",soloServer);sound=gameObject.AddComponent<IslandAudio>();sound.Music("lobby_jazz");Application.targetFrameRate=60;Screen.orientation=ScreenOrientation.Portrait;playerName=PlayerPrefs.GetString("island-name","Player");socket=gameObject.AddComponent<PollingSocket>();rpg=gameObject.AddComponent<RpgSession>();battle=gameObject.AddComponent<NativeBattle>();battle.session=rpg;
+  void Awake(){PlayerPrefs.DeleteKey("island-mount-server");InitializePrototype();server=PlayerPrefs.GetString("island-server",server);soloServer=PlayerPrefs.GetString("island-solo-server",soloServer);sound=gameObject.AddComponent<IslandAudio>();sound.Music("lobby_jazz");Application.targetFrameRate=60;Screen.orientation=ScreenOrientation.Portrait;playerName=PlayerPrefs.GetString("island-name","Player");socket=gameObject.AddComponent<PollingSocket>();rpg=gameObject.AddComponent<RpgSession>();battle=gameObject.AddComponent<NativeBattle>();battle.session=rpg;
    socket.Ready+=()=>{online=true;socket.Emit("LOBBY_HELLO",new JObject{{"token",PlayerPrefs.GetString("island-lobby-token","")}},a=>{if(a?["error"]!=null){notice=(string)a["error"];return;}account=a as JObject;if(a?["token"]!=null){PlayerPrefs.SetString("island-lobby-token",(string)a["token"]);PlayerPrefs.Save();}if(page.StartsWith("poker"))Join();});};
-   socket.Message+=(eventName,data)=>{if(eventName=="TABLE_STATE"){table=data as JObject;string deal=table.Value<string>("dealStage")??"";if(deal!=lastDeal){if(deal=="shuffle")sound.Effect("shuffle_card");if(deal=="cards")sound.Effect("taking_card");lastDeal=deal;}}else if(eventName=="PLAYER_ACTION"){string action=data?.Value<string>("action");if(action=="allin")sound.Effect("all_in_chip");else if(action=="raise"||action=="call")sound.Effect("chip_raise");}else if(eventName=="ROOM_EXIT"||eventName=="ROOM_DENIED"){notice=(string)data?["message"];Lobby();}else if(eventName=="ACTION_REJECTED")notice=(string)data?["message"];else if(eventName=="SYSTEM_NOTICE")notice=string.Join("\n",data?["messages"]?.ToObject<string[]>()??new string[0]);else if(eventName=="HAND_HISTORY")SaveHistory(data);};
-   socket.Failed+=message=>{online=false;notice=message;};rpg.Failed+=message=>notice=message;Connect(server);
+   socket.Message+=(eventName,data)=>{if(eventName=="TABLE_STATE"){table=data as JObject;pokerReceivedAt=Time.unscaledTime;sound.DealStage((string)table?["dealStage"],N(table,"handNumber").ToString());}else if(eventName=="PLAYER_ACTION"){sound.PlayerAction(data?.Value<string>("action"));}else if(eventName=="ROOM_EXIT"||eventName=="ROOM_DENIED"){notice=(string)data?["message"];Lobby();}else if(eventName=="ACTION_REJECTED"){notice=(string)data?["message"];pokerHud?.RejectAction();}else if(eventName=="SYSTEM_NOTICE")notice=string.Join("\n",data?["messages"]?.ToObject<string[]>()??new string[0]);else if(eventName=="HAND_HISTORY")SaveHistory(data);};
+   socket.Failed+=message=>{online=false;notice=message;};rpg.Failed+=message=>notice=message;Connect(server);InitializeBattleHud();InitializePokerHud();
   }
   void SaveHistory(JToken hand){try{var dir=Path.Combine(Application.persistentDataPath,"hands");Directory.CreateDirectory(dir);var id=hand.Value<string>("id")??Guid.NewGuid().ToString("N");File.WriteAllText(Path.Combine(dir,Uri.EscapeDataString(id)+".json"),hand.ToString());var files=new DirectoryInfo(dir).GetFiles("*.json");Array.Sort(files,(a,b)=>a.LastWriteTimeUtc.CompareTo(b.LastWriteTimeUtc));for(int i=0;i<files.Length-1000;i++)files[i].Delete();}catch(Exception e){notice="History save: "+e.Message;}}
   void Connect(string url){online=false;socket.Open(url);}
   void Join(){socket.Emit("JOIN_ROOM",new JObject{{"name",playerName},{"tableSize",page=="poker6"?6:8},{"tournament",page=="pokerTournament"}});}
-  void Lobby(){sound.Music("lobby_jazz");page="lobby";rpg.Close();battle.Clear();table=null;Connect(server);}
-  void Poker(string mode){sound.Music("lobby_jazz",.06f);page=mode;table=null;Connect(mode=="pokerSolo"?soloServer:server);}
+  void Lobby(){sound.EndTable();page="lobby";rpg.Close();battle.Clear();table=null;Connect(server);}
+  void Poker(string mode){sound.BeginTable();page=mode;table=null;Connect(mode=="pokerSolo"?soloServer:server);}
   void Update(){UpdateRpgInput();if(page=="lobby"&&online&&Time.unscaledTime>=nextStatus){nextStatus=Time.unscaledTime+2;socket.Emit("LOBBY_STATUS",null,a=>account=a as JObject);socket.Emit("GET_TOURNAMENT_STATUS",null,a=>tournament=a as JObject);}}
   Texture2D Texture(string path){Texture2D t;if(!textures.TryGetValue(path,out t)){t=Resources.Load<Texture2D>("WebAssets/"+path);textures[path]=t;}return t;}
   void Image(string path,Rect rect){var t=Texture(path);if(t)GUI.DrawTexture(rect,t,ScaleMode.ScaleToFit,true);}
   bool Button(string text,float x,float y,float w,float h,Action action,bool enabled=true){GUI.enabled=enabled;bool pressed=GUI.Button(new Rect(x,y,w,h),text);GUI.enabled=true;if(pressed){sound?.Effect("button_press");action();}return pressed;}
-  static long N(JToken t,string key){return t?[key]?.Value<long>()??0;}static bool B(JToken t,string key){return t?[key]?.Value<bool>()??false;}
+  static long N(JToken t,string key){return (t as JObject)?[key]?.Value<long?>()??0;}static bool B(JToken t,string key){return (t as JObject)?[key]?.Value<bool?>()??false;}
   void Text(string text,float x,float y,float w,float h=25){GUI.Label(new Rect(x,y,w,h),text);}
-  void OnGUI(){float scale=Math.Min(Screen.width/390f,Screen.height/844f),left=(Screen.width-390*scale)/2;GUI.matrix=Matrix4x4.TRS(new Vector3(left,0),Quaternion.identity,new Vector3(scale,scale,1));GUI.skin.label.fontSize=13;GUI.skin.button.fontSize=12;GUI.skin.textField.fontSize=14;
+  public int LegacyGuiRenderPasses{get;private set;}
+  void OnGUI(){
+   if(BossTrialsVisible)return;
+   if(PokerVisible&&pokerHud)return;
+   if(HudGrowthOpen&&growthView)return;
+   if(battleHud&&battleHud.Visible)return;
+   if(BattleHudEnabled&&HudPage&&!HudPanelOpen)return;
+   LegacyGuiRenderPasses++;
+   var skin=GUI.skin;var originalFont=skin.font;var originalMatrix=GUI.matrix;
+   int labelSize=skin.label.fontSize,buttonSize=skin.button.fontSize,fieldSize=skin.textField.fontSize;
+   if(!rpgSkin){rpgSkin=Instantiate(skin);rpgSkin.hideFlags=HideFlags.DontSave;}GUI.skin=rpgSkin;
+   try {EnsureCatalog();if(rpgFont)GUI.skin.font=rpgFont;float scale=Math.Min(Screen.width/390f,Screen.height/844f),left=(Screen.width-390*scale)/2;GUI.matrix=Matrix4x4.TRS(new Vector3(left,0),Quaternion.identity,new Vector3(scale,scale,1));GUI.skin.label.fontSize=13;GUI.skin.button.fontSize=12;GUI.skin.textField.fontSize=14;
    GUI.Box(new Rect(0,0,390,844),"");Text("ISLAND · UNITY",12,8,220);Text(online?"ONLINE":"CONNECTING",270,8,115);
    if(page=="lobby")DrawLobby();else if(page.StartsWith("poker"))DrawPoker();else if(page=="settings")DrawSettings();else if(page=="growth")DrawCurrentGrowth();else DrawRpg();
    Text(notice,12,790,365,48);
+     }finally{GUI.skin=skin;skin.font=originalFont;GUI.matrix=originalMatrix;skin.label.fontSize=labelSize;skin.button.fontSize=buttonSize;skin.textField.fontSize=fieldSize;}
   }
-  void DrawLobby(){Image("poker/hong-table/front",new Rect(20,65,130,215));Text("Island Tavern",165,85,210,40);playerName=GUI.TextField(new Rect(165,135,200,38),playerName,16);
-   Button("Save name",165,183,200,35,()=>{PlayerPrefs.SetString("island-name",playerName);socket.Emit("LOBBY_RENAME",new JObject{{"name",playerName}},a=>account=a as JObject);});
-   Text("Name: "+(string)account?["name"]+"\nMultiplayer: "+N(account,"multi").ToString("N0"),15,285,360,105);
-   Button("Solo · 준비 중",20,400,170,60,()=>{},false);Button("Multiplayer · 6 seats",200,400,170,60,()=>Poker("poker6"));
-   Button("Tournament · 8 seats",20,475,350,55,()=>Poker("pokerTournament"));Text(TournamentText(tournament),20,535,350,50);
-   Button("Hunt · Vardian corridor",20,600,350,55,()=>StartRpg(false));Button("Growth / campaign",20,670,350,50,()=>StartRpg(true));
-   Button("Recharge",20,735,100,35,()=>socket.Emit("LOBBY_RECHARGE",null,a=>account=a as JObject));Button("Server settings",135,735,160,35,()=>page="settings");
+  void DrawLobby(){
+   GUI.Box(new Rect(12,45,366,165),"");Image("poker/hong-table/front",new Rect(20,55,100,145));
+   Text("ISLAND TAVERN",135,64,235,32);Text("사냥과 성장, 그리고 홀덤",135,98,235,30);
+   Text("플레이어 이름",135,132,225);playerName=GUI.TextField(new Rect(135,158,145,32),playerName,16);
+   Button("저장",288,158,75,32,()=>{PlayerPrefs.SetString("island-name",playerName);PlayerPrefs.Save();if(online)socket.Emit("LOBBY_RENAME",new JObject{{"name",playerName}},a=>account=a as JObject);});
+   Text("01  사냥을 시작하세요",20,230,350,30);
+   Button("마을길 사냥 입장",20,267,350,58,()=>StartRpg(false));
+   Button("성장 사냥 / 장비 관리",20,337,350,48,()=>StartRpg(true));
+   Text("기본 액티브 6칸은 비어 있습니다.\n장비에 액티브 젬을 장착하면 스킬을 쓸 수 있습니다.",22,397,346,48);
+   Text("이동 A/D · 공격 Space · 점프 W/J · 스킬 1~6",22,452,346,28);
+   Text("02  홀덤 테이블",20,499,350,30);
+   Button("온라인 홀덤 · 6인",20,535,350,48,()=>Poker("poker6"));
+   Button("토너먼트 · 8인",20,595,350,42,()=>Poker("pokerTournament"));
+   Text(TournamentText(tournament),22,645,346,34);
+   Text("보유 칩  "+N(account,"multi").ToString("N0"),22,686,346,25);
+   Button("칩 충전",20,727,102,36,()=>socket.Emit("LOBBY_RECHARGE",null,a=>account=a as JObject),online);
+   Button("서버 설정",134,727,112,36,()=>page="settings");
+   Button("재접속",258,727,112,36,()=>{notice="";Connect(server);});
   }
   string TournamentText(JObject t){if(t==null)return "";long now=DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();long until=N(t,"nextTournamentAt");if(until==0)until=N(t,"startsAt");return (string)t["status"]+" · Round "+N(t,"level")+" · "+N(t,"remaining")+" players"+(until>now?" · "+Math.Ceiling((until-now)/1000d)+"s":"");}
   void DrawPoker(){Button("Lobby",8,34,70,32,Lobby);if(table==null){Text("Waiting for table. Solo requires the dedicated local backend.",20,180,350,100);Button("Reconnect",110,310,160,50,()=>Connect(page=="pokerSolo"?soloServer:server));return;}
@@ -46,8 +69,10 @@ namespace IslandGame {
    GUI.color=new Color(.06f,.35f,.25f);GUI.Box(new Rect(45,150,300,405),"");GUI.color=Color.white;var seats=table["seats"] as JArray;var positions=seats?.Count==6?six:eight;int mine=(int)N(table,"mySeatId"),count=seats?.Count??0;
    foreach(var seat in seats??new JArray()){
     if(B(seat,"eliminated"))continue;int index=((int)N(seat,"seatId")-Math.Max(0,mine)+count)%count;var p=positions[index];float x=p.x*390,y=135+p.y*450;
-    bool dealer=N(table,"buttonSeat")==N(seat,"seatId");string blind=N(table,"bigBlindSeat")==N(seat,"seatId")?"BB":N(table,"smallBlindSeat")==N(seat,"seatId")?"SB":"";
-    PokerProfileGui.Draw(new Rect(x-38,y-48,76,85),B(seat,"isMe")?7:(int)N(seat,"portrait"),(string)seat["name"],money(N(seat,"stack")),(int)Math.Max(1,N(seat,"level")),dealer,blind,(int)N(table,"activeSeatId")==N(seat,"seatId"),B(seat,"folded"));
+    string character=N(seat,"portrait")==8?"pink-glasses":N(seat,"portrait")==6?"teal-twins":"hong",pose=index==0?"back":index==count/2?"front":p.x<.5?"right":"left";
+    Image("poker/"+character+"-table/"+pose,new Rect(x-38,y-65,76,90));GUI.Box(new Rect(x-43,y+24,86,45),(string)seat["name"]+"\n"+money(N(seat,"stack")));
+    if(B(seat,"folded"))Text("FOLD",x-25,y-35,60);if((int)N(table,"activeSeatId")==N(seat,"seatId"))Text("▶",x-48,y-35,25);
+    string badge=N(table,"bigBlindSeat")==N(seat,"seatId")?"BB":N(table,"smallBlindSeat")==N(seat,"seatId")?"SB":N(table,"buttonSeat")==N(seat,"seatId")?"D":"";Text(badge,x+25,y,30);
     Text(money(N(seat,"currentBet")),x<195?x+40:x-90,y,65);
     var cards=seat["holeCards"] as JArray;if(cards!=null)Cards(cards,x-35,y-95,32,null);
    }
@@ -74,7 +99,9 @@ namespace IslandGame {
    Text((string)p["name"]+" · "+(string)p["handCategory"],10,y+row*38,165);Cards(holes,155,y+row*38,25,h);Cards(board,212,y+row*38,25,c);row++;
   }}
 
-  void StartRpg(bool growth){socket.Close();campaign=growth;page="rpg";rpgPanel="";battle.enabled=true;rpg.Open(server,growth);}
+  string mountTestOrigin;string CurrentRpgOrigin=>rpg.mountSundayPreview&&!string.IsNullOrEmpty(mountTestOrigin)?mountTestOrigin:server;
+  public void StartMountTest(string origin){mountTestOrigin=origin;StartRpg(false);}
+  void StartRpg(bool growth){socket.Close();notice="";campaign=growth;page="rpg";rpgPanel="";battle.enabled=true;rpg.mountSundayPreview=!growth;rpg.Open(!growth?CurrentRpgOrigin:server,growth);}
   void DrawRpg(){DrawCurrentRpg();}
   void DrawSettings(){Text("Online HTTPS origin",20,100,350);server=GUI.TextField(new Rect(20,135,350,40),server);Text("Dedicated solo backend origin",20,200,350);soloServer=GUI.TextField(new Rect(20,235,350,40),soloServer);
    Button("Save / reconnect",60,320,270,55,()=>{Uri url;Uri solo;if(!Uri.TryCreate(server,UriKind.Absolute,out url)||!Uri.TryCreate(soloServer,UriKind.Absolute,out solo)||!(url.Scheme=="http"||url.Scheme=="https")||!(solo.Scheme=="http"||solo.Scheme=="https")){notice="Invalid HTTP(S) origin";return;}PlayerPrefs.SetString("island-server",server);PlayerPrefs.SetString("island-solo-server",soloServer);PlayerPrefs.Save();Lobby();});

@@ -20,6 +20,24 @@ namespace IslandGame {
    }
    return result;
   }
+  // Consumes both snapshots on the Unity main thread. Static tokens have one owner;
+  // callers must not retain old State metadata or mutate metadata in presentation code.
+  // The pure MergeSnapshot above stays available for callers requiring independent copies.
+  public static JObject ConsumeSnapshot(JObject previous,JObject next){
+   if(previous==null||(string)previous["id"]!=(string)next["id"])return next;
+   bool sameBuild=previous["buildRevision"]!=null&&JToken.DeepEquals(previous["buildRevision"],next["buildRevision"])&&JToken.DeepEquals(previous["protocol"],next["protocol"]);
+   if(sameBuild){
+    TransferMissing(next,previous,"compiled");
+    if(next["build"] is JObject build&&previous["build"] is JObject oldBuild)TransferMissing(build,oldBuild,"tree");
+    if(next["progress"] is JObject progress&&previous["progress"] is JObject oldProgress)foreach(var key in StaticProgressKeys)TransferMissing(progress,oldProgress,key);
+   }
+   return next;
+  }
+  static readonly string[] StaticProgressKeys={"equipment","gemCollection","gacha","legacyBuild"};
+  static void TransferMissing(JObject target,JObject source,string key){
+   if(target[key]!=null)return;var property=source.Property(key);if(property==null)return;
+   var value=property.Value;property.Value=JValue.CreateNull();target[key]=value;
+  }
   static void Preserve(JObject target,JObject source,string key){if(target[key]==null&&source[key]!=null)target[key]=source[key].DeepClone();}
   public static JObject Skill(JObject state,int index){
    if(state==null||index<0||index>=6)return null;

@@ -17,7 +17,7 @@ namespace IslandGame {
   string Url(){return endpoint+(sid==null?"":"&sid="+UnityWebRequest.EscapeURL(sid))+"&t="+Guid.NewGuid().ToString("N");}
   IEnumerator ReadLoop(int generation){
    while(active&&generation==epoch){
-    using(var req=UnityWebRequest.Get(Url())){read=req;req.timeout=40;yield return req.SendWebRequest();
+    using(var req=UnityWebRequest.Get(Url())){read=req;try{req.timeout=40;yield return req.SendWebRequest();
      if(generation!=epoch)yield break;
      if(req.result!=UnityWebRequest.Result.Success){Fail("연결 끊김: "+req.error);yield break;}
      foreach(var packet in req.downloadHandler.text.Split('\u001e')){
@@ -30,17 +30,17 @@ namespace IslandGame {
        else if(kind==2&&data.Count>0)Message?.Invoke(data[0].Value<string>(),data.Count>1?data[1]:null);
       }
      }
-    }read=null;
+    }finally{read=null;}}
    }
   }
   IEnumerator WriteLoop(int generation){while(active&&generation==epoch){
    if(sid==null||outgoing.Count==0){yield return null;continue;}
    var text=outgoing.Dequeue();using(var req=new UnityWebRequest(Url(),"POST")){
-    write=req;req.uploadHandler=new UploadHandlerRaw(Encoding.UTF8.GetBytes(text));req.downloadHandler=new DownloadHandlerBuffer();req.SetRequestHeader("Content-Type","text/plain;charset=UTF-8");req.timeout=15;
+    write=req;try{req.uploadHandler=new UploadHandlerRaw(Encoding.UTF8.GetBytes(text));req.downloadHandler=new DownloadHandlerBuffer();req.SetRequestHeader("Content-Type","text/plain;charset=UTF-8");req.timeout=15;
     yield return req.SendWebRequest();if(generation!=epoch)yield break;
     // Never replay a poker action after an ambiguous POST failure.
     if(req.result!=UnityWebRequest.Result.Success){Fail("전송 결과 불명확: 재접속 후 상태를 확인하세요.");yield break;}
-   }write=null;
+   }finally{write=null;}}
   }}
   void Fail(string message){active=false;Failed?.Invoke(message);}
   public void Close(){epoch++;active=false;read?.Abort();write?.Abort();StopAllCoroutines();read=null;write=null;sid=null;outgoing.Clear();replies.Clear();}

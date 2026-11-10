@@ -1,0 +1,79 @@
+{
+  "source": "/home/z/my-project/upload/chipimage_bulk.jpg",
+  "generation_method": "ai_image_edit (z-ai-web-dev-sdk base64 direct)",
+  "output_size_px": 1024,
+  "output_format": "PNG (RGB, no transparency — dark background preserved from source)",
+  "style": "cartoon game token sprite, vibrant colors, vector-style illustration",
+  "chips": [
+    {
+      "id": "Chip_01",
+      "index": 1,
+      "file": "src/ui/assets/chips/Chip_01.png",
+      "size_px": 1024,
+      "bytes": 79869
+    },
+    {
+      "id": "Chip_02",
+      "index": 2,
+      "file": "src/ui/assets/chips/Chip_02.png",
+      "size_px": 1024,
+      "bytes": 95134
+    },
+    {
+      "id": "Chip_03",
+      "index": 3,
+      "file": "src/ui/assets/chips/Chip_03.png",
+      "size_px": 1024,
+      "bytes": 84929
+    },
+    {
+      "id": "Chip_04",
+      "index": 4,
+      "file": "src/ui/assets/chips/Chip_04.png",
+      "size_px": 1024,
+      "bytes": 106244
+    },
+    {
+      "id": "Chip_05",
+      "index": 5,
+      "file": "src/ui/assets/chips/Chip_05.png",
+      "size_px": 1024,
+      "bytes": 120138
+    },
+    {
+      "id": "Chip_06",
+      "index": 6,
+      "file": "src/ui/assets/chips/Chip_06.png",
+      "size_px": 1024,
+      "bytes": 194001
+    },
+    {
+      "id": "Chip_07",
+      "index": 7,
+      "file": "src/ui/assets/chips/Chip_07.png",
+      "size_px": 1024,
+      "bytes": 133386
+    },
+    {
+      "id": "Chip_08",
+      "index": 8,
+      "file": "src/ui/assets/chips/Chip_08.png",
+      "size_px": 1024,
+      "bytes": 199184
+    },
+    {
+      "id": "Chip_09",
+      "index": 9,
+      "file": "src/ui/assets/chips/Chip_09.png",
+      "size_px": 1024,
+      "bytes": 118990
+    },
+    {
+      "id": "Chip_10",
+      "index": 10,
+      "file": "src/ui/assets/chips/Chip_10.png",
+      "size_px": 1024,
+      "bytes": 164527
+    }
+  ]
+}

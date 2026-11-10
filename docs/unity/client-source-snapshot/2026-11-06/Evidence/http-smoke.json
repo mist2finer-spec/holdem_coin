@@ -1,9 +1,0 @@
-{
-  "status": "PASS",
-  "checks": 7,
-  "productionBuild": true,
-  "transport": "HTTP",
-  "protocol": "island-unity-boss-v1",
-  "elapsed": 0.19999999999999998,
-  "rooms": 2
-}

@@ -1,3 +1,13 @@
+# 최상위 현재 작업 기준 (2026-11-10 정리)
+
+- **일반 10구역 = 사이드뷰(Side25D), 보스전만 = 쿼터뷰(QuarterView).**
+- 현재 메인 게임 기준은 새 10구역 맵이다. 초기 low-poly 일반 맵으로 되돌리지 않는다. 현재 사용하는 보스 맵과 홀덤 게임은 보존한다.
+- 실제 Unity: G:/holdem_coin-workspace/island/branches/current-10zone/unity/IslandGame
+- 활성 Git 브랜치: codex/genshin-environment-20261110; 공통 Git: G:/holdem_coin-workspace/island/branches/main/.git
+- 작업·임시 파일·빌드·기록은 이 Island 폴더 내부에 둔다. 옛 G:/new_project 경로와 C: 호환 경로를 다시 만들지 않는다.
+- 현재 로컬 변경을 보존한다. reset/clean/pull/외부 배포를 정리 목적으로 실행하지 않는다.
+- 바르디안은 archives/Vardian_Analysis_Reference.zip 하나와 records/VARDIAN_ANALYSIS_STATUS_KO.txt로 보관한다. 과거 원신 추출 수/검사 통과는 원본 일치율이 아니다.
+
 ## 최우선 게임 시점 규칙
 
 - **일반 구역 = 사이드뷰(Side25D), 보스전 구역만 = 쿼터뷰(QuarterView).** 일반 구역 전체에 쿼터뷰를 적용하지 않는다.

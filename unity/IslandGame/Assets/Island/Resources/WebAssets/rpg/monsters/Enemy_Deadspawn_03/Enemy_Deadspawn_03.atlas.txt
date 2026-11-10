@@ -1,0 +1,16 @@
+Enemy_Deadspawn_03.png
+size:128,64
+filter:MipMapNearestNearest,MipMapNearestNearest
+Lleg
+bounds:91,37,16,15
+Rarm
+bounds:109,43,11,9
+Rleg
+bounds:91,22,13,16
+rotate:90
+body
+bounds:51,21,38,31
+head
+bounds:2,19,47,33
+tail
+bounds:2,2,39,15

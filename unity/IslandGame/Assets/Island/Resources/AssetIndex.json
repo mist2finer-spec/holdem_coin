@@ -621,5 +621,22 @@
   },
   "catalog": "RpgCatalog",
   "spineRuntime": "4.2",
-  "serverAuthority": "existing Node RPG services"
+  "serverAuthority": "existing Node RPG services",
+  "bossTrials": {
+    "mapContract": "BossTrials/map-contract",
+    "scene": "WebAssets/rpg/maps/candle-dungeon/scene",
+    "definitions": "BossTrials/bosses",
+    "nativeActorSubstitutes": {
+      "B01": "1253",
+      "B02": "1154",
+      "B03": "1323",
+      "B04": "1322",
+      "B05": "1104",
+      "B06": "1105",
+      "B07": "1202",
+      "B08": "1252",
+      "B09": "1032",
+      "B10": "1055"
+    }
+  }
 }

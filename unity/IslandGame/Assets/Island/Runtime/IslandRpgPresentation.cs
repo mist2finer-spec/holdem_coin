@@ -6,21 +6,23 @@ using Newtonsoft.Json.Linq;
 
 namespace IslandGame {
  public sealed partial class IslandApp {
+  UnityDisplayNames displayNames;
   JObject catalog;string rpgPanel="",growthTab="arts",selectedEquipment="",selectedNode="",gemQuery="",gemFilter="all",summonPool="weapon";
-  int selectedSlot,selectedSocket,itemPage;float panelHeight=1200,treeZoom=.65f;Vector2 panelScroll,treeScroll;Font rpgFont;
+  int selectedSlot,selectedSocket,itemPage;float panelHeight=1200,treeZoom=.65f;Vector2 panelScroll,treeScroll;[NonSerialized] Font rpgFont;[NonSerialized] GUISkin rpgSkin;
   readonly Dictionary<string,JObject> gems=new Dictionary<string,JObject>();
   readonly Dictionary<string,Vector2> treePositions=new Dictionary<string,Vector2>();
   static readonly string[] slotNames={"무기","갑옷","장갑","장화","반지 1","반지 2"};
-  void EnsureCatalog(){if(catalog!=null)return;var asset=Resources.Load<TextAsset>("RpgCatalog");if(!asset)return;catalog=JObject.Parse(asset.text);
+  void EnsureCatalog(){if(catalog!=null)return;var asset=Resources.Load<TextAsset>("RpgCatalog");if(!asset)return;catalog=JObject.Parse(asset.text);var names=Resources.Load<TextAsset>("UnityDisplayNames");displayNames=new UnityDisplayNames(names?JObject.Parse(names.text):null);catalog=displayNames.ApplyCatalog(catalog);
    foreach(var kind in new[]{"active","support"})foreach(var gem in catalog[kind] as JArray??new JArray()){var copy=(JObject)gem.DeepClone();copy["kind"]=kind;gems[(string)copy["id"]]=copy;}
    foreach(var node in catalog["tree"]?["nodes"] as JArray??new JArray())treePositions[(string)node["id"]]=new Vector2(node.Value<float>("displayX"),node.Value<float>("displayY"));
-   rpgFont=Font.CreateDynamicFontFromOSFont(new[]{"Malgun Gothic","Apple SD Gothic Neo","Noto Sans CJK KR","Arial"},14);
+   rpgFont=IslandFonts.CreateGuiFont();
   }
   JObject Gem(string id){JObject result;return id!=null&&gems.TryGetValue(id,out result)?result:null;}
   string GemName(string id){return (string)Gem(id)?["name"]??id??"비어 있음";}
   string ItemName(JObject item){if(item==null)return "장비 없음";var rarity=(string)item["rarity"];return ((string)catalog?["equipment"]?["labels"]?[rarity]??rarity)+" "+((string)item["weaponType"]??(string)catalog?["equipment"]?["slots"]?[(string)item["slot"]]??(string)item["slot"]);}
   void SetPanel(string panel){rpgPanel=panel;panelScroll=Vector2.zero;panelHeight=1200;rpg.Paused=panel!="";rpg.Move=0;rpg.ClearInput();}
-  void UpdateRpgInput(){
+  void UpdateRpgInput(){if(BossTrialsVisible)return;
+   if(BattleHudEnabled&&HudPage)return;
    if(rpg==null)return;bool playing=page=="rpg"&&rpgPanel==""&&rpg.Active;rpg.Paused=page=="growth"||rpgPanel!="";
    if(!playing){rpg.Move=0;return;}
    if(Input.GetKeyDown(KeyCode.Space))rpg.Command("tick",new JObject{{campaign?"basic":"attack",true}});
@@ -36,10 +38,10 @@ namespace IslandGame {
   void Evade(int direction){rpg.Command("tick",campaign?new JObject{{"dodge",direction},{"move",direction}}:new JObject{{"dodge",true},{"x",direction}});}
   void Drink(string kind){rpg.Command("tick",new JObject{{"potion",kind}});}
   void Bar(Rect rect,double ratio,Color color){GUI.Box(rect,"");GUI.color=color;GUI.DrawTexture(new Rect(rect.x+2,rect.y+2,(rect.width-4)*(float)Math.Max(0,Math.Min(1,ratio)),rect.height-4),Texture2D.whiteTexture);GUI.color=Color.white;}
-  void DrawCurrentRpg(){
+  void DrawCurrentRpg(){if(BattleHudEnabled&&HudPage){if(rpgPanel!=""&&rpg.State!=null)DrawRpgPanel(rpg.State);return;}
    EnsureCatalog();if(rpgFont)GUI.skin.font=rpgFont;var state=rpg.State;
    Button("로비",10,35,65,30,Lobby);Button(rpg.Auto?"AUTO ON":"AUTO OFF",280,35,100,30,()=>rpg.Auto=!rpg.Auto,rpgPanel=="");
-   if(state==null){Text(rpg.Active?"전투와 장비를 불러오는 중…":"연결 중단 · 다시 입장하세요",45,300,320,45);if(!rpg.Active)Button("재접속",135,360,120,40,()=>rpg.Open(server,campaign));return;}
+   if(state==null){Text(rpg.Active?"전투와 장비를 불러오는 중…":"연결 중단 · 다시 입장하세요",45,300,320,45);if(!rpg.Active)Button("재접속",135,360,120,40,()=>rpg.Open(CurrentRpgOrigin,campaign));return;}
    if(battle.Output)GUI.DrawTexture(new Rect(15,85,360,360),battle.Output,ScaleMode.StretchToFill,false);
    DrawDamageLabels(state);
    var hero=campaign?state:state["hero"] as JObject;var progress=state["progress"] as JObject;
@@ -54,7 +56,7 @@ namespace IslandGame {
     var skill=RpgContracts.Skill(state,i);var gem=Gem((string)skill["activeId"]);bool trigger=skill["trigger"]!=null&&skill["trigger"].Type!=JTokenType.Null;
     Button("",x,535,59,57,()=>Cast(slot),rpg.Active&&rpgPanel==""&&RpgContracts.CanCast(state,i));
     string icon=(string)gem?["icon"];if(!string.IsNullOrEmpty(icon))Image("rpg/SkillIcon_"+icon,new Rect(x+9,537,40,35));
-    Text(trigger?"자동 발동":cd>0?cd.ToString("0.0"):(i+1).ToString(),x+5,572,54);Text((string)skill["name"],x,595,62,32);
+    Text(trigger?"자동 발동":cd>0?cd.ToString("0.0"):(i+1).ToString(),x+5,572,54);Text((string)gem?["name"]??(string)skill["name"],x,595,62,32);
    }
    if(rpgPanel==""){
     bool left=GUI.RepeatButton(new Rect(18,645,65,60),"◀"),right=GUI.RepeatButton(new Rect(307,645,65,60),"▶");
@@ -65,7 +67,7 @@ namespace IslandGame {
     if(!campaign){Button("체력 물약 "+N(state["resources"]?["potions"],"health"),15,720,170,30,()=>Drink("health"),N(state["resources"]?["potions"],"health")>0);Button("마나 물약 "+N(state["resources"]?["potions"],"mana"),200,720,175,30,()=>Drink("mana"),N(state["resources"]?["potions"],"mana")>0);}
    }
    if(campaign&&B(state,"dead"))Button("부활",145,350,100,45,()=>rpg.Command("revive"),B(state,"reviveReady"));
-   if(!campaign&&((string)state["status"]!="playing"||!rpg.Active))Button((string)state["status"]=="won"?"다음 미궁":"다시 입장",135,350,120,45,()=>{SetPanel("");rpg.Open(server,false);});
+   if(!campaign&&((string)state["status"]!="playing"||!rpg.Active))Button((string)state["status"]=="won"?"다음 미궁":"다시 입장",135,350,120,45,()=>{SetPanel("");rpg.Open(CurrentRpgOrigin,false);});
    var panels=new[]{"growth","equipment","tavern","dungeon","summon","bag"};var labels=new[]{"성장","소지품","주점","던전","소환","가방"};
    for(int i=0;i<panels.Length;i++){string panel=panels[i];Button(labels[i],8+i*63,760,60,30,()=>{if(panel=="tavern"){rpg.Close();battle.Clear();Poker("poker6");}else SetPanel(panel);});}
    if(rpgPanel!="")DrawRpgPanel(state);
@@ -185,9 +187,9 @@ namespace IslandGame {
    Func<JToken,Vector2> position=n=>{Vector2 p;return treePositions.TryGetValue((string)n["id"],out p)?p*treeZoom:new Vector2(n.Value<float>("x")*3+160,n.Value<float>("y")*3+160)*treeZoom;};
    var map=nodes.OfType<JObject>().ToDictionary(n=>(string)n["id"]);
    foreach(var edge in edges){string from=edge is JArray?(string)edge[0]:(string)edge["from"],to=edge is JArray?(string)edge[1]:(string)edge["to"];if(map.ContainsKey(from)&&map.ContainsKey(to))Line(position(map[from]),position(map[to]),allocated.Contains(from)&&allocated.Contains(to)?new Color(.85f,.65f,.25f):new Color(.28f,.32f,.32f));}
-   foreach(var node in nodes){Vector2 p=position(node);if(p.x<treeScroll.x-40||p.y<treeScroll.y-40||p.x>treeScroll.x+390||p.y>treeScroll.y+380)continue;string id=(string)node["id"];float size=(string)node["kind"]=="small"?18:25;GUI.color=allocated.Contains(id)?new Color(1,.78f,.35f):Color.white;if(GUI.Button(new Rect(p.x-size/2,p.y-size/2,size,size),new GUIContent((string)node["kind"]=="socket"?"◇":"·",(string)node["name"])))selectedNode=id;GUI.color=Color.white;}
+   foreach(var node in nodes){Vector2 p=position(node);if(p.x<treeScroll.x-40||p.y<treeScroll.y-40||p.x>treeScroll.x+390||p.y>treeScroll.y+380)continue;string id=(string)node["id"];float size=(string)node["kind"]=="small"?18:25;GUI.color=allocated.Contains(id)?new Color(1,.78f,.35f):Color.white;if(GUI.Button(new Rect(p.x-size/2,p.y-size/2,size,size),new GUIContent((string)node["kind"]=="socket"?"◇":"·",displayNames.NodeName(node))))selectedNode=id;GUI.color=Color.white;}
    GUI.EndScrollView();var selected=nodes.OfType<JObject>().FirstOrDefault(n=>(string)n["id"]==selectedNode);if(selected==null){Text("트리를 스크롤하고 노드를 선택하세요.\n표시 좌표만 3배 확장합니다. 판정은 서버가 처리합니다.",20,582,345,75);return;}
-   Text((string)selected["name"],20,580,345,35);Text((string)selected["description"],20,615,345,65);bool taken=allocated.Contains(selectedNode),root=(string)build?["start"]?["nodeId"]==selectedNode;string selectedId=selectedNode;
+   Text(displayNames.NodeName(selected),20,580,345,35);Text((string)selected["description"],20,615,345,65);bool taken=allocated.Contains(selectedNode),root=(string)build?["start"]?["nodeId"]==selectedNode;string selectedId=selectedNode;
    Button(taken?"환불":"할당",20,686,165,38,()=>rpg.Command("core-"+(taken?"refund-":"allocate-")+selectedId),!root&&(taken||N(build,"remaining")>0));Button("트리 초기화",200,686,165,38,()=>rpg.Command("core-reset"));
   }
   static void Line(Vector2 a,Vector2 b,Color color){var saved=GUI.matrix;GUI.color=color;GUIUtility.RotateAroundPivot(Mathf.Atan2(b.y-a.y,b.x-a.x)*Mathf.Rad2Deg,a);GUI.DrawTexture(new Rect(a.x,a.y,(b-a).magnitude,1.5f),Texture2D.whiteTexture);GUI.matrix=saved;GUI.color=Color.white;}

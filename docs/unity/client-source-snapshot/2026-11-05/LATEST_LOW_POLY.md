@@ -1,1 +1,0 @@
-현재 기준은 [로우폴리·주얼 통합 인계](../../LOWPOLY_JEWEL_UPDATE_20261105_KO.md)입니다. source-manifest.json의 source→snapshot 매핑을 사용하고 전체 프로젝트를 덮어쓰지 마세요. 두 GLB 원본은 assets/unity-lowpoly-combat 브랜치 docs/unity/assets/lowpoly-combat에 있습니다.

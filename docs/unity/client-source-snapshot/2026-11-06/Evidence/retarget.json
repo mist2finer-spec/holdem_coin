@@ -1,8 +1,0 @@
-{
-  "clip": "Assets/Island/Art/Battle3D/UnityBoss/PinkGlass_Knockback_Fall_GetUp.anim",
-  "duration": 1.8,
-  "bones": 65,
-  "curves": 455,
-  "groundSamples": 109,
-  "sourceClip": "hit_knockback"
-}
