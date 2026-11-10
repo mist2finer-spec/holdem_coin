@@ -1,0 +1,40 @@
+{
+  "success": true,
+  "command": "command",
+  "data": {
+    "command": "script eval",
+    "parameters": {
+      "code": "var samples=new[]{new Newtonsoft.Json.Linq.JObject{{\"unityBossMode\",true},{\"mountSunday\",true},{\"room\",0}},new Newtonsoft.Json.Linq.JObject{{\"unityBossMode\",true},{\"mountSunday\",true},{\"room\",1}},new Newtonsoft.Json.Linq.JObject{{\"unityBossMode\",true},{\"mountSunday\",true},{\"room\",9}},new Newtonsoft.Json.Linq.JObject{{\"unityBossMode\",true},{\"mountSunday\",false},{\"room\",0}},new Newtonsoft.Json.Linq.JObject{{\"unityBossMode\",true},{\"mountSunday\",false},{\"room\",1}}};var actual=samples.Select(s=>IslandGame.NativeBattle.EncounterView(s).ToString()).ToArray();var expected=new[]{\"Side25D\",\"Side25D\",\"Side25D\",\"Side25D\",\"QuarterView\"};if(!actual.SequenceEqual(expected))throw new System.Exception(\"Encounter view policy mismatch\");return new {actual,expected,scene=UnityEngine.SceneManagement.SceneManager.GetActiveScene().path,playing=UnityEditor.EditorApplication.isPlaying};"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": {
+        "actual": [
+          "Side25D",
+          "Side25D",
+          "Side25D",
+          "Side25D",
+          "QuarterView"
+        ],
+        "expected": [
+          "Side25D",
+          "Side25D",
+          "Side25D",
+          "Side25D",
+          "QuarterView"
+        ],
+        "scene": "Assets/Island/Scenes/Island.unity",
+        "playing": false
+      }
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "G:\\new_project\\IslandGame"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

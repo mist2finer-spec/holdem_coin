@@ -1,0 +1,94 @@
+{
+  "seen": {
+    "mount:0": {
+      "camera": "Side25D",
+      "expected": "Side25D",
+      "lastAge": 41.89177,
+      "kills": 28
+    },
+    "mount:1": {
+      "camera": "Side25D",
+      "expected": "Side25D",
+      "lastAge": 88.44157,
+      "kills": 59
+    },
+    "mount:2": {
+      "camera": "Side25D",
+      "expected": "Side25D",
+      "lastAge": 135.759048,
+      "kills": 89
+    },
+    "mount:3": {
+      "camera": "Side25D",
+      "expected": "Side25D",
+      "lastAge": 183.0834,
+      "kills": 120
+    },
+    "mount:4": {
+      "camera": "Side25D",
+      "expected": "Side25D",
+      "lastAge": 237.908142,
+      "kills": 150
+    },
+    "mount:5": {
+      "camera": "Side25D",
+      "expected": "Side25D",
+      "lastAge": 281.7913,
+      "kills": 177
+    },
+    "mount:6": {
+      "camera": "Side25D",
+      "expected": "Side25D",
+      "lastAge": 328.20874,
+      "kills": 207
+    },
+    "mount:7": {
+      "camera": "Side25D",
+      "expected": "Side25D",
+      "lastAge": 376.942047,
+      "kills": 238
+    },
+    "mount:8": {
+      "camera": "Side25D",
+      "expected": "Side25D",
+      "lastAge": 424.1408,
+      "kills": 266
+    },
+    "mount:9": {
+      "camera": "Side25D",
+      "expected": "Side25D",
+      "lastAge": 472.1241,
+      "kills": 297
+    },
+    "boss:1": {
+      "camera": "QuarterView",
+      "expected": "QuarterView",
+      "lastAge": 523.675354,
+      "kills": 301
+    }
+  },
+  "mismatches": [
+    {
+      "age": 478.498962,
+      "room": 1,
+      "routeStage": "boss",
+      "actual": "Side25D",
+      "expected": "QuarterView"
+    },
+    {
+      "age": 478.498962,
+      "room": 1,
+      "routeStage": "boss",
+      "actual": "Side25D",
+      "expected": "QuarterView"
+    },
+    {
+      "age": 478.498962,
+      "room": 1,
+      "routeStage": "boss",
+      "actual": "Side25D",
+      "expected": "QuarterView"
+    }
+  ],
+  "lastStatus": "won"
+}

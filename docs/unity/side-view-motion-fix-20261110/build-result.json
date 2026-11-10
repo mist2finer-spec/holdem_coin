@@ -1,0 +1,14 @@
+{
+  "result": "Succeeded",
+  "totalErrors": 0,
+  "totalWarnings": 1,
+  "seconds": 233.46597,
+  "output": "G:/holdem_coin-workspace/island-genshin-localcombat-20261110/correction/builds/IslandGame-SideView-MotionFix-20261110.apk",
+  "apkBytes": 139046845,
+  "messages": [
+    {
+      "type": "Warning",
+      "content": "Assets\\Island\\Runtime\\IslandApp.cs(10,205): warning CS0414: The field 'IslandApp.lastDeal' is assigned but its value is never used"
+    }
+  ]
+}

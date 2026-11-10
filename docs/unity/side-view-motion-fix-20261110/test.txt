@@ -1,0 +1,21 @@
+{"ticks":24089,"maps":11,"kills":300,"status":"won","contacts":["hero-attack1","hero-attack2","hero-attack3"]}
+✔ training bundle uses original engines through ten zones and boss, with no network globals (3916.2212ms)
+✔ readiness, pause, commands and profile updates retain local rules; snapshots omit unchanged map (40.2692ms)
+✔ standalone boss mode uses the same engine and rejects unknown modes (259.6023ms)
+{"profile":"source-run-v2","steps":25494,"kills":300,"status":"won"}
+✔ requested reduction is one third of prior speed for run and traversal distance (1.3928ms)
+✔ holding movement against a static object preserves run intent and releases to idle (4.1041ms)
+✔ source run target is shared by both local modes; map and combat rules are preserved (4.5579ms)
+✔ jump is ballistic and travel distances match speed, without changing source action names (2.0512ms)
+✔ run, slide and roll cannot tunnel through static obstacles with the opt-in profile (2.8718ms)
+✔ attack definition, damage, motion timeline and action assets retain their prior contract (0.505ms)
+✔ opt-in traversal completes all ten unchanged zones and boss with normal inputs (626.0994ms)
+✔ shipped bundle accepts the explicit traversal profile and matches the source engine (20.3728ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5270.2892
