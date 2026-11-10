@@ -1,4 +1,4 @@
-﻿# 2026-11-10 LocalCombat 환경 이식 시험
+# 2026-11-10 LocalCombat 환경 이식 시험
 
 11월 9일 최종 `IslandGame-LocalCombat-20261109.apk`를 기준으로 기존 전투 규칙과 맵을 유지하면서 쿼터뷰, 원신 잔디·나무·돌, 이동 프로파일과 그림자를 연결했다. 기존 Pink Glass 액션과 Nilo 캐릭터 셰이딩을 사용한다. 새 원신 독립 시험 씬으로 게임을 교체하지 않는다.
 
@@ -26,7 +26,13 @@
 - **PASS — 실제 Unity:** 쿼터뷰와 원본 환경 메시·그림자 표시, 기존 달리기·점프·구르기·슬라이딩 클립 재생. 달리기 다리 회전 변화 82° 이상, 점프 정점 약 1.05m, 실행 오류 0. [기록](source-environment-20261110/editor-motion.json).
 - **PASS — Android 입력 시험:** 블루스택 900×1600에서 동일 클립 재생, 점프 약 1.05m, 구르기 약 3.25m, 실행 오류 0. 왼쪽 슬라이드는 적 몸체에 막혀 약 0.30m 이동했다. 이 구간을 자유 공간 최대 이동거리로 해석하지 않는다. [기록](source-environment-20261110/android-motion.json), [실제 화면](source-environment-20261110/android-motion.png).
 
-전체 Android 경로의 최종 결과는 검증 완료 후 아래에 기록한다.
+- **PASS — Android 전체 진행:** 491.64초 동안 10개 일반 구역 300처치 후 보스 승리. 실행 오류 0, 잘못된 공격 접촉 자세 0, 확인된 공격 접촉 600회, 지면 검사 28,538회 중 누락 0. 최대 지면 간격 0.0273m. 씬 최대 2개, 애니메이션 그래프 최대 8개. [전체 기록](source-environment-20261110/android-complete.json), [완료 화면](source-environment-20261110/android-complete.png).
+- **성능:** 블루스택 안정 구간 27,939프레임 평균 59.38FPS, p95 16.67ms. 50ms 초과 14회, 최대 116.67ms. 전환 구간 292프레임 평균 20.95ms, 최대 516.67ms. 로컬 시뮬레이션의 누적 지연 버림 0.667초도 기록했다. 실제 휴대전화 측정값으로 해석하지 않는다.
+- **PASS — 실제 터치·일시정지:** Android 스와이프와 점프·구르기·슬라이드 버튼 터치 확인. 홈 전환 중 로컬 스텝 1,672로 정지하고 복귀 후 1,740으로 재개, 요청 수는 모두 1로 유지. [기록](source-environment-20261110/android-pause.json), [터치 후 화면](source-environment-20261110/android-touch.png). 원본 동영상은 로컬 작업 폴더 `evidence/android-touch.mp4`에 보존했다.
+- **PASS — 산출물 보존:** 설치된 APK의 해시가 빌드 APK와 일치. 기존 Unity 프로젝트·빌드 설정 파일의 SHA-256이 작업 전과 동일. Git에 저장된 Unity 증분 파일 136개가 실제 프로젝트 파일 해시와 일치. [설정](source-environment-20261110/settings-preserved.json), [APK](source-environment-20261110/installed-apk.json), [소스](source-environment-20261110/repository-file-hashes.json).
+- **PASS — GitHub CI:** 소스 커밋 `497f3bb852af9a877e2d56a5003e5957113954ed`의 server 검사 22단계 통과. [실행 결과](https://github.com/mist2finer-spec/holdem_coin/actions/runs/42866016679), [기록](source-environment-20261110/ci.json). 후속 커밋은 최종 검증 문서·증거만 추가한다.
+
+GitHub 작업 브랜치는 [`codex/genshin-environment-20261110`](https://github.com/mist2finer-spec/holdem_coin/tree/codex/genshin-environment-20261110)이다. main 병합이나 운영 배포는 수행하지 않았다.
 
 검증 입장은 외부 운영 서버에 계정 정보를 보내지 않는 localhost 시험 서비스의 익명 메모리 데이터로 수행했다. 실제 전투·맵·AI·계정 기본 형식은 저장소 서비스 코드를 사용한다. 운영 서버 입장/계정 연동 재검증과 물리적 휴대전화의 장시간 발열 시험은 이번 결과에 포함하지 않는다. 원신 전체 물리·조명·식생의 정확한 일치율은 측정하지 않았으며, 테스트 성공이나 에셋 수를 일치율로 해석하지 않는다.
 
