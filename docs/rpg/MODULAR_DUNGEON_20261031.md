@@ -29,7 +29,7 @@ The ten-room branching graph is retained deliberately. This version randomizes a
 - `encounters.ts` / `engine.ts`:safe spawn lanes, entry refuge, actual selected passage.
 - Existing actor scale, phone frame, lower UI and native Hong/monster animation retained. WebGL live-rig budget and Canvas crowd bakes retained.
 
-![Four seeded regions rendered by the actual assembler](images/modular-map-preview.png)
+![Four seeded regions rendered by the actual assembler](https://github.com/mist2finer-spec/holdem_coin/blob/e460b37490265a523670b77b56756201007d9086/docs/rpg/images/modular-map-preview.png)
 
 ## Verification
 
@@ -51,4 +51,4 @@ Initial modular assembly commit `213df96` was visually verified, then live play 
 
 Final Chrome run showed a2,592-unit moss arena, initial30/197 and timed reinforcements. With AUTO off, a real left-evade UI command moved authoritative displayed X from645.80559648 to525.80559648 (**120 units**) while enemies were present. AUTO was resumed. Existing phone UI stayed in place; no application-origin console errors observed (extension metadata noise excluded). A prior visual run also showed a2,208-unit arena, confirming width changes between seeds. Canvas fallback exercised; no real-device FPS claim.
 
-![Final deployed modular dungeon and control panel](images/modular-dungeon-live.jpg)
+![Final deployed modular dungeon and control panel](https://github.com/mist2finer-spec/holdem_coin/blob/e460b37490265a523670b77b56756201007d9086/docs/rpg/images/modular-dungeon-live.jpg)

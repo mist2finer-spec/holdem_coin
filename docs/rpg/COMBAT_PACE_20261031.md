@@ -40,4 +40,4 @@
 - 운영 브라우저에서 수동 키 이동·터치 스틱 드래그·수동 스킬·재시작·AUTO 전 구역 통과를 확인했다. 최종 버전에서 10구역 정리, 41마리 처치, 통과 기록 `0,1,2,3,4,5,6,7,8`, 미궁 탈출 성공을 확인했다.
 - 검증 브라우저의 실제 선택은 Canvas 폴백이었다. WebGL 경로의 실제 GPU 렌더링과 기기별 FPS는 이 환경에서 확인하지 못했다. 실기 성능 확인 없이 60FPS를 보장하지 않는다.
 
-![최종 운영 버전 AUTO 10구역 완주](images/rpg-combat-pace-final-20261031.jpg)
+![최종 운영 버전 AUTO 10구역 완주](https://github.com/mist2finer-spec/holdem_coin/blob/e460b37490265a523670b77b56756201007d9086/docs/rpg/images/rpg-combat-pace-final-20261031.jpg)

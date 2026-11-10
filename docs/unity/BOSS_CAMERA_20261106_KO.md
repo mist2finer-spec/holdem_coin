@@ -65,7 +65,7 @@ Side25D에서는 스틱의 X 성분만 이동에 사용한다. 좌상/좌하로 
 - [운영 서버 smoke](verification/boss-runtime-20261106/production-smoke.json): health 200, 151요청, 슬라임→다리→보스→경고→폭발→넘어짐→기상 PASS. 경고부터 폭발까지 2초. 체력 유지·훈련 모드·영구 보상 없음 확인.
 - [APK 검사](verification/boss-runtime-20261106/apk-validation.json): Android ARM64 IL2CPP, Development, Portrait, 버전 `0.1.0-test.20261106.2` / `2026110602`. 빌드 오류/경고 0, ZIP CRC·서명·16KB ZIP 정렬·인터넷 권한 PASS. Android 실기기 실행은 ADB 기기 미연결로 미검증이다.
 
-화면: [Side](verification/boss-runtime-20261106/side.png) · [다리](verification/boss-runtime-20261106/bridge.png) · [Quarter](verification/boss-runtime-20261106/quarter.png) · [경고](verification/boss-runtime-20261106/warning.png) · [넘어짐](verification/boss-runtime-20261106/knockdown.png) · [기상](verification/boss-runtime-20261106/getup.png).
+화면: [Side](https://github.com/mist2finer-spec/holdem_coin/blob/e460b37490265a523670b77b56756201007d9086/docs/unity/verification/boss-runtime-20261106/side.png) · [다리](https://github.com/mist2finer-spec/holdem_coin/blob/e460b37490265a523670b77b56756201007d9086/docs/unity/verification/boss-runtime-20261106/bridge.png) · [Quarter](https://github.com/mist2finer-spec/holdem_coin/blob/e460b37490265a523670b77b56756201007d9086/docs/unity/verification/boss-runtime-20261106/quarter.png) · [경고](https://github.com/mist2finer-spec/holdem_coin/blob/e460b37490265a523670b77b56756201007d9086/docs/unity/verification/boss-runtime-20261106/warning.png) · [넘어짐](https://github.com/mist2finer-spec/holdem_coin/blob/e460b37490265a523670b77b56756201007d9086/docs/unity/verification/boss-runtime-20261106/knockdown.png) · [기상](https://github.com/mist2finer-spec/holdem_coin/blob/e460b37490265a523670b77b56756201007d9086/docs/unity/verification/boss-runtime-20261106/getup.png).
 
 ## 배포 / 전달
 

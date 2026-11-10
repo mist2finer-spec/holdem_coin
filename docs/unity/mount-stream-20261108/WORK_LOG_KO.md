@@ -75,15 +75,15 @@ BlueStacks, Android 앱 900×1600, 60FPS 상한, Development/ARM64 변환 실행
 
 ## 5. 실제 화면
 
-[실제 Android 20초 조작 영상](mount-sprint-controls.mp4) · [이미지 모아 보기](REPORT_KO.html)
+[실제 Android 20초 조작 영상](https://github.com/mist2finer-spec/holdem_coin/blob/e460b37490265a523670b77b56756201007d9086/docs/unity/mount-stream-20261108/mount-sprint-controls.mp4) · [이미지 모아 보기](REPORT_KO.html)
 
 | 사이드뷰 비교 | 쿼터뷰 비교 |
 | --- | --- |
-| ![사이드뷰](android-view-side.png) | ![쿼터뷰](android-view-quarter.png) |
+| ![사이드뷰](https://github.com/mist2finer-spec/holdem_coin/blob/e460b37490265a523670b77b56756201007d9086/docs/unity/mount-stream-20261108/android-view-side.png) | ![쿼터뷰](https://github.com/mist2finer-spec/holdem_coin/blob/e460b37490265a523670b77b56756201007d9086/docs/unity/mount-stream-20261108/android-view-quarter.png) |
 
 | 언덕 구역 | 다리 구역 | 마을 앞 |
 | --- | --- | --- |
-| ![언덕](android-zone03.png) | ![다리](android-zone05.png) | ![마을 앞](android-zone10.png) |
+| ![언덕](https://github.com/mist2finer-spec/holdem_coin/blob/e460b37490265a523670b77b56756201007d9086/docs/unity/mount-stream-20261108/android-zone03.png) | ![다리](https://github.com/mist2finer-spec/holdem_coin/blob/e460b37490265a523670b77b56756201007d9086/docs/unity/mount-stream-20261108/android-zone05.png) | ![마을 앞](https://github.com/mist2finer-spec/holdem_coin/blob/e460b37490265a523670b77b56756201007d9086/docs/unity/mount-stream-20261108/android-zone10.png) |
 
 ## 6. 수정 과정과 남은 범위
 

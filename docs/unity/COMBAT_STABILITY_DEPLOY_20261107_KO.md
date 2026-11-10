@@ -28,6 +28,6 @@ Render **Test place** / `holdem-coin-tavern`의 자동 배포 `dep-dbnjaqvb9u1s7
 
 `verification/combat-stability-20261107`에 빌드 요약, APK 검사, CI, 소스 해시, 네트워크 손실, 렌더 실측, 실제 화면 결과와 대표 캡처를 보관했다. 전체 Profiler 원본은 `C:/Users/SHK/island-combat-stability-20261107/combat-editor-profiler-20261107.zip`에 별도로 보관한다. 5초 캡처 오버헤드는 수치 비교에 포함하지 않았다.
 
-![최종 Quarter 화면](verification/combat-stability-20261107/final-quarter.png)
+![최종 Quarter 화면](https://github.com/mist2finer-spec/holdem_coin/blob/e460b37490265a523670b77b56756201007d9086/docs/unity/verification/combat-stability-20261107/final-quarter.png)
 
 **UNAVAILABLE:** 연결된 ADB 기기가 없어 Android 실기 FPS·GPU·발열·10~15분 연속 플레이는 미검증이다. Editor 진단 p95 18.76ms와 드물게 40ms 프레임이 남았으므로 지속적인 60FPS를 달성했다고 주장하지 않는다. 아트 및 사용자 체감의 최종 승인은 별도다.

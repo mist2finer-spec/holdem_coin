@@ -74,8 +74,8 @@ Terrain이 Resources에서만 로드되던 경로의 빌드 의존성을 보존�
 - 최종 APK에서 점프 버튼·방향 전환·회피 버튼을 실제 ADB 터치로 눌러 살아 있는 슬라임을 양 방향으로 넘는 것을 재확인했다. 상세 좌표·모션 시계열은 android-jump/android-dodge.json. 높은 벽과 제한된 착지 공간 검사는 서버 자동검사이며 모든 현장 물체를 직접 뛰어넘어 검수한 것은 아니다.
 - 최종 성능 수치는 짧은 BlueStacks 기능 관찰이다. Android10구역 실시간 연속 완주·폰2대·20분 부하·사운드 확인은 미실행이다.
 
-![일반 전투 최종 화면](contact-boss-20261109/final-normal.png)
-![보스와 지형 최종 화면](contact-boss-20261109/final-boss.png)
-![보스 처치 완료](contact-boss-20261109/final-boss-complete.png)
+![일반 전투 최종 화면](https://github.com/mist2finer-spec/holdem_coin/blob/e460b37490265a523670b77b56756201007d9086/docs/unity/contact-boss-20261109/final-normal.png)
+![보스와 지형 최종 화면](https://github.com/mist2finer-spec/holdem_coin/blob/e460b37490265a523670b77b56756201007d9086/docs/unity/contact-boss-20261109/final-boss.png)
+![보스 처치 완료](https://github.com/mist2finer-spec/holdem_coin/blob/e460b37490265a523670b77b56756201007d9086/docs/unity/contact-boss-20261109/final-boss-complete.png)
 
 [원시 검사 결과](contact-boss-20261109). 로그의 `totalSizeBytes`는 Unity BuildReport 전체 산출물 크기이며 다운로드 APK 크기는 위의 실제 파일 bytes를 사용한다.

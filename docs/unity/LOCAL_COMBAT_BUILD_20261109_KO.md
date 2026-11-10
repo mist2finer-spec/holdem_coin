@@ -74,7 +74,7 @@ Android 최종 빌드·기기 결과는 아래 최종 부록에 기록한다. S2
 
 초기 .5 후보에서 발견한 패널 내 계정 명령 차단을 수정한 **.6이 최종 배포본**이다. 상세 이상 이동 검증·구역 서버 승인·영구 정산은 여전히 후속 작업이다. 운영 서버 코드는 변경하지 않았으며 `[skip render]` 커밋으로 클라이언트 소스/인계만 게시한다.
 
-[기기 결과](local-combat-20261109/android-complete.json), [APK 검사](local-combat-20261109/apk-validation.json), [실제 최종 화면](local-combat-20261109/android-complete.png).
+[기기 결과](local-combat-20261109/android-complete.json), [APK 검사](local-combat-20261109/apk-validation.json), [실제 최종 화면](https://github.com/mist2finer-spec/holdem_coin/blob/e460b37490265a523670b77b56756201007d9086/docs/unity/local-combat-20261109/android-complete.png).
 
 ## 게시 완료
 

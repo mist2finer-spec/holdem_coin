@@ -8,10 +8,10 @@ unchanged. Atlas shaft volume still keeps the legs fuller than the old baseline.
 
 | Weapon | Comparison GIF |
 | --- | --- |
-| Axe | [hong-native-hd-comparison-axe.gif](hong-native-hd-comparison-axe.gif) |
-| Sword | [hong-native-hd-comparison-sword.gif](hong-native-hd-comparison-sword.gif) |
-| Dual | [hong-native-hd-comparison-dual.gif](hong-native-hd-comparison-dual.gif) |
-| Spear | [hong-native-hd-comparison-spear.gif](hong-native-hd-comparison-spear.gif) |
+| Axe | [hong-native-hd-comparison-axe.gif](https://github.com/mist2finer-spec/holdem_coin/blob/e460b37490265a523670b77b56756201007d9086/docs/rpg/hong-native-hd-comparison-axe.gif) |
+| Sword | [hong-native-hd-comparison-sword.gif](https://github.com/mist2finer-spec/holdem_coin/blob/e460b37490265a523670b77b56756201007d9086/docs/rpg/hong-native-hd-comparison-sword.gif) |
+| Dual | [hong-native-hd-comparison-dual.gif](https://github.com/mist2finer-spec/holdem_coin/blob/e460b37490265a523670b77b56756201007d9086/docs/rpg/hong-native-hd-comparison-dual.gif) |
+| Spear | [hong-native-hd-comparison-spear.gif](https://github.com/mist2finer-spec/holdem_coin/blob/e460b37490265a523670b77b56756201007d9086/docs/rpg/hong-native-hd-comparison-spear.gif) |
 
 1120x440, 30fps, looping. Both sides use SOURCE 4x / LINEAR and the same
 animation/physics clock. Sequence: idle, run, attack1–5, skill1, skill3, including

@@ -56,6 +56,6 @@ Runtime code: `fdb4220` (base feature `55b88b7`). RPG/asset tests: 135/135; dung
 
 Preview examples use a disposable test guest.
 
-![Three support links and calculated combat modifiers](images/rpg-gem-core-live-20261031.jpg)
+![Three support links and calculated combat modifiers](https://github.com/mist2finer-spec/holdem_coin/blob/e460b37490265a523670b77b56756201007d9086/docs/rpg/images/rpg-gem-core-live-20261031.jpg)
 
-![28-node trial tree and one allocated node](images/rpg-core-tree-live-20261031.jpg)
+![28-node trial tree and one allocated node](https://github.com/mist2finer-spec/holdem_coin/blob/e460b37490265a523670b77b56756201007d9086/docs/rpg/images/rpg-core-tree-live-20261031.jpg)

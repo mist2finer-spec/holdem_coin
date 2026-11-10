@@ -60,8 +60,8 @@ Runtime commit `c8c3f4bed954f6b9d5f7fcde131d9bd5d238f39d` pushed to main and fea
 
 In live Chrome, linked power/wide/echo/quick/reach to Rift: five supports, heading6/6. Learned area nodes2_1,2_2,2_3: points12→9, area increased+54%. Combined compiled area2.695 (UI rounds displayed floating value to2.69), radius1.6416455 (UI×1.64), per-hit effect0.739206, cooldown0.891825, two pulses. Quest gold/wave remained frozen while editing. Returned to character selection and entered a fresh run; five supports and9 remaining points persisted. No application-origin console errors observed; browser-extension metadata errors excluded. Source-level boundary-hit tests, rather than screenshots alone, verify actual expanded collision reach.
 
-![Allocated axe range path](images/axe-tree-live.jpg)
+![Allocated axe range path](https://github.com/mist2finer-spec/holdem_coin/blob/e460b37490265a523670b77b56756201007d9086/docs/rpg/images/axe-tree-live.jpg)
 
-![Six-link support configuration and radius preview](images/sixlink-live.jpg)
+![Six-link support configuration and radius preview](https://github.com/mist2finer-spec/holdem_coin/blob/e460b37490265a523670b77b56756201007d9086/docs/rpg/images/sixlink-live.jpg)
 
 Save rollback note: once a v2 build is saved, old v1-only server code cannot read it without a deliberate downgrade migration; do not silently discard the new two sockets or side nodes to roll back.

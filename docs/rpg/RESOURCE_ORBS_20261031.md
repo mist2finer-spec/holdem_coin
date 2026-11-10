@@ -26,4 +26,4 @@ Runtime `ec57eab0f6dfcc241f0f305a69b7d09619157dae` pushed atomically to main and
 
 Browser QA at https://holdem-coin-tavern.onrender.com/hunt: entered as Hong, AUTO continued through room2; HP potion brought the displayed99% to100% and started8s cooldown. Both HP and mana buttons were used and each remaining-charge text later showed2 (from3); mana potion cooldown visible in screenshot. Six skills, jump/slide and symmetric evades remained visible. Screenshot records actual live UI, not a mockup. Cloud canvas timing is not a device-FPS benchmark.
 
-![Live resource HUD](images/resource-orbs-live.jpg)
+![Live resource HUD](https://github.com/mist2finer-spec/holdem_coin/blob/e460b37490265a523670b77b56756201007d9086/docs/rpg/images/resource-orbs-live.jpg)

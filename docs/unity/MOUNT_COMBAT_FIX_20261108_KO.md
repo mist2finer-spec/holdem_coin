@@ -33,7 +33,7 @@
 - 두 관찰 모두 Unity 오류/예외 0, 지면 미검출 0, 환경 씬 최대 2. 짧은 기능 검증이며 Android 10구역 장시간 완주·메모리 누수 검증으로 확대 해석하지 않는다.
 - BlueStacks에서 AUTO를 끄고 살아 있는 슬라임 방향으로 터치 입력 3초 유지. 이동 중 최소 몸통 간격 0.0085m, 위치 정지 표본 37개, 관통 없음. 일반 구역 시점 버튼도 측면 표시를 유지했다.
 
-![일반 구역 접촉](mount-combat-fix-20261108/android-contact.png)
-![9구역 중간 전경 가림 처리](mount-combat-fix-20261108/zone9-40s.png)
+![일반 구역 접촉](https://github.com/mist2finer-spec/holdem_coin/blob/e460b37490265a523670b77b56756201007d9086/docs/unity/mount-combat-fix-20261108/android-contact.png)
+![9구역 중간 전경 가림 처리](https://github.com/mist2finer-spec/holdem_coin/blob/e460b37490265a523670b77b56756201007d9086/docs/unity/mount-combat-fix-20261108/zone9-40s.png)
 
 원시 결과와 화면은 [검증 자료 폴더](mount-combat-fix-20261108)에 있다. 서버 일반 입력 300처치 회귀와 Android 짧은 실제 조작 검증을 구분한다.

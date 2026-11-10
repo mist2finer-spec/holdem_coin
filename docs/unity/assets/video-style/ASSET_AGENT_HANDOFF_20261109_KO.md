@@ -11,7 +11,7 @@
 ## 먼저 읽을 자료와 적용 우선순위
 
 1. 저장소 [AGENTS.md](../../../../AGENTS.md), [Unity 안내](../../../../unity/IslandGame/AGENTS.md), 기존 아트·모션 지시서. 최신 사용자 요청이 우선한다.
-2. [사용자 원본 PDF](IslandGame_영상스타일_로드맵_Tripo에셋.pdf). 재작성·최적화 없이 바이트 그대로 복사했다. [출처·SHA-256](source-manifest.json).
+2. [사용자 원본 PDF](https://github.com/mist2finer-spec/holdem_coin/blob/e460b37490265a523670b77b56756201007d9086/docs/unity/assets/video-style/IslandGame_%EC%98%81%EC%83%81%EC%8A%A4%ED%83%80%EC%9D%BC_%EB%A1%9C%EB%93%9C%EB%A7%B5_Tripo%EC%97%90%EC%85%8B.pdf). 재작성·최적화 없이 바이트 그대로 복사했다. [출처·SHA-256](source-manifest.json).
 3. [PR #9 감사 원문](../../UNITY_VISUAL_AUDIT_20261109_KO.md), [구현 계획 원문](../../VIDEO_STYLE_IMPLEMENTATION_PLAN_20261109_KO.md). PR head `6791bf088e39a162d0d44b7c9584dd168680e612`에서 가져왔으며 내용 수정 없이 보존한다. 해당 원문의 '실행하지 않았다'는 문장은 그 검토 당시의 범위다.
 4. [Mount 환경 검토](../../MOUNT_SUNDAY_REVIEW_20261107_KO.md), [10구역 스트리밍](../../MOUNT_SUNDAY_STREAM_PLAYTEST_20261108_KO.md), [슬라임·전경 가림 수정](../../MOUNT_COMBAT_FIX_20261108_KO.md), [기존 시점·액션 인계](../../COMBAT_VIEW_ACTION_20261107_KO.md).
 5. **현재 동작은 [이번 전투·보스 패치 인계](../../CONTACT_BOSS_HANDOFF_20261109_KO.md)가 우선**한다. 이전 문서의 '보스 미연결', '점프·회피도 몸통 관통 차단'은 이번 요청으로 바뀌었다.
@@ -35,8 +35,8 @@
 
 원본은 `G:/new_project/map_forest/map_ref1.mp4`, `map_ref2.mp4`에 있다. 1·4·7초 프레임을 추출했다. 영상 파일 자체는 저장소에 추가하지 않았다. 파일 해시는 manifest에 기록했다.
 
-![측면 마을 1·4·7초](map_ref1-sheet.png)
-![쿼터 초지 1·4·7초](map_ref2-sheet.png)
+![측면 마을 1·4·7초](https://github.com/mist2finer-spec/holdem_coin/blob/e460b37490265a523670b77b56756201007d9086/docs/unity/assets/video-style/map_ref1-sheet.png)
+![쿼터 초지 1·4·7초](https://github.com/mist2finer-spec/holdem_coin/blob/e460b37490265a523670b77b56756201007d9086/docs/unity/assets/video-style/map_ref2-sheet.png)
 
 마을은 전경 풀 → 밝은 이동 길 → 천막·NPC·소품 → 숲·언덕 → 푸른 원경 산·하늘의 깊이가 읽힌다. 초지는 낮은 풀 군락과 빈 이동 공간, 밝은 공격 효과가 읽힌다. 영상만으로 Tripo 제작 여부는 확인할 수 없다. 부드러운 색 변화가 있으므로 모든 재질을 딱딱한 2단계 툰으로 통일하는 방식은 기준으로 삼지 않는다.
 
