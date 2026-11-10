@@ -9,9 +9,9 @@ const {outputFiles,metafile}=await esbuild.build({entryPoints:[path.join(base,'r
 }}]});
 const raw=outputFiles[0].text;
 const sha=crypto.createHash('sha256').update(raw).digest('hex');
-const out=path.join(repo,'docs/unity/client-source-snapshot/2026-11-05/Resources/RogueStageKernel.js.txt');
+const out=path.join(repo,'unity/IslandGame/Assets/Island/Resources/RogueStageKernel.js.txt');
 const meta=path.join(repo,'src/lib/generated/rogue-stage-kernel.json');fs.mkdirSync(path.dirname(out),{recursive:true});fs.mkdirSync(path.dirname(meta),{recursive:true});
 const metadata=JSON.stringify({protocol:'island-stage-v1',sha256:sha,bytes:Buffer.byteLength(raw),sourceFiles:Object.keys(metafile.inputs).sort()},null,2)+'\n';
-if(process.argv.includes('--check')){if(fs.readFileSync(out,'utf8')!==raw||fs.readFileSync(meta,'utf8')!==metadata)throw Error('Stage kernel is stale. Run npm run unity:stage:kernel and copy it to the Unity project.');}
+if(process.argv.includes('--check')){if(fs.readFileSync(out,'utf8')!==raw||fs.readFileSync(meta,'utf8').replace(/\r\n/g,'\n')!==metadata)throw Error('Stage kernel is stale. Run npm run unity:stage:kernel.');}
 else {fs.writeFileSync(out,raw);fs.writeFileSync(meta,metadata);}console.log(JSON.stringify({sha256:sha,bytes:Buffer.byteLength(raw),checked:process.argv.includes('--check')}));
 })().catch(e=>{console.error(e.message);process.exitCode=1});

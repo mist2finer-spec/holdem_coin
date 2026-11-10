@@ -1,7 +1,7 @@
-"""Restore pinned NuGet runtime DLLs. Usage: python scripts/unity/restore-stage-runtime.py --project G:/new_project/IslandGame
+"""Restore pinned NuGet runtime DLLs. Usage: python scripts/unity/restore-stage-runtime.py --project unity/IslandGame
 
-DLLs are intentionally not uploaded through text-only GitHub tools. Existing .meta
-GUIDs and adjacent license notices come from the client source snapshot.
+DLLs, .meta GUIDs and license notices are tracked in the actual Unity project.
+Use this repair helper only when a local runtime library needs to be restored.
 """
 import argparse,hashlib,io,json,urllib.request,zipfile
 from pathlib import Path
@@ -14,7 +14,7 @@ def main():
     if not (project/'ProjectSettings/ProjectVersion.txt').is_file():
         parser.error('Destination must be an existing Unity project')
     repo=Path(__file__).resolve().parents[2]
-    snapshot=repo/'docs/unity/client-source-snapshot/2026-11-05/Plugins/StageRuntime'
+    snapshot=repo/'unity/IslandGame/Assets/Island/Plugins/StageRuntime'
     dependencies=json.loads((snapshot/'dependencies.json').read_text(encoding='utf-8'))
     verified=[]
     for dep in dependencies:
@@ -35,7 +35,7 @@ def main():
             backup.write_bytes(destination.read_bytes())
         destination.write_bytes(raw)
     for source in snapshot.iterdir():
-        if source.is_file():
+        if source.is_file() and source.suffix.lower()!='.dll':
             destination=target/source.name
             if destination.exists() and destination.read_bytes()!=source.read_bytes():
                 raise RuntimeError('Preserve local edits; reconcile snapshot manually: '+str(destination))
