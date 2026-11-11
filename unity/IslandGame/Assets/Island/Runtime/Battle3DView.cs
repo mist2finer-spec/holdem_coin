@@ -208,7 +208,7 @@ namespace IslandGame {
     if(budget&&!budget.AllowOptionalPose()){ThrottledSamples++;return sample;}a.lastSampleSlot=slot;
    }
    long poseStart=System.Diagnostics.Stopwatch.GetTimestamp();
-   CombatPoseBlend policy=!hero?CombatPoseBlend.Locomotion:kind=="dodge"?CombatPoseBlend.DodgeCancel:kind=="knockback"?CombatPoseBlend.HitReaction:kind=="rush"?CombatPoseBlend.DodgeCancel:kind=="skill"?CombatPoseBlend.AttackEntry:kind=="attack"?HeroAttackActive?CombatPoseBlend.AttackContact:HeroAttackProgress<.32f?CombatPoseBlend.AttackEntry:CombatPoseBlend.AttackRecovery:CombatPoseBlend.Locomotion;
+   CombatPoseBlend policy=!hero?CombatPoseBlend.Locomotion:(kind=="dodge"||kind=="cancel"||kind=="jump"||kind=="slide")?CombatPoseBlend.DodgeCancel:kind=="knockback"?CombatPoseBlend.HitReaction:kind=="rush"?CombatPoseBlend.DodgeCancel:kind=="skill"?CombatPoseBlend.AttackEntry:kind=="attack"?HeroAttackActive?CombatPoseBlend.AttackContact:HeroAttackProgress<.32f?CombatPoseBlend.AttackEntry:CombatPoseBlend.AttackRecovery:CombatPoseBlend.Locomotion;
    a.presentationRoot.localScale=Vector3.one;a.animation.Sample(clip,sample,advance,policy);SampleCalls++;if(!hero&&budget)budget.RecordPose(poseStart);
    // Mirror the side-on presentation without rotating the asymmetric rig through its back view.
    a.model.transform.localScale=new Vector3(a.scale,a.scale,a.scale*(hero&&!Planar&&facing<0?-1:1));

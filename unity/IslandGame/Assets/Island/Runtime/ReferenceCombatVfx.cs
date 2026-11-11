@@ -48,6 +48,7 @@ namespace IslandGame {
    float delta=previous<0?0:Mathf.Clamp(time-previous,0,.1f);int nextRoom=(int?)state["room"]??0;string id=(string)state["id"];
    if(time<previous||room!=nextRoom||session!=id){lightning.Reset();foreach(var b in pool){b.active=false;b.root.SetActive(false);}lastAttack=lastImpact=0;room=nextRoom;session=id;}previous=time;
    var h=state["hero"];var motion=h?["motion"] as JObject;int attack=(int?)motion?["attackId"]??0;string kind=(string)motion?["kind"];
+   if(kind=="cancel"){foreach(var b in pool)if(b.active&&b.kind==0){b.active=false;b.root.SetActive(false);}}
    float age=motion==null?0:time-N(motion["start"]),duration=N(motion?["duration"],1);int facing=(int)N(h?["facing"],1);float yaw=Mathf.Atan2(-N(h?["direction"]?["y"]),N(h?["direction"]?["x"],1))*Mathf.Rad2Deg;
    if(attack!=lastAttack&&age>=0){
     if(kind=="attack"&&age>=duration*N(motion?["timeline"]?["active"]?[0]?["from"],.32f)){lastAttack=attack;var active=motion["timeline"]?["active"]?[0];float start=N(active?["from"],.32f),end=N(active?["to"],.58f);Spawn(0,hero.position+Vector3.up*.25f,N(motion["start"])+duration*start,1.05f,1,yaw,5.5f,(int)N(motion["comboStep"],1),duration*(end-start)+.10f);}

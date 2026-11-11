@@ -1,0 +1,12 @@
+{
+  "apk": "G:\\holdem_coin-workspace\\island\\builds\\IslandGame-ActionCancelJump-20261111.apk",
+  "bytes": 147312833,
+  "sha256": "99a09299b065bca3f399aa8db450532928ece6a2bd78d0ece66565ccb0e73869",
+  "architectures": [
+    "arm64-v8a"
+  ],
+  "zip": "PASS",
+  "signature": "PASS",
+  "alignment16K": "PASS",
+  "manifest": "package: name='com.mist2finer.islandgame.dev' versionCode='2026111106' versionName='0.1.0-test.20261111.6' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'"
+}

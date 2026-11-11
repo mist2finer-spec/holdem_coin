@@ -41,7 +41,7 @@ namespace IslandGame {
    if(motion!=null){
     float age=Mathf.Max(0,visualTime-N(motion["start"])),duration=N(motion["duration"]),t=duration>0?Mathf.Clamp01(age/duration):1;string kind=(string)motion["kind"];
     if(kind=="jump"&&motion["legs"] is JArray legs&&legs.Count>0){var p=SampleTraversal(legs,age);hero["x"]=p["x"];hero["y"]=p["y"];hero["elevation"]=p["elevation"];hero["airHeight"]=p["airHeight"];hero["action"]=(bool)p["holding"]?"jump5":JumpClip(N(p["progress"]));}
-    else if((bool?)state["unityBossMode"]==true&&(kind=="jump"||kind=="dodge"||kind=="slide")){if(kind=="jump")hero["action"]=JumpClip(t);return hero;}
+    else if((bool?)state["unityBossMode"]==true&&(kind=="jump"||kind=="dodge"||kind=="slide")){if(kind=="jump")hero["action"]=motion["jump"] is JObject j?(j["landedAt"]?.Type!=JTokenType.Null?"jump5":age<.06f?"jump1":N(j["velocityY"])>0?"jump2":"jump4"):JumpClip(t);return hero;}
     else if(kind=="jump"||kind=="dodge"||kind=="slide"){
      hero["x"]=Mathf.Lerp(N(motion["from"]?["x"]),N(motion["to"]?["x"]),t);hero["y"]=Mathf.Lerp(N(motion["from"]?["y"]),N(motion["to"]?["y"]),t);hero["airHeight"]=kind=="jump"?400*t*(1-t):0;
      if(kind=="jump")hero["action"]=JumpClip(t);if(kind=="slide")hero["action"]=t<.7f?"sliding1":"sliding2";

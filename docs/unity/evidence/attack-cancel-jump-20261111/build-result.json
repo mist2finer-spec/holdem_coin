@@ -1,0 +1,14 @@
+{
+  "result": "Succeeded",
+  "totalErrors": 0,
+  "totalWarnings": 1,
+  "seconds": 215.1476233,
+  "output": "G:/holdem_coin-workspace/Island/builds/IslandGame-ActionCancelJump-20261111.apk",
+  "apkBytes": 147312833,
+  "messages": [
+    {
+      "type": "Warning",
+      "content": "Assets\\Island\\Runtime\\IslandApp.cs(10,205): warning CS0414: The field 'IslandApp.lastDeal' is assigned but its value is never used"
+    }
+  ]
+}

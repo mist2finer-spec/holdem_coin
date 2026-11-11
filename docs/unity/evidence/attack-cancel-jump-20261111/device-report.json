@@ -1,0 +1,921 @@
+{
+  "result": "PASS",
+  "version": "0.1.0-test.20261111.6",
+  "platform": "Android",
+  "frames": 1393,
+  "errors": 0,
+  "errorSamples": [],
+  "networkRequests": 0,
+  "samples": [
+    {
+      "zone": 0,
+      "camera": "Side25D",
+      "action": "jump",
+      "valid": true,
+      "auto": true,
+      "cancelledAttackId": 2,
+      "idleObserved": true,
+      "rendered": true,
+      "latency": 0.120000005,
+      "jumpPeakCm": 104.745186,
+      "landingAge": 0.66,
+      "trace": [
+        {
+          "time": 1.76,
+          "kind": "attack",
+          "action": "attack1",
+          "air": 0,
+          "velocity": null,
+          "attackId": 2,
+          "presented": "dash",
+          "groundError": 0.0
+        },
+        {
+          "time": 1.8,
+          "kind": "cancel",
+          "action": "stay1",
+          "air": 0,
+          "velocity": null,
+          "attackId": null,
+          "presented": "dash",
+          "groundError": 0.0
+        },
+        {
+          "time": 1.88,
+          "kind": "jump",
+          "action": "jump1",
+          "air": 24.339961204974809,
+          "velocity": 568.07406984078591,
+          "attackId": 3,
+          "presented": "attack1",
+          "groundError": 0.0
+        },
+        {
+          "time": 1.92,
+          "kind": "jump",
+          "action": "jump1",
+          "air": 45.484424117969866,
+          "velocity": 488.07406984078591,
+          "attackId": 3,
+          "presented": "jump1",
+          "groundError": 0.0
+        },
+        {
+          "time": 1.98,
+          "kind": "jump",
+          "action": "jump1",
+          "air": 71.201041815174989,
+          "velocity": 368.0740698407858,
+          "attackId": 3,
+          "presented": "jump2",
+          "groundError": 0.0
+        },
+        {
+          "time": 2.1,
+          "kind": "jump",
+          "action": "jump1",
+          "air": 101.03010013467353,
+          "velocity": 128.07406984078557,
+          "attackId": 3,
+          "presented": "jump2",
+          "groundError": 0.0
+        },
+        {
+          "time": 2.12,
+          "kind": "jump",
+          "action": "jump1",
+          "air": 103.20125833784117,
+          "velocity": 88.074069840785569,
+          "attackId": 3,
+          "presented": "jump2",
+          "groundError": 0.0
+        },
+        {
+          "time": 2.18,
+          "kind": "jump",
+          "action": "jump1",
+          "air": 104.9157453291707,
+          "velocity": -31.925930159214545,
+          "attackId": 3,
+          "presented": "jump2",
+          "groundError": 0.0
+        },
+        {
+          "time": 2.3,
+          "kind": "jump",
+          "action": "jump1",
+          "air": 86.751020526656362,
+          "velocity": -271.92593015921477,
+          "attackId": 3,
+          "presented": "jump4",
+          "groundError": 0.0
+        },
+        {
+          "time": 2.32,
+          "kind": "jump",
+          "action": "jump1",
+          "air": 80.9228403695173,
+          "velocity": -311.92593015921489,
+          "attackId": 3,
+          "presented": "jump4",
+          "groundError": 0.0
+        },
+        {
+          "time": 2.38,
+          "kind": "jump",
+          "action": "jump1",
+          "air": 58.636314979020185,
+          "velocity": -431.92593015921489,
+          "attackId": 3,
+          "presented": "jump4",
+          "groundError": 0.0
+        },
+        {
+          "time": 2.5,
+          "kind": "jump",
+          "action": "jump5",
+          "air": 0,
+          "velocity": 0,
+          "attackId": 3,
+          "presented": "jump4",
+          "groundError": 0.0
+        },
+        {
+          "time": 2.6,
+          "kind": null,
+          "action": "stay1",
+          "air": 0,
+          "velocity": null,
+          "attackId": null,
+          "presented": "jump5",
+          "groundError": 0.0
+        }
+      ]
+    },
+    {
+      "zone": 0,
+      "camera": "Side25D",
+      "action": "dodge",
+      "valid": true,
+      "auto": true,
+      "cancelledAttackId": 7,
+      "idleObserved": true,
+      "rendered": true,
+      "latency": 0.100000381,
+      "jumpPeakCm": 0.0,
+      "landingAge": -1.0,
+      "trace": [
+        {
+          "time": 5.16,
+          "kind": "attack",
+          "action": "attack2",
+          "air": 0,
+          "velocity": null,
+          "attackId": 7,
+          "presented": "dash",
+          "groundError": 0.0
+        },
+        {
+          "time": 5.2,
+          "kind": "cancel",
+          "action": "stay1",
+          "air": 0,
+          "velocity": null,
+          "attackId": null,
+          "presented": "dash",
+          "groundError": 0.0
+        },
+        {
+          "time": 5.26,
+          "kind": "dodge",
+          "action": "avoid1",
+          "air": 0,
+          "velocity": null,
+          "attackId": 8,
+          "presented": "attack2",
+          "groundError": 0.0
+        },
+        {
+          "time": 5.3,
+          "kind": "dodge",
+          "action": "avoid1",
+          "air": 0,
+          "velocity": null,
+          "attackId": 8,
+          "presented": "avoid1",
+          "groundError": 0.0
+        },
+        {
+          "time": 5.36,
+          "kind": "dodge",
+          "action": "avoid1",
+          "air": 0,
+          "velocity": null,
+          "attackId": 8,
+          "presented": "avoid1",
+          "groundError": 0.0
+        },
+        {
+          "time": 5.4,
+          "kind": "dodge",
+          "action": "avoid1",
+          "air": 0,
+          "velocity": null,
+          "attackId": 8,
+          "presented": "avoid1",
+          "groundError": 0.0
+        },
+        {
+          "time": 5.46,
+          "kind": "dodge",
+          "action": "avoid1",
+          "air": 0,
+          "velocity": null,
+          "attackId": 8,
+          "presented": "avoid1",
+          "groundError": 0.0
+        }
+      ]
+    },
+    {
+      "zone": 0,
+      "camera": "Side25D",
+      "action": "slide",
+      "valid": true,
+      "auto": true,
+      "cancelledAttackId": 12,
+      "idleObserved": true,
+      "rendered": true,
+      "latency": 0.07999992,
+      "jumpPeakCm": 0.0,
+      "landingAge": -1.0,
+      "trace": [
+        {
+          "time": 8.7,
+          "kind": "attack",
+          "action": "attack2",
+          "air": 0,
+          "velocity": null,
+          "attackId": 12,
+          "presented": "dash",
+          "groundError": 0.0
+        },
+        {
+          "time": 8.74,
+          "kind": "cancel",
+          "action": "stay1",
+          "air": 0,
+          "velocity": null,
+          "attackId": null,
+          "presented": "dash",
+          "groundError": 0.0
+        },
+        {
+          "time": 8.78,
+          "kind": "slide",
+          "action": "sliding1",
+          "air": 0,
+          "velocity": null,
+          "attackId": 13,
+          "presented": "attack2",
+          "groundError": 0.0
+        },
+        {
+          "time": 8.8,
+          "kind": "slide",
+          "action": "sliding1",
+          "air": 0,
+          "velocity": null,
+          "attackId": 13,
+          "presented": "stay1",
+          "groundError": 0.0
+        },
+        {
+          "time": 8.84,
+          "kind": "slide",
+          "action": "sliding1",
+          "air": 0,
+          "velocity": null,
+          "attackId": 13,
+          "presented": "sliding1",
+          "groundError": 0.0
+        },
+        {
+          "time": 8.9,
+          "kind": "slide",
+          "action": "sliding1",
+          "air": 0,
+          "velocity": null,
+          "attackId": 13,
+          "presented": "sliding1",
+          "groundError": 0.0
+        },
+        {
+          "time": 8.94,
+          "kind": "slide",
+          "action": "sliding1",
+          "air": 0,
+          "velocity": null,
+          "attackId": 13,
+          "presented": "sliding1",
+          "groundError": 0.0
+        },
+        {
+          "time": 9.0,
+          "kind": "slide",
+          "action": "sliding1",
+          "air": 0,
+          "velocity": null,
+          "attackId": 13,
+          "presented": "sliding1",
+          "groundError": 0.0
+        }
+      ]
+    },
+    {
+      "zone": 0,
+      "camera": "Side25D",
+      "action": "skill",
+      "valid": true,
+      "auto": true,
+      "cancelledAttackId": 17,
+      "idleObserved": true,
+      "rendered": true,
+      "latency": 0.07999992,
+      "jumpPeakCm": 0.0,
+      "landingAge": -1.0,
+      "trace": [
+        {
+          "time": 12.1,
+          "kind": "attack",
+          "action": "attack1",
+          "air": 0,
+          "velocity": null,
+          "attackId": 17,
+          "presented": "dash",
+          "groundError": 0.0
+        },
+        {
+          "time": 12.14,
+          "kind": "cancel",
+          "action": "stay1",
+          "air": 0,
+          "velocity": null,
+          "attackId": null,
+          "presented": "dash",
+          "groundError": 0.0
+        },
+        {
+          "time": 12.18,
+          "kind": "skill",
+          "action": "skill2",
+          "air": 0,
+          "velocity": null,
+          "attackId": 18,
+          "presented": "attack1",
+          "groundError": 0.0
+        },
+        {
+          "time": 12.2,
+          "kind": "skill",
+          "action": "skill2",
+          "air": 0,
+          "velocity": null,
+          "attackId": 18,
+          "presented": "stay1",
+          "groundError": 0.0
+        },
+        {
+          "time": 12.24,
+          "kind": "skill",
+          "action": "skill2",
+          "air": 0,
+          "velocity": null,
+          "attackId": 18,
+          "presented": "stay1",
+          "groundError": 0.0
+        },
+        {
+          "time": 12.28,
+          "kind": "skill",
+          "action": "skill2",
+          "air": 0,
+          "velocity": null,
+          "attackId": 18,
+          "presented": "skill2",
+          "groundError": 0.0
+        },
+        {
+          "time": 12.3,
+          "kind": "skill",
+          "action": "skill2",
+          "air": 0,
+          "velocity": null,
+          "attackId": 18,
+          "presented": "skill2",
+          "groundError": 0.0
+        },
+        {
+          "time": 12.34,
+          "kind": "skill",
+          "action": "skill2",
+          "air": 0,
+          "velocity": null,
+          "attackId": 18,
+          "presented": "skill2",
+          "groundError": 0.0
+        },
+        {
+          "time": 12.38,
+          "kind": "skill",
+          "action": "skill2",
+          "air": 0,
+          "velocity": null,
+          "attackId": 18,
+          "presented": "skill2",
+          "groundError": 0.0
+        }
+      ]
+    },
+    {
+      "zone": 9,
+      "camera": "QuarterView",
+      "action": "jump",
+      "valid": true,
+      "auto": true,
+      "cancelledAttackId": 1,
+      "idleObserved": true,
+      "rendered": true,
+      "latency": 0.0599999428,
+      "jumpPeakCm": 104.745186,
+      "landingAge": 0.66,
+      "trace": [
+        {
+          "time": 5.0,
+          "kind": "attack",
+          "action": "attack1",
+          "air": 0,
+          "velocity": null,
+          "attackId": 1,
+          "presented": "run1",
+          "groundError": 0.0
+        },
+        {
+          "time": 5.02,
+          "kind": "cancel",
+          "action": "stay1",
+          "air": 0,
+          "velocity": null,
+          "attackId": null,
+          "presented": "run1",
+          "groundError": 0.0
+        },
+        {
+          "time": 5.06,
+          "kind": "jump",
+          "action": "jump1",
+          "air": 0,
+          "velocity": 0,
+          "attackId": 2,
+          "presented": "run1",
+          "groundError": 0.0
+        },
+        {
+          "time": 5.18,
+          "kind": "jump",
+          "action": "jump1",
+          "air": 63.368888380892912,
+          "velocity": 408.0740698407929,
+          "attackId": 2,
+          "presented": "jump1",
+          "groundError": 0.0
+        },
+        {
+          "time": 5.3,
+          "kind": "jump",
+          "action": "jump1",
+          "air": 97.937776761787632,
+          "velocity": 168.07406984079802,
+          "attackId": 2,
+          "presented": "jump2",
+          "groundError": 0.0
+        },
+        {
+          "time": 5.36,
+          "kind": "jump",
+          "action": "jump1",
+          "air": 104.42222095223546,
+          "velocity": 48.074069840800576,
+          "attackId": 2,
+          "presented": "jump2",
+          "groundError": 0.0
+        },
+        {
+          "time": 5.4,
+          "kind": "jump",
+          "action": "jump1",
+          "air": 104.74518374586752,
+          "velocity": -31.925930159197719,
+          "attackId": 2,
+          "presented": "jump2",
+          "groundError": 0.0
+        },
+        {
+          "time": 5.44,
+          "kind": "jump",
+          "action": "jump1",
+          "air": 101.86814653949969,
+          "velocity": -111.92593015919601,
+          "attackId": 2,
+          "presented": "jump4",
+          "groundError": 0.0
+        },
+        {
+          "time": 5.48,
+          "kind": "jump",
+          "action": "jump1",
+          "air": 95.791109333132,
+          "velocity": -191.92593015919431,
+          "attackId": 2,
+          "presented": "jump4",
+          "groundError": 0.0
+        },
+        {
+          "time": 5.5,
+          "kind": "jump",
+          "action": "jump1",
+          "air": 91.552590729948264,
+          "velocity": -231.9259301591934,
+          "attackId": 2,
+          "presented": "jump4",
+          "groundError": 0.0
+        },
+        {
+          "time": 5.54,
+          "kind": "jump",
+          "action": "jump1",
+          "air": 80.67555352358076,
+          "velocity": -311.92593015919169,
+          "attackId": 2,
+          "presented": "jump4",
+          "groundError": 0.0
+        },
+        {
+          "time": 5.58,
+          "kind": "jump",
+          "action": "jump1",
+          "air": 66.598516317213409,
+          "velocity": -391.9259301591901,
+          "attackId": 2,
+          "presented": "jump4",
+          "groundError": 0.0
+        },
+        {
+          "time": 5.68,
+          "kind": "jump",
+          "action": "jump1",
+          "air": 17.405923301295672,
+          "velocity": -591.92593015918578,
+          "attackId": 2,
+          "presented": "jump4",
+          "groundError": 0.0
+        },
+        {
+          "time": 5.74,
+          "kind": "jump",
+          "action": "jump5",
+          "air": 0,
+          "velocity": 0,
+          "attackId": 2,
+          "presented": "jump4",
+          "groundError": 0.0
+        },
+        {
+          "time": 5.78,
+          "kind": "jump",
+          "action": "jump5",
+          "air": 0,
+          "velocity": 0,
+          "attackId": 2,
+          "presented": "jump5",
+          "groundError": 0.0
+        },
+        {
+          "time": 5.8,
+          "kind": "jump",
+          "action": "jump5",
+          "air": 0,
+          "velocity": 0,
+          "attackId": 2,
+          "presented": "jump5",
+          "groundError": 0.0
+        },
+        {
+          "time": 5.84,
+          "kind": "attack",
+          "action": "attack2",
+          "air": 0,
+          "velocity": null,
+          "attackId": 3,
+          "presented": "jump5",
+          "groundError": 0.0
+        }
+      ]
+    },
+    {
+      "zone": 9,
+      "camera": "QuarterView",
+      "action": "dodge",
+      "valid": true,
+      "auto": true,
+      "cancelledAttackId": 6,
+      "idleObserved": true,
+      "rendered": true,
+      "latency": 0.0599999428,
+      "jumpPeakCm": 0.0,
+      "landingAge": -1.0,
+      "trace": [
+        {
+          "time": 7.08,
+          "kind": "attack",
+          "action": "attack2",
+          "air": 0,
+          "velocity": null,
+          "attackId": 6,
+          "presented": "attack2",
+          "groundError": 0.0
+        },
+        {
+          "time": 7.1,
+          "kind": "cancel",
+          "action": "stay1",
+          "air": 0,
+          "velocity": null,
+          "attackId": null,
+          "presented": "attack2",
+          "groundError": 0.0
+        },
+        {
+          "time": 7.14,
+          "kind": "dodge",
+          "action": "avoid1",
+          "air": 0,
+          "velocity": null,
+          "attackId": 7,
+          "presented": "attack2",
+          "groundError": 0.0
+        },
+        {
+          "time": 7.18,
+          "kind": "dodge",
+          "action": "avoid1",
+          "air": 0,
+          "velocity": null,
+          "attackId": 7,
+          "presented": "stay1",
+          "groundError": 0.0
+        },
+        {
+          "time": 7.2,
+          "kind": "dodge",
+          "action": "avoid1",
+          "air": 0,
+          "velocity": null,
+          "attackId": 7,
+          "presented": "avoid1",
+          "groundError": 0.0
+        },
+        {
+          "time": 7.24,
+          "kind": "dodge",
+          "action": "avoid1",
+          "air": 0,
+          "velocity": null,
+          "attackId": 7,
+          "presented": "avoid1",
+          "groundError": 0.0
+        },
+        {
+          "time": 7.28,
+          "kind": "dodge",
+          "action": "avoid1",
+          "air": 0,
+          "velocity": null,
+          "attackId": 7,
+          "presented": "avoid1",
+          "groundError": 0.0
+        },
+        {
+          "time": 7.3,
+          "kind": "dodge",
+          "action": "avoid1",
+          "air": 0,
+          "velocity": null,
+          "attackId": 7,
+          "presented": "avoid1",
+          "groundError": 0.0
+        },
+        {
+          "time": 7.34,
+          "kind": "dodge",
+          "action": "avoid1",
+          "air": 0,
+          "velocity": null,
+          "attackId": 7,
+          "presented": "avoid1",
+          "groundError": 0.0
+        }
+      ]
+    },
+    {
+      "zone": 9,
+      "camera": "QuarterView",
+      "action": "slide",
+      "valid": true,
+      "auto": true,
+      "cancelledAttackId": 10,
+      "idleObserved": true,
+      "rendered": true,
+      "latency": 0.06000042,
+      "jumpPeakCm": 0.0,
+      "landingAge": -1.0,
+      "trace": [
+        {
+          "time": 9.0,
+          "kind": "attack",
+          "action": "attack2",
+          "air": 0,
+          "velocity": null,
+          "attackId": 10,
+          "presented": "attack1",
+          "groundError": 0.0
+        },
+        {
+          "time": 9.02,
+          "kind": "cancel",
+          "action": "stay1",
+          "air": 0,
+          "velocity": null,
+          "attackId": null,
+          "presented": "attack1",
+          "groundError": 0.0
+        },
+        {
+          "time": 9.06,
+          "kind": "slide",
+          "action": "sliding1",
+          "air": 0,
+          "velocity": null,
+          "attackId": 11,
+          "presented": "stay1",
+          "groundError": 0.0
+        },
+        {
+          "time": 9.1,
+          "kind": "slide",
+          "action": "sliding1",
+          "air": 0,
+          "velocity": null,
+          "attackId": 11,
+          "presented": "stay1",
+          "groundError": 0.0
+        },
+        {
+          "time": 9.14,
+          "kind": "slide",
+          "action": "sliding1",
+          "air": 0,
+          "velocity": null,
+          "attackId": 11,
+          "presented": "sliding1",
+          "groundError": 0.0
+        },
+        {
+          "time": 9.18,
+          "kind": "slide",
+          "action": "sliding1",
+          "air": 0,
+          "velocity": null,
+          "attackId": 11,
+          "presented": "sliding1",
+          "groundError": 0.0
+        },
+        {
+          "time": 9.2,
+          "kind": "slide",
+          "action": "sliding1",
+          "air": 0,
+          "velocity": null,
+          "attackId": 11,
+          "presented": "sliding1",
+          "groundError": 0.0
+        },
+        {
+          "time": 9.24,
+          "kind": "slide",
+          "action": "sliding1",
+          "air": 0,
+          "velocity": null,
+          "attackId": 11,
+          "presented": "sliding1",
+          "groundError": 0.0
+        },
+        {
+          "time": 9.28,
+          "kind": "slide",
+          "action": "sliding1",
+          "air": 0,
+          "velocity": null,
+          "attackId": 11,
+          "presented": "sliding1",
+          "groundError": 0.0
+        }
+      ]
+    },
+    {
+      "zone": 9,
+      "camera": "QuarterView",
+      "action": "skill",
+      "valid": true,
+      "auto": true,
+      "cancelledAttackId": 13,
+      "idleObserved": true,
+      "rendered": true,
+      "latency": 0.03999996,
+      "jumpPeakCm": 0.0,
+      "landingAge": -1.0,
+      "trace": [
+        {
+          "time": 10.78,
+          "kind": "attack",
+          "action": "attack2",
+          "air": 0,
+          "velocity": null,
+          "attackId": 13,
+          "presented": "attack3",
+          "groundError": 0.0
+        },
+        {
+          "time": 10.82,
+          "kind": "skill",
+          "action": "skill2",
+          "air": 0,
+          "velocity": null,
+          "attackId": 14,
+          "presented": "stay1",
+          "groundError": 0.0
+        },
+        {
+          "time": 10.86,
+          "kind": "skill",
+          "action": "skill2",
+          "air": 0,
+          "velocity": null,
+          "attackId": 14,
+          "presented": "stay1",
+          "groundError": 0.0
+        },
+        {
+          "time": 10.9,
+          "kind": "skill",
+          "action": "skill2",
+          "air": 0,
+          "velocity": null,
+          "attackId": 14,
+          "presented": "skill2",
+          "groundError": 0.0
+        },
+        {
+          "time": 10.94,
+          "kind": "skill",
+          "action": "skill2",
+          "air": 0,
+          "velocity": null,
+          "attackId": 14,
+          "presented": "skill2",
+          "groundError": 0.0
+        },
+        {
+          "time": 10.98,
+          "kind": "skill",
+          "action": "skill2",
+          "air": 0,
+          "velocity": null,
+          "attackId": 14,
+          "presented": "skill2",
+          "groundError": 0.0
+        },
+        {
+          "time": 11.0,
+          "kind": "skill",
+          "action": "skill2",
+          "air": 0,
+          "velocity": null,
+          "attackId": 14,
+          "presented": "skill2",
+          "groundError": 0.0
+        }
+      ]
+    }
+  ]
+}
