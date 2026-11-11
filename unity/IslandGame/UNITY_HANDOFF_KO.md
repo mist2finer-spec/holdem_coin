@@ -1,7 +1,19 @@
 Island / holdem_coin — 통합 작업 시작점 (2026-11-11)
 
-최상위 기준: 일반 10구역 = 사이드뷰(Side25D), 보스전만 = 쿼터뷰(QuarterView).
+최상위 기준(2026-11-11 최신 요청): 일반 1~9구역 = 사이드뷰(Side25D). 10구역 = 보스 지역, 사이드뷰로 걸어서 입장 후 보스 등장 때 쿼터뷰(QuarterView).
 현재 게임 기준은 새 10구역 맵이다. 초기 low-poly 일반 맵으로 되돌리지 않는다. 현재 사용하는 기존 보스 맵과 홀덤 게임은 보존한다.
+
+2026-11-11 원소 VFX 본게임 연결 / 10구역 보스 (최신)
+- 기존 Island 메인 게임에 검기 5단계, 물방울/번개 각 3종 및 실제 다중 판정·반사·넉백·젖음 연계를 연결했다. 범위 성장은 보류하고 고정 반경을 사용한다.
+- 진행은 일반 9구역 + 10번째 Nature 보스 전장이다. 보스 전장에서 walk_loop로 3m 이동 후 1.25초 등장, 1.2초 카메라 전환. 추격은 Boss_AdaptedWalk의 이동 거리 기준 걷기이다. 기존 MountZone10 에셋과 빌드 씬은 보존했다.
+- 개발 로비: 원소 전투 연습(4구역), 10구역 보스 연습(입장부터). 임시 에르텔 6종은 계정에 저장하지 않는다.
+- 10구역 보스 처치 즉시 미궁 탈출 모달을 표시한다. 완료 후 이전 보스맵이나 11번째 구역으로 이동하지 않는다.
+- 전투 회귀91/타입 검사/Unity 컴파일 PASS. 실제 Editor 9→10구역 1497프레임 PASS. Android9 BlueStacks 1980프레임, 19개 기록, 검기5단계·스킬6종·걷기3샘플·탈출 팝업, 오류0 PASS. 실제 휴대폰은 미검증.
+- Android 기본 Medium 품질은 단일 샘플 DioramaMobileURP를 사용해 화면 MSAA 샘플 불일치를 해결했다.
+- APK: builds/IslandGame-ElementalBoss-20261111.apk, 0.1.0-test.20261111.2(code2026111102), 178673135 bytes. 빌드 오류0/경고1, 서명·16KB 정렬 PASS.
+- SHA256 3104f2b2da32218ca653f463e57aec57803296943d94abd88116e7a188b57650
+- Editor는 현재 메인 Island 게임을 열었다. 아래 실험실 단독/기존 일반10구역 설명은 이전 기록이다.
+- 상세/증거: ../../docs/unity/ELEMENTAL_BOSS_INTEGRATION_20261111_KO.md
 
 2026-11-11 원신 관찰 기반 효과 실험실
 - Unity 메뉴 Island > Elemental VFX > Open lab. ElementalVfxLab.unity에서 검격 5단계 / 원형 물방울 3종 / 번개 3종을 선택·반복 재생한다. Space 재생, 휠 확대, 속도·일시정지·판정 표시·시점 전환 지원.
@@ -27,7 +39,7 @@ Island / holdem_coin — 통합 작업 시작점 (2026-11-11)
 - 활성 Git 브랜치: codex/genshin-environment-20261110
 - 공통 Git 저장소: branches/main/.git
 - 11월 9일 기준 브랜치: branches/local-combat-base
-- 최신 APK: builds/IslandGame-ReferenceCombat-20261111.apk
+- 최신 APK: builds/IslandGame-ElementalBoss-20261111.apk
 - 인계/검증: records 및 maintenance/cleanup-20261110/evidence
 - 바르디안 단일 보관본: archives/Vardian_Analysis_Reference.zip
 - 과거 고유 로컬 DB/설정: private-state (비공개, Git에 추가하지 않는다)

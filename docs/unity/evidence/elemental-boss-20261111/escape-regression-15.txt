@@ -1,0 +1,23 @@
+✔ swept projectile detects initial overlap and a thin collider at 80m/s (2.8239ms)
+✔ alternating sword stages hit at the same angular phase as their visible crescent (0.9862ms)
+✔ water variant 1: real swept hits in multiple directions, dedup, gravity and bounded lifetime (3.4489ms)
+✔ water variant 2: real swept hits in multiple directions, dedup, gravity and bounded lifetime (3.1524ms)
+✔ water variant 3: real swept hits in multiple directions, dedup, gravity and bounded lifetime (2.648ms)
+✔ water wall interception reflects once and shields a target behind the wall (3.2537ms)
+✔ lightning variant 1: real damage once per cast, no tier radius increase (0.7499ms)
+✔ lightning variant 2: real damage once per cast, no tier radius increase (0.4652ms)
+✔ lightning variant 3: real damage once per cast, no tier radius increase (0.3509ms)
+✔ lightning can be dodged after locking and a roof/trunk blocks the locked strike (0.5874ms)
+✔ wet status increases lightning by 25% and expires; obstacle LOS blocks splash damage (0.551ms)
+✔ fixed tick projectile results do not depend on 30 vs 100 display FPS (5.4728ms)
+✔ zone ten waits for environment then walks 3m side-on, reveals once, blends to quarter and pursues walking (7.3949ms)
+✔ six existing gems drive all water/lightning variants, removal gates casts and five sword stages wrap without growth (36.7449ms)
+✔ tenth-zone victory is terminal: no extra boss map or eleventh zone after escape (64.1409ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1677.4119

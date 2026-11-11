@@ -1,0 +1,12 @@
+{
+  "apk": "G:\\holdem_coin-workspace\\island\\builds\\IslandGame-ElementalBoss-20261111.apk",
+  "bytes": 178673135,
+  "sha256": "3104f2b2da32218ca653f463e57aec57803296943d94abd88116e7a188b57650",
+  "architectures": [
+    "arm64-v8a"
+  ],
+  "zip": "PASS",
+  "signature": "PASS",
+  "alignment16K": "PASS",
+  "manifest": "package: name='com.mist2finer.islandgame.dev' versionCode='2026111102' versionName='0.1.0-test.20261111.2' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'"
+}

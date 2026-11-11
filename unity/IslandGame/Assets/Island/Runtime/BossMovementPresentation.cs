@@ -7,7 +7,7 @@ namespace IslandGame {
   bool ready;string session;int room;Vector2 position;
   public void Reset(){ready=false;}
   public void Apply(JObject hero,JObject state,JObject map,float move,float depth,float dt,double now,double received,double rttMs,bool paused){
-   if(hero==null)return;var source=state["hero"] as JObject;string id=(string)state["id"];int nextRoom=(int)NativeCombatPresentation.N(state["room"]);
+   if(hero==null)return;if((bool?)state?["bossIntroActive"]==true){Reset();return;}var source=state["hero"] as JObject;string id=(string)state["id"];int nextRoom=(int)NativeCombatPresentation.N(state["room"]);
    Vector2 authoritative=new Vector2(NativeCombatPresentation.N(source?["x"]),NativeCombatPresentation.N(source?["y"]));
    if(paused||(bool?)state["paused"]==true||(string)state["status"]!="playing"||source?["motion"] is JObject){Reset();return;}
    bool planar=(string)state["movementMode"]=="plane"||(bool?)state["mountSunday"]!=true&&(int?)state["room"]==1;float speed=NativeCombatPresentation.N(state["movementSpeed"],210);var input=Vector2.ClampMagnitude(new Vector2(move,planar?depth:0),1);float age=Mathf.Max(0,(float)(now-received));

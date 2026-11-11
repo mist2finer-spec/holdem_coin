@@ -1,0 +1,113 @@
+✔ bone curve is fixed, finite, uses original clip and two bounded active windows (1.893ms)
+✔ capsule distance handles crossing, parallel and zero-length segments (0.5953ms)
+✔ actual hand contact hits in full 3D, horizontal/vertical misses stay misses at rotated headings (1.3782ms)
+✔ each successful strike applies damage and one event with the same attack/time only once (3.8055ms)
+✔ inactive phase, dodge invulnerability, pause and out-of-height contacts never damage (2.6991ms)
+✔ body blocks walking, slide and roll without crossing and separates an initially overlapping hero (12.0768ms)
+✔ legal jump trajectory contacts a hand without artificial height or bone changes (2.5039ms)
+✔ throw warning, explosion and damage carry one attack ID and scheduled contact time (9.3225ms)
+✔ initial overlap near arena boundary resolves outside body and within legal bounds (1.1344ms)
+✔ original weapon tracks have finite samples and contact-only windows (1.7778ms)
+✔ weapon capsule matches a rotated original blade and rejects height/depth misses (1.4583ms)
+✔ view metadata never changes held input, movement limits or command identity (18.3564ms)
+✔ all motion instances have stable IDs and immutable shared contact windows (2.4647ms)
+✔ each weapon contact has one damage event at the authoritative phase, with no late duplicate (1.4386ms)
+✔ cancelled attack and dead boss cannot emit residual hook damage (4.7707ms)
+✔ hook -> visible idle -> chase window -> throw uses bounded gaps and pauses freeze cadence (6.8142ms)
+✔ swept projectile detects initial overlap and a thin collider at 80m/s (1.9452ms)
+✔ alternating sword stages hit at the same angular phase as their visible crescent (0.5937ms)
+✔ water variant 1: real swept hits in multiple directions, dedup, gravity and bounded lifetime (3.3373ms)
+✔ water variant 2: real swept hits in multiple directions, dedup, gravity and bounded lifetime (4.0022ms)
+✔ water variant 3: real swept hits in multiple directions, dedup, gravity and bounded lifetime (2.6862ms)
+✔ water wall interception reflects once and shields a target behind the wall (4.359ms)
+✔ lightning variant 1: real damage once per cast, no tier radius increase (0.9859ms)
+✔ lightning variant 2: real damage once per cast, no tier radius increase (0.9396ms)
+✔ lightning variant 3: real damage once per cast, no tier radius increase (0.6097ms)
+✔ lightning can be dodged after locking and a roof/trunk blocks the locked strike (0.5685ms)
+✔ wet status increases lightning by 25% and expires; obstacle LOS blocks splash damage (0.5553ms)
+✔ fixed tick projectile results do not depend on 30 vs 100 display FPS (5.0168ms)
+✔ zone ten waits for environment then walks 3m side-on, reveals once, blends to quarter and pursues walking (6.5284ms)
+✔ six existing gems drive all water/lightning variants, removal gates casts and five sword stages wrap without growth (39.5896ms)
+attack1 -1 [ 30, 35, 40, 45, 50, 55 ]
+attack2 -1 [
+  30, 35, 40, 45, 50,
+  55, 60, 65, 70
+]
+attack3 -1 [ 30, 35, 40, 45, 50, 55 ]
+attack1 1 [ 30, 35, 40, 45, 50, 55 ]
+attack2 1 [
+  30, 35, 40, 45, 50,
+  55, 60, 65, 70
+]
+attack3 1 [ 30, 35, 40, 45, 50, 55 ]
+✔ all three swings touch a small slime in both side facings (19.2564ms)
+✔ three successive normal motions have separate IDs and one damage per target per motion (12.7268ms)
+✔ dodge or skill IDs do not skip the next normal combo motion (4.9871ms)
+{"ticks":10815,"maps":10,"kills":270,"status":"won","contacts":["hero-attack1","hero-attack2","hero-attack3"]}
+✔ training bundle uses original engines through nine normal zones and the tenth boss zone, with no network globals (1957.9592ms)
+✔ readiness, pause, commands and profile updates retain local rules; snapshots omit unchanged map (60.2055ms)
+✔ standalone boss mode uses the same engine and rejects unknown modes (207.964ms)
+✔ mount API retains secure session, exact retries, restart invalidation and input validation (153.6915ms)
+{"history":[{"zone":1,"kills":30,"spawned":30,"elapsed":18.2199999999997},{"zone":2,"kills":30,"spawned":30,"elapsed":38.74000000000046},{"zone":3,"kills":30,"spawned":30,"elapsed":57.5800000000034},{"zone":4,"kills":30,"spawned":30,"elapsed":77.36000000000175},{"zone":5,"kills":30,"spawned":30,"elapsed":99.6999999999973},{"zone":6,"kills":30,"spawned":30,"elapsed":120.19999999999322},{"zone":7,"kills":30,"spawned":30,"elapsed":137.73999999999666},{"zone":8,"kills":30,"spawned":30,"elapsed":156.2000000000061}],"final":{"status":"playing","room":9,"kills":270,"zoneKills":30,"spawned":30,"hero":{"x":1528.30042,"y":5053.632417712531,"elevation":-95.71415856716244,"airHeight":0,"facing":1,"direction":{"x":1,"y":0},"hp":94085,"maxHP":100000,"action":"run1","serial":195,"motion":null},"mobs":[]},"seconds":176.9400000000167,"maximum":6}
+✔ ten terrain contracts retain valid path heights and bounded play corridors (2.7172ms)
+✔ pause and readiness prevent hidden combat; hints cannot skip zones (12.7661ms)
+✔ sprint moves six metres per second without diagonal advantage (1.8471ms)
+✔ seeded packs are deterministic and bounded instead of spawning all thirty at once (136.989ms)
+✔ all nine ordinary zones clear through ordinary auto combat with exactly thirty kills each (283.3071ms)
+✔ all ordinary zones stay side view and ignore depth input (1.6032ms)
+✔ slime pursuit speed is half the previous 230 and body size is halved (0.7581ms)
+✔ live slime blocks walking and sliding; death releases the lane (4.6627ms)
+✔ dodge crosses live slime; jump crosses low body and tall obstacle blocks jump (10.9395ms)
+✔ landing nudges a monster minimally and cannot push it through a wall or boundary (3.3769ms)
+✔ mount normal attack damages each contacted slime once per attack ID and never on a miss (16.4936ms)
+✔ boss waits for readiness, uses quarter view, is beatable and grants no permanent currency (65.3659ms)
+✔ blocked landing retreats to free path instead of overlapping a wall or occupied origin (0.6417ms)
+✔ landing cannot nudge through a narrow wall; unknown obstacle heights remain solid (0.4194ms)
+✔ actual jump landing makes space beside a live slime without overlapping bodies (1.608ms)
+✔ auto approach dashes only inside its distance band; manual movement never starts one (8.17ms)
+✔ a low sword sweep hits every intersecting row once and misses enemies beyond its reach (6.5331ms)
+✔ gem identity selects the skill even in a different slot; cooldown, mana, pause and unequip gate casts (8.1315ms)
+✔ quarter-view skill aims along depth and emits one world-space impact at the locked target (5.5197ms)
+✔ gold cleave turns toward a nearby pack behind the hero and damages each enemy once (1.2622ms)
+✔ packs have actual depth, never exceed the visible cap, and cannot spawn outside the bridge deck (47.8635ms)
+{"profile":"source-run-v2","steps":11723,"kills":270,"status":"won"}
+✔ requested reduction is one third of prior speed for run and traversal distance (1.6817ms)
+✔ holding movement against a static object preserves run intent and releases to idle (6.0498ms)
+✔ source run target is shared by both local modes; map and combat rules are preserved (6.0271ms)
+✔ jump is ballistic and travel distances match speed, without changing source action names (4.953ms)
+✔ run, slide and roll cannot tunnel through static obstacles with the opt-in profile (4.6956ms)
+✔ attack definition, damage, motion timeline and action assets retain their prior contract (0.4164ms)
+✔ opt-in traversal completes nine normal zones and tenth-zone boss with normal inputs (362.028ms)
+✔ shipped bundle accepts the explicit traversal profile and matches the source engine (39.0187ms)
+✔ Unity boss cookie is set at entry and not rewritten for every combat tick (148.7232ms)
+✔ movement ACK belongs to its sequence, remains immutable and never includes one-shot actions (46.1412ms)
+✔ roll lasts as long as sliding and stays active through the old cutoff (2.4396ms)
+✔ Unity route contains only slime chamber, bridge and boss chamber (0.6399ms)
+✔ uncleared slime chamber is locked; auto combat clears it and walks across bridge (31.8267ms)
+✔ authored bridge and terrain height join without a visible step (2.1517ms)
+✔ hook combo keeps timing but emits no phantom contacts on a stationary low target (36.8487ms)
+✔ throw circle warns for two seconds then applies skill damage and knockback (33.7735ms)
+✔ walking out of the warning radius avoids the explosion (18.138ms)
+✔ blast flight, knockdown and getup block actions then restore control (21.2776ms)
+✔ training HP stays high and cannot be killed by the encounter (184.8864ms)
+✔ unprepared skills remain disabled; pause freezes combat and warning timers (13.9776ms)
+✔ boss defeat restores side view and completes the two-chamber run (16.7229ms)
+✔ server retries are idempotent and reject sequence/account forgery (11.1019ms)
+✔ Unity combat ticks do not credit or mutate permanent economy (56.4325ms)
+✔ fixed-step headless encounter advances 60 seconds without dropping simulation time (32.0364ms)
+✔ side view rejects vertical input and diagonal walking stays on its lane (0.8381ms)
+✔ boss remains absent until the player crosses the authored bridge (1.4723ms)
+✔ quarter movement supports all directions and normalizes diagonal speed (20.6813ms)
+✔ quarter slide follows vertical joystick direction (13.7786ms)
+✔ leaving a warning in depth avoids the circular explosion (15.1119ms)
+✔ warning targets the current depth and a stationary target is hit (15.9892ms)
+✔ basic attacks cannot hit targets distant along depth (9.1869ms)
+✔ tree trunks block walking and sliding without tunnelling (13.1586ms)
+ℹ tests 90
+ℹ suites 0
+ℹ pass 90
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3092.6212

@@ -25,7 +25,7 @@ namespace IslandGame {
   public Camera BattleCamera=>view;
   public bool OverridePresentationView;public ViewMode PresentationView=ViewMode.Side25D;
   // Encounter policy is fixed: normal areas are side-on, only the boss arena is quarter view.
-  public static ViewMode EncounterView(JObject state)=> (bool?)state?["unityBossMode"]==true&&(bool?)state?["mountSunday"]!=true&&(int?)state?["room"]==1?ViewMode.QuarterView:ViewMode.Side25D;
+  public static ViewMode EncounterView(JObject state)=> (bool?)state?["unityBossMode"]==true&&(bool?)state?["mountSunday"]!=true&&(int?)state?["room"]==1&&(bool?)state?["bossVisible"]==true?ViewMode.QuarterView:ViewMode.Side25D;
   public void SetPresentationView(ViewMode? mode){OverridePresentationView=false;PresentationView=EncounterView(session?.State);}
   public ViewPresentationCoordinator ViewPresentation=>threeD?threeD.Presentation:null;
   public void ConfigureViewport(float aspect){

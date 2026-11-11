@@ -1,0 +1,923 @@
+{
+  "result": "PASS",
+  "version": "0.1.0-test.20261111.2",
+  "platform": "Android",
+  "frames": 1980,
+  "errors": 0,
+  "errorSamples": [],
+  "escapePopup": true,
+  "swordStages": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "samples": [
+    {
+      "label": "boss-approach",
+      "frame": 111,
+      "time": 0.56,
+      "routeZone": 9,
+      "phase": "boss-approach",
+      "status": "playing",
+      "camera": "Side25D",
+      "quarterWeight": 0.0,
+      "heroX": 2984.0,
+      "heroAction": "walk",
+      "heroClip": "walk_loop",
+      "heroSample": 0.3999998,
+      "bossX": 3500.0,
+      "bossHP": 1800.0,
+      "bossAction": "idle",
+      "bossClip": null,
+      "bossSample": 0.0,
+      "effects": 0,
+      "particles": 0,
+      "projectiles": 0,
+      "poolObjects": 0,
+      "motion": null
+    },
+    {
+      "label": "boss-reveal",
+      "frame": 193,
+      "time": 2.44,
+      "routeZone": 9,
+      "phase": "boss-reveal",
+      "status": "playing",
+      "camera": "QuarterView",
+      "quarterWeight": 0.240938351,
+      "heroX": 3200.0,
+      "heroAction": "stay1",
+      "heroClip": "idle_loop",
+      "heroSample": 0.383332729,
+      "bossX": 3500.0,
+      "bossHP": 1800.0,
+      "bossAction": "idle",
+      "bossClip": "Boss_AdaptedIdle",
+      "bossSample": 2.36000013,
+      "effects": 1,
+      "particles": 17,
+      "projectiles": 0,
+      "poolObjects": 1,
+      "motion": null
+    },
+    {
+      "label": "boss-walk-0",
+      "frame": 247,
+      "time": 3.56,
+      "routeZone": 9,
+      "phase": "boss",
+      "status": "playing",
+      "camera": "QuarterView",
+      "quarterWeight": 1.0,
+      "heroX": 3200.0,
+      "heroAction": "stay1",
+      "heroClip": "idle_loop",
+      "heroSample": 1.49333262,
+      "bossX": 3493.4,
+      "bossHP": 1800.0,
+      "bossAction": "walk",
+      "bossClip": "Boss_AdaptedWalk",
+      "bossSample": 0.00712924544,
+      "effects": 0,
+      "particles": 0,
+      "projectiles": 0,
+      "poolObjects": 0,
+      "motion": null
+    },
+    {
+      "label": "boss-walk-1",
+      "frame": 253,
+      "time": 3.78,
+      "routeZone": 9,
+      "phase": "boss",
+      "status": "playing",
+      "camera": "QuarterView",
+      "quarterWeight": 1.0,
+      "heroX": 3200.0,
+      "heroAction": "stay1",
+      "heroClip": "idle_loop",
+      "heroSample": 1.64000034,
+      "bossX": 3469.2,
+      "bossHP": 1800.0,
+      "bossAction": "walk",
+      "bossClip": "Boss_AdaptedWalk",
+      "bossSample": 0.115093663,
+      "effects": 0,
+      "particles": 0,
+      "projectiles": 0,
+      "poolObjects": 0,
+      "motion": null
+    },
+    {
+      "label": "boss-walk-2",
+      "frame": 259,
+      "time": 3.98,
+      "routeZone": 9,
+      "phase": "boss",
+      "status": "playing",
+      "camera": "QuarterView",
+      "quarterWeight": 1.0,
+      "heroX": 3200.0,
+      "heroAction": "stay1",
+      "heroClip": "idle_loop",
+      "heroSample": 1.82999992,
+      "bossX": 3447.2,
+      "bossHP": 1800.0,
+      "bossAction": "walk",
+      "bossClip": "Boss_AdaptedWalk",
+      "bossSample": 0.249538437,
+      "effects": 0,
+      "particles": 0,
+      "projectiles": 0,
+      "poolObjects": 0,
+      "motion": null
+    },
+    {
+      "label": "boss-skill-0",
+      "frame": 300,
+      "time": 4.64,
+      "routeZone": 9,
+      "phase": "boss",
+      "status": "playing",
+      "camera": "QuarterView",
+      "quarterWeight": 1.0,
+      "heroX": 3200.0,
+      "heroAction": "skill2",
+      "heroClip": "spell_simple_shoot",
+      "heroSample": 0.304999948,
+      "bossX": 3388.6,
+      "bossHP": 1680.0,
+      "bossAction": "walk",
+      "bossClip": "Boss_AdaptedWalk",
+      "bossSample": 0.00148137414,
+      "effects": 8,
+      "particles": 40,
+      "projectiles": 7,
+      "poolObjects": 1,
+      "motion": {
+        "kind": "skill",
+        "slot": 0,
+        "skillId": "water-ring",
+        "variant": 1,
+        "target": {
+          "x": 3330,
+          "y": 5000
+        },
+        "radius": 18,
+        "damage": 120,
+        "attackId": 1,
+        "definitionId": "water-ring",
+        "start": 4.080000000000001,
+        "duration": 1.05,
+        "hitAt": 0.48,
+        "from": {
+          "x": 3200,
+          "y": 5000
+        },
+        "to": {
+          "x": 3200,
+          "y": 5000
+        },
+        "done": 1
+      }
+    },
+    {
+      "label": "boss-skill-1",
+      "frame": 393,
+      "time": 6.52,
+      "routeZone": 9,
+      "phase": "boss",
+      "status": "playing",
+      "camera": "QuarterView",
+      "quarterWeight": 1.0,
+      "heroX": 3200.0,
+      "heroAction": "skill2",
+      "heroClip": "spell_simple_shoot",
+      "heroSample": 0.354787171,
+      "bossX": 3391.6,
+      "bossHP": 1560.0,
+      "bossAction": "combo",
+      "bossClip": "Boss_MeleeHook_RL_Combo_Bound",
+      "bossSample": 0.414909035,
+      "effects": 6,
+      "particles": 40,
+      "projectiles": 11,
+      "poolObjects": 1,
+      "motion": {
+        "kind": "skill",
+        "slot": 1,
+        "skillId": "water-ring",
+        "variant": 2,
+        "target": {
+          "x": 3330,
+          "y": 5000
+        },
+        "radius": 18,
+        "damage": 120,
+        "attackId": 2,
+        "definitionId": "water-ring",
+        "start": 5.8199999999999639,
+        "duration": 1.05,
+        "hitAt": 0.48,
+        "from": {
+          "x": 3200,
+          "y": 5000
+        },
+        "to": {
+          "x": 3200,
+          "y": 5000
+        },
+        "done": 1
+      }
+    },
+    {
+      "label": "boss-skill-2",
+      "frame": 499,
+      "time": 8.28,
+      "routeZone": 9,
+      "phase": "boss",
+      "status": "playing",
+      "camera": "QuarterView",
+      "quarterWeight": 1.0,
+      "heroX": 3200.0,
+      "heroAction": "skill2",
+      "heroClip": "spell_simple_shoot",
+      "heroSample": 0.305000424,
+      "bossX": 3394.6,
+      "bossHP": 1440.0,
+      "bossAction": "idle",
+      "bossClip": "Boss_MeleeHook_RL_Combo_Bound",
+      "bossSample": 1.63,
+      "effects": 10,
+      "particles": 321,
+      "projectiles": 6,
+      "poolObjects": 9,
+      "motion": {
+        "kind": "skill",
+        "slot": 2,
+        "skillId": "water-ring",
+        "variant": 3,
+        "target": {
+          "x": 3330,
+          "y": 5000
+        },
+        "radius": 18,
+        "damage": 120,
+        "attackId": 4,
+        "definitionId": "water-ring",
+        "start": 7.5799999999999264,
+        "duration": 1.05,
+        "hitAt": 0.48,
+        "from": {
+          "x": 3200,
+          "y": 5000
+        },
+        "to": {
+          "x": 3200,
+          "y": 5000
+        },
+        "done": 1
+      }
+    },
+    {
+      "label": "boss-skill-3",
+      "frame": 647,
+      "time": 10.02,
+      "routeZone": 9,
+      "phase": "boss",
+      "status": "playing",
+      "camera": "QuarterView",
+      "quarterWeight": 1.0,
+      "heroX": 3200.0,
+      "heroAction": "skill2",
+      "heroClip": "spell_simple_shoot",
+      "heroSample": 0.363889277,
+      "bossX": 3388.8,
+      "bossHP": 1215.0,
+      "bossAction": "idle",
+      "bossClip": "Boss_AdaptedIdle",
+      "bossSample": 0.3800001,
+      "effects": 18,
+      "particles": 385,
+      "projectiles": 0,
+      "poolObjects": 12,
+      "motion": {
+        "kind": "skill",
+        "slot": 3,
+        "skillId": "storm-call",
+        "variant": 1,
+        "target": {
+          "x": 3394.6000000000095,
+          "y": 5000
+        },
+        "radius": 240,
+        "damage": 180,
+        "attackId": 5,
+        "definitionId": "storm-call",
+        "start": 9.31999999999989,
+        "duration": 0.94,
+        "hitAt": 0.48,
+        "from": {
+          "x": 3200,
+          "y": 5000
+        },
+        "to": {
+          "x": 3200,
+          "y": 5000
+        },
+        "done": 1
+      }
+    },
+    {
+      "label": "boss-skill-4",
+      "frame": 690,
+      "time": 11.46,
+      "routeZone": 9,
+      "phase": "boss",
+      "status": "playing",
+      "camera": "QuarterView",
+      "quarterWeight": 1.0,
+      "heroX": 3200.0,
+      "heroAction": "skill2",
+      "heroClip": "spell_simple_shoot",
+      "heroSample": 0.305000424,
+      "bossX": 3391.8,
+      "bossHP": 990.0,
+      "bossAction": "throw",
+      "bossClip": "Boss_OverhandThrow_Bound",
+      "bossSample": 0.2909088,
+      "effects": 1,
+      "particles": 40,
+      "projectiles": 0,
+      "poolObjects": 1,
+      "motion": {
+        "kind": "skill",
+        "slot": 4,
+        "skillId": "storm-call",
+        "variant": 2,
+        "target": {
+          "x": 3388.80000000001,
+          "y": 5000
+        },
+        "radius": 240,
+        "damage": 180,
+        "attackId": 6,
+        "definitionId": "storm-call",
+        "start": 10.859999999999857,
+        "duration": 0.94,
+        "hitAt": 0.48,
+        "from": {
+          "x": 3200,
+          "y": 5000
+        },
+        "to": {
+          "x": 3200,
+          "y": 5000
+        },
+        "done": 1
+      }
+    },
+    {
+      "label": "boss-skill-5",
+      "frame": 775,
+      "time": 13.0,
+      "routeZone": 9,
+      "phase": "boss",
+      "status": "playing",
+      "camera": "QuarterView",
+      "quarterWeight": 1.0,
+      "heroX": 3200.0,
+      "heroAction": "skill2",
+      "heroClip": "spell_simple_shoot",
+      "heroSample": 0.305000424,
+      "bossX": 3394.8,
+      "bossHP": 810.0,
+      "bossAction": "idle",
+      "bossClip": "Boss_AdaptedIdle",
+      "bossSample": 0.960000038,
+      "effects": 1,
+      "particles": 40,
+      "projectiles": 0,
+      "poolObjects": 1,
+      "motion": {
+        "kind": "skill",
+        "slot": 5,
+        "skillId": "storm-call",
+        "variant": 3,
+        "target": {
+          "x": 3391.80000000001,
+          "y": 5000
+        },
+        "radius": 240,
+        "damage": 180,
+        "attackId": 8,
+        "definitionId": "storm-call",
+        "start": 12.399999999999824,
+        "duration": 0.94,
+        "hitAt": 0.48,
+        "from": {
+          "x": 3200,
+          "y": 5000
+        },
+        "to": {
+          "x": 3200,
+          "y": 5000
+        },
+        "done": 1
+      }
+    },
+    {
+      "label": "boss-sword-1",
+      "frame": 911,
+      "time": 15.56,
+      "routeZone": 9,
+      "phase": "boss",
+      "status": "playing",
+      "camera": "QuarterView",
+      "quarterWeight": 1.0,
+      "heroX": 3109.60327,
+      "heroAction": "attack1",
+      "heroClip": "sword_regular_a",
+      "heroSample": 0.1550003,
+      "bossX": 3289.2,
+      "bossHP": 810.0,
+      "bossAction": "idle",
+      "bossClip": "Boss_AdaptedIdle",
+      "bossSample": 1.11999989,
+      "effects": 1,
+      "particles": 8,
+      "projectiles": 0,
+      "poolObjects": 1,
+      "motion": {
+        "kind": "attack",
+        "start": 15.339999999999762,
+        "duration": 0.55,
+        "hitAt": 0.22,
+        "from": {
+          "x": 3109.6032653333314,
+          "y": 5000
+        },
+        "to": {
+          "x": 3109.6032653333314,
+          "y": 5000
+        },
+        "done": 0,
+        "comboStep": 1,
+        "hitIds": [],
+        "attackId": 9,
+        "definitionId": "hero-attack1",
+        "timeline": {
+          "active": [
+            {
+              "strike": 0,
+              "from": 0.32,
+              "to": 0.58
+            }
+          ],
+          "cancelFrom": 1,
+          "contactRevision": "hero-weapon-v2-three-swings"
+        }
+      }
+    },
+    {
+      "label": "boss-sword-2",
+      "frame": 941,
+      "time": 16.16,
+      "routeZone": 9,
+      "phase": "boss",
+      "status": "playing",
+      "camera": "QuarterView",
+      "quarterWeight": 1.0,
+      "heroX": 3109.60327,
+      "heroAction": "attack2",
+      "heroClip": "sword_regular_b",
+      "heroSample": 0.196295857,
+      "bossX": 3289.2,
+      "bossHP": 750.0,
+      "bossAction": "combo",
+      "bossClip": "Boss_MeleeHook_RL_Combo_Bound",
+      "bossSample": 0.08643949,
+      "effects": 1,
+      "particles": 8,
+      "projectiles": 0,
+      "poolObjects": 1,
+      "motion": {
+        "kind": "attack",
+        "start": 15.919999999999749,
+        "duration": 0.55,
+        "hitAt": 0.22,
+        "from": {
+          "x": 3109.6032653333314,
+          "y": 5000
+        },
+        "to": {
+          "x": 3109.6032653333314,
+          "y": 5000
+        },
+        "done": 0,
+        "comboStep": 2,
+        "hitIds": [
+          9001
+        ],
+        "attackId": 10,
+        "definitionId": "hero-attack2",
+        "timeline": {
+          "active": [
+            {
+              "strike": 0,
+              "from": 0.32,
+              "to": 0.58
+            }
+          ],
+          "cancelFrom": 1,
+          "contactRevision": "hero-weapon-v2-three-swings"
+        }
+      }
+    },
+    {
+      "label": "boss-sword-3",
+      "frame": 969,
+      "time": 16.72,
+      "routeZone": 9,
+      "phase": "boss",
+      "status": "playing",
+      "camera": "QuarterView",
+      "quarterWeight": 1.0,
+      "heroX": 3109.60327,
+      "heroAction": "attack3",
+      "heroClip": "sword_regular_c",
+      "heroSample": 0.859992266,
+      "bossX": 3289.2,
+      "bossHP": 750.0,
+      "bossAction": "combo",
+      "bossClip": "Boss_MeleeHook_RL_Combo_Bound",
+      "bossSample": 0.518635452,
+      "effects": 1,
+      "particles": 8,
+      "projectiles": 0,
+      "poolObjects": 1,
+      "motion": {
+        "kind": "attack",
+        "start": 16.499999999999737,
+        "duration": 0.55,
+        "hitAt": 0.22,
+        "from": {
+          "x": 3109.6032653333314,
+          "y": 5000
+        },
+        "to": {
+          "x": 3109.6032653333314,
+          "y": 5000
+        },
+        "done": 0,
+        "comboStep": 3,
+        "hitIds": [],
+        "attackId": 12,
+        "definitionId": "hero-attack3",
+        "timeline": {
+          "active": [
+            {
+              "strike": 0,
+              "from": 0.32,
+              "to": 0.78
+            }
+          ],
+          "cancelFrom": 1,
+          "contactRevision": "hero-weapon-v2-three-swings"
+        }
+      }
+    },
+    {
+      "label": "boss-sword-4",
+      "frame": 994,
+      "time": 17.28,
+      "routeZone": 9,
+      "phase": "boss",
+      "status": "playing",
+      "camera": "QuarterView",
+      "quarterWeight": 1.0,
+      "heroX": 3109.60327,
+      "heroAction": "attack2",
+      "heroClip": "sword_regular_b",
+      "heroSample": 0.196297973,
+      "bossX": 3289.2,
+      "bossHP": 690.0,
+      "bossAction": "combo",
+      "bossClip": "Boss_MeleeHook_RL_Combo_Bound",
+      "bossSample": 0.945895255,
+      "effects": 1,
+      "particles": 8,
+      "projectiles": 0,
+      "poolObjects": 1,
+      "motion": {
+        "kind": "attack",
+        "start": 17.079999999999725,
+        "duration": 0.55,
+        "hitAt": 0.22,
+        "from": {
+          "x": 3109.6032653333314,
+          "y": 5000
+        },
+        "to": {
+          "x": 3109.6032653333314,
+          "y": 5000
+        },
+        "done": 0,
+        "comboStep": 4,
+        "hitIds": [],
+        "attackId": 13,
+        "definitionId": "hero-attack2",
+        "timeline": {
+          "active": [
+            {
+              "strike": 0,
+              "from": 0.32,
+              "to": 0.58
+            }
+          ],
+          "cancelFrom": 1,
+          "contactRevision": "hero-weapon-v2-three-swings"
+        }
+      }
+    },
+    {
+      "label": "boss-sword-5",
+      "frame": 1024,
+      "time": 17.9,
+      "routeZone": 9,
+      "phase": "boss",
+      "status": "playing",
+      "camera": "QuarterView",
+      "quarterWeight": 1.0,
+      "heroX": 3109.60327,
+      "heroAction": "attack1",
+      "heroClip": "sword_regular_a",
+      "heroSample": 0.152130917,
+      "bossX": 3289.2,
+      "bossHP": 630.0,
+      "bossAction": "combo",
+      "bossClip": "Boss_MeleeHook_RL_Combo_Bound",
+      "bossSample": 1.37562251,
+      "effects": 1,
+      "particles": 8,
+      "projectiles": 0,
+      "poolObjects": 1,
+      "motion": {
+        "kind": "attack",
+        "start": 17.659999999999712,
+        "duration": 0.55,
+        "hitAt": 0.22,
+        "from": {
+          "x": 3109.6032653333314,
+          "y": 5000
+        },
+        "to": {
+          "x": 3109.6032653333314,
+          "y": 5000
+        },
+        "done": 0,
+        "comboStep": 5,
+        "hitIds": [],
+        "attackId": 14,
+        "definitionId": "hero-attack1",
+        "timeline": {
+          "active": [
+            {
+              "strike": 0,
+              "from": 0.32,
+              "to": 0.58
+            }
+          ],
+          "cancelFrom": 1,
+          "contactRevision": "hero-weapon-v2-three-swings"
+        }
+      }
+    },
+    {
+      "label": "boss-victory",
+      "frame": 1693,
+      "time": 30.4,
+      "routeZone": 9,
+      "phase": "complete",
+      "status": "won",
+      "camera": "QuarterView",
+      "quarterWeight": 1.0,
+      "heroX": 3003.788,
+      "heroAction": "attack3",
+      "heroClip": "sword_regular_c",
+      "heroSample": 1.34782434,
+      "bossX": 3185.8,
+      "bossHP": 0.0,
+      "bossAction": "idle",
+      "bossClip": "Boss_AdaptedIdle",
+      "bossSample": 1.59999847,
+      "effects": 1,
+      "particles": 6,
+      "projectiles": 0,
+      "poolObjects": 1,
+      "motion": {
+        "kind": "attack",
+        "start": 29.999999999999449,
+        "duration": 0.55,
+        "hitAt": 0.22,
+        "from": {
+          "x": 3003.7880519999962,
+          "y": 5000
+        },
+        "to": {
+          "x": 3003.7880519999962,
+          "y": 5000
+        },
+        "done": 0,
+        "comboStep": 3,
+        "hitIds": [
+          9001
+        ],
+        "attackId": 34,
+        "definitionId": "hero-attack3",
+        "timeline": {
+          "active": [
+            {
+              "strike": 0,
+              "from": 0.32,
+              "to": 0.78
+            }
+          ],
+          "cancelFrom": 1,
+          "contactRevision": "hero-weapon-v2-three-swings"
+        }
+      }
+    },
+    {
+      "label": "side-skill-0",
+      "frame": 1870,
+      "time": 3.04,
+      "routeZone": 3,
+      "phase": "combat",
+      "status": "playing",
+      "camera": "Side25D",
+      "quarterWeight": 0.0,
+      "heroX": -1492.41968,
+      "heroAction": "skill2",
+      "heroClip": "spell_simple_shoot",
+      "heroSample": 0.324999928,
+      "bossX": 0.0,
+      "bossHP": 0.0,
+      "bossAction": null,
+      "bossClip": null,
+      "bossSample": 0.0,
+      "effects": 8,
+      "particles": 0,
+      "projectiles": 8,
+      "poolObjects": 0,
+      "motion": {
+        "kind": "skill",
+        "slot": 0,
+        "skillId": "water-ring",
+        "variant": 1,
+        "target": {
+          "x": -1362.4495727887718,
+          "y": 4981.9696549682139
+        },
+        "radius": 18,
+        "damage": 120,
+        "start": 2.4200000000000017,
+        "duration": 1.05,
+        "hitAt": 0.48,
+        "done": 1,
+        "attackId": 1,
+        "definitionId": "water-ring"
+      }
+    },
+    {
+      "label": "side-skill-3",
+      "frame": 1948,
+      "time": 4.56,
+      "routeZone": 3,
+      "phase": "combat",
+      "status": "playing",
+      "camera": "Side25D",
+      "quarterWeight": 0.0,
+      "heroX": -1492.41968,
+      "heroAction": "skill2",
+      "heroClip": "spell_simple_shoot",
+      "heroSample": 0.304999948,
+      "bossX": 0.0,
+      "bossHP": 0.0,
+      "bossAction": null,
+      "bossClip": null,
+      "bossSample": 0.0,
+      "effects": 3,
+      "particles": 84,
+      "projectiles": 0,
+      "poolObjects": 3,
+      "motion": {
+        "kind": "skill",
+        "slot": 3,
+        "skillId": "storm-call",
+        "variant": 1,
+        "target": {
+          "x": -1125.8015120973996,
+          "y": 4987.04545373558
+        },
+        "radius": 240,
+        "damage": 180,
+        "start": 3.9600000000000031,
+        "duration": 0.94,
+        "hitAt": 0.48,
+        "done": 1,
+        "attackId": 2,
+        "definitionId": "storm-call"
+      }
+    }
+  ],
+  "skillHits": [
+    {
+      "attackId": 1,
+      "target": "boss",
+      "value": 120,
+      "element": "water"
+    },
+    {
+      "attackId": 2,
+      "target": "boss",
+      "value": 120,
+      "element": "water"
+    },
+    {
+      "attackId": 4,
+      "target": "boss",
+      "value": 120,
+      "element": "water"
+    },
+    {
+      "attackId": 5,
+      "target": "boss",
+      "value": 225,
+      "element": "lightning"
+    },
+    {
+      "attackId": 6,
+      "target": "boss",
+      "value": 225,
+      "element": "lightning"
+    },
+    {
+      "attackId": 8,
+      "target": "boss",
+      "value": 180,
+      "element": "lightning"
+    },
+    {
+      "attackId": 7,
+      "target": "hero",
+      "value": 10000,
+      "element": null
+    },
+    {
+      "attackId": 20,
+      "target": "hero",
+      "value": 10000,
+      "element": null
+    },
+    {
+      "attackId": 2,
+      "target": "mob1",
+      "value": 180,
+      "element": "lightning"
+    },
+    {
+      "attackId": 2,
+      "target": "mob2",
+      "value": 180,
+      "element": "lightning"
+    },
+    {
+      "attackId": 2,
+      "target": "mob3",
+      "value": 180,
+      "element": "lightning"
+    },
+    {
+      "attackId": 2,
+      "target": "mob4",
+      "value": 180,
+      "element": "lightning"
+    },
+    {
+      "attackId": 2,
+      "target": "mob5",
+      "value": 180,
+      "element": "lightning"
+    },
+    {
+      "attackId": 2,
+      "target": "mob6",
+      "value": 180,
+      "element": "lightning"
+    }
+  ],
+  "networkRequests": 0
+}

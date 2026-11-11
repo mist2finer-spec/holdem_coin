@@ -51,7 +51,7 @@ namespace IslandGame {
    return true;
   }
   public static bool CanCast(JObject state,int index){
-   if(!SkillEnabled(state,index))return false;var skill=Skill(state,index);
+   if(!SkillEnabled(state,index)||(bool?)state["bossIntroActive"]==true||(string)state["phase"]=="boss-loading")return false;var skill=Skill(state,index);
    if(skill["trigger"]!=null&&skill["trigger"].Type!=JTokenType.Null)return false;
    if((state["cooldowns"]?[index]?.Value<double>()??0)>0)return false;
    var enabled=state["progress"]?["skillEnabled"] as JArray;

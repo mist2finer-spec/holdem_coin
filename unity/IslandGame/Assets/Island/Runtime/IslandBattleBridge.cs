@@ -14,7 +14,7 @@ namespace IslandGame {
   public bool HudPanelOpen=>rpgPanel!="";
   public string HudNotice=>notice;
   public bool BattleHudEnabled=>battleHud&&battleHud.enabled;
-  public bool HudCanInput=>HudPage&&!HudPanelOpen&&rpg!=null&&rpg.State!=null&&rpg.Active&&!rpg.Paused&&!rpg.StageBoundaryWaiting;
+  public bool HudCanInput=>HudPage&&!HudPanelOpen&&rpg!=null&&rpg.State!=null&&rpg.Active&&!rpg.Paused&&!rpg.StageBoundaryWaiting&&(bool?)rpg.State["bossIntroActive"]!=true&&(string)rpg.State["phase"]!="boss-loading";
   void OnDestroy(){if(rpgSkin){rpgSkin.font=null;Destroy(rpgSkin);}IslandFonts.ReleaseGuiFont(rpgFont);}
   void InitializeBattleHud(){EnsureCatalog();battleHud=gameObject.AddComponent<IslandBattleHud>();battleHud.Initialize(this);growthView=gameObject.AddComponent<IslandGrowthPanel>();growthView.Initialize(this,battleHud.RuntimeFont);}
   public void HudSkill(int slot){if(HudCanInput)Cast(slot);}
@@ -35,7 +35,7 @@ namespace IslandGame {
   public void HudCycleView(){if(battle)battle.SetPresentationView(null);}
   public void HudAuto(){if(HudCanInput)rpg.Auto=!rpg.Auto;}
   public void HudMenu(string panel){if(panel=="lobby"){Lobby();return;}if(panel=="tavern"){rpg.Close();battle.Clear();Poker("poker6");return;}if(rpg.ReferencePreview&&panel!=""){notice="연습용 에르텔 · 장비 관리는 일반 사냥에서 이용하세요.";return;}if(rpg.State==null&&panel!="")return;SetPanel(panel);}
-  public void HudRetry(){bool preview=rpg.ReferencePreview;SetPanel("");notice="";if(preview)StartReferenceTraining();else rpg.Open(CurrentRpgOrigin,campaign);}
+  public void HudRetry(){bool preview=rpg.ReferencePreview;SetPanel("");notice="";if(preview)StartReferenceTraining(rpg.ReferenceStartZone);else rpg.Open(CurrentRpgOrigin,campaign);}
   public JObject HudGem(string id){EnsureCatalog();return Gem(id);}
  }
 }

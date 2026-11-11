@@ -17,13 +17,13 @@ test('a low sword sweep hits every intersecting row once and misses enemies beyo
 test('gem identity selects the skill even in a different slot; cooldown, mana, pause and unequip gate casts',()=>{
  const g=arena();g.skillIds[4]='stormcall';g.skillEnabled[4]=true;g.mobs=[mob(g,1,180,-70),mob(g,2,190,70),mob(g,3,700,0)];const targets=[...g.mobs];
  assert(g.command({...idle,skill:4}));assert.equal(g.hero.action,'skill2');assert.equal(g.hero.motion.skillId,'storm-call');assert.equal(g.resources.mana,935);
- for(let i=0;i<25;i++)g.step(.02,idle);assert.deepEqual(targets.map(m=>m.hp),[820,820,1000]);assert.equal(g.fx.filter(f=>f.kind==='skill-impact').length,1);
+ for(let i=0;i<25;i++)g.step(.02,idle);assert.deepEqual(targets.map(m=>m.hp),[820,820,1000]);assert.equal(g.fx.filter(f=>f.kind==='elemental-strike').length,1);
  for(let i=0;i<25;i++)g.step(.02,idle);assert(!g.command({...idle,skill:4}));g.cooldowns[4]=0;g.skillEnabled[4]=false;assert(!g.command({...idle,skill:4}));g.skillEnabled[4]=true;g.resources.mana=64;assert(!g.command({...idle,skill:4}));g.resources.mana=100;assert(!g.command({...idle,skill:4,paused:true}));
 });
 test('quarter-view skill aims along depth and emits one world-space impact at the locked target',()=>{
  const g=new UnityBossEngine(111,{slimeCount:0,bossHP:1000});g.enterArena();g.hero.x=g.boss.x;g.hero.y=g.boss.y-450;g.skillIds[2]='stormcall';g.skillEnabled[2]=true;
  assert(g.command({...idle,skill:2}));assert.equal(g.hero.action,'skill2');assert(g.hero.direction.y>.99);const target={...g.hero.motion!.target!};
- for(let i=0;i<26;i++)g.step(.02,idle);assert.equal(g.boss.hp,820);const impact=g.fx.find(f=>f.kind==='skill-impact');assert(impact);assert.equal(impact.x,target.x);assert.equal(impact.z,target.y);assert.equal(g.view().cameraMode,'QuarterView');
+ for(let i=0;i<26;i++)g.step(.02,idle);assert.equal(g.boss.hp,820);const impact=g.fx.find(f=>f.kind==='elemental-strike');assert(impact);assert.equal(impact.x,target.x);assert.equal(impact.z,target.y);assert.equal(g.view().cameraMode,'QuarterView');
  assert(skillContains({x:target.x+100,y:target.y+100},target,240));assert(!skillContains({x:target.x,y:target.y+300},target,240));
 });
 test('gold cleave turns toward a nearby pack behind the hero and damages each enemy once',()=>{

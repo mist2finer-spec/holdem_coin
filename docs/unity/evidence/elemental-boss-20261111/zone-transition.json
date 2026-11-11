@@ -1,0 +1,66 @@
+{
+  "result": "PASS",
+  "frames": 1497,
+  "samples": [
+    {
+      "label": "zone-09",
+      "frame": 8804,
+      "routeZone": 8,
+      "phase": "combat",
+      "intro": null,
+      "elapsed": 0.96000000000000052,
+      "kills": 0,
+      "camera": "Side25D",
+      "quarterWeight": 0.0,
+      "loadedMountScenes": 2,
+      "bossReady": false,
+      "heroClip": "idle_loop",
+      "heroX": -1327.69958
+    },
+    {
+      "label": "zone-10-approach",
+      "frame": 10093,
+      "routeZone": 9,
+      "phase": "boss-approach",
+      "intro": "approach",
+      "elapsed": 0.38000000000000006,
+      "kills": 30,
+      "camera": "Side25D",
+      "quarterWeight": 0.0,
+      "loadedMountScenes": 0,
+      "bossReady": true,
+      "heroClip": "walk_loop",
+      "heroX": 2957
+    },
+    {
+      "label": "zone-10-reveal",
+      "frame": 10210,
+      "routeZone": 9,
+      "phase": "boss-reveal",
+      "intro": "reveal",
+      "elapsed": 2.4600000000000017,
+      "kills": 30,
+      "camera": "QuarterView",
+      "quarterWeight": 0.328175962,
+      "loadedMountScenes": 0,
+      "bossReady": true,
+      "heroClip": "idle_loop",
+      "heroX": 3200
+    },
+    {
+      "label": "zone-10-ready",
+      "frame": 10255,
+      "routeZone": 9,
+      "phase": "boss",
+      "intro": "none",
+      "elapsed": 3.2800000000000025,
+      "kills": 30,
+      "camera": "QuarterView",
+      "quarterWeight": 1.0,
+      "loadedMountScenes": 0,
+      "bossReady": true,
+      "heroClip": "idle_loop",
+      "heroX": 3200
+    }
+  ]
+}

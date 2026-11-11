@@ -18,6 +18,7 @@ MonoBehaviour:
   slimeMaterial: {fileID: 2100000, guid: 565c9bf00ef54d146959d279de3a3c65, type: 2}
   idle: {fileID: -1619646539702097700, guid: 1a75cc7e48a5ab74882aa25fb2e0ac7f, type: 3}
   run: {fileID: 7400000, guid: d00228fcbbecdf840a2d935d6cec2030, type: 2}
+  walk: {fileID: 8440309614512552275, guid: 1a75cc7e48a5ab74882aa25fb2e0ac7f, type: 3}
   jumpStart: {fileID: -2828760888762982009, guid: 1a75cc7e48a5ab74882aa25fb2e0ac7f, type: 3}
   jumpLoop: {fileID: 1204013332245689937, guid: 1a75cc7e48a5ab74882aa25fb2e0ac7f, type: 3}
   jumpLand: {fileID: -4977280325600754817, guid: 1a75cc7e48a5ab74882aa25fb2e0ac7f, type: 3}

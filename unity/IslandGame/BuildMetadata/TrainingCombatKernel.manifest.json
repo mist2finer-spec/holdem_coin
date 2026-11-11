@@ -1,13 +1,14 @@
 {
   "protocol": "island-training-local-v1",
-  "sha256": "7abd52ec3ce8e1d7794382216260ac892ce263b04ff85f5a21d578908aedae4c",
-  "bytes": 482799,
+  "sha256": "fa4b6bcfd4f5b97e7935ae6c3986931759e70dffbe8a88d1ed6e7988c3142d02",
+  "bytes": 491328,
   "sourceFiles": [
     "src/lib/generated/mount-sunday-zones.json",
     "src/lib/generated/unity-boss-contact.json",
     "src/lib/generated/unity-hero-contact.json",
     "src/lib/generated/unity-nature-map.json",
     "src/lib/rpg-boss-contact.ts",
+    "src/lib/rpg-elemental-combat.ts",
     "src/lib/rpg-hero-contact.ts",
     "src/lib/rpg-mount-sunday-engine.ts",
     "src/lib/rpg-reference-skills.ts",

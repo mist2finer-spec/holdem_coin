@@ -3,15 +3,15 @@ import {MountSundayEngine} from '../../src/lib/rpg-mount-sunday-engine';import {
 const source=readFileSync('unity/IslandGame/Assets/Island/Resources/TrainingCombatKernel.js.txt','utf8');
 function kernel(mode='mount'){const c:any=vm.createContext({});vm.runInContext(source,c);const initial=JSON.parse(c.stageInitialize(JSON.stringify({mode,seed:111})));return {c,initial,step(steps:number,input:any,commands:any[]=[]){return JSON.parse(c.stageAdvance(JSON.stringify({steps,input,commands,snapshot:true})));}};}
 function equal(actual:any,expected:any){for(const key of Object.keys(expected))assert.deepEqual(actual[key],JSON.parse(JSON.stringify(expected[key])),key);}
-test('training bundle uses original engines through ten zones and boss, with no network globals',()=>{
+test('training bundle uses original engines through nine normal zones and the tenth boss zone, with no network globals',()=>{
  const k=kernel(),g=new MountSundayEngine(111);let ticks=0,maps=1;const contacts=new Set<string>();
  for(;ticks<60000&&g.status==='playing';ticks++){
-  const input={x:0,y:0,auto:true,readyZone:Math.min(9,g.room+1),readyBoss:g.room===10};g.acceptClientHints(input);g.step(.02,input);
+  const input={x:0,y:0,auto:true,readyZone:Math.min(9,g.room+1),readyBoss:g.room===9};g.acceptClientHints(input);g.step(.02,input);
   const actual=k.step(1,input);if(actual.map)maps++;
   if(ticks%100===0||g.status!=='playing')equal(actual,g.view());
   for(const fx of actual.fx??[])if(fx.damageKind==='attack')contacts.add(fx.definitionId);
  }
- assert.equal(g.room,10);assert.equal(g.status,'won');assert.equal(maps,11);assert.equal(g.kills,300);
+ assert.equal(g.room,9);assert.equal(g.status,'won');assert.equal(maps,10);assert.equal(g.kills,270);
  assert(contacts.has('hero-attack1')&&contacts.has('hero-attack2')&&contacts.has('hero-attack3'));
  console.log(JSON.stringify({ticks,maps,kills:g.kills,status:g.status,contacts:[...contacts]}));
 });

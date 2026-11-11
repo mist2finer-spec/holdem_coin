@@ -63,6 +63,7 @@ namespace IslandGame {
   UnityBossPresentation bossView;UnityBossAssets bossAssets;
   public Transform BossTarget=>bossView!=null?bossView.BossTarget:null;
   public string BossClipName=>bossView?.BossClipName;
+  public float BossSampleTime=>bossView?.BossSampleTime??0;
   public void UpdateEncounter(JObject state,float visualTime){if(bossView!=null)bossView.Update(state,visualTime);}
   public string HeroClipName {get;private set;}
   public float HeroSampleTime {get;private set;}
@@ -169,7 +170,7 @@ namespace IslandGame {
   public float Draw(string id,string action,float x,float elevation,float facing,string serial,float age,float duration,float hitAt,string kind,float advance,float visualTime){
    bool hero=id=="hero";Actor a;if(!actors.TryGetValue(id,out a))a=Create(id,hero);if(a==null)return 0;
    var clip=hero&&bossAssets&&bossAssets.knockback&&(action=="knockback"||action=="knockdown"||action=="getup")?bossAssets.knockback:hero?assets.HeroClip(action):assets.slimeIdle;if(!clip)return 0;
-   bool loop=!hero||clip==assets.idle||clip==assets.run||clip==assets.jumpLoop||clip==assets.slide;
+   bool loop=!hero||clip==assets.idle||clip==assets.run||clip==assets.walk||clip==assets.jumpLoop||clip==assets.slide;
    bool changed=a.clip!=clip||a.serial!=serial;
    if(a.clip!=clip||(!loop&&a.serial!=serial))a.time=0;
    a.clip=clip;a.serial=serial;

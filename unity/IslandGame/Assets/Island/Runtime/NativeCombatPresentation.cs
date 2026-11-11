@@ -36,7 +36,7 @@ namespace IslandGame {
   static bool Finite(float n)=>!float.IsNaN(n)&&!float.IsInfinity(n);
   public static JObject ProjectHero(JObject state,JObject map,float visualTime,float move,bool auto,float moveY=0,JObject reusable=null){
    var source=state?["hero"] as JObject;if(source==null)return null;var hero=reusable??(JObject)source.DeepClone();
-   if((string)state["status"]!="playing")return hero;
+   if((string)state["status"]!="playing"||(bool?)state["bossIntroActive"]==true)return hero;
    var motion=hero["motion"] as JObject;
    if(motion!=null){
     float age=Mathf.Max(0,visualTime-N(motion["start"])),duration=N(motion["duration"]),t=duration>0?Mathf.Clamp01(age/duration):1;string kind=(string)motion["kind"];

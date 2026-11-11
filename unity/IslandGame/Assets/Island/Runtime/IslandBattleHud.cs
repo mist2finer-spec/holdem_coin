@@ -13,7 +13,7 @@ namespace IslandGame {
   void Awake(){budget=IslandFrameBudget.Ensure(gameObject);}
   IslandApp app;RectTransform safe,frame,header,stage,lower,footer,resource,skills,mode,controls;
   GameObject root;Canvas canvas;[NonSerialized] TMP_FontAsset font;UnityEngine.UI.RawImage viewport;
-  RectTransform dungeonPanel;
+  RectTransform dungeonPanel;GameObject escapePopup;
   readonly UnityEngine.UI.Button[] skillButtons=new UnityEngine.UI.Button[6];
   readonly UnityEngine.UI.Image[] icons=new UnityEngine.UI.Image[6],sweeps=new UnityEngine.UI.Image[6];
   readonly TextMeshProUGUI[] numbers=new TextMeshProUGUI[6],damage=new TextMeshProUGUI[24];
@@ -29,6 +29,7 @@ namespace IslandGame {
   bool outputDirty=true;bool outputWas3D;NativeBattle outputBattle;Vector2 outputSize;
   float oldWidth=-1,oldHeight=-1;Rect oldSafe;bool ownsEventSystem;GameObject events;
   public bool Visible=>root&&root.activeInHierarchy;
+  public bool EscapePopupVisible=>escapePopup&&escapePopup.activeInHierarchy;
   public TMP_FontAsset RuntimeFont=>font;
   public int UiDispatches{get;private set;}
   public string LastInput{get;private set;}
@@ -77,6 +78,12 @@ namespace IslandGame {
    notice=Label(lower,"Notice","",10,TextAlignmentOptions.Center);notice.color=new Color(1,.65f,.5f);
    overlay=Rect("ConnectionOrResult",stage).gameObject;Fill((RectTransform)overlay.transform,new Color(.035f,.08f,.10f,.94f));PanelFrame((RectTransform)overlay.transform,"ResultFrame");Stretch((RectTransform)overlay.transform);
    overlayText=Label(overlay.transform,"Message","전투와 장비를 불러오는 중…",16,TextAlignmentOptions.Center);retry=Button(overlay.transform,"Retry","다시 입장",()=>app.HudRetry(),new Color(.1f,.25f,.28f));
+   escapePopup=Rect("LabyrinthEscape",frame).gameObject;Stretch((RectTransform)escapePopup.transform);Fill((RectTransform)escapePopup.transform,new Color(.01f,.025f,.035f,.78f)).raycastTarget=true;
+   var escapePanel=Rect("EscapePanel",escapePopup.transform);escapePanel.anchorMin=escapePanel.anchorMax=escapePanel.pivot=Vector2.one*.5f;escapePanel.sizeDelta=new Vector2(322,224);Fill(escapePanel,new Color(.035f,.08f,.10f,.98f));PanelFrame(escapePanel,"EscapeFrame");
+   var escapeTitle=Label(escapePanel,"EscapeTitle","미궁 탈출",24,TextAlignmentOptions.Center);escapeTitle.color=new Color(1,.85f,.5f);Box((RectTransform)escapeTitle.transform,16,24,290,42);
+   var escapeInfo=Label(escapePanel,"EscapeInfo","10구역의 보스를 물리쳤습니다.\n미궁 탐험을 완료했습니다.",14,TextAlignmentOptions.Center);Box((RectTransform)escapeInfo.transform,16,78,290,54);
+   var leave=Button(escapePanel,"EscapeLobby","마을로 돌아가기",()=>app.HudMenu("lobby"),new Color(.1f,.25f,.28f));Box((RectTransform)leave.transform,20,158,165,44);
+   var again=Button(escapePanel,"EscapeRetry","다시 도전",()=>app.HudRetry(),new Color(.1f,.18f,.22f));Box((RectTransform)again.transform,195,158,107,44);escapePopup.SetActive(false);
    dungeonPanel=Rect("DungeonPanel",safe);Fill(dungeonPanel,new Color(.035f,.07f,.09f));PanelFrame(dungeonPanel,"DungeonFrame");
    var dungeonTitle=Label(dungeonPanel,"DungeonTitle","던전",24,TextAlignmentOptions.Center);Box((RectTransform)dungeonTitle.transform,18,60,354,50);
    var dungeonInfo=Label(dungeonPanel,"DungeonInfo","촛불 미궁 / 독립 보스 시험\n보스 시험은 계정 성장·보상과 별개입니다.",13,TextAlignmentOptions.Center);Box((RectTransform)dungeonInfo.transform,18,130,354,75);
@@ -119,6 +126,8 @@ namespace IslandGame {
   public void HideForBossTrials(){if(app)app.HudBattle.RestoreTexturePresentation();if(stick)stick.ResetInput();if(root)root.SetActive(false);}
   void Refresh(){
    var session=app.HudSession;var state=session.State;var hero=app.HudCampaign?state:state?["hero"] as JObject;var progress=state?["progress"] as JObject;var resources=state?["resources"] as JObject;bool active=app.HudCanInput;
+   bool escaped=(bool?)state?["mountCampaign"]==true&&(int?)state?["routeZone"]==9&&(string)state?["status"]=="won";
+   escapePopup.SetActive(escaped);
    // Interaction remains current every frame; only visual text/icon work is throttled.
    for(int i=0;i<6;i++)skillButtons[i].interactable=active&&RpgContracts.CanCast(state,i);
    autoButton.interactable=active;
@@ -129,10 +138,13 @@ namespace IslandGame {
    nextRefresh=Time.unscaledTime+1f/(budget?budget.Policy.HudHz:20);lastActive=active;lastEnded=endedNow;
    viewport.texture=app.HudBattle.Output;viewport.enabled=!app.HudBattle.DirectPresentationActive;
    bool mount=(bool?)state?["mountSunday"]==true;
-   title.text=(string)state?["roomKind"]=="boss"?"보스 구역 · 거인":mount?"마을길 · "+(string)state?["zoneName"]:app.HudCampaign?"성장 사냥":"촛불 미궁 · Lv."+Value(state?["dungeonLevel"],1);
+   title.text=(string)state?["roomKind"]=="boss"?"10구역 · 거인의 정원":mount?"마을길 · "+(string)state?["zoneName"]:app.HudCampaign?"성장 사냥":"촛불 미궁 · Lv."+Value(state?["dungeonLevel"],1);
    bool viewAvailable=(bool?)state?["unityBossMode"]==true;viewButton.gameObject.SetActive(viewAvailable);gold.gameObject.SetActive(!viewAvailable);viewButton.interactable=false;viewText.text=NativeBattle.EncounterView(state)==ViewMode.QuarterView?"쿼터뷰":"사이드뷰";
-   gold.text=RpgContracts.Amount(progress?["gold"])+" G";chamber.text=(mount?"ZONE\n":"CHAMBER\n")+(Value(state?["routeZone"],Value(state?["room"]))+1).ToString("00")+" / "+Value(state?["totalRooms"],10);
+   gold.text=RpgContracts.Amount(progress?["gold"])+" G";chamber.text=(mount||(bool?)state?["mountCampaign"]==true?"ZONE\n":"CHAMBER\n")+(Value(state?["routeZone"],Value(state?["room"]))+1).ToString("00")+" / "+Value(state?["totalRooms"],10);
    objective.text=mount?((string)state?["phase"]=="exit"||(string)state?["phase"]=="waiting-next"?"마을 방향 출구로 이동":"이 구역 "+Value(state?["zoneKills"])+" / 30 처치"):(string)state?["phase"]=="exit-ready"?"출구 개방 · 점프 / 슬라이드로 이동":"전투 화면을 눌러 기본 공격";
+   if((string)state?["phase"]=="boss-loading")objective.text="거인의 정원으로 이동 중";
+   else if((string)state?["bossIntroStage"]=="approach")objective.text="정원 안쪽으로 걸어갑니다";
+   else if((string)state?["bossIntroStage"]=="reveal")objective.text="정원의 수호자가 깨어납니다";
    hpOrb.SetFill((float)RpgContracts.Ratio(hero?["hp"],hero?["maxHP"]));manaOrb.SetFill((float)RpgContracts.Ratio(resources?["mana"],resources?["maxMana"]));
    hpText.text="체력 "+Math.Round(hpOrb.fill*100)+"%";manaText.text=resources==null?"마나 —":"마나 "+Math.Round(manaOrb.fill*100)+"%";
    for(int i=0;i<6;i++){bool equipped=RpgContracts.SkillEnabled(state,i);var skill=RpgContracts.Skill(state,i);string id=equipped?(string)skill?["activeId"]:null;
@@ -143,12 +155,13 @@ namespace IslandGame {
     numbers[i].text=cooling?(cd<1?cd.ToString("0.0"):Mathf.CeilToInt(cd).ToString()):(i+1).ToString();numbers[i].color=equipped?Color.white:new Color(.43f,.49f,.46f);numbers[i].alignment=cooling?TextAlignmentOptions.Center:TextAlignmentOptions.BottomRight;numbers[i].fontSize=cooling?18:11;
    }
    modeText.text="캐릭터 Lv."+Value(progress?["level"],1)+" · "+Value(state?["kills"])+" 처치\n액티브 젬은 소지품에서 장착";
+   if(session.ReferencePreview)modeText.text="원소 전투 연습 · "+Value(state?["kills"])+" 처치\n1~3 물방울 · 4~6 번개";
    autoText.text="AUTO "+(session.Auto?"ON":"OFF");autoButton.interactable=active;Skin((UnityEngine.UI.Image)autoButton.targetGraphic,session.Auto?"ui-buttons/btn-purple":"ui-buttons/btn-blue",32,4);
    jump.interactable=active&&(app.HudCampaign||(bool?)state?["jumpReady"]==true);slide.interactable=active&&(app.HudCampaign||(bool?)state?["slideReady"]==true);evadeLeft.interactable=evadeRight.interactable=active&&(app.HudCampaign||(bool?)state?["dodgeReady"]==true);
    PotionState(hpPotion,hpPotionText,"health",hero?["hp"],hero?["maxHP"]);PotionState(manaPotion,manaPotionText,"mana",resources?["mana"],resources?["maxMana"]);
    notice.text=app.HudNotice;
    bool ended=state!=null&&(!session.Active||app.HudCampaign&&(bool?)state["dead"]==true);
-   overlay.SetActive(state==null||ended);overlayText.text=state==null?(session.Active?"전투와 장비를 불러오는 중…":"연결 중단 · 다시 입장하세요"):(string)state["status"]=="won"?(mount?"마을 입구 도착 · 300마리 처치":"미궁 탈출 성공"):(string)state["status"]=="dead"?"전투 불능":"연결이 종료되었습니다";retry.gameObject.SetActive(!session.Active);
+   overlay.SetActive(!escaped&&(state==null||ended));overlayText.text=state==null?(session.Active?"전투와 장비를 불러오는 중…":"연결 중단 · 다시 입장하세요"):(string)state["status"]=="won"?"미궁 탈출 성공":(string)state["status"]=="dead"?"전투 불능":"연결이 종료되었습니다";retry.gameObject.SetActive(!session.Active);
    DrawDamage(state);
   }
   void PotionState(UnityEngine.UI.Button button,TextMeshProUGUI label,string kind,JToken value,JToken max){var r=app.HudSession.State?["resources"] as JObject;float cooldown=Value(r?["potionCooldowns"]?[kind]),count=Value(r?["potions"]?[kind]);button.interactable=app.HudCanInput&&r!=null&&count>0&&cooldown<=0&&RpgContracts.Ratio(value,max)<1;label.text=cooldown>0?Mathf.CeilToInt(cooldown)+"s":count.ToString("0");}
@@ -167,7 +180,7 @@ namespace IslandGame {
    // Preserve existing icon/font design units without an additional CanvasScaler.
    float units=1080f/390f,w=width*area.width/Screen.width/units,h=height*area.height/Screen.height/units;
    frame.anchorMin=frame.anchorMax=frame.pivot=Vector2.one*.5f;frame.anchoredPosition=Vector2.zero;frame.sizeDelta=new Vector2(w,h);frame.localScale=Vector3.one*units;
-   Band(stage,.50f,1);Band(header,.94f,1);Band(lower,.08f,.50f);Band(footer,0,.08f);header.SetAsLastSibling();
+   Band(stage,.50f,1);Band(header,.94f,1);Band(lower,.08f,.50f);Band(footer,0,.08f);header.SetAsLastSibling();escapePopup.transform.SetAsLastSibling();
    float stageH=h*.50f,headerH=h*.06f,lowerH=h*.42f;
    Box((RectTransform)header.Find("Lobby"),6,3,36,headerH-6);Box((RectTransform)title.transform,50,3,w-178,headerH-6);Box((RectTransform)gold.transform,w-124,3,82,headerH-6);Box((RectTransform)header.Find("Help"),w-36,3,30,headerH-6);Box((RectTransform)viewButton.transform,w-124,3,82,headerH-6);
    Box((RectTransform)chamber.transform,12,headerH+8,180,40);Box((RectTransform)objective.transform,10,stageH-78,w-20,20);
