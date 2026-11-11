@@ -11,6 +11,32 @@ using UnityEngine.SceneManagement;
 namespace IslandGame.Editor {
  public static class ElementalVfxLabTools {
   public const string ScenePath="Assets/Island/Scenes/ElementalVfxLab.unity";
+  // PhysicsScene and manual PlayableGraph handles do not survive a domain reload.
+  // Restart only this disposable preview; ordinary game scenes retain their policy.
+  const string ResumeKey="Island.ElementalLab.ResumeAfterReload";
+  [InitializeOnLoadMethod]
+  static void InstallReloadRecovery(){
+   AssemblyReloadEvents.beforeAssemblyReload-=RememberPreviewBeforeReload;
+   AssemblyReloadEvents.beforeAssemblyReload+=RememberPreviewBeforeReload;
+  }
+  static void RememberPreviewBeforeReload(){
+   var lab=UnityEngine.Object.FindFirstObjectByType<ElementalVfxLab>();
+   SessionState.SetBool(ResumeKey,EditorApplication.isPlaying&&lab&&lab.Ready&&SceneManager.GetActiveScene().path==ScenePath);
+  }
+  [UnityEditor.Callbacks.DidReloadScripts]
+  static void RestorePreviewAfterReload(){
+   bool resume=SessionState.GetBool(ResumeKey,false);SessionState.SetBool(ResumeKey,false);
+   if(!resume)return;
+   if(!EditorApplication.isPlaying||SceneManager.GetActiveScene().path!=ScenePath)return;
+   EditorApplication.playModeStateChanged-=ResumePreview;
+   EditorApplication.playModeStateChanged+=ResumePreview;
+   EditorApplication.isPlaying=false;
+  }
+  static void ResumePreview(PlayModeStateChange state){
+   if(state!=PlayModeStateChange.EnteredEditMode)return;
+   EditorApplication.playModeStateChanged-=ResumePreview;
+   EditorApplication.delayCall+=()=>{if(SceneManager.GetActiveScene().path==ScenePath)EditorApplication.isPlaying=true;};
+  }
   [MenuItem("Island/Elemental VFX/Open lab")]
   public static void Open(){
    if(EditorApplication.isPlaying)throw new InvalidOperationException("Exit Play before changing the preview scene.");

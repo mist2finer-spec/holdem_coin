@@ -244,11 +244,11 @@
   ],
   "cases": [
     {
-      "frame": 483,
-      "clock": 3.23999763,
+      "frame": 1851,
+      "clock": 21.5803032,
       "kind": "Sword",
       "tier": 1,
-      "age": 0.979999065,
+      "age": 0.98002243,
       "hits": 2,
       "walls": 0,
       "ground": 0,
@@ -337,15 +337,15 @@
       ],
       "hitLog": [
         {
-          "cast": 3,
+          "cast": 9,
           "target": "FRONT A",
           "element": "Sword",
-          "time": 0.239999771,
+          "time": 0.2400055,
           "damage": 29.0,
           "point": [
-            0.9029546,
-            0.162729442,
-            -1.29256785
+            0.903078854,
+            0.162765443,
+            -1.29250026
           ],
           "impulse": [
             1.3146857,
@@ -354,15 +354,15 @@
           ]
         },
         {
-          "cast": 3,
+          "cast": 9,
           "target": "FRONT B",
           "element": "Sword",
-          "time": 0.279999733,
+          "time": 0.2800064,
           "damage": 29.0,
           "point": [
-            1.64039087,
-            0.6071795,
-            -0.4566789
+            1.64044368,
+            0.607258141,
+            -0.456531078
           ],
           "impulse": [
             1.62,
@@ -373,11 +373,11 @@
       ]
     },
     {
-      "frame": 483,
-      "clock": 4.219997,
+      "frame": 1851,
+      "clock": 22.5603256,
       "kind": "Sword",
       "tier": 2,
-      "age": 0.9799993,
+      "age": 0.98002243,
       "hits": 2,
       "walls": 0,
       "ground": 0,
@@ -466,15 +466,15 @@
       ],
       "hitLog": [
         {
-          "cast": 4,
+          "cast": 10,
           "target": "FRONT C",
           "element": "Sword",
-          "time": 0.239999771,
+          "time": 0.2400055,
           "damage": 36.0,
           "point": [
-            1.07276666,
-            0.317801774,
-            1.46220267
+            1.07290053,
+            0.317833364,
+            1.46211588
           ],
           "impulse": [
             1.49322307,
@@ -483,15 +483,15 @@
           ]
         },
         {
-          "cast": 4,
+          "cast": 10,
           "target": "FRONT B",
           "element": "Sword",
-          "time": 0.279999733,
+          "time": 0.2800064,
           "damage": 36.0,
           "point": [
-            1.80252266,
-            0.6556158,
-            0.5340664
+            1.8025806,
+            0.6556787,
+            0.533893466
           ],
           "impulse": [
             1.83999991,
@@ -502,11 +502,11 @@
       ]
     },
     {
-      "frame": 483,
-      "clock": 5.199996,
+      "frame": 1851,
+      "clock": 23.5403481,
       "kind": "Sword",
       "tier": 3,
-      "age": 0.979999065,
+      "age": 0.98002243,
       "hits": 1,
       "walls": 0,
       "ground": 0,
@@ -595,15 +595,15 @@
       ],
       "hitLog": [
         {
-          "cast": 5,
+          "cast": 11,
           "target": "FRONT B",
           "element": "Sword",
-          "time": 0.2999997,
+          "time": 0.300006866,
           "damage": 43.0,
           "point": [
-            2.05733085,
-            0.942558467,
-            -0.04921421
+            2.05734229,
+            0.942362249,
+            -0.04910987
           ],
           "impulse": [
             2.06,
@@ -614,11 +614,11 @@
       ]
     },
     {
-      "frame": 483,
-      "clock": 6.179995,
+      "frame": 1851,
+      "clock": 24.52037,
       "kind": "Sword",
       "tier": 4,
-      "age": 0.979999065,
+      "age": 0.98002243,
       "hits": 3,
       "walls": 0,
       "ground": 0,
@@ -707,15 +707,15 @@
       ],
       "hitLog": [
         {
-          "cast": 6,
+          "cast": 12,
           "target": "FRONT C",
           "element": "Sword",
-          "time": 0.259999752,
+          "time": 0.260005951,
           "damage": 50.0,
           "point": [
-            1.68724549,
-            1.05293059,
-            1.443926
+            1.68738,
+            1.0529089,
+            1.44377184
           ],
           "impulse": [
             1.85029829,
@@ -724,15 +724,15 @@
           ]
         },
         {
-          "cast": 6,
+          "cast": 12,
           "target": "FRONT B",
           "element": "Sword",
-          "time": 0.2999997,
+          "time": 0.300006866,
           "damage": 50.0,
           "point": [
-            2.20404482,
-            0.897213757,
-            0.335943162
+            2.20408058,
+            0.8971814,
+            0.335712671
           ],
           "impulse": [
             2.28,
@@ -741,15 +741,15 @@
           ]
         },
         {
-          "cast": 6,
+          "cast": 12,
           "target": "FRONT A",
           "element": "Sword",
-          "time": 0.339999676,
+          "time": 0.340007782,
           "damage": 50.0,
           "point": [
-            2.08991623,
-            0.741735339,
-            -0.7703433
+            2.089825,
+            0.7417011,
+            -0.77058655
           ],
           "impulse": [
             1.85029829,
@@ -760,11 +760,11 @@
       ]
     },
     {
-      "frame": 483,
-      "clock": 7.159994,
+      "frame": 1851,
+      "clock": 25.5003929,
       "kind": "Sword",
       "tier": 5,
-      "age": 0.979999065,
+      "age": 0.98002243,
       "hits": 2,
       "walls": 0,
       "ground": 0,
@@ -853,15 +853,15 @@
       ],
       "hitLog": [
         {
-          "cast": 7,
+          "cast": 13,
           "target": "FRONT A",
           "element": "Sword",
-          "time": 0.259999752,
+          "time": 0.260005951,
           "damage": 57.0,
           "point": [
-            1.55601239,
-            -0.507907748,
-            -1.22266567
+            1.55617452,
+            -0.5078051,
+            -1.22257328
           ],
           "impulse": [
             2.02883577,
@@ -870,15 +870,15 @@
           ]
         },
         {
-          "cast": 7,
+          "cast": 13,
           "target": "FRONT B",
           "element": "Sword",
-          "time": 0.279999733,
+          "time": 0.2800064,
           "damage": 57.0,
           "point": [
-            2.20371461,
-            0.143566191,
-            -0.636075854
+            2.20380926,
+            0.143729389,
+            -0.6359289
           ],
           "impulse": [
             2.5,
@@ -889,11 +889,11 @@
       ]
     },
     {
-      "frame": 483,
-      "clock": 10.2800455,
+      "frame": 1851,
+      "clock": 28.6204643,
       "kind": "Water",
       "tier": 1,
-      "age": 3.12005138,
+      "age": 3.12007141,
       "hits": 5,
       "walls": 1,
       "ground": 3,
@@ -982,10 +982,10 @@
       ],
       "hitLog": [
         {
-          "cast": 8,
+          "cast": 14,
           "target": "FRONT C",
           "element": "Water",
-          "time": 0.6199994,
+          "time": 0.600013733,
           "damage": 26.0,
           "point": [
             0.7682331,
@@ -999,10 +999,10 @@
           ]
         },
         {
-          "cast": 8,
+          "cast": 14,
           "target": "FRONT A",
           "element": "Water",
-          "time": 0.6199994,
+          "time": 0.600013733,
           "damage": 26.0,
           "point": [
             0.76823324,
@@ -1016,10 +1016,10 @@
           ]
         },
         {
-          "cast": 8,
+          "cast": 14,
           "target": "FRONT B",
           "element": "Water",
-          "time": 0.6599994,
+          "time": 0.640014648,
           "damage": 26.0,
           "point": [
             1.251077,
@@ -1033,10 +1033,10 @@
           ]
         },
         {
-          "cast": 8,
+          "cast": 14,
           "target": "LEFT",
           "element": "Water",
-          "time": 0.6599994,
+          "time": 0.640014648,
           "damage": 26.0,
           "point": [
             -1.26139367,
@@ -1050,10 +1050,10 @@
           ]
         },
         {
-          "cast": 8,
+          "cast": 14,
           "target": "DEPTH",
           "element": "Water",
-          "time": 0.7599993,
+          "time": 0.740016937,
           "damage": 26.0,
           "point": [
             -7.87431063E-08,
@@ -1069,8 +1069,8 @@
       ]
     },
     {
-      "frame": 483,
-      "clock": 13.4001169,
+      "frame": 1851,
+      "clock": 31.7405357,
       "kind": "Water",
       "tier": 2,
       "age": 3.12007141,
@@ -1162,7 +1162,7 @@
       ],
       "hitLog": [
         {
-          "cast": 9,
+          "cast": 15,
           "target": "FRONT B",
           "element": "Water",
           "time": 0.6200142,
@@ -1179,7 +1179,7 @@
           ]
         },
         {
-          "cast": 9,
+          "cast": 15,
           "target": "LEFT",
           "element": "Water",
           "time": 0.6200142,
@@ -1196,7 +1196,7 @@
           ]
         },
         {
-          "cast": 9,
+          "cast": 15,
           "target": "FRONT C",
           "element": "Water",
           "time": 0.8600197,
@@ -1213,7 +1213,7 @@
           ]
         },
         {
-          "cast": 9,
+          "cast": 15,
           "target": "FRONT A",
           "element": "Water",
           "time": 0.8600197,
@@ -1230,7 +1230,7 @@
           ]
         },
         {
-          "cast": 9,
+          "cast": 15,
           "target": "DEPTH",
           "element": "Water",
           "time": 1.00002289,
@@ -1249,15 +1249,15 @@
       ]
     },
     {
-      "frame": 483,
-      "clock": 16.5201874,
+      "frame": 1851,
+      "clock": 34.8606071,
       "kind": "Water",
       "tier": 3,
-      "age": 3.12007046,
+      "age": 3.12007141,
       "hits": 5,
       "walls": 2,
       "ground": 2,
-      "particles": 7,
+      "particles": 8,
       "drops": 0,
       "poolSlots": 100,
       "queries": 1792,
@@ -1342,7 +1342,7 @@
       ],
       "hitLog": [
         {
-          "cast": 10,
+          "cast": 16,
           "target": "FRONT B",
           "element": "Water",
           "time": 0.600013733,
@@ -1359,7 +1359,7 @@
           ]
         },
         {
-          "cast": 10,
+          "cast": 16,
           "target": "FRONT C",
           "element": "Water",
           "time": 0.6200142,
@@ -1376,7 +1376,7 @@
           ]
         },
         {
-          "cast": 10,
+          "cast": 16,
           "target": "DEPTH",
           "element": "Water",
           "time": 0.820018768,
@@ -1393,7 +1393,7 @@
           ]
         },
         {
-          "cast": 10,
+          "cast": 16,
           "target": "LEFT",
           "element": "Water",
           "time": 0.8400192,
@@ -1410,7 +1410,7 @@
           ]
         },
         {
-          "cast": 10,
+          "cast": 16,
           "target": "FRONT A",
           "element": "Water",
           "time": 0.98002243,
@@ -1429,8 +1429,8 @@
       ]
     },
     {
-      "frame": 483,
-      "clock": 18.3202286,
+      "frame": 1851,
+      "clock": 36.66065,
       "kind": "Lightning",
       "tier": 1,
       "age": 1.8000412,
@@ -1522,7 +1522,7 @@
       ],
       "hitLog": [
         {
-          "cast": 11,
+          "cast": 17,
           "target": "FRONT C",
           "element": "Lightning",
           "time": 0.680015564,
@@ -1539,7 +1539,7 @@
           ]
         },
         {
-          "cast": 11,
+          "cast": 17,
           "target": "FRONT B",
           "element": "Lightning",
           "time": 0.680015564,
@@ -1556,7 +1556,7 @@
           ]
         },
         {
-          "cast": 11,
+          "cast": 17,
           "target": "FRONT A",
           "element": "Lightning",
           "time": 0.680015564,
@@ -1575,8 +1575,8 @@
       ]
     },
     {
-      "frame": 483,
-      "clock": 20.12027,
+      "frame": 1851,
+      "clock": 38.46069,
       "kind": "Lightning",
       "tier": 2,
       "age": 1.8000412,
@@ -1668,7 +1668,7 @@
       ],
       "hitLog": [
         {
-          "cast": 12,
+          "cast": 18,
           "target": "FRONT C",
           "element": "Lightning",
           "time": 0.680015564,
@@ -1685,7 +1685,7 @@
           ]
         },
         {
-          "cast": 12,
+          "cast": 18,
           "target": "FRONT B",
           "element": "Lightning",
           "time": 0.680015564,
@@ -1702,7 +1702,7 @@
           ]
         },
         {
-          "cast": 12,
+          "cast": 18,
           "target": "FRONT A",
           "element": "Lightning",
           "time": 0.680015564,
@@ -1719,7 +1719,7 @@
           ]
         },
         {
-          "cast": 12,
+          "cast": 18,
           "target": "DEPTH",
           "element": "Lightning",
           "time": 0.680015564,
@@ -1736,7 +1736,7 @@
           ]
         },
         {
-          "cast": 12,
+          "cast": 18,
           "target": "LEFT",
           "element": "Lightning",
           "time": 0.680015564,
@@ -1755,8 +1755,8 @@
       ]
     },
     {
-      "frame": 483,
-      "clock": 21.920311,
+      "frame": 1851,
+      "clock": 40.26073,
       "kind": "Lightning",
       "tier": 3,
       "age": 1.8000412,
@@ -1848,7 +1848,7 @@
       ],
       "hitLog": [
         {
-          "cast": 13,
+          "cast": 19,
           "target": "FRONT C",
           "element": "Lightning",
           "time": 0.680015564,
@@ -1865,7 +1865,7 @@
           ]
         },
         {
-          "cast": 13,
+          "cast": 19,
           "target": "FRONT B",
           "element": "Lightning",
           "time": 0.680015564,
@@ -1882,7 +1882,7 @@
           ]
         },
         {
-          "cast": 13,
+          "cast": 19,
           "target": "FRONT A",
           "element": "Lightning",
           "time": 0.680015564,

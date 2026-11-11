@@ -17,7 +17,7 @@ namespace IslandGame {
   Transform pelvis,shoulder;float heroScale;bool ready,oldBackground;int oldTargetFrameRate;
   Font font;GUIStyle titleStyle,bodyStyle,smallStyle,buttonStyle,toggleStyle;Texture2D panelTexture;GUISkin localSkin;
   AudioSource audioSource;readonly AudioClip[] cues=new AudioClip[3];
-  public bool Ready=>ready;
+  public bool Ready=>ready&&physicsScene.IsValid();
   public Camera LabCamera=>labCamera;
 
   void Start(){
@@ -80,7 +80,7 @@ namespace IslandGame {
     var anim=new RuntimeAnimationPlayer(model);anim.Sample(assets.slimeIdle,0);targetAnimations.Add(anim);targets.Add(target);
    }
   }
-  void Update(){if(!ready)return;if(Input.GetKeyDown(KeyCode.Space))Cast(selectedKind,selectedTier);float wheel=Input.mouseScrollDelta.y;if(Mathf.Abs(wheel)>.01f)labCamera.orthographicSize=Mathf.Clamp(labCamera.orthographicSize-wheel*.25f,2.8f,6.5f);Advance(Time.unscaledDeltaTime);RenderVisuals();SampleActors();}
+  void Update(){if(!Ready)return;if(Input.GetKeyDown(KeyCode.Space))Cast(selectedKind,selectedTier);float wheel=Input.mouseScrollDelta.y;if(Mathf.Abs(wheel)>.01f)labCamera.orthographicSize=Mathf.Clamp(labCamera.orthographicSize-wheel*.25f,2.8f,6.5f);Advance(Time.unscaledDeltaTime);RenderVisuals();SampleActors();}
   void SampleActors(){
    AnimationClip clip=assets.idle;float t=Mathf.Repeat(clock,clip.length);
    if(casting){clip=profile.Kind==ElementalAttackKind.Sword?assets.HeroClip("attack"+profile.Tier):profile.Kind==ElementalAttackKind.Water?assets.spell:assets.heavy;
@@ -100,7 +100,7 @@ namespace IslandGame {
   void PlayCue(ElementalAttackKind kind,bool impact){if(Sound&&audioSource)audioSource.PlayOneShot(cues[(int)kind],impact?1:.45f);}
   void EnsureGui(){if(localSkin)return;localSkin=Instantiate(GUI.skin);localSkin.font=font;panelTexture=new Texture2D(1,1);panelTexture.SetPixel(0,0,new Color(.025f,.055f,.095f,1));panelTexture.Apply();titleStyle=new GUIStyle(localSkin.label){fontSize=22,fontStyle=FontStyle.Bold};titleStyle.normal.textColor=new Color(.94f,.85f,.65f);bodyStyle=new GUIStyle(localSkin.label){fontSize=15,wordWrap=true};bodyStyle.normal.textColor=new Color(.75f,.87f,.94f);smallStyle=new GUIStyle(bodyStyle){fontSize=13};toggleStyle=new GUIStyle(localSkin.toggle){fontSize=15,fixedHeight=27};toggleStyle.normal.textColor=bodyStyle.normal.textColor;buttonStyle=new GUIStyle(localSkin.button){fontSize=15,fixedHeight=35};}
   void OnGUI(){
-   if(!ready)return;EnsureGui();var oldSkin=GUI.skin;var oldMatrix=GUI.matrix;GUI.skin=localSkin;float scale=Screen.height/900f;GUI.matrix=Matrix4x4.Scale(new Vector3(scale,scale,1));float width=Screen.width/scale;
+   if(!Ready)return;EnsureGui();var oldSkin=GUI.skin;var oldMatrix=GUI.matrix;GUI.skin=localSkin;float scale=Screen.height/900f;GUI.matrix=Matrix4x4.Scale(new Vector3(scale,scale,1));float width=Screen.width/scale;
    GUI.DrawTexture(new Rect(0,0,320,900),panelTexture);GUILayout.BeginArea(new Rect(33,30,264,835));
    GUILayout.Label("ELEMENTAL ATELIER",titleStyle);GUILayout.Label("원신 관찰 · VFX / 충돌 실험 · 휠 확대",smallStyle);GUILayout.Space(14);
    var kind=(ElementalAttackKind)GUILayout.Toolbar((int)selectedKind,new[]{"검기","물방울","번개"},buttonStyle);if(kind!=selectedKind){selectedKind=kind;selectedTier=1;Cast(selectedKind,selectedTier);}
@@ -117,6 +117,6 @@ namespace IslandGame {
    foreach(var t in targets){var p=labCamera.WorldToScreenPoint(t.Body.position+Vector3.up*.8f);if(p.z<0)continue;float x=p.x/scale,y=(Screen.height-p.y)/scale;GUI.Label(new Rect(x-55,y-25,140,50),t.Label+"\n"+(t.Hits>0?"−"+t.Damage.ToString("0")+" / "+t.Hits+" HIT":"READY"),smallStyle);}
    GUI.skin=oldSkin;GUI.matrix=oldMatrix;
   }
-  void OnDestroy(){ready=false;Application.runInBackground=oldBackground;Application.targetFrameRate=oldTargetFrameRate;heroAnimation?.Dispose();foreach(var a in targetAnimations)a.Dispose();DisposeVisuals();if(postProfile){foreach(var c in postProfile.components)if(c)Destroy(c);Destroy(postProfile);}foreach(var m in ownedMaterials)if(m)Destroy(m);foreach(var c in cues)if(c)Destroy(c);if(localSkin)Destroy(localSkin);if(panelTexture)Destroy(panelTexture);IslandFonts.ReleaseGuiFont(font);if(labScene.IsValid()&&labScene.isLoaded)SceneManager.UnloadSceneAsync(labScene);}
+  void OnDestroy(){ready=false;Application.runInBackground=oldBackground;Application.targetFrameRate=oldTargetFrameRate;heroAnimation?.Dispose();foreach(var a in targetAnimations)a.Dispose();DisposeVisuals();if(postProfile){foreach(var c in postProfile.components)if(c)Destroy(c);Destroy(postProfile);}foreach(var m in ownedMaterials)if(m)Destroy(m);foreach(var c in cues)if(c)Destroy(c);if(localSkin)Destroy(localSkin);if(panelTexture)Destroy(panelTexture);if(font&&(font.hideFlags&HideFlags.DontSave)!=0)Destroy(font);if(labScene.IsValid()&&labScene.isLoaded)SceneManager.UnloadSceneAsync(labScene);}
  }
 }

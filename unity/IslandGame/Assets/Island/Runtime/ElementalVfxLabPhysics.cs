@@ -43,7 +43,7 @@ namespace IslandGame {
   public IReadOnlyList<ElementalLabTarget> Targets=>targets;
   public float ProjectileSpeedOverride;
   public void Cast(ElementalAttackKind kind,int tier) {
-   if(!ready)return;
+   if(!Ready)return;
    if(ResetOnCast)ResetTargets();ClearVisuals();foreach(var d in drops){d.Active=false;d.Launched=false;}
    selectedKind=kind;selectedTier=tier;profile=new ElementalAttackProfile(kind,tier);castId++;castStart=clock;
    previousAge=0;accumulator=0;casting=true;released=false;hitOwners.Clear();chainOwners.Clear();hitLog.Clear();TotalHits=WallContacts=GroundContacts=QueryCount=0;
@@ -53,7 +53,7 @@ namespace IslandGame {
   }
   public void ResetTargets(){foreach(var t in targets)t.ResetTarget();Physics.SyncTransforms();}
   public void Advance(float realSeconds) {
-   if(!ready||Paused)return;
+   if(!ready||Paused||!physicsScene.IsValid())return;
    accumulator+=Mathf.Min(realSeconds,.25f)*PlaybackSpeed;
    while(accumulator+1e-6f>=FixedStep){accumulator-=FixedStep;Step(FixedStep);}
   }

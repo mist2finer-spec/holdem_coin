@@ -1,0 +1,14 @@
+{
+  "pass": true,
+  "trigger": "EditorUtility.RequestScriptReload while preview playing",
+  "physicsChecksAfterReload": 60,
+  "physicsPassed": true,
+  "labReady": true,
+  "labCount": 1,
+  "worldObjects": 368,
+  "particles": 16,
+  "targetFrameRate": 60,
+  "oldInstance": 37388,
+  "newInstance": 37388,
+  "note": "Root instance ID is retained by this Editor; recovery is checked through a valid PhysicsScene and 60 actual collision checks, not object identity."
+}

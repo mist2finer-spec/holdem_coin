@@ -6,6 +6,7 @@ Island / holdem_coin — 통합 작업 시작점 (2026-11-11)
 2026-11-11 원신 관찰 기반 효과 실험실
 - Unity 메뉴 Island > Elemental VFX > Open lab. ElementalVfxLab.unity에서 검격 5단계 / 원형 물방울 3종 / 번개 3종을 선택·반복 재생한다. Space 재생, 휠 확대, 속도·일시정지·판정 표시·시점 전환 지원.
 - 별도 PhysicsScene의 20ms 시뮬레이션, 다중 타격·복합 콜라이더 중복 방지·스윕 충돌·벽 반사·지붕/벽 차단·넉백·젖음 연계. 실제 Play Mode 검사 60/60 통과. 65초 자동 재생에서 11종, Transform 368개/ParticleSystem 16개 유지.
+- Play 중 스크립트 재로드 후에는 이 실험실만 자동 재시작한다. 실제 재로드와 이후 물리 60개 검사도 통과했다. 뷰어 목표 60 FPS, 게임 장면에는 재시작 정책을 적용하지 않는다.
 - 현재 Editor는 이 장면을 자동 재생 중이다. 기존 게임 빌드 씬 11개와 실제 RPG 장비 연결은 변경하지 않았다. 이번 실험실의 새 APK는 만들지 않았다.
 - 원신의 실제 공격 녹화와 로컬 프리팹 구조를 참고한 독립 구현이다. 원본 ParticleSystem 곡선·피해/물리 계수를 복원한 것은 아니다.
 - 이 G: exFAT 경로의 대소문자 혼용에 따른 MonoScript 연결 오류는 생성된 컴파일 경로 정보 보정으로 복구했다. Open-Unity.ps1이 scripts/unity/watch-generated-path-case.py를 Editor 수명 동안 실행한다. 실제 폴더는 이동하지 않았다.

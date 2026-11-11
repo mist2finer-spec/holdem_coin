@@ -49,6 +49,8 @@ SphereCast가 시작 시 이미 겹친 Collider를 검출하지 않는 경계는
 
 [실제 자동 재생 결과](evidence/elemental-vfx-20261111/autoplay-validation.json): 65.001초 동안 11종 모두 순환, 12,106 프레임 진행. 장면 Transform 368개와 ParticleSystem 16개가 반복 재생 전후 일정했다. 이는 이 실험 장면의 실행 기록이며 모바일 성능 측정은 아니다. 최종 확인 시 컴파일 실패 false, Unity Console 오류 0개였다. 이전 실행 기록에는 기존 Spine 경고와 수정 전 진단 오류가 남아 있다.
 
+후속 확인에서 Play 중 스크립트 재로드가 PhysicsScene 핸들을 무효화하는 문제가 재현됐다. 실험실이 실제 실행 중이었을 때만 재로드 후 Play를 재시작하며, 복구 전 틱은 유효한 물리 장면인지 검사한다. 번들 폰트는 해제 대상에서 제외하고 임시 폰트만 정리한다. `EditorUtility.RequestScriptReload`로 실제 재로드를 걸고 자동 재개와 물리 60개 검사를 다시 통과했다. [재로드 결과](evidence/elemental-vfx-20261111/reload-validation.json). 현재 뷰어의 목표 프레임은 60이며 종료 시 이전 값을 복구한다.
+
 화면으로 검격의 방향·코어·잔상, 물 구체·꼬리·파문, 번개의 분기·연쇄·착지 파문, 시전 자세와 한글 조작부를 확인했다. 쿼터뷰와 사이드뷰 모두 캡처했다. 카메라 HDR과 layer 29 Volume의 Bloom(threshold 1, intensity .35, scatter .45)을 확인했다. 효과음은 독립 합성 큐와 AudioListener를 연결했으며 청취 평가는 수행하지 않았다.
 
 - [검격 5단](evidence/elemental-vfx-20261111/sword-5.png)

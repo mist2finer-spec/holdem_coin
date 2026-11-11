@@ -57,7 +57,7 @@ namespace IslandGame {
   }
   static void HideBolt(BoltFx b){b.Core.enabled=b.Glow.enabled=false;foreach(var f in b.Forks)if(f)f.enabled=false;}
   void RenderVisuals(){
-   if(!ready)return;float delta=clock-renderedClock;renderedClock=clock;ParticleCount=ActiveDropCount=0;
+   if(!Ready)return;float delta=clock-renderedClock;renderedClock=clock;ParticleCount=ActiveDropCount=0;
    foreach(var s in sparks){if(delta>0)s.System.Simulate(delta,false,false,false);ParticleCount+=s.System.particleCount;}
    foreach(var r in rings){if(!r.Active)continue;float u=(clock-r.Born)/r.Life;if(u>=1){r.Active=false;r.Root.SetActive(false);continue;}
     float radius=r.Radius*(r.Telegraph?1:Mathf.Lerp(.25f,1,Mathf.Sqrt(u)));float width=r.Telegraph?.025f:Mathf.Lerp(.13f,.018f,u);float fade=r.Telegraph?.34f:Mathf.Pow(1-u,1.4f);
