@@ -1,0 +1,504 @@
+{
+  "result": "PASS",
+  "version": "0.1.0-test.20261111.5",
+  "platform": "Android",
+  "frames": 3984,
+  "errors": 0,
+  "errorSamples": [],
+  "networkRequests": 0,
+  "gateMotion": [
+    {
+      "elapsed": 45.7,
+      "progress": 0.0,
+      "drop": 0.0,
+      "active": true,
+      "passable": false
+    },
+    {
+      "elapsed": 45.78,
+      "progress": 0.08888889,
+      "drop": 0.0,
+      "active": true,
+      "passable": false
+    },
+    {
+      "elapsed": 45.84,
+      "progress": 0.155555561,
+      "drop": 0.05797751,
+      "active": true,
+      "passable": false
+    },
+    {
+      "elapsed": 45.94,
+      "progress": 0.266666681,
+      "drop": 0.169167653,
+      "active": true,
+      "passable": false
+    },
+    {
+      "elapsed": 46.04,
+      "progress": 0.377777785,
+      "drop": 0.5255923,
+      "active": true,
+      "passable": false
+    },
+    {
+      "elapsed": 46.1,
+      "progress": 0.444444448,
+      "drop": 0.832827449,
+      "active": true,
+      "passable": false
+    },
+    {
+      "elapsed": 46.2,
+      "progress": 0.5555556,
+      "drop": 1.25667381,
+      "active": true,
+      "passable": false
+    },
+    {
+      "elapsed": 46.32,
+      "progress": 0.6888889,
+      "drop": 1.5157752,
+      "active": true,
+      "passable": false
+    },
+    {
+      "elapsed": 46.38,
+      "progress": 0.75555557,
+      "drop": 2.074408,
+      "active": true,
+      "passable": false
+    },
+    {
+      "elapsed": 46.44,
+      "progress": 0.822222233,
+      "drop": 2.20987868,
+      "active": true,
+      "passable": false
+    },
+    {
+      "elapsed": 46.5,
+      "progress": 0.8888889,
+      "drop": 2.43083239,
+      "active": true,
+      "passable": false
+    },
+    {
+      "elapsed": 46.56,
+      "progress": 0.955555558,
+      "drop": 2.51083684,
+      "active": true,
+      "passable": false
+    },
+    {
+      "elapsed": 46.64,
+      "progress": 1.0,
+      "drop": 2.6,
+      "active": false,
+      "passable": true
+    }
+  ],
+  "samples": [
+    {
+      "label": "side-entry",
+      "valid": true,
+      "frame": 1054,
+      "phase": "boss-approach",
+      "camera": "Side25D",
+      "bossHP": 2000,
+      "maxHP": 2000,
+      "hero": {
+        "x": 2454,
+        "y": 4500,
+        "elevation": -114.77999999999999,
+        "airHeight": 0,
+        "facing": 1,
+        "direction": {
+          "x": 1,
+          "y": 0
+        },
+        "hp": 99440,
+        "maxHP": 100000,
+        "action": "walk",
+        "serial": 0,
+        "motion": null
+      },
+      "natureMaps": 0,
+      "mountScenes": 1,
+      "groundError": 0.0,
+      "entranceClosed": false,
+      "exitClosed": true,
+      "exitDrop": 0.0,
+      "exitProgress": 0,
+      "exitPassable": false,
+      "escapePopup": false
+    },
+    {
+      "label": "boss-reveal",
+      "valid": true,
+      "frame": 1148,
+      "phase": "boss-reveal",
+      "camera": "QuarterView",
+      "bossHP": 2000,
+      "maxHP": 2000,
+      "hero": {
+        "x": 2700,
+        "y": 4500,
+        "elevation": -127.86,
+        "airHeight": 0,
+        "facing": 1,
+        "direction": {
+          "x": 1,
+          "y": 0
+        },
+        "hp": 99440,
+        "maxHP": 100000,
+        "action": "stay1",
+        "serial": 0,
+        "motion": null
+      },
+      "natureMaps": 0,
+      "mountScenes": 1,
+      "groundError": 0.0,
+      "entranceClosed": true,
+      "exitClosed": true,
+      "exitDrop": 0.0,
+      "exitProgress": 0,
+      "exitPassable": false,
+      "escapePopup": false
+    },
+    {
+      "label": "quarter-arena",
+      "valid": true,
+      "frame": 1205,
+      "phase": "boss",
+      "camera": "QuarterView",
+      "bossHP": 2000,
+      "maxHP": 2000,
+      "hero": {
+        "x": 2700,
+        "y": 4500,
+        "elevation": -127.86,
+        "airHeight": 0,
+        "facing": 1,
+        "direction": {
+          "x": 1,
+          "y": 0
+        },
+        "hp": 99440,
+        "maxHP": 100000,
+        "action": "stay1",
+        "serial": 0,
+        "motion": null
+      },
+      "natureMaps": 0,
+      "mountScenes": 1,
+      "groundError": 0.0,
+      "entranceClosed": true,
+      "exitClosed": true,
+      "exitDrop": 0.0,
+      "exitProgress": 0,
+      "exitPassable": false,
+      "escapePopup": false
+    },
+    {
+      "label": "quarter-movement",
+      "valid": true,
+      "frame": 1239,
+      "phase": "boss",
+      "camera": "QuarterView",
+      "bossHP": 2000,
+      "maxHP": 2000,
+      "hero": {
+        "x": 2707.7092062239835,
+        "y": 4754.404897999997,
+        "elevation": -128.48523838696329,
+        "airHeight": 0,
+        "facing": 1,
+        "direction": {
+          "x": -1.3014431499999892E-07,
+          "y": 0.99999999999999156
+        },
+        "hp": 99440,
+        "maxHP": 100000,
+        "action": "run1",
+        "serial": 0,
+        "motion": null
+      },
+      "natureMaps": 0,
+      "mountScenes": 1,
+      "groundError": 0.0,
+      "entranceClosed": true,
+      "exitClosed": true,
+      "exitDrop": 0.0,
+      "exitProgress": 0,
+      "exitPassable": false,
+      "escapePopup": false
+    },
+    {
+      "label": "lightning-in-grass",
+      "valid": true,
+      "frame": 1532,
+      "phase": "boss",
+      "camera": "QuarterView",
+      "bossHP": 1640,
+      "maxHP": 2000,
+      "hero": {
+        "x": 3267.236833414966,
+        "y": 4608.6793963204982,
+        "elevation": -128,
+        "airHeight": 0,
+        "facing": 1,
+        "direction": {
+          "x": 0.96771783051136639,
+          "y": -0.25203610953665823
+        },
+        "hp": 99440,
+        "maxHP": 100000,
+        "action": "skill2",
+        "serial": 6,
+        "motion": {
+          "kind": "skill",
+          "slot": 3,
+          "skillId": "storm-call",
+          "variant": 1,
+          "linkedSupports": 0,
+          "target": {
+            "x": 3441.6189296272337,
+            "y": 4563.26266045343
+          },
+          "radius": 240,
+          "damage": 180,
+          "attackId": 7,
+          "definitionId": "storm-call",
+          "start": 8.8199999999999,
+          "duration": 0.94,
+          "hitAt": 0.48,
+          "from": {
+            "x": 3267.236833414966,
+            "y": 4608.6793963204982
+          },
+          "to": {
+            "x": 3267.236833414966,
+            "y": 4608.6793963204982
+          },
+          "done": 1
+        }
+      },
+      "natureMaps": 0,
+      "mountScenes": 1,
+      "groundError": 0.0,
+      "entranceClosed": true,
+      "exitClosed": true,
+      "exitDrop": 0.0,
+      "exitProgress": 0,
+      "exitPassable": false,
+      "escapePopup": false
+    },
+    {
+      "label": "exit-lowering-start",
+      "valid": true,
+      "frame": 3532,
+      "phase": "village-exit",
+      "camera": "QuarterView",
+      "bossHP": 0,
+      "maxHP": 2000,
+      "hero": {
+        "x": 2797.9568117864651,
+        "y": 4730.9004686262942,
+        "elevation": -128.00227287703845,
+        "airHeight": 0,
+        "facing": 1,
+        "direction": {
+          "x": 0.96771783051136184,
+          "y": -0.25203610953667582
+        },
+        "hp": 59440,
+        "maxHP": 100000,
+        "action": "stay1",
+        "serial": 59,
+        "motion": null
+      },
+      "natureMaps": 0,
+      "mountScenes": 1,
+      "groundError": 0.0,
+      "entranceClosed": true,
+      "exitClosed": true,
+      "exitDrop": 0.05797751,
+      "exitProgress": 0.15555555555557987,
+      "exitPassable": false,
+      "escapePopup": false
+    },
+    {
+      "label": "exit-lowering-middle",
+      "valid": true,
+      "frame": 3543,
+      "phase": "village-exit",
+      "camera": "QuarterView",
+      "bossHP": 0,
+      "maxHP": 2000,
+      "hero": {
+        "x": 2797.9568117864651,
+        "y": 4730.9004686262942,
+        "elevation": -128.00227287703845,
+        "airHeight": 0,
+        "facing": 1,
+        "direction": {
+          "x": 0.96771783051136184,
+          "y": -0.25203610953667582
+        },
+        "hp": 59440,
+        "maxHP": 100000,
+        "action": "stay1",
+        "serial": 59,
+        "motion": null
+      },
+      "natureMaps": 0,
+      "mountScenes": 1,
+      "groundError": 0.0,
+      "entranceClosed": true,
+      "exitClosed": true,
+      "exitDrop": 1.25667381,
+      "exitProgress": 0.5555555555556424,
+      "exitPassable": false,
+      "escapePopup": false
+    },
+    {
+      "label": "boss-down-exit-open",
+      "valid": true,
+      "frame": 3562,
+      "phase": "village-exit",
+      "camera": "QuarterView",
+      "bossHP": 0,
+      "maxHP": 2000,
+      "hero": {
+        "x": 2815.9006828840597,
+        "y": 4745.4918643758592,
+        "elevation": -128,
+        "airHeight": 0,
+        "facing": 1,
+        "direction": {
+          "x": 0.77585999178969411,
+          "y": 0.630905122138104
+        },
+        "hp": 59440,
+        "maxHP": 100000,
+        "action": "run1",
+        "serial": 59,
+        "motion": null
+      },
+      "natureMaps": 0,
+      "mountScenes": 1,
+      "groundError": 0.0,
+      "entranceClosed": true,
+      "exitClosed": false,
+      "exitDrop": 2.6,
+      "exitProgress": 1,
+      "exitPassable": true,
+      "escapePopup": false
+    },
+    {
+      "label": "run-to-village",
+      "valid": true,
+      "frame": 3622,
+      "phase": "village-exit",
+      "camera": "QuarterView",
+      "bossHP": 0,
+      "maxHP": 2000,
+      "hero": {
+        "x": 2833.8445539816544,
+        "y": 4760.0832601254242,
+        "elevation": -128.01498675994736,
+        "airHeight": 0,
+        "facing": 1,
+        "direction": {
+          "x": 0.77585999178969378,
+          "y": 0.63090512213810435
+        },
+        "hp": 59440,
+        "maxHP": 100000,
+        "action": "run1",
+        "serial": 59,
+        "motion": null
+      },
+      "natureMaps": 0,
+      "mountScenes": 1,
+      "groundError": 0.0,
+      "entranceClosed": true,
+      "exitClosed": false,
+      "exitDrop": 2.6,
+      "exitProgress": 1,
+      "exitPassable": true,
+      "escapePopup": false
+    },
+    {
+      "label": "outside-arena",
+      "valid": true,
+      "frame": 3813,
+      "phase": "village-exit",
+      "camera": "QuarterView",
+      "bossHP": 0,
+      "maxHP": 2000,
+      "hero": {
+        "x": 3834.9876073089054,
+        "y": 5579.70583447045,
+        "elevation": -145.8069494785403,
+        "airHeight": 0,
+        "facing": 1,
+        "direction": {
+          "x": 0.29413566368987731,
+          "y": 0.9557636796539799
+        },
+        "hp": 59440,
+        "maxHP": 100000,
+        "action": "run1",
+        "serial": 59,
+        "motion": null
+      },
+      "natureMaps": 0,
+      "mountScenes": 1,
+      "groundError": 0.0,
+      "entranceClosed": true,
+      "exitClosed": false,
+      "exitDrop": 2.6,
+      "exitProgress": 1,
+      "exitPassable": true,
+      "escapePopup": false
+    },
+    {
+      "label": "village-arrived",
+      "valid": true,
+      "frame": 3984,
+      "phase": "complete",
+      "camera": "QuarterView",
+      "bossHP": 0,
+      "maxHP": 2000,
+      "hero": {
+        "x": 4121.67217357816,
+        "y": 6547.9062448937839,
+        "elevation": -280.94675019165,
+        "airHeight": 0,
+        "facing": 1,
+        "direction": {
+          "x": 0.25571762257093944,
+          "y": 0.96675151797484482
+        },
+        "hp": 59440,
+        "maxHP": 100000,
+        "action": "stay1",
+        "serial": 59,
+        "motion": null
+      },
+      "natureMaps": 0,
+      "mountScenes": 1,
+      "groundError": 0.0,
+      "entranceClosed": true,
+      "exitClosed": false,
+      "exitDrop": 2.6,
+      "exitProgress": 1,
+      "exitPassable": true,
+      "escapePopup": true
+    }
+  ]
+}

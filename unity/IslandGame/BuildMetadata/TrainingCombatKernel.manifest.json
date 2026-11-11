@@ -1,7 +1,7 @@
 {
   "protocol": "island-training-local-v1",
-  "sha256": "d604bbabbcc9e9c25a7357bbc78d39846a538a4eb78644655722823687c2366f",
-  "bytes": 541210,
+  "sha256": "9d6aee222929d3fabc4db0a672ee18bd2850e84ed20fcd3b57d9dc8649f54e4a",
+  "bytes": 564106,
   "sourceFiles": [
     "src/lib/generated/mount-sunday-zones.json",
     "src/lib/generated/unity-boss-contact.json",
