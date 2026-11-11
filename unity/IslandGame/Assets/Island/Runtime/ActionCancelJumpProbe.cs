@@ -57,7 +57,7 @@ namespace IslandGame {
    yield return new WaitForSecondsRealtime(1.3f);
   }
   void Shot(string name){ScreenCapture.CaptureScreenshot(Application.platform==RuntimePlatform.Android?"action-review/"+name+".png":Path.Combine(output,name+".png"));}
-  void Save(string result){File.WriteAllText(Path.Combine(output,"action-report.json"),new JObject{{"result",result},{"version",Application.version},{"platform",Application.platform.ToString()},{"frames",frames},{"errors",errors},{"errorSamples",errorsLog},{"networkRequests",session?.NetworkRequestCount??0},{"samples",cases}}.ToString());}
+  void Save(string result){File.WriteAllText(Path.Combine(output,"action-report.json"),new JObject{{"result",result},{"version",Application.version},{"platform",Application.platform.ToString()},{"frames",frames},{"errors",errors},{"errorSamples",errorsLog},{"audioEvents",RpgAudio.Current?RpgAudio.Current.SkillEvents:0},{"audioLastSkill",RpgAudio.Current?RpgAudio.Current.LastSkill:null},{"networkRequests",session?.NetworkRequestCount??0},{"samples",cases}}.ToString());}
   void OnDestroy(){Application.logMessageReceived-=Log;}
  }
 }

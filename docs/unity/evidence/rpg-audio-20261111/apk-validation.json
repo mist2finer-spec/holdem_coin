@@ -1,0 +1,12 @@
+{
+  "apk": "G:\\holdem_coin-workspace\\island\\builds\\IslandGame-RpgAudio-20261111.apk",
+  "bytes": 182730884,
+  "sha256": "4d493d067484e7781760df1e7edf06c6181f93c7e11ddc417f6e5ec50d8fd32a",
+  "architectures": [
+    "arm64-v8a"
+  ],
+  "zip": "PASS",
+  "signature": "PASS",
+  "alignment16K": "PASS",
+  "manifest": "package: name='com.mist2finer.islandgame.dev' versionCode='2026111107' versionName='0.1.0-test.20261111.7' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'"
+}

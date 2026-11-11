@@ -45,6 +45,7 @@ namespace IslandGame {
    if(kind==1)for(int i=0;i<13;i++){float u=i/12f;b.bolt.SetPosition(i,new Vector3(facing*(1-u)*.8f,(1-u)*3.6f,0));}
   }
   public void Update(JObject state,float time,Transform hero,Vector3 bladeBase,Vector3 bladeTip){
+   RpgAudio.Current?.Present(state,time);
    float delta=previous<0?0:Mathf.Clamp(time-previous,0,.1f);int nextRoom=(int?)state["room"]??0;string id=(string)state["id"];
    if(time<previous||room!=nextRoom||session!=id){lightning.Reset();foreach(var b in pool){b.active=false;b.root.SetActive(false);}lastAttack=lastImpact=0;room=nextRoom;session=id;}previous=time;
    var h=state["hero"];var motion=h?["motion"] as JObject;int attack=(int?)motion?["attackId"]??0;string kind=(string)motion?["kind"];

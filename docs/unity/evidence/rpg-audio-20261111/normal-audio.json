@@ -1,0 +1,59 @@
+{
+  "success": true,
+  "command": "command",
+  "data": {
+    "command": "script eval_file",
+    "parameters": {
+      "file": "G:\\holdem_coin-workspace\\island\\maintenance\\rpg-audio-20261111\\inspect.cs"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": {
+        "frame": 130,
+        "events": 0,
+        "last": null,
+        "sources": [
+          {
+            "clip": "lobby_jazz",
+            "playing": false,
+            "volume": 0.24
+          },
+          {
+            "clip": null,
+            "playing": false,
+            "volume": 0.65
+          },
+          {
+            "clip": null,
+            "playing": false,
+            "volume": 0.65
+          },
+          {
+            "clip": "Stage_1_bgm",
+            "playing": true,
+            "volume": 0.22
+          },
+          {
+            "clip": null,
+            "playing": false,
+            "volume": 0.65
+          },
+          {
+            "clip": null,
+            "playing": false,
+            "volume": 0.45
+          }
+        ]
+      }
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7801,
+      "projectPath": "G:\\holdem_coin-workspace\\Island\\branches\\current-10zone\\unity\\IslandGame"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

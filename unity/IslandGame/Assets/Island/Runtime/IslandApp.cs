@@ -7,7 +7,7 @@ namespace IslandGame {
  // Native Unity presentation. Authoritative rules, AI, settlement and growth stay on the existing backend.
  public sealed partial class IslandApp : MonoBehaviour {
   public string server="https://holdem-coin-tavern.onrender.com",soloServer="http://127.0.0.1:8081";
-  PollingSocket socket;RpgSession rpg;NativeBattle battle;JObject table,account,tournament;string page="lobby",notice="",playerName="Player",custom="",growthAction="train-attack";IslandAudio sound;string lastDeal="";bool online,campaign;double multiplier=2;float nextStatus;
+  PollingSocket socket;RpgSession rpg;NativeBattle battle;JObject table,account,tournament;string page="lobby",notice="",playerName="Player",custom="",growthAction="train-attack";IslandAudio sound;RpgAudio rpgAudio;string lastDeal="";bool online,campaign;double multiplier=2;float nextStatus;
   readonly Dictionary<string,Texture2D> textures=new Dictionary<string,Texture2D>();
   static readonly Vector2[] six={new Vector2(.5f,.83f),new Vector2(.88f,.61f),new Vector2(.88f,.36f),new Vector2(.5f,.12f),new Vector2(.12f,.36f),new Vector2(.12f,.61f)};
   static readonly Vector2[] eight={new Vector2(.5f,.84f),new Vector2(.89f,.66f),new Vector2(.89f,.46f),new Vector2(.89f,.28f),new Vector2(.5f,.1f),new Vector2(.11f,.28f),new Vector2(.11f,.46f),new Vector2(.11f,.66f)};
@@ -21,10 +21,10 @@ namespace IslandGame {
   void Join(){socket.Emit("JOIN_ROOM",new JObject{{"name",playerName},{"tableSize",page=="poker6"?6:8},{"tournament",page=="pokerTournament"}});}
   void Lobby(){sound.EndTable();page="lobby";rpg.Close();battle.Clear();table=null;Connect(server);}
   void Poker(string mode){sound.BeginTable();page=mode;table=null;Connect(mode=="pokerSolo"?soloServer:server);}
-  void Update(){UpdateRpgInput();if(page=="lobby"&&online&&Time.unscaledTime>=nextStatus){nextStatus=Time.unscaledTime+2;socket.Emit("LOBBY_STATUS",null,a=>account=a as JObject);socket.Emit("GET_TOURNAMENT_STATUS",null,a=>tournament=a as JObject);}}
+  void Update(){if(!rpgAudio){rpgAudio=gameObject.AddComponent<RpgAudio>();rpgAudio.Initialize(this);}UpdateRpgInput();if(page=="lobby"&&online&&Time.unscaledTime>=nextStatus){nextStatus=Time.unscaledTime+2;socket.Emit("LOBBY_STATUS",null,a=>account=a as JObject);socket.Emit("GET_TOURNAMENT_STATUS",null,a=>tournament=a as JObject);}}
   Texture2D Texture(string path){Texture2D t;if(!textures.TryGetValue(path,out t)){t=Resources.Load<Texture2D>("WebAssets/"+path);textures[path]=t;}return t;}
   void Image(string path,Rect rect){var t=Texture(path);if(t)GUI.DrawTexture(rect,t,ScaleMode.ScaleToFit,true);}
-  bool Button(string text,float x,float y,float w,float h,Action action,bool enabled=true){GUI.enabled=enabled;bool pressed=GUI.Button(new Rect(x,y,w,h),text);GUI.enabled=true;if(pressed){sound?.Effect("button_press");action();}return pressed;}
+  bool Button(string text,float x,float y,float w,float h,Action action,bool enabled=true){GUI.enabled=enabled;bool pressed=GUI.Button(new Rect(x,y,w,h),text);GUI.enabled=true;if(pressed){if(page=="rpg")rpgAudio?.Click();else sound?.Effect("button_press");action();}return pressed;}
   static long N(JToken t,string key){return (t as JObject)?[key]?.Value<long?>()??0;}static bool B(JToken t,string key){return (t as JObject)?[key]?.Value<bool?>()??false;}
   void Text(string text,float x,float y,float w,float h=25){GUI.Label(new Rect(x,y,w,h),text);}
   public int LegacyGuiRenderPasses{get;private set;}
