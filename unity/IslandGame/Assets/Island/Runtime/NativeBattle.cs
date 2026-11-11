@@ -25,7 +25,7 @@ namespace IslandGame {
   public Camera BattleCamera=>view;
   public bool OverridePresentationView;public ViewMode PresentationView=ViewMode.Side25D;
   // Encounter policy is fixed: normal areas are side-on, only the boss arena is quarter view.
-  public static ViewMode EncounterView(JObject state)=> (bool?)state?["unityBossMode"]==true&&(bool?)state?["mountSunday"]!=true&&(int?)state?["room"]==1&&(bool?)state?["bossVisible"]==true?ViewMode.QuarterView:ViewMode.Side25D;
+  public static ViewMode EncounterView(JObject state)=> (bool?)state?["zoneTenArena"]==true?((string)state["bossIntroStage"]=="approach"?ViewMode.Side25D:ViewMode.QuarterView):(bool?)state?["unityBossMode"]==true&&(bool?)state?["mountSunday"]!=true&&(int?)state?["room"]==1&&(bool?)state?["bossVisible"]==true?ViewMode.QuarterView:ViewMode.Side25D;
   public void SetPresentationView(ViewMode? mode){OverridePresentationView=false;PresentationView=EncounterView(session?.State);}
   public ViewPresentationCoordinator ViewPresentation=>threeD?threeD.Presentation:null;
   public void ConfigureViewport(float aspect){
@@ -123,7 +123,7 @@ namespace IslandGame {
    string weapon=campaign?state.Value<string>("weapon")??"axe":state["progress"]?.Value<string>("weaponType")??"axe",path=index["heroes"]?[weapon]?.Value<string>()??"characters/hong/native-axe/hong";
    var motion=(campaign?state["motion"]:hero["motion"]) as JObject;float start=motion?.Value<float?>(campaign?"startedAt":"start")??elapsed,duration=motion?.Value<float?>("duration")??0;
    if(Uses3D){
-    if((bool?)state["mountSunday"]==true){int room=(int)state["room"];MountZoneStream.Ensure().Bind(view,threeD.HeroTarget,room);if(mountRoom!=room){mountRoom=room;cameraPoseReady=false;CameraRig.ResetPose();}view.farClipPlane=650;}
+    if((bool?)state["mountSunday"]==true||(bool?)state["zoneTenArena"]==true){int room=(bool?)state["zoneTenArena"]==true?9:(int)state["room"];MountZoneStream.Ensure().Bind(view,threeD.HeroTarget,room);if(room==9)MountZoneStream.Current.PresentArena(state);if(mountRoom!=room){mountRoom=room;cameraPoseReady=false;CameraRig.ResetPose();}view.farClipPlane=650;}
     float depth=NativeCombatPresentation.N(hero["y"])-NativeCombatPresentation.N(session.Map?["laneY"],192);
     bool unity=(bool?)state["unityBossMode"]==true;
     if(unity)e=NativeCombatPresentation.UnityGroundHeight(session.Map,x,depth/100);
@@ -137,8 +137,9 @@ namespace IslandGame {
      CameraRig.PrepareTransition(frameAdvance);threeD.PreparePresentation(state,hero,VisualTime,CameraRig);
      var warning=state["warning"] as JObject;CameraRig.WarningActive=warning!=null;
      if(warning!=null){float wx=NativeCombatPresentation.N(warning["x"]),wz=NativeCombatPresentation.N(warning["z"])/100,wr=NativeCombatPresentation.N(warning["radius"])/100;CameraRig.WarningBounds=new Bounds(new Vector3(wx/100,NativeCombatPresentation.UnityGroundHeight(session.Map,wx,wz)/100+.1f,wz),new Vector3(wr*2,.5f,wr*2));}
-     int chamber=(int)NativeCombatPresentation.N(state["room"]);var chamberData=session.Map?["rooms"]?[chamber];bool combat=(string)state["phase"]=="combat"||(string)state["phase"]=="boss";
-     CameraRig.SetChamberBounds(NativeCombatPresentation.N(chamberData?["x1"])*.48f,(NativeCombatPresentation.N(chamberData?["x2"])+1)*.48f,combat);
+     int chamber=(int)NativeCombatPresentation.N(state["room"]);var chambers=session.Map?["rooms"] as JArray;var chamberData=chambers!=null&&chamber>=0&&chamber<chambers.Count?chambers[chamber]:null;bool combat=(string)state["phase"]=="combat"||(string)state["phase"]=="boss";
+     var arena=session.Map?["arena"];float center=NativeCombatPresentation.N(arena?["center"]?["x"])/100,radius=NativeCombatPresentation.N(arena?["radius"])/100;
+     CameraRig.SetChamberBounds(arena!=null?center-radius:NativeCombatPresentation.N(chamberData?["x1"])*.48f,arena!=null?center+radius:(NativeCombatPresentation.N(chamberData?["x2"])+1)*.48f,combat&&(arena!=null||chamberData!=null));
      float speed=cameraPoseReady?(x-previousCameraHeroX)/100/Mathf.Max(.001f,Time.unscaledDeltaTime):0;previousCameraHeroX=x;cameraPoseReady=true;
      CameraRig.SetPose(new Vector3(x/100,(e+air)/100,threeD.HeroDepth),NativeCombatPresentation.N(hero["facing"],1),e/100,Mathf.Clamp(speed,-20,20));
     }

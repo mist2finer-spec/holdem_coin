@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "command": "command",
+  "data": {
+    "command": "script eval_file",
+    "parameters": {
+      "file": "G:\\holdem_coin-workspace\\island\\maintenance\\zone10-grass-arena-20261111\\show-arena.cs"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": "{\"scene\":\"Assets/Island/MountRuntime/Scenes/MountZone10.unity\",\"playing\":false,\"previewOnly\":true,\"renderers\":404,\"missingOrUnsupported\":[],\"materials\":[\"Ground\",\"MS_Architecture\",\"MS_Vegetation\",\"MS_Rock\",\"Stages_MDSRock11_Vo\"],\"runInBackground\":false}"
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7801,
+      "projectPath": "G:\\holdem_coin-workspace\\Island\\branches\\current-10zone\\unity\\IslandGame"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

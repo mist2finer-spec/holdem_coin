@@ -1,7 +1,7 @@
-# 최상위 현재 작업 기준 (2026-11-11 보스 구역 반영)
+# 최상위 현재 작업 기준 (2026-11-11 원형 초원 전장 반영)
 
 - **일반 1~9구역 = 사이드뷰(Side25D). 10구역은 보스 지역이며 사이드뷰 입장·전진 후 보스 등장과 함께 쿼터뷰(QuarterView)로 전환한다.**
-- 현재 메인 게임 기준은 새 10구역 맵이다. 초기 low-poly 일반 맵으로 되돌리지 않는다. 현재 사용하는 보스 맵과 홀덤 게임은 보존한다.
+- 현재 10구역은 실제 `MountZone10` 원형 초원 전장이다. 입구 길 이후 잔디밭과 바위 경계에서 2000 HP 보스와 싸운다. 이전 Nature/low-poly 보스 맵으로 연결하지 않는다. 보스 처치 후 출구가 열리고 마을 문 안에 도착해야 미궁 탈출한다. 별도 보스 연습 에셋과 홀덤은 보존한다.
 - 실제 Unity: G:/holdem_coin-workspace/island/branches/current-10zone/unity/IslandGame
 - 활성 Git 브랜치: codex/genshin-environment-20261110; 공통 Git: G:/holdem_coin-workspace/island/branches/main/.git
 - 작업·임시 파일·빌드·기록은 이 Island 폴더 내부에 둔다. 옛 G:/new_project 경로와 C: 호환 경로를 다시 만들지 않는다.

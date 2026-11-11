@@ -1,0 +1,6 @@
+{
+  "android": "9",
+  "model": "SM-S908E",
+  "install": "Performing Streamed Install\r\nSuccess",
+  "launch": "Starting: Intent { cmp=com.mist2finer.islandgame.dev/com.unity3d.player.UnityPlayerGameActivity (has extras) }"
+}

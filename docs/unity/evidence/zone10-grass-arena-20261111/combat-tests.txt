@@ -1,0 +1,38 @@
+✔ swept projectile detects initial overlap and a thin collider at 80m/s (1.4548ms)
+✔ alternating sword stages hit at the same angular phase as their visible crescent (0.3828ms)
+✔ water variant 1: real swept hits in multiple directions, dedup, gravity and bounded lifetime (2.2568ms)
+✔ water variant 2: real swept hits in multiple directions, dedup, gravity and bounded lifetime (1.2194ms)
+✔ water variant 3: real swept hits in multiple directions, dedup, gravity and bounded lifetime (2.6386ms)
+✔ water wall interception reflects once and shields a target behind the wall (1.859ms)
+✔ lightning variant 1: real damage once per cast, no tier radius increase (0.6849ms)
+✔ lightning variant 2: real damage once per cast, no tier radius increase (0.3917ms)
+✔ lightning variant 3: real damage once per cast, no tier radius increase (0.2865ms)
+✔ lightning can be dodged after locking and a roof/trunk blocks the locked strike (0.4304ms)
+✔ wet status increases lightning by 25% and expires; obstacle LOS blocks splash damage (0.3919ms)
+✔ fixed tick projectile results do not depend on 30 vs 100 display FPS (3.1929ms)
+✔ zone ten waits for environment then walks 3m side-on, reveals once, blends to quarter and pursues walking (6.167ms)
+✔ six existing gems drive all water/lightning variants, removal gates casts and five sword stages wrap without growth (32.5681ms)
+✔ tenth-zone victory is terminal: no extra boss map or eleventh zone after escape (60.8172ms)
+✔ lightning tier uses effective connected supports, not socket count or unconnected inventory (9.7715ms)
+✔ lightning 1: support presentation is captured per strike without expanding damage (2.5825ms)
+✔ lightning 2: support presentation is captured per strike without expanding damage (0.5399ms)
+✔ lightning 3: support presentation is captured per strike without expanding damage (0.5543ms)
+✔ boss handoff preserves linked supports; changing gear mid-cast affects the next cast (7.43ms)
+✔ shipped local kernel passes compiled support metadata and removal through actual skill commands (98.9317ms)
+{"ticks":12039,"maps":10,"kills":270,"status":"won","contacts":["hero-attack1","hero-attack2","hero-attack3"]}
+✔ training bundle uses original engines through nine normal zones and the tenth boss zone, with no network globals (1710.2065ms)
+✔ readiness, pause, commands and profile updates retain local rules; snapshots omit unchanged map (59.2252ms)
+✔ standalone boss mode uses the same engine and rejects unknown modes (227.755ms)
+✔ mount API retains secure session, exact retries, restart invalidation and input validation (110.0182ms)
+✔ Unity boss cookie is set at entry and not rewritten for every combat tick (85.2699ms)
+✔ zone ten uses its authored grass map, 2000 HP and unchanged side approach (4.3574ms)
+✔ walking, rolling, sliding and jumping cannot escape the circular combat boundary (182.2274ms)
+✔ boss defeat opens the village exit without completing; arrival alone completes the run (121.6876ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 29
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2655.5598

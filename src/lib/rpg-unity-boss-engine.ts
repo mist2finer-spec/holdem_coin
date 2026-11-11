@@ -18,6 +18,7 @@ const normalized=(x:number,y:number)=>{const n=Math.hypot(x,y);return n>1e-8?{x:
 import {type TraversalProfile,jumpDuration,jumpHeight,actionDistance} from './rpg-traversal-profile';
 export class UnityBossEngine {
  private elemental=new ElementalCombat();
+ public bossDefeated=false;private defeatedAt=-1;private exitWaypoint=0;
  public introStage:'none'|'approach'|'reveal'='none';private introAt=0;private introStartX=0;
  public traversal?:TraversalProfile;
  readonly rules:UnityRules;readonly map:any;elapsed=0;room=0;kills=0;status='playing';phase='combat';paused=false;auto=true;
@@ -28,21 +29,22 @@ export class UnityBossEngine {
  resources={mana:1000,maxMana:1000,potions:{health:3,mana:3},potionCooldowns:{health:0,mana:0}};
  private bossIdleUntil=0;private bossChaseUntil=0;private attackSerial=0;private heroComboStep=0;private previousHero={x:0,y:0,elevation:0,airHeight:0};
  private dodgeAt=0;private jumpAt=0;private attackAt=0;private bossAt=0;private bossTurn=0;private effectSerial=0;private rollRecoveryUntil=0;
- constructor(seed=111,rules:Partial<UnityRules>={}){
+ constructor(seed=111,rules:Partial<UnityRules>={},public readonly arena?:any){
   this.rules={...UNITY_BOSS_RULES,...rules,comboHitTimes:[...(rules.comboHitTimes??UNITY_BOSS_RULES.comboHitTimes)]};this.hero.hp=this.hero.maxHP=this.rules.playerHP;this.boss.hp=this.boss.maxHP=this.rules.bossHP;
-  const width=185,height=216;this.map={seed,width,height,unityBossMode:true,environment:'nature-authored-v2',laneY:LANE_Y,
+  const width=185,height=216;this.map=arena?{seed,unityBossMode:true,zoneTenArena:true,environment:arena.revision,laneY:LANE_Y,zone:9,terrain:arena.terrain,obstacles:arena.obstacles,arena,rooms:[],tiles:[],gates:[],width:0,height:0}:{seed,width,height,unityBossMode:true,environment:'nature-authored-v2',laneY:LANE_Y,
    rooms:[{id:0,x1:22,x2:44,y1:103,y2:105,elevation:0,kind:'slime',branch:'main'},{id:1,x1:55,x2:184,y1:25,y2:215,elevation:0,kind:'boss',branch:'main'}],
    tiles:Array(width*height).fill(0),gates:[],bridge:natureMap.bridge,terrain:{originX:natureMap.originX,originZ:natureMap.originZ,step:natureMap.step,width:natureMap.width,height:natureMap.height,heights:natureMap.heights},obstacles:natureMap.obstacles};
   for(let i=0;i<this.rules.slimeCount;i++)this.slimes.push({id:i+1,species:1003,room:0,x:1500+i*80,y:LANE_Y,elevation:0,hp:this.rules.slimeHP,maxHP:this.rules.slimeHP,radius:16,state:'walk',facing:-1,nextAttack:0});
+  if(arena){this.boss.x=arena.boss.x;this.boss.y=arena.boss.y;this.hero.x=arena.entry.x;this.hero.y=arena.entry.y;}
   this.hero.elevation=this.groundAt(this.hero.x,this.hero.y);this.boss.elevation=this.groundAt(this.boss.x,this.boss.y);
 
  }
- enterArena(staged=false){this.slimes=[];this.room=1;this.phase='boss';this.hero.x=this.boss.x-240;this.hero.y=this.boss.y;this.hero.elevation=this.groundAt(this.hero.x,this.hero.y);this.bossIdleUntil=this.elapsed+.9;this.bossChaseUntil=this.elapsed+2.25;this.bossAt=this.elapsed+2.5;if(staged){this.introStage='approach';this.introAt=this.elapsed;this.hero.x=this.boss.x-600;this.introStartX=this.hero.x;this.hero.elevation=this.groundAt(this.hero.x,this.hero.y);this.phase='boss-approach';}}
+ enterArena(staged=false){this.slimes=[];this.room=1;this.phase='boss';this.hero.x=this.boss.x-240;this.hero.y=this.boss.y;this.hero.elevation=this.groundAt(this.hero.x,this.hero.y);this.bossIdleUntil=this.elapsed+.9;this.bossChaseUntil=this.elapsed+2.25;this.bossAt=this.elapsed+2.5;if(staged){this.introStage='approach';this.introAt=this.elapsed;this.hero.x=this.arena?this.arena.entry.x:this.boss.x-600;this.hero.y=this.arena?this.arena.entry.y:this.boss.y;this.introStartX=this.hero.x;this.hero.elevation=this.groundAt(this.hero.x,this.hero.y);this.phase='boss-approach';}}
  private effect(kind:string,x:number,value?:number,extra:any={}){this.fx.push({id:++this.effectSerial,kind,x,room:this.room,born:this.elapsed,value,...extra});if(this.fx.length>48)this.fx.splice(0,this.fx.length-48);}
  get slimeCleared(){return this.slimes.every(m=>m.hp<=0);}
- private bounds(){return this.room===1?{minX:ARENA_X,maxX:8700,minY:1200,maxY:10300}:this.slimeCleared?{minX:1100,maxX:8700,minY:LANE_Y,maxY:LANE_Y}:{minX:1100,maxX:2140,minY:LANE_Y,maxY:LANE_Y};}
- private blocked(x:number,y:number,radius=18){return this.map.obstacles.some((o:any)=>Math.hypot(o.x-x,o.y-y)<o.radius+radius);}
- private heroBlocked(x:number,y:number){const kind=this.hero.motion?.kind;if(kind==='dodge')return this.traversal?this.blocked(x,y):false;const feet=this.groundAt(x,y)+this.hero.airHeight;if(kind==='jump')return this.map.obstacles.some((o:any)=>blocksAt(x,y,feet,o,(a,b)=>this.groundAt(a,b)))||this.room===1&&this.boss.hp>0&&blocksAt(x,y,feet,{...this.boss,bodyHeight:650},(a,b)=>this.groundAt(a,b));return this.blocked(x,y)||this.room===1&&this.boss.hp>0&&Math.hypot(x-this.boss.x,y-this.boss.y)<BOSS_CONTACT.bodyRadius+BOSS_CONTACT.heroRadius;}
+ private bounds(){if(this.arena)return {minX:400,maxX:4800,minY:3800,maxY:7200};return this.room===1?{minX:ARENA_X,maxX:8700,minY:1200,maxY:10300}:this.slimeCleared?{minX:1100,maxX:8700,minY:LANE_Y,maxY:LANE_Y}:{minX:1100,maxX:2140,minY:LANE_Y,maxY:LANE_Y};}
+ private blocked(x:number,y:number,radius=18){return this.outsideArena(x,y,radius)||this.map.obstacles.some((o:any)=>Math.hypot(o.x-x,o.y-y)<o.radius+radius);}
+ private heroBlocked(x:number,y:number){if(this.outsideArena(x,y,20))return true;const kind=this.hero.motion?.kind;if(kind==='dodge')return this.traversal?this.blocked(x,y):false;const feet=this.groundAt(x,y)+this.hero.airHeight;if(kind==='jump')return this.map.obstacles.some((o:any)=>blocksAt(x,y,feet,o,(a,b)=>this.groundAt(a,b)))||this.room===1&&this.boss.hp>0&&blocksAt(x,y,feet,{...this.boss,bodyHeight:650},(a,b)=>this.groundAt(a,b));return this.blocked(x,y)||this.room===1&&this.boss.hp>0&&Math.hypot(x-this.boss.x,y-this.boss.y)<BOSS_CONTACT.bodyRadius+BOSS_CONTACT.heroRadius;}
  private separateBody(){
   if(this.room!==1||this.boss.hp<=0||this.hero.motion?.kind==='dodge')return;
   const dx=this.hero.x-this.boss.x,dy=this.hero.y-this.boss.y,r=BOSS_CONTACT.bodyRadius+BOSS_CONTACT.heroRadius,d=Math.hypot(dx,dy);if(d>=r)return;
@@ -62,12 +64,13 @@ export class UnityBossEngine {
   // Small collision substeps keep a dash from tunnelling through authored tree trunks.
   const steps=Math.max(1,Math.ceil(Math.hypot(x-px,y-py)/8));
   for(let i=1;i<=steps;i++){const nx=px+(x-px)*i/steps,ny=py+(y-py)*i/steps;if(!this.heroBlocked(nx,ny)){this.hero.x=nx;this.hero.y=ny;}else if(Math.abs(nx-this.hero.x)>.001&&!this.heroBlocked(nx,this.hero.y))this.hero.x=nx;else if(Math.abs(ny-this.hero.y)>.001&&!this.heroBlocked(this.hero.x,ny))this.hero.y=ny;else break;}
+  if(this.arena)return;
   if(this.hero.x>=ARENA_X&&this.slimeCleared){if(this.room!==1){this.bossIdleUntil=this.elapsed+.9;this.bossChaseUntil=this.bossIdleUntil+1.35;this.bossAt=this.bossChaseUntil+.25;}this.room=1;this.phase='boss';}else if(this.slimeCleared)this.phase='bridge';
  }
  private inputDirection(input:UnityInput){let x=clamp(input.x,-1,1),y=this.room===1?clamp(input.y,-1,1):0;const length=Math.hypot(x,y);if(length>1){x/=length;y/=length;}return {x,y};}
  private faceHero(x:number,y:number){this.hero.direction=normalized(x,y);if(Math.abs(x)>.01)this.hero.facing=Math.sign(x);}
  command(input:UnityInput){
-  if(this.status!=='playing'||this.paused||input.paused||this.introStage!=='none')return false;
+  if(this.status!=='playing'||this.paused||input.paused||this.introStage!=='none'||this.bossDefeated)return false;
   if(input.potion){const k=input.potion;if(this.resources.potions[k]<=0||this.resources.potionCooldowns[k]>0)return false;this.resources.potions[k]--;this.resources.potionCooldowns[k]=5;if(k==='health')this.hero.hp=Math.min(this.hero.maxHP,this.hero.hp+this.hero.maxHP*.3);else this.resources.mana=this.resources.maxMana;return true;}
   if(this.hero.motion)return false;
   if(input.jump||input.slide||input.dodge){
@@ -88,7 +91,7 @@ export class UnityBossEngine {
   const candidates=this.room===0?this.slimes:this.boss.hp>0?[this.boss]:[];
   for(const target of candidates){if(target.hp<=0||!skillContains(target,motion.target,motion.radius!))continue;
    const damage=motion.damage!;target.hp=Math.max(0,target.hp-damage);this.effect('damage',target.x,damage,{target:target.unityBoss?'boss':'mob'+target.id,damageKind:'skill',attackId:motion.attackId,strike:0,contactAt:motion.start+motion.hitAt,point:{x:target.x,y:target.elevation+30,z:target.y}});
-   if(target.hp<=0){this.kills++;target.state='death';if(target.unityBoss){this.status='won';this.phase='complete';this.warning=null;this.effect('boss-defeated',target.x);}else if(this.slimeCleared){this.phase='bridge';this.effect('slime-clear',this.hero.x);}}
+   if(target.hp<=0){this.kills++;target.state='death';if(target.unityBoss){this.defeatBoss();}else if(this.slimeCleared){this.phase='bridge';this.effect('slime-clear',this.hero.x);}}
   }
  }
  private stepWeapon(dt:number){
@@ -97,7 +100,7 @@ export class UnityBossEngine {
   for(let i=0;i<=samples;i++){const phase=start+(end-start)*i/samples;for(const target of candidates){if(target.hp<=0||(m.hitIds??=[]).includes(target.id))continue;const hit=weaponContact(this.hero.action,phase,{...this.hero,sideView:this.room===0},target);if(!hit||!elementLineClear({...this.hero,elevation:this.hero.elevation+35},{...target,elevation:target.elevation+35},this.map.obstacles,(x,y)=>this.groundAt(x,y)))continue;
    const contactAt=m.start+phase*m.duration;m.hitIds!.push(target.id);target.hp=Math.max(0,target.hp-this.rules.attackDamage);
    this.effect('damage',hit.point.x,this.rules.attackDamage,{target:target.unityBoss?'boss':'mob'+target.id,damageKind:'attack',attackId:m.attackId,definitionId:m.definitionId,strike:0,contactAt,contactRevision:HERO_CONTACT.revision,point:hit.point,part:'blade'});
-   if(target.hp<=0){this.kills++;target.state='death';if(target.unityBoss){this.status='won';this.phase='complete';this.warning=null;this.boss.motion=null;this.effect('boss-defeated',target.x);}else if(this.slimeCleared){this.phase='bridge';this.effect('slime-clear',this.hero.x);}}
+   if(target.hp<=0){this.kills++;target.state='death';if(target.unityBoss){this.defeatBoss();}else if(this.slimeCleared){this.phase='bridge';this.effect('slime-clear',this.hero.x);}}
   }}
  }
  private stepHero(dt:number,input:UnityInput){
@@ -123,7 +126,7 @@ export class UnityBossEngine {
  }
  private elementWorld(){return {targets:this.room===0?this.slimes:[this.boss],obstacles:this.map.obstacles,ground:(x:number,y:number)=>this.groundAt(x,y),
   emit:(f:any)=>this.effect(f.kind,f.x,undefined,f),
-  damage:(t:any,damage:number,attackId:number,at:number,element:string,p:any)=>{t.hp=Math.max(0,t.hp-damage);this.effect('damage',p.x,damage,{target:t.unityBoss?'boss':'mob'+t.id,damageKind:'skill',element,attackId,contactAt:at,point:{x:p.x,y:p.elevation,z:p.y}});if(!t.hp){this.kills++;t.state='death';if(t.unityBoss){this.status='won';this.phase='complete';this.warning=null;this.effect('boss-defeated',t.x);}else if(this.slimeCleared)this.phase='bridge';}},
+  damage:(t:any,damage:number,attackId:number,at:number,element:string,p:any)=>{t.hp=Math.max(0,t.hp-damage);this.effect('damage',p.x,damage,{target:t.unityBoss?'boss':'mob'+t.id,damageKind:'skill',element,attackId,contactAt:at,point:{x:p.x,y:p.elevation,z:p.y}});if(!t.hp){this.kills++;t.state='death';if(t.unityBoss){this.defeatBoss();}else if(this.slimeCleared)this.phase='bridge';}},
   impulse:(t:any,dx:number,dy:number)=>{const b=this.bounds(),x=clamp(t.x+dx,b.minX+t.radius,b.maxX-t.radius),y=this.room===0?LANE_Y:clamp(t.y+dy,b.minY+t.radius,b.maxY-t.radius);if(!this.blocked(x,y,t.radius)){t.x=x;t.y=y;t.elevation=this.groundAt(x,y);}}};}
  private stepSlimes(dt:number){if(this.room!==0)return;for(const m of this.slimes){if(m.hp<=0)continue;const delta=this.hero.x-m.x;if(Math.abs(delta)>70){m.x=clamp(m.x+Math.sign(delta)*75*dt,1150,2120);m.state='walk';}else{m.state='attack';if(this.elapsed>=m.nextAttack){m.nextAttack=this.elapsed+1.5;this.damageHero(50,'attack');}}m.facing=Math.sign(delta)||-1;m.elevation=this.groundAt(m.x,m.y);}}
  private stepBoss(dt:number){
@@ -160,11 +163,29 @@ export class UnityBossEngine {
  step(dt:number,input:UnityInput){this.paused=!!input.paused;this.auto=input.auto;if(this.status!=='playing'||this.paused)return;dt=clamp(dt,0,.02);this.elapsed+=dt;
   for(let i=0;i<6;i++)this.cooldowns[i]=Math.max(0,this.cooldowns[i]-dt);for(const k of ['health','mana'] as const)this.resources.potionCooldowns[k]=Math.max(0,this.resources.potionCooldowns[k]-dt);
   if(this.introStage!=='none'){this.stepIntro(dt);return;}
+  if(this.bossDefeated&&this.arena){this.stepVillageExit(dt,input);this.fx=this.fx.filter(f=>this.elapsed-f.born<2.5);return;}
   this.previousHero={x:this.hero.x,y:this.hero.y,elevation:this.hero.elevation,airHeight:this.hero.airHeight};this.stepHero(dt,input);this.separateBody();this.hero.elevation=this.groundAt(this.hero.x,this.hero.y);this.stepSlimes(dt);this.stepBoss(dt);this.elemental.step(this.elapsed,dt,this.elementWorld());this.separateBody();this.detonate();this.hero.elevation=this.groundAt(this.hero.x,this.hero.y);this.fx=this.fx.filter(f=>this.elapsed-f.born<2.5);
  }
- groundAt(x:number,y=LANE_Y){const t=this.map.terrain,z=(y-LANE_Y)/100,gx=clamp(x/100-t.originX,0,100),gz=clamp(z-t.originZ,0,100),ix=Math.min(99,Math.floor(gx)),iz=Math.min(99,Math.floor(gz)),a=t.heights;
-  const low=a[iz*101+ix]+(a[iz*101+ix+1]-a[iz*101+ix])*(gx-ix),high=a[(iz+1)*101+ix]+(a[(iz+1)*101+ix+1]-a[(iz+1)*101+ix])*(gx-ix);let ground=(low+(high-low)*(gz-iz))*100;
-  const b=this.map.bridge;if(x>=b.from&&x<=b.to&&Math.abs(z)<=.65){const heights=b.heightCore as number[],i=(x-b.from)/(b.to-b.from)*(heights.length-1),n=Math.floor(i);ground=Math.max(ground,heights[n]+(heights[Math.min(n+1,heights.length-1)]-heights[n])*(i-n));}return ground;
+ groundAt(x:number,y=LANE_Y){const t=this.map.terrain,z=(y-LANE_Y)/100,gx=clamp((x/100-t.originX)/t.step,0,t.width-1),gz=clamp((z-t.originZ)/t.step,0,t.height-1),ix=Math.min(t.width-2,Math.floor(gx)),iz=Math.min(t.height-2,Math.floor(gz)),a=t.heights;
+  const low=a[iz*t.width+ix]+(a[iz*t.width+ix+1]-a[iz*t.width+ix])*(gx-ix),high=a[(iz+1)*t.width+ix]+(a[(iz+1)*t.width+ix+1]-a[(iz+1)*t.width+ix])*(gx-ix);let ground=(low+(high-low)*(gz-iz))*100;
+  const b=this.map.bridge;if(b&&x>=b.from&&x<=b.to&&Math.abs(z)<=.65){const heights=b.heightCore as number[],i=(x-b.from)/(b.to-b.from)*(heights.length-1),n=Math.floor(i);ground=Math.max(ground,heights[n]+(heights[Math.min(n+1,heights.length-1)]-heights[n])*(i-n));}return ground;
  }
- view(){const b=this.bounds();return {...(this.traversal?{traversalProfile:this.traversal.id,movementSpeed:this.traversal.run}:{}),presentationRevision:'combat-view-v1',inputSpace:'world-xz',movementMode:this.room===1&&this.introStage!=='approach'?'plane':'lane',bossCadence:{idleUntil:this.bossIdleUntil,chaseUntil:this.bossChaseUntil,nextAttackAt:this.bossAt},contactRevision:BOSS_CONTACT.revision,bodyRadius:BOSS_CONTACT.bodyRadius,heroRadius:BOSS_CONTACT.heroRadius,heroHeight:BOSS_CONTACT.heroHeight,unityBossMode:true,protocol:UNITY_BOSS_PROTOCOL,totalRooms:2,training:true,room:this.room,status:this.status,phase:this.phase,elapsed:this.elapsed,paused:this.paused,auto:this.auto,kills:this.kills,gold:0,hero:{...this.hero,direction:{...this.hero.direction},motion:this.hero.motion?JSON.parse(JSON.stringify(this.hero.motion)):null},mobs:[...this.slimes.map(m=>({...m})),{...this.boss,motion:this.boss.motion?JSON.parse(JSON.stringify(this.boss.motion)):null}],warning:this.warning?{...this.warning}:null,fx:this.fx.map(f=>({...f})),walkBounds:b,cleared:this.slimeCleared?[0]:[],visited:this.room===1?[0,1]:[0],cameraMode:this.room===1&&this.boss.hp>0&&this.introStage!=='approach'?'QuarterView':'Side25D',bossVisible:this.room===1&&this.introStage!=='approach',bossIntroActive:this.introStage!=='none',bossIntroStage:this.introStage,bossRevealAt:this.introAt,elementalProjectiles:this.elemental.view(this.elapsed),resources:JSON.parse(JSON.stringify(this.resources)),cooldowns:[...this.cooldowns],cooldownTotals:[...this.cooldownTotals],jumpReady:this.elapsed>=this.jumpAt&&!this.hero.motion,dodgeReady:this.elapsed>=this.dodgeAt&&!this.hero.motion,slideReady:this.elapsed>=this.dodgeAt&&!this.hero.motion};}
+ private outsideArena(x:number,y:number,radius:number){
+  if(!this.arena)return false;const a=this.arena;if(Math.hypot(x-a.center.x,y-a.center.y)<=a.radius-radius)return false;
+  if(!this.bossDefeated)return true;
+  const path=[a.center,...a.exitWaypoints];for(let i=1;i<path.length;i++){const p=path[i-1],q=path[i],dx=q.x-p.x,dy=q.y-p.y,t=clamp(((x-p.x)*dx+(y-p.y)*dy)/(dx*dx+dy*dy),0,1);if(Math.hypot(x-p.x-dx*t,y-p.y-dy*t)<=220-radius)return false;}return true;
+ }
+ private defeatBoss(){
+  if(this.bossDefeated)return;this.bossDefeated=true;this.defeatedAt=this.elapsed;this.warning=null;this.boss.motion=null;this.boss.action='death';this.elemental.clear();this.effect('boss-defeated',this.boss.x);
+  if(this.arena){this.phase='village-exit';this.exitWaypoint=0;}else{this.status='won';this.phase='complete';}
+ }
+ private stepVillageExit(dt:number,input:UnityInput){
+  this.hero.motion=null;this.hero.airHeight=0;let direction=this.inputDirection(input);const waypoints=this.arena.exitWaypoints;
+  if(input.auto&&Math.hypot(direction.x,direction.y)<.1){while(this.exitWaypoint<waypoints.length-1&&distance(this.hero,waypoints[this.exitWaypoint])<70)this.exitWaypoint++;const p=waypoints[this.exitWaypoint];direction=normalized(p.x-this.hero.x,p.y-this.hero.y);}
+  if(Math.hypot(direction.x,direction.y)>.1){this.moveHero(this.hero.x+direction.x*180*dt,this.hero.y+direction.y*180*dt);this.faceHero(direction.x,direction.y);this.hero.action='walk';}else this.hero.action='stay1';
+  this.hero.elevation=this.groundAt(this.hero.x,this.hero.y);
+  if(distance(this.hero,waypoints[waypoints.length-1])<100){this.status='won';this.phase='complete';this.hero.action='stay1';this.effect('village-arrived',this.hero.x);}
+ }
+
+ view(){const b=this.bounds();return {...(this.arena?{zoneTenArena:true,bossDefeated:this.bossDefeated,bossDefeatedAt:this.defeatedAt,villageEntered:this.status==='won',exitTarget:this.arena.exitWaypoints.at(-1)}:{}),...(this.traversal?{traversalProfile:this.traversal.id,movementSpeed:this.traversal.run}:{}),presentationRevision:'combat-view-v1',inputSpace:'world-xz',movementMode:this.room===1&&this.introStage!=='approach'?'plane':'lane',bossCadence:{idleUntil:this.bossIdleUntil,chaseUntil:this.bossChaseUntil,nextAttackAt:this.bossAt},contactRevision:BOSS_CONTACT.revision,bodyRadius:BOSS_CONTACT.bodyRadius,heroRadius:BOSS_CONTACT.heroRadius,heroHeight:BOSS_CONTACT.heroHeight,unityBossMode:true,protocol:UNITY_BOSS_PROTOCOL,totalRooms:2,training:true,room:this.room,status:this.status,phase:this.phase,elapsed:this.elapsed,paused:this.paused,auto:this.auto,kills:this.kills,gold:0,hero:{...this.hero,direction:{...this.hero.direction},motion:this.hero.motion?JSON.parse(JSON.stringify(this.hero.motion)):null},mobs:[...this.slimes.map(m=>({...m})),{...this.boss,motion:this.boss.motion?JSON.parse(JSON.stringify(this.boss.motion)):null}],warning:this.warning?{...this.warning}:null,fx:this.fx.map(f=>({...f})),walkBounds:b,cleared:this.slimeCleared?[0]:[],visited:this.room===1?[0,1]:[0],cameraMode:this.room===1&&this.boss.hp>0&&this.introStage!=='approach'?'QuarterView':'Side25D',bossVisible:this.room===1&&this.introStage!=='approach'&&(!this.arena||!this.bossDefeated||this.elapsed-this.defeatedAt<.7),bossIntroActive:this.introStage!=='none',bossIntroStage:this.introStage,bossRevealAt:this.introAt,elementalProjectiles:this.elemental.view(this.elapsed),resources:JSON.parse(JSON.stringify(this.resources)),cooldowns:[...this.cooldowns],cooldownTotals:[...this.cooldownTotals],jumpReady:this.elapsed>=this.jumpAt&&!this.hero.motion,dodgeReady:this.elapsed>=this.dodgeAt&&!this.hero.motion,slideReady:this.elapsed>=this.dodgeAt&&!this.hero.motion};}
 }

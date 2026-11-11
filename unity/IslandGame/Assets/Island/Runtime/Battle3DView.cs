@@ -31,7 +31,7 @@ namespace IslandGame {
   public int ThrottledSamples {get;private set;}
   readonly List<UnityEngine.Object> owned=new List<UnityEngine.Object>();
   readonly Dictionary<PrimitiveType,Mesh> displayMeshes=new Dictionary<PrimitiveType,Mesh>();
-  Transform world;NatureAuthoredEnvironment authored;public float HeroDepth,HeroHeading,MobDepth;bool mountMode;public bool Planar;
+  Transform world;NatureAuthoredEnvironment authored;public float HeroDepth,HeroHeading,MobDepth;bool mountMode,zoneTenArena;public bool Planar;
   public NatureEnvironmentStream Stream{get;private set;}
   ReferenceCombatVfx referenceVfx;BossContactDebug contactDebug;CombatFeedbackRouter contactFeedback;BattleDioramaLook diorama;
   public BattleDioramaLook Diorama=>diorama;
@@ -47,7 +47,7 @@ namespace IslandGame {
   }
   Transform FeedbackTarget(string id){if(id=="boss")return BossTarget;if(actors.TryGetValue(id,out var a))return a.root.transform;return null;}
   public BossContactDebug ContactDebug=>contactDebug;
-  public bool BossEnvironmentReady=>!mountMode&&bossView!=null&&HeroTarget&&authored&&authored.IsReadyNear(HeroTarget.position)&&(!MountZoneStream.Current||MountZoneStream.Current.LoadedCount==0);
+  public bool BossEnvironmentReady=>!mountMode&&bossView!=null&&HeroTarget&&(zoneTenArena?MountZoneStream.Current&&MountZoneStream.Current.ActiveZone==9&&!MountZoneStream.Current.Busy&&MountZoneStream.Current.LoadedCount==1:authored&&authored.IsReadyNear(HeroTarget.position)&&(!MountZoneStream.Current||MountZoneStream.Current.LoadedCount==0));
   public Transform HeroTarget=>actors.TryGetValue("hero",out var actor)?actor.root.transform:null;
   public void UpdateContact(JObject state,float visualTime){if(!HeroTarget)return;if(referenceVfx==null)referenceVfx=new ReferenceCombatVfx(world);referenceVfx.Update(state,visualTime,HeroTarget,HeroWeaponBase,HeroWeaponTip);if(mountMode){if(contactFeedback==null)contactFeedback=new CombatFeedbackRouter(gameObject,battleCamera.GetComponentInParent<BattleCameraController>(),Presentation??(Presentation=new ViewPresentationCoordinator()),FeedbackTarget);contactFeedback.Update(state,visualTime);contactFeedback.Smear(0,HeroAttackId,HeroAttackActive,HeroWeaponTip,visualTime);return;}if(bossView==null)return;if(diorama)diorama.ProtectAttack(bossView.ContactPoint(1),bossView.ContactPoint(3),bossView.WarningTarget,bossView.BossVisible&&bossView.HookActive);if(contactFeedback==null)contactFeedback=new CombatFeedbackRouter(gameObject,battleCamera.GetComponentInParent<BattleCameraController>(),Presentation??(Presentation=new ViewPresentationCoordinator()),FeedbackTarget);contactFeedback.Update(state,visualTime);
    if(actors.TryGetValue("hero",out var readable)&&readable.occlusionSkin){
@@ -72,7 +72,7 @@ namespace IslandGame {
   public void PresentLightning(JObject map,float time){referenceVfx?.PresentLightning(battleCamera,map,time,Presentation);}
   public int ActiveReferenceEffects=>referenceVfx?.ActiveEffects??0;public int ReferenceParticles=>referenceVfx?.ParticleCount??0;public int ActorCount=>actors.Count;
   Material ground,edge,bark,leaves,rock,steel,grip,shadow;
-  public void Clear(){referenceVfx?.Dispose();referenceVfx=null;if(mountMode&&MountZoneStream.Current)MountZoneStream.Current.Release();mountMode=false;Presentation=null;HeroAttackId=0;HeroAttackActive=false;contactFeedback?.Dispose();contactFeedback=null;contactDebug?.Dispose();contactDebug=null;if(authored){authored.VisualChunkCreated-=OnVisualBranch;authored.VisualChunkRemoving-=OnVisualRemoving;}if(diorama){diorama.Dispose();diorama=null;}foreach(var a in actors.Values)a.animation?.Dispose();foreach(var a in slimePool)a.animation?.Dispose();if(authored){Destroy(authored.gameObject);authored=null;}if(bossView!=null){bossView.Dispose();bossView=null;}if(Stream!=null){Stream.Dispose();Stream=null;}actors.Clear();slimePool.Clear();displayMeshes.Clear();world=null;hasFrustum=false;foreach(var o in owned)if(o)Destroy(o);owned.Clear();}
+  public void Clear(){referenceVfx?.Dispose();referenceVfx=null;if((mountMode||zoneTenArena)&&MountZoneStream.Current)MountZoneStream.Current.Release();mountMode=zoneTenArena=false;Presentation=null;HeroAttackId=0;HeroAttackActive=false;contactFeedback?.Dispose();contactFeedback=null;contactDebug?.Dispose();contactDebug=null;if(authored){authored.VisualChunkCreated-=OnVisualBranch;authored.VisualChunkRemoving-=OnVisualRemoving;}if(diorama){diorama.Dispose();diorama=null;}foreach(var a in actors.Values)a.animation?.Dispose();foreach(var a in slimePool)a.animation?.Dispose();if(authored){Destroy(authored.gameObject);authored=null;}if(bossView!=null){bossView.Dispose();bossView=null;}if(Stream!=null){Stream.Dispose();Stream=null;}actors.Clear();slimePool.Clear();displayMeshes.Clear();world=null;hasFrustum=false;foreach(var o in owned)if(o)Destroy(o);owned.Clear();}
   Material Mat(string name,Color color,float metallic=0){var m=new Material(Shader.Find("Standard")){name=name,color=color};m.SetFloat("_Glossiness",.2f);m.SetFloat("_Metallic",metallic);owned.Add(m);return m;}
   GameObject Shape(string name,PrimitiveType type,Transform parent,Vector3 p,Vector3 scale,Material material){
    Mesh mesh;if(!displayMeshes.TryGetValue(type,out mesh)){mesh=IslandDisplayMeshes.Create(type);displayMeshes.Add(type,mesh);owned.Add(mesh);}
@@ -90,8 +90,8 @@ namespace IslandGame {
    var light=sun.AddComponent<Light>();light.type=LightType.Directional;light.color=new Color(1,.89f,.73f);light.intensity=.85f;light.shadows=LightShadows.Soft;light.cullingMask=1<<30;light.shadowBias=.035f;light.shadowNormalBias=.3f;light.shadowStrength=.85f;RenderSettings.sun=light;
    var fill=new GameObject("Battle 3D · cool fill");fill.transform.SetParent(root,false);fill.transform.rotation=Quaternion.Euler(35,150,0);var fl=fill.AddComponent<Light>();fl.type=LightType.Directional;fl.color=new Color(.58f,.75f,.84f);fl.intensity=.35f;fl.cullingMask=1<<30;
    var environmentAssets=Resources.Load<NatureEnvironmentAssets>("NatureEnvironmentAssets");
-   mountMode=(bool?)map?["mountSunday"]==true;bool authoredMap=(bool?)map?["unityBossMode"]==true;
-   if(authoredMap&&!mountMode){var scenery=new GameObject("Authored Nature Free map");scenery.transform.SetParent(root,false);authored=scenery.AddComponent<NatureAuthoredEnvironment>();authored.Initialize();}
+   mountMode=(bool?)map?["mountSunday"]==true;zoneTenArena=(bool?)map?["zoneTenArena"]==true;bool authoredMap=(bool?)map?["unityBossMode"]==true;
+   if(authoredMap&&!mountMode&&!zoneTenArena){var scenery=new GameObject("Authored Nature Free map");scenery.transform.SetParent(root,false);authored=scenery.AddComponent<NatureAuthoredEnvironment>();authored.Initialize();}
    if(!authoredMap&&environmentAssets)Stream=new NatureEnvironmentStream(root,map,environmentAssets);
    if(Stream==null&&!authoredMap){
    if(map?["rooms"] is JArray rooms){
@@ -113,7 +113,7 @@ namespace IslandGame {
    if((bool?)map?["unityBossMode"]==true&&bossAssets&&!mountMode)bossView=new UnityBossPresentation(root,bossAssets,map);
    
    IslandFrameBudget.Current.BindScenery(null);
-   diorama=GetComponent<BattleDioramaLook>()??gameObject.AddComponent<BattleDioramaLook>();diorama.Initialize(world,camera);if(mountMode){var rig=camera.GetComponentInParent<BattleCameraController>();rig.side=new BattleCameraController.Preset(10,0,20,24,new Vector3(0,2,0));rig.quarter=new BattleCameraController.Preset(40,35,35,17,new Vector3(0,1.2f,1.8f));rig.lookAheadDistanceX=1.6f;rig.maxVelocityLookAhead=.7f;rig.velocityLookAheadMultiplier=.10f;rig.playerEdgePadding=1.2f;rig.lookAheadAccelSmoothTime=.08f;rig.verticalSmoothTime=.10f;rig.GetComponent<BattleForegroundOcclusion>().protectSideView=true;MountZoneStream.Ensure().Bind(camera,null,(int?)map["zone"]??0);}if(authored){authored.VisualChunkCreated+=OnVisualBranch;authored.VisualChunkRemoving+=OnVisualRemoving;}
+   diorama=GetComponent<BattleDioramaLook>()??gameObject.AddComponent<BattleDioramaLook>();diorama.Initialize(world,camera);if(mountMode||zoneTenArena){var rig=camera.GetComponentInParent<BattleCameraController>();rig.side=new BattleCameraController.Preset(10,0,20,24,new Vector3(0,2,0));rig.quarter=zoneTenArena?new BattleCameraController.Preset(40,25,42,27,new Vector3(0,1.3f,1)):new BattleCameraController.Preset(40,35,35,17,new Vector3(0,1.2f,1.8f));rig.lookAheadDistanceX=1.6f;rig.maxVelocityLookAhead=.7f;rig.velocityLookAheadMultiplier=.10f;rig.playerEdgePadding=1.2f;rig.lookAheadAccelSmoothTime=.08f;rig.verticalSmoothTime=.10f;rig.GetComponent<BattleForegroundOcclusion>().protectSideView=true;MountZoneStream.Ensure().Bind(camera,null,(int?)map["zone"]??0);}if(authored){authored.VisualChunkCreated+=OnVisualBranch;authored.VisualChunkRemoving+=OnVisualRemoving;}
   }
   void OnVisualBranch(Transform branch){if(diorama)diorama.ApplyBranch(branch);}
   void OnVisualRemoving(Transform branch){if(diorama)diorama.ForgetBranch(branch);}

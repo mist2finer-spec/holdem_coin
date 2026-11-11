@@ -81,7 +81,7 @@ namespace IslandGame {
    escapePopup=Rect("LabyrinthEscape",frame).gameObject;Stretch((RectTransform)escapePopup.transform);Fill((RectTransform)escapePopup.transform,new Color(.01f,.025f,.035f,.78f)).raycastTarget=true;
    var escapePanel=Rect("EscapePanel",escapePopup.transform);escapePanel.anchorMin=escapePanel.anchorMax=escapePanel.pivot=Vector2.one*.5f;escapePanel.sizeDelta=new Vector2(322,224);Fill(escapePanel,new Color(.035f,.08f,.10f,.98f));PanelFrame(escapePanel,"EscapeFrame");
    var escapeTitle=Label(escapePanel,"EscapeTitle","미궁 탈출",24,TextAlignmentOptions.Center);escapeTitle.color=new Color(1,.85f,.5f);Box((RectTransform)escapeTitle.transform,16,24,290,42);
-   var escapeInfo=Label(escapePanel,"EscapeInfo","10구역의 보스를 물리쳤습니다.\n미궁 탐험을 완료했습니다.",14,TextAlignmentOptions.Center);Box((RectTransform)escapeInfo.transform,16,78,290,54);
+   var escapeInfo=Label(escapePanel,"EscapeInfo","보스를 물리치고 마을에 도착했습니다.\n미궁 탐험을 완료했습니다.",14,TextAlignmentOptions.Center);Box((RectTransform)escapeInfo.transform,16,78,290,54);
    var leave=Button(escapePanel,"EscapeLobby","마을로 돌아가기",()=>app.HudMenu("lobby"),new Color(.1f,.25f,.28f));Box((RectTransform)leave.transform,20,158,165,44);
    var again=Button(escapePanel,"EscapeRetry","다시 도전",()=>app.HudRetry(),new Color(.1f,.18f,.22f));Box((RectTransform)again.transform,195,158,107,44);escapePopup.SetActive(false);
    dungeonPanel=Rect("DungeonPanel",safe);Fill(dungeonPanel,new Color(.035f,.07f,.09f));PanelFrame(dungeonPanel,"DungeonFrame");
@@ -138,11 +138,11 @@ namespace IslandGame {
    nextRefresh=Time.unscaledTime+1f/(budget?budget.Policy.HudHz:20);lastActive=active;lastEnded=endedNow;
    viewport.texture=app.HudBattle.Output;viewport.enabled=!app.HudBattle.DirectPresentationActive;
    bool mount=(bool?)state?["mountSunday"]==true;
-   title.text=(string)state?["roomKind"]=="boss"?"10구역 · 거인의 정원":mount?"마을길 · "+(string)state?["zoneName"]:app.HudCampaign?"성장 사냥":"촛불 미궁 · Lv."+Value(state?["dungeonLevel"],1);
+   title.text=(string)state?["roomKind"]=="boss"?"10구역 · 초원 수호자의 마당":mount?"마을길 · "+(string)state?["zoneName"]:app.HudCampaign?"성장 사냥":"촛불 미궁 · Lv."+Value(state?["dungeonLevel"],1);
    bool viewAvailable=(bool?)state?["unityBossMode"]==true;viewButton.gameObject.SetActive(viewAvailable);gold.gameObject.SetActive(!viewAvailable);viewButton.interactable=false;viewText.text=NativeBattle.EncounterView(state)==ViewMode.QuarterView?"쿼터뷰":"사이드뷰";
    gold.text=RpgContracts.Amount(progress?["gold"])+" G";chamber.text=(mount||(bool?)state?["mountCampaign"]==true?"ZONE\n":"CHAMBER\n")+(Value(state?["routeZone"],Value(state?["room"]))+1).ToString("00")+" / "+Value(state?["totalRooms"],10);
-   objective.text=mount?((string)state?["phase"]=="exit"||(string)state?["phase"]=="waiting-next"?"마을 방향 출구로 이동":"이 구역 "+Value(state?["zoneKills"])+" / 30 처치"):(string)state?["phase"]=="exit-ready"?"출구 개방 · 점프 / 슬라이드로 이동":"전투 화면을 눌러 기본 공격";
-   if((string)state?["phase"]=="boss-loading")objective.text="거인의 정원으로 이동 중";
+   objective.text=(string)state?["phase"]=="village-exit"?"보스 처치 · 열린 출구를 지나 마을로 이동":(bool?)state?["zoneTenArena"]==true?((bool?)state?["bossIntroActive"]==true?"진입로 끝 · 초원 전장에 진입 중":"바위 경계 안에서 초원 수호자 처치"):mount?((string)state?["phase"]=="exit"||(string)state?["phase"]=="waiting-next"?"마을 방향 출구로 이동":"이 구역 "+Value(state?["zoneKills"])+" / 30 처치"):(string)state?["phase"]=="exit-ready"?"출구 개방 · 점프 / 슬라이드로 이동":"전투 화면을 눌러 기본 공격";
+   if((string)state?["phase"]=="boss-loading")objective.text="초원 전장으로 이동 중";
    else if((string)state?["bossIntroStage"]=="approach")objective.text="정원 안쪽으로 걸어갑니다";
    else if((string)state?["bossIntroStage"]=="reveal")objective.text="정원의 수호자가 깨어납니다";
    hpOrb.SetFill((float)RpgContracts.Ratio(hero?["hp"],hero?["maxHP"]));manaOrb.SetFill((float)RpgContracts.Ratio(resources?["mana"],resources?["maxMana"]));
@@ -166,7 +166,7 @@ namespace IslandGame {
   }
   void PotionState(UnityEngine.UI.Button button,TextMeshProUGUI label,string kind,JToken value,JToken max){var r=app.HudSession.State?["resources"] as JObject;float cooldown=Value(r?["potionCooldowns"]?[kind]),count=Value(r?["potions"]?[kind]);button.interactable=app.HudCanInput&&r!=null&&count>0&&cooldown<=0&&RpgContracts.Ratio(value,max)<1;label.text=cooldown>0?Mathf.CeilToInt(cooldown)+"s":count.ToString("0");}
   void DrawDamage(JObject state){state=app.HudBattle.PresentationState??state;int used=0;float now=(bool?)state?["unityBossMode"]==true?app.HudBattle.VisualTime:Value(state?["elapsed"]);foreach(var fx in state?["fx"] as JArray??new JArray()){
-    float age=now-Value(fx["contactAt"]??fx["born"]);string kind=(string)fx["kind"];if(used>=damage.Length||age<0||age>1||(kind!="damage"&&kind!="gold")||fx["value"]==null)continue;int room=(int)Value(fx["room"],Value(state?["room"]));float elevation=Value(app.HudSession.Map?["rooms"]?[room]?["elevation"]);
+    float age=now-Value(fx["contactAt"]??fx["born"]);string kind=(string)fx["kind"];if(used>=damage.Length||age<0||age>1||(kind!="damage"&&kind!="gold")||fx["value"]==null)continue;int room=(int)Value(fx["room"],Value(state?["room"]));var rooms=app.HudSession.Map?["rooms"] as JArray;float elevation=rooms!=null&&room>=0&&room<rooms.Count?Value(rooms[room]["elevation"]):Value(state?["hero"]?["elevation"]);
     var contact=fx["point"];float cx=contact==null?Value(fx["x"]):Value(contact["x"]),cy=contact==null?elevation+55:Value(contact["y"]),cz=contact==null?Value(fx["z"]):Value(contact["z"])-Value(app.HudSession.Map?["laneY"],5000);
     Vector2 p=app.HudBattle.ViewPoint(cx,cy+age*25,cz);if(p.x<0||p.x>1||p.y<0||p.y>1)continue;
     var text=damage[used++];text.text=(kind=="gold"?"+":"")+RpgContracts.Amount(fx["value"]);text.color=kind=="gold"?new Color(1,.8f,.3f,1-age):new Color(1,.85f,.8f,1-age);Box((RectTransform)text.transform,p.x*stage.rect.width-55,p.y*stage.rect.height,110,24);

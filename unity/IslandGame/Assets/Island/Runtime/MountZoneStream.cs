@@ -10,6 +10,7 @@ namespace IslandGame {
   public static MountZoneStream Ensure(){if(Current)return Current;return new GameObject("Mount Sunday scene owner").AddComponent<MountZoneStream>();}
   void Awake(){Current=this;DontDestroyOnLoad(gameObject);StartCoroutine(Worker());}
   public void Bind(Camera camera,Transform target,int zone){view=camera;hero=target;desired=Mathf.Clamp(zone,0,9);if(active>=0&&loaded.TryGetValue(active,out var env)&&hero&&env.grass&&env.grass.hero!=hero)env.Bind(view,hero);}
+  public void PresentArena(Newtonsoft.Json.Linq.JObject state){if(loaded.TryGetValue(9,out var env)){var arena=env.GetComponent<ZoneTenArenaScene>();if(arena)arena.Present(state);}}
   public void Release(){desired=-1;view=null;hero=null;fadeTarget=0;}
   void Update(){fade=Mathf.MoveTowards(fade,BossLoading?1:fadeTarget,Time.unscaledDeltaTime*7);}
   void OnGUI(){if(fade<=0)return;var old=GUI.color;GUI.depth=-1000;GUI.color=new Color(0,0,0,fade);GUI.DrawTexture(new Rect(0,0,Screen.width,Screen.height),Texture2D.whiteTexture);GUI.color=old;if(!string.IsNullOrEmpty(failure))GUI.Label(new Rect(30,Screen.height*.5f,Screen.width-60,60),"구역을 불러오지 못했습니다. 사냥에 다시 입장해 주세요.");}
