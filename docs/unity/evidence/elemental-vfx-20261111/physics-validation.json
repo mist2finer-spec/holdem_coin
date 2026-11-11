@@ -1,0 +1,1906 @@
+{
+  "pass": true,
+  "checks": [
+    {
+      "name": "Sword 1 hits",
+      "pass": true
+    },
+    {
+      "name": "Sword 1 compound colliders hit once",
+      "pass": true
+    },
+    {
+      "name": "Sword 1 outside excluded",
+      "pass": true
+    },
+    {
+      "name": "Sword 1 impulses",
+      "pass": true
+    },
+    {
+      "name": "Sword 2 hits",
+      "pass": true
+    },
+    {
+      "name": "Sword 2 compound colliders hit once",
+      "pass": true
+    },
+    {
+      "name": "Sword 2 outside excluded",
+      "pass": true
+    },
+    {
+      "name": "Sword 2 impulses",
+      "pass": true
+    },
+    {
+      "name": "Sword 3 hits",
+      "pass": true
+    },
+    {
+      "name": "Sword 3 compound colliders hit once",
+      "pass": true
+    },
+    {
+      "name": "Sword 3 outside excluded",
+      "pass": true
+    },
+    {
+      "name": "Sword 3 impulses",
+      "pass": true
+    },
+    {
+      "name": "Sword 4 hits",
+      "pass": true
+    },
+    {
+      "name": "Sword 4 compound colliders hit once",
+      "pass": true
+    },
+    {
+      "name": "Sword 4 outside excluded",
+      "pass": true
+    },
+    {
+      "name": "Sword 4 impulses",
+      "pass": true
+    },
+    {
+      "name": "Sword 5 hits",
+      "pass": true
+    },
+    {
+      "name": "Sword 5 compound colliders hit once",
+      "pass": true
+    },
+    {
+      "name": "Sword 5 outside excluded",
+      "pass": true
+    },
+    {
+      "name": "Sword 5 impulses",
+      "pass": true
+    },
+    {
+      "name": "Water 1 hits",
+      "pass": true
+    },
+    {
+      "name": "Water 1 compound colliders hit once",
+      "pass": true
+    },
+    {
+      "name": "Water 1 outside excluded",
+      "pass": true
+    },
+    {
+      "name": "Water 1 impulses",
+      "pass": true
+    },
+    {
+      "name": "Water 1 wall hit",
+      "pass": true
+    },
+    {
+      "name": "Water 1 wall shields target",
+      "pass": true
+    },
+    {
+      "name": "Water 2 hits",
+      "pass": true
+    },
+    {
+      "name": "Water 2 compound colliders hit once",
+      "pass": true
+    },
+    {
+      "name": "Water 2 outside excluded",
+      "pass": true
+    },
+    {
+      "name": "Water 2 impulses",
+      "pass": true
+    },
+    {
+      "name": "Water 2 wall hit",
+      "pass": true
+    },
+    {
+      "name": "Water 2 wall shields target",
+      "pass": true
+    },
+    {
+      "name": "Water 3 hits",
+      "pass": true
+    },
+    {
+      "name": "Water 3 compound colliders hit once",
+      "pass": true
+    },
+    {
+      "name": "Water 3 outside excluded",
+      "pass": true
+    },
+    {
+      "name": "Water 3 impulses",
+      "pass": true
+    },
+    {
+      "name": "Water 3 wall hit",
+      "pass": true
+    },
+    {
+      "name": "Water 3 wall shields target",
+      "pass": true
+    },
+    {
+      "name": "Lightning 1 hits",
+      "pass": true
+    },
+    {
+      "name": "Lightning 1 compound colliders hit once",
+      "pass": true
+    },
+    {
+      "name": "Lightning 1 outside excluded",
+      "pass": true
+    },
+    {
+      "name": "Lightning 1 impulses",
+      "pass": true
+    },
+    {
+      "name": "Lightning 2 hits",
+      "pass": true
+    },
+    {
+      "name": "Lightning 2 compound colliders hit once",
+      "pass": true
+    },
+    {
+      "name": "Lightning 2 outside excluded",
+      "pass": true
+    },
+    {
+      "name": "Lightning 2 impulses",
+      "pass": true
+    },
+    {
+      "name": "Lightning 3 hits",
+      "pass": true
+    },
+    {
+      "name": "Lightning 3 compound colliders hit once",
+      "pass": true
+    },
+    {
+      "name": "Lightning 3 outside excluded",
+      "pass": true
+    },
+    {
+      "name": "Lightning 3 impulses",
+      "pass": true
+    },
+    {
+      "name": "Sword knockback points away from caster",
+      "pass": true
+    },
+    {
+      "name": "Roof blocks lightning before ground impact",
+      "pass": true
+    },
+    {
+      "name": "Wall blocks sword damage to targets behind it",
+      "pass": true
+    },
+    {
+      "name": "80m/s droplets do not tunnel through 12cm wall",
+      "pass": true
+    },
+    {
+      "name": "Lightning locks ground target; moving out can evade",
+      "pass": true
+    },
+    {
+      "name": "Pause freezes simulation",
+      "pass": true
+    },
+    {
+      "name": "30 / 100 FPS produces identical hit sets",
+      "pass": true
+    },
+    {
+      "name": "Wet target lightning multiplier",
+      "pass": true
+    },
+    {
+      "name": "Particle pool is bounded after repeated casts",
+      "pass": true
+    },
+    {
+      "name": "All droplets expire",
+      "pass": true
+    }
+  ],
+  "cases": [
+    {
+      "frame": 483,
+      "clock": 3.23999763,
+      "kind": "Sword",
+      "tier": 1,
+      "age": 0.979999065,
+      "hits": 2,
+      "walls": 0,
+      "ground": 0,
+      "particles": 0,
+      "drops": 0,
+      "poolSlots": 100,
+      "queries": 131,
+      "targets": [
+        {
+          "name": "FRONT A",
+          "hits": 1,
+          "damage": 29.0,
+          "displacement": 0.05686381,
+          "position": [
+            1.29319847,
+            0.439999938,
+            -0.931102753
+          ]
+        },
+        {
+          "name": "FRONT B",
+          "hits": 1,
+          "damage": 29.0,
+          "displacement": 0.0568636879,
+          "position": [
+            1.8032304,
+            0.439999938,
+            0.0
+          ]
+        },
+        {
+          "name": "FRONT C",
+          "hits": 0,
+          "damage": 0.0,
+          "displacement": 0.02000007,
+          "position": [
+            1.25,
+            0.44,
+            0.9
+          ]
+        },
+        {
+          "name": "LEFT",
+          "hits": 0,
+          "damage": 0.0,
+          "displacement": 0.02000007,
+          "position": [
+            -1.75,
+            0.44,
+            0.1
+          ]
+        },
+        {
+          "name": "DEPTH",
+          "hits": 0,
+          "damage": 0.0,
+          "displacement": 0.02000007,
+          "position": [
+            0.0,
+            0.44,
+            2.3
+          ]
+        },
+        {
+          "name": "COVERED",
+          "hits": 0,
+          "damage": 0.0,
+          "displacement": 0.02000007,
+          "position": [
+            -2.6,
+            0.44,
+            -2.6
+          ]
+        },
+        {
+          "name": "OUTSIDE",
+          "hits": 0,
+          "damage": 0.0,
+          "displacement": 0.02000007,
+          "position": [
+            4.6,
+            0.44,
+            3.6
+          ]
+        }
+      ],
+      "hitLog": [
+        {
+          "cast": 3,
+          "target": "FRONT A",
+          "element": "Sword",
+          "time": 0.239999771,
+          "damage": 29.0,
+          "point": [
+            0.9029546,
+            0.162729442,
+            -1.29256785
+          ],
+          "impulse": [
+            1.3146857,
+            0.45,
+            -0.9465737
+          ]
+        },
+        {
+          "cast": 3,
+          "target": "FRONT B",
+          "element": "Sword",
+          "time": 0.279999733,
+          "damage": 29.0,
+          "point": [
+            1.64039087,
+            0.6071795,
+            -0.4566789
+          ],
+          "impulse": [
+            1.62,
+            0.45,
+            0.0
+          ]
+        }
+      ]
+    },
+    {
+      "frame": 483,
+      "clock": 4.219997,
+      "kind": "Sword",
+      "tier": 2,
+      "age": 0.9799993,
+      "hits": 2,
+      "walls": 0,
+      "ground": 0,
+      "particles": 0,
+      "drops": 0,
+      "poolSlots": 100,
+      "queries": 129,
+      "targets": [
+        {
+          "name": "FRONT A",
+          "hits": 0,
+          "damage": 0.0,
+          "displacement": 0.02000007,
+          "position": [
+            1.25,
+            0.44,
+            -0.9
+          ]
+        },
+        {
+          "name": "FRONT B",
+          "hits": 1,
+          "damage": 36.0,
+          "displacement": 0.0690705553,
+          "position": [
+            1.81611156,
+            0.439999938,
+            0.0
+          ]
+        },
+        {
+          "name": "FRONT C",
+          "hits": 1,
+          "damage": 36.0,
+          "displacement": 0.06907059,
+          "position": [
+            1.30365181,
+            0.439999938,
+            0.9386293
+          ]
+        },
+        {
+          "name": "LEFT",
+          "hits": 0,
+          "damage": 0.0,
+          "displacement": 0.02000007,
+          "position": [
+            -1.75,
+            0.44,
+            0.1
+          ]
+        },
+        {
+          "name": "DEPTH",
+          "hits": 0,
+          "damage": 0.0,
+          "displacement": 0.02000007,
+          "position": [
+            0.0,
+            0.44,
+            2.3
+          ]
+        },
+        {
+          "name": "COVERED",
+          "hits": 0,
+          "damage": 0.0,
+          "displacement": 0.02000007,
+          "position": [
+            -2.6,
+            0.44,
+            -2.6
+          ]
+        },
+        {
+          "name": "OUTSIDE",
+          "hits": 0,
+          "damage": 0.0,
+          "displacement": 0.02000007,
+          "position": [
+            4.6,
+            0.44,
+            3.6
+          ]
+        }
+      ],
+      "hitLog": [
+        {
+          "cast": 4,
+          "target": "FRONT C",
+          "element": "Sword",
+          "time": 0.239999771,
+          "damage": 36.0,
+          "point": [
+            1.07276666,
+            0.317801774,
+            1.46220267
+          ],
+          "impulse": [
+            1.49322307,
+            0.45,
+            1.07512069
+          ]
+        },
+        {
+          "cast": 4,
+          "target": "FRONT B",
+          "element": "Sword",
+          "time": 0.279999733,
+          "damage": 36.0,
+          "point": [
+            1.80252266,
+            0.6556158,
+            0.5340664
+          ],
+          "impulse": [
+            1.83999991,
+            0.45,
+            0.0
+          ]
+        }
+      ]
+    },
+    {
+      "frame": 483,
+      "clock": 5.199996,
+      "kind": "Sword",
+      "tier": 3,
+      "age": 0.979999065,
+      "hits": 1,
+      "walls": 0,
+      "ground": 0,
+      "particles": 0,
+      "drops": 0,
+      "poolSlots": 100,
+      "queries": 109,
+      "targets": [
+        {
+          "name": "FRONT A",
+          "hits": 0,
+          "damage": 0.0,
+          "displacement": 0.02000007,
+          "position": [
+            1.25,
+            0.44,
+            -0.9
+          ]
+        },
+        {
+          "name": "FRONT B",
+          "hits": 1,
+          "damage": 43.0,
+          "displacement": 0.0822808444,
+          "position": [
+            1.82981312,
+            0.439999938,
+            0.0
+          ]
+        },
+        {
+          "name": "FRONT C",
+          "hits": 0,
+          "damage": 0.0,
+          "displacement": 0.02000007,
+          "position": [
+            1.25,
+            0.44,
+            0.9
+          ]
+        },
+        {
+          "name": "LEFT",
+          "hits": 0,
+          "damage": 0.0,
+          "displacement": 0.02000007,
+          "position": [
+            -1.75,
+            0.44,
+            0.1
+          ]
+        },
+        {
+          "name": "DEPTH",
+          "hits": 0,
+          "damage": 0.0,
+          "displacement": 0.02000007,
+          "position": [
+            0.0,
+            0.44,
+            2.3
+          ]
+        },
+        {
+          "name": "COVERED",
+          "hits": 0,
+          "damage": 0.0,
+          "displacement": 0.02000007,
+          "position": [
+            -2.6,
+            0.44,
+            -2.6
+          ]
+        },
+        {
+          "name": "OUTSIDE",
+          "hits": 0,
+          "damage": 0.0,
+          "displacement": 0.02000007,
+          "position": [
+            4.6,
+            0.44,
+            3.6
+          ]
+        }
+      ],
+      "hitLog": [
+        {
+          "cast": 5,
+          "target": "FRONT B",
+          "element": "Sword",
+          "time": 0.2999997,
+          "damage": 43.0,
+          "point": [
+            2.05733085,
+            0.942558467,
+            -0.04921421
+          ],
+          "impulse": [
+            2.06,
+            0.45,
+            0.0
+          ]
+        }
+      ]
+    },
+    {
+      "frame": 483,
+      "clock": 6.179995,
+      "kind": "Sword",
+      "tier": 4,
+      "age": 0.979999065,
+      "hits": 3,
+      "walls": 0,
+      "ground": 0,
+      "particles": 0,
+      "drops": 0,
+      "poolSlots": 100,
+      "queries": 127,
+      "targets": [
+        {
+          "name": "FRONT A",
+          "hits": 1,
+          "damage": 50.0,
+          "displacement": 0.09637324,
+          "position": [
+            1.32650757,
+            0.439999938,
+            -0.9550853
+          ]
+        },
+        {
+          "name": "FRONT B",
+          "hits": 1,
+          "damage": 50.0,
+          "displacement": 0.09637312,
+          "position": [
+            1.844275,
+            0.439999938,
+            0.0
+          ]
+        },
+        {
+          "name": "FRONT C",
+          "hits": 1,
+          "damage": 50.0,
+          "displacement": 0.09637324,
+          "position": [
+            1.32650757,
+            0.439999938,
+            0.9550853
+          ]
+        },
+        {
+          "name": "LEFT",
+          "hits": 0,
+          "damage": 0.0,
+          "displacement": 0.02000007,
+          "position": [
+            -1.75,
+            0.44,
+            0.1
+          ]
+        },
+        {
+          "name": "DEPTH",
+          "hits": 0,
+          "damage": 0.0,
+          "displacement": 0.02000007,
+          "position": [
+            0.0,
+            0.44,
+            2.3
+          ]
+        },
+        {
+          "name": "COVERED",
+          "hits": 0,
+          "damage": 0.0,
+          "displacement": 0.02000007,
+          "position": [
+            -2.6,
+            0.44,
+            -2.6
+          ]
+        },
+        {
+          "name": "OUTSIDE",
+          "hits": 0,
+          "damage": 0.0,
+          "displacement": 0.02000007,
+          "position": [
+            4.6,
+            0.44,
+            3.6
+          ]
+        }
+      ],
+      "hitLog": [
+        {
+          "cast": 6,
+          "target": "FRONT C",
+          "element": "Sword",
+          "time": 0.259999752,
+          "damage": 50.0,
+          "point": [
+            1.68724549,
+            1.05293059,
+            1.443926
+          ],
+          "impulse": [
+            1.85029829,
+            0.45,
+            1.33221483
+          ]
+        },
+        {
+          "cast": 6,
+          "target": "FRONT B",
+          "element": "Sword",
+          "time": 0.2999997,
+          "damage": 50.0,
+          "point": [
+            2.20404482,
+            0.897213757,
+            0.335943162
+          ],
+          "impulse": [
+            2.28,
+            0.45,
+            0.0
+          ]
+        },
+        {
+          "cast": 6,
+          "target": "FRONT A",
+          "element": "Sword",
+          "time": 0.339999676,
+          "damage": 50.0,
+          "point": [
+            2.08991623,
+            0.741735339,
+            -0.7703433
+          ],
+          "impulse": [
+            1.85029829,
+            0.45,
+            -1.33221483
+          ]
+        }
+      ]
+    },
+    {
+      "frame": 483,
+      "clock": 7.159994,
+      "kind": "Sword",
+      "tier": 5,
+      "age": 0.979999065,
+      "hits": 2,
+      "walls": 0,
+      "ground": 0,
+      "particles": 0,
+      "drops": 0,
+      "poolSlots": 100,
+      "queries": 124,
+      "targets": [
+        {
+          "name": "FRONT A",
+          "hits": 1,
+          "damage": 57.0,
+          "displacement": 0.111960277,
+          "position": [
+            1.33939815,
+            0.439999938,
+            -0.9643667
+          ]
+        },
+        {
+          "name": "FRONT B",
+          "hits": 1,
+          "damage": 57.0,
+          "displacement": 0.111960009,
+          "position": [
+            1.86015916,
+            0.439999938,
+            0.0
+          ]
+        },
+        {
+          "name": "FRONT C",
+          "hits": 0,
+          "damage": 0.0,
+          "displacement": 0.02000007,
+          "position": [
+            1.25,
+            0.44,
+            0.9
+          ]
+        },
+        {
+          "name": "LEFT",
+          "hits": 0,
+          "damage": 0.0,
+          "displacement": 0.02000007,
+          "position": [
+            -1.75,
+            0.44,
+            0.1
+          ]
+        },
+        {
+          "name": "DEPTH",
+          "hits": 0,
+          "damage": 0.0,
+          "displacement": 0.02000007,
+          "position": [
+            0.0,
+            0.44,
+            2.3
+          ]
+        },
+        {
+          "name": "COVERED",
+          "hits": 0,
+          "damage": 0.0,
+          "displacement": 0.02000007,
+          "position": [
+            -2.6,
+            0.44,
+            -2.6
+          ]
+        },
+        {
+          "name": "OUTSIDE",
+          "hits": 0,
+          "damage": 0.0,
+          "displacement": 0.02000007,
+          "position": [
+            4.6,
+            0.44,
+            3.6
+          ]
+        }
+      ],
+      "hitLog": [
+        {
+          "cast": 7,
+          "target": "FRONT A",
+          "element": "Sword",
+          "time": 0.259999752,
+          "damage": 57.0,
+          "point": [
+            1.55601239,
+            -0.507907748,
+            -1.22266567
+          ],
+          "impulse": [
+            2.02883577,
+            0.45,
+            -1.4607619
+          ]
+        },
+        {
+          "cast": 7,
+          "target": "FRONT B",
+          "element": "Sword",
+          "time": 0.279999733,
+          "damage": 57.0,
+          "point": [
+            2.20371461,
+            0.143566191,
+            -0.636075854
+          ],
+          "impulse": [
+            2.5,
+            0.45,
+            0.0
+          ]
+        }
+      ]
+    },
+    {
+      "frame": 483,
+      "clock": 10.2800455,
+      "kind": "Water",
+      "tier": 1,
+      "age": 3.12005138,
+      "hits": 5,
+      "walls": 1,
+      "ground": 3,
+      "particles": 0,
+      "drops": 0,
+      "poolSlots": 100,
+      "queries": 532,
+      "targets": [
+        {
+          "name": "FRONT A",
+          "hits": 1,
+          "damage": 26.0,
+          "displacement": 0.06124287,
+          "position": [
+            1.290931,
+            0.439999938,
+            -0.9409309
+          ]
+        },
+        {
+          "name": "FRONT B",
+          "hits": 1,
+          "damage": 26.0,
+          "displacement": 0.0612429231,
+          "position": [
+            1.80788517,
+            0.439999938,
+            0.0
+          ]
+        },
+        {
+          "name": "FRONT C",
+          "hits": 1,
+          "damage": 26.0,
+          "displacement": 0.06124287,
+          "position": [
+            1.290931,
+            0.439999938,
+            0.9409309
+          ]
+        },
+        {
+          "name": "LEFT",
+          "hits": 1,
+          "damage": 26.0,
+          "displacement": 0.0612429231,
+          "position": [
+            -1.80788517,
+            0.439999938,
+            0.1
+          ]
+        },
+        {
+          "name": "DEPTH",
+          "hits": 1,
+          "damage": 26.0,
+          "displacement": 0.0612429231,
+          "position": [
+            -2.530238E-09,
+            0.439999938,
+            2.35788512
+          ]
+        },
+        {
+          "name": "COVERED",
+          "hits": 0,
+          "damage": 0.0,
+          "displacement": 0.02000007,
+          "position": [
+            -2.6,
+            0.44,
+            -2.6
+          ]
+        },
+        {
+          "name": "OUTSIDE",
+          "hits": 0,
+          "damage": 0.0,
+          "displacement": 0.02000007,
+          "position": [
+            4.6,
+            0.44,
+            3.6
+          ]
+        }
+      ],
+      "hitLog": [
+        {
+          "cast": 8,
+          "target": "FRONT C",
+          "element": "Water",
+          "time": 0.6199994,
+          "damage": 26.0,
+          "point": [
+            0.7682331,
+            0.8100673,
+            0.7682331
+          ],
+          "impulse": [
+            1.20208156,
+            0.45,
+            1.20208156
+          ]
+        },
+        {
+          "cast": 8,
+          "target": "FRONT A",
+          "element": "Water",
+          "time": 0.6199994,
+          "damage": 26.0,
+          "point": [
+            0.76823324,
+            0.8100673,
+            -0.7682327
+          ],
+          "impulse": [
+            1.20208192,
+            0.45,
+            -1.20208108
+          ]
+        },
+        {
+          "cast": 8,
+          "target": "FRONT B",
+          "element": "Water",
+          "time": 0.6599994,
+          "damage": 26.0,
+          "point": [
+            1.251077,
+            0.812037051,
+            0.0
+          ],
+          "impulse": [
+            1.7,
+            0.45,
+            0.0
+          ]
+        },
+        {
+          "cast": 8,
+          "target": "LEFT",
+          "element": "Water",
+          "time": 0.6599994,
+          "damage": 26.0,
+          "point": [
+            -1.26139367,
+            0.812130868,
+            -1.10274541E-07
+          ],
+          "impulse": [
+            -1.7,
+            0.45,
+            -1.48618724E-07
+          ]
+        },
+        {
+          "cast": 8,
+          "target": "DEPTH",
+          "element": "Water",
+          "time": 0.7599993,
+          "damage": 26.0,
+          "point": [
+            -7.87431063E-08,
+            0.8126397,
+            1.80143237
+          ],
+          "impulse": [
+            -7.430936E-08,
+            0.45,
+            1.7
+          ]
+        }
+      ]
+    },
+    {
+      "frame": 483,
+      "clock": 13.4001169,
+      "kind": "Water",
+      "tier": 2,
+      "age": 3.12007141,
+      "hits": 5,
+      "walls": 2,
+      "ground": 7,
+      "particles": 0,
+      "drops": 0,
+      "poolSlots": 100,
+      "queries": 1108,
+      "targets": [
+        {
+          "name": "FRONT A",
+          "hits": 1,
+          "damage": 32.0,
+          "displacement": 0.06124281,
+          "position": [
+            1.30012989,
+            0.439999938,
+            -0.928942561
+          ]
+        },
+        {
+          "name": "FRONT B",
+          "hits": 1,
+          "damage": 32.0,
+          "displacement": 0.0612429231,
+          "position": [
+            1.80788517,
+            0.439999938,
+            0.0
+          ]
+        },
+        {
+          "name": "FRONT C",
+          "hits": 1,
+          "damage": 32.0,
+          "displacement": 0.06124281,
+          "position": [
+            1.30012989,
+            0.439999938,
+            0.928942561
+          ]
+        },
+        {
+          "name": "LEFT",
+          "hits": 1,
+          "damage": 32.0,
+          "displacement": 0.0612429231,
+          "position": [
+            -1.80788517,
+            0.439999938,
+            0.1
+          ]
+        },
+        {
+          "name": "DEPTH",
+          "hits": 1,
+          "damage": 32.0,
+          "displacement": 0.0612429231,
+          "position": [
+            -2.530238E-09,
+            0.439999938,
+            2.35788512
+          ]
+        },
+        {
+          "name": "COVERED",
+          "hits": 0,
+          "damage": 0.0,
+          "displacement": 0.02000007,
+          "position": [
+            -2.6,
+            0.44,
+            -2.6
+          ]
+        },
+        {
+          "name": "OUTSIDE",
+          "hits": 0,
+          "damage": 0.0,
+          "displacement": 0.02000007,
+          "position": [
+            4.6,
+            0.44,
+            3.6
+          ]
+        }
+      ],
+      "hitLog": [
+        {
+          "cast": 9,
+          "target": "FRONT B",
+          "element": "Water",
+          "time": 0.6200142,
+          "damage": 32.0,
+          "point": [
+            1.22616124,
+            0.8108806,
+            0.0
+          ],
+          "impulse": [
+            1.7,
+            0.45,
+            0.0
+          ]
+        },
+        {
+          "cast": 9,
+          "target": "LEFT",
+          "element": "Water",
+          "time": 0.6200142,
+          "damage": 32.0,
+          "point": [
+            -1.23597777,
+            0.810983956,
+            -1.0805261E-07
+          ],
+          "impulse": [
+            -1.7,
+            0.45,
+            -1.48618724E-07
+          ]
+        },
+        {
+          "cast": 9,
+          "target": "FRONT C",
+          "element": "Water",
+          "time": 0.8600197,
+          "damage": 32.0,
+          "point": [
+            0.8924331,
+            0.8082814,
+            0.5152465
+          ],
+          "impulse": [
+            1.47224319,
+            0.45,
+            0.85
+          ]
+        },
+        {
+          "cast": 9,
+          "target": "FRONT A",
+          "element": "Water",
+          "time": 0.8600197,
+          "damage": 32.0,
+          "point": [
+            0.892433345,
+            0.8082814,
+            -0.5152463
+          ],
+          "impulse": [
+            1.47224355,
+            0.45,
+            -0.8499996
+          ]
+        },
+        {
+          "cast": 9,
+          "target": "DEPTH",
+          "element": "Water",
+          "time": 1.00002289,
+          "damage": 32.0,
+          "point": [
+            -7.771061E-08,
+            0.8134531,
+            1.77781117
+          ],
+          "impulse": [
+            -7.430936E-08,
+            0.45,
+            1.7
+          ]
+        }
+      ]
+    },
+    {
+      "frame": 483,
+      "clock": 16.5201874,
+      "kind": "Water",
+      "tier": 3,
+      "age": 3.12007046,
+      "hits": 5,
+      "walls": 2,
+      "ground": 2,
+      "particles": 7,
+      "drops": 0,
+      "poolSlots": 100,
+      "queries": 1792,
+      "targets": [
+        {
+          "name": "FRONT A",
+          "hits": 1,
+          "damage": 38.0,
+          "displacement": 0.06124287,
+          "position": [
+            1.290931,
+            0.439999938,
+            -0.9409309
+          ]
+        },
+        {
+          "name": "FRONT B",
+          "hits": 1,
+          "damage": 38.0,
+          "displacement": 0.0612429231,
+          "position": [
+            1.80788517,
+            0.439999938,
+            0.0
+          ]
+        },
+        {
+          "name": "FRONT C",
+          "hits": 1,
+          "damage": 38.0,
+          "displacement": 0.0612429567,
+          "position": [
+            1.303479,
+            0.439999938,
+            0.9221517
+          ]
+        },
+        {
+          "name": "LEFT",
+          "hits": 1,
+          "damage": 38.0,
+          "displacement": 0.0612429231,
+          "position": [
+            -1.80788517,
+            0.439999938,
+            0.1
+          ]
+        },
+        {
+          "name": "DEPTH",
+          "hits": 1,
+          "damage": 38.0,
+          "displacement": 0.0612429231,
+          "position": [
+            -2.530238E-09,
+            0.439999938,
+            2.35788512
+          ]
+        },
+        {
+          "name": "COVERED",
+          "hits": 0,
+          "damage": 0.0,
+          "displacement": 0.02000007,
+          "position": [
+            -2.6,
+            0.44,
+            -2.6
+          ]
+        },
+        {
+          "name": "OUTSIDE",
+          "hits": 0,
+          "damage": 0.0,
+          "displacement": 0.02000007,
+          "position": [
+            4.6,
+            0.44,
+            3.6
+          ]
+        }
+      ],
+      "hitLog": [
+        {
+          "cast": 10,
+          "target": "FRONT B",
+          "element": "Water",
+          "time": 0.600013733,
+          "damage": 38.0,
+          "point": [
+            1.23146331,
+            0.852770269,
+            0.0
+          ],
+          "impulse": [
+            1.7,
+            0.45,
+            0.0
+          ]
+        },
+        {
+          "cast": 10,
+          "target": "FRONT C",
+          "element": "Water",
+          "time": 0.6200142,
+          "damage": 38.0,
+          "point": [
+            1.02732778,
+            0.8429883,
+            0.425533175
+          ],
+          "impulse": [
+            1.57059515,
+            0.45,
+            0.650561869
+          ]
+        },
+        {
+          "cast": 10,
+          "target": "DEPTH",
+          "element": "Water",
+          "time": 0.820018768,
+          "damage": 38.0,
+          "point": [
+            -7.94548356E-08,
+            0.897061467,
+            1.81771445
+          ],
+          "impulse": [
+            -7.430936E-08,
+            0.45,
+            1.7
+          ]
+        },
+        {
+          "cast": 10,
+          "target": "LEFT",
+          "element": "Water",
+          "time": 0.8400192,
+          "damage": 38.0,
+          "point": [
+            -1.24196589,
+            0.8536251,
+            -1.085761E-07
+          ],
+          "impulse": [
+            -1.7,
+            0.45,
+            -1.48618724E-07
+          ]
+        },
+        {
+          "cast": 10,
+          "target": "FRONT A",
+          "element": "Water",
+          "time": 0.98002243,
+          "damage": 38.0,
+          "point": [
+            0.744812369,
+            0.8380782,
+            -0.7448119
+          ],
+          "impulse": [
+            1.20208192,
+            0.45,
+            -1.20208108
+          ]
+        }
+      ]
+    },
+    {
+      "frame": 483,
+      "clock": 18.3202286,
+      "kind": "Lightning",
+      "tier": 1,
+      "age": 1.8000412,
+      "hits": 3,
+      "walls": 0,
+      "ground": 0,
+      "particles": 0,
+      "drops": 0,
+      "poolSlots": 100,
+      "queries": 8,
+      "targets": [
+        {
+          "name": "FRONT A",
+          "hits": 1,
+          "damage": 55.0,
+          "displacement": 0.104844287,
+          "position": [
+            1.20001817,
+            0.439999938,
+            -0.9899674
+          ]
+        },
+        {
+          "name": "FRONT B",
+          "hits": 1,
+          "damage": 55.0,
+          "displacement": 0.124955863,
+          "position": [
+            1.8733449,
+            0.439999938,
+            0.0
+          ]
+        },
+        {
+          "name": "FRONT C",
+          "hits": 1,
+          "damage": 55.0,
+          "displacement": 0.104844287,
+          "position": [
+            1.20001817,
+            0.439999938,
+            0.9899674
+          ]
+        },
+        {
+          "name": "LEFT",
+          "hits": 0,
+          "damage": 0.0,
+          "displacement": 0.02000007,
+          "position": [
+            -1.75,
+            0.44,
+            0.1
+          ]
+        },
+        {
+          "name": "DEPTH",
+          "hits": 0,
+          "damage": 0.0,
+          "displacement": 0.02000007,
+          "position": [
+            0.0,
+            0.44,
+            2.3
+          ]
+        },
+        {
+          "name": "COVERED",
+          "hits": 0,
+          "damage": 0.0,
+          "displacement": 0.02000007,
+          "position": [
+            -2.6,
+            0.44,
+            -2.6
+          ]
+        },
+        {
+          "name": "OUTSIDE",
+          "hits": 0,
+          "damage": 0.0,
+          "displacement": 0.02000007,
+          "position": [
+            4.6,
+            0.44,
+            3.6
+          ]
+        }
+      ],
+      "hitLog": [
+        {
+          "cast": 11,
+          "target": "FRONT C",
+          "element": "Lightning",
+          "time": 0.680015564,
+          "damage": 55.0,
+          "point": [
+            1.75,
+            0.08,
+            0.0
+          ],
+          "impulse": [
+            -1.1655432,
+            0.45,
+            2.09797764
+          ]
+        },
+        {
+          "cast": 11,
+          "target": "FRONT B",
+          "element": "Lightning",
+          "time": 0.680015564,
+          "damage": 55.0,
+          "point": [
+            1.75,
+            0.08,
+            0.0
+          ],
+          "impulse": [
+            2.32755756,
+            1.03521442,
+            0.0
+          ]
+        },
+        {
+          "cast": 11,
+          "target": "FRONT A",
+          "element": "Lightning",
+          "time": 0.680015564,
+          "damage": 55.0,
+          "point": [
+            1.75,
+            0.08,
+            0.0
+          ],
+          "impulse": [
+            -1.1655432,
+            0.45,
+            -2.09797764
+          ]
+        }
+      ]
+    },
+    {
+      "frame": 483,
+      "clock": 20.12027,
+      "kind": "Lightning",
+      "tier": 2,
+      "age": 1.8000412,
+      "hits": 5,
+      "walls": 0,
+      "ground": 0,
+      "particles": 0,
+      "drops": 0,
+      "poolSlots": 100,
+      "queries": 11,
+      "targets": [
+        {
+          "name": "FRONT A",
+          "hits": 1,
+          "damage": 70.0,
+          "displacement": 0.104844287,
+          "position": [
+            1.20001817,
+            0.439999938,
+            -0.9899674
+          ]
+        },
+        {
+          "name": "FRONT B",
+          "hits": 1,
+          "damage": 70.0,
+          "displacement": 0.124955863,
+          "position": [
+            1.8733449,
+            0.439999938,
+            0.0
+          ]
+        },
+        {
+          "name": "FRONT C",
+          "hits": 1,
+          "damage": 70.0,
+          "displacement": 0.104844287,
+          "position": [
+            1.20001817,
+            0.439999938,
+            0.9899674
+          ]
+        },
+        {
+          "name": "LEFT",
+          "hits": 1,
+          "damage": 49.0,
+          "displacement": 0.124931596,
+          "position": [
+            -1.87311947,
+            0.440000027,
+            0.1070354
+          ]
+        },
+        {
+          "name": "DEPTH",
+          "hits": 1,
+          "damage": 49.0,
+          "displacement": 0.121077836,
+          "position": [
+            0.0,
+            0.439999938,
+            2.41941452
+          ]
+        },
+        {
+          "name": "COVERED",
+          "hits": 0,
+          "damage": 0.0,
+          "displacement": 0.02000007,
+          "position": [
+            -2.6,
+            0.44,
+            -2.6
+          ]
+        },
+        {
+          "name": "OUTSIDE",
+          "hits": 0,
+          "damage": 0.0,
+          "displacement": 0.02000007,
+          "position": [
+            4.6,
+            0.44,
+            3.6
+          ]
+        }
+      ],
+      "hitLog": [
+        {
+          "cast": 12,
+          "target": "FRONT C",
+          "element": "Lightning",
+          "time": 0.680015564,
+          "damage": 70.0,
+          "point": [
+            1.75,
+            0.08,
+            0.0
+          ],
+          "impulse": [
+            -1.1655432,
+            0.45,
+            2.09797764
+          ]
+        },
+        {
+          "cast": 12,
+          "target": "FRONT B",
+          "element": "Lightning",
+          "time": 0.680015564,
+          "damage": 70.0,
+          "point": [
+            1.75,
+            0.08,
+            0.0
+          ],
+          "impulse": [
+            2.32755756,
+            1.03521442,
+            0.0
+          ]
+        },
+        {
+          "cast": 12,
+          "target": "FRONT A",
+          "element": "Lightning",
+          "time": 0.680015564,
+          "damage": 70.0,
+          "point": [
+            1.75,
+            0.08,
+            0.0
+          ],
+          "impulse": [
+            -1.1655432,
+            0.45,
+            -2.09797764
+          ]
+        },
+        {
+          "cast": 12,
+          "target": "DEPTH",
+          "element": "Lightning",
+          "time": 0.680015564,
+          "damage": 49.0,
+          "point": [
+            0.0,
+            0.44,
+            2.3
+          ],
+          "impulse": [
+            0.0,
+            0.900952756,
+            2.357253
+          ]
+        },
+        {
+          "cast": 12,
+          "target": "LEFT",
+          "element": "Lightning",
+          "time": 0.680015564,
+          "damage": 49.0,
+          "point": [
+            -1.75,
+            0.44,
+            0.1
+          ],
+          "impulse": [
+            -2.32399154,
+            1.034318,
+            0.132799521
+          ]
+        }
+      ]
+    },
+    {
+      "frame": 483,
+      "clock": 21.920311,
+      "kind": "Lightning",
+      "tier": 3,
+      "age": 1.8000412,
+      "hits": 3,
+      "walls": 0,
+      "ground": 0,
+      "particles": 0,
+      "drops": 0,
+      "poolSlots": 100,
+      "queries": 32,
+      "targets": [
+        {
+          "name": "FRONT A",
+          "hits": 1,
+          "damage": 85.0,
+          "displacement": 0.104844287,
+          "position": [
+            1.20001817,
+            0.439999938,
+            -0.9899674
+          ]
+        },
+        {
+          "name": "FRONT B",
+          "hits": 1,
+          "damage": 85.0,
+          "displacement": 0.124955863,
+          "position": [
+            1.8733449,
+            0.439999938,
+            0.0
+          ]
+        },
+        {
+          "name": "FRONT C",
+          "hits": 1,
+          "damage": 85.0,
+          "displacement": 0.104844287,
+          "position": [
+            1.20001817,
+            0.439999938,
+            0.9899674
+          ]
+        },
+        {
+          "name": "LEFT",
+          "hits": 0,
+          "damage": 0.0,
+          "displacement": 0.02000007,
+          "position": [
+            -1.75,
+            0.44,
+            0.1
+          ]
+        },
+        {
+          "name": "DEPTH",
+          "hits": 0,
+          "damage": 0.0,
+          "displacement": 0.02000007,
+          "position": [
+            0.0,
+            0.44,
+            2.3
+          ]
+        },
+        {
+          "name": "COVERED",
+          "hits": 0,
+          "damage": 0.0,
+          "displacement": 0.02000007,
+          "position": [
+            -2.6,
+            0.44,
+            -2.6
+          ]
+        },
+        {
+          "name": "OUTSIDE",
+          "hits": 0,
+          "damage": 0.0,
+          "displacement": 0.02000007,
+          "position": [
+            4.6,
+            0.44,
+            3.6
+          ]
+        }
+      ],
+      "hitLog": [
+        {
+          "cast": 13,
+          "target": "FRONT C",
+          "element": "Lightning",
+          "time": 0.680015564,
+          "damage": 85.0,
+          "point": [
+            1.75,
+            0.08,
+            0.0
+          ],
+          "impulse": [
+            -1.1655432,
+            0.45,
+            2.09797764
+          ]
+        },
+        {
+          "cast": 13,
+          "target": "FRONT B",
+          "element": "Lightning",
+          "time": 0.680015564,
+          "damage": 85.0,
+          "point": [
+            1.75,
+            0.08,
+            0.0
+          ],
+          "impulse": [
+            2.32755756,
+            1.03521442,
+            0.0
+          ]
+        },
+        {
+          "cast": 13,
+          "target": "FRONT A",
+          "element": "Lightning",
+          "time": 0.680015564,
+          "damage": 85.0,
+          "point": [
+            1.75,
+            0.08,
+            0.0
+          ],
+          "impulse": [
+            -1.1655432,
+            0.45,
+            -2.09797764
+          ]
+        }
+      ]
+    }
+  ],
+  "particleSystems": 16,
+  "scope": "Local PhysicsScene; real colliders, compound targets, rigidbody impulses, sweep and occlusion queries. Not recovered Genshin engine coefficients."
+}

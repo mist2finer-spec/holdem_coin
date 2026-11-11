@@ -1,0 +1,129 @@
+{
+  "pass": true,
+  "variants": 11,
+  "frames": 12106,
+  "worldObjects": 368,
+  "particleSystems": 16,
+  "elapsed": 65.0014343,
+  "samples": [
+    {
+      "kind": "Sword/1",
+      "clock": 90.35685,
+      "frame": 47285,
+      "worldObjects": 368,
+      "particleSystems": 16
+    },
+    {
+      "kind": "Sword/2",
+      "clock": 92.1165543,
+      "frame": 47754,
+      "worldObjects": 368,
+      "particleSystems": 16
+    },
+    {
+      "kind": "Sword/3",
+      "clock": 94.0162354,
+      "frame": 48332,
+      "worldObjects": 368,
+      "particleSystems": 16
+    },
+    {
+      "kind": "Sword/4",
+      "clock": 95.91592,
+      "frame": 48866,
+      "worldObjects": 368,
+      "particleSystems": 16
+    },
+    {
+      "kind": "Sword/5",
+      "clock": 97.8156,
+      "frame": 49404,
+      "worldObjects": 368,
+      "particleSystems": 16
+    },
+    {
+      "kind": "Water/1",
+      "clock": 99.71528,
+      "frame": 49881,
+      "worldObjects": 368,
+      "particleSystems": 16
+    },
+    {
+      "kind": "Water/2",
+      "clock": 103.7546,
+      "frame": 51059,
+      "worldObjects": 368,
+      "particleSystems": 16
+    },
+    {
+      "kind": "Water/3",
+      "clock": 107.793922,
+      "frame": 52224,
+      "worldObjects": 368,
+      "particleSystems": 16
+    },
+    {
+      "kind": "Lightning/1",
+      "clock": 111.833244,
+      "frame": 53390,
+      "worldObjects": 368,
+      "particleSystems": 16
+    },
+    {
+      "kind": "Lightning/2",
+      "clock": 114.532791,
+      "frame": 54185,
+      "worldObjects": 368,
+      "particleSystems": 16
+    },
+    {
+      "kind": "Lightning/3",
+      "clock": 117.232338,
+      "frame": 54952,
+      "worldObjects": 368,
+      "particleSystems": 16
+    },
+    {
+      "kind": "Sword/1",
+      "clock": 119.931885,
+      "frame": 55747,
+      "worldObjects": 368,
+      "particleSystems": 16
+    },
+    {
+      "kind": "Sword/2",
+      "clock": 121.831566,
+      "frame": 56299,
+      "worldObjects": 368,
+      "particleSystems": 16
+    },
+    {
+      "kind": "Sword/3",
+      "clock": 123.731247,
+      "frame": 56870,
+      "worldObjects": 368,
+      "particleSystems": 16
+    },
+    {
+      "kind": "Sword/4",
+      "clock": 125.630928,
+      "frame": 57406,
+      "worldObjects": 368,
+      "particleSystems": 16
+    },
+    {
+      "kind": "Sword/5",
+      "clock": 127.530609,
+      "frame": 57986,
+      "worldObjects": 368,
+      "particleSystems": 16
+    },
+    {
+      "kind": "Water/1",
+      "clock": 129.410828,
+      "frame": 58510,
+      "worldObjects": 368,
+      "particleSystems": 16
+    }
+  ]
+}
