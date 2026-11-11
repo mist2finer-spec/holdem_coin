@@ -11,6 +11,7 @@ namespace IslandGame {
  public sealed class IslandBattleHud:MonoBehaviour {
   IslandFrameBudget budget;float nextRefresh;bool lastActive,lastEnded;
   void Awake(){budget=IslandFrameBudget.Ensure(gameObject);}
+  RectTransform bossBar;UnityEngine.UI.Image bossFill;TextMeshProUGUI bossName;public bool BossBarVisible=>bossBar&&bossBar.gameObject.activeSelf;public float BossHealthFraction=>bossFill?bossFill.rectTransform.anchorMax.x:0;
   IslandApp app;RectTransform safe,frame,header,stage,lower,footer,resource,skills,mode,controls;
   GameObject root;Canvas canvas;[NonSerialized] TMP_FontAsset font;UnityEngine.UI.RawImage viewport;
   RectTransform dungeonPanel;GameObject escapePopup;
@@ -50,6 +51,7 @@ namespace IslandGame {
    stageTap=Fill(Rect("AttackSurface",stage),new Color(0,0,0,0));Stretch((RectTransform)stageTap.transform);
    var attack=stageTap.gameObject.AddComponent<UnityEngine.UI.Button>();stageTap.raycastTarget=true;attack.targetGraphic=stageTap;attack.onClick.AddListener(()=>Dispatch("attack",app.HudAttack));attack.navigation=new UnityEngine.UI.Navigation{mode=UnityEngine.UI.Navigation.Mode.None};
    chamber=Label(stage,"Chamber","",12,TextAlignmentOptions.TopLeft);objective=Label(stage,"Objective","",10,TextAlignmentOptions.Center);
+   bossBar=Rect("BossHealth",stage);Fill(bossBar,new Color(.08f,.04f,.05f,.9f));bossFill=Fill(Rect("Fill",bossBar),new Color(.73f,.08f,.15f));Stretch(bossFill.rectTransform);bossFill.rectTransform.offsetMin=new Vector2(2,2);bossFill.rectTransform.offsetMax=new Vector2(-2,-2);bossName=Label(bossBar,"BossName","아스트로스",12,TextAlignmentOptions.Center);bossName.raycastTarget=false;bossFill.raycastTarget=false;bossBar.GetComponent<UnityEngine.UI.Image>().raycastTarget=false;bossBar.gameObject.SetActive(false);
    for(int i=0;i<damage.Length;i++){damage[i]=Label(stage,"Damage"+i,"",15,TextAlignmentOptions.Center);damage[i].fontStyle=FontStyles.Bold;}
    resource=Rect("Resources",stage);hpBox=Rect("Health",resource);hpOrb=Art(Rect("Orb",hpBox),IslandHudArt.Kind.Orb,new Color(.94f,.28f,.4f));hpText=Label(hpBox,"HealthValue","",10,TextAlignmentOptions.Bottom);
    manaBox=Rect("Mana",resource);manaOrb=Art(Rect("Orb",manaBox),IslandHudArt.Kind.Orb,new Color(.25f,.65f,.95f));manaText=Label(manaBox,"ManaValue","",10,TextAlignmentOptions.Bottom);
@@ -126,6 +128,7 @@ namespace IslandGame {
   public void HideForBossTrials(){if(app)app.HudBattle.RestoreTexturePresentation();if(stick)stick.ResetInput();if(root)root.SetActive(false);}
   void Refresh(){
    var session=app.HudSession;var state=session.State;var hero=app.HudCampaign?state:state?["hero"] as JObject;var progress=state?["progress"] as JObject;var resources=state?["resources"] as JObject;bool active=app.HudCanInput;
+   JToken boss=null;foreach(var mob in state?["mobs"] as JArray??new JArray())if((bool?)mob["unityBoss"]==true){boss=mob;break;}bossBar.gameObject.SetActive(boss!=null&&(bool?)state?["bossVisible"]==true);bossFill.gameObject.SetActive(boss!=null&&NativeCombatPresentation.N(boss["hp"])>0);if(boss!=null)bossFill.rectTransform.anchorMax=new Vector2(Mathf.Clamp01(NativeCombatPresentation.N(boss["hp"])/Mathf.Max(1,NativeCombatPresentation.N(boss["maxHP"]))),1);
    bool escaped=(bool?)state?["mountCampaign"]==true&&(int?)state?["routeZone"]==9&&(string)state?["status"]=="won";
    escapePopup.SetActive(escaped);
    // Interaction remains current every frame; only visual text/icon work is throttled.
@@ -183,7 +186,7 @@ namespace IslandGame {
    Band(stage,.50f,1);Band(header,.94f,1);Band(lower,.08f,.50f);Band(footer,0,.08f);header.SetAsLastSibling();escapePopup.transform.SetAsLastSibling();
    float stageH=h*.50f,headerH=h*.06f,lowerH=h*.42f;
    Box((RectTransform)header.Find("Lobby"),6,3,36,headerH-6);Box((RectTransform)title.transform,50,3,w-178,headerH-6);Box((RectTransform)gold.transform,w-124,3,82,headerH-6);Box((RectTransform)header.Find("Help"),w-36,3,30,headerH-6);Box((RectTransform)viewButton.transform,w-124,3,82,headerH-6);
-   Box((RectTransform)chamber.transform,12,headerH+8,180,40);Box((RectTransform)objective.transform,10,stageH-78,w-20,20);
+   Box(bossBar,w*.2f,headerH+27,w*.6f,9);Box((RectTransform)bossName.transform,0,-20,w*.6f,18);Box((RectTransform)chamber.transform,12,headerH+8,68,40);Box((RectTransform)objective.transform,10,stageH-78,w-20,20);
    float orb=48;resource.anchorMin=new Vector2(0,0);resource.anchorMax=new Vector2(1,0);resource.pivot=new Vector2(.5f,0);resource.anchoredPosition=new Vector2(0,5);resource.sizeDelta=new Vector2(-18,orb);
    Box(hpBox,0,0,orb,orb);Box(manaBox,w-18-orb,0,orb,orb);Stretch((RectTransform)hpOrb.transform);Stretch((RectTransform)manaOrb.transform);Stretch((RectTransform)hpText.transform);Stretch((RectTransform)manaText.transform);
    Box(flasks,(w-18-105)*.5f,orb-46,105,46);Box((RectTransform)hpPotion.transform,0,0,48,46);Box((RectTransform)manaPotion.transform,57,0,48,46);

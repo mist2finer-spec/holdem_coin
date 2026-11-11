@@ -3,7 +3,12 @@ Island / holdem_coin — 통합 작업 시작점 (2026-11-11)
 최상위 기준(2026-11-11 최신 요청): 일반 1~9구역 = 사이드뷰(Side25D). 10구역 = 보스 지역, 사이드뷰로 걸어서 입장 후 보스 등장 때 쿼터뷰(QuarterView).
 현재 10구역은 실제 MountZone10 원형 초원 전장이다. 2000 HP 보스 처치 후 출구가 열리고 마을 문 안에 도착해야 종료한다. 이전 Nature 보스 맵으로 이어지지 않는다. 별도 보스 연습 에셋과 홀덤은 보존한다.
 
-2026-11-11 RPG 오디오 (최신)
+2026-11-11 아스트로스 보스 연출 (최신)
+- 10구역 카메라 확대, 이름/체력바, 자체 걷기·팔 내린 대기·제자리 뒤로 사망.
+- 추격 후0.55초 대기, 기존 훅/스킬 판정 유지. Android 버전 .8, 15지점 PASS/오류0.
+- APK builds/IslandGame-BossPresentation-20261111.apk; 상세 ../../docs/unity/BOSS_PRESENTATION_20261111_KO.md
+
+2026-11-11 RPG 오디오
 - Stage_1_bgm 일반 미궁/보스 제외, 번개·물방울 음원은 VFX hitAt 동기화, RPG 버튼 button_2_bgm.
 - APK builds/IslandGame-RpgAudio-20261111.apk / 버전 .7. Android 입력8개 PASS, 오류0. 청음/실물 휴대폰 미검증.
 - 상세: ../../docs/unity/RPG_AUDIO_20261111_KO.md

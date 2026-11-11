@@ -17,8 +17,8 @@ MonoBehaviour:
   combo: {fileID: 7400000, guid: 9902bf78713ee2d4e82dd1e0f3e4b5d7, type: 2}
   throwClip: {fileID: 7400000, guid: 355f8821538e37a4d881674fcfc6f1e4, type: 2}
   knockback: {fileID: 7400000, guid: e749a91bedea76349a9244cb777e5412, type: 2}
-  idle: {fileID: 7400000, guid: e981e27a31252b94a8878108b9e63cee, type: 2}
-  walk: {fileID: 7400000, guid: ecc891f3e9077fe4e888a2174fa124db, type: 2}
+  idle: {fileID: 7400000, guid: b8161a3ba67cbfc48bd067ca68727c20, type: 2}
+  walk: {fileID: 7400000, guid: 669572be8e0ab5141a6c8e809aab3f2a, type: 2}
   bossMaterial: {fileID: 2100000, guid: 57abab231de83264e923ffcbeb902a76, type: 2}
   bridgeMaterial: {fileID: 0}
   telegraphMaterial: {fileID: 2100000, guid: f600e0f2a7e00d440ae97f6cbcaf68a1, type: 2}

@@ -6,7 +6,7 @@ namespace IslandGame {
  // Development-only traversal with ordinary session inputs. No HP, location, or camera overrides.
  public sealed class ZoneTenArenaProbe:MonoBehaviour {
   IslandApp app;RpgSession session;string output;int frames,errors,stage;float deadline,at,nextSkill;bool approach,reveal,fight,lightning,exit,complete;readonly JArray samples=new JArray(),errorSamples=new JArray();Vector3 moveStart;
-  bool descentStart,descentMiddle,running,outside;readonly JArray gateMotion=new JArray();float nextGateSample;
+  bool walkSeen,idleSeen,attackSeen,deathSeen;bool descentStart,descentMiddle,running,outside;readonly JArray gateMotion=new JArray();float nextGateSample;
   public bool Finished{get;private set;}
   public void Begin(string directory,int startZone=8){if(!Debug.isDebugBuild&&!Application.isEditor)return;output=directory;Directory.CreateDirectory(output);app=FindFirstObjectByType<IslandApp>();session=app.HudSession;app.StartReferenceTraining(startZone);session.Auto=true;deadline=Time.realtimeSinceStartup+180;Application.logMessageReceived+=Log;}
   [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]static void AndroidBoot(){
@@ -22,6 +22,11 @@ namespace IslandGame {
    if(intro=="reveal"&&app.HudBattle.CameraRig.Mode==ViewMode.QuarterView&&!reveal){reveal=true;Capture("boss-reveal");}
    if(intro=="none"&&phase=="boss"&&!fight){fight=true;session.Auto=false;SetStick(Vector2.up);at=time;moveStart=view.HeroTarget.position;stage=1;Capture("quarter-arena");}
    if(stage==1&&time-at>.65f){SetStick(Vector2.zero);Capture("quarter-movement",Vector3.Distance(moveStart,view.HeroTarget.position)>1);stage=2;session.Auto=true;nextSkill=time;}
+   var bossMob=(s["mobs"] as JArray)?.First;string bossAction=(string)bossMob?["action"];
+   if(fight&&!walkSeen&&bossAction=="walk"){walkSeen=true;Capture("boss-walk");}
+   if(walkSeen&&!idleSeen&&bossAction=="idle"){idleSeen=true;Capture("boss-neutral");}
+   if(idleSeen&&!attackSeen&&(bossAction=="combo"||bossAction=="throw")){attackSeen=true;Capture("boss-attack");}
+   if(!deathSeen&&(bool?)s["bossDefeated"]==true&&time-NativeCombatPresentation.N(s["bossDefeatedAt"])>1.15f){deathSeen=true;Capture("boss-fallen");}
    if(stage==2&&phase=="boss"&&time>=nextSkill){int slot=(int)(time*10)%3==0?0:3;session.Command("tick",new JObject{{"skill",slot}});nextSkill=time+1.2f;}
    if(stage>=2&&!lightning&&view.Lightning!=null&&view.Lightning.ActiveCount>0&&view.Lightning.LatestAge>=.04f){lightning=true;Capture("lightning-in-grass");}
    if(phase=="village-exit"){
@@ -40,7 +45,7 @@ namespace IslandGame {
   void SetStick(Vector2 input){var stick=FindFirstObjectByType<IslandHudStick>();stick.ResetInput();if(input.sqrMagnitude<.01f)return;var rect=(RectTransform)stick.transform;var local=rect.rect.center+input*Mathf.Min(rect.rect.width,rect.rect.height)*.45f;stick.OnPointerDown(new UnityEngine.EventSystems.PointerEventData(UnityEngine.EventSystems.EventSystem.current){pointerId=200,position=RectTransformUtility.WorldToScreenPoint(null,rect.TransformPoint(local))});}
   void Capture(string label,bool valid=true){var s=session.State;var view=FindFirstObjectByType<Battle3DView>();var stream=MountZoneStream.Current;var arena=FindFirstObjectByType<ZoneTenArenaScene>();var boss=(s["mobs"] as JArray)?.First;var p=view.HeroTarget.position;float ground=NativeCombatPresentation.UnityGroundHeight(session.Map,p.x*100,p.z)/100;int nature=FindObjectsByType<NatureAuthoredEnvironment>(FindObjectsInactive.Include,FindObjectsSortMode.None).Length;
    valid&=nature==0&&stream&&stream.ActiveZone==9&&stream.LoadedCount==1&&arena&&Mathf.Abs(p.y-ground)<.06f&&(int?)boss?["maxHP"]==2000;
-   samples.Add(new JObject{{"label",label},{"valid",valid},{"frame",Time.frameCount},{"phase",(string)s["phase"]},{"camera",app.HudBattle.CameraRig.Mode.ToString()},{"bossHP",boss?["hp"]?.DeepClone()},{"maxHP",boss?["maxHP"]?.DeepClone()},{"hero",s["hero"]?.DeepClone()},{"natureMaps",nature},{"mountScenes",stream?stream.LoadedCount:0},{"groundError",Mathf.Abs(p.y-ground)},{"entranceClosed",arena&&arena.entranceSeal.activeSelf},{"exitClosed",arena&&arena.exitSeal.activeSelf},{"exitDrop",arena?arena.ExitDrop:0},{"exitProgress",s["villageExitProgress"]?.DeepClone()},{"exitPassable",s["villageExitOpen"]?.DeepClone()},{"escapePopup",FindFirstObjectByType<IslandBattleHud>().EscapePopupVisible}});
+   samples.Add(new JObject{{"label",label},{"valid",valid},{"frame",Time.frameCount},{"phase",(string)s["phase"]},{"camera",app.HudBattle.CameraRig.Mode.ToString()},{"cameraDistance",app.HudBattle.CameraRig.CurrentDistance},{"bossAction",boss?["action"]?.DeepClone()},{"bossBar",FindFirstObjectByType<IslandBattleHud>().BossBarVisible},{"bossHealthFraction",FindFirstObjectByType<IslandBattleHud>().BossHealthFraction},{"bossHP",boss?["hp"]?.DeepClone()},{"maxHP",boss?["maxHP"]?.DeepClone()},{"hero",s["hero"]?.DeepClone()},{"natureMaps",nature},{"mountScenes",stream?stream.LoadedCount:0},{"groundError",Mathf.Abs(p.y-ground)},{"entranceClosed",arena&&arena.entranceSeal.activeSelf},{"exitClosed",arena&&arena.exitSeal.activeSelf},{"exitDrop",arena?arena.ExitDrop:0},{"exitProgress",s["villageExitProgress"]?.DeepClone()},{"exitPassable",s["villageExitOpen"]?.DeepClone()},{"escapePopup",FindFirstObjectByType<IslandBattleHud>().EscapePopupVisible}});
    string file=label+".png";ScreenCapture.CaptureScreenshot(Application.platform==RuntimePlatform.Android?"arena-review/"+file:Path.Combine(output,file));Save("RUNNING");
   }
   void Save(string result){File.WriteAllText(Path.Combine(output,"arena-report.json"),new JObject{{"result",result},{"version",Application.version},{"platform",Application.platform.ToString()},{"frames",frames},{"errors",errors},{"errorSamples",errorSamples},{"networkRequests",session.NetworkRequestCount},{"gateMotion",gateMotion},{"samples",samples}}.ToString());}
