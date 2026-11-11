@@ -2,6 +2,8 @@
   "dependencies": {
     "com.esotericsoftware.spine.spine-csharp": "file:com.esotericsoftware.spine.spine-csharp",
     "com.esotericsoftware.spine.spine-unity": "file:com.esotericsoftware.spine.spine-unity",
+    "com.ivanmurzak.unity.mcp": "1.10.0",
+    "com.ivanmurzak.unity.mcp.particlesystem": "2.1.1",
     "com.unity.cloud.gltfast": "6.20.0",
     "com.unity.nuget.newtonsoft-json": "3.2.1",
     "com.unity.pipeline": "0.9.1-exp.1",
@@ -21,5 +23,15 @@
     "com.unity.modules.unitywebrequest": "1.0.0",
     "com.unity.modules.unitywebrequestaudio": "1.0.0",
     "com.unity.modules.unitywebrequesttexture": "1.0.0"
-  }
+  },
+  "scopedRegistries": [
+    {
+      "name": "package.openupm.com",
+      "url": "https://package.openupm.com",
+      "scopes": [
+        "com.ivanmurzak",
+        "extensions.unity"
+      ]
+    }
+  ]
 }

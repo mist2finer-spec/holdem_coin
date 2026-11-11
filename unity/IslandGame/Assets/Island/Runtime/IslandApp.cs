@@ -52,7 +52,8 @@ namespace IslandGame {
    Text("01  사냥을 시작하세요",20,230,350,30);
    Button("마을길 사냥 입장",20,267,350,58,()=>StartRpg(false));
    Button("성장 사냥 / 장비 관리",20,337,350,48,()=>StartRpg(true));
-   Text("기본 액티브 6칸은 비어 있습니다.\n장비에 액티브 젬을 장착하면 스킬을 쓸 수 있습니다.",22,397,346,48);
+   if(Debug.isDebugBuild||Application.isEditor)Button("영상 전투 연습 · 쪼개기 / 폭풍 부름",20,397,350,42,()=>StartReferenceTraining());
+   else Text("기본 액티브 6칸은 비어 있습니다.\n장비에 액티브 젬을 장착하면 스킬을 쓸 수 있습니다.",22,397,346,48);
    Text("이동 A/D · 공격 Space · 점프 W/J · 스킬 1~6",22,452,346,28);
    Text("02  홀덤 테이블",20,499,350,30);
    Button("온라인 홀덤 · 6인",20,535,350,48,()=>Poker("poker6"));

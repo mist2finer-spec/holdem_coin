@@ -22,6 +22,8 @@ namespace IslandGame {
    if(action.StartsWith("jump"))return action=="jump1"?jumpStart:action=="jump5"?jumpLand:jumpLoop;
    if(action.StartsWith("sliding"))return slide;
    if(action.StartsWith("avoid")||action.StartsWith("dodge"))return roll;
+   if(action=="dash"||action=="rush")return dash?dash:run;
+   if(action=="skill1")return heavy?heavy:attack3;
    if(action.StartsWith("skill"))return spell;
    if(action.StartsWith("death")||action.StartsWith("die"))return death;
    if(action.StartsWith("defeat")||action.StartsWith("damage"))return hit;

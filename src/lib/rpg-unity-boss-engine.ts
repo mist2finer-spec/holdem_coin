@@ -1,11 +1,12 @@
 // Unity-only training encounter. The web RogueEngine, economy and its stage kernel stay unchanged.
+import {referenceSkill,skillAim,skillContains} from './rpg-reference-skills';
 import {BOSS_CONTACT,hookContact} from './rpg-boss-contact';
 import {HERO_CONTACT,heroAttackDefinition,weaponContact} from './rpg-hero-contact';
 import {blocksAt,clearLanding,settleLanding} from './rpg-traversal';
 import natureMap from './generated/unity-nature-map.json';
 export const UNITY_BOSS_PROTOCOL='island-unity-boss-v2';
 export type UnityInput={x:number;y:number;auto:boolean;paused?:boolean;attack?:boolean;jump?:boolean;slide?:boolean;dodge?:boolean;skill?:number;potion?:'health'|'mana'};
-type Motion={kind:string;start:number;duration:number;hitAt:number;from:{x:number;y:number};to:{x:number;y:number};hits?:number[];done?:number;slot?:number;attackId?:number;hitMask?:number;definitionId?:string;timeline?:any;hitIds?:number[];comboStep?:number};
+type Motion={skillId?:string;target?:{x:number;y:number};radius?:number;damage?:number;kind:string;start:number;duration:number;hitAt:number;from:{x:number;y:number};to:{x:number;y:number};hits?:number[];done?:number;slot?:number;attackId?:number;hitMask?:number;definitionId?:string;timeline?:any;hitIds?:number[];comboStep?:number};
 export type UnityRules={playerHP:number;bossHP:number;slimeCount:number;slimeHP:number;attackDamage:number;comboDuration:number;comboHitTimes:number[];warningSeconds:number;blastDamage:number;blastRadius:number;knockbackSeconds:number};
 export const UNITY_BOSS_RULES:Readonly<UnityRules>=Object.freeze({playerHP:1_000_000,bossHP:1_000_000_000,slimeCount:8,slimeHP:120,attackDamage:60,comboDuration:2.2,comboHitTimes:[.85,1.55],warningSeconds:2,blastDamage:10000,blastRadius:120,knockbackSeconds:1.8});
 const clamp=(n:number,a:number,b:number)=>Math.max(a,Math.min(b,n));
@@ -20,7 +21,7 @@ export class UnityBossEngine {
  hero={x:1200,y:LANE_Y,elevation:0,airHeight:0,facing:1,direction:{x:1,y:0},hp:0,maxHP:0,action:'stay1',serial:0,motion:null as Motion|null};
  boss={id:9001,species:9001,unityBoss:true,room:1,x:3500,y:LANE_Y,elevation:0,hp:0,maxHP:0,radius:140,direction:{x:-1,y:0},state:'idle',action:'idle',facing:-1,motion:null as Motion|null};
  slimes:Array<any>=[];fx:Array<any>=[];warning:null|{id:number;attackId:number;x:number;z:number;radius:number;born:number;explodeAt:number}=null;
- cooldowns=[0,0,0,0,0,0];cooldownTotals=[4,4,4,4,4,4];skillEnabled=[false,false,false,false,false,false];
+ skillIds=Array<string>(6).fill('');cooldowns=[0,0,0,0,0,0];cooldownTotals=[4,4,4,4,4,4];skillEnabled=[false,false,false,false,false,false];
  resources={mana:1000,maxMana:1000,potions:{health:3,mana:3},potionCooldowns:{health:0,mana:0}};
  private bossIdleUntil=0;private bossChaseUntil=0;private attackSerial=0;private heroComboStep=0;private previousHero={x:0,y:0,elevation:0,airHeight:0};
  private dodgeAt=0;private jumpAt=0;private attackAt=0;private bossAt=0;private bossTurn=0;private effectSerial=0;private rollRecoveryUntil=0;
@@ -74,15 +75,18 @@ export class UnityBossEngine {
    if(input.jump)this.jumpAt=this.elapsed+1.05;else this.dodgeAt=this.elapsed+1.2;if(input.dodge)this.rollRecoveryUntil=this.elapsed+.72;return true;
   }
   if(input.skill!==undefined){const slot=input.skill;if(!Number.isInteger(slot)||slot<0||slot>=6||!this.skillEnabled[slot]||this.cooldowns[slot]>0||this.resources.mana<50)return false;
-   this.resources.mana-=50;this.cooldowns[slot]=4;this.hero.motion={kind:'skill',slot,attackId:++this.attackSerial,definitionId:'hero-skill',timeline:{active:[{strike:0,from:.3/.7,to:.3/.7}],cancelFrom:1},start:this.elapsed,duration:.7,hitAt:.3,from:point(this.hero.x,this.hero.y),to:point(this.hero.x,this.hero.y),done:0};this.hero.action='skill1';this.hero.serial++;return true;}
+   const spec=referenceSkill(this.skillIds[slot]);if(this.resources.mana<spec.mana)return false;const targets=this.room===0?this.slimes:[this.boss];const center=skillAim(this.hero,targets,spec);this.faceHero(center.x-this.hero.x,this.room===1?center.y-this.hero.y:0);this.resources.mana-=spec.mana;this.cooldowns[slot]=this.cooldownTotals[slot]=spec.cooldown;this.hero.motion={kind:'skill',slot,skillId:spec.id,target:center,radius:spec.radius,damage:spec.damage,attackId:++this.attackSerial,definitionId:spec.id,start:this.elapsed,duration:spec.duration,hitAt:spec.hitAt,from:point(this.hero.x,this.hero.y),to:point(this.hero.x,this.hero.y),done:0};this.hero.action=spec.id==='storm-call'?'skill2':'skill1';this.hero.serial++;return true;}
   if(input.attack&&this.elapsed>=this.attackAt){this.attackAt=this.elapsed+.55;this.hero.motion={kind:'attack',start:this.elapsed,duration:.55,hitAt:.22,from:point(this.hero.x,this.hero.y),to:point(this.hero.x,this.hero.y),done:0};this.hero.action='attack'+(this.heroComboStep++%3+1);this.hero.motion.comboStep=(this.heroComboStep-1)%3+1;this.hero.motion.hitIds=[];this.hero.motion.attackId=++this.attackSerial;this.hero.motion.definitionId='hero-'+this.hero.action;const d=heroAttackDefinition(this.hero.action);this.hero.motion.timeline={active:[{strike:0,from:d.activeFrom,to:d.activeTo}],cancelFrom:d.cancelFrom,contactRevision:HERO_CONTACT.revision};const dir=this.inputDirection(input);if(Math.hypot(dir.x,dir.y)>.1)this.faceHero(dir.x,dir.y);this.hero.serial++;return true;}return false;
  }
  private damageHero(amount:number,kind:string,contact:any={}){if(this.hero.motion?.kind==='dodge'||this.hero.motion?.kind==='knockback')return false;this.hero.hp=Math.max(1,this.hero.hp-amount);this.effect('damage',this.hero.x,amount,{target:'hero',damageKind:kind,...contact});return true;}
- private heroHit(skill:boolean){const range=skill?600:230,damage=this.rules.attackDamage*(skill?4:1);let target:any=null;
-  const candidates=this.room===0?this.slimes.filter(m=>m.hp>0):this.boss.hp>0?[this.boss]:[];
-  for(const m of candidates)if(distance(m,this.hero)<range+(m.unityBoss?m.radius:0)&&(!target||distance(m,this.hero)<distance(target,this.hero)))target=m;
-  if(!target)return;this.faceHero(target.x-this.hero.x,target.y-this.hero.y);target.hp=Math.max(0,target.hp-damage);this.effect('damage',target.x,damage,{target:target.unityBoss?'boss':'mob'+target.id,damageKind:skill?'skill':'attack',attackId:this.hero.motion?.attackId,strike:0,contactAt:this.hero.motion?this.hero.motion.start+this.hero.motion.hitAt:this.elapsed,point:{x:target.x,y:target.elevation+50,z:target.y}});
-  if(target.hp<=0){this.kills++;target.state='death';if(target.unityBoss){this.status='won';this.phase='complete';this.warning=null;this.effect('boss-defeated',target.x);}else if(this.slimeCleared){this.phase='bridge';this.effect('slime-clear',this.hero.x);}}
+ private heroHit(skill:boolean){
+  const motion=this.hero.motion;if(!skill||!motion?.target)return;
+  this.effect('skill-impact',motion.target.x,undefined,{skillId:motion.skillId,attackId:motion.attackId,z:motion.target.y,elevation:this.groundAt(motion.target.x,motion.target.y),radius:motion.radius,born:motion.start+motion.hitAt});
+  const candidates=this.room===0?this.slimes:this.boss.hp>0?[this.boss]:[];
+  for(const target of candidates){if(target.hp<=0||!skillContains(target,motion.target,motion.radius!))continue;
+   const damage=motion.damage!;target.hp=Math.max(0,target.hp-damage);this.effect('damage',target.x,damage,{target:target.unityBoss?'boss':'mob'+target.id,damageKind:'skill',attackId:motion.attackId,strike:0,contactAt:motion.start+motion.hitAt,point:{x:target.x,y:target.elevation+30,z:target.y}});
+   if(target.hp<=0){this.kills++;target.state='death';if(target.unityBoss){this.status='won';this.phase='complete';this.warning=null;this.effect('boss-defeated',target.x);}else if(this.slimeCleared){this.phase='bridge';this.effect('slime-clear',this.hero.x);}}
+  }
  }
  private stepWeapon(dt:number){
   const m=this.hero.motion!;if(this.hero.hp<=0)return;const d=heroAttackDefinition(this.hero.action),end=Math.min(d.activeTo,(this.elapsed-m.start)/m.duration),start=Math.max(d.activeFrom,(this.elapsed-dt-m.start)/m.duration);if(end<start)return;

@@ -47,7 +47,8 @@ namespace IslandGame {
      if(kind=="jump")hero["action"]=JumpClip(t);if(kind=="slide")hero["action"]=t<.7f?"sliding1":"sliding2";
     }else if(kind=="knockback"){
      float flight=Mathf.Clamp01(age/.45f);hero["x"]=Mathf.Lerp(N(motion["from"]?["x"]),N(motion["to"]?["x"]),flight);hero["y"]=Mathf.Lerp(N(motion["from"]?["y"]),N(motion["to"]?["y"]),flight);hero["airHeight"]=age<.45f?4*210*flight*(1-flight):0;hero["action"]=age<.45f?"knockback":age<1.2f?"knockdown":"getup";
-    }else if(kind=="rush"){float desired=Mathf.Lerp(N(motion["from"]?["x"]),N(motion["to"]?["x"]),t);hero["x"]=PreviewWalk(map,state,N(hero["x"]),desired-N(hero["x"]));}
+    }else if(kind=="rush"&&(bool?)state["mountSunday"]==true)return hero;
+    else if(kind=="rush"){float desired=Mathf.Lerp(N(motion["from"]?["x"]),N(motion["to"]?["x"]),t);hero["x"]=PreviewWalk(map,state,N(hero["x"]),desired-N(hero["x"]));}
     return hero;
    }
    if((bool?)state["unityBossMode"]==true){

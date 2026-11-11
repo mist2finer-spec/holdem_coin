@@ -113,6 +113,6 @@ namespace IslandGame {
     yield return new WaitForSecondsRealtime(Mathf.Min(30,Mathf.Pow(2,Mathf.Min(5,attempt-1))));
    }
   }
-  void CloseLocalStage(){localTraining=false;trainingView=null;trainingServerSequence=0;rollAutoResumeAt=0;lastRollStart=float.NegativeInfinity;localCombat?.Dispose();localCombat=null;localMode=false;stageRequestBusy=false;StageBoundaryWaiting=false;localMetadata=null;localSource=null;}
+  void CloseLocalStage(){ReferencePreview=false;localTraining=false;trainingView=null;trainingServerSequence=0;rollAutoResumeAt=0;lastRollStart=float.NegativeInfinity;localCombat?.Dispose();localCombat=null;localMode=false;stageRequestBusy=false;StageBoundaryWaiting=false;localMetadata=null;localSource=null;}
  }
 }

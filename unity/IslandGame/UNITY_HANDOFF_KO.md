@@ -1,15 +1,25 @@
-Island / holdem_coin — 통합 작업 시작점 (2026-11-10)
+Island / holdem_coin — 통합 작업 시작점 (2026-11-11)
 
 최상위 기준: 일반 10구역 = 사이드뷰(Side25D), 보스전만 = 쿼터뷰(QuarterView).
 현재 게임 기준은 새 10구역 맵이다. 초기 low-poly 일반 맵으로 되돌리지 않는다. 현재 사용하는 기존 보스 맵과 홀덤 게임은 보존한다.
 
+
+2026-11-11 영상 기반 추가 적용
+- 원경 파노라마/패럴랙스, 다리·강변 수면, 3줄 몬스터 팩(6마리/최대12), 일정 거리 접근 대시, 검격 다중 타격, 금빛 쪼개기·푸른 폭풍 부름과 시전 자세를 추가했다. 새 보스전은 추가하지 않았다.
+- Development 빌드 로비의 "영상 전투 연습"은 4구역부터 임시 에르텔 2개로 시작하는 무보상 모드이다. 계정 장비는 변경하지 않는다. 일반 사냥에서는 실제 장착 젬을 사용한다.
+- Unity MCP 1.10.0 / AI ParticleSystem 2.1.1 설치. 개인 인증 설정은 Git에 넣지 않는다.
+- 전투 검사 76개/타입 검사/Unity 컴파일 통과. Play Mode에서 스킬별 6마리 명중과 QuarterView 시전 확인. 반복 공격 10회에서 VFX 풀은 12개로 유지됐다.
+- APK 0.1.0-test.20261111.1(code2026111101), 146445039 bytes, 오류0/기존경고1, 서명·16KB 정렬 통과. 블루스택 Android9 업데이트 설치·진입·4→5구역·스킬 터치 확인.
+- SHA256 b70995f63e2dcf381b78681f3315bde1bc76f12aaae24a4a1001f7c49cdbd6ae
+- 상세: ../../docs/unity/REFERENCE_COMBAT_20261111_KO.md
+- 증거/빌드 로그: G:/holdem_coin-workspace/island/maintenance/reference-combat-20261111
 현재 위치
 - 작업 루트: G:/holdem_coin-workspace/island
 - 실제 Unity: branches/current-10zone/unity/IslandGame
 - 활성 Git 브랜치: codex/genshin-environment-20261110
 - 공통 Git 저장소: branches/main/.git
 - 11월 9일 기준 브랜치: branches/local-combat-base
-- 최신 APK: builds/IslandGame-Current-10Zones.apk
+- 최신 APK: builds/IslandGame-ReferenceCombat-20261111.apk
 - 인계/검증: records 및 maintenance/cleanup-20261110/evidence
 - 바르디안 단일 보관본: archives/Vardian_Analysis_Reference.zip
 - 과거 고유 로컬 DB/설정: private-state (비공개, Git에 추가하지 않는다)
@@ -20,7 +30,7 @@ Unity 진입 씬은 Assets/Island/Scenes/Island.unity이며 빌드 씬은 Island
 
 이동속도는 이전 대비 2/3이다. 장애물에 막혀도 이동 입력 동안 달리기 모션이 진행되고, 입력을 놓으면 idle로 전환된다. 점프·구르기·슬라이딩, 기존 전투 규칙, Nilo 스타일, 원신에서 이식한 잔디·돌·나무와 그림자는 유지했다.
 
-이번 검증
+이전 통합본 검증 (2026-11-10)
 - Android APK v0.1.0-test.20261110.3 / code2026111003, 138941520 bytes.
 - SHA256: cea69654af2dece84f910939b3ef5b1ff9c479da4d276c712dbc13b4b194ab38
 - 빌드 오류 0개, 기존 미사용 필드 경고 1개. 서명·ZIP·16KB 정렬 통과.

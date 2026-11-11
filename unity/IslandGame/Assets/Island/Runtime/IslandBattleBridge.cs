@@ -34,8 +34,8 @@ namespace IslandGame {
   }
   public void HudCycleView(){if(battle)battle.SetPresentationView(null);}
   public void HudAuto(){if(HudCanInput)rpg.Auto=!rpg.Auto;}
-  public void HudMenu(string panel){if(panel=="lobby"){Lobby();return;}if(panel=="tavern"){rpg.Close();battle.Clear();Poker("poker6");return;}if(rpg.State==null&&panel!="")return;SetPanel(panel);}
-  public void HudRetry(){SetPanel("");notice="";rpg.Open(CurrentRpgOrigin,campaign);}
+  public void HudMenu(string panel){if(panel=="lobby"){Lobby();return;}if(panel=="tavern"){rpg.Close();battle.Clear();Poker("poker6");return;}if(rpg.ReferencePreview&&panel!=""){notice="연습용 에르텔 · 장비 관리는 일반 사냥에서 이용하세요.";return;}if(rpg.State==null&&panel!="")return;SetPanel(panel);}
+  public void HudRetry(){bool preview=rpg.ReferencePreview;SetPanel("");notice="";if(preview)StartReferenceTraining();else rpg.Open(CurrentRpgOrigin,campaign);}
   public JObject HudGem(string id){EnsureCatalog();return Gem(id);}
  }
 }

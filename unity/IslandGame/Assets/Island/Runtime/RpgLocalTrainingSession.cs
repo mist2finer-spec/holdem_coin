@@ -58,7 +58,7 @@ namespace IslandGame {
   void TrainingCommand(string action,JObject input){
    if(systemPaused||stageRequestBusy||localCombat==null)return;
    if(action=="tick"){if(Paused)return;localCombat.Command((input??new JObject()).ToString(Newtonsoft.Json.Formatting.None));return;}
-   stageRequestBusy=true;StartCoroutine(TrainingProfileCommand(action,epoch));
+   if(ReferencePreview){Failed?.Invoke("연습용 에르텔입니다. 장비 관리는 일반 사냥에서 이용하세요.");return;}stageRequestBusy=true;StartCoroutine(TrainingProfileCommand(action,epoch));
   }
   IEnumerator TrainingProfileCommand(string action,int generation){
    JObject response=null;

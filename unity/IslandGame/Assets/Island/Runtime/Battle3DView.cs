@@ -33,7 +33,7 @@ namespace IslandGame {
   readonly Dictionary<PrimitiveType,Mesh> displayMeshes=new Dictionary<PrimitiveType,Mesh>();
   Transform world;NatureAuthoredEnvironment authored;public float HeroDepth,HeroHeading,MobDepth;bool mountMode;public bool Planar;
   public NatureEnvironmentStream Stream{get;private set;}
-  BossContactDebug contactDebug;CombatFeedbackRouter contactFeedback;BattleDioramaLook diorama;
+  ReferenceCombatVfx referenceVfx;BossContactDebug contactDebug;CombatFeedbackRouter contactFeedback;BattleDioramaLook diorama;
   public BattleDioramaLook Diorama=>diorama;
   public CombatFeedbackRouter ContactFeedback=>contactFeedback;
   public ViewPresentationCoordinator Presentation{get;private set;}
@@ -49,7 +49,7 @@ namespace IslandGame {
   public BossContactDebug ContactDebug=>contactDebug;
   public bool BossEnvironmentReady=>!mountMode&&bossView!=null&&HeroTarget&&authored&&authored.IsReadyNear(HeroTarget.position)&&(!MountZoneStream.Current||MountZoneStream.Current.LoadedCount==0);
   public Transform HeroTarget=>actors.TryGetValue("hero",out var actor)?actor.root.transform:null;
-  public void UpdateContact(JObject state,float visualTime){if(!HeroTarget)return;if(mountMode){if(contactFeedback==null)contactFeedback=new CombatFeedbackRouter(gameObject,battleCamera.GetComponentInParent<BattleCameraController>(),Presentation??(Presentation=new ViewPresentationCoordinator()),FeedbackTarget);contactFeedback.Update(state,visualTime);contactFeedback.Smear(0,HeroAttackId,HeroAttackActive,HeroWeaponTip,visualTime);return;}if(bossView==null)return;if(diorama)diorama.ProtectAttack(bossView.ContactPoint(1),bossView.ContactPoint(3),bossView.WarningTarget,bossView.BossVisible&&bossView.HookActive);if(contactFeedback==null)contactFeedback=new CombatFeedbackRouter(gameObject,battleCamera.GetComponentInParent<BattleCameraController>(),Presentation??(Presentation=new ViewPresentationCoordinator()),FeedbackTarget);contactFeedback.Update(state,visualTime);
+  public void UpdateContact(JObject state,float visualTime){if(!HeroTarget)return;if(referenceVfx==null)referenceVfx=new ReferenceCombatVfx(world);referenceVfx.Update(state,visualTime,HeroTarget,HeroWeaponBase,HeroWeaponTip);if(mountMode){if(contactFeedback==null)contactFeedback=new CombatFeedbackRouter(gameObject,battleCamera.GetComponentInParent<BattleCameraController>(),Presentation??(Presentation=new ViewPresentationCoordinator()),FeedbackTarget);contactFeedback.Update(state,visualTime);contactFeedback.Smear(0,HeroAttackId,HeroAttackActive,HeroWeaponTip,visualTime);return;}if(bossView==null)return;if(diorama)diorama.ProtectAttack(bossView.ContactPoint(1),bossView.ContactPoint(3),bossView.WarningTarget,bossView.BossVisible&&bossView.HookActive);if(contactFeedback==null)contactFeedback=new CombatFeedbackRouter(gameObject,battleCamera.GetComponentInParent<BattleCameraController>(),Presentation??(Presentation=new ViewPresentationCoordinator()),FeedbackTarget);contactFeedback.Update(state,visualTime);
    if(actors.TryGetValue("hero",out var readable)&&readable.occlusionSkin){
     // Imported skinned bounds include the full animation envelope and falsely cover nearby heroes.
     // Use the calibrated torso volume as a conservative gate; the shader checks actual rendered depth.
@@ -67,9 +67,9 @@ namespace IslandGame {
   public string HeroClipName {get;private set;}
   public float HeroSampleTime {get;private set;}
   public float HeroGroundError {get;private set;}
-  public int ActorCount=>actors.Count;
+  public int ActiveReferenceEffects=>referenceVfx?.ActiveEffects??0;public int ReferenceParticles=>referenceVfx?.ParticleCount??0;public int ActorCount=>actors.Count;
   Material ground,edge,bark,leaves,rock,steel,grip,shadow;
-  public void Clear(){if(mountMode&&MountZoneStream.Current)MountZoneStream.Current.Release();mountMode=false;Presentation=null;HeroAttackId=0;HeroAttackActive=false;contactFeedback?.Dispose();contactFeedback=null;contactDebug?.Dispose();contactDebug=null;if(authored){authored.VisualChunkCreated-=OnVisualBranch;authored.VisualChunkRemoving-=OnVisualRemoving;}if(diorama){diorama.Dispose();diorama=null;}foreach(var a in actors.Values)a.animation?.Dispose();foreach(var a in slimePool)a.animation?.Dispose();if(authored){Destroy(authored.gameObject);authored=null;}if(bossView!=null){bossView.Dispose();bossView=null;}if(Stream!=null){Stream.Dispose();Stream=null;}actors.Clear();slimePool.Clear();displayMeshes.Clear();world=null;hasFrustum=false;foreach(var o in owned)if(o)Destroy(o);owned.Clear();}
+  public void Clear(){referenceVfx?.Dispose();referenceVfx=null;if(mountMode&&MountZoneStream.Current)MountZoneStream.Current.Release();mountMode=false;Presentation=null;HeroAttackId=0;HeroAttackActive=false;contactFeedback?.Dispose();contactFeedback=null;contactDebug?.Dispose();contactDebug=null;if(authored){authored.VisualChunkCreated-=OnVisualBranch;authored.VisualChunkRemoving-=OnVisualRemoving;}if(diorama){diorama.Dispose();diorama=null;}foreach(var a in actors.Values)a.animation?.Dispose();foreach(var a in slimePool)a.animation?.Dispose();if(authored){Destroy(authored.gameObject);authored=null;}if(bossView!=null){bossView.Dispose();bossView=null;}if(Stream!=null){Stream.Dispose();Stream=null;}actors.Clear();slimePool.Clear();displayMeshes.Clear();world=null;hasFrustum=false;foreach(var o in owned)if(o)Destroy(o);owned.Clear();}
   Material Mat(string name,Color color,float metallic=0){var m=new Material(Shader.Find("Standard")){name=name,color=color};m.SetFloat("_Glossiness",.2f);m.SetFloat("_Metallic",metallic);owned.Add(m);return m;}
   GameObject Shape(string name,PrimitiveType type,Transform parent,Vector3 p,Vector3 scale,Material material){
    Mesh mesh;if(!displayMeshes.TryGetValue(type,out mesh)){mesh=IslandDisplayMeshes.Create(type);displayMeshes.Add(type,mesh);owned.Add(mesh);}
@@ -184,7 +184,8 @@ namespace IslandGame {
     if(kind=="attack"||kind=="skill"){
      float displayAge=age;
      if(kind=="attack"&&action=="attack1"&&Presentation!=null)displayAge=CombatPoseTiming.Limited(Mathf.Clamp01(age/duration),.32f,.58f,Presentation.SidePoseWeight)*duration;
-     sample=NativeCombatPresentation.MotionTime(displayAge,duration,hitAt,clip.length,clip.length*.45f);
+     float segment=kind=="skill"&&action=="skill1"?Mathf.Min(1.25f,clip.length):clip.length;
+     sample=NativeCombatPresentation.MotionTime(displayAge,duration,hitAt,segment,segment*.45f);
     }
     else if(kind=="rush"||kind=="dodge"||kind=="slide")sample=Mathf.Clamp01(age/duration)*clip.length;
    }
@@ -204,7 +205,7 @@ namespace IslandGame {
     if(budget&&!budget.AllowOptionalPose()){ThrottledSamples++;return sample;}a.lastSampleSlot=slot;
    }
    long poseStart=System.Diagnostics.Stopwatch.GetTimestamp();
-   CombatPoseBlend policy=!hero?CombatPoseBlend.Locomotion:kind=="dodge"?CombatPoseBlend.DodgeCancel:kind=="knockback"?CombatPoseBlend.HitReaction:kind=="attack"?HeroAttackActive?CombatPoseBlend.AttackContact:HeroAttackProgress<.32f?CombatPoseBlend.AttackEntry:CombatPoseBlend.AttackRecovery:CombatPoseBlend.Locomotion;
+   CombatPoseBlend policy=!hero?CombatPoseBlend.Locomotion:kind=="dodge"?CombatPoseBlend.DodgeCancel:kind=="knockback"?CombatPoseBlend.HitReaction:kind=="rush"?CombatPoseBlend.DodgeCancel:kind=="skill"?CombatPoseBlend.AttackEntry:kind=="attack"?HeroAttackActive?CombatPoseBlend.AttackContact:HeroAttackProgress<.32f?CombatPoseBlend.AttackEntry:CombatPoseBlend.AttackRecovery:CombatPoseBlend.Locomotion;
    a.presentationRoot.localScale=Vector3.one;a.animation.Sample(clip,sample,advance,policy);SampleCalls++;if(!hero&&budget)budget.RecordPose(poseStart);
    // Mirror the side-on presentation without rotating the asymmetric rig through its back view.
    a.model.transform.localScale=new Vector3(a.scale,a.scale,a.scale*(hero&&!Planar&&facing<0?-1:1));
@@ -220,6 +221,7 @@ namespace IslandGame {
    }
    if(hero&&a.pelvis){var p=a.root.transform.InverseTransformPoint(a.pelvis.position);a.model.transform.localPosition=new Vector3(-p.x,0,-p.z);}
    a.model.transform.localPosition+=Vector3.down*feet;
+   if(hero&&kind=="skill")ReferenceSkillPose.Apply(action,duration>0?age/duration:0,a.pelvis,a.shoulder);
    if(hero&&mountMode&&kind=="attack")HeroMeleePose.Apply(action,duration>0?age/duration:0,a.shoulder,a.weapon,elevation/100);
 
    if(!hero){
