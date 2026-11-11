@@ -156,7 +156,7 @@ namespace IslandGame {
     if(Uses3D)threeD.MobDepth=(bool?)state["mountSunday"]==true?(NativeCombatPresentation.N(m["y"])-NativeCombatPresentation.N(session.Map?["laneY"],5000))/100:0;DrawActor(id,profile.Value<string>("skeleton"),clip??"stay1",mx,height,m.Value<bool?>("boss")==true?94:species==1102?68:40,mx>x?-1:1,mode+(mode=="windup"?m["until"]?.ToString():""));shown.Add(id);
    }
    foreach(var actor in actors)actor.Value.gameObject.SetActive(shown.Contains(actor.Key));
-   if(Uses3D){threeD.ShowOnly(shown);threeD.UpdateContact(state,VisualTime);threeD.Follow(view,x,e,frameAdvance);return;}
+   if(Uses3D){threeD.ShowOnly(shown);threeD.UpdateContact(state,VisualTime);threeD.Follow(view,x,e,frameAdvance);threeD.PresentLightning(session.Map,VisualTime);return;}
    var target=new Vector3(x/100,e/100+view.orthographicSize*.44f,-10);view.transform.position=Vector3.Lerp(view.transform.position,target,1-Mathf.Exp(-Time.unscaledDeltaTime*24));
   }
   public Vector2 ViewPoint(float x,float elevation,float depth=0){var p=view.WorldToViewportPoint(new Vector3(x/100,elevation/100,depth/100));return new Vector2(p.x,1-p.y);}

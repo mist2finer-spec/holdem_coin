@@ -12,11 +12,13 @@ namespace IslandGame {
    runId=id="reference-practice";var skills=new JArray();var items=new JArray();var equipped=new JObject();
    for(int i=0;i<6;i++){
     string gem=new[]{"icespear","icenova","frostshot","stormcall","arc","spark"}[i];string item="practice-"+i;
-    skills.Add(new JObject{{"enabled",true},{"activeId",gem},{"trigger",null},{"index",i},{"name",new[]{"원형 물방울","이중 물결","회전 물방울","낙뢰","연쇄 번개","뇌우"}[i]}});
-    items.Add(new JObject{{"instanceId",item},{"slot",RpgContracts.Slots[i]},{"gems",new JArray(gem)},{"socketColors",new JArray("white")}});equipped[RpgContracts.Slots[i]]=item;
+    var supports=i<4?new JArray():i==4?new JArray("echo","elemental"):new JArray("echo","elemental","reach","quick");
+    skills.Add(new JObject{{"supportIds",supports},{"enabled",true},{"activeId",gem},{"trigger",null},{"index",i},{"name",new[]{"원형 물방울","이중 물결","회전 물방울","낙뢰","연쇄 번개","뇌우"}[i]}});
+    var gems=new JArray(gem);var colors=new JArray("white");var links=new JArray();foreach(var support in supports){gems.Add(support.DeepClone());colors.Add("white");links.Add(true);}
+    items.Add(new JObject{{"instanceId",item},{"slot",RpgContracts.Slots[i]},{"gems",gems},{"socketColors",colors},{"socketLinks",links}});equipped[RpgContracts.Slots[i]]=item;
    }
    var build=new JObject{{"skills",skills}};
-   localMetadata=new JObject{{"build",build},{"buildRevision","elemental-practice-v2"},{"progress",new JObject{{"level",1},{"weaponType","sword"},{"skillEnabled",new JArray(1,1,1,1,1,1)},{"equipment",new JObject{{"items",items},{"equipped",equipped}}}}}};
+   localMetadata=new JObject{{"build",build},{"buildRevision","elemental-practice-v3"},{"progress",new JObject{{"level",1},{"weaponType","sword"},{"skillEnabled",new JArray(1,1,1,1,1,1)},{"equipment",new JObject{{"items",items},{"equipped",equipped}}}}}};
    var boot=new JObject{{"mode",quarter?"boss":"mount"},{"previewArena",quarter},{"seed",111},{"referencePreview",true},{"previewZone",Mathf.Clamp(zone,0,9)},{"traversalProfile","source-run-v2"},{"build",build.DeepClone()}};
    localCombat=new StageCombatWorker(localSource,boot.ToString(Newtonsoft.Json.Formatting.None),20);
   }

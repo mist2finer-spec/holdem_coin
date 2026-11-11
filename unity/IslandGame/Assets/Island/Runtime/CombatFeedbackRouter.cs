@@ -6,7 +6,7 @@ namespace IslandGame {
   sealed class Trail {public LineRenderer line;public Vector3[] points=new Vector3[4];public float[] times=new float[4];public int attack=-1;public bool active;}
   readonly GameObject root;readonly Material material;readonly AudioSource audio;readonly AudioClip clip;readonly AudioListener ownedListener;readonly BattleCameraController camera;readonly ViewPresentationCoordinator profile;readonly Func<string,Transform> resolve;
   readonly Dictionary<string,Flash[]> targets=new Dictionary<string,Flash[]>();readonly Trail[] trails=new Trail[3];readonly LineRenderer[] sparks=new LineRenderer[6];readonly float[] sparkAt=new float[6];readonly Vector3[] sparkPoints=new Vector3[9];
-  int lastEvent=-1,nextSpark;float hitAt=-100,soundAt=-100;string session;
+  int lastEvent=-1,lastLightning=-1,nextSpark;float hitAt=-100,soundAt=-100;string session;
   public bool FlashEnabled=true,SoundEnabled=true,CameraEnabled=true,DecorationsEnabled=true;
   public int ConsumedContacts{get;private set;}public int LastAttackId{get;private set;}public int LastStrike{get;private set;}public float LastContactAt{get;private set;}public float MaximumLateSeconds{get;private set;}
   public CombatFeedbackRouter(GameObject host,BattleCameraController rig,ViewPresentationCoordinator profiles,Func<string,Transform> targetResolver){
@@ -22,6 +22,7 @@ namespace IslandGame {
   Flash[] Target(string id){if(targets.TryGetValue(id,out var cached))return cached;var target=resolve(id);if(!target)return null;var rs=target.GetComponentsInChildren<Renderer>();var list=new List<Flash>();foreach(var r in rs){if(!r.sharedMaterial||r is LineRenderer)continue;int property=Shader.PropertyToID(r.sharedMaterial.HasProperty("_BaseColor")?"_BaseColor":"_Color");if(!r.sharedMaterial.HasProperty(property))continue;var f=new Flash{renderer=r,colorId=property,color=r.sharedMaterial.GetColor(property)};r.GetPropertyBlock(f.saved);r.GetPropertyBlock(f.block);list.Add(f);}cached=list.ToArray();targets[id]=cached;return cached;}
   public void Update(JObject state,float time){
    string id=(string)state["id"];if(session!=id){Reset();session=id;}
+   foreach(var strike in state["fx"] as JArray??Empty){if((string)strike["kind"]!="elemental-strike"||(bool?)strike["blocked"]==true)continue;int key=(int?)strike["id"]??0;float born=NativeCombatPresentation.N(strike["born"]);if(key<=lastLightning||time<born)continue;lastLightning=key;if(time-born<.24f)hitAt=Mathf.Max(hitAt,born);}
    foreach(var token in state["fx"] as JArray??Empty){if((string)token["kind"]!="damage"||token["attackId"]==null||token["contactAt"]==null)continue;int eventId=(int?)token["id"]??0;float contact=(float)token["contactAt"];if(eventId<=lastEvent||time<contact)continue;lastEvent=eventId;float late=time-contact;MaximumLateSeconds=Mathf.Max(MaximumLateSeconds,late);if(late>.45f)continue;
     hitAt=contact;LastAttackId=(int)token["attackId"];LastStrike=(int?)token["strike"]??0;LastContactAt=contact;ConsumedContacts++;
     var target=Target((string)token["target"]??"hero");if(target!=null)foreach(var f in target)f.at=contact;
@@ -40,7 +41,7 @@ namespace IslandGame {
    for(int i=0;i<4;i++)t.line.SetPosition(i,time-t.times[i]<=profile.SmearLife?t.points[i]:tip);
    t.line.startWidth=profile.SmearWidth;t.line.endWidth=.008f;t.line.startColor=new Color(1,.84f,.45f,profile.SmearOpacity);t.line.endColor=new Color(1,.84f,.45f,0);t.line.enabled=profile.SmearOpacity>.01f;
   }
-  void Reset(){lastEvent=-1;hitAt=soundAt=-100;foreach(var ts in targets.Values)foreach(var f in ts)if(f.renderer){f.renderer.SetPropertyBlock(f.saved);f.at=-100;f.active=false;}foreach(var t in trails){t.active=false;t.line.enabled=false;}for(int i=0;i<sparks.Length;i++){sparks[i].enabled=false;sparkAt[i]=-100;}if(camera)camera.SetPresentationImpact(Vector3.zero,0);audio.Stop();}
+  void Reset(){lastEvent=lastLightning=-1;hitAt=soundAt=-100;foreach(var ts in targets.Values)foreach(var f in ts)if(f.renderer){f.renderer.SetPropertyBlock(f.saved);f.at=-100;f.active=false;}foreach(var t in trails){t.active=false;t.line.enabled=false;}for(int i=0;i<sparks.Length;i++){sparks[i].enabled=false;sparkAt[i]=-100;}if(camera)camera.SetPresentationImpact(Vector3.zero,0);audio.Stop();}
   static readonly JArray Empty=new JArray();
   public void Dispose(){Reset();if(ownedListener)UnityEngine.Object.Destroy(ownedListener);UnityEngine.Object.Destroy(root);UnityEngine.Object.Destroy(material);UnityEngine.Object.Destroy(clip);targets.Clear();}
  }

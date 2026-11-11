@@ -68,6 +68,8 @@ namespace IslandGame {
   public string HeroClipName {get;private set;}
   public float HeroSampleTime {get;private set;}
   public float HeroGroundError {get;private set;}
+  public LightningStrikeVfx Lightning=>referenceVfx?.Lightning;
+  public void PresentLightning(JObject map,float time){referenceVfx?.PresentLightning(battleCamera,map,time,Presentation);}
   public int ActiveReferenceEffects=>referenceVfx?.ActiveEffects??0;public int ReferenceParticles=>referenceVfx?.ParticleCount??0;public int ActorCount=>actors.Count;
   Material ground,edge,bark,leaves,rock,steel,grip,shadow;
   public void Clear(){referenceVfx?.Dispose();referenceVfx=null;if(mountMode&&MountZoneStream.Current)MountZoneStream.Current.Release();mountMode=false;Presentation=null;HeroAttackId=0;HeroAttackActive=false;contactFeedback?.Dispose();contactFeedback=null;contactDebug?.Dispose();contactDebug=null;if(authored){authored.VisualChunkCreated-=OnVisualBranch;authored.VisualChunkRemoving-=OnVisualRemoving;}if(diorama){diorama.Dispose();diorama=null;}foreach(var a in actors.Values)a.animation?.Dispose();foreach(var a in slimePool)a.animation?.Dispose();if(authored){Destroy(authored.gameObject);authored=null;}if(bossView!=null){bossView.Dispose();bossView=null;}if(Stream!=null){Stream.Dispose();Stream=null;}actors.Clear();slimePool.Clear();displayMeshes.Clear();world=null;hasFrustum=false;foreach(var o in owned)if(o)Destroy(o);owned.Clear();}

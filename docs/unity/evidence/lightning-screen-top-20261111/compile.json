@@ -1,0 +1,21 @@
+{
+  "success": true,
+  "command": "command",
+  "data": {
+    "command": "script recompile_status",
+    "parameters": {},
+    "result": {
+      "status": "completed",
+      "failed": false,
+      "errors": [],
+      "compilationFailed": false
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7801,
+      "projectPath": "G:\\holdem_coin-workspace\\Island\\branches\\current-10zone\\unity\\IslandGame"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

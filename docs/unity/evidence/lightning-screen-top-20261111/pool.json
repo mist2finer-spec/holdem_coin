@@ -1,0 +1,32 @@
+{
+  "success": true,
+  "command": "command",
+  "data": {
+    "command": "script eval_file",
+    "parameters": {
+      "file": "G:\\holdem_coin-workspace\\island\\maintenance\\lightning-screen-top-20261111\\pool-check.cs"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": {
+        "result": "PASS",
+        "strikes": 10,
+        "activeAtOverlap": 8,
+        "capacity": 8,
+        "lines": 323,
+        "particles": 20,
+        "expired": true,
+        "shaders": "supported/no errors"
+      }
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7801,
+      "projectPath": "G:\\holdem_coin-workspace\\Island\\branches\\current-10zone\\unity\\IslandGame"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

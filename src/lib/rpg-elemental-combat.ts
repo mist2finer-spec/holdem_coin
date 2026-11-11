@@ -5,7 +5,9 @@ export type ElementTarget=ElementPoint&{id:number;hp:number;radius:number;bodyHe
 export type ElementObstacle={x:number;y:number;radius:number;bodyHeight?:number;height?:number;baseElevation?:number};
 export const ELEMENTAL_RULES=Object.freeze({swordRadius:105,dropRadius:18,dropSpeed:520,dropGravity:110,dropLife:1.5,lightningRadius:240,wetSeconds:4,wetMultiplier:1.25});
 type Drop=ElementPoint&{id:number;attackId:number;vx:number;vy:number;vz:number;born:number;radius:number;bounces:number;active:boolean;damage:number;origin:ElementPoint;hit:number[]};
-type Strike={attackId:number;at:number;center:ElementPoint;origin:ElementPoint;damage:number;variant:number;hit:number[]};
+type Strike={attackId:number;at:number;center:ElementPoint;origin:ElementPoint;damage:number;variant:number;linkedSupports:number;hit:number[]};
+// Compiled supportIds contain connected, effective supports; inventory/socket capacity do not count.
+export function linkedElementSupports(skill:any){return Math.min(5,new Set((Array.isArray(skill?.supportIds)?skill.supportIds:[]).filter((id:unknown)=>typeof id==='string'&&id.length>0)).size);}
 export type ElementWorld={targets:ElementTarget[];obstacles:ElementObstacle[];ground:(x:number,y:number)=>number;damage:(target:ElementTarget,damage:number,attackId:number,at:number,element:string,point:ElementPoint)=>void;impulse:(target:ElementTarget,dx:number,dy:number)=>void;emit:(event:any)=>void};
 const distance=(a:{x:number;y:number},b:{x:number;y:number})=>Math.hypot(a.x-b.x,a.y-b.y);
 // Earliest segment/circle intersection, including an initially overlapping sphere.
@@ -24,7 +26,7 @@ export function swordAction(combo:number){return ['attack1','attack2','attack3',
 export class ElementalCombat {
  private serial=0;private drops:Drop[]=[];private strikes:Strike[]=[];
  clear(){this.drops=[];this.strikes=[];}
- cast(skill:string,variant:number,origin:ElementPoint,center:ElementPoint,at:number,attackId:number,damage:number,world:ElementWorld){
+ cast(skill:string,variant:number,origin:ElementPoint,center:ElementPoint,at:number,attackId:number,damage:number,world:ElementWorld,linkedSupports=0){
   const hit:number[]=[];variant=Math.max(1,Math.min(3,variant));
   if(skill==='water-ring'){
    const count=variant===1?8:variant===2?12:16;
@@ -35,9 +37,10 @@ export class ElementalCombat {
    }
    this.drops=this.drops.slice(-48);
   }else{
-   this.strikes.push({attackId,at,origin:{...origin},center:{...center},damage,variant,hit});
-   if(variant===2){const others=world.targets.filter(t=>t.hp>0&&distance(t,center)>25&&distance(t,center)<=450).sort((a,b)=>distance(a,center)-distance(b,center)).slice(0,2);others.forEach((t,i)=>this.strikes.push({attackId,at:at+(i+1)*.12,origin:{...center,elevation:center.elevation+35},center:{...t},damage,variant,hit}));}
-   if(variant===3)for(let i=0;i<4;i++){const angle=i*Math.PI/2,p={x:center.x+Math.cos(angle)*145,y:center.y+Math.sin(angle)*145,elevation:0};p.elevation=world.ground(p.x,p.y);this.strikes.push({attackId,at:at+(i+1)*.12,origin:{...origin},center:p,damage,variant,hit});}
+   linkedSupports=Number.isFinite(linkedSupports)?Math.max(0,Math.min(5,Math.floor(linkedSupports))):0;
+   this.strikes.push({attackId,at,origin:{...origin},center:{...center},damage,variant,linkedSupports,hit});
+   if(variant===2){const others=world.targets.filter(t=>t.hp>0&&distance(t,center)>25&&distance(t,center)<=450).sort((a,b)=>distance(a,center)-distance(b,center)).slice(0,2);others.forEach((t,i)=>this.strikes.push({attackId,at:at+(i+1)*.12,origin:{...center,elevation:center.elevation+35},center:{...t},damage,variant,linkedSupports,hit}));}
+   if(variant===3)for(let i=0;i<4;i++){const angle=i*Math.PI/2,p={x:center.x+Math.cos(angle)*145,y:center.y+Math.sin(angle)*145,elevation:0};p.elevation=world.ground(p.x,p.y);this.strikes.push({attackId,at:at+(i+1)*.12,origin:{...origin},center:p,damage,variant,linkedSupports,hit});}
    this.strikes=this.strikes.slice(-20);
   }
  }
@@ -52,7 +55,7 @@ export class ElementalCombat {
   for(const s of this.strikes){if(s.at>now)continue;
    // Trunks/overhangs occupying the locked ground point block a strike.
    const covered=world.obstacles.some(o=>distance(o,s.center)<o.radius);
-   world.emit({kind:'elemental-strike',element:'lightning',attackId:s.attackId,born:s.at,x:s.center.x,z:s.center.y,elevation:s.center.elevation,radius:ELEMENTAL_RULES.lightningRadius,variant:s.variant,blocked:covered});
+   world.emit({kind:'elemental-strike',element:'lightning',attackId:s.attackId,born:s.at,x:s.center.x,z:s.center.y,elevation:s.center.elevation,radius:ELEMENTAL_RULES.lightningRadius,variant:s.variant,linkedSupports:s.linkedSupports,blocked:covered});
    if(!covered)for(const t of world.targets)if(distance(t,s.center)<=ELEMENTAL_RULES.lightningRadius+t.radius&&elementLineClear({...s.center,elevation:s.center.elevation+35},{...t,elevation:t.elevation+35},world.obstacles,world.ground))this.contact(t,s.damage,s.attackId,s.at,'lightning',s.origin,s.hit,world);
   }
   this.strikes=this.strikes.filter(s=>s.at>now);

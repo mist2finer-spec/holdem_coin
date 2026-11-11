@@ -1,0 +1,27 @@
+{
+  "success": true,
+  "command": "command",
+  "data": {
+    "command": "script eval_file",
+    "parameters": {
+      "file": "G:\\holdem_coin-workspace\\island\\maintenance\\lightning-screen-top-20261111\\restore-editor.cs"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": {
+        "playing": false,
+        "runInBackground": false,
+        "version": "0.1.0-test.20261110.3"
+      }
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7801,
+      "projectPath": "G:\\holdem_coin-workspace\\Island\\branches\\current-10zone\\unity\\IslandGame"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

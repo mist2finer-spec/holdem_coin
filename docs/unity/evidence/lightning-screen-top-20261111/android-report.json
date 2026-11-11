@@ -1,0 +1,536 @@
+{
+  "result": "PASS",
+  "version": "0.1.0-test.20261111.3",
+  "platform": "Android",
+  "frames": 762,
+  "errors": 0,
+  "errorSamples": [],
+  "networkRequests": 0,
+  "samples": [
+    {
+      "label": "side-skill-4-flash",
+      "valid": true,
+      "frame": 105,
+      "camera": "Side25D",
+      "age": 0.0,
+      "supports": 0,
+      "active": 1,
+      "groundArcs": 0,
+      "particles": 24,
+      "lineRenderers": 309,
+      "strikes": [
+        {
+          "startY": 1.14999926,
+          "startX": 0.928305745,
+          "targetX": 0.890325844,
+          "targetY": 0.277131259,
+          "depthError": 0.0,
+          "endError": 0.0,
+          "supports": 0,
+          "groundArcs": 0,
+          "groundError": 0.0,
+          "extent": 0.0,
+          "damageRadius": 2.4
+        }
+      ]
+    },
+    {
+      "label": "side-skill-4-arc",
+      "valid": true,
+      "frame": 106,
+      "camera": "Side25D",
+      "age": 0.0599999428,
+      "supports": 0,
+      "active": 1,
+      "groundArcs": 0,
+      "particles": 24,
+      "lineRenderers": 309,
+      "strikes": [
+        {
+          "startY": 1.15000951,
+          "startX": 0.9243277,
+          "targetX": 0.8863728,
+          "targetY": 0.2820282,
+          "depthError": 0.0,
+          "endError": 0.0,
+          "supports": 0,
+          "groundArcs": 0,
+          "groundError": 0.0,
+          "extent": 0.0,
+          "damageRadius": 2.4
+        }
+      ]
+    },
+    {
+      "label": "side-skill-4-ground",
+      "valid": true,
+      "frame": 107,
+      "camera": "Side25D",
+      "age": 0.1400001,
+      "supports": 0,
+      "active": 1,
+      "groundArcs": 0,
+      "particles": 16,
+      "lineRenderers": 309,
+      "strikes": [
+        {
+          "startY": 1.14999771,
+          "startX": 0.919704437,
+          "targetX": 0.881754637,
+          "targetY": 0.2833568,
+          "depthError": 1.90734863E-06,
+          "endError": 0.0,
+          "supports": 0,
+          "groundArcs": 0,
+          "groundError": 0.0,
+          "extent": 0.0,
+          "damageRadius": 2.4
+        }
+      ]
+    },
+    {
+      "label": "side-skill-5-flash",
+      "valid": true,
+      "frame": 154,
+      "camera": "Side25D",
+      "age": 0.0,
+      "supports": 2,
+      "active": 1,
+      "groundArcs": 0,
+      "particles": 30,
+      "lineRenderers": 309,
+      "strikes": [
+        {
+          "startY": 1.14999914,
+          "startX": 0.453127027,
+          "targetX": 0.4683665,
+          "targetY": 0.186829075,
+          "depthError": 0.0,
+          "endError": 0.0,
+          "supports": 2,
+          "groundArcs": 6,
+          "groundError": 6.70552254E-08,
+          "extent": 1.92000031,
+          "damageRadius": 2.4
+        }
+      ]
+    },
+    {
+      "label": "side-skill-5-arc",
+      "valid": true,
+      "frame": 155,
+      "camera": "Side25D",
+      "age": 0.03999996,
+      "supports": 2,
+      "active": 1,
+      "groundArcs": 6,
+      "particles": 30,
+      "lineRenderers": 309,
+      "strikes": [
+        {
+          "startY": 1.15000188,
+          "startX": 0.454632342,
+          "targetX": 0.4698645,
+          "targetY": 0.190293655,
+          "depthError": 1.90734863E-06,
+          "endError": 0.0,
+          "supports": 2,
+          "groundArcs": 6,
+          "groundError": 6.70552254E-08,
+          "extent": 1.92000031,
+          "damageRadius": 2.4
+        }
+      ]
+    },
+    {
+      "label": "side-skill-5-ground",
+      "valid": true,
+      "frame": 157,
+      "camera": "Side25D",
+      "age": 0.136667728,
+      "supports": 2,
+      "active": 1,
+      "groundArcs": 6,
+      "particles": 16,
+      "lineRenderers": 309,
+      "strikes": [
+        {
+          "startY": 1.14999616,
+          "startX": 0.4537777,
+          "targetX": 0.469018281,
+          "targetY": 0.195140541,
+          "depthError": 1.90734863E-06,
+          "endError": 0.0,
+          "supports": 2,
+          "groundArcs": 6,
+          "groundError": 6.70552254E-08,
+          "extent": 1.92000031,
+          "damageRadius": 2.4
+        }
+      ]
+    },
+    {
+      "label": "side-skill-6-flash",
+      "valid": true,
+      "frame": 210,
+      "camera": "Side25D",
+      "age": 0.0133357048,
+      "supports": 4,
+      "active": 1,
+      "groundArcs": 0,
+      "particles": 36,
+      "lineRenderers": 309,
+      "strikes": [
+        {
+          "startY": 1.1499902,
+          "startX": 0.45204398,
+          "targetX": 0.465488851,
+          "targetY": 0.18641746,
+          "depthError": 0.0,
+          "endError": 0.0,
+          "supports": 4,
+          "groundArcs": 9,
+          "groundError": 6.70552254E-08,
+          "extent": 2.40000033,
+          "damageRadius": 2.4
+        }
+      ]
+    },
+    {
+      "label": "side-skill-6-arc",
+      "valid": true,
+      "frame": 212,
+      "camera": "Side25D",
+      "age": 0.03333521,
+      "supports": 4,
+      "active": 2,
+      "groundArcs": 18,
+      "particles": 54,
+      "lineRenderers": 309,
+      "strikes": [
+        {
+          "startY": 1.150001,
+          "startX": 0.455023348,
+          "targetX": 0.46850577,
+          "targetY": 0.192084357,
+          "depthError": 0.0,
+          "endError": 0.0,
+          "supports": 4,
+          "groundArcs": 9,
+          "groundError": 6.70552254E-08,
+          "extent": 2.40000033,
+          "damageRadius": 2.4
+        },
+        {
+          "startY": 1.150001,
+          "startX": 0.605241835,
+          "targetX": 0.6204758,
+          "targetY": 0.223270714,
+          "depthError": 0.0,
+          "endError": 0.0,
+          "supports": 4,
+          "groundArcs": 9,
+          "groundError": 6.70552254E-08,
+          "extent": 2.40000033,
+          "damageRadius": 2.4
+        }
+      ]
+    },
+    {
+      "label": "side-skill-6-ground",
+      "valid": true,
+      "frame": 230,
+      "camera": "Side25D",
+      "age": 0.139999866,
+      "supports": 4,
+      "active": 2,
+      "groundArcs": 18,
+      "particles": 20,
+      "lineRenderers": 309,
+      "strikes": [
+        {
+          "startY": 1.15000629,
+          "startX": 0.339594,
+          "targetX": 0.319485426,
+          "targetY": 0.1882505,
+          "depthError": 1.90734863E-06,
+          "endError": 0.0,
+          "supports": 4,
+          "groundArcs": 9,
+          "groundError": 6.70552254E-08,
+          "extent": 2.40000033,
+          "damageRadius": 2.4
+        },
+        {
+          "startY": 1.15000629,
+          "startX": 0.449274719,
+          "targetX": 0.467031747,
+          "targetY": 0.155520782,
+          "depthError": 0.0,
+          "endError": 0.0,
+          "supports": 4,
+          "groundArcs": 9,
+          "groundError": 6.70552254E-08,
+          "extent": 2.40000033,
+          "damageRadius": 2.4
+        }
+      ]
+    },
+    {
+      "label": "quarter-skill-4-flash",
+      "valid": true,
+      "frame": 621,
+      "camera": "QuarterView",
+      "age": 0.0,
+      "supports": 0,
+      "active": 1,
+      "groundArcs": 0,
+      "particles": 24,
+      "lineRenderers": 323,
+      "strikes": [
+        {
+          "startY": 1.14998627,
+          "startX": 0.644151568,
+          "targetX": 0.613255441,
+          "targetY": 0.419988722,
+          "depthError": 0.0,
+          "endError": 0.0,
+          "supports": 0,
+          "groundArcs": 0,
+          "groundError": 0.0,
+          "extent": 0.0,
+          "damageRadius": 2.4
+        }
+      ]
+    },
+    {
+      "label": "quarter-skill-4-arc",
+      "valid": true,
+      "frame": 622,
+      "camera": "QuarterView",
+      "age": 0.03999996,
+      "supports": 0,
+      "active": 1,
+      "groundArcs": 0,
+      "particles": 24,
+      "lineRenderers": 323,
+      "strikes": [
+        {
+          "startY": 1.14999914,
+          "startX": 0.6449145,
+          "targetX": 0.614012241,
+          "targetY": 0.4203592,
+          "depthError": 0.0,
+          "endError": 0.0,
+          "supports": 0,
+          "groundArcs": 0,
+          "groundError": 0.0,
+          "extent": 0.0,
+          "damageRadius": 2.4
+        }
+      ]
+    },
+    {
+      "label": "quarter-skill-4-ground",
+      "valid": true,
+      "frame": 624,
+      "camera": "QuarterView",
+      "age": 0.220000267,
+      "supports": 0,
+      "active": 1,
+      "groundArcs": 0,
+      "particles": 0,
+      "lineRenderers": 323,
+      "strikes": [
+        {
+          "startY": 1.15000486,
+          "startX": 0.646162748,
+          "targetX": 0.615268469,
+          "targetY": 0.4216037,
+          "depthError": 0.0,
+          "endError": 0.0,
+          "supports": 0,
+          "groundArcs": 0,
+          "groundError": 0.0,
+          "extent": 0.0,
+          "damageRadius": 2.4
+        }
+      ]
+    },
+    {
+      "label": "quarter-skill-5-flash",
+      "valid": true,
+      "frame": 679,
+      "camera": "QuarterView",
+      "age": 0.0,
+      "supports": 2,
+      "active": 1,
+      "groundArcs": 0,
+      "particles": 30,
+      "lineRenderers": 323,
+      "strikes": [
+        {
+          "startY": 1.14999914,
+          "startX": 0.5884242,
+          "targetX": 0.5824911,
+          "targetY": 0.4012166,
+          "depthError": 1.90734863E-06,
+          "endError": 0.0,
+          "supports": 2,
+          "groundArcs": 6,
+          "groundError": 0.0,
+          "extent": 1.92000139,
+          "damageRadius": 2.4
+        }
+      ]
+    },
+    {
+      "label": "quarter-skill-5-arc",
+      "valid": true,
+      "frame": 680,
+      "camera": "QuarterView",
+      "age": 0.03999996,
+      "supports": 2,
+      "active": 1,
+      "groundArcs": 6,
+      "particles": 30,
+      "lineRenderers": 323,
+      "strikes": [
+        {
+          "startY": 1.14999175,
+          "startX": 0.588556945,
+          "targetX": 0.5826164,
+          "targetY": 0.401322484,
+          "depthError": 0.0,
+          "endError": 0.0,
+          "supports": 2,
+          "groundArcs": 6,
+          "groundError": 0.0,
+          "extent": 1.92000139,
+          "damageRadius": 2.4
+        }
+      ]
+    },
+    {
+      "label": "quarter-skill-5-ground",
+      "valid": true,
+      "frame": 682,
+      "camera": "QuarterView",
+      "age": 0.199999809,
+      "supports": 2,
+      "active": 1,
+      "groundArcs": 6,
+      "particles": 5,
+      "lineRenderers": 323,
+      "strikes": [
+        {
+          "startY": 1.14999616,
+          "startX": 0.58801496,
+          "targetX": 0.582092762,
+          "targetY": 0.401598066,
+          "depthError": 1.90734863E-06,
+          "endError": 0.0,
+          "supports": 2,
+          "groundArcs": 6,
+          "groundError": 0.0,
+          "extent": 1.92000139,
+          "damageRadius": 2.4
+        }
+      ]
+    },
+    {
+      "label": "quarter-skill-6-flash",
+      "valid": true,
+      "frame": 740,
+      "camera": "QuarterView",
+      "age": 0.0,
+      "supports": 4,
+      "active": 1,
+      "groundArcs": 0,
+      "particles": 36,
+      "lineRenderers": 323,
+      "strikes": [
+        {
+          "startY": 1.14998531,
+          "startX": 0.5674964,
+          "targetX": 0.58882767,
+          "targetY": 0.394060045,
+          "depthError": 1.90734863E-06,
+          "endError": 0.0,
+          "supports": 4,
+          "groundArcs": 9,
+          "groundError": 0.0,
+          "extent": 2.400002,
+          "damageRadius": 2.4
+        }
+      ]
+    },
+    {
+      "label": "quarter-skill-6-arc",
+      "valid": true,
+      "frame": 741,
+      "camera": "QuarterView",
+      "age": 0.0599999428,
+      "supports": 4,
+      "active": 1,
+      "groundArcs": 9,
+      "particles": 36,
+      "lineRenderers": 323,
+      "strikes": [
+        {
+          "startY": 1.15000117,
+          "startX": 0.5682045,
+          "targetX": 0.5895071,
+          "targetY": 0.393808454,
+          "depthError": 3.81469727E-06,
+          "endError": 0.0,
+          "supports": 4,
+          "groundArcs": 9,
+          "groundError": 0.0,
+          "extent": 2.400002,
+          "damageRadius": 2.4
+        }
+      ]
+    },
+    {
+      "label": "quarter-skill-6-ground",
+      "valid": true,
+      "frame": 755,
+      "camera": "QuarterView",
+      "age": 0.140000343,
+      "supports": 4,
+      "active": 2,
+      "groundArcs": 18,
+      "particles": 18,
+      "lineRenderers": 323,
+      "strikes": [
+        {
+          "startY": 1.14999568,
+          "startX": 0.5359501,
+          "targetX": 0.51733005,
+          "targetY": 0.366425782,
+          "depthError": 0.0,
+          "endError": 0.0,
+          "supports": 4,
+          "groundArcs": 9,
+          "groundError": 0.0,
+          "extent": 2.40000081,
+          "damageRadius": 2.4
+        },
+        {
+          "startY": 1.14999759,
+          "startX": 0.6182322,
+          "targetX": 0.630926,
+          "targetY": 0.350514233,
+          "depthError": 0.0,
+          "endError": 0.0,
+          "supports": 4,
+          "groundArcs": 9,
+          "groundError": 0.0,
+          "extent": 2.40000081,
+          "damageRadius": 2.4
+        }
+      ]
+    }
+  ]
+}

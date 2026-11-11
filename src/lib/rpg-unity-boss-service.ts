@@ -1,9 +1,10 @@
+import {linkedElementSupports} from './rpg-elemental-combat';
 import {randomUUID,createHash} from 'node:crypto';
 import type {RpgStore} from './rpg-store';
 import type {RpgItemsStore} from './rpg-items';
 import {RogueService,isRogueAction,parseRogueInput,type RogueAction} from './rpg-rogue-service';
 import {UnityBossEngine,UNITY_BOSS_PROTOCOL,type UnityInput} from './rpg-unity-boss-engine';
-type TrainingEngine={map:any;skillEnabled:boolean[];paused:boolean;step(dt:number,input:UnityInput):void;command(input:UnityInput):boolean;view():any;acceptClientHints?(raw:unknown):void};
+type TrainingEngine={map:any;skillIds:string[];skillSupportCounts:number[];skillEnabled:boolean[];paused:boolean;step(dt:number,input:UnityInput):void;command(input:UnityInput):boolean;view():any;acceptClientHints?(raw:unknown):void};
 type Session={id:string;account:string;game:TrainingEngine;mapZone:number;sequence:number;lastAt:number;pending:number;input:UnityInput;metadata:any;digest:string;response:any;expires:number};
 export class UnityBossService {
  private sessions=new Map<string,Session>();
@@ -11,7 +12,7 @@ export class UnityBossService {
  private profile(account:string,action?:RogueAction){const bridge=new RogueService(()=>0,()=>7,this.store,this.items,true,this.now);let view=bridge.start(account,'hong');if(action)view=bridge.command(account,view.id,1,{x:0,y:0,auto:false,paused:true},action);return {progress:view.progress,development:view.development,growth:view.growth,build:view.build,buildRevision:this.store.load(account).revision,compiled:view.compiled};}
  start(account:string){
   const now=this.now();for(const [k,s]of this.sessions)if(s.expires<now)this.sessions.delete(k);
-  const metadata=this.profile(account),game=this.createGame?this.createGame(this.seed()):new UnityBossEngine(this.seed());game.skillEnabled=metadata.build.skills.map((s:any)=>!!s.enabled&&!!s.activeId&&!s.trigger);
+  const metadata=this.profile(account),game=this.createGame?this.createGame(this.seed()):new UnityBossEngine(this.seed());game.skillIds=metadata.build.skills.map((s:any)=>s.activeId??'');game.skillSupportCounts=metadata.build.skills.map(linkedElementSupports);game.skillEnabled=metadata.build.skills.map((s:any)=>!!s.enabled&&!!s.activeId&&!s.trigger);
   const s:Session={id:randomUUID(),account,game,mapZone:-1,sequence:0,lastAt:now,pending:0,input:{x:0,y:0,auto:true},metadata,digest:'',response:null,expires:now+30*60*1000};this.sessions.set(account,s);s.response=this.snapshot(s,true);return s.response;
  }
  command(account:string,id:string,sequence:number,raw:unknown,action:unknown='tick',knownBuildRevision?:number){
@@ -27,7 +28,7 @@ export class UnityBossService {
   s.pending+=Math.min(delta,.5);
   while(s.pending+.0000001>=.02){s.game.step(.02,s.input);s.pending-=.02;}
   s.input=input;s.game.paused=!!input.paused;
-  if(action==='tick')s.game.command(input);else {s.metadata=this.profile(account,action);s.game.skillEnabled=s.metadata.build.skills.map((v:any)=>!!v.enabled&&!!v.activeId&&!v.trigger);}
+  if(action==='tick')s.game.command(input);else {s.metadata=this.profile(account,action);s.game.skillIds=s.metadata.build.skills.map((s:any)=>s.activeId??'');s.game.skillSupportCounts=s.metadata.build.skills.map(linkedElementSupports);s.game.skillEnabled=s.metadata.build.skills.map((v:any)=>!!v.enabled&&!!v.activeId&&!v.trigger);}
   s.sequence=sequence;s.digest=digest;s.expires=now+30*60*1000;s.response=this.snapshot(s,knownBuildRevision!==s.metadata.buildRevision);return s.response;
  }
  private snapshot(s:Session,full:boolean){

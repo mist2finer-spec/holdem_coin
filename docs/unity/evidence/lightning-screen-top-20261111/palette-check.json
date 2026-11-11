@@ -1,0 +1,36 @@
+{
+  "success": true,
+  "command": "command",
+  "data": {
+    "command": "script eval_file",
+    "parameters": {
+      "file": "G:\\holdem_coin-workspace\\island\\maintenance\\lightning-screen-top-20261111\\palette-check.cs"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": {
+        "result": "PASS",
+        "frame": 1161,
+        "roots": 8,
+        "renderers": 232,
+        "systems": 8,
+        "materials": [
+          "Reference · ribbons",
+          "Lightning · visible ground arcs",
+          "Lightning · ground flash",
+          "Reference · sparks"
+        ],
+        "scope": "New lightning objects; bright white/cyan cores and HDR spark gradients are intentional. Existing HUD unchanged."
+      }
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7801,
+      "projectPath": "G:\\holdem_coin-workspace\\Island\\branches\\current-10zone\\unity\\IslandGame"
+    }
+  },
+  "errors": [],
+  "warnings": []
+}

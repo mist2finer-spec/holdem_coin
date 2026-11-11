@@ -3,7 +3,18 @@ Island / holdem_coin — 통합 작업 시작점 (2026-11-11)
 최상위 기준(2026-11-11 최신 요청): 일반 1~9구역 = 사이드뷰(Side25D). 10구역 = 보스 지역, 사이드뷰로 걸어서 입장 후 보스 등장 때 쿼터뷰(QuarterView).
 현재 게임 기준은 새 10구역 맵이다. 초기 low-poly 일반 맵으로 되돌리지 않는다. 현재 사용하는 기존 보스 맵과 홀덤 게임은 보존한다.
 
-2026-11-11 원소 VFX 본게임 연결 / 10구역 보스 (최신)
+2026-11-11 화면 상단 낙뢰 / 지면 확산 (최신)
+- 실제 4~6번 번개는 활성 카메라 viewport Y=1.15, 대상과 같은 깊이에서 시작한다. 카메라 추적 후 재계산하여 Side25D/QuarterView 모두 상단 절단을 없앴다.
+- 흰 코어·청백/보라 글로우·3개 잔가지, 2/60초 섬광→4/60초 떨림→감쇠, 지면 링·스파크·Shake를 연결했다.
+- 연결된 유효 보조 젬 0/1/2~3/4~5개에 따라 지면 전기 가지 0/3/6/9개. 기존 2.4m 피해 반경 내 시각적 확산이며 실제 피해 반경 성장/추가 중복 판정은 없다.
+- 실제 장비는 compileSkill 결과를 사용한다. 개발 연습 4/5/6번은 계정에 저장하지 않는 임시 0/2/4 연결 예시다.
+- 전투/커널/API 26개, 카메라 36조건, 10회 풀 검사 PASS. Editor 834프레임 / Android9 에뮬레이터 762프레임, 각각 18개 캡처, 오류0. 실제 휴대폰 미검증.
+- APK: builds/IslandGame-Lightning-20261111.apk, 0.1.0-test.20261111.3(code2026111103), 146778074 bytes. 오류0/경고0, 서명·16KB 정렬 PASS.
+- SHA256 ca5f80570932e8614c2d0d1f7a3fa2f3ab5d7b54fd176e5a894585998ae93714
+- 10구역 보스 처치 즉시 미궁 탈출, 완료 후 추가 보스맵 없음 유지. Editor는 Play 종료 상태.
+- 상세/증거: ../../docs/unity/LIGHTNING_SCREEN_TOP_20261111_KO.md
+
+2026-11-11 원소 VFX 본게임 연결 / 10구역 보스
 - 기존 Island 메인 게임에 검기 5단계, 물방울/번개 각 3종 및 실제 다중 판정·반사·넉백·젖음 연계를 연결했다. 범위 성장은 보류하고 고정 반경을 사용한다.
 - 진행은 일반 9구역 + 10번째 Nature 보스 전장이다. 보스 전장에서 walk_loop로 3m 이동 후 1.25초 등장, 1.2초 카메라 전환. 추격은 Boss_AdaptedWalk의 이동 거리 기준 걷기이다. 기존 MountZone10 에셋과 빌드 씬은 보존했다.
 - 개발 로비: 원소 전투 연습(4구역), 10구역 보스 연습(입장부터). 임시 에르텔 6종은 계정에 저장하지 않는다.
@@ -39,7 +50,7 @@ Island / holdem_coin — 통합 작업 시작점 (2026-11-11)
 - 활성 Git 브랜치: codex/genshin-environment-20261110
 - 공통 Git 저장소: branches/main/.git
 - 11월 9일 기준 브랜치: branches/local-combat-base
-- 최신 APK: builds/IslandGame-ElementalBoss-20261111.apk
+- 최신 APK: builds/IslandGame-Lightning-20261111.apk
 - 인계/검증: records 및 maintenance/cleanup-20261110/evidence
 - 바르디안 단일 보관본: archives/Vardian_Analysis_Reference.zip
 - 과거 고유 로컬 DB/설정: private-state (비공개, Git에 추가하지 않는다)

@@ -1,0 +1,523 @@
+{
+  "result": "PASS",
+  "version": "0.1.0-test.20261110.3",
+  "platform": "WindowsEditor",
+  "frames": 834,
+  "errors": 0,
+  "errorSamples": [],
+  "networkRequests": 0,
+  "samples": [
+    {
+      "label": "side-skill-4-flash",
+      "valid": true,
+      "frame": 1397,
+      "camera": "Side25D",
+      "age": 0.0,
+      "supports": 0,
+      "active": 1,
+      "groundArcs": 0,
+      "particles": 24,
+      "lineRenderers": 309,
+      "strikes": [
+        {
+          "startY": 1.15000081,
+          "startX": 0.860935867,
+          "targetX": 0.8879062,
+          "targetY": 0.277080625,
+          "depthError": 0.0,
+          "endError": 0.0,
+          "supports": 0,
+          "groundArcs": 0,
+          "groundError": 0.0,
+          "extent": 0.0,
+          "damageRadius": 2.4
+        }
+      ]
+    },
+    {
+      "label": "side-skill-4-arc",
+      "valid": true,
+      "frame": 1399,
+      "camera": "Side25D",
+      "age": 0.100000143,
+      "supports": 0,
+      "active": 1,
+      "groundArcs": 0,
+      "particles": 21,
+      "lineRenderers": 309,
+      "strikes": [
+        {
+          "startY": 1.14999366,
+          "startX": 0.853715062,
+          "targetX": 0.880666256,
+          "targetY": 0.2818636,
+          "depthError": 3.81469727E-06,
+          "endError": 0.0,
+          "supports": 0,
+          "groundArcs": 0,
+          "groundError": 0.0,
+          "extent": 0.0,
+          "damageRadius": 2.4
+        }
+      ]
+    },
+    {
+      "label": "side-skill-4-ground",
+      "valid": true,
+      "frame": 1400,
+      "camera": "Side25D",
+      "age": 0.1400001,
+      "supports": 0,
+      "active": 1,
+      "groundArcs": 0,
+      "particles": 16,
+      "lineRenderers": 309,
+      "strikes": [
+        {
+          "startY": 1.14999545,
+          "startX": 0.852398753,
+          "targetX": 0.8793755,
+          "targetY": 0.2828061,
+          "depthError": 1.90734863E-06,
+          "endError": 0.0,
+          "supports": 0,
+          "groundArcs": 0,
+          "groundError": 0.0,
+          "extent": 0.0,
+          "damageRadius": 2.4
+        }
+      ]
+    },
+    {
+      "label": "side-skill-5-flash",
+      "valid": true,
+      "frame": 1460,
+      "camera": "Side25D",
+      "age": 0.01999998,
+      "supports": 2,
+      "active": 1,
+      "groundArcs": 6,
+      "particles": 30,
+      "lineRenderers": 309,
+      "strikes": [
+        {
+          "startY": 1.15000761,
+          "startX": 0.447666436,
+          "targetX": 0.4657393,
+          "targetY": 0.186892033,
+          "depthError": 0.0,
+          "endError": 0.0,
+          "supports": 2,
+          "groundArcs": 6,
+          "groundError": 6.70552254E-08,
+          "extent": 1.92000031,
+          "damageRadius": 2.4
+        }
+      ]
+    },
+    {
+      "label": "side-skill-5-arc",
+      "valid": true,
+      "frame": 1461,
+      "camera": "Side25D",
+      "age": 0.0599999428,
+      "supports": 2,
+      "active": 1,
+      "groundArcs": 6,
+      "particles": 30,
+      "lineRenderers": 309,
+      "strikes": [
+        {
+          "startY": 1.15000629,
+          "startX": 0.4517547,
+          "targetX": 0.469817847,
+          "targetY": 0.193466,
+          "depthError": 1.90734863E-06,
+          "endError": 0.0,
+          "supports": 2,
+          "groundArcs": 6,
+          "groundError": 6.70552254E-08,
+          "extent": 1.92000031,
+          "damageRadius": 2.4
+        }
+      ]
+    },
+    {
+      "label": "side-skill-5-ground",
+      "valid": true,
+      "frame": 1463,
+      "camera": "Side25D",
+      "age": 0.21999979,
+      "supports": 2,
+      "active": 1,
+      "groundArcs": 6,
+      "particles": 0,
+      "lineRenderers": 309,
+      "strikes": [
+        {
+          "startY": 1.1500051,
+          "startX": 0.451043248,
+          "targetX": 0.469090044,
+          "targetY": 0.195243642,
+          "depthError": 0.0,
+          "endError": 0.0,
+          "supports": 2,
+          "groundArcs": 6,
+          "groundError": 6.70552254E-08,
+          "extent": 1.92000031,
+          "damageRadius": 2.4
+        }
+      ]
+    },
+    {
+      "label": "side-skill-6-flash",
+      "valid": true,
+      "frame": 1520,
+      "camera": "Side25D",
+      "age": 0.0,
+      "supports": 4,
+      "active": 1,
+      "groundArcs": 0,
+      "particles": 36,
+      "lineRenderers": 309,
+      "strikes": [
+        {
+          "startY": 1.14999771,
+          "startX": 0.429026842,
+          "targetX": 0.468365341,
+          "targetY": 0.187406823,
+          "depthError": 1.90734863E-06,
+          "endError": 0.0,
+          "supports": 4,
+          "groundArcs": 9,
+          "groundError": 6.70552254E-08,
+          "extent": 2.40000033,
+          "damageRadius": 2.4
+        }
+      ]
+    },
+    {
+      "label": "side-skill-6-arc",
+      "valid": true,
+      "frame": 1521,
+      "camera": "Side25D",
+      "age": 0.03999996,
+      "supports": 4,
+      "active": 1,
+      "groundArcs": 9,
+      "particles": 36,
+      "lineRenderers": 309,
+      "strikes": [
+        {
+          "startY": 1.149998,
+          "startX": 0.430502564,
+          "targetX": 0.4698625,
+          "targetY": 0.19136782,
+          "depthError": 0.0,
+          "endError": 0.0,
+          "supports": 4,
+          "groundArcs": 9,
+          "groundError": 6.70552254E-08,
+          "extent": 2.40000033,
+          "damageRadius": 2.4
+        }
+      ]
+    },
+    {
+      "label": "side-skill-6-ground",
+      "valid": true,
+      "frame": 1548,
+      "camera": "Side25D",
+      "age": 0.141305923,
+      "supports": 4,
+      "active": 2,
+      "groundArcs": 18,
+      "particles": 15,
+      "lineRenderers": 309,
+      "strikes": [
+        {
+          "startY": 1.14999616,
+          "startX": 0.284140944,
+          "targetX": 0.319480956,
+          "targetY": 0.188709259,
+          "depthError": 1.90734863E-06,
+          "endError": 0.0,
+          "supports": 4,
+          "groundArcs": 9,
+          "groundError": 6.70552254E-08,
+          "extent": 2.40000033,
+          "damageRadius": 2.4
+        },
+        {
+          "startY": 1.14999616,
+          "startX": 0.441862941,
+          "targetX": 0.467019856,
+          "targetY": 0.156008527,
+          "depthError": 0.0,
+          "endError": 0.0,
+          "supports": 4,
+          "groundArcs": 9,
+          "groundError": 6.70552254E-08,
+          "extent": 2.40000033,
+          "damageRadius": 2.4
+        }
+      ]
+    },
+    {
+      "label": "quarter-skill-4-flash",
+      "valid": true,
+      "frame": 1909,
+      "camera": "QuarterView",
+      "age": 0.0,
+      "supports": 0,
+      "active": 1,
+      "groundArcs": 0,
+      "particles": 24,
+      "lineRenderers": 323,
+      "strikes": [
+        {
+          "startY": 1.14999485,
+          "startX": 0.636750638,
+          "targetX": 0.612713456,
+          "targetY": 0.4196144,
+          "depthError": 0.0,
+          "endError": 0.0,
+          "supports": 0,
+          "groundArcs": 0,
+          "groundError": 0.0,
+          "extent": 0.0,
+          "damageRadius": 2.4
+        }
+      ]
+    },
+    {
+      "label": "quarter-skill-4-arc",
+      "valid": true,
+      "frame": 1910,
+      "camera": "QuarterView",
+      "age": 0.03999996,
+      "supports": 0,
+      "active": 1,
+      "groundArcs": 0,
+      "particles": 24,
+      "lineRenderers": 323,
+      "strikes": [
+        {
+          "startY": 1.1500057,
+          "startX": 0.6374943,
+          "targetX": 0.613464057,
+          "targetY": 0.419993967,
+          "depthError": 0.0,
+          "endError": 0.0,
+          "supports": 0,
+          "groundArcs": 0,
+          "groundError": 0.0,
+          "extent": 0.0,
+          "damageRadius": 2.4
+        }
+      ]
+    },
+    {
+      "label": "quarter-skill-4-ground",
+      "valid": true,
+      "frame": 1912,
+      "camera": "QuarterView",
+      "age": 0.220000267,
+      "supports": 0,
+      "active": 1,
+      "groundArcs": 0,
+      "particles": 0,
+      "lineRenderers": 323,
+      "strikes": [
+        {
+          "startY": 1.15000892,
+          "startX": 0.6387306,
+          "targetX": 0.61471045,
+          "targetY": 0.421246529,
+          "depthError": 1.90734863E-06,
+          "endError": 0.0,
+          "supports": 0,
+          "groundArcs": 0,
+          "groundError": 0.0,
+          "extent": 0.0,
+          "damageRadius": 2.4
+        }
+      ]
+    },
+    {
+      "label": "quarter-skill-5-flash",
+      "valid": true,
+      "frame": 1969,
+      "camera": "QuarterView",
+      "age": 0.0,
+      "supports": 2,
+      "active": 1,
+      "groundArcs": 0,
+      "particles": 30,
+      "lineRenderers": 323,
+      "strikes": [
+        {
+          "startY": 1.14999747,
+          "startX": 0.592048168,
+          "targetX": 0.582443357,
+          "targetY": 0.4012665,
+          "depthError": 0.0,
+          "endError": 0.0,
+          "supports": 2,
+          "groundArcs": 6,
+          "groundError": 9.313226E-10,
+          "extent": 1.920001,
+          "damageRadius": 2.4
+        }
+      ]
+    },
+    {
+      "label": "quarter-skill-5-arc",
+      "valid": true,
+      "frame": 1971,
+      "camera": "QuarterView",
+      "age": 0.0999999046,
+      "supports": 2,
+      "active": 1,
+      "groundArcs": 6,
+      "particles": 28,
+      "lineRenderers": 323,
+      "strikes": [
+        {
+          "startY": 1.150019,
+          "startX": 0.5916555,
+          "targetX": 0.582046866,
+          "targetY": 0.401573271,
+          "depthError": 0.0,
+          "endError": 0.0,
+          "supports": 2,
+          "groundArcs": 6,
+          "groundError": 9.313226E-10,
+          "extent": 1.920001,
+          "damageRadius": 2.4
+        }
+      ]
+    },
+    {
+      "label": "quarter-skill-5-ground",
+      "valid": true,
+      "frame": 1972,
+      "camera": "QuarterView",
+      "age": 0.139999866,
+      "supports": 2,
+      "active": 1,
+      "groundArcs": 6,
+      "particles": 18,
+      "lineRenderers": 323,
+      "strikes": [
+        {
+          "startY": 1.15000367,
+          "startX": 0.5916307,
+          "targetX": 0.5820222,
+          "targetY": 0.401682377,
+          "depthError": 1.90734863E-06,
+          "endError": 0.0,
+          "supports": 2,
+          "groundArcs": 6,
+          "groundError": 9.313226E-10,
+          "extent": 1.920001,
+          "damageRadius": 2.4
+        }
+      ]
+    },
+    {
+      "label": "quarter-skill-6-flash",
+      "valid": true,
+      "frame": 2030,
+      "camera": "QuarterView",
+      "age": 0.0,
+      "supports": 4,
+      "active": 1,
+      "groundArcs": 0,
+      "particles": 36,
+      "lineRenderers": 323,
+      "strikes": [
+        {
+          "startY": 1.1499908,
+          "startX": 0.577947736,
+          "targetX": 0.5893672,
+          "targetY": 0.393415749,
+          "depthError": 0.0,
+          "endError": 0.0,
+          "supports": 4,
+          "groundArcs": 9,
+          "groundError": 9.313226E-10,
+          "extent": 2.40000033,
+          "damageRadius": 2.4
+        }
+      ]
+    },
+    {
+      "label": "quarter-skill-6-arc",
+      "valid": true,
+      "frame": 2031,
+      "camera": "QuarterView",
+      "age": 0.03999996,
+      "supports": 4,
+      "active": 1,
+      "groundArcs": 9,
+      "particles": 36,
+      "lineRenderers": 323,
+      "strikes": [
+        {
+          "startY": 1.15000689,
+          "startX": 0.578565836,
+          "targetX": 0.5899506,
+          "targetY": 0.392947763,
+          "depthError": 1.90734863E-06,
+          "endError": 0.0,
+          "supports": 4,
+          "groundArcs": 9,
+          "groundError": 9.313226E-10,
+          "extent": 2.40000033,
+          "damageRadius": 2.4
+        }
+      ]
+    },
+    {
+      "label": "quarter-skill-6-ground",
+      "valid": true,
+      "frame": 2055,
+      "camera": "QuarterView",
+      "age": 0.140000343,
+      "supports": 4,
+      "active": 2,
+      "groundArcs": 18,
+      "particles": 19,
+      "lineRenderers": 323,
+      "strikes": [
+        {
+          "startY": 1.150006,
+          "startX": 0.4806168,
+          "targetX": 0.5167864,
+          "targetY": 0.3705635,
+          "depthError": 0.0,
+          "endError": 0.0,
+          "supports": 4,
+          "groundArcs": 9,
+          "groundError": 9.313226E-10,
+          "extent": 2.40000081,
+          "damageRadius": 2.4
+        },
+        {
+          "startY": 1.15000653,
+          "startX": 0.6305071,
+          "targetX": 0.626818061,
+          "targetY": 0.3551937,
+          "depthError": 1.90734863E-06,
+          "endError": 0.0,
+          "supports": 4,
+          "groundArcs": 9,
+          "groundError": 9.313226E-10,
+          "extent": 2.40000081,
+          "damageRadius": 2.4
+        }
+      ]
+    }
+  ]
+}
