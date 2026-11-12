@@ -1,0 +1,5 @@
+{
+  "type": "ACCEPT", "login": "mist2finer-spec", "role": "qa-tester",
+  "instance": "qa-session-20261112-b", "summary": "별도 실행자가 실제 산출물 확인 후 검수",
+  "checks": [{"criterion": 0, "result": "PASS", "evidence": "docs/agents/evidence/task-N.md"}]
+}

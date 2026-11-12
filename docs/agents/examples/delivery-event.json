@@ -1,0 +1,9 @@
+{
+  "type": "DELIVER", "login": "mist2finer-spec", "role": "tools-perf-engineer",
+  "instance": "tools-session-20261112-a", "summary": "결과 제출; 지정 검수자 확인 대기",
+  "delivery": {
+    "commit": "REPLACE_WITH_FULL_RESULT_SHA", "summary": "변경한 동작과 결과",
+    "artifacts": [{"path": "docs/agents/evidence/task-N.md", "sha256": "REPLACE_WITH_SHA256"}],
+    "validation": "실행한 명령과 관찰 결과", "limitations": "미실행 검사와 불확실성"
+  }
+}

@@ -1,0 +1,47 @@
+name: Agent coordination
+on:
+  push:
+    paths: ['AGENTS.md', '.agents/roles/**', 'docs/agents/**', 'scripts/agents/**', '.github/workflows/agent-coordination.yml']
+  pull_request:
+    paths: ['AGENTS.md', '.agents/roles/**', 'docs/agents/**', 'scripts/agents/**', '.github/workflows/agent-coordination.yml']
+  issues:
+    types: [opened, edited, reopened, closed]
+  issue_comment:
+    types: [created, edited, deleted]
+  workflow_dispatch:
+    inputs:
+      issue:
+        description: 'Optional agent task issue number to verify'
+        required: false
+        type: string
+permissions:
+  contents: read
+  issues: read
+jobs:
+  protocol:
+    if: github.event_name == 'push' || github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+      - run: node --test scripts/agents/protocol.test.mjs
+      - run: node scripts/agents/context.mjs --check
+  receipt:
+    if: startsWith(github.event.issue.title, '[agent-task:') || (github.event_name == 'workflow_dispatch' && inputs.issue != '')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+      - name: Read and verify the current task (no automatic claim or acceptance)
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          AGENT_ISSUE: ${{ github.event.issue.number || inputs.issue }}
+        run: node scripts/agents/tasks.mjs verify "$AGENT_ISSUE"

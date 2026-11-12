@@ -8,6 +8,8 @@
 
 `reverse_eng_designer`는 분석 질문과 근거를 정리하고 [역할별 전달](HANDOFF.md)로 분배한다. 전체 덤프를 specialist 모두에게 보내지 않는다. 바르디안 과거 자료는 `G:/holdem_coin-workspace/island/archives/Vardian_Analysis_Reference.zip` 및 `records/VARDIAN_ANALYSIS_STATUS_KO.txt`; 해당 조사 요청이 있을 때만 연다.
 
+원격 인계에는 session/target/질문/evidence ID·출처/버전·관찰/추론/미확인을 작은 공유 근거 파일로 내보낸다. 같은 커밋 링크를 역할별 Issue에서 재사용하고 수신 CLAIM까지 확인한다. 로컬 evidence ID만으로 전달 완료를 선언하지 않는다.
+
 ## ComfyUI / art-lead·technical-artist
 
 설치 `G:/AI/ComfyUI_windows_portable`, 확인 버전 0.42.1. 연결 주소 `http://127.0.0.1:8188`은 해당 Windows 컴퓨터에서만 접근 가능하다. 원격 GitHub 에이전트에서 이 주소가 사용자 컴퓨터를 뜻하지 않는다.
@@ -16,6 +18,8 @@
 SD 1.5 / IP-Adapter Plus SD15 / CLIP Vision 및 이미지 변형 노드 인식 확인. GTX 1650 4GB, native allocator 옵션 사용. 생성/품질/성능은 미검증이며 새로운 시안 요청 때 실행한다.
 
 역할: 원본 캐릭터 이미지 복사본→변형/부분 수정 시안→art-lead 검토→technical-artist의 재질/모델 적용 검토. 2D 결과만으로 3D 메시·리깅이 변경되지는 않는다. 모델 다운로드·유료 API·원본 덮어쓰기는 연결 준비에 포함하지 않는다.
+
+결과를 전달할 때 workflow/model 식별자·버전/해시·seed·입력/결과 해시·검증 범위와 수신자가 접근 가능한 시안 위치를 근거 요약에 남긴다. localhost/G: 경로만 있는 결과는 원격 검수 완료로 처리하지 않는다. [공유 근거 규약](PROTOCOL.md)을 따른다.
 
 ## 길티기어풍 셀 표현
 
