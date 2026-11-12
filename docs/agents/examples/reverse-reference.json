@@ -1,0 +1,13 @@
+{
+  "kind": "local-reverse-reference",
+  "access": "local-only",
+  "notice": "위치 인덱스 예제이며 실제 분석 자료가 아니다. 확인 후 값을 채우고 분석 본문은 로컬에 유지한다.",
+  "root": "G:/holdem_coin-workspace/island/maintenance/<task>",
+  "entrypoint": "G:/holdem_coin-workspace/island/maintenance/<task>/HANDOFF_KO.txt",
+  "files": [
+    {"path": "G:/holdem_coin-workspace/island/maintenance/<task>/investigation.cany", "sha256": null}
+  ],
+  "source_version": null,
+  "checked_at": null,
+  "local_verification": "UNVERIFIED"
+}

@@ -8,7 +8,9 @@
 
 `reverse_eng_designer`는 분석 질문과 근거를 정리하고 [역할별 전달](HANDOFF.md)로 분배한다. 전체 덤프를 specialist 모두에게 보내지 않는다. 바르디안 과거 자료는 `G:/holdem_coin-workspace/island/archives/Vardian_Analysis_Reference.zip` 및 `records/VARDIAN_ANALYSIS_STATUS_KO.txt`; 해당 조사 요청이 있을 때만 연다.
 
-원격 인계에는 session/target/질문/evidence ID·출처/버전·관찰/추론/미확인을 작은 공유 근거 파일로 내보낸다. 같은 커밋 링크를 역할별 Issue에서 재사용하고 수신 CLAIM까지 확인한다. 로컬 evidence ID만으로 전달 완료를 선언하지 않는다.
+역분석 자료는 **로컬 에이전트 전용**이다. session/target/질문/evidence ID·출처/버전·관찰/추론/미확인은 로컬 인계 파일에 둔다. GitHub에는 절대 경로·진입 파일·식별정보·확인 상태만 담은 위치 인덱스를 게시하고 역할별 Issue에서 재사용한다. 자료 묶음은 업로드하지 않는다. 수신자는 실제 로컬 자료를 확인한다. [우선 지침](../../.agents/roles/reverse_eng_designer.md)과 [인계 규약](PROTOCOL.md)을 따른다.
+
+원신 과거 상세 인계 위치: `G:/holdem_coin-workspace/island/records/historical/genshin-SESSION_HANDOFF_KO.txt`. 이 파일 안의 옛 작업 경로와 원본 존재 여부는 사용 전에 별도로 확인한다. 인계 파일의 존재가 분석 자료 전체 보존을 보장하지 않는다.
 
 ## ComfyUI / art-lead·technical-artist
 
@@ -19,7 +21,7 @@ SD 1.5 / IP-Adapter Plus SD15 / CLIP Vision 및 이미지 변형 노드 인식 �
 
 역할: 원본 캐릭터 이미지 복사본→변형/부분 수정 시안→art-lead 검토→technical-artist의 재질/모델 적용 검토. 2D 결과만으로 3D 메시·리깅이 변경되지는 않는다. 모델 다운로드·유료 API·원본 덮어쓰기는 연결 준비에 포함하지 않는다.
 
-결과를 전달할 때 workflow/model 식별자·버전/해시·seed·입력/결과 해시·검증 범위와 수신자가 접근 가능한 시안 위치를 근거 요약에 남긴다. localhost/G: 경로만 있는 결과는 원격 검수 완료로 처리하지 않는다. [공유 근거 규약](PROTOCOL.md)을 따른다.
+결과를 전달할 때 workflow/model 식별자·버전/해시·seed·입력/결과 해시·검증 범위와 시안 위치를 남긴다. 역분석 연계 자료는 로컬에 두고 GitHub에는 위치 인덱스만 게시한다. 로컬 검수자가 실제 자료를 확인하며 localhost/G: 경로를 원격 CI가 검증한 것으로 표현하지 않는다. [근거 규약](PROTOCOL.md)을 따른다.
 
 ## 길티기어풍 셀 표현
 
