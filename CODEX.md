@@ -1,5 +1,6 @@
-# CODEX.md (System Instructions)
+# Codex 진입
 
-이 프로젝트의 모든 AI 에이전트 정책과 실행 규칙의 단일 기준 문서는 루트 [AGENTS.md](AGENTS.md)이다.
-Codex(ChatGPT)는 세션 시작 및 모든 작업 수행 전 반드시 `AGENTS.md`를 읽고 그 제약을 따른다.
-규칙을 추가하거나 수정할 때는 `AGENTS.md`만 편집한다.
+[AGENTS.md](AGENTS.md)의 최소 읽기를 따른다. 사용자가 지정한 역할은 `.agents/roles/<역할>.md` 하나로 시작한다.
+
+예: `gameplay-dev를 읽고 작업준비` → [gameplay-dev](.agents/roles/gameplay-dev.md).
+공통 규칙은 AGENTS, 역할별 경로는 역할 카드, 최신 상태는 [CURRENT](docs/agents/CURRENT.md)에 유지한다.

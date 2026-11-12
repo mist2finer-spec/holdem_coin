@@ -1,6 +1,11 @@
 # Island / holdem_coin
 
-현재 게임 기준은 **새 일반 10구역 맵**입니다. **일반 구역은 사이드뷰(Side25D), 보스전만 쿼터뷰(QuarterView)**이며 현재 보스 맵과 홀덤 게임을 유지합니다.
+**역할로 바로 시작:** [13개 역할 안내](docs/agents/README.md) · [현재 게임 기준](docs/agents/CURRENT.md) · [gameplay-dev](.agents/roles/gameplay-dev.md) · [reverse_eng_designer](.agents/roles/reverse_eng_designer.md)
+
+`gameplay-dev를 읽고 작업준비`처럼 요청하면 공통 규칙·현재 요약·선택 역할만 읽습니다. 로컬에서는 `node scripts/agents/context.mjs gameplay-dev`로 같은 묶음을 출력합니다.
+
+
+게임의 공통 시점은 **일반 구역 Side25D, 보스전 QuarterView**입니다. 최신 Unity 게임 작업과 main의 게임 내용은 다르므로 [현재 기준](docs/agents/CURRENT.md)에서 대상 브랜치와 진행 상태를 먼저 확인합니다. 역할 문서 정리는 게임 브랜치를 main에 병합하는 작업이 아닙니다.
 
 | 작업 | 시작 위치 |
 | --- | --- |
@@ -10,7 +15,7 @@
 | 홀덤 서버 | [mini-services/poker-server](mini-services/poker-server) |
 | 현재 웹 리소스 | [public](public) |
 | 정리·브랜치·과거 자료 조회 | [GitHub 통합 기록](docs/maintenance/GITHUB_CONSOLIDATION_20261110_KO.md) |
-| 최신 테스트 APK | [10구역 테스트 릴리스](https://github.com/mist2finer-spec/holdem_coin/releases/tag/island-current-10zones-20261110.3) |
+| 11월 10일 통합 기준 APK | [10구역 테스트 릴리스](https://github.com/mist2finer-spec/holdem_coin/releases/tag/island-current-10zones-20261110.3) · 최신 작업 빌드는 해당 브랜치 인계 확인 |
 
 ## 브랜치
 
