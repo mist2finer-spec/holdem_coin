@@ -1,0 +1,74 @@
+{
+  "schema": 1,
+  "id": "ggxrd-island-transfer-20261112",
+  "version": "planning-v1",
+  "access": "local-only",
+  "storage": "local-only",
+  "owner_role": "reverse_eng_designer",
+  "status": "analysis-and-role-handoffs-prepared",
+  "review_status": "independent-tech-director-review-pending",
+  "task": "https://github.com/mist2finer-spec/holdem_coin/issues/17",
+  "local_root": "G:/holdem_coin-workspace/island/maintenance/ggxrd-island-transfer-20261112",
+  "project": "G:/holdem_coin-workspace/island/branches/current-10zone/unity/IslandGame",
+  "checked_at": "2026-11-12T22:04:56.691240+00:00",
+  "entries": {
+    "start": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/ggxrd-island-transfer-20261112/README.md",
+      "sha256": "7ee9c212fa9de05c863a10e71d6f146f8ed2cbb9310fb011a6474daf47d56dc6",
+      "bytes": 3890
+    },
+    "handoff": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/ggxrd-island-transfer-20261112/handoff.json",
+      "sha256": "7ab51db6ce0fee087f5438b787d5427d8de21cd6aa6e6e05616ac22830e07141",
+      "bytes": 8415
+    },
+    "manifest": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/ggxrd-island-transfer-20261112/document-manifest.json",
+      "sha256": "c6075db93cd7c92f4442b4c7618a0644f398fc1dc0db90779af89518257f3911",
+      "bytes": 6087
+    }
+  },
+  "roles": {
+    "tech-director": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/ggxrd-island-transfer-20261112/roles/tech-director.md",
+      "sha256": "a2532405a7b03be3fb4806a90f3b0e1db69ebed76653ae0fe1e6ba422bff4161",
+      "bytes": 2686
+    },
+    "art-lead": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/ggxrd-island-transfer-20261112/roles/art-lead.md",
+      "sha256": "3600939cdbe472bb901e0e42e5ade2c2c64de6f79b771266d62e39af1cb05d63",
+      "bytes": 2901
+    },
+    "technical-artist": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/ggxrd-island-transfer-20261112/roles/technical-artist.md",
+      "sha256": "d1a7990675d4ef39fa2037d00b1f6c6782ddd0ab97f3ff7fe283dc93f07a574a",
+      "bytes": 2988
+    },
+    "gameplay-dev": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/ggxrd-island-transfer-20261112/roles/gameplay-dev.md",
+      "sha256": "b36d003a494a7d56d571ef53481c74458f46982c4564c93b98b755d28b1cdbfb",
+      "bytes": 2937
+    },
+    "systems-level-designer": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/ggxrd-island-transfer-20261112/roles/systems-level-designer.md",
+      "sha256": "42f57cc7cf99e1109b9b3fe65560e0ce15df60ba26b1005342c1290572c09be7",
+      "bytes": 2832
+    },
+    "tools-perf-engineer": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/ggxrd-island-transfer-20261112/roles/tools-perf-engineer.md",
+      "sha256": "ddd25d4ee852cea71faf086c8f525daf04b01ea1e45e6ccf9079ec07010bf69f",
+      "bytes": 2790
+    },
+    "qa-tester": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/ggxrd-island-transfer-20261112/roles/qa-tester.md",
+      "sha256": "bfed8d492a6ae17c69724ac7af89a72438f8b510ffa51e59fcd64caa96a76bf0",
+      "bytes": 2805
+    },
+    "qa-release-lead": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/ggxrd-island-transfer-20261112/roles/qa-release-lead.md",
+      "sha256": "b0d5d04cd7f9a3e3ed2ef0ec941e60580d0df8ae7d23d061b9454424632e9977",
+      "bytes": 2665
+    }
+  },
+  "materials_publishable": false
+}
