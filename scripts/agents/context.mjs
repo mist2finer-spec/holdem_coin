@@ -10,7 +10,7 @@ const roles = ['director', 'tech-director', 'design-lead', 'art-lead', 'qa-relea
 const limit = 12 * 1024;
 const common = ['AGENTS.md', 'docs/agents/CURRENT.md'];
 const unityRules = 'unity/IslandGame/AGENTS.md';
-const read = path => readFileSync(resolve(root, path), 'utf8');
+const read = path => readFileSync(resolve(root, path), 'utf8').replaceAll('\r\n', '\n');
 const packPaths = (role, unity) => [...common, `.agents/roles/${role}.md`, ...(unity ? [unityRules] : [])];
 const pack = (role, unity) => packPaths(role, unity).map(path => `FILE: ${path}\n${read(path).trim()}\n`).join('\n');
 
