@@ -1,0 +1,59 @@
+{
+  "kind": "local-reverse-reference",
+  "access": "local-only",
+  "root": "G:/holdem_coin-workspace/island/maintenance/ggxrd-rev2-motion-20261112",
+  "entrypoint": "G:/holdem_coin-workspace/island/maintenance/ggxrd-rev2-motion-20261112/HANDOFF_KO.txt",
+  "craft_project": "G:/holdem_coin-workspace/island/maintenance/ggxrd-rev2-motion-20261112/investigation.cany",
+  "files": [
+    {
+      "path": "G:/holdem_coin-workspace/island/maintenance/ggxrd-rev2-motion-20261112/HANDOFF_KO.txt",
+      "sha256": "63e6dbbf6abddfb2b6d2783a09e397ccc6bb9f4f6da26e566b0bdbfdb5eeb5a1"
+    },
+    {
+      "path": "G:/holdem_coin-workspace/island/maintenance/ggxrd-rev2-motion-20261112/review.html",
+      "sha256": "cfa1af182864c2df1793724c992e01d067f30380ebb07d123aadddf5b3cc8118"
+    },
+    {
+      "path": "G:/holdem_coin-workspace/island/maintenance/ggxrd-rev2-motion-20261112/runtime-observations.json",
+      "sha256": "9d8c4a2a3b951c95ed9664f89b6c9b9d34341b9c0c17a24332994fb91efa71df"
+    },
+    {
+      "path": "G:/holdem_coin-workspace/island/maintenance/ggxrd-rev2-motion-20261112/state-links.json",
+      "sha256": "d92161c3d1f25d8f4530bea0dc2e0fc4f127f7ae99be119ace32b6ea026172c9"
+    },
+    {
+      "path": "G:/holdem_coin-workspace/island/maintenance/ggxrd-rev2-motion-20261112/particle-structure.json",
+      "sha256": "b4ea696659af8ca779e33bd6a01a972614daccddac09a9288467607b023d2005"
+    },
+    {
+      "path": "G:/holdem_coin-workspace/island/maintenance/ggxrd-rev2-motion-20261112/hud-findings.json",
+      "sha256": "4eb074ab3d5412350aed2740037f84a2b659d31a2c69dd729ba00f9c56f5a102"
+    },
+    {
+      "path": "G:/holdem_coin-workspace/island/maintenance/ggxrd-rev2-motion-20261112/local-validation.json",
+      "sha256": "06e16d5797007e36bd2c1009d3c92f281e88db25d6a4e3a7639dc8c7d26a8149"
+    },
+    {
+      "path": "G:/holdem_coin-workspace/island/maintenance/ggxrd-rev2-motion-20261112/evidence-bundle.json",
+      "sha256": "232d101f291fa104b9d1b95cecec242d1f556e58342f7e45190d03df363f84e4"
+    }
+  ],
+  "source_version": {
+    "product": "GUILTY GEAR Xrd -REVELATOR- / REV 2",
+    "exe_file_version": "1,0,8767,0",
+    "exe_sha256": "2d737e609cd48879c773701916f1f806589f32f1f16f90c9f37e57ceaf43d95e",
+    "craft_anything": "0.6.0",
+    "GGXrdShading_commit": "db46c5ccea57bf3eaf9176cbb9eedab8f4b6dd68"
+  },
+  "checked_at": "2026-11-12T18:44:10.594591+00:00",
+  "local_verification": "PASS_WITH_LIMITATIONS",
+  "verification_status": {
+    "runtime_recordings": 29,
+    "blue_burst_runtime": "SKIPPED_BY_USER",
+    "roman_cancel_runtime": "UNCONFIRMED",
+    "unity_implementation": "NOT_STARTED",
+    "independent_review": "PENDING"
+  },
+  "task_issue": 13,
+  "previous_reference": "docs/agents/references/ggxrd-rev2-20261112.json"
+}
