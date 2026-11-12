@@ -1,0 +1,46 @@
+{
+  "kind": "local-reverse-reference",
+  "access": "local-only",
+  "notice": "위치·식별정보만 게시한다. 원본 자료는 로컬 에이전트가 직접 확인하며 원격 CI가 내용을 검증하지 않는다.",
+  "root": "G:/holdem_coin-workspace/island/maintenance/ggxrd-rev2-reverse-20261112",
+  "entrypoint": "G:/holdem_coin-workspace/island/maintenance/ggxrd-rev2-reverse-20261112/HANDOFF_KO.txt",
+  "project": "G:/holdem_coin-workspace/island/maintenance/ggxrd-rev2-reverse-20261112/investigation.cany",
+  "files": [
+    {
+      "path": "G:/holdem_coin-workspace/island/maintenance/ggxrd-rev2-reverse-20261112/HANDOFF_KO.txt",
+      "sha256": "f0c2cd6f7fa972332e912aaf6ef1768f6cb63bd7228721f136068b5576129952"
+    },
+    {
+      "path": "G:/holdem_coin-workspace/island/maintenance/ggxrd-rev2-reverse-20261112/CRAFT_REPORT.html",
+      "sha256": "8900f45c3d042a82857edae6c1764b98b4a90893e24fb10541346c13015d3932"
+    },
+    {
+      "path": "G:/holdem_coin-workspace/island/maintenance/ggxrd-rev2-reverse-20261112/evidence-snapshot/manifest.json",
+      "sha256": "dd3771a0f484c6cb5480fcadb16858c5fe8b7caddd4e4ff1f02c0e27d4a1b377"
+    },
+    {
+      "path": "G:/holdem_coin-workspace/island/maintenance/ggxrd-rev2-reverse-20261112/action-analysis.json",
+      "sha256": "669cc2e4d9b8e077bb113f760a85c85e3656264285f89cc6598b7b9a8731340f"
+    },
+    {
+      "path": "G:/holdem_coin-workspace/island/maintenance/ggxrd-rev2-reverse-20261112/animation-links.json",
+      "sha256": "6c44698b560c0b33b79e28e699f83c4ebe029eca9a0850b1aaf1d1b32e3c895b"
+    },
+    {
+      "path": "G:/holdem_coin-workspace/island/maintenance/ggxrd-rev2-reverse-20261112/local-validation.json",
+      "sha256": "9da80aa196631f4196ce3540e5b02ebff18b6cfe697b108814c46b25e3682cd6"
+    }
+  ],
+  "source_version": {
+    "product": "GUILTY GEAR Xrd -REVELATOR- / REV 2",
+    "executable_file_version": "1, 0, 8767, 0",
+    "executable_sha256": "2d737e609cd48879c773701916f1f806589f32f1f16f90c9f37e57ceaf43d95e",
+    "reference_commit": "db46c5ccea57bf3eaf9176cbb9eedab8f4b6dd68",
+    "craft_anything": "0.6.0",
+    "bbscript": "1.5.8"
+  },
+  "checked_at": "2026-11-12T17:42:50.517796+00:00",
+  "local_verification": "STATIC_PASS_RUNTIME_UNVERIFIED",
+  "review_status": "PENDING_TECH_DIRECTOR",
+  "task_issue": 12
+}
