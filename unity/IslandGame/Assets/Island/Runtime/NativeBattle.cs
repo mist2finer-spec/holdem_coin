@@ -30,8 +30,8 @@ namespace IslandGame {
   public ViewPresentationCoordinator ViewPresentation=>threeD?threeD.Presentation:null;
   public void ConfigureViewport(float aspect){
    if(!view||!Output||aspect<=0)return;RestoreTexturePresentation();
-   if(Mathf.Abs(aspect-viewportAspect)>.001f){
-    viewportAspect=aspect;int height=Mathf.RoundToInt(720/aspect),width=720;
+   if(Mathf.Abs(aspect-viewportAspect)>.001f || Output.width!=PixelArtSettings.Width(aspect)){
+    viewportAspect=aspect;int width=PixelArtSettings.Width(aspect),height=Mathf.RoundToInt(width/aspect);
     if(height>2048){width=Mathf.Max(1,Mathf.RoundToInt(width*2048f/height));height=2048;}
     if(Output.width!=width||Output.height!=height){Output.Release();Output.width=width;Output.height=Mathf.Max(1,height);Output.Create();}
    }
@@ -44,8 +44,8 @@ namespace IslandGame {
   public void RestoreTexturePresentation(){
    if(!view||!DirectPresentationActive)return;DirectPresentationActive=false;view.targetTexture=Output;view.rect=new Rect(0,0,1,1);view.aspect=viewportAspect;if(CameraRig&&Uses3D)CameraRig.ApplyProjection();else if(widthLock)widthLock.Apply();
   }
-  void Awake(){var data=Resources.Load<TextAsset>("AssetIndex");if(data)index=JObject.Parse(data.text);var profile=Resources.Load<TextAsset>("VardianCombatProfile");if(profile)combatProfile=JObject.Parse(profile.text);Output=new RenderTexture(720,720,24);owned.Add(Output);
-   var pivotObject=new GameObject("CameraPivot");pivotObject.transform.SetParent(transform,false);var cameraObject=new GameObject("Main Camera");cameraObject.transform.SetParent(pivotObject.transform,false);view=cameraObject.AddComponent<Camera>();view.orthographic=true;view.orthographicSize=3.2f;view.backgroundColor=new Color(.025f,.035f,.03f);view.clearFlags=CameraClearFlags.SolidColor;view.targetTexture=Output;view.cullingMask=1<<30;
+  void Awake(){var data=Resources.Load<TextAsset>("AssetIndex");if(data)index=JObject.Parse(data.text);var profile=Resources.Load<TextAsset>("VardianCombatProfile");if(profile)combatProfile=JObject.Parse(profile.text);Output=new RenderTexture(720,720,24){name="Island pixel world",filterMode=FilterMode.Point,wrapMode=TextureWrapMode.Clamp,antiAliasing=1,useMipMap=false};owned.Add(Output);
+   var pivotObject=new GameObject("CameraPivot");pivotObject.transform.SetParent(transform,false);var cameraObject=new GameObject("Main Camera");cameraObject.transform.SetParent(pivotObject.transform,false);view=cameraObject.AddComponent<Camera>();cameraObject.AddComponent<PixelArtCamera>();view.allowMSAA=false;view.allowHDR=false;view.orthographic=true;view.orthographicSize=3.2f;view.backgroundColor=new Color(.025f,.035f,.03f);view.clearFlags=CameraClearFlags.SolidColor;view.targetTexture=Output;view.cullingMask=1<<30;
    var models=Resources.Load<Battle3DAssets>("Battle3DAssets");if(models&&models.hero&&models.slime){threeD=gameObject.AddComponent<Battle3DView>();threeD.assets=models;widthLock=cameraObject.AddComponent<CameraHorizontalWidthLock>();widthLock.enabled=false;CameraRig=pivotObject.AddComponent<BattleCameraController>();CameraRig.externallyDriven=true;CameraRig.maxBossDistance=40;CameraRig.Bind(view);}
   }
   public void Clear(){combatBuffer.Reset();PresentationState=null;if(MountZoneStream.Current)MountZoneStream.Current.BossLoading=false;mountRoom=-1;OverridePresentationView=false;heroProjection.Reset();bossMovement.Reset();cameraPoseReady=false;if(CameraRig){CameraRig.SetViewMode(ViewMode.Side25D);CameraRig.ResetPose();}rollPresentation.Reset();walkFilter.Reset();landingMesh=null;if(threeD)threeD.Clear();if(world)Destroy(world);actors.Clear();actorPaths.Clear();actorData.Clear();keys.Clear();bodyHeights.Clear();clock=new NativeCombatClock();lastSnapshot=null;lastVisual=0;foreach(var item in owned)if(item&&item!=Output)Destroy(item);owned.RemoveAll(item=>item!=Output);sessionId=null;}

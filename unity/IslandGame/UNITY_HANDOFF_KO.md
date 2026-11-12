@@ -1,3 +1,20 @@
+2026-11-12 도트화 작업 푸시 인계
+- 사용자 후속 요청에 따라 현재 작업 브랜치에 도트화 구현·검증 기록·일지를 커밋/푸시한다. main 병합·운영 배포는 범위 밖이다. 아래 11월11일의 미푸시 표기는 당시 상태다.
+- 상세 일지: [도트화 작업 일지](../../docs/unity/PIXEL_ART_WORKLOG_20261112_KO.md). 완료 범위, 남은 작업, APK/백업 경로와 복원 방법을 기록했다.
+
+2026-11-11 도트 렌더링 테스트 (최신)
+- 저해상도 실제 전투 RT + Point 확대, 기본 세로360/가로640px. HUD/홀덤/성장 UI는 기존 해상도.
+- 커스텀 지형·풀·잎·환경 및 Nilo 캐릭터 조명 3단계, 하드 섀도우. URP/Lit 일부 재질은 기존 조명을 유지한 뒤 최종 팔레트 적용.
+- 깊이 기반 내부 1픽셀 외곽선, 깊이에서 복원한 기하 법선 기반 모서리 하이라이트, 4x4 Bayer + 최종32색. 투명 VFX는 독립 깊이 외곽선 없음.
+- 포즈와 절차적 보정은12fps, 월드 위치·카메라·전투시간 유지. 동작 전환은 즉시 갱신. 6초/356관찰프레임에서 자세75회·위치101회 변화.
+- 설정 Assets/Island/Resources/PixelArtSettings.asset. enabled=false 후 Play 재시작으로 도트/포즈 제한 끄기. 전역 섀도우/AA까지 원복하려면 백업과 비교.
+- 회귀43 PASS. Editor3894프레임/Android9 에뮬레이터3839프레임, 각각15지점 PASS·Unity오류0·네트워크0. 일반 Side25D→보스 QuarterView→출구 하강→마을 도착 유지.
+- APK builds/IslandGame-PixelArt-20261111.apk, 0.1.0-test.20261111.9(code2026111109),150208790bytes. 빌드오류0/기존경고1, ZIP·서명·16KB정렬 PASS.
+- SHA256 fccb18795c61f94ed687ac180a960de0d1cf0815960d3dcf794f7dedc4dbc960
+- 백업/증거/설정·복원 안내: G:/holdem_coin-workspace/island/maintenance/pixel-art-20261111. backup/Unity-source-before.tar 및 backup/IslandGame-before.apk 보존.
+- 원격 푸시/운영 배포 없음. 기존 미커밋 Unsafe.dll.meta 및 MobileURP 변경 보존. Editor는 Play 종료·MountZone10, runInBackground=false, 임시 자동 틱 종료.
+- 실물 휴대폰·전체10구역 장시간 관찰·미술 승인은 미검증. 작은 얼굴/고밀도 잔디의 서브픽셀 깜빡임은 완전 해결 아님. 필요시 너비640~960 조정; 머리 메시·얼굴 텍스처 교체는 하지 않음. 참조 영상 직접 열람 실패, 사용자가 제공한 상세5단계 명세 기반.
+
 Island / holdem_coin — 통합 작업 시작점 (2026-11-11)
 
 최상위 기준(2026-11-11 최신 요청): 일반 1~9구역 = 사이드뷰(Side25D). 10구역 = 보스 지역, 사이드뷰로 걸어서 입장 후 보스 등장 때 쿼터뷰(QuarterView).

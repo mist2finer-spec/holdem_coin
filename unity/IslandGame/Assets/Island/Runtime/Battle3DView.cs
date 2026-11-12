@@ -209,7 +209,8 @@ namespace IslandGame {
    }
    long poseStart=System.Diagnostics.Stopwatch.GetTimestamp();
    CombatPoseBlend policy=!hero?CombatPoseBlend.Locomotion:(kind=="dodge"||kind=="cancel"||kind=="jump"||kind=="slide")?CombatPoseBlend.DodgeCancel:kind=="knockback"?CombatPoseBlend.HitReaction:kind=="rush"?CombatPoseBlend.DodgeCancel:kind=="skill"?CombatPoseBlend.AttackEntry:kind=="attack"?HeroAttackActive?CombatPoseBlend.AttackContact:HeroAttackProgress<.32f?CombatPoseBlend.AttackEntry:CombatPoseBlend.AttackRecovery:CombatPoseBlend.Locomotion;
-   a.presentationRoot.localScale=Vector3.one;a.animation.Sample(clip,sample,advance,policy);SampleCalls++;if(!hero&&budget)budget.RecordPose(poseStart);
+   if(!a.animation.Sample(clip,sample,advance,policy))return sample;
+   a.presentationRoot.localScale=Vector3.one;SampleCalls++;if(!hero&&budget)budget.RecordPose(poseStart);
    // Mirror the side-on presentation without rotating the asymmetric rig through its back view.
    a.model.transform.localScale=new Vector3(a.scale,a.scale,a.scale*(hero&&!Planar&&facing<0?-1:1));
    a.model.transform.localRotation=Quaternion.Euler(0,hero?(Planar?HeroHeading:assets.heroYaw):0,0);

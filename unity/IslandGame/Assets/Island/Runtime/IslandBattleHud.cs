@@ -222,10 +222,10 @@ namespace IslandGame {
   static void Band(RectTransform r,float a,float b){r.anchorMin=new Vector2(0,a);r.anchorMax=new Vector2(1,b);r.pivot=Vector2.one*.5f;r.offsetMin=r.offsetMax=Vector2.zero;}
   void ConfigureBattleOutput(){
    var battle=app.HudBattle;var size=stage.rect.size;
-   if(!outputDirty&&outputBattle==battle&&outputWas3D==battle.Uses3D&&outputSize==size&&(!battle.Uses3D||battle.DirectPresentationActive))return;
+   if(!outputDirty&&outputBattle==battle&&outputWas3D==battle.Uses3D&&outputSize==size&&(!battle.Uses3D||PixelArtSettings.Active||battle.DirectPresentationActive))return;
    outputDirty=false;outputBattle=battle;outputWas3D=battle.Uses3D;outputSize=size;
    stage.GetWorldCorners(viewportCorners);var min=RectTransformUtility.WorldToScreenPoint(null,viewportCorners[0]);var max=RectTransformUtility.WorldToScreenPoint(null,viewportCorners[2]);
-   if(app.HudBattle.Uses3D)app.HudBattle.ConfigureScreenViewport(new Rect(min.x/Screen.width,min.y/Screen.height,(max.x-min.x)/Screen.width,(max.y-min.y)/Screen.height));
+   if(app.HudBattle.Uses3D&&!PixelArtSettings.Active)app.HudBattle.ConfigureScreenViewport(new Rect(min.x/Screen.width,min.y/Screen.height,(max.x-min.x)/Screen.width,(max.y-min.y)/Screen.height));
    else app.HudBattle.ConfigureViewport(stage.rect.width/stage.rect.height);
   }
 

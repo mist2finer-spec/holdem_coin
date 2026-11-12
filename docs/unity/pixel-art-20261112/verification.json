@@ -1,0 +1,213 @@
+{
+  "build": {
+    "result": "Succeeded",
+    "totalErrors": 0,
+    "totalWarnings": 1,
+    "seconds": 278.5283491,
+    "output": "G:/holdem_coin-workspace/Island/builds/IslandGame-PixelArt-20261111.apk",
+    "apkBytes": 150208790,
+    "messages": [
+      {
+        "type": "Warning",
+        "content": "Assets\\Island\\Runtime\\IslandApp.cs(10,223): warning CS0414: The field 'IslandApp.lastDeal' is assigned but its value is never used"
+      }
+    ]
+  },
+  "apk": {
+    "apk": "G:\\holdem_coin-workspace\\island\\builds\\IslandGame-PixelArt-20261111.apk",
+    "bytes": 150208790,
+    "sha256": "fccb18795c61f94ed687ac180a960de0d1cf0815960d3dcf794f7dedc4dbc960",
+    "architectures": [
+      "arm64-v8a"
+    ],
+    "zip": "PASS",
+    "signature": "PASS",
+    "alignment16K": "PASS",
+    "manifest": "package: name='com.mist2finer.islandgame.dev' versionCode='2026111109' versionName='0.1.0-test.20261111.9' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'"
+  },
+  "palette": {
+    "worldResolution": [
+      360,
+      320
+    ],
+    "uniqueColors": 31,
+    "paletteLimitPass": true,
+    "backupBytes": 264714240,
+    "backupSha256": "e7dd8804c9fdb9bb198a39fc526c23d41abc757d5aaeb55573367ba7ccbf7db9"
+  },
+  "pose": {
+    "frames": 356,
+    "poseChanges": 75,
+    "rootChanges": 101,
+    "seconds": 6.008377,
+    "heldFrames": 281
+  },
+  "editor": {
+    "result": "PASS",
+    "version": "0.1.0-test.20261110.3",
+    "frames": 3894,
+    "errors": 0,
+    "networkRequests": 0,
+    "checks": [
+      {
+        "label": "side-entry",
+        "valid": true,
+        "camera": "Side25D"
+      },
+      {
+        "label": "boss-reveal",
+        "valid": true,
+        "camera": "QuarterView"
+      },
+      {
+        "label": "quarter-arena",
+        "valid": true,
+        "camera": "QuarterView"
+      },
+      {
+        "label": "boss-walk",
+        "valid": true,
+        "camera": "QuarterView"
+      },
+      {
+        "label": "quarter-movement",
+        "valid": true,
+        "camera": "QuarterView"
+      },
+      {
+        "label": "boss-neutral",
+        "valid": true,
+        "camera": "QuarterView"
+      },
+      {
+        "label": "boss-attack",
+        "valid": true,
+        "camera": "QuarterView"
+      },
+      {
+        "label": "lightning-in-grass",
+        "valid": true,
+        "camera": "QuarterView"
+      },
+      {
+        "label": "exit-lowering-start",
+        "valid": true,
+        "camera": "QuarterView"
+      },
+      {
+        "label": "exit-lowering-middle",
+        "valid": true,
+        "camera": "QuarterView"
+      },
+      {
+        "label": "boss-down-exit-open",
+        "valid": true,
+        "camera": "QuarterView"
+      },
+      {
+        "label": "boss-fallen",
+        "valid": true,
+        "camera": "QuarterView"
+      },
+      {
+        "label": "run-to-village",
+        "valid": true,
+        "camera": "QuarterView"
+      },
+      {
+        "label": "outside-arena",
+        "valid": true,
+        "camera": "QuarterView"
+      },
+      {
+        "label": "village-arrived",
+        "valid": true,
+        "camera": "QuarterView"
+      }
+    ]
+  },
+  "android": {
+    "result": "PASS",
+    "version": "0.1.0-test.20261111.9",
+    "frames": 3839,
+    "errors": 0,
+    "networkRequests": 0,
+    "checks": [
+      {
+        "label": "side-entry",
+        "valid": true,
+        "camera": "Side25D"
+      },
+      {
+        "label": "boss-reveal",
+        "valid": true,
+        "camera": "QuarterView"
+      },
+      {
+        "label": "quarter-arena",
+        "valid": true,
+        "camera": "QuarterView"
+      },
+      {
+        "label": "boss-walk",
+        "valid": true,
+        "camera": "QuarterView"
+      },
+      {
+        "label": "quarter-movement",
+        "valid": true,
+        "camera": "QuarterView"
+      },
+      {
+        "label": "boss-neutral",
+        "valid": true,
+        "camera": "QuarterView"
+      },
+      {
+        "label": "boss-attack",
+        "valid": true,
+        "camera": "QuarterView"
+      },
+      {
+        "label": "lightning-in-grass",
+        "valid": true,
+        "camera": "QuarterView"
+      },
+      {
+        "label": "exit-lowering-start",
+        "valid": true,
+        "camera": "QuarterView"
+      },
+      {
+        "label": "exit-lowering-middle",
+        "valid": true,
+        "camera": "QuarterView"
+      },
+      {
+        "label": "boss-down-exit-open",
+        "valid": true,
+        "camera": "QuarterView"
+      },
+      {
+        "label": "boss-fallen",
+        "valid": true,
+        "camera": "QuarterView"
+      },
+      {
+        "label": "run-to-village",
+        "valid": true,
+        "camera": "QuarterView"
+      },
+      {
+        "label": "outside-arena",
+        "valid": true,
+        "camera": "QuarterView"
+      },
+      {
+        "label": "village-arrived",
+        "valid": true,
+        "camera": "QuarterView"
+      }
+    ]
+  }
+}

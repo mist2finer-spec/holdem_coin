@@ -12,6 +12,7 @@ HLSLPROGRAM
 #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+ #include "Assets/Island/Shaders/PixelLighting.hlsl"
 CBUFFER_START(UnityPerMaterial)
 float _ScaleUnit,_ScaleRandom,_ScaleShift,_UseVertexColor;
 float _NoiseScale,_VegetationSoftness,_VegetationBend,_PetalFlat,_VegetationMoveScale;
@@ -58,7 +59,7 @@ V vert(A i){
  o.normal=TransformObjectToWorldNormal(normalize(i.normal+float3(-wind.x,0,-wind.y)));
  o.height=i.height.y;o.fog=ComputeFogFactor(o.pos.z);o.color=i.color;return o;
 }
-half4 frag(V i):SV_Target {UNITY_SETUP_INSTANCE_ID(i);float3 root=UNITY_ACCESS_INSTANCED_PROP(BladeProps,_RootTint).rgb;float3 tip=UNITY_ACCESS_INSTANCED_PROP(BladeProps,_TipTint).rgb;float k=saturate(i.height/.2-.519);float3 c=lerp(root,tip,k)*(1+1.18*saturate(i.height-.6));if(_UseVertexColor>.5)c=i.color.rgb;Light sun=GetMainLight(TransformWorldToShadowCoord(i.world));float ndl=saturate(dot(normalize(i.normal),sun.direction)*.5+.5);float3 light=SampleSH(float3(0,1,0))+sun.color*ndl*sun.shadowAttenuation*.6;c*=light;
+half4 frag(V i):SV_Target {UNITY_SETUP_INSTANCE_ID(i);float3 root=UNITY_ACCESS_INSTANCED_PROP(BladeProps,_RootTint).rgb;float3 tip=UNITY_ACCESS_INSTANCED_PROP(BladeProps,_TipTint).rgb;float k=saturate(i.height/.2-.519);float3 c=lerp(root,tip,k)*(1+1.18*saturate(i.height-.6));if(_UseVertexColor>.5)c=i.color.rgb;Light sun=GetMainLight(TransformWorldToShadowCoord(i.world));float ndl=saturate(dot(normalize(i.normal),sun.direction)*.5+.5);float3 light=SampleSH(float3(0,1,0))+sun.color*IslandPixelDiffuse(ndl)*sun.shadowAttenuation*.6;c*=light;
 #if defined(UNITY_COLORSPACE_GAMMA)
 c=LinearToSRGB(c);
 #endif

@@ -4,6 +4,7 @@ Shader "Island/Source/Leaf" {
  HLSLINCLUDE
  #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
  #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+ #include "Assets/Island/Shaders/PixelLighting.hlsl"
  TEXTURE2D(_MainTex);SAMPLER(sampler_MainTex);
  CBUFFER_START(UnityPerMaterial)
  float4 _MainTex_ST,_LeafColor,_LeafColor2,_BranchColor,_AOColor;float _CutOff;
@@ -12,7 +13,7 @@ Shader "Island/Source/Leaf" {
  struct V{float4 p:SV_POSITION;float3 w:TEXCOORD0;half3 n:TEXCOORD1;float2 uv:TEXCOORD2;half ao:TEXCOORD3;half fog:TEXCOORD4;};
  float3 World(A a){float3 w=TransformObjectToWorld(a.p.xyz);float3 pivot=TransformObjectToWorld(float3(0,0,0));float weight=saturate((w.y-pivot.y)*.16);w.xz+=float2(1,.35)*sin(_Time.y*1.4+w.x*.63+w.z*.49)*weight*.045;return w;}
  V Vert(A a){UNITY_SETUP_INSTANCE_ID(a);V o;o.w=World(a);o.p=TransformWorldToHClip(o.w);o.n=TransformObjectToWorldNormal(a.n);o.uv=TRANSFORM_TEX(a.uv,_MainTex);o.ao=a.c.a;o.fog=ComputeFogFactor(o.p.z);return o;}
- half4 Frag(V i):SV_Target{half4 t=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv);clip(t.b-_CutOff);half3 c=lerp(_BranchColor.rgb,lerp(_LeafColor.rgb,_LeafColor2.rgb,t.r),t.a);c=lerp(_AOColor.rgb,c,lerp(.45,1,i.ao));Light l=GetMainLight(TransformWorldToShadowCoord(i.w));half ndl=saturate(dot(normalize(i.n),l.direction)*.5+.5);half band=smoothstep(.35,.65,ndl);c*=SampleSH(half3(0,1,0))+l.color*lerp(.45,.85,band)*lerp(.35,1,l.shadowAttenuation);return half4(MixFog(c,i.fog),1);}
+ half4 Frag(V i):SV_Target{half4 t=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv);clip(t.b-_CutOff);half3 c=lerp(_BranchColor.rgb,lerp(_LeafColor.rgb,_LeafColor2.rgb,t.r),t.a);c=lerp(_AOColor.rgb,c,lerp(.45,1,i.ao));Light l=GetMainLight(TransformWorldToShadowCoord(i.w));half ndl=saturate(dot(normalize(i.n),l.direction)*.5+.5);half band=smoothstep(.35,.65,ndl);band=IslandPixelDiffuse(band);c*=SampleSH(half3(0,1,0))+l.color*lerp(.45,.85,band)*lerp(.35,1,l.shadowAttenuation);return half4(MixFog(c,i.fog),1);}
  float3 _LightDirection,_LightPosition;
  V ShadowVert(A a){UNITY_SETUP_INSTANCE_ID(a);V o=Vert(a);float3 light=_LightDirection;
  #if defined(_CASTING_PUNCTUAL_LIGHT_SHADOW)

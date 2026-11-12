@@ -74,6 +74,7 @@ Shader "MountSunday/Environment"
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE _MAIN_LIGHT_SHADOWS_SCREEN
             #pragma multi_compile_fragment _ _SHADOWS_SOFT
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+ #include "Assets/Island/Shaders/PixelLighting.hlsl"
             struct Varyings {
                 float4 positionCS : SV_POSITION;
                 float3 positionWS : TEXCOORD0;
@@ -110,7 +111,7 @@ Shader "MountSunday/Environment"
                 float detail = StageNoise(input.positionWS * _DetailScale) * .7 + StageNoise(input.positionWS * _DetailScale * 3.7) * .3;
                 albedo *= 1 + (detail - .5) * _DetailStrength * 2;
                 Light sun = GetMainLight(TransformWorldToShadowCoord(input.positionWS));
-                half diffuse = saturate(dot(normal, sun.direction));
+                half diffuse = IslandPixelDiffuse(saturate(dot(normal, sun.direction)));
                 half3 ambient = max(SampleSH(normal), half3(.025, .025, .025));
                 half3 color = albedo * (ambient + sun.color * diffuse * sun.shadowAttenuation * sun.distanceAttenuation);
                 half3 viewDirection = SafeNormalize(GetWorldSpaceViewDir(input.positionWS));

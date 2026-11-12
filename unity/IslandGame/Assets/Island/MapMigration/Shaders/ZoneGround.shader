@@ -26,12 +26,13 @@ Shader "Island/MapReview/WorldGround" {
  #pragma multi_compile_fragment _ _SHADOWS_SOFT
  #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
  #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+ #include "Assets/Island/Shaders/PixelLighting.hlsl"
  TEXTURE2D(_Grass); SAMPLER(sampler_Grass); TEXTURE2D(_Earth); SAMPLER(sampler_Earth);
  CBUFFER_START(UnityPerMaterial) half4 _Tint;float _TextureWeight;float _UseHole;float4 _NearHole; CBUFFER_END
  struct A {float4 p:POSITION;float3 n:NORMAL;float2 uv:TEXCOORD0;half4 c:COLOR;};
  struct V {float4 p:SV_POSITION;float3 w:TEXCOORD0;half3 n:TEXCOORD1;float2 uv:TEXCOORD2;half4 c:COLOR;half fog:TEXCOORD3;};
  V vert(A a){V o;o.w=TransformObjectToWorld(a.p.xyz);o.p=TransformWorldToHClip(o.w);o.n=TransformObjectToWorldNormal(a.n);o.uv=a.uv;o.c=a.c;o.fog=ComputeFogFactor(o.p.z);return o;}
- half4 frag(V i):SV_Target{ClipForeground(i.w,i.p.xy);if(_UseHole>.5 && i.uv.x>_NearHole.x && i.uv.y>_NearHole.y && i.uv.x<_NearHole.z && i.uv.y<_NearHole.w)discard;half3 n=normalize(i.n);half road=saturate(i.c.a);half3 grass=SAMPLE_TEXTURE2D(_Grass,sampler_Grass,i.uv*.2).rgb;half3 earth=SAMPLE_TEXTURE2D(_Earth,sampler_Earth,i.uv*.2).rgb;half3 tex=lerp(grass,earth,road);half3 base=lerp(i.c.rgb,tex,_TextureWeight)*_Tint.rgb;half slope=saturate((.88-n.y)*3);base=lerp(base,half3(.32,.32,.27),slope*.6);Light l=GetMainLight(TransformWorldToShadowCoord(i.w));half3 lit=base*(max(SampleSH(n),half3(.24,.26,.24))+l.color*saturate(dot(n,l.direction))*lerp(.45,1,l.shadowAttenuation));return half4(MixFog(lit,i.fog),1);}
+ half4 frag(V i):SV_Target{ClipForeground(i.w,i.p.xy);if(_UseHole>.5 && i.uv.x>_NearHole.x && i.uv.y>_NearHole.y && i.uv.x<_NearHole.z && i.uv.y<_NearHole.w)discard;half3 n=normalize(i.n);half road=saturate(i.c.a);half3 grass=SAMPLE_TEXTURE2D(_Grass,sampler_Grass,i.uv*.2).rgb;half3 earth=SAMPLE_TEXTURE2D(_Earth,sampler_Earth,i.uv*.2).rgb;half3 tex=lerp(grass,earth,road);half3 base=lerp(i.c.rgb,tex,_TextureWeight)*_Tint.rgb;half slope=saturate((.88-n.y)*3);base=lerp(base,half3(.32,.32,.27),slope*.6);Light l=GetMainLight(TransformWorldToShadowCoord(i.w));half3 lit=base*(max(SampleSH(n),half3(.24,.26,.24))+l.color*IslandPixelDiffuse(saturate(dot(n,l.direction)))*lerp(.45,1,l.shadowAttenuation));return half4(MixFog(lit,i.fog),1);}
  ENDHLSL
  }
  Pass { Name "DepthOnly" Tags {"LightMode"="DepthOnly"} ZWrite On ColorMask R
