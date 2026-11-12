@@ -21,6 +21,7 @@ export function taskService(api) {
     if (cache.has(id)) return cache.get(id);
     const issue = await api.issue(id);
     const comments = await api.comments(id);
+    assert(comments.length >= (issue.comments ?? 0), 'Incomplete/stale comment stream; retry a fresh read');
     const state = reduceTask(issue, comments);
     state.effective_status = state.status;
     state.blockers = [];
@@ -56,6 +57,7 @@ export function taskService(api) {
     }
     // Re-read before preparing; if another writer changed the stream, the version check rejects this packet.
     const issue = await api.issue(id), comments = await api.comments(id);
+    assert(comments.length >= (issue.comments ?? 0), 'Incomplete/stale comment stream; retry a fresh read');
     const candidate = { id: Math.max(0, ...comments.map(c => c.id)) + 1, user: { login: event.login },
       created_at: 'candidate', updated_at: 'candidate', body: envelope('event', event) };
     const after = reduceTask(issue, [...comments, candidate]);
