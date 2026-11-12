@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "id": "ggxrd-rev2-unity-20261112",
+  "version": "local-reconstruction-v1",
+  "owner_role": "technical-artist",
+  "storage": "local-only",
+  "status": "implemented-and-editor-validated",
+  "review_status": "independent-tech-director-review-pending",
+  "task": "https://github.com/mist2finer-spec/holdem_coin/issues/14",
+  "local_root": "G:/holdem_coin-workspace/island/maintenance/ggxrd-rev2-unity-20261112",
+  "project": "G:/holdem_coin-workspace/island/branches/current-10zone/unity/IslandGame",
+  "entries": {
+    "scene": {
+      "path": "G:/holdem_coin-workspace/island/branches/current-10zone/unity/IslandGame/Assets/LocalRev2Reconstruction/Scenes/Rev2JohnnyStage.unity",
+      "sha256": "9147da12b8955db2ef6940abcb5fc97e154b8e85717cf51936d723296c3bfd1f",
+      "bytes": 1423793
+    },
+    "handoff": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/ggxrd-rev2-unity-20261112/handoff.json",
+      "sha256": "289dc7d65fe435daf068a5b8fa05e6f9a995788d44c690a56af300bfbb71b31e",
+      "bytes": 4947
+    },
+    "review": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/ggxrd-rev2-unity-20261112/review.html",
+      "sha256": "6f2b32b114fb26574f9166593ddeb022a3faa9b29116d33a3e0349d4c6f58c46",
+      "bytes": 4408
+    },
+    "validation": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/ggxrd-rev2-unity-20261112/validation.json",
+      "sha256": "1146dbae6dc30c55e743c847cc8eb11f93aabad09ea288fe39db705f4b632b14",
+      "bytes": 1695
+    },
+    "asset_manifest": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/ggxrd-rev2-unity-20261112/asset-manifest.json",
+      "sha256": "ad4f60020f6606648fc2357908397c68a3bcbf82287412cf2b890da403e114d2",
+      "bytes": 171991
+    },
+    "sources": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/ggxrd-rev2-unity-20261112/source-inputs.json",
+      "sha256": "1f9c16f67b47408baf20720e9cc48ee49b6c57e4eb6456694d2e8d8bc371c6d4",
+      "bytes": 5848
+    }
+  },
+  "resume_role": "technical-artist",
+  "materials_publishable": false
+}
