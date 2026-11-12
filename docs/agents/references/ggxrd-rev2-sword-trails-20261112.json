@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "id": "ggxrd-rev2-sword-trails-20261112",
+  "version": "local-reconstruction-v3",
+  "owner_role": "technical-artist",
+  "access": "local-only",
+  "storage": "local-only",
+  "status": "implemented-and-desktop-validated",
+  "review_status": "independent-tech-director-review-pending",
+  "task": "https://github.com/mist2finer-spec/holdem_coin/issues/16",
+  "local_root": "G:/holdem_coin-workspace/island/maintenance/ggxrd-rev2-sword-trails-20261112",
+  "project": "G:/holdem_coin-workspace/island/branches/current-10zone/unity/IslandGame",
+  "checked_at": "2026-11-12T21:36:45.334691+00:00",
+  "entries": {
+    "scene": {
+      "path": "G:/holdem_coin-workspace/island/branches/current-10zone/unity/IslandGame/Assets/LocalRev2Reconstruction/Scenes/Rev2JohnnyStage.unity",
+      "sha256": "db3ffb2bedf1fcd5c3f0cfdb771780ab753976f887537406c289b2fff7b96610",
+      "bytes": 1460958
+    },
+    "handoff": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/ggxrd-rev2-sword-trails-20261112/handoff.json",
+      "sha256": "c5f298e137c47e685ac635f9402e2a327a1d24d127038af51ed7c0d5e9e7e2c8",
+      "bytes": 7860
+    },
+    "review": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/ggxrd-rev2-sword-trails-20261112/review.html",
+      "sha256": "3f4ad0d8b5d8fddb2b61db0eec3056cf3d0573ed9412b64d61e42278af380a66",
+      "bytes": 5529
+    },
+    "validation": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/ggxrd-rev2-sword-trails-20261112/validation.json",
+      "sha256": "000ced2452065342baf0b1bbb04dc7f56e6420308771138a18affa18d4daaab3",
+      "bytes": 2309
+    },
+    "changed_assets": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/ggxrd-rev2-sword-trails-20261112/changed-asset-manifest.json",
+      "sha256": "9b1c39f0e8616a6b10b72d22ab3e952b93b5e61335df54218eff51fe0a38e4ac",
+      "bytes": 19975
+    }
+  },
+  "resume_role": "technical-artist",
+  "materials_publishable": false
+}
