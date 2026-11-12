@@ -66,11 +66,15 @@ CLAIM 입력 (`event.json`; 실제 branch/SHA로 채운다):
 
 ## 공유 근거·Craft Anything·ComfyUI
 
-`expected_artifacts`는 이 저장소의 1MiB 이하 커밋된 파일이다. 제출 커밋은 base SHA의 후손이어야 하며 각 파일 바이트의 SHA-256을 GitHub에서 읽어 확인한다. 로컬 파일/디렉터리/LFS 포인터/빈 파일은 완료 산출물로 인정하지 않는다.
+**역분석은 사용자 지정 로컬 전용 정책을 우선 적용한다.** [역할 우선 지침](../../.agents/roles/reverse_eng_designer.md)은 자료 묶음의 Git 커밋/푸시·LFS·Release/Issue 첨부·본문 업로드를 금지한다. 분석 원본·추출물·`.cany`·상세 보고서·로그·영상은 로컬에 유지한다. 다른 역할이 이 자료를 받아도 같은 방침을 따른다.
 
-대형 이미지·모델·원본 덤프는 강제로 넣지 않는다. `docs/agents/evidence/task-N.md` 같은 작은 요약에 접근 가능한 원본 위치·해시·출처/버전·관찰/추론/미확인·재현 방법을 기록한다. 원본 접근이 안 되면 그 사실과 담당자를 남기고 해당 기준의 검수는 보류한다. 인증정보/개인 로컬 경로를 공개 증거에 넣지 않는다.
+GitHub에는 [로컬 위치 인덱스](examples/reverse-reference.json)처럼 경로와 식별정보만 남긴다. `access: local-only`, 실제 `G:/` 절대 보관 경로, 첫 진입 파일, 필요한 자료 파일/해시, 버전, 확인 시각·상태를 기록한다. 분석 본문·전체 파일 목록·대량 로그는 복제하지 않는다. 예제의 `<task>`와 미확인 값은 실제 확인 후 채운다. 새 작업물은 `G:/holdem_coin-workspace/island/maintenance/<task>` 아래에 두며 기존 기록/아카이브는 현 위치를 가리킨다. 경로 변경 시 인덱스를 갱신한다. 사용자 지정 작업 경로는 게시할 수 있지만 인증정보는 기록하지 않는다.
 
-reverse_eng_designer는 Craft Anything session/target/질문/evidence ID/관찰을 요약 파일로 내보내고 수신 역할마다 Issue를 발행한다. 공유 근거는 같은 고정 커밋 링크를 재사용한다. ComfyUI 결과에는 workflow/model 식별자·버전/해시·seed·입력/결과 해시·검증 범위와 접근 가능한 시안 위치를 남긴다. localhost/evidence ID만으로 전달 완료를 선언하지 않는다.
+`expected_artifacts`는 여전히 이 저장소의 1MiB 이하 커밋 파일이다. **역분석 작업에서는 원본 자료 대신 작은 위치 인덱스의 저장소 상대 경로**를 지정한다. `sources`는 HTTPS 참조가 없으면 `[]`로 두고, 로컬 경로를 HTTPS인 것처럼 넣지 않는다. DELIVER의 SHA-256 및 `checks[].evidence`도 인덱스 파일을 가리킨다. 원격 도구는 커밋 후손 관계와 인덱스 바이트만 검사하며 로컬 원본을 다운로드/업로드하지 않는다. 일반 작업의 산출물 해시 검증은 기존대로다.
+
+수신·검수하는 로컬 에이전트는 해당 절대 경로를 직접 열어 존재·버전·해시와 요청한 범위의 내용을 확인한다. 원본 확인 전에는 인덱스가 있다는 이유로 ACCEPT하지 않는다. 로컬 확인 결과·미확인 항목은 DELIVER의 validation/limitations와 검수 summary에 짧게 남긴다. G: 부재/경로 불일치/해시 불일치는 BLOCK/UNAVAILABLE로 남긴다. 이를 해결하기 위해 자료를 GitHub에 올리거나 클라우드 에이전트 접근용 사본을 만들지 않는다. 검수 기록은 실제 로컬 에이전트의 확인 진술이며 GitHub CI가 확인한 것으로 표현하지 않는다.
+
+reverse_eng_designer는 Craft Anything session/target/질문/evidence ID/관찰을 로컬 인계 파일에 두고 위치 인덱스의 고정 커밋 링크를 수신 역할별 Issue에서 재사용한다. ComfyUI의 역분석 연계 시안/workflow/model 식별자·seed·해시·검증 범위도 로컬 인계에 둔다. 일반 아트 작업은 기존 방식으로 수신자가 접근 가능한 시안 위치와 검증 범위를 전달한다. 원본 또는 시안 접근이 안 되면 해당 검수를 보류한다. 이번 정책으로 기존 게시 자료를 소급 삭제하지 않는다.
 
 ## 검사·한계
 

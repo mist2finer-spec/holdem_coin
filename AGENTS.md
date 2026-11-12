@@ -15,6 +15,7 @@ GitHub 도구만 있으면 같은 문서와 [작업 전달 규약](docs/agents/P
 
 ## 전달·수신
 
+- 역분석 자료는 로컬 전용이다. GitHub에는 위치 인덱스만 올리며 자료 묶음은 업로드하지 않는다. 이 범위에서는 [reverse_eng_designer 우선 지침](.agents/roles/reverse_eng_designer.md)이 일반 공유 규칙보다 우선하며 수신 역할도 따른다.
 - 작업 기록의 원본은 이 저장소 GitHub Issues다. 역할당 요청 1개를 만들고 인수(CLAIM), 제출(DELIVER), 별도 실행자의 검수(ACCEPT)를 댓글로 기록한다. [HANDOFF](docs/agents/HANDOFF.md)를 따른다.
 - 인수 후 상태를 다시 읽고 소유자를 확인한 뒤 착수한다. 인계·의존 작업은 ACCEPTED 전까지 완료로 취급하지 않는다. 준비 요청은 조회까지만 한다.
 - 세션 종료/중단 전 같은 Issue에 CHECKPOINT 또는 BLOCK을 남긴다. 계약 변경은 영향받는 역할에 후속 Issue로 전달한다. 공유 파일의 동시 작성은 tech-director가 나눈다.
