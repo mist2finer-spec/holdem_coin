@@ -1,13 +1,19 @@
 import { assert, repository, bytesHash } from './protocol.mjs';
+import { randomUUID } from 'node:crypto';
 
 export function githubClient({ token = process.env.GH_TOKEN || process.env.GITHUB_TOKEN, fetchImpl = fetch } = {}) {
   const prefix = `/repos/${repository}`;
   async function request(path, { method = 'GET', body } = {}) {
     assert(path.startsWith(prefix + '/') || path === '/user', 'Unexpected API path');
     if (method !== 'GET') assert(token, 'Write requires GH_TOKEN/GITHUB_TOKEN, or use the connected GitHub tool with prepared JSON');
-    const response = await fetchImpl(`https://api.github.com${path}`, { method, redirect: 'error',
+    // Public API/proxy caches can briefly replay a pre-claim comment list after a write.
+    // Mutable task reads need a fresh URL; commit-addressed artifacts remain cacheable.
+    const mutable = method === 'GET' && path.startsWith(prefix + '/issues');
+    const target = mutable ? `${path}${path.includes('?') ? '&' : '?'}agent_read=${randomUUID()}` : path;
+    const response = await fetchImpl(`https://api.github.com${target}`, { method, redirect: 'error',
       signal: AbortSignal.timeout(20000), headers: { Accept: 'application/vnd.github+json',
         'X-GitHub-Api-Version': '2022-11-28', 'User-Agent': 'holdem-agent-protocol',
+        ...(mutable ? { 'Cache-Control': 'no-cache' } : {}),
         ...(token ? { Authorization: `Bearer ${token}` } : {}), ...(body ? { 'Content-Type': 'application/json' } : {}) },
       ...(body ? { body: JSON.stringify(body) } : {}) });
     assert(response.ok, `GitHub ${response.status} for ${path}; inbox is UNAVAILABLE, not empty`);

@@ -163,3 +163,16 @@ test('Unicode inbox summaries stay within byte budget without losing pagination'
   assert.equal(result.next_offset, result.items.length);
   assert.equal(result.total_pending, 5);
 });
+test('mutable reads use different URLs and no-cache headers after writes', async () => {
+  const requests = [];
+  const api = githubClient({ token: '', fetchImpl: async (url, options) => {
+    requests.push({ url, options }); return new Response('[]');
+  } });
+  await api.comments(10); await api.comments(10);
+  assert.notEqual(requests[0].url, requests[1].url);
+  assert.equal(requests[0].options.headers['Cache-Control'], 'no-cache');
+});
+test('known incomplete comment stream cannot report an unclaimed task', async () => {
+  const api = mockApi([{ ...issue(), comments: 1 }]);
+  await assert.rejects(taskService(api).load(10), /Incomplete/);
+});
