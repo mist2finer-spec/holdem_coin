@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "id": "ggxrd-rev2-sword-recovery-20261112",
+  "version": "local-reconstruction-v2",
+  "owner_role": "technical-artist",
+  "access": "local-only",
+  "storage": "local-only",
+  "status": "implemented-and-desktop-validated",
+  "review_status": "independent-tech-director-review-pending",
+  "task": "https://github.com/mist2finer-spec/holdem_coin/issues/15",
+  "local_root": "G:/holdem_coin-workspace/island/maintenance/ggxrd-rev2-sword-recovery-20261112",
+  "project": "G:/holdem_coin-workspace/island/branches/current-10zone/unity/IslandGame",
+  "checked_at": "2026-11-12T20:59:31.069017+00:00",
+  "entries": {
+    "scene": {
+      "path": "G:/holdem_coin-workspace/island/branches/current-10zone/unity/IslandGame/Assets/LocalRev2Reconstruction/Scenes/Rev2JohnnyStage.unity",
+      "sha256": "3a1f6e95d6fb4de4a7fbc8ca8ff100fb5724b55b46ca34708f2469cfea542ab6",
+      "bytes": 1423905
+    },
+    "handoff": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/ggxrd-rev2-sword-recovery-20261112/handoff.json",
+      "sha256": "47a2c3b82761ae04448b4a4bfa7c1f91e98685a0164b7a3153e745ad24611070",
+      "bytes": 4052
+    },
+    "review": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/ggxrd-rev2-sword-recovery-20261112/review.html",
+      "sha256": "19b32c844059747a220676646075f1f7bd935ee0266e2f57d90d759296852c32",
+      "bytes": 6197
+    },
+    "validation": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/ggxrd-rev2-sword-recovery-20261112/validation.json",
+      "sha256": "c8265f8a4f8d48b5a402ab25abbc4970fae79bb9c2306261ab488c4687035094",
+      "bytes": 1539
+    },
+    "changed_assets": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/ggxrd-rev2-sword-recovery-20261112/changed-asset-manifest.json",
+      "sha256": "2af893b4a201a26829549498ca81704b2910a3e7cab509586bb697c3f12e0988",
+      "bytes": 1384
+    }
+  },
+  "resume_role": "technical-artist",
+  "materials_publishable": false
+}
