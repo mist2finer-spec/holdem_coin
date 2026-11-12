@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "from": "tech-director",
+  "to": "tools-perf-engineer",
+  "reviewer": "qa-tester",
+  "goal": "역할 수신함 검증 결과 정리",
+  "scope": "통신 도구와 근거 문서만. 게임 구현/배포 제외.",
+  "branch": "main",
+  "base_sha": "468d3db9461a2771be829ded3326161cbc605716",
+  "paths": ["scripts/agents/tasks.mjs"],
+  "acceptance": ["중복 인수와 누락 산출물의 거부 결과를 근거에 기록한다"],
+  "expected_artifacts": ["docs/agents/evidence/task-N.md"],
+  "depends_on": [],
+  "sources": []
+}

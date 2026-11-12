@@ -40,7 +40,9 @@ node scripts/agents/context.mjs reverse_eng_designer
 node scripts/agents/context.mjs --check
 ```
 
-기본 출력은 공통 규칙·현재 요약·선택 카드뿐이다. `--unity`는 Unity 조사에 필요한 짧은 규칙을 추가한다. 소스·로그·모든 역할은 출력하지 않는다. GitHub 도구만 쓰는 경우 같은 문서 3개를 직접 읽는다.
+기본 출력은 공통 규칙·현재 요약·선택 카드와 해당 역할의 미처리 작업 최대 3개다. `--unity`는 Unity 규칙, `--offline`은 수신함 미조회를 명시한다. 소스·로그·모든 역할은 출력하지 않는다. GitHub 도구만 쓰는 경우 같은 문서 3개와 [전달 규약](PROTOCOL.md)의 연결 도구 절을 따른다.
+
+작업 원본은 GitHub Issues다. CLAIM/ACK 전에는 착수하지 않고 DELIVER와 ACCEPT를 구분한다. `node scripts/agents/tasks.mjs show NUMBER`로 선택 작업의 체크포인트를 확인한다. 발신자/검수자도 자기 미완료 작업을 조회할 수 있다.
 
 ## 요청 예시
 
@@ -53,4 +55,4 @@ node scripts/agents/context.mjs --check
 
 경로가 바뀌면 담당 카드, 게임 기준이 바뀌면 [CURRENT](CURRENT.md), 공통 보호 규칙은 AGENTS만 갱신한다. 작업 전후의 긴 기록은 기존 분야 문서/로컬 증거에 보관한다. 전달 서식은 [HANDOFF](HANDOFF.md), 조건부 규칙은 [WORK_RULES](WORK_RULES.md), 분석/아트 도구는 [REFERENCES](REFERENCES.md).
 
-검사 명령은 13개 역할, 링크/소스 경로, 12KB 시작 묶음을 확인한다. 바이트 감소는 컨텍스트 입력량 지표이며 실제 청구 토큰 절감률은 별도 측정해야 한다.
+`context.mjs --check`는 13개 역할, 링크/소스 경로, 12KB 정적 묶음을 확인한다. 통신 회귀 검사는 `node --test scripts/agents/protocol.test.mjs`, 실제 원격 산출물 확인은 `tasks.mjs verify NUMBER`다. 수신함 요약은 별도 최대 4KB다. 바이트 크기는 실제 청구 토큰과 다르다.
