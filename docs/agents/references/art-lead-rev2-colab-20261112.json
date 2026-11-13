@@ -8,28 +8,28 @@
   "review_status": "independent-review-pending",
   "branch": "codex/genshin-environment-20261110",
   "base_sha": "cef2bfd1b6605d6c7a8ab91be2d5458519e60e5b",
-  "checked_at": "2026-11-13T02:34:37.198586+00:00",
+  "checked_at": "2026-11-13T02:47:47.613971+00:00",
   "local_root": "G:/holdem_coin-workspace/island/maintenance/rev2-colab-pipeline-20261112",
   "entries": {
     "start": {
       "path": "G:/holdem_coin-workspace/island/maintenance/rev2-colab-pipeline-20261112/ART_LEAD_HANDOFF_KO.md",
-      "sha256": "df991e42d5a062c0b276bdb5ad9519de73e93b143e45674681c26c5b477d1277",
-      "bytes": 12655
+      "sha256": "428eab99220a5d66a44a6c89cbd75505ab2d0131fccd454b4b59c9220b385e8e",
+      "bytes": 13075
     },
     "worklog": {
       "path": "G:/holdem_coin-workspace/island/maintenance/rev2-colab-pipeline-20261112/WORKLOG_20261112_KO.md",
-      "sha256": "ff134c0a3e9811fe2f47385a290c0069dbde19b7e2f60b538ce30ff92d84834e",
-      "bytes": 4992
+      "sha256": "287141a80b81681b5d232430cedb75320aceb3e102663192f748b5f1f8cb5cfe",
+      "bytes": 5286
     },
     "validation": {
-      "path": "G:/holdem_coin-workspace/island/maintenance/rev2-colab-pipeline-20261112/resume-20261112/validation.json",
-      "sha256": "e5b18e86882da7f5a8b8b8cc48e4e8800aa6f817fc10b19b2961c5244f472a9a",
-      "bytes": 1715
+      "path": "G:/holdem_coin-workspace/island/maintenance/rev2-colab-pipeline-20261112/server-restart-20261113/validation.json",
+      "sha256": "51416e8fd6ee72ce88f8abd097950bda1522d4dd80305c30717fae71140b9a0a",
+      "bytes": 1741
     },
     "notebook": {
       "path": "G:/holdem_coin-workspace/island/Rev2_Character_TPose_Parts_Colab.ipynb",
-      "sha256": "89fed7731579b206d94ca013e8236a9060a7b37aa83e5bd9a04118a59f8f9b32",
-      "bytes": 365100
+      "sha256": "500a7c6548a255293274b8f5438f25686b7d098a1ac925c02a8b35973a94bd6b",
+      "bytes": 370532
     },
     "authoring": {
       "path": "G:/holdem_coin-workspace/island/branches/current-10zone/workflows/comfyui/rev2_colab/AUTHORING_KO.md",
@@ -37,12 +37,18 @@
       "bytes": 12076
     },
     "source_manifest": {
-      "path": "G:/holdem_coin-workspace/island/maintenance/rev2-colab-pipeline-20261112/resume-20261112/delivery-manifest.json",
-      "sha256": "dfc25f71f298fef152dae7a30cd16671328738869df3c3de80fbd146ccfd3bd1",
-      "bytes": 5447
+      "path": "G:/holdem_coin-workspace/island/maintenance/rev2-colab-pipeline-20261112/server-restart-20261113/source-manifest.json",
+      "sha256": "8006bd5744a68aa481a61c1c7b0b642b1dedceea5e79e037e6c771ea657001b3",
+      "bytes": 4995
+    },
+    "latest_fix": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/rev2-colab-pipeline-20261112/server-restart-20261113/RESULT_KO.md",
+      "sha256": "e64726693cc31f76edeb3c687bcb781f0ed9c212917f9b2d43d4b010b81672b6",
+      "bytes": 3518
     }
   },
   "materials_publishable": false,
   "source_directory": "G:/holdem_coin-workspace/island/branches/current-10zone/workflows/comfyui/rev2_colab",
-  "publication_record": "G:/holdem_coin-workspace/island/maintenance/rev2-colab-pipeline-20261112/publish-20261112/publication.json"
+  "publication_record": "G:/holdem_coin-workspace/island/maintenance/rev2-colab-pipeline-20261112/server-restart-20261113/publication.json",
+  "version": "server-restart-v2"
 }

@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "id": "art-lead-rev2-colab-runtime-review",
+  "version": "server-restart-v2",
+  "access": "local-only",
+  "storage": "local-only",
+  "owner_role": "art-lead",
+  "status": "local-fix-validated-colab-rerun-unverified",
+  "review_status": "independent-review-pending",
+  "task": "https://github.com/mist2finer-spec/holdem_coin/issues/26",
+  "checked_at": "2026-11-13T02:47:47.613971+00:00",
+  "local_root": "G:/holdem_coin-workspace/island/maintenance/rev2-colab-pipeline-20261112/server-restart-20261113",
+  "source_directory": "G:/holdem_coin-workspace/island/branches/current-10zone/workflows/comfyui/rev2_colab",
+  "entries": {
+    "start": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/rev2-colab-pipeline-20261112/server-restart-20261113/RESULT_KO.md",
+      "sha256": "e64726693cc31f76edeb3c687bcb781f0ed9c212917f9b2d43d4b010b81672b6",
+      "bytes": 3518
+    },
+    "validation": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/rev2-colab-pipeline-20261112/server-restart-20261113/validation.json",
+      "sha256": "51416e8fd6ee72ce88f8abd097950bda1522d4dd80305c30717fae71140b9a0a",
+      "bytes": 1741
+    },
+    "notebook": {
+      "path": "G:/holdem_coin-workspace/island/Rev2_Character_TPose_Parts_Colab.ipynb",
+      "sha256": "500a7c6548a255293274b8f5438f25686b7d098a1ac925c02a8b35973a94bd6b",
+      "bytes": 370532
+    },
+    "source_manifest": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/rev2-colab-pipeline-20261112/server-restart-20261113/source-manifest.json",
+      "sha256": "8006bd5744a68aa481a61c1c7b0b642b1dedceea5e79e037e6c771ea657001b3",
+      "bytes": 4995
+    }
+  },
+  "materials_publishable": false,
+  "publication_record": "G:/holdem_coin-workspace/island/maintenance/rev2-colab-pipeline-20261112/server-restart-20261113/publication.json"
+}
