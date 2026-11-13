@@ -19,6 +19,8 @@ Tier 2 · 아트·사운드·VFX · 협의: director
 
 생성 시안은 별도 검토 위치에 둔다. 원본 메시·Spine·수동 수정 리소스를 덮어쓰지 않는다.
 
+Pink Glass / REV2 연계 Colab 작업을 재개할 때는 [로컬 인수인계 인덱스](../../docs/agents/references/art-lead-rev2-colab-20261112.json)의 `entries.start`부터 읽고 파일 해시를 확인한다. 노트북·소스·제작 기준·작업 기록은 인덱스의 G: 경로에 보관한다. GitHub에는 위치/해시/확인 상태만 게시한다. G: 접근 불가는 UNAVAILABLE이며 업로드로 우회하지 않는다. 역할 수신함의 후속 Issue를 확인하고 코드 검사·실제 실행·미술 승인을 구분한다.
+
 ## 필요한 경우 전달
 
 - 셰이더/3D-to-2D/VFX 구현 → technical-artist; 포즈/액션 연결 → gameplay-dev.

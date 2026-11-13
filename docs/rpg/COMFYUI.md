@@ -67,3 +67,11 @@ npm run test:comfy
 ```
 
 테스트는 로컬 모의 HTTP 서버를 이용해 참조 업로드, 큐 제출, 결과 다운로드, 오류 처리를 검증한다. 실제 GPU 추론 성공과는 별개다. 서버가 없을 때 `comfy:doctor`의 연결 실패는 정상이며 생성 가능한 상태로 보고하지 않는다.
+
+## 2026-11-12 Pink Glass / REV2 Colab 로컬 인수인계
+
+[위치·해시 인덱스](../agents/references/art-lead-rev2-colab-20261112.json)의 `entries.start`가 다음 art-lead의 진입점이다. 인덱스에서 독립 노트북, 소스 디렉터리, 제작 기준, 작업 기록과 검증 파일의 실제 G: 경로를 확인한다.
+
+이 작업은 [역분석 연계 자료 정책](../agents/PROTOCOL.md#공유-근거craft-anythingcomfyui)에 따라 노트북·workflow·모델 정보·상세 문서를 로컬에 보관한다. GitHub에는 위치와 식별정보만 게시한다. 로컬 접근이 불가능하면 UNAVAILABLE로 남기며 자료를 업로드해 해결하지 않는다. 공개 저장소의 기존 roster CLI와 이 로컬 패키지를 혼동하지 않는다.
+
+현재 인덱스의 상태는 로컬 코드 검사 완료 / Colab 런타임 미검증 / 독립 검수 대기다. 후속 요청은 art-lead 수신함에서 확인한다. 시작 파일에 다음 실행 단계와 미완료 범위가 있으며, GitHub CI는 실제 로컬 자료·GPU 실행·미술 품질을 대신 검증하지 않는다.

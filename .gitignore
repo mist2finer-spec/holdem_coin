@@ -106,3 +106,6 @@ mini-services/poker-server/data/
 # Current complete Unity project assets
 !/unity/IslandGame/Assets/**/*.png
 !/unity/IslandGame/Assets/**/*.dll
+
+# Local-only REV2-linked art pipeline; publish the location/hash index instead.
+/workflows/comfyui/rev2_colab/
