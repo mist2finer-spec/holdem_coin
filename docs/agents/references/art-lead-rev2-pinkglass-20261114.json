@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "id": "art-lead-rev2-pinkglass-20261114",
+  "access": "local-only",
+  "storage": "local-only",
+  "owner_role": "art-lead",
+  "status": "directive-issued-phase1-not-started",
+  "review_status": "independent-review-pending",
+  "branch": "codex/genshin-environment-20261110",
+  "checked_at": "2026-11-14T18:10:31.725208+00:00",
+  "local_root": "G:/holdem_coin-workspace/island/maintenance/art-rev2-pinkglass-20261114",
+  "entries": {
+    "directive": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/art-rev2-pinkglass-20261114/ART_DIRECTIVE_KO.md",
+      "sha256": "0e6738afae8b02e785743db12ed8597a72ea56f070f63dabae6f8feab30c180a",
+      "bytes": 11201
+    },
+    "modular3_review": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/art-rev2-pinkglass-20261114/modular3-review/REVIEW_KO.md",
+      "sha256": "cef331832395878c7b03e32f300b8179ad5b6c24e29a95a9ca8b7a8d906e9414",
+      "bytes": 4135
+    },
+    "reference_tpose": {
+      "path": "G:/holdem_coin-workspace/island/ref/pink_T_pose.jpg",
+      "sha256": "45d6ac2385f1dd4c24d2852f4cf7338a35640802a5c7aaebcf3f8739c96f94f8",
+      "bytes": 1547642
+    },
+    "draft_3d_tripo": {
+      "path": "G:/holdem_coin-workspace/island/ref/Modular Game Character Assembly #3.zip",
+      "sha256": "a77b3f640c02c11bb0472f086b1ca59a337145e1cbf588c80de4095c7ce49b2e",
+      "bytes": 2817465
+    }
+  },
+  "decisions_20261114": {
+    "weapon": "Johnny sword for local test only; excluded from build/commit/release",
+    "style": "GG Xrd style LoRA allowed; review copyright/style later",
+    "stockings": "black, no real transparency",
+    "glasses": "separate part like Johnny sunglasses; outlined; painted reflection"
+  },
+  "materials_publishable": false
+}
