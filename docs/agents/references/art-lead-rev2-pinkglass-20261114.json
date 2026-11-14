@@ -4,10 +4,10 @@
   "access": "local-only",
   "storage": "local-only",
   "owner_role": "art-lead",
-  "status": "directive-issued-blender-route-phase1-not-started",
-  "review_status": "independent-review-pending",
+  "status": "blender-b1-b9-first-pass-review-required",
+  "review_status": "visual-changes-required-independent-review-pending",
   "branch": "codex/genshin-environment-20261110",
-  "checked_at": "2026-11-14T18:17:26.025212+00:00",
+  "checked_at": "2026-11-14T20:02:32.551982+00:00",
   "local_root": "G:/holdem_coin-workspace/island/maintenance/art-rev2-pinkglass-20261114",
   "entries": {
     "directive": {
@@ -17,8 +17,8 @@
     },
     "modular3_review": {
       "path": "G:/holdem_coin-workspace/island/maintenance/art-rev2-pinkglass-20261114/modular3-review/REVIEW_KO.md",
-      "sha256": "2b446ca01a92dcca1039e0f24f8c19cd8d031f5d0d8b4022baf3a591ef79011d",
-      "bytes": 4476
+      "sha256": "8a3105f2f09ee51f2745ab17612b495ce3f7ee600c1470f7d206c38c90c051be",
+      "bytes": 4987
     },
     "reference_tpose": {
       "path": "G:/holdem_coin-workspace/island/ref/pink_T_pose.jpg",
@@ -39,6 +39,31 @@
       "path": "G:/holdem_coin-workspace/island/maintenance/art-rev2-pinkglass-20261114/blender-check/check_tripo.py",
       "sha256": "3e202da87c66c986ca277cbd4c2c395b42c4c881e04329b6ed3e2a94b89d6f21",
       "bytes": 2994
+    },
+    "blender_result": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/art-rev2-pinkglass-20261114/RESULT_KO.md",
+      "sha256": "29b891422f85369c3d713f7ecf9ef45cdcf232747a3d13037813ad0be5d63cf0",
+      "bytes": 9749
+    },
+    "blender_review": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/art-rev2-pinkglass-20261114/blender/REVIEW_KO.md",
+      "sha256": "3970f0d90f0013caaa96a3ea774b718c2f4d3c9eb44c9a8ba3ec74be36786e84",
+      "bytes": 4873
+    },
+    "blender_preview": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/art-rev2-pinkglass-20261114/blender/pinkglass_turnaround.blend",
+      "sha256": "5690681c1d9f6d5fd0bbe3b697b38e5171b731f8f6b1466a1b2737216d867a5c",
+      "bytes": 6464632
+    },
+    "blender_comparison": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/art-rev2-pinkglass-20261114/blender/review.html",
+      "sha256": "e9b1ab2c1da68e334099b8f3622730625e0ca7759a9b24653a556d7bab5455f8",
+      "bytes": 8116
+    },
+    "blender_validation": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/art-rev2-pinkglass-20261114/blender/reports/b9_validation.json",
+      "sha256": "90b5335f263b3be79e8c624244c1f1c3effbda9f79ebe57dbda79f622d0d913f",
+      "bytes": 914
     }
   },
   "decisions_20261114": {
@@ -51,5 +76,6 @@
   "tooling": {
     "colab": "on-hold (user decision 2026-11-14)",
     "blender": "G:/holdem_coin-workspace/tools/blender-agent/blender-5.3.0-windows-x64/blender.exe via Blender.ps1"
-  }
+  },
+  "protocol_status": "UNAVAILABLE: tasks.mjs show 27 malformed task packet; manual checkpoint only"
 }
