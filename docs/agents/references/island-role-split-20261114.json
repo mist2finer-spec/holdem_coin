@@ -1,0 +1,108 @@
+{
+  "schema": 1,
+  "id": "island-role-split-20261114",
+  "access": "local-only",
+  "storage": "local-only",
+  "owner_role": "director",
+  "status": "claude-tech-profiles-and-launchers-created",
+  "review_status": "user-smoke-test-pending",
+  "branch": "codex/genshin-environment-20261110",
+  "checked_at": "2026-11-14T20:51:59.125063+00:00",
+  "decision": {
+    "date": "2026-11-14",
+    "claude_tech_roles": [
+      "director",
+      "tech-director",
+      "gameplay-dev",
+      "tools-perf-engineer",
+      "ui-ux-dev",
+      "qa-tester",
+      "qa-release-lead",
+      "technical-artist",
+      "network-server-dev"
+    ],
+    "codex_art_design_roles": [
+      "art-lead",
+      "design-lead",
+      "systems-level-designer",
+      "reverse_eng_designer"
+    ],
+    "handoff": "GitHub Issues + G: files only"
+  },
+  "entries": {
+    "codex_request_prompt": {
+      "path": "G:/holdem_coin-workspace/island/production/codex-art-design-agents-prompt.md",
+      "sha256": "ba8b0854b04c901aa55ba0718d67e9a62ac49bf7ecfc972b90be706054278979",
+      "bytes": 5084
+    },
+    "director_checkpoint": {
+      "path": "G:/holdem_coin-workspace/island/production/session-state/director.md",
+      "sha256": "c014bf091d64ccca73e7924a216da4caf387e0a072410ec2a53abdbceaa3bce3",
+      "bytes": 2223
+    },
+    "claude_launcher": {
+      "path": "C:/Users/SHK/.claude/island-launchers/launch-role.ps1",
+      "sha256": "f0653f26b9e53623a24fa9b937d81893e1297b7964221469fadcf64df3657e3d",
+      "bytes": 2166
+    },
+    "claude_profile_generator": {
+      "path": "C:/Users/SHK/.claude/island-launchers/gen_profiles.py",
+      "sha256": "f109e00e01ece3ba9ec056bdad619e84d5e25660d80ed227f6e6407e9b5487db",
+      "bytes": 6539
+    }
+  },
+  "claude_agent_profiles": {
+    "director": {
+      "path": "C:/Users/SHK/.claude/agents/director.md",
+      "sha256": "bc79a44fcf800325fcf8531316da201babc1da0489b3a2175a153e44853d09a9",
+      "bytes": 2410
+    },
+    "tech-director": {
+      "path": "C:/Users/SHK/.claude/agents/tech-director.md",
+      "sha256": "c95b43a9c18a9e09e62fe2d4c5a2d02fbb06fe0a5ca7d462d080bd4af5a7594a",
+      "bytes": 2966
+    },
+    "gameplay-dev": {
+      "path": "C:/Users/SHK/.claude/agents/gameplay-dev.md",
+      "sha256": "056cd6e098a1d2e896b80042473d80631f59601b04fd6e8882e946c49eb93ba0",
+      "bytes": 3030
+    },
+    "tools-perf-engineer": {
+      "path": "C:/Users/SHK/.claude/agents/tools-perf-engineer.md",
+      "sha256": "c7fc8591c125efa7974eebdf174e8fa34af777acd3735f3b9b7e2e6742b746ca",
+      "bytes": 3011
+    },
+    "ui-ux-dev": {
+      "path": "C:/Users/SHK/.claude/agents/ui-ux-dev.md",
+      "sha256": "67c6258df858d334890f9e3bf7df5436c3c1f211ddb255ba30cdf8942ecdee1a",
+      "bytes": 2891
+    },
+    "qa-tester": {
+      "path": "C:/Users/SHK/.claude/agents/qa-tester.md",
+      "sha256": "e0c3018bd3effc70ba1906659e13a1b104cc454c4120df16eef8277bfe380323",
+      "bytes": 2869
+    },
+    "qa-release-lead": {
+      "path": "C:/Users/SHK/.claude/agents/qa-release-lead.md",
+      "sha256": "18ca1642d16ed6199ac6d5aa8357c71956aa85a054af9f503b86930cc7e4e5aa",
+      "bytes": 2839
+    },
+    "technical-artist": {
+      "path": "C:/Users/SHK/.claude/agents/technical-artist.md",
+      "sha256": "72aa0d720e60b3287fafc34c35705482025b3595e0c798029bc4a8e66b096aa3",
+      "bytes": 3028
+    },
+    "network-server-dev": {
+      "path": "C:/Users/SHK/.claude/agents/network-server-dev.md",
+      "sha256": "998e7eb3e3fe185c47b94c349ca4a1534b3e2a650d398c9c3104b2fefffc7ad3",
+      "bytes": 2351
+    }
+  },
+  "desktop_shortcuts": "Desktop/Island Claude (Tech)/01-09 <role>.lnk",
+  "validation": {
+    "launcher_dry_run": "PASS (gameplay-dev, network-server-dev)",
+    "claude_print_smoke": "PASS gameplay-dev profile + unity MCP; ai-game-developer ECONNREFUSED = UNAVAILABLE (editor closed)",
+    "interactive_shortcut": "not run"
+  },
+  "materials_publishable": false
+}
