@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "id": "island-stylization-tech-director-plan-20261112",
+  "version": "boundary-v1",
+  "access": "local-only",
+  "storage": "local-only",
+  "owner_role": "tech-director",
+  "status": "plan-delivered",
+  "review_status": "independent-director-review-pending",
+  "task": "https://github.com/mist2finer-spec/holdem_coin/issues/18",
+  "depends_on_accepted": "https://github.com/mist2finer-spec/holdem_coin/issues/17",
+  "local_root": "G:/holdem_coin-workspace/island/maintenance/tech-review-17-20261114",
+  "checked_at": "2026-11-15T02:31:48.757Z",
+  "source_head": "2d06d98a",
+  "entries": {
+    "plan": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/tech-review-17-20261114/REVIEW_17_AND_BOUNDARY.md",
+      "sha256": "8e6ad46c727782dfa1c36576c3ca6191cef3ac1ef966a122ff0569a56f72c96d",
+      "bytes": 8866
+    }
+  },
+  "inputs": {
+    "role_document": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/ggxrd-island-transfer-20261112/roles/tech-director.md",
+      "sha256": "a2532405a7b03be3fb4806a90f3b0e1db69ebed76653ae0fe1e6ba422bff4161",
+      "bytes": 2686
+    },
+    "contracts": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/ggxrd-island-transfer-20261112/CONTRACTS.md",
+      "sha256": "281334b9c4d782b3fbe34c66cc58e321768ec42e542661acae77110a3bf2499c",
+      "bytes": 3176
+    },
+    "validation": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/ggxrd-island-transfer-20261112/VALIDATION.md",
+      "sha256": "f6a1c0083652972fbc39636f53b7216528b00aad86d2da686db0e13c6e48a803",
+      "bytes": 2152
+    },
+    "battle3d_view": {
+      "path": "G:/holdem_coin-workspace/island/branches/current-10zone/unity/IslandGame/Assets/Island/Runtime/Battle3DView.cs",
+      "sha256": "d1de50bcb60c031132c4bb7c7c979b81c1daa00f1f30abd9caa47b615831e457",
+      "bytes": 26944
+    },
+    "runtime_animation_player": {
+      "path": "G:/holdem_coin-workspace/island/branches/current-10zone/unity/IslandGame/Assets/Island/Runtime/RuntimeAnimationPlayer.cs",
+      "sha256": "e5a4008946051588fe80f26f30b2637ea9ccec2eb966f9af46f2d3274068e361",
+      "bytes": 3448
+    },
+    "battle3d_assets": {
+      "path": "G:/holdem_coin-workspace/island/branches/current-10zone/unity/IslandGame/Assets/Island/Resources/Battle3DAssets.asset",
+      "sha256": "5aebb412dbf892f9f05ed7e5eb6c37bb7a053f5a9f6f793b464bc624f2aa6699",
+      "bytes": 2388
+    }
+  },
+  "unavailable_inputs": [],
+  "verification": {
+    "method": "code-inspection",
+    "editor": "not-run",
+    "android": "not-run",
+    "stage_kernel_check": "PASS"
+  }
+}
