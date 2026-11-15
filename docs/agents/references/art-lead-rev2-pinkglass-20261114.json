@@ -4,10 +4,10 @@
   "access": "local-only",
   "storage": "local-only",
   "owner_role": "art-lead",
-  "status": "blender-b1-b9-first-pass-review-required",
+  "status": "phase2-cloth-correction-review-required",
   "review_status": "visual-changes-required-independent-review-pending",
   "branch": "codex/genshin-environment-20261110",
-  "checked_at": "2026-11-14T20:02:32.551982+00:00",
+  "checked_at": "2026-11-15T18:56:15.310993+00:00",
   "local_root": "G:/holdem_coin-workspace/island/maintenance/art-rev2-pinkglass-20261114",
   "entries": {
     "directive": {
@@ -64,6 +64,51 @@
       "path": "G:/holdem_coin-workspace/island/maintenance/art-rev2-pinkglass-20261114/blender/reports/b9_validation.json",
       "sha256": "90b5335f263b3be79e8c624244c1f1c3effbda9f79ebe57dbda79f622d0d913f",
       "bytes": 914
+    },
+    "phase2_cloth_result": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/art-rev2-pinkglass-20261114/phase2/cloth-fix-20261115/RESULT_KO.md",
+      "sha256": "be9b895b98d5dd6c7cbc3c955728daf08cbb52cb55a714cfdba4375c59e2dc0f",
+      "bytes": 5188
+    },
+    "phase2_cloth_comparison": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/art-rev2-pinkglass-20261114/phase2/cloth-fix-20261115/review.html",
+      "sha256": "53562cbcbd619baaf2956ba89138c0843e2abfa80cf3e7d97bf26c222707471c",
+      "bytes": 4447
+    },
+    "phase2_cloth_preview": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/art-rev2-pinkglass-20261114/phase2/cloth-fix-20261115/local-only_MayShip_cloth_review.blend",
+      "sha256": "0e65e87a2afa349b9658ae13bc0d2a18e9d6c4e7c28c5349769be964aa977f62",
+      "bytes": 41475947
+    },
+    "phase2_cloth_video": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/art-rev2-pinkglass-20261114/phase2/cloth-fix-20261115/PinkGlass_REV2_cloth_review.mp4",
+      "sha256": "4ac61f396c85ed3f805e92474e3bb781127cb3353f29b47f954918752fa2de1f",
+      "bytes": 505859
+    },
+    "phase2_cloth_manifest": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/art-rev2-pinkglass-20261114/phase2/cloth-fix-20261115/artifact_manifest.json",
+      "sha256": "171847bc1d1110675d3e944a8fa9c305191b403e66a07b36e535ee8b0fb70e4b",
+      "bytes": 4685
+    },
+    "phase2_cloth_validation": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/art-rev2-pinkglass-20261114/phase2/cloth-fix-20261115/reports/verified_summary.json",
+      "sha256": "66224ee7e47d2df9e9df40eb06f396f792abc8a7aa54790e512da045f825e2cb",
+      "bytes": 963
+    },
+    "phase2_cloth_preservation": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/art-rev2-pinkglass-20261114/phase2/cloth-fix-20261115/reports/preservation_and_floor.json",
+      "sha256": "6662180c33fb114dcdd9198198d1ad4fdcd81d022f3c25d098446ae64338b34a",
+      "bytes": 2011
+    },
+    "phase2_cloth_video_validation": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/art-rev2-pinkglass-20261114/phase2/cloth-fix-20261115/reports/video_verification.json",
+      "sha256": "42dfbde1aea5d52df37d4a5d8f05e775694732907d82e9df3b6af3d8df0839d3",
+      "bytes": 515
+    },
+    "phase2_cloth_script": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/art-rev2-pinkglass-20261114/phase2/cloth-fix-20261115/scripts/correct_cloth_final.py",
+      "sha256": "f9886174a10f3ed013df5c707dc410bbf1befd51c2d577d87e2822df521e5690",
+      "bytes": 7822
     }
   },
   "decisions_20261114": {
@@ -77,5 +122,17 @@
     "colab": "on-hold (user decision 2026-11-14)",
     "blender": "G:/holdem_coin-workspace/tools/blender-agent/blender-5.3.0-windows-x64/blender.exe via Blender.ps1"
   },
-  "protocol_status": "UNAVAILABLE: tasks.mjs show 27 malformed task packet; manual checkpoint only"
+  "protocol_status": "UNAVAILABLE: tasks.mjs show 27 malformed task packet; manual checkpoint only",
+  "current_entry": "phase2_cloth_result",
+  "phase2_review_status": {
+    "execution": "PASS",
+    "preservation": "PASS",
+    "video_encoding_and_decoding": "PASS",
+    "visual_quality": "FAIL",
+    "art_approval": "pending",
+    "unity_gameplay": "UNAVAILABLE: not executed",
+    "independent_review": "UNAVAILABLE: not executed",
+    "commit_authorization": "user authorized local commit only; no push or Issue publication",
+    "repository_payload": "location/hash/status index only; source assets and derived reference media remain local"
+  }
 }
