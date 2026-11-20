@@ -5,16 +5,23 @@ Shader "Island/MapReview/WorldGround" {
  HLSLINCLUDE
  #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
  float4 _MountOcclusionHero;
+ float _ZoneGroundForegroundOff; // debug global: 1 disables the lane rule below (the hero ellipse stays)
  void ClipForeground(float3 world,float2 pixel){
-  if(_MountOcclusionHero.w<.5||world.y<_MountOcclusionHero.y-.50)return;
+  if(_MountOcclusionHero.w<.5)return;
   float3 heroVS=TransformWorldToView(_MountOcclusionHero.xyz);
   float3 pointVS=TransformWorldToView(world);
   float depth=-pointVS.z,heroDepth=-heroVS.z;
   if(depth<=0||heroDepth<=0||depth>=heroDepth-.65)return;
   float2 offset=pointVS.xy*(heroDepth/depth)-heroVS.xy;
-  float mask=1-smoothstep(.55,1.0,length(offset/float2(2.2,1.55)));
+  // hero ellipse (unchanged): stippled hole around the hero
+  float mask=world.y<_MountOcclusionHero.y-.50?0:(1-smoothstep(.55,1.0,length(offset/float2(2.2,1.55))))*.98;
+  // lane rule (same as SourceGrass ForegroundClear): ground close to the camera (full <6 m, none >8 m) and >2 m in
+  // front of the hero is removed where, seen from the camera, it rises above the lane line (hero feet +.1 m on the
+  // hero plane), so it no longer covers the hero/enemies anywhere along the lane.
+  float gate=_ZoneGroundForegroundOff>.5?0:saturate((heroDepth-2-depth)/.5)*saturate((8-depth)/2);
+  mask=max(mask,gate*saturate((offset.y+.65-.10)/.10)*1.0001);
   float noise=frac(52.9829189*frac(dot(floor(pixel),float2(.06711056,.00583715))));
-  clip(noise-mask*.98);
+  clip(noise-mask);
  }
  ENDHLSL
  Pass { Name "Forward" Tags {"LightMode"="UniversalForward"}
