@@ -81,10 +81,13 @@ function kitNoSkillDigest(){
 // T1 (2026-11-19, user-approved method A: activeFrom moved to the visible cut, contact sampling >= 32 points per window):
 // re-recorded with vfx-basic-attack-20261119/qa_T1/work/golden/kit_golden_T1.mts (this function verbatim). The pre-T1 copy
 // (backup_before_T1/srclib_copy) still prints the old value fd64fe03... (room 2, kills 90), the T1 tree and a source copy of
-// it (qa_T1/work/golden/src_T1b, iai3 window from F(32)) both print the value below (room 3, kills 96). Pending tech-director review of T1.
-const KIT_GOLDEN={noSkills:'3910ad9fa1dadcec2d4fbf46dc40c5598f12817a7e676b07a199cb2a5acf51e3'};
+// it (qa_T1/work/golden/src_T1b, iai3 window from F(32)) both printed 3910ad9f... (room 3, kills 96); tech-director ACCEPT.
+// T1b (iai2 window from F(18)): same script (qa_T1b/work/golden). The T1 copy (backup_before_T1b/srclib_copy) still prints
+// 3910ad9f..., the T1b tree and its source copy (qa_T1b/work/golden/src_T1b2) print the value below (room 3, kills 90). The
+// two same-result changes in stepRow alone keep 3910ad9f at stage 0 and the T1 digests at stages 1 and 2.
+const KIT_GOLDEN={noSkills:'782d84d8a7cf1101478cf9e1777af633b3c5c1f3e17a614326147202f28d4543'};
 test('kit on, no skill presses: the kit path is the recorded one (kit golden digest of 6000 ticks)',()=>{
- const k=kitNoSkillDigest();assert.equal(k.room,3);assert.equal(k.kills,96);assert.equal(k.digest,KIT_GOLDEN.noSkills);
+ const k=kitNoSkillDigest();assert.equal(k.room,3);assert.equal(k.kills,90);assert.equal(k.digest,KIT_GOLDEN.noSkills);
 });
 
 test('kit table holds the E-3 times and the k-converted distances in one measured block',()=>{
@@ -92,7 +95,7 @@ test('kit table holds the E-3 times and the k-converted distances in one measure
  near(IAI_K,.678);const r=PINK_IAI.rows;near(PINK_IAI.entry,.12);
  // T1: activeFrom = the clip frame where the blade comes in front (was the trial hit start ENTRY+F(10) / F(11) / F(23)).
  near(r.iai1.duration,.12+32/60,1e-9,'iai1');near(r.iai1.activeFrom,.12+18/60);near(r.iai1.activeTo,.12+21/60);near(r.iai1.inputFrom,.12+2/60);near(r.iai1.cancelAt,.12+23/60);near(r.iai1.grace,.25);
- near(r.iai2.duration,33/60);near(r.iai2.activeFrom,14/60);near(r.iai2.activeTo,20/60);near(r.iai2.inputFrom,2/60);near(r.iai2.cancelAt,23/60);near(r.iai2.grace,.25);
+ near(r.iai2.duration,33/60);near(r.iai2.activeFrom,18/60);near(r.iai2.activeTo,20/60);near(r.iai2.inputFrom,2/60);near(r.iai2.cancelAt,23/60);near(r.iai2.grace,.25);
  near(r.iai3.duration,54/60);near(r.iai3.activeFrom,32/60);near(r.iai3.activeTo,36/60);assert.equal(r.iai3.next,null);near(r.iai3.grace,0);
  near(r.iai1.hitstop,.08);near(r.iai2.hitstop,.08);near(r.iai3.hitstop,.14);near(PINK_IAI.skill.hitstop,.20);
  assert.deepEqual([r.iai1.damage,r.iai2.damage,r.iai3.damage],[60,60,105]);
@@ -113,7 +116,7 @@ test('kit table holds the E-3 times and the k-converted distances in one measure
  const st=PINK_IAI.skill.overrides['storm-call'];assert.deepEqual([st.reach,st.radius,st.ahead],[407,163,88]);assert.equal('ahead' in PINK_IAI.skill,false,'ahead is storm-call only');
  near(PINK_IAI.skill.duration,58/60);near(PINK_IAI.skill.hitAt,28/60);
  // no per-frame trajectory is carried: only a few spec numbers per row
- for(const row of Object.values(IAI_MEASURED.rows)){assert.ok(row.advance.length<=4,'a few advance segments');for(const v of Object.values(row.contact))assert.ok(typeof v==='number'||(Array.isArray(v)&&v.length===2),'contact holds spec numbers only');}
+ for(const row of Object.values(IAI_MEASURED.rows)){assert.ok(row.advance.length<=5,'a few advance segments');/* T1b: iai2 has 5 (its back step is cut at the window start F(18)) */for(const v of Object.values(row.contact))assert.ok(typeof v==='number'||(Array.isArray(v)&&v.length===2),'contact holds spec numbers only');}
  assert.ok(IAI_MEASURED.recover.advance.length<=2);
  // the module tables are frozen (one shared object per bundle)
  for(const o of [PINK_IAI,PINK_IAI.switches,PINK_IAI.rows.iai1,PINK_IAI.rows.iai1.contact,PINK_IAI.rows.iai1.advance,PINK_IAI.skill.overrides['storm-call'],IAI_MEASURED.recover.advance[0]])assert.ok(Object.isFrozen(o));
@@ -330,11 +333,20 @@ test('training bundle: boot heroKit selects the kit in mount mode only, and stay
 // 2 cm from 20 cm out to the row's reach edge, at stages 0/1/2 (no gap the edge fan skips), and the edges stay where the
 // pre-T1 rows had them within a few cm (pre-T1: iai1 204-206, iai2 142, iai3 144-146; T1: iai3 gains the advance it now
 // makes before its window).
+// T1b (REVIEW_T1 1-3 (b)): the cells straight ahead are crossed even without the per-window sample rule, so the test
+// also places the slime off axis near the outer edge. Each listed cell (degrees off the facing @ cm) is hit with the
+// rule (>= SWEEP_SAMPLES points per window) and missed with 120 per clip second alone (qa_T1b/work/probe/oblique.mts).
+const T1B_OBLIQUE:Record<string,string[]>={
+ 'iai1 s0':['-40@188','-16@200','8@200'],'iai1 s1':['-40@188','-16@200','8@200'],'iai1 s2':['-32@196','0@204','28@196'],
+ 'iai2 s0':['-36@136','0@136','20@136'],'iai2 s1':['-36@136','0@136','20@136'],'iai2 s2':['-24@136','8@136','24@140'],
+ 'iai3 s0':['-52@136','-8@156','36@140'],'iai3 s1':['-48@136','0@156','40@136'],'iai3 s2':['-52@136','-12@156','36@140']};
 test('T1 short windows lose no contact: rows 1-3 at stages 0-2 cut a standing slime at every distance up to the edge',()=>{
- const rowHit=(kit:any,row:string,dx:number)=>{const g=make(kit);g.command({...idle,x:1,attack:true});let s:any=null;
-  for(let i=0;i<400;i++){if(!s&&g.hero.action===row){s=slime(g,dx);s.frozenUntil=1e9;}if(s&&g.hero.action!==row)break;
+ const rowHit=(kit:any,row:string,dx:number,deg=0)=>{const g=make(kit);g.command({...idle,x:1,attack:true});let s:any=null;
+  for(let i=0;i<400;i++){if(!s&&g.hero.action===row){const a=deg*Math.PI/180,f=g.hero.motion.facing||1;s=slime(g,f*dx*Math.cos(a));s.y=g.hero.y+dx*Math.sin(a);s.frozenUntil=1e9;}if(s&&g.hero.action!==row)break;
    if(g.hero.motion?.kind==='attack'&&g.hero.action!==row)g.command({...idle,x:1,attack:true});g.step(.02,idle);}
   return !!s&&s.hp<100000;};
+ for(const [key,cells] of Object.entries(T1B_OBLIQUE)){const [row,s]=key.split(' '),kit={...PINK_IAI,switches:{...PINK_IAI.switches,tempo:+s.slice(1)}};
+  for(const cell of cells){const [deg,d]=cell.split('@').map(Number);assert.ok(rowHit(kit,row,d,deg),`${key} off-axis ${cell}: missed (contact samples per window)`);}}
  const edges:any={};
  for(const st of [0,1,2]){const kit={...PINK_IAI,switches:{...PINK_IAI.switches,tempo:st}};
   for(const row of ['iai1','iai2','iai3']){let last=-1;

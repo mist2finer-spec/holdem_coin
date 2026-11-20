@@ -32,8 +32,9 @@ function deepFreeze<T>(o:T):T{if(o&&typeof o==='object'&&!Object.isFrozen(o)){fo
 //            switches.heightFloor lowers the near end (ground slimes, downhill targets).
 //  advance = travelRemovedGame_m split at the KERNEL active window into before / inside / after (row clock = clip time);
 //            each part is one eased segment over the ticks it moves in (the before-part of iai2 and iai3 is two:
-//            iai2 forward then back, iai3 back then forward).
-//            Sums (cm), T1 window: iai1 47.17 / 0.29 / 3.24 = 50.70; iai2 7.93 / -3.81 / -3.24 = 0.88;
+//            iai2 forward then back, iai3 back then forward; T1b: iai2's back step F(14)-F(20) is one line cut at the
+//            window start F(18), so its movement is the T1 one exactly).
+//            Sums (cm), T1/T1b window: iai1 47.17 / 0.29 / 3.24 = 50.70; iai2 5.39 / -1.27 / -3.24 = 0.88;
 //            iai3 36.67 / 10.22 / 5.71 = 52.60 (52.6). Totals per row are the same as before T1.
 //            Travel the clip has after the kernel end (iai3 0.90-0.9167) is folded into the last segment.
 //  recover = PG_iai_recover.travelRemovedGame_m (-5.17 cm, the same after rows 1, 2 and 3), over the flick+sheathe.
@@ -44,7 +45,7 @@ export const IAI_MEASURED=deepFreeze({
  rows:{
   iai1:{advance:[{from:F(8),to:F(18),cm:47.17},{from:ENTRY+F(18),to:ENTRY+F(21),cm:.29,ease:'smooth'},{from:ENTRY+F(21),to:ENTRY+F(32),cm:3.24}] as IaiAdvance[],
    contact:{reach:[20,137.2] as [number,number],height:[25.9,101.2] as [number,number]}},
-  iai2:{advance:[{from:0,to:F(8),cm:9.50,ease:'smooth'},{from:F(8),to:F(14),cm:-1.57,ease:'linear'},{from:F(14),to:F(20),cm:-3.81,ease:'linear'},{from:F(20),to:F(33),cm:-3.24,ease:'linear'}] as IaiAdvance[],
+  iai2:{advance:[{from:0,to:F(8),cm:9.50,ease:'smooth'},{from:F(8),to:F(14),cm:-1.57,ease:'linear'},{from:F(14),to:F(18),cm:-2.54,ease:'linear'},{from:F(18),to:F(20),cm:-1.27,ease:'linear'},{from:F(20),to:F(33),cm:-3.24,ease:'linear'}] as IaiAdvance[],
    contact:{reach:[20,114.3] as [number,number],height:[9.3,182.6] as [number,number]}},
   iai3:{advance:[{from:0,to:F(11),cm:-2.76},{from:F(11),to:F(32),cm:39.42,ease:'linear'},{from:F(32),to:F(36),cm:10.22,ease:'linear'},{from:F(36),to:F(54),cm:5.71}] as IaiAdvance[],
    contact:{reach:[20,91.5] as [number,number],height:[42.4,118.6] as [number,number]}},
@@ -63,6 +64,8 @@ type Row={step:1|2|3;duration:number;activeFrom:number;activeTo:number;inputFrom
 // so the contact, the hitstop and the arc landed before the visible cut. activeFrom is now the clip frame where the blade
 // tip comes in front of the body (Editor clip sampling, qa_T0): iai1 ENTRY+F(18), iai2 F(14), iai3 F(32) (the first whole
 // clip frame at or after the tip-front time; F(31) held the 3rd's 0.14 s stop with the tip still behind in the Editor, qa_T1).
+// T1b: iai2 F(14) -> F(18). iai2 is an overhead cut: at F(14) the tip is in front but still above the head, so the
+// rule for iai2 is the first whole frame where the tip is in front AND down near the target height (REVIEW_T1 sec. 2).
 // activeTo, inputFrom, cancelAt, damage and hitstop are the trial's as before. Only the start of the window moved.
 // sweep/width below are DESIGN values (not measured): the ground-plane fan of the game crescent (packSwordContact)
 // generalised per row, and the half thickness of the edge. Tune them against the screen blade in 3c.
@@ -71,7 +74,7 @@ export const PINK_IAI=deepFreeze({
  id:'pink-iai',revision:'pink-iai-v1',entry:ENTRY,
  rows:{
   iai1:{step:1,duration:ENTRY+F(32),activeFrom:ENTRY+F(18),activeTo:ENTRY+F(21),inputFrom:ENTRY+F(2),cancelAt:ENTRY+F(23),grace:.25,next:'iai2',hitstop:.08,damage:60,advance:M.iai1.advance,contact:{...M.iai1.contact,sweep:[-60,60],width:9}},
-  iai2:{step:2,duration:F(33),activeFrom:F(14),activeTo:F(20),inputFrom:F(2),cancelAt:F(23),grace:.25,next:'iai3',hitstop:.08,damage:60,advance:M.iai2.advance,contact:{...M.iai2.contact,sweep:[45,-45],width:9}},
+  iai2:{step:2,duration:F(33),activeFrom:F(18),activeTo:F(20),inputFrom:F(2),cancelAt:F(23),grace:.25,next:'iai3',hitstop:.08,damage:60,advance:M.iai2.advance,contact:{...M.iai2.contact,sweep:[45,-45],width:9}},
   iai3:{step:3,duration:F(54),activeFrom:F(32),activeTo:F(36),inputFrom:null,cancelAt:null,grace:0,next:null,hitstop:.14,damage:105,advance:M.iai3.advance,contact:{...M.iai3.contact,sweep:[100,-100],width:9}},
  } as Record<RowName,Row>,
  // moveReleaseAt: the stick ends the hold only after the trial idleBlend (0.22 s) of it; during the sheathe it is ignored.
@@ -239,8 +242,12 @@ function stepRow(host:IaiHost,kit:HeroKit,dt:number,m:any){
  const lo=Math.max(r.activeFrom,m.lastClip),hi=Math.min(r.activeTo,c),struck:any[]=[];
  // T1: at least SWEEP_SAMPLES points over the whole window as well as 120 per clip second. The T1 windows are short (iai1
  // 0.05 s) and the edge fan turns 120-200 degrees in them; 120/s alone left 20-degree gaps that a far target fell through.
- if(hi>=lo){const n=Math.max(1,Math.ceil((hi-lo)*120),Math.ceil((hi-lo)/Math.max(1e-6,r.activeTo-r.activeFrom)*SWEEP_SAMPLES));for(let i=0;i<=n;i++){const t=lo+(hi-lo)*i/n,u=(t-r.activeFrom)/Math.max(1e-6,r.activeTo-r.activeFrom);
-  for(const mob of host.mobs){if(mob.hp<=0||m.hitIds.includes(mob.id))continue;const hit=iaiContact(r.contact,u,{...h,facing:m.facing},mob,kit.switches.heightFloor);
+ // T1b (same results, cheaper): the hero copy is made once per tick, not per sample and mob, and a mob farther than the
+ // edge can reach (reach end + its radius + edge half width, ground plane) is left out of the samples of this tick.
+ if(hi>=lo){const n=Math.max(1,Math.ceil((hi-lo)*120),Math.ceil((hi-lo)/Math.max(1e-6,r.activeTo-r.activeFrom)*SWEEP_SAMPLES));
+  const edge={...h,facing:m.facing},near=host.mobs.filter(mob=>Math.hypot(mob.x-h.x,mob.y-h.y)<=r.contact.reach[1]+mob.radius+r.contact.width+1e-6);
+  if(near.length)for(let i=0;i<=n;i++){const t=lo+(hi-lo)*i/n,u=(t-r.activeFrom)/Math.max(1e-6,r.activeTo-r.activeFrom);
+  for(const mob of near){if(mob.hp<=0||m.hitIds.includes(mob.id))continue;const hit=iaiContact(r.contact,u,edge,mob,kit.switches.heightFloor);
    if(hit&&host.clear(mob)){m.hitIds.push(mob.id);host.strike(mob,r.damage,hit.point,m.start+ageAt(m.clipMap??null,t));struck.push(mob);}}}}
  m.lastClip=c;if(struck.length)freeze(host,m,m.hitstop,struck);
  if(m.saved&&r.next&&r.cancelAt!==null&&c>=r.cancelAt-1e-9)return startRow(host,kit,r.next,0,m.savedX,m.pendingSkill);
