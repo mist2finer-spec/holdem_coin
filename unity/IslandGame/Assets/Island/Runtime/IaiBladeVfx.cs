@@ -22,7 +22,8 @@ namespace IslandGame {
  // CombatFeedbackRouter keep flash, shake, sound and every skill effect).
  // Layers: blade arc (R1+R2+R0), hit star (R3 / R4), embers (R6), 3rd hit line / ground glow / dust (R7 / R9 / R5),
  // sheathe glint (R8). Materials: maintenance/vfx-basic-attack-20261119/art/out_v1 (README_KO.md).
- // Timing: on/off from kernel values only (timeline.active from/to, fx contactAt, recover start / sheatheAt).
+ // Timing: stars, embers, 3rd hit layers and glints from kernel values (fx contactAt, hitstopUntil, recover start / sheatheAt);
+ // the arc from the per-row clip window ArcClipFrom/To (V2b), falling back to the kernel timeline.active window.
  // The arc is built from the blade bone the hero pose already sampled through ClipAt this frame, so it follows the
  // tempo stage by construction. All layers run on one effect clock that does not advance during the kernel hitstop.
  // Every buffer, mesh and material is made once; the snapshot is read by value each frame and never kept.
@@ -36,16 +37,23 @@ namespace IslandGame {
   // README hold frames (60 fps) and plate sizes in standing heights (H).
   static readonly int[] StarHold = { 1, 2, 2, 3, 3, 4 }, HeavyHold = { 1, 2, 2, 2, 3, 3, 4, 5 }, DustHold = { 3, 4, 5, 6, 7, 9, 12, 15 }, GlintHold = { 1, 2, 2, 3 };
   static readonly float[] DustStage = { 224 / 255f, 222 / 255f, 213 / 255f, 204 / 255f, 187 / 255f, 160 / 255f, 130 / 255f, 104 / 255f };
-  const float StarPlate = .48f, HeavyPlate = .60f, GlintPlate = .30f, DustWidth = 1.0f, LineWidth = 2.9f, PoolWidth = 1.4f;
-  // Look parameters (not timing): the arc holds its peak 2 frames, then breaks up; shapes are gone by ~0.35 s.
-  const float ArcHold = 2 * Frame, ArcBreak = .18f, ArcOuter = 1.06f;
-  // Band from this fraction of the blade to just past the tip, per hit (concept R10 stroke widths 24 / 64 / 86 px at H 300).
-  static readonly float[] ArcInner = { .84f, .60f, .45f };
+  const float StarPlate = .48f, HeavyPlate = .60f, GlintPlate = .46f, DustWidth = 1.0f, LineWidth = 2.9f, PoolWidth = 1.8f;
+  // Look parameters (not timing): the arc holds its full shape a few frames after the swing, then breaks up.
+  const float ArcHold = 4 * Frame, ArcBreak = .22f, ArcOuter = 1.06f;
+  // V2b arc window, per row (1st, 2nd, 3rd): clip seconds in which the blade is SEEN swinging. This is a property of the
+  // clip, not of the hit: it is compared with the clip time the hero pose shows (HeroSampleTime), which already carries the
+  // tempo clipMap and the hitstop hold. Stars, hitstop and sound stay on the kernel values (contactAt, hitstopUntil).
+  // A row without a value (NaN) falls back to the kernel active window (timeline.active[0]).
+  // First values: tip 40 cm or more in front of the body (T0 / REVIEW_T1 3). Final values: REPORT_V2b.
+  static readonly float[] ArcClipFrom = { .330f, .200f, .470f }, ArcClipTo = { .430f, .310f, .545f };
+  // Band from this fraction of the blade to just past the tip, per hit.
+  static readonly float[] ArcInner = { .70f, .60f, .45f };
+  // Least band width across the path on screen (H), per hit; the mask then tapers it (thin tail, full head).
+  static readonly float[] ArcMinFace = { .14f, .18f, .26f };
   // The band is not drawn until the tip has swept ArcMinLength (H); it then widens to full by ArcMinLength + ArcGrowLength.
-  // A blade held almost still in the window (3rd hit starts overhead) would otherwise show a small pennant at the tip.
-  const float ArcMinLength = .15f, ArcGrowLength = .45f;
-  // While the tip has not yet moved this far (H) from the first key, the first key slides with it: a blade that waits in the
-  // window (3rd hit opens overhead) starts its arc where the real swing starts.
+  const float ArcMinLength = .10f, ArcGrowLength = .25f;
+  // While the tip has not yet moved this far (H) from the first key, the first key slides with it (a blade that waits at the
+  // start of the window starts its arc where the real swing starts).
   const float ArcStartStep = .12f;
   static float RowV(int row) => 1 - (row + .5f) / 4; // 0 = 1st hit, 1 = 2nd, 2 = 3rd, 3 = hit row
 
@@ -77,12 +85,15 @@ namespace IslandGame {
    public void Dispose() { if (go) UnityEngine.Object.Destroy(go); if (mesh) UnityEngine.Object.Destroy(mesh); }
   }
 
-  // Blade sweep: guard/tip keys recorded while the kernel active window is open, Catmull-Rom between keys.
+  // Blade sweep: one key per shown frame inside the arc window (guard point, blade direction, blade length).
+  // Between keys the blade is swung, not slid: the guard follows a Catmull-Rom path and the blade direction is
+  // interpolated on the unit sphere, so a fast swing with few frames still makes a round crescent instead of a polygon.
   sealed class Arc {
-   public const int Keys = 40, Sub = 4, Columns = (Keys - 1) * Sub + 1;
-   public readonly Vector3[] inner = new Vector3[Keys], outer = new Vector3[Keys];
+   public const int Keys = 40, Sub = 8, Columns = (Keys - 1) * Sub + 1;
+   readonly Vector3[] guard = new Vector3[Keys], dir = new Vector3[Keys]; readonly float[] len = new float[Keys];
    public int keys, attack, row; public bool recording, live; public float end;
    readonly GameObject go; readonly Mesh mesh; readonly MeshRenderer renderer; readonly Vector3[] v = new Vector3[Columns * 2]; readonly Vector2[] uv = new Vector2[Columns * 2]; readonly Color[] c = new Color[Columns * 2];
+   readonly float[] along = new float[Columns]; readonly Vector3[] across = new Vector3[Columns];
    public Arc(Transform parent, Material m, int index) {
     var tris = new int[(Columns - 1) * 6]; for (int i = 0; i < Columns - 1; i++) { int k = i * 6, q = i * 2; tris[k] = q; tris[k + 1] = q + 1; tris[k + 2] = q + 3; tris[k + 3] = q; tris[k + 4] = q + 3; tris[k + 5] = q + 2; }
     go = new GameObject("Iai blade arc " + index); go.layer = 30; go.transform.SetParent(parent, false);
@@ -91,26 +102,57 @@ namespace IslandGame {
     renderer.shadowCastingMode = ShadowCastingMode.Off; renderer.receiveShadows = false; renderer.lightProbeUsage = LightProbeUsage.Off; renderer.reflectionProbeUsage = ReflectionProbeUsage.Off; renderer.enabled = false;
    }
    public void Kill() { live = recording = false; keys = 0; renderer.enabled = false; }
-   public void Add(Vector3 guard, Vector3 tip, float H) {
-    var a = Vector3.LerpUnclamped(guard, tip, ArcInner[row]); var b = Vector3.LerpUnclamped(guard, tip, ArcOuter);
-    if (keys > 0 && (b - outer[keys - 1]).sqrMagnitude < 1e-6f && (a - inner[keys - 1]).sqrMagnitude < 1e-6f) return; // frozen pose (hitstop): no new key
-    if (keys == 1 && (b - outer[0]).sqrMagnitude < ArcStartStep * H * ArcStartStep * H) { inner[0] = a; outer[0] = b; return; }
-    if (keys == Keys) { Array.Copy(inner, 1, inner, 0, Keys - 1); Array.Copy(outer, 1, outer, 0, Keys - 1); keys--; }
-    inner[keys] = a; outer[keys] = b; keys++;
+   Vector3 Tip(int i) => guard[i] + dir[i] * (len[i] * ArcOuter);
+   Vector3 Edge(int i, float f) => guard[i] + dir[i] * (len[i] * f);
+   const float WideTurn = -.34f; // cos 110 deg
+   public void Add(Vector3 g, Vector3 tip, float H) {
+    var d = tip - g; float l = d.magnitude; if (l < 1e-4f) return; d /= l;
+    var b = g + d * (l * ArcOuter);
+    if (keys > 0 && (b - Tip(keys - 1)).sqrMagnitude < 1e-6f && (g - guard[keys - 1]).sqrMagnitude < 1e-6f) return; // frozen pose (hitstop): no new key
+    if (keys == 1 && (b - Tip(0)).sqrMagnitude < ArcStartStep * H * ArcStartStep * H) { guard[0] = g; dir[0] = d; len[0] = l; return; }
+    if (keys == Keys) { Array.Copy(guard, 1, guard, 0, Keys - 1); Array.Copy(dir, 1, dir, 0, Keys - 1); Array.Copy(len, 1, len, 0, Keys - 1); keys--; }
+    guard[keys] = g; dir[keys] = d; len[keys] = l; keys++;
    }
-   public Vector3 TipTangent => keys < 2 ? Vector3.zero : outer[keys - 1] - outer[keys - 2];
+   public Vector3 TipTangent => keys < 2 ? Vector3.zero : Tip(keys - 1) - Tip(keys - 2);
    static Vector3 CR(Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3, float t) { float t2 = t * t, t3 = t2 * t; return .5f * (2 * p1 + (p2 - p0) * t + (2 * p0 - 5 * p1 + 4 * p2 - p3) * t2 + (3 * p1 - p0 - 3 * p2 + p3) * t3); }
-   public void Draw(float rowV, float opacity, float erode, float H) {
+   public void Draw(float rowV, float opacity, float erode, float H, Vector3 camForward) {
     if (keys < 2) { renderer.enabled = false; return; }
-    int cols = (keys - 1) * Sub + 1; float length = 0; for (int i = 1; i < keys; i++) length += (outer[i] - outer[i - 1]).magnitude;
+    int cols = (keys - 1) * Sub + 1; float inner = ArcInner[row];
+    // Pass 1: swing the blade between keys; outer edge in v[k + 1], inner edge in v[k], length along the outer edge.
+    for (int j = 0; j < cols; j++) {
+     int k = j * 2, seg = Mathf.Min(j / Sub, keys - 2); float t = (j - seg * Sub) / (float)Sub;
+     int i0 = Mathf.Max(seg - 1, 0), i3 = Mathf.Min(seg + 2, keys - 1);
+     if (row == 2 && Vector3.Dot(dir[seg], dir[seg + 1]) < WideTurn) {
+      // 3rd hit only: a turn this wide in one frame is its draw around the body (behind -> front); seen from the side it is a
+      // flat sweep, so the edges follow the recorded points (Catmull-Rom) instead of rotating the blade the short way round.
+      v[k + 1] = CR(Tip(i0), Tip(seg), Tip(seg + 1), Tip(i3), t); v[k] = CR(Edge(i0, inner), Edge(seg, inner), Edge(seg + 1, inner), Edge(i3, inner), t);
+     } else {
+      var g = CR(guard[i0], guard[seg], guard[seg + 1], guard[i3], t);
+      var d = CR(dir[i0], dir[seg], dir[seg + 1], dir[i3], t); float m = d.magnitude; d = m > .2f ? d / m : Vector3.Slerp(dir[seg], dir[seg + 1], t);
+      float l = Mathf.Lerp(len[seg], len[seg + 1], t);
+      v[k + 1] = g + d * (l * ArcOuter); v[k] = g + d * (l * inner);
+     }
+     along[j] = j == 0 ? 0 : along[j - 1] + (v[k + 1] - v[k - 1]).magnitude;
+    }
+    float length = along[cols - 1];
     float thick = Mathf.Clamp01((length / H - ArcMinLength) / ArcGrowLength); if (thick <= 0) { renderer.enabled = false; return; }
+    // Minimum face on screen: a blade swung in the ground plane (3rd hit) has both edges on one line seen from the side.
+    // Push the inner edge across the path (in the camera plane) to at least ArcMinFace[row] H, on one side for the whole arc:
+    // the side the blade already shows, or toward the ground when it shows none.
+    float minFace = ArcMinFace[row] * H, side = 0;
+    for (int j = 0; j < cols; j++) {
+     var tan = v[Mathf.Min(j + Sub, cols - 1) * 2 + 1] - v[Mathf.Max(j - Sub, 0) * 2 + 1]; var p = Vector3.Cross(camForward, tan); // tangent over one key each way: no zigzag at a sharp turn
+     across[j] = p.sqrMagnitude > 1e-12f ? p.normalized : Vector3.zero; side += Vector3.Dot(v[j * 2] - v[j * 2 + 1], across[j]);
+    }
+    if (Mathf.Abs(side) < .02f * H * cols) { side = 0; for (int j = 0; j < cols; j++) side += Vector3.Dot(Vector3.down, across[j]); }
+    float sign = side < 0 ? -1 : 1;
+    for (int j = 0; j < cols; j++) { var n = across[j] * sign; float face = Vector3.Dot(v[j * 2] - v[j * 2 + 1], n); if (face < minFace) v[j * 2] += n * (minFace - face); }
+    // Pass 2: thickness ramp, U by arc length (tail 0 .. head 1) so the mask is not stretched by uneven frame steps.
     for (int j = 0; j < Columns; j++) {
      int k = j * 2;
-     if (j >= cols) { v[k] = v[k + 1] = v[(cols - 1) * 2]; c[k] = c[k + 1] = Color.clear; continue; }
-     int seg = Mathf.Min(j / Sub, keys - 2); float t = (j - seg * Sub) / (float)Sub;
-     int i0 = Mathf.Max(seg - 1, 0), i3 = Mathf.Min(seg + 2, keys - 1);
-     v[k + 1] = CR(outer[i0], outer[seg], outer[seg + 1], outer[i3], t); v[k] = Vector3.LerpUnclamped(v[k + 1], CR(inner[i0], inner[seg], inner[seg + 1], inner[i3], t), thick);
-     float along = cols > 1 ? j / (float)(cols - 1) : 1; uv[k] = new Vector2(along, 0); uv[k + 1] = new Vector2(along, 1);
+     if (j >= cols) { v[k] = v[k + 1] = v[(cols - 1) * 2 + 1]; c[k] = c[k + 1] = Color.clear; continue; }
+     v[k] = Vector3.LerpUnclamped(v[k + 1], v[k], thick);
+     float u = along[j] / length; uv[k] = new Vector2(u, 0); uv[k + 1] = new Vector2(u, 1);
      c[k] = c[k + 1] = new Color(rowV, opacity, erode, 1);
     }
     mesh.vertices = v; mesh.uv = uv; mesh.colors = c; renderer.enabled = true;
@@ -192,19 +234,24 @@ namespace IslandGame {
    // Cut off (K5 cancel = 0.04 s stay1, a hurt, a dodge...): nothing blade-attached stays in the air.
    // attack -> next attack and attack -> recover are the combo / sheathe: the arc there finishes and breaks up normally.
    bool attacking = kit && kind == "attack";
-   if (kind == "cancel") { foreach (var a in arcs) if (a.live) a.Kill(); for (int i = 0; i < finishPool.Length; i++) finishPool[i].live = false; }
+   // A skill cast also cuts the attack: its own effect takes over, no arc of the cut hit is left on screen.
+   if (kind == "cancel" || kind == "skill") { foreach (var a in arcs) if (a.live) a.Kill(); for (int i = 0; i < finishPool.Length; i++) finishPool[i].live = false; }
    else if (!attacking && kind != "recover") foreach (var a in arcs) if (a.recording) a.Kill();
 
-   // Blade arc. Window = kernel timeline.active[0] (ratios of the kernel duration) taken into clip time with the motion's
-   // clipMap (ClipAt, the same mapping the hero pose uses), and compared with the clip time the hero shows this frame.
-   // So the arc covers exactly the swing on screen at tempo 0/1/2, also when the shown pose lags the kernel.
+   // Blade arc. Window = the row's ArcClipFrom/To (clip seconds), compared with the clip time the hero shows this frame,
+   // so the arc covers the swing on screen at tempo 0/1/2 and holds through the hitstop with the pose.
+   // Fallback for a row without a value: kernel timeline.active[0] (ratios of the kernel duration) taken into clip time
+   // with the motion's clipMap (ClipAt, the same mapping the hero pose uses).
    int row = 0; float clipFrom = float.MaxValue, clipTo = float.MaxValue; bool shownRow = false;
    if (attacking) {
     string r = (string)motion["row"]; row = r != null && r.Length == 4 ? Mathf.Clamp(r[3] - '1', 0, 2) : 0;
-    var window = (motion["timeline"]?["active"] as JArray); var w0 = window != null && window.Count > 0 ? window[0] : null;
-    float from = NativeCombatPresentation.N(w0?["from"], 1), to = NativeCombatPresentation.N(w0?["to"], 1);
-    if (attack != mapAttack) { mapAttack = attack; mapCount = NativeCombatPresentation.ReadClipMap(motion["clipMap"] as JArray, ref mapAge, ref mapClip); }
-    clipFrom = NativeCombatPresentation.ClipAt(mapAge, mapClip, mapCount, duration * from); clipTo = NativeCombatPresentation.ClipAt(mapAge, mapClip, mapCount, duration * to);
+    if (!float.IsNaN(ArcClipFrom[row]) && !float.IsNaN(ArcClipTo[row])) { clipFrom = ArcClipFrom[row]; clipTo = ArcClipTo[row]; }
+    else {
+     var window = (motion["timeline"]?["active"] as JArray); var w0 = window != null && window.Count > 0 ? window[0] : null;
+     float from = NativeCombatPresentation.N(w0?["from"], 1), to = NativeCombatPresentation.N(w0?["to"], 1);
+     if (attack != mapAttack) { mapAttack = attack; mapCount = NativeCombatPresentation.ReadClipMap(motion["clipMap"] as JArray, ref mapAge, ref mapClip); }
+     clipFrom = NativeCombatPresentation.ClipAt(mapAge, mapClip, mapCount, duration * from); clipTo = NativeCombatPresentation.ClipAt(mapAge, mapClip, mapCount, duration * to);
+    }
     shownRow = r != null && heroClip != null && heroClip.EndsWith(r, StringComparison.Ordinal);
    }
    foreach (var a in arcs) if (a.recording && (a.attack != attack || !attacking)) FinishArc(a, guard, tip, ground, facing, H); // next hit / sheathe began
@@ -214,14 +261,15 @@ namespace IslandGame {
    }
    foreach (var a in arcs) {
     if (!a.recording || a.attack != attack) continue;
-    a.Add(guard, tip, H);
+    // A pose already past the window end (sparse frames) is not keyed: the blade there is on its way back (hook).
+    if (shownRow && heroSample <= clipTo + 1e-4f) a.Add(guard, tip, H);
     if (heroSample >= clipTo || !shownRow) FinishArc(a, guard, tip, ground, facing, H);
    }
    foreach (var a in arcs) {
     if (!a.live) continue;
     float erode = a.recording ? 0 : Mathf.Clamp01((clock - a.end - ArcHold) / ArcBreak);
     if (!a.recording && clock - a.end > ArcHold + ArcBreak) { a.Kill(); continue; }
-    a.Draw(RowV(a.row), 1, erode, H);
+    a.Draw(RowV(a.row), 1, erode, H, cam.transform.forward);
    }
 
    // Hits: authoritative damage events of this kit (definitionId pink-iai-*), at contactAt.
@@ -239,7 +287,7 @@ namespace IslandGame {
     // Up to three stars per strike (AUTO multi-mob): first full size, then smaller. Embers for every target.
     if (starCount < 3) { SpawnStar(point, hitRow == 2, H * (hitRow == 2 ? HeavyPlate : StarPlate) * (starCount == 0 ? 1 : starCount == 1 ? .8f : .7f), ground, H); starCount++; }
     var tangent = Vector3.zero; foreach (var a in arcs) if (a.live && a.attack == hitAttack) tangent = a.TipTangent;
-    HitEmbers(point, point - new Vector3(ground.x, point.y, ground.z), tangent, hitRow == 2 ? 10 : 6, eventId, H);
+    HitEmbers(point, point - new Vector3(ground.x, point.y, ground.z), tangent, hitRow == 2 ? 14 : 8, eventId, H);
     if (hitRow == 2) SpawnFinish(hitAttack, tip, ground, facing, H);
    }
 
@@ -256,7 +304,7 @@ namespace IslandGame {
   }
 
   void PeakEmbers(Arc a, Vector3 guard, Vector3 tip, float H) {
-   var tangent = a.TipTangent; int n = a.row == 2 ? 8 : 4;
+   var tangent = a.TipTangent; int n = a.row == 2 ? 10 : 6;
    for (int i = 0; i < n; i++) EmitEmber(tip, tangent, tip - guard, a.attack * 31 + i, a.row, H, .7f);
   }
   void HitEmbers(Vector3 point, Vector3 outward, Vector3 tangent, int n, int seed, float H) { for (int i = 0; i < n; i++) EmitEmber(point, tangent, outward, seed * 17 + i, 3, H, 1); }
@@ -265,7 +313,7 @@ namespace IslandGame {
    float r0 = Hash(seed, 1), r1 = Hash(seed, 2), r2 = Hash(seed, 3), r3 = Hash(seed, 4);
    var t = tangent.sqrMagnitude > 1e-8f ? tangent.normalized : Vector3.zero; var o = outward.sqrMagnitude > 1e-8f ? outward.normalized : Vector3.up;
    var dir = (t * (.6f + r0) + o * (.5f + r1 * .8f) + new Vector3(r2 - .5f, r3 * .6f, (r1 - .5f) * .3f)).normalized;
-   e.live = true; e.born = clock; e.life = .22f + r1 * .2f; e.len = H * (.05f + .05f * r2); e.row = RowV(row); e.p0 = at; e.vel = dir * H * (1.6f + 2.2f * r0) * power;
+   e.live = true; e.born = clock; e.life = .22f + r1 * .2f; e.len = H * (.09f + .08f * r2); e.row = RowV(row); e.p0 = at; e.vel = dir * H * (1.6f + 2.2f * r0) * power;
   }
   void SpawnStar(Vector3 point, bool heavy, float size, Vector3 ground, float H) {
    ref var s = ref starPool[nextStar++ % starPool.Length];
@@ -318,7 +366,7 @@ namespace IslandGame {
     ref var e = ref emberPool[i]; if (!e.live) continue; float t = clock - e.born; if (t > e.life) { e.live = false; continue; }
     var vel = e.vel + Vector3.down * (H * 3.5f) * t; var p = e.p0 + e.vel * t + Vector3.down * (H * 1.75f) * t * t;
     var sv = vel - Vector3.Dot(vel, forward) * forward; var dir = sv.sqrMagnitude > 1e-8f ? sv.normalized : up;
-    float k = t / e.life, len = e.len * (1 - .4f * k), wid = len * .4f, a = k < .6f ? 1 : 1 - (k - .6f) / .4f;
+    float k = t / e.life, len = e.len * (1 - .4f * k), wid = len * .45f, a = k < .6f ? 1 : 1 - (k - .6f) / .4f;
     var side = Vector3.Cross(forward, dir).normalized;
     embers.Quad(p - dir * len * .5f, side * wid * .5f, dir * len * .5f, Whole, new Color(e.row, a, 0, 1));
    }
@@ -334,8 +382,8 @@ namespace IslandGame {
      float w = LineWidth * H * wx, hh = LineWidth * H / 16 * hy;
      lines.Quad(f.line - forward * .1f, right * (w * .5f) * f.facing, up * (hh * .5f), Whole, new Color(RowV(2), a, 0, 1));
     }
-    float pa = t < 10 ? .30f : t < 16 ? Mathf.Lerp(.30f, .14f, (t - 10) / 6) : Mathf.Lerp(.14f, 0, (t - 16) / 10);
-    pools.Quad(f.pool, right * (PoolWidth * H * .5f), up * (PoolWidth * H * .5f * 27 / 413f), Whole, new Color(RowV(2), pa, 0, 1));
+    float pa = t < 10 ? .65f : t < 16 ? Mathf.Lerp(.65f, .30f, (t - 10) / 6) : Mathf.Lerp(.30f, 0, (t - 16) / 10);
+    pools.Quad(f.pool, right * (PoolWidth * H * .5f), up * (PoolWidth * H * .5f * 27 / 413f * 1.6f), Whole, new Color(RowV(2), pa, 0, 1));
    }
    lines.End(); pools.End();
 
