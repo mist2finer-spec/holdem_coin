@@ -2,7 +2,7 @@
   "dependencies": {
     "com.esotericsoftware.spine.spine-csharp": "file:com.esotericsoftware.spine.spine-csharp",
     "com.esotericsoftware.spine.spine-unity": "file:com.esotericsoftware.spine.spine-unity",
-    "com.ivanmurzak.unity.mcp": "1.10.0",
+    "com.ivanmurzak.unity.mcp": "1.11.3",
     "com.ivanmurzak.unity.mcp.particlesystem": "2.1.1",
     "com.unity.cloud.gltfast": "6.20.0",
     "com.unity.nuget.newtonsoft-json": "3.2.1",
