@@ -37,6 +37,10 @@ namespace IslandGame {
   // U0-4 development kit tempo buttons (K6 stage 0/1/2). The chosen stage is remembered for the next boot (Battle3DAssets.WithRunOptions).
   readonly UnityEngine.UI.Button[] tempoButtons=new UnityEngine.UI.Button[3];TextMeshProUGUI tempoLabel;int tempoChosen=-1,tempoShown=-2;bool tempoVisible=true;
   public int DevKitTempoChosen=>tempoChosen;
+  // T1b development quality readout (IslandFrameBudget level 0-3) and the auto / 0-pin switch. Shown whenever DevControls is on
+  // (any hero), under the tempo row. The pin is not saved: a new app starts on auto. Text changes only when the level or pin changes.
+  TextMeshProUGUI qualityLabel,qualityPinText;UnityEngine.UI.Button qualityPin;int qualityShown=-2;bool qualityPinShown;
+  static readonly string[] QualityText={"품질 0","품질 1","품질 2","품질 3"};
   public void Initialize(IslandApp owner){
    app=owner;font=IslandFonts.CreateSdfFont();
    root=new GameObject("RpgBattleCanvas",typeof(RectTransform),typeof(Canvas),typeof(UnityEngine.UI.CanvasScaler),typeof(UnityEngine.UI.GraphicRaycaster));
@@ -72,7 +76,9 @@ namespace IslandGame {
    autoButton=Button(mode,"Auto","AUTO ON",()=>Dispatch("auto",app.HudAuto),new Color(.06f,.22f,.24f));autoText=autoButton.GetComponentInChildren<TextMeshProUGUI>();
    // Editor and development builds only (same rule as the practice entry, IslandApp). Digits and Hangul only: device fonts do not draw symbol glyphs.
    if(Battle3DAssets.DevControls){tempoChosen=Battle3DAssets.DevKitTempo;tempoLabel=Label(stage,"DevTempoLabel","템포",11,TextAlignmentOptions.MidlineRight);tempoLabel.color=Color.white;tempoLabel.fontStyle=FontStyles.Bold;
-    for(int i=0;i<3;i++){int n=i;tempoButtons[i]=Button(stage,"DevTempo"+i,i.ToString(),()=>Dispatch("tempo:"+n,()=>ChooseKitTempo(n)),new Color(.09f,.18f,.21f));}}
+    for(int i=0;i<3;i++){int n=i;tempoButtons[i]=Button(stage,"DevTempo"+i,i.ToString(),()=>Dispatch("tempo:"+n,()=>ChooseKitTempo(n)),new Color(.09f,.18f,.21f));}
+    qualityLabel=Label(stage,"DevQualityLabel","품질",11,TextAlignmentOptions.MidlineRight);qualityLabel.color=Color.white;qualityLabel.fontStyle=FontStyles.Bold;
+    qualityPin=Button(stage,"DevQualityPin","자동",()=>Dispatch("quality-pin",ToggleQualityPin),new Color(.09f,.18f,.21f));qualityPinText=qualityPin.GetComponentInChildren<TextMeshProUGUI>();}
    controls=Rect("ThumbControls",lower);
    jump=RoundButton("Jump","↑",()=>app.HudJump());slide=RoundButton("Slide","→",()=>app.HudSlide());
    evadeLeft=RoundButton("EvadeLeft","‹",()=>app.HudEvade(-1));evadeRight=RoundButton("EvadeRight","›",()=>app.HudEvade(1));
@@ -103,6 +109,7 @@ namespace IslandGame {
   void Dispatch(string id,Action action){if(!app.HudCanInput)return;app.GetComponent<RpgAudio>()?.Click();UiDispatches++;LastInput=id;action();}
   // The kernel applies the stage from the next row (the running row keeps its map). Kept for "다시 도전" and the next practice.
   void ChooseKitTempo(int n){Battle3DAssets.DevKitTempo=n;tempoChosen=n;app.HudSession.Command("tick",new JObject{{"kitTempo",n}});}
+  void ToggleQualityPin(){var b=IslandFrameBudget.Current;if(b)b.Pinned=!b.Pinned;nextRefresh=0;}
   UnityEngine.UI.Button RoundButton(string id,string text,Action action){var r=Rect(id,controls);var art=Art(r,IslandHudArt.Kind.Circle,Color.white);art.raycastTarget=true;var b=r.gameObject.AddComponent<UnityEngine.UI.Button>();b.targetGraphic=art;b.navigation=new UnityEngine.UI.Navigation{mode=UnityEngine.UI.Navigation.Mode.None};b.onClick.AddListener(()=>Dispatch(id,action));var t=Label(r,id+"Label",text,25,TextAlignmentOptions.Center);Stretch((RectTransform)t.transform);var caption=Label(r,id+"Caption",id=="Jump"?"점프":id=="Slide"?"슬라이드":"구르기",9,TextAlignmentOptions.Center);Box((RectTransform)caption.transform,-5,43,50,16);return b;}
   UnityEngine.UI.Button Potion(string id,Transform parent,string kind,Color color,out TextMeshProUGUI text){var b=Button(parent,id,"",()=>Dispatch("potion:"+kind,()=>app.HudDrink(kind)),new Color(.07f,.14f,.19f));var art=Art(Rect("Flask",b.transform),IslandHudArt.Kind.Flask,color);Box((RectTransform)art.transform,2,3,26,36);text=Label(b.transform,"Charges","3",11,TextAlignmentOptions.BottomRight);Box((RectTransform)text.transform,26,3,17,36);return b;}
   void Update(){
@@ -171,6 +178,9 @@ namespace IslandGame {
    if(tempoLabel){bool kitHero=state?["heroKit"]!=null;if(kitHero!=tempoVisible){tempoVisible=kitHero;tempoLabel.gameObject.SetActive(kitHero);foreach(var b in tempoButtons)b.gameObject.SetActive(kitHero);}
     foreach(var b in tempoButtons)b.interactable=active;
     if(tempoShown!=tempoChosen){tempoShown=tempoChosen;tempoLabel.text=tempoChosen<0?"템포 기본":"템포";for(int i=0;i<3;i++){var img=(UnityEngine.UI.Image)tempoButtons[i].targetGraphic;Skin(img,i==tempoChosen?"ui-buttons/btn-purple":"ui-buttons/btn-blue",32,4);if(i==tempoChosen)img.color=new Color(1,.78f,.3f);}}}
+   if(qualityLabel){var fb=IslandFrameBudget.Current;int level=fb?fb.Policy.Level:-1;bool pinned=fb&&fb.Pinned;
+    if(level!=qualityShown||pinned!=qualityPinShown){qualityShown=level;qualityPinShown=pinned;qualityLabel.text=level<0?"품질 -":QualityText[level];qualityPinText.text=pinned?"0고정":"자동";
+     var img=(UnityEngine.UI.Image)qualityPin.targetGraphic;Skin(img,pinned?"ui-buttons/btn-purple":"ui-buttons/btn-blue",32,4);if(pinned)img.color=new Color(1,.78f,.3f);}}
    jump.interactable=active&&(app.HudCampaign||(bool?)state?["jumpReady"]==true);slide.interactable=active&&(app.HudCampaign||(bool?)state?["slideReady"]==true);evadeLeft.interactable=evadeRight.interactable=active&&(app.HudCampaign||(bool?)state?["dodgeReady"]==true);
    PotionState(hpPotion,hpPotionText,"health",hero?["hp"],hero?["maxHP"]);PotionState(manaPotion,manaPotionText,"mana",resources?["mana"],resources?["maxMana"]);
    notice.text=app.HudNotice;
@@ -198,7 +208,8 @@ namespace IslandGame {
    float stageH=h*.50f,headerH=h*.06f,lowerH=h*.42f;
    Box((RectTransform)header.Find("Lobby"),6,3,36,headerH-6);Box((RectTransform)title.transform,50,3,w-178,headerH-6);Box((RectTransform)gold.transform,w-124,3,82,headerH-6);Box((RectTransform)header.Find("Help"),w-36,3,30,headerH-6);Box((RectTransform)viewButton.transform,w-124,3,82,headerH-6);
    Box(bossBar,w*.2f,headerH+27,w*.6f,9);Box((RectTransform)bossName.transform,0,-20,w*.6f,18);Box((RectTransform)chamber.transform,12,headerH+8,68,40);Box((RectTransform)objective.transform,10,stageH-78,w-20,20);
-   if(tempoLabel){float bw=26,bh=22,gap=4,x0=w-12-3*bw-2*gap,y0=headerH+8;Box((RectTransform)tempoLabel.transform,x0-62,y0,58,bh);for(int i=0;i<3;i++)Box((RectTransform)tempoButtons[i].transform,x0+i*(bw+gap),y0,bw,bh);}
+   if(tempoLabel){float bw=26,bh=22,gap=4,x0=w-12-3*bw-2*gap,y0=headerH+8;Box((RectTransform)tempoLabel.transform,x0-62,y0,58,bh);for(int i=0;i<3;i++)Box((RectTransform)tempoButtons[i].transform,x0+i*(bw+gap),y0,bw,bh);
+    if(qualityLabel){float y1=y0+bh+4;Box((RectTransform)qualityLabel.transform,x0-62,y1,58,bh);Box((RectTransform)qualityPin.transform,x0,y1,3*bw+2*gap,bh);}}
    float orb=48;resource.anchorMin=new Vector2(0,0);resource.anchorMax=new Vector2(1,0);resource.pivot=new Vector2(.5f,0);resource.anchoredPosition=new Vector2(0,5);resource.sizeDelta=new Vector2(-18,orb);
    Box(hpBox,0,0,orb,orb);Box(manaBox,w-18-orb,0,orb,orb);Stretch((RectTransform)hpOrb.transform);Stretch((RectTransform)manaOrb.transform);Stretch((RectTransform)hpText.transform);Stretch((RectTransform)manaText.transform);
    Box(flasks,(w-18-105)*.5f,orb-46,105,46);Box((RectTransform)hpPotion.transform,0,0,48,46);Box((RectTransform)manaPotion.transform,57,0,48,46);

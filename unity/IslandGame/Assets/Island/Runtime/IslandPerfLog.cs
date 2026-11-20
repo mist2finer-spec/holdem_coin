@@ -46,6 +46,14 @@ namespace IslandGame {
     lastSteps=steps;lastDropped=dropped;
    }else{line.Append(" session=none");lastSteps=-1;lastDropped=session?session.LocalDroppedSeconds:0;}
    line.Append(" gc=").Append(lastGc<0?0:gc-lastGc).Append(" budget=").Append(IslandFrameBudget.Current?IslandFrameBudget.Current.Policy.Level:-1);
+   // T1b (appended at the end, earlier keys unchanged): pin = development 0-pin on, over/under = the budget rule's run counts now,
+   // main/wait/render/gpu = mean FrameTiming parts of the last second (ms), load = mean max(cpu, gpu) the rule was given ("-" = no timings).
+   var budget=IslandFrameBudget.Current;
+   if(budget){line.Append(" pin=").Append(budget.Pinned?1:0).Append(" over=").Append(budget.Policy.Over).Append(" under=").Append(budget.Policy.Under);
+    if(budget.TakeWindow(out double main,out double wait,out double render,out double gpu,out double load))
+     line.Append(" main=").Append(main.ToString("F2")).Append(" wait=").Append(wait.ToString("F2")).Append(" render=").Append(render.ToString("F2")).Append(" gpu=").Append(gpu.ToString("F2")).Append(" load=").Append(load.ToString("F2"));
+    else line.Append(" main=- wait=- render=- gpu=- load=-");}
+   else line.Append(" pin=- over=- under=- main=- wait=- render=- gpu=- load=-");
    Debug.LogFormat(LogType.Log,LogOption.NoStacktrace,null,"{0}",line.ToString());
    lastGc=gc;windowStart=now;frames=0;maxFrame=0;arrivals=0;maxGap=0;maxAge=0;capFrames=0;
   }
