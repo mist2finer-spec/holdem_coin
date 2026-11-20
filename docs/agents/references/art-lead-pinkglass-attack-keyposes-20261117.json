@@ -58,5 +58,45 @@
   {
     "path": "G:/holdem_coin-workspace/island/maintenance/art-pinkglass-attack-keyposes-20261117/out_v3/stageB/artifact_manifest.json",
     "sha256": "a5abc8fd802a11a1bfbc52876bc544e2a9b50608cca04ca8475a8d84e91d3937"
+  },
+  {
+    "path": "G:/holdem_coin-workspace/island/maintenance/art-pinkglass-attack-keyposes-20261117/out_v3/mocap_select/review.html",
+    "sha256": "5c0dc28f12313e77f29668bed59cbf3b98cc8ec0995030c2cff511e502cb627f"
+  },
+  {
+    "path": "G:/holdem_coin-workspace/island/maintenance/art-pinkglass-attack-keyposes-20261117/out_v3/mocap_select/selection.json",
+    "sha256": "2d9a256dd9bdf63148d8225448a9ae45277420515fa540a0ffc0480d145b2ff6"
+  },
+  {
+    "path": "G:/holdem_coin-workspace/island/maintenance/art-pinkglass-attack-keyposes-20261117/out_v3/mocap_select/common_socket.json",
+    "sha256": "70f5c06e4c36be329e668f7ad339771421aa22c19b6146980f5e03b069a19a04"
+  },
+  {
+    "path": "G:/holdem_coin-workspace/island/maintenance/art-pinkglass-attack-keyposes-20261117/out_v3/mocap_select/NOTES_KO.md",
+    "sha256": "1bf8e70d24d816fa3ab65cceeb4494552bd84989e092d4ef0bd298d43aeed132"
+  },
+  {
+    "path": "G:/holdem_coin-workspace/island/maintenance/art-pinkglass-attack-keyposes-20261117/out_v3/mocap_select/_summary_5hits.png",
+    "sha256": "8e65edb4a3cf124686f936522b1470b6e07dd64a3bca52f2eace12427e796ff3"
+  },
+  {
+    "path": "G:/holdem_coin-workspace/island/maintenance/art-pinkglass-attack-keyposes-20261117/out_v3/mocap_select/artifact_manifest.json",
+    "sha256": "7deee1ede640f0edde973c4219a6339dd735a9eda43b9e268bada6a08b70d134"
+  },
+  {
+    "path": "G:/holdem_coin-workspace/island/maintenance/art-pinkglass-attack-keyposes-20261117/out_v3/mocap_select/validation_media.json",
+    "sha256": "12fe1bf7c46b71a2217aa745f73bbd2ee9054ce95cee0b5a4b9d91bda80633e4"
+  },
+  {
+    "path": "G:/holdem_coin-workspace/island/maintenance/art-pinkglass-attack-keyposes-20261117/out_v3/mocap_select/validation_retarget_preservation.json",
+    "sha256": "c108770b0a89b1680b3647a2b642c6ca3822406d49cf75d390a045415b988c7e"
+  },
+  {
+    "path": "G:/holdem_coin-workspace/island/maintenance/art-pinkglass-attack-keyposes-20261117/out_v3/mocap_select/validation_files.json",
+    "sha256": "8cd91a2b161b2320161509d0df055b0aed40d69639206b86dfe6ad1c17247478"
+  },
+  {
+    "path": "G:/holdem_coin-workspace/island/maintenance/art-pinkglass-attack-keyposes-20261117/out_v3/mocap_select/LOCAL_ONLY_selected_five.blend",
+    "sha256": "a032c9da3f36c8e1408b6e5025a930a82d4c46bd05e227267375e57260f09742"
   }
 ]
