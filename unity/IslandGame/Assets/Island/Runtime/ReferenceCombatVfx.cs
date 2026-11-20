@@ -13,6 +13,8 @@ namespace IslandGame {
    public float born,life,radius;public int kind,facing,tier;public Color color;public bool active;
   }
   readonly LightningStrikeVfx lightning;public LightningStrikeVfx Lightning=>lightning;readonly Burst[] pool=new Burst[Capacity];readonly Material ribbons,embers,water;readonly Transform[] drops=new Transform[48];readonly LineRenderer[] tails=new LineRenderer[48];int cursor,lastAttack,lastImpact;float previous=-1;string session;int room=-1;
+  // V2: the kit hero in a normal zone draws its own blade arc (IaiBladeVfx); the attack crescent is skipped then.
+  public bool SuppressHeroSlash;
   public int ActiveEffects{get;private set;}public int ActiveDrops{get;private set;}public int PoolCapacity=>Capacity;public int ParticleCount{get;private set;}
   static float N(JToken t,float f=0)=>NativeCombatPresentation.N(t,f);
   public ReferenceCombatVfx(Transform parent){
@@ -52,7 +54,7 @@ namespace IslandGame {
    if(kind=="cancel"){foreach(var b in pool)if(b.active&&b.kind==0){b.active=false;b.root.SetActive(false);}}
    float age=motion==null?0:time-N(motion["start"]),duration=N(motion?["duration"],1);int facing=(int)N(h?["facing"],1);float yaw=Mathf.Atan2(-N(h?["direction"]?["y"]),N(h?["direction"]?["x"],1))*Mathf.Rad2Deg;
    if(attack!=lastAttack&&age>=0){
-    if(kind=="attack"&&age>=duration*N(motion?["timeline"]?["active"]?[0]?["from"],.32f)){lastAttack=attack;var active=motion["timeline"]?["active"]?[0];float start=N(active?["from"],.32f),end=N(active?["to"],.58f);Spawn(0,hero.position+Vector3.up*.25f,N(motion["start"])+duration*start,1.05f,1,yaw,5.5f,(int)N(motion["comboStep"],1),duration*(end-start)+.10f);}
+    if(kind=="attack"&&age>=duration*N(motion?["timeline"]?["active"]?[0]?["from"],.32f)){lastAttack=attack;var active=motion["timeline"]?["active"]?[0];float start=N(active?["from"],.32f),end=N(active?["to"],.58f);if(!SuppressHeroSlash)Spawn(0,hero.position+Vector3.up*.25f,N(motion["start"])+duration*start,1.05f,1,yaw,5.5f,(int)N(motion["comboStep"],1),duration*(end-start)+.10f);}
     else if(kind=="rush"){lastAttack=attack;Spawn(3,hero.position,time,.8f,facing);}
     else if(kind=="skill"){lastAttack=attack;var target=motion["target"];bool storm=(string)motion["skillId"]=="storm-call",waterCast=(string)motion["skillId"]=="water-ring";Spawn(waterCast?7:storm?4:5,new Vector3(N(target?["x"])/100,hero.position.y+.05f,(N(target?["y"],5000)-5000)/100),N(motion["start"]),waterCast?1.1f:N(motion["radius"])/100,1,yaw,5.5f,1,N(motion["hitAt"],.48f));}
    }

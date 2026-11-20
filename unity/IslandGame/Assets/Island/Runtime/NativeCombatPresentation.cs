@@ -17,7 +17,10 @@ namespace IslandGame {
   }
  }
  public static class NativeCombatPresentation {
-  public static float N(JToken value,float fallback=0)=>value==null||value.Type==JTokenType.Null?fallback:value.Value<float>();
+  // O1: explicit cast instead of Value<float>() (Convert.ChangeType boxed every call). Same Convert.ToSingle, InvariantCulture.
+  public static float N(JToken value,float fallback=0)=>value==null||value.Type==JTokenType.Null?fallback:(float)value;
+  // Shared read-only empty array for `?? EmptyArray` (never add to it).
+  public static readonly JArray EmptyArray=new JArray();
   public static string ClipName(string action)=>action=="damage1"?"defeat1":action=="skill6"?"skill5":action=="walk"?"run1":action;
   public static float MotionTime(float age,float duration,float hitAt,float clipDuration,float contact,bool snappy=true){
    if(!Finite(age)||!Finite(duration)||!Finite(hitAt)||!Finite(clipDuration)||!Finite(contact)||duration<=0||clipDuration<=0)return 0;
@@ -34,6 +37,28 @@ namespace IslandGame {
    return duration==hit?clipDuration:contact+(t-hit)/(duration-hit)*(clipDuration-contact);
   }
   static bool Finite(float n)=>!float.IsNaN(n)&&!float.IsInfinity(n);
+  // Kit attack tempo (K6, KERNEL_KIT_CONTRACT §3-0): motion.clipMap = [[kernelAge, clipTime], ...] from [0,0], both increasing.
+  // Kernel age -> clip time by straight pieces; past the last point 1:1. No map (tempo stage 0, skills, other kinds) = 1:1.
+  // Same rule as clipAt in src/lib/rpg-hero-kit-iai.ts. Effects that follow the blade bone use this one function too.
+  public static float ClipAt(JArray map,float age){
+   if(map==null||map.Count<2||age<=0)return age;
+   for(int i=1;i<map.Count;i++){var p=map[i] as JArray;if(p==null||p.Count<2)return age;float a1=(float)p[0],c1=(float)p[1];
+    if(age<=a1){var q=(JArray)map[i-1];float a0=(float)q[0],c0=(float)q[1];return a1>a0?c0+(c1-c0)*(age-a0)/(a1-a0):c1;}}
+   var last=(JArray)map[map.Count-1];return (float)last[1]+(age-(float)last[0]);
+  }
+  // Reads a clipMap once (when the motion changes) into reusable arrays; grows them only if the map is longer. Returns the point count, 0 = no map.
+  public static int ReadClipMap(JArray map,ref float[] ages,ref float[] clips){
+   int n=map?.Count??0;if(n<2)return 0;
+   if(ages==null||clips==null||ages.Length<n||clips.Length<n){ages=new float[Mathf.Max(8,n)];clips=new float[ages.Length];}
+   for(int i=0;i<n;i++){var p=map[i] as JArray;if(p==null||p.Count<2)return 0;ages[i]=(float)p[0];clips[i]=(float)p[1];}
+   return n;
+  }
+  // Per-frame form of ClipAt on the values ReadClipMap kept. No allocation.
+  public static float ClipAt(float[] ages,float[] clips,int count,float age){
+   if(count<2||ages==null||clips==null||age<=0)return age;
+   for(int i=1;i<count;i++)if(age<=ages[i]){float a0=ages[i-1],a1=ages[i];return a1>a0?clips[i-1]+(clips[i]-clips[i-1])*(age-a0)/(a1-a0):clips[i];}
+   return clips[count-1]+(age-ages[count-1]);
+  }
   public static JObject ProjectHero(JObject state,JObject map,float visualTime,float move,bool auto,float moveY=0,JObject reusable=null){
    var source=state?["hero"] as JObject;if(source==null)return null;var hero=reusable??(JObject)source.DeepClone();
    if((string)state["status"]!="playing"||(bool?)state["bossIntroActive"]==true)return hero;
@@ -57,7 +82,7 @@ namespace IslandGame {
     if(input.magnitude>.1f){
      float lead=Mathf.Clamp(visualTime-N(state["elapsed"]),0,.15f);float px=N(hero["x"])+input.x*moveSpeed*lead,py=N(hero["y"])+input.y*moveSpeed*lead;
      var bounds=state["walkBounds"];px=Mathf.Clamp(px,N(bounds?["minX"]),N(bounds?["maxX"]));py=planar?Mathf.Clamp(py,N(bounds?["minY"]),N(bounds?["maxY"])):N(map?["laneY"],192);
-     if((bool?)state["mountSunday"]==true){var p=MountRoute.Clamp(map,state,new Vector2(px,py),planar);px=p.x;py=p.y;}bool blocked=false;foreach(var o in map?["obstacles"] as JArray??new JArray())if(Vector2.Distance(new Vector2(px,py),new Vector2(N(o["x"]),N(o["y"])))<N(o["radius"])+18){blocked=true;break;}
+     if((bool?)state["mountSunday"]==true){var p=MountRoute.Clamp(map,state,new Vector2(px,py),planar);px=p.x;py=p.y;}bool blocked=false;foreach(var o in map?["obstacles"] as JArray??EmptyArray)if(Vector2.Distance(new Vector2(px,py),new Vector2(N(o["x"]),N(o["y"])))<N(o["radius"])+18){blocked=true;break;}
      if(!blocked){hero["x"]=px;hero["y"]=py;}if(Mathf.Abs(input.x)>.01f)hero["facing"]=Mathf.Sign(input.x);SetDirection(hero,input.normalized.x,input.normalized.y);hero["action"]="run1";
     }else if(!auto)hero["action"]="stay1";
     return hero;
@@ -87,7 +112,7 @@ namespace IslandGame {
    if(map==null||!(map["rooms"] is JArray rooms))return from;int room=(int)N(state["room"]);if(room<0||room>=rooms.Count)return from;
    int steps=Mathf.Max(1,Mathf.CeilToInt(Mathf.Abs(dx)/6));float x=from,y=N(state["hero"]?["y"]);
    for(int i=0;i<steps;i++){float next=x+dx/steps;if(!Walkable(map,next,y))next=x;next=Mathf.Clamp(next,N(state["walkBounds"]?["minX"],N(rooms[room]["x1"])*48+12),N(state["walkBounds"]?["maxX"],(N(rooms[room]["x2"])+1)*48-12));
-    bool blocked=false;foreach(var mob in state["mobs"] as JArray??new JArray())if(N(mob["hp"])>0&&(int)N(mob["room"])==room&&Vector2.Distance(new Vector2(next,y),new Vector2(N(mob["x"]),N(mob["y"])))<12+N(mob["radius"])-1){blocked=true;break;}
+    bool blocked=false;foreach(var mob in state["mobs"] as JArray??EmptyArray)if(N(mob["hp"])>0&&(int)N(mob["room"])==room&&Vector2.Distance(new Vector2(next,y),new Vector2(N(mob["x"]),N(mob["y"])))<12+N(mob["radius"])-1){blocked=true;break;}
     if(blocked)break;x=next;
    }return x;
   }

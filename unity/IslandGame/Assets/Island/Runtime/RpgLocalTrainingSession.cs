@@ -23,20 +23,23 @@ namespace IslandGame {
    if((bool?)response["training"]!=true||response["id"]==null){Active=false;Failed?.Invoke("로컬 훈련 입장 응답을 확인하지 못했습니다.");yield break;}
    runId=(string)response["id"];id=runId;trainingServerSequence=(int?)response["sequence"]??0;
    SetTrainingMetadata(response);
-   var boot=new JObject{{"mode",mountSundayPreview?"mount":"boss"},{"seed",111},{"traversalProfile","source-run-v2"},{"build",response["build"]?.DeepClone()}};
-   localCombat=new StageCombatWorker(localSource,boot.ToString(Newtonsoft.Json.Formatting.None),20);
+   localCombat=new StageCombatWorker(localSource,TrainingBoot(mountSundayPreview,response["build"]).ToString(Newtonsoft.Json.Formatting.None),20);
   }
+  // Server-path training boot. Same hero kit helper as the practice boot (ReferenceTrainingSession.ReferenceBoot).
+  public static JObject TrainingBoot(bool mount,JToken build)=>Battle3DAssets.WithRunOptions(Battle3DAssets.WithHeroKit(new JObject{{"mode",mount?"mount":"boss"},{"seed",111},{"traversalProfile","source-run-v2"},{"build",build?.DeepClone()}}));
   void SetTrainingMetadata(JObject response){
    localMetadata=new JObject();
    foreach(var key in new[]{"progress","development","growth","build","buildRevision","compiled"})if(response[key]!=null)localMetadata[key]=response[key].DeepClone();
    if(State!=null)foreach(var p in localMetadata.Properties())State[p.Name]=p.Value.DeepClone();
    if(response["loot"] is JArray loot)LastLoot=(JArray)loot.DeepClone();
   }
+  // O1: snapshots are parsed every frame a new one arrives; nothing reads JSON line info (IJsonLineInfo/LineNumber/LinePosition), so skip storing it.
+  static readonly Newtonsoft.Json.Linq.JsonLoadSettings SnapshotLoad=new Newtonsoft.Json.Linq.JsonLoadSettings{LineInfoHandling=Newtonsoft.Json.Linq.LineInfoHandling.Ignore};
   void UpdateLocalTraining(){
    var error=localCombat.TakeError();if(error!=null){Active=false;localCombat.Dispose();Failed?.Invoke("로컬 전투 오류: "+error);return;}
    var json=localCombat.TakeSnapshot();
    if(!string.IsNullOrEmpty(json)){
-    var next=JObject.Parse(json);if(next["map"] is JObject map){Map=map;next.Remove("map");}
+    var next=JObject.Parse(json,SnapshotLoad);if(next["map"] is JObject map){Map=map;next.Remove("map");}
     foreach(var key in new[]{"progress","development","growth","build","buildRevision","compiled"}){
      var value=State?[key];if(value!=null){State[key]=JValue.CreateNull();next[key]=value;}
      else if(localMetadata?[key]!=null)next[key]=localMetadata[key].DeepClone();
@@ -53,6 +56,7 @@ namespace IslandGame {
      input["readyBoss"]=trainingView&&trainingView.BossEnvironmentReady;
     }
    }
+   // REV2-PORT-HOOK(SLOWMO): test-scene quarter speed would scale the seconds submitted here (kernel steps stay 20 ms).
    localCombat.Submit(systemPaused?0:Time.unscaledDeltaTime,input.ToString(Newtonsoft.Json.Formatting.None));
   }
   void TrainingCommand(string action,JObject input){

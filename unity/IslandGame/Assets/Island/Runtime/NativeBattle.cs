@@ -25,6 +25,7 @@ namespace IslandGame {
   public Camera BattleCamera=>view;
   public bool OverridePresentationView;public ViewMode PresentationView=ViewMode.Side25D;
   // Encounter policy is fixed: normal areas are side-on, only the boss arena is quarter view.
+  // REV2-PORT-HOOK(CAM-VIEW): the test scene's Side/Quarter/Orbit switch (A3dCameraRig, F1-F3) would pick the view here; the game picks it by zone only.
   public static ViewMode EncounterView(JObject state)=> (bool?)state?["zoneTenArena"]==true?((string)state["bossIntroStage"]=="approach"?ViewMode.Side25D:ViewMode.QuarterView):(bool?)state?["unityBossMode"]==true&&(bool?)state?["mountSunday"]!=true&&(int?)state?["room"]==1&&(bool?)state?["bossVisible"]==true?ViewMode.QuarterView:ViewMode.Side25D;
   public void SetPresentationView(ViewMode? mode){OverridePresentationView=false;PresentationView=EncounterView(session?.State);}
   public ViewPresentationCoordinator ViewPresentation=>threeD?threeD.Presentation:null;
@@ -46,7 +47,8 @@ namespace IslandGame {
   }
   void Awake(){var data=Resources.Load<TextAsset>("AssetIndex");if(data)index=JObject.Parse(data.text);var profile=Resources.Load<TextAsset>("VardianCombatProfile");if(profile)combatProfile=JObject.Parse(profile.text);Output=new RenderTexture(720,720,24){name="Island pixel world",filterMode=FilterMode.Point,wrapMode=TextureWrapMode.Clamp,antiAliasing=1,useMipMap=false};owned.Add(Output);
    var pivotObject=new GameObject("CameraPivot");pivotObject.transform.SetParent(transform,false);var cameraObject=new GameObject("Main Camera");cameraObject.transform.SetParent(pivotObject.transform,false);view=cameraObject.AddComponent<Camera>();cameraObject.AddComponent<PixelArtCamera>();view.allowMSAA=false;view.allowHDR=false;view.orthographic=true;view.orthographicSize=3.2f;view.backgroundColor=new Color(.025f,.035f,.03f);view.clearFlags=CameraClearFlags.SolidColor;view.targetTexture=Output;view.cullingMask=1<<30;
-   var models=Resources.Load<Battle3DAssets>("Battle3DAssets");if(models&&models.hero&&models.slime){threeD=gameObject.AddComponent<Battle3DView>();threeD.assets=models;widthLock=cameraObject.AddComponent<CameraHorizontalWidthLock>();widthLock.enabled=false;CameraRig=pivotObject.AddComponent<BattleCameraController>();CameraRig.externallyDriven=true;CameraRig.maxBossDistance=40;CameraRig.Bind(view);}
+   // The local hero kit asset (Resources path string only) wins when present and complete; otherwise the original hero.
+   var models=Battle3DAssets.LoadForBattle();if(models&&models.hero&&models.slime){threeD=gameObject.AddComponent<Battle3DView>();threeD.assets=models;threeD.legacyAssets=models.IsKit?Battle3DAssets.LoadDefault():null;widthLock=cameraObject.AddComponent<CameraHorizontalWidthLock>();widthLock.enabled=false;CameraRig=pivotObject.AddComponent<BattleCameraController>();CameraRig.externallyDriven=true;CameraRig.maxBossDistance=40;CameraRig.Bind(view);}
   }
   public void Clear(){combatBuffer.Reset();PresentationState=null;if(MountZoneStream.Current)MountZoneStream.Current.BossLoading=false;mountRoom=-1;OverridePresentationView=false;heroProjection.Reset();bossMovement.Reset();cameraPoseReady=false;if(CameraRig){CameraRig.SetViewMode(ViewMode.Side25D);CameraRig.ResetPose();}rollPresentation.Reset();walkFilter.Reset();landingMesh=null;if(threeD)threeD.Clear();if(world)Destroy(world);actors.Clear();actorPaths.Clear();actorData.Clear();keys.Clear();bodyHeights.Clear();clock=new NativeCombatClock();lastSnapshot=null;lastVisual=0;foreach(var item in owned)if(item&&item!=Output)Destroy(item);owned.RemoveAll(item=>item!=Output);sessionId=null;}
   void NewWorld(){Clear();world=new GameObject("Authoritative battle view");world.transform.SetParent(transform);sessionId=(string)session.State["id"];
@@ -86,7 +88,7 @@ namespace IslandGame {
   }
   float NativeContact(string action,float duration){foreach(var stage in combatProfile?["combo"] as JArray??new JArray())if((string)stage["animation"]==action)return Mathf.Clamp(NativeCombatPresentation.N(stage["hitAt"]),0,duration);return duration*.45f;}
   void DrawActor(string id,string path,string action,float x,float elevation,float height,float facing,string serial,float age=-1,float duration=0,float hitAt=0,string kind=null){
-   if(Uses3D&&(id=="hero"||path.Contains("Slime"))){float t=threeD.Draw(id,action,x,elevation,facing,serial,age,duration,hitAt,kind,frameAdvance,VisualTime);if(id=="hero"){HeroTrackTime=t;HeroGroundError=threeD.HeroGroundError;HeroBodyHeight=threeD.assets.heroHeight;HeroWorldX=x;HeroAction=action;}return;}
+   if(Uses3D&&(id=="hero"||path.Contains("Slime"))){float t=threeD.Draw(id,action,x,elevation,facing,serial,age,duration,hitAt,kind,frameAdvance,VisualTime);if(id=="hero"){HeroTrackTime=t;HeroGroundError=threeD.HeroGroundError;HeroBodyHeight=threeD.HeroHeight;HeroWorldX=x;HeroAction=action;}return;}
    var a=Actor(id,path);if(!a)return;action=NativeCombatPresentation.ClipName(action);var animation=a.Skeleton.Data.FindAnimation(action);if(animation==null)animation=a.Skeleton.Data.FindAnimation("stay1")??a.Skeleton.Data.Animations.Items[0];
    string key=path+":"+animation.Name+":"+serial;string previous;if(!keys.TryGetValue(id,out previous)||previous!=key){a.Skeleton.SetSlotsToSetupPose();a.AnimationState.SetAnimation(0,animation,animation.Name.Contains("run")||animation.Name.Contains("stay"));keys[id]=key;}
    a.Skeleton.ScaleX=Mathf.Sign(facing==0?1:facing);float scale=height/bodyHeights[id]/100;a.transform.localScale=Vector3.one*scale;
@@ -103,6 +105,8 @@ namespace IslandGame {
   }
   readonly NativeHeroProjection heroProjection=new NativeHeroProjection();
   readonly BossMovementPresentation bossMovement=new BossMovementPresentation();
+  readonly NativeBattleText labels=new NativeBattleText();
+  string HeroSerialText(JObject hero)=>labels.HeroSerial(hero);string MobIdText(JToken id)=>labels.MobId(id);string SpeciesText(int species)=>labels.Species(species);string ModeText(string id,string mode,JToken until)=>labels.Mode(id,mode,until);
   void LateUpdate(){
    if(session==null||session.State==null){if(world)world.SetActive(false);return;}if(index==null)return;if(sessionId!=(string)session.State["id"]||environmentKey!=(string)session.Map?["environment"])NewWorld();world.SetActive(true);
    var raw=session.State;var state=raw;bool campaign=!(state["hero"] is JObject),playing=session.Active&&!session.Paused&&(bool?)state["paused"]!=true&&(string)state["status"]!="dead"&&(string)state["status"]!="won";
@@ -121,7 +125,7 @@ namespace IslandGame {
    if(!campaign&&(bool?)state["mountSunday"]!=true&&(bool?)state["unityBossMode"]==true&&(string)(hero["motion"] as JObject)?["kind"]!="dodge"){BossContactProfile.ConstrainProjectedMotion(hero,state,session.Map);BossContactProfile.ClampBody(hero,state,session.Map);}
    float x=NativeCombatPresentation.N(hero["x"]),e=NativeCombatPresentation.N(hero["elevation"]),air=NativeCombatPresentation.N(hero["airHeight"]);
    string weapon=campaign?state.Value<string>("weapon")??"axe":state["progress"]?.Value<string>("weaponType")??"axe",path=index["heroes"]?[weapon]?.Value<string>()??"characters/hong/native-axe/hong";
-   var motion=(campaign?state["motion"]:hero["motion"]) as JObject;float start=motion?.Value<float?>(campaign?"startedAt":"start")??elapsed,duration=motion?.Value<float?>("duration")??0;
+   var motion=(campaign?state["motion"]:hero["motion"]) as JObject;float start=(float?)motion?[campaign?"startedAt":"start"]??elapsed,duration=(float?)motion?["duration"]??0;
    if(Uses3D){
     if((bool?)state["mountSunday"]==true||(bool?)state["zoneTenArena"]==true){int room=(bool?)state["zoneTenArena"]==true?9:(int)state["room"];MountZoneStream.Ensure().Bind(view,threeD.HeroTarget,room);if(room==9)MountZoneStream.Current.PresentArena(state);if(mountRoom!=room){mountRoom=room;cameraPoseReady=false;CameraRig.ResetPose();}view.farClipPlane=650;}
     float depth=NativeCombatPresentation.N(hero["y"])-NativeCombatPresentation.N(session.Map?["laneY"],192);
@@ -130,9 +134,13 @@ namespace IslandGame {
     threeD.HeroDepth=unity?depth/100:0;threeD.Planar=session.PlanarMovement;
     threeD.HeroRequestedSpeed=playing?Mathf.Clamp01(new Vector2(previewMove,session.PlanarMovement?previewDepth:0).magnitude)*NativeCombatPresentation.N(state["movementSpeed"],210)/100:0;
     threeD.HeroHeading=Mathf.Atan2(NativeCombatPresentation.N(hero["direction"]?["x"],1),NativeCombatPresentation.N(hero["direction"]?["y"]))*Mathf.Rad2Deg;
+    // Kit display follows the snapshot: no heroKit (server path without the kit, zone 10 boss engine) = the original hero.
+    threeD.HeroKit=(string)state["heroKit"];threeD.HeroMotion=motion;threeD.SnapshotElapsed=elapsed;
     
     if(CameraRig){
      CameraRig.SetViewMode(EncounterView(state),(bool?)state["bossVisible"]==true?threeD.BossTarget:null);
+     // Kit in a normal zone: solve the side distance so the hero is 28 % of the visible battle area (below the header).
+     CameraRig.heroScreenFraction=threeD.KitHeroActive&&(bool?)state["mountSunday"]==true&&(bool?)state["zoneTenArena"]!=true?.28f:0;CameraRig.heroScreenHeight=threeD.HeroHeight;
      CameraRig.FacingWorld=new Vector2(NativeCombatPresentation.N(hero["direction"]?["x"],1),NativeCombatPresentation.N(hero["direction"]?["y"]));
      CameraRig.PrepareTransition(frameAdvance);threeD.PreparePresentation(state,hero,VisualTime,CameraRig);
      var warning=state["warning"] as JObject;CameraRig.WarningActive=warning!=null;
@@ -145,16 +153,16 @@ namespace IslandGame {
     }
     threeD.UpdateEncounter(state,VisualTime);threeD.BeginFrame(x);
    }
-   DrawActor("hero",path,hero.Value<string>("action")??"stay1",x,e+air,88,hero.Value<float?>("facing")??1,(hero["serial"]??hero["actionSerial"]??0).ToString(),VisualTime-start,duration,motion?.Value<float?>("hitAt")??0,(string)motion?["kind"]);HeroAirHeight=air;
-   var shown=shownActors;shown.Clear();shown.Add("hero");foreach(var m in state[campaign?"enemies":"mobs"] as JArray??new JArray()){
+   DrawActor("hero",path,hero.Value<string>("action")??"stay1",x,e+air,88,(float?)hero["facing"]??1,HeroSerialText(hero),VisualTime-start,duration,(float?)motion?["hitAt"]??0,(string)motion?["kind"]);HeroAirHeight=air;
+   var shown=shownActors;shown.Clear();shown.Add("hero");foreach(var m in state[campaign?"enemies":"mobs"] as JArray??NativeCombatPresentation.EmptyArray){
     if((bool?)m["unityBoss"]==true)continue;
     if(!campaign&&(int)NativeCombatPresentation.N(m["room"])!=(int)NativeCombatPresentation.N(state["room"]))continue;
     bool dead=NativeCombatPresentation.N(m["hp"])<=0;if(dead&&elapsed-NativeCombatPresentation.N(m["until"])>.5f)continue;
-    int species=m.Value<int?>(campaign?"actorType":"species")??0;var profile=index["monsters"]?[species.ToString()];if(profile==null)continue;
+    int species=(int?)m[campaign?"actorType":"species"]??0;var profile=index["monsters"]?[SpeciesText(species)];if(profile==null)continue;
     float mx=NativeCombatPresentation.N(m["x"]),height=NativeCombatPresentation.N(m["elevation"]);if(!campaign&&(bool?)state["unityBossMode"]!=true)height=NativeCombatPresentation.N(session.Map?["rooms"]?[(int)NativeCombatPresentation.N(m["room"])]?["elevation"]);
-    string id="mob"+(m["id"]??m["slot"]??0),mode=m.Value<string>("state")??"idle",clip=dead?(string)profile["clips"]?["death"]:m.Value<string>("castClip")??profile["clips"]?[mode=="windup"?"attack":mode=="walk"?"move":"idle"]?.Value<string>()??"stay1";
+    string id=MobIdText(m["id"]??m["slot"]),mode=m.Value<string>("state")??"idle",clip=dead?(string)profile["clips"]?["death"]:m.Value<string>("castClip")??profile["clips"]?[mode=="windup"?"attack":mode=="walk"?"move":"idle"]?.Value<string>()??"stay1";
     if(Uses3D&&!threeD.ShouldPresent(mx))continue;
-    if(Uses3D)threeD.MobDepth=(bool?)state["mountSunday"]==true?(NativeCombatPresentation.N(m["y"])-NativeCombatPresentation.N(session.Map?["laneY"],5000))/100:0;DrawActor(id,profile.Value<string>("skeleton"),clip??"stay1",mx,height,m.Value<bool?>("boss")==true?94:species==1102?68:40,mx>x?-1:1,mode+(mode=="windup"?m["until"]?.ToString():""));shown.Add(id);
+    if(Uses3D)threeD.MobDepth=(bool?)state["mountSunday"]==true?(NativeCombatPresentation.N(m["y"])-NativeCombatPresentation.N(session.Map?["laneY"],5000))/100:0;DrawActor(id,profile.Value<string>("skeleton"),clip??"stay1",mx,height,(bool?)m["boss"]==true?94:species==1102?68:40,mx>x?-1:1,ModeText(id,mode,m["until"]));shown.Add(id);
    }
    foreach(var actor in actors)actor.Value.gameObject.SetActive(shown.Contains(actor.Key));
    if(Uses3D){threeD.ShowOnly(shown);threeD.UpdateContact(state,VisualTime);threeD.Follow(view,x,e,frameAdvance);threeD.PresentLightning(session.Map,VisualTime);return;}
@@ -162,6 +170,35 @@ namespace IslandGame {
   }
   public Vector2 ViewPoint(float x,float elevation,float depth=0){var p=view.WorldToViewportPoint(new Vector3(x/100,elevation/100,depth/100));return new Vector2(p.x,1-p.y);}
   void OnDestroy(){foreach(var o in owned)if(o)Destroy(o);}
+ }
+ // O1: the per-frame label strings of NativeBattle.LateUpdate, built with the same expressions as before but only when the value changes.
+ // They are clip/restart keys: the text must stay exactly what the old expression gave.
+ public sealed class NativeBattleText {
+  object serialValue;string serialText;
+  readonly Dictionary<object,string> mobIds=new Dictionary<object,string>();readonly Dictionary<int,string> species=new Dictionary<int,string>();
+  readonly Dictionary<string,KeyValuePair<object,string>> windups=new Dictionary<string,KeyValuePair<object,string>>();
+  // (hero["serial"]??hero["actionSerial"]??0).ToString()
+  public string HeroSerial(JObject hero){
+   var token=hero["serial"]??hero["actionSerial"];if(token==null)return "0";
+   var value=(token as JValue)?.Value;if(value==null||value is double||value is float)return token.ToString();
+   if(serialText!=null&&Equals(serialValue,value))return serialText;
+   serialValue=value;return serialText=token.ToString();
+  }
+  // "mob"+(m["id"]??m["slot"]??0)
+  public string MobId(JToken token){
+   if(token==null)return "mob0";
+   var value=(token as JValue)?.Value;if(value==null||value is double||value is float)return "mob"+token;
+   if(!mobIds.TryGetValue(value,out var text)){text="mob"+token;mobIds[value]=text;}return text;
+  }
+  // species.ToString()
+  public string Species(int value){if(!species.TryGetValue(value,out var text)){text=value.ToString();species[value]=text;}return text;}
+  // mode+(mode=="windup"?m["until"]?.ToString():"")
+  public string Mode(string id,string mode,JToken until){
+   if(mode!="windup")return mode+"";
+   var value=(until as JValue)?.Value;if(value==null||id==null)return mode+until?.ToString();
+   if(windups.TryGetValue(id,out var last)&&JsonSync.SameValue(last.Key,value))return last.Value;
+   var text=mode+until.ToString();windups[id]=new KeyValuePair<object,string>(value,text);return text;
+  }
  }
 }
 

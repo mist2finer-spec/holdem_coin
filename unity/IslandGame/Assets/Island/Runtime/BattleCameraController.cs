@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 namespace IslandGame {
+ // REV2-PORT-HOOK(CAM-VIEW): the test scene adds an Orbit view (drag/wheel) and a user switch; both would join this enum and SetViewMode.
  public enum ViewMode { Side25D, QuarterView, TopDown1945 }
  [DisallowMultipleComponent]
  public sealed class BattleCameraController:MonoBehaviour {
@@ -38,6 +39,9 @@ namespace IslandGame {
   public float lookAheadAccelSmoothTime=.18f,lookAheadDecelSmoothTime=.35f;
   [Header("Boss framing")]
   public float transitionDuration=1.2f,maxBossDistance=32,bossWeight=.35f,framingMargin=1.15f;
+  [Header("Side hero framing (0 = use side.distance)")]
+  // Hero height as a fraction of the visible battle area (the rect minus the header band); the side distance is solved from it.
+  public float heroScreenFraction,heroScreenHeight=1.3f,visibleFraction=.88f;
   public float maxCameraStep=.05f;
   public float CurrentLookAhead{get;private set;}public float CurrentDistance{get;private set;}
   public float ConfirmedFacing=>facing;public bool ChamberClampActive=>clamp;
@@ -65,7 +69,16 @@ namespace IslandGame {
    if(mode==ViewMode.Side25D){candidate=rawFacing;turnAge=0;turnX=pose.x;}
   }
   public void ResetPose(){ImpactOffset=Vector3.zero;ImpactFov=0;WarningActive=false;QuarterWeight=fromQuarter=Mode==ViewMode.Side25D?0:1;transitionPrepared=false;initialized=false;lookVelocity=xVelocity=yVelocity=zVelocity=zoomVelocity=0;CurrentLookAhead=0;facing=candidate=rawFacing;turnAge=0;turnX=pose.x;current=from=Desired;CurrentDistance=Desired.distance;fromRotation=Quaternion.Euler(current.pitch,current.yaw,0);blendAge=transitionDuration;}
-  Preset Desired=>Mode==ViewMode.QuarterView?quarter:Mode==ViewMode.TopDown1945?top:side;
+  Preset Desired=>Mode==ViewMode.QuarterView?quarter:Mode==ViewMode.TopDown1945?top:FramedSide;
+  Preset FramedSide{get{if(heroScreenFraction<=0||!view)return side;var p=side;float rectAspect=Mathf.Max(.01f,referenceAspect*view.rect.width/Mathf.Max(.01f,view.rect.height));
+   p.distance=SideDistanceForHeroFraction(heroScreenHeight,heroScreenFraction*visibleFraction,LockedVerticalFov(side.verticalFov,rectAspect,view.aspect),side.pitch,groundViewportY);return p;}}
+  // Side25D with keepGroundFraming: the pivot is raised so the ground under the hero lands at groundViewportY.
+  // Returns the camera distance at which a vertical segment (feet -> feet+height) at the hero spans `fraction` of the viewport height.
+  public static float SideDistanceForHeroFraction(float height,float fraction,float verticalFov,float pitch,float groundViewportY){
+   float t=Mathf.Tan(verticalFov*Mathf.Deg2Rad*.5f),p=pitch*Mathf.Deg2Rad,c=Mathf.Cos(p),s=Mathf.Sin(p),q=(groundViewportY*2-1)*t;
+   float a=q/Mathf.Max(.1f,c+q*s)-s,b=a*c+c*s,cc=c*c-a*s,k=2*t*fraction+b/cc;
+   float den=k*cc-b;return den>1e-5f?Mathf.Max(.5f,height*(c+k*s)/den):999;
+  }
   public void ApplyProjection(){if(!view)return;view.orthographic=false;float rectAspect=Mathf.Max(.01f,referenceAspect*view.rect.width/Mathf.Max(.01f,view.rect.height));view.fieldOfView=LockedVerticalFov(current.verticalFov,rectAspect,view.aspect);}
   public static float LockedVerticalFov(float vertical,float referenceViewportAspect,float actualViewportAspect){
    float f=Mathf.Clamp(vertical,1,110);if(actualViewportAspect>=referenceViewportAspect)return f;

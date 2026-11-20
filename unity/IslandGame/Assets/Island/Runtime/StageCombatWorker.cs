@@ -14,6 +14,10 @@ namespace IslandGame {
   double pendingTime;string input="{\"x\":0,\"y\":0,\"auto\":true}",latest,error;
   public int SnapshotIntervalMilliseconds{get;private set;}=50;public long SnapshotsProduced{get;private set;}
   public long Steps {get;private set;}public double DroppedSeconds {get;private set;}public double MaxBatchMilliseconds {get;private set;}
+  // O1-0 perf log (IslandPerfLog): longest advance batch since the last read, any worker. Read-and-reset; no effect on combat.
+  static readonly object windowGate=new object();static double windowMaxBatch;
+  static void NoteBatch(double ms){lock(windowGate){if(ms>windowMaxBatch)windowMaxBatch=ms;}}
+  public static double TakeWindowMaxBatchMilliseconds(){lock(windowGate){var value=windowMaxBatch;windowMaxBatch=0;return value;}}
   public StageCombatWorker(string source,string boot,int publicationMilliseconds=50){this.publicationMilliseconds=Math.Max(20,publicationMilliseconds);this.source=source;this.boot=boot;thread=new Thread(Run){IsBackground=true,Name="Island local stage combat"};thread.Start();}
   public bool Ready {get{lock(gate)return ready;}}
   public string TakeSnapshot(){lock(gate){var result=latest;latest=null;return result;}}
@@ -36,7 +40,7 @@ namespace IslandGame {
      foreach(var update in updates)Call(engine,update[0]=='A'?acknowledge:profile,update.Substring(1));
      if(count==0&&events.Length==0){wake.WaitOne(10);continue;}
      var message=new JObject{{"steps",count},{"input",JObject.Parse(current)},{"commands",new JArray(Array.ConvertAll(events,JObject.Parse))},{"snapshot",publishClock.ElapsedMilliseconds>=SnapshotIntervalMilliseconds||events.Length>0||updates.Length>0}};
-     var timer=Stopwatch.StartNew();string snapshot=Call(engine,advance,message.ToString(Newtonsoft.Json.Formatting.None));MaxBatchMilliseconds=Math.Max(MaxBatchMilliseconds,timer.Elapsed.TotalMilliseconds);Steps+=count;
+     var timer=Stopwatch.StartNew();string snapshot=Call(engine,advance,message.ToString(Newtonsoft.Json.Formatting.None));MaxBatchMilliseconds=Math.Max(MaxBatchMilliseconds,timer.Elapsed.TotalMilliseconds);NoteBatch(timer.Elapsed.TotalMilliseconds);Steps+=count;
      if(!string.IsNullOrEmpty(snapshot)){Publish(snapshot);publishClock.Restart();}
     }
    }catch(Exception ex){lock(gate)error=ex.GetType().Name+": "+ex.Message;}

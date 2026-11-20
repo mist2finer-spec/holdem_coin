@@ -19,9 +19,10 @@ namespace IslandGame {
    }
    var build=new JObject{{"skills",skills}};
    localMetadata=new JObject{{"build",build},{"buildRevision","elemental-practice-v3"},{"progress",new JObject{{"level",1},{"weaponType","sword"},{"skillEnabled",new JArray(1,1,1,1,1,1)},{"equipment",new JObject{{"items",items},{"equipped",equipped}}}}}};
-   var boot=new JObject{{"mode",quarter?"boss":"mount"},{"previewArena",quarter},{"seed",111},{"referencePreview",true},{"previewZone",Mathf.Clamp(zone,0,9)},{"traversalProfile","source-run-v2"},{"build",build.DeepClone()}};
-   localCombat=new StageCombatWorker(localSource,boot.ToString(Newtonsoft.Json.Formatting.None),20);
+   localCombat=new StageCombatWorker(localSource,ReferenceBoot(zone,quarter,build).ToString(Newtonsoft.Json.Formatting.None),20);
   }
+  // Server-free practice boot. The hero kit key is added only when the local kit asset is present (Battle3DAssets.WithHeroKit).
+  public static JObject ReferenceBoot(int zone,bool quarter,JObject build)=>Battle3DAssets.WithRunOptions(Battle3DAssets.WithHeroKit(new JObject{{"mode",quarter?"boss":"mount"},{"previewArena",quarter},{"seed",111},{"referencePreview",true},{"previewZone",Mathf.Clamp(zone,0,9)},{"traversalProfile","source-run-v2"},{"build",build.DeepClone()}}));
  }
  public sealed partial class IslandApp {
   public void StartReferenceTraining(int zone=3,bool quarter=false){

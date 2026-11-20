@@ -1,17 +1,14 @@
 using Newtonsoft.Json.Linq;
 namespace IslandGame {
  // Owns a private display buffer. Authority snapshots and their motion data stay read-only.
+ // O1: every frame the buffer is brought back to the source hero in place (all keys, motion included), then projected.
+ // Same result as a fresh DeepClone + ProjectHero; only a shape change (key set, type, array length) copies again.
  public sealed class NativeHeroProjection {
-  JObject source,buffer;JToken motion;
-  static readonly string[] Fields={"x","y","elevation","airHeight","facing","action"};
-  public void Reset(){source=buffer=null;motion=null;}
+  JObject buffer;
+  public void Reset(){buffer=null;}
   public JObject Project(JObject state,JObject map,float time,float move,bool auto,float depth){
    var next=state?["hero"] as JObject;if(next==null)return null;
-   if(!object.ReferenceEquals(source,next)){source=next;buffer=(JObject)next.DeepClone();motion=buffer["motion"];}
-   else {foreach(var key in Fields){if(source[key] is JValue s&&buffer[key] is JValue d)d.Value=s.Value;}
-    if(!object.ReferenceEquals(buffer["motion"],motion))buffer["motion"]=motion;
-    if(source["direction"] is JObject dir)NativeCombatPresentation.SetDirection(buffer,NativeCombatPresentation.N(dir["x"]),NativeCombatPresentation.N(dir["y"]));
-   }
+   buffer=(buffer==null?null:JsonSync.Sync(buffer,next) as JObject)??(JObject)next.DeepClone();
    return NativeCombatPresentation.ProjectHero(state,map,time,move,auto,depth,buffer);
   }
  }

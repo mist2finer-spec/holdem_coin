@@ -8,6 +8,8 @@ namespace IslandGame {
   readonly Dictionary<string,Flash[]> targets=new Dictionary<string,Flash[]>();readonly Trail[] trails=new Trail[3];readonly LineRenderer[] sparks=new LineRenderer[6];readonly float[] sparkAt=new float[6];readonly Vector3[] sparkPoints=new Vector3[9];
   int lastEvent=-1,lastLightning=-1,nextSpark;float hitAt=-100,soundAt=-100;string session;
   public bool FlashEnabled=true,SoundEnabled=true,CameraEnabled=true,DecorationsEnabled=true;
+  // V2: the kit hero's own hit star (IaiBladeVfx) replaces the orange contact spark for its hits (definitionId pink-iai-*). Flash, shake and sound stay.
+  public bool SuppressKitSpark;
   public int ConsumedContacts{get;private set;}public int LastAttackId{get;private set;}public int LastStrike{get;private set;}public float LastContactAt{get;private set;}public float MaximumLateSeconds{get;private set;}
   public CombatFeedbackRouter(GameObject host,BattleCameraController rig,ViewPresentationCoordinator profiles,Func<string,Transform> targetResolver){
    camera=rig;profile=profiles;resolve=targetResolver;root=new GameObject("Combat feedback · pooled");root.transform.SetParent(host.transform,false);
@@ -27,7 +29,7 @@ namespace IslandGame {
     hitAt=contact;LastAttackId=(int)token["attackId"];LastStrike=(int?)token["strike"]??0;LastContactAt=contact;ConsumedContacts++;
     var target=Target((string)token["target"]??"hero");if(target!=null)foreach(var f in target)f.at=contact;
     if(SoundEnabled&&time-soundAt>=.04f){audio.volume=profile.SoundVolume;audio.Play();soundAt=time;}
-    var p=token["point"];if(p!=null){int n=nextSpark++%sparks.Length;var center=new Vector3(NativeCombatPresentation.N(p["x"])/100,NativeCombatPresentation.N(p["y"])/100,(NativeCombatPresentation.N(p["z"])-5000)/100);for(int i=0;i<9;i++){float angle=i*Mathf.PI/4;sparkPoints[i]=center+new Vector3(Mathf.Cos(angle),Mathf.Sin(angle),0)*.11f;}sparks[n].SetPositions(sparkPoints);sparkAt[n]=contact;}
+    var p=token["point"];var def=SuppressKitSpark?(string)token["definitionId"]:null;if(p!=null&&!(def!=null&&def.StartsWith("pink-iai",StringComparison.Ordinal))){int n=nextSpark++%sparks.Length;var center=new Vector3(NativeCombatPresentation.N(p["x"])/100,NativeCombatPresentation.N(p["y"])/100,(NativeCombatPresentation.N(p["z"])-5000)/100);for(int i=0;i<9;i++){float angle=i*Mathf.PI/4;sparkPoints[i]=center+new Vector3(Mathf.Cos(angle),Mathf.Sin(angle),0)*.11f;}sparks[n].SetPositions(sparkPoints);sparkAt[n]=contact;}
    }
    foreach(var ts in targets.Values)foreach(var f in ts){if(!f.renderer)continue;float age=time-f.at,amount=FlashEnabled&&age>=0?Mathf.Clamp01(1-age/Mathf.Max(.001f,profile.FlashSeconds)):0;if(amount>0){f.block.SetColor(f.colorId,Color.Lerp(f.color,new Color(1,.85f,.7f),amount*profile.FlashStrength));f.renderer.SetPropertyBlock(f.block);f.active=true;}else if(f.active){f.renderer.SetPropertyBlock(f.saved);f.active=false;}}
    bool low=IslandFrameBudget.Current&&IslandFrameBudget.Current.Policy.Level>=1;

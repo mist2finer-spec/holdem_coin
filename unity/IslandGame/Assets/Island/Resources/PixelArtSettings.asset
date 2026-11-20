@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 175a007a0ffcb1f42b3318867953d5f5, type: 3}
   m_Name: PixelArtSettings
   m_EditorClassIdentifier: 
-  enabled: 1
+  enabled: 0
   landscapeWidth: 640
   portraitWidth: 360
   poseFps: 12

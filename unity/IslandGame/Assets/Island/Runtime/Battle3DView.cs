@@ -15,8 +15,19 @@ namespace IslandGame {
    public AnimationClip clip;
    public string serial;
    public float time, scale, baseFoot, soleOffset;
+   public Battle3DAssets set;public bool kit;public Transform[] pins;public AnimationClip kitClip;public string kitSerial;public float kitSample;
+   // Kit tempo clipMap of the current motion, read once when the serial changes (K6).
+   public string mapSerial;public float[] mapAge,mapClip;public int mapCount;
+   // K5: a kit skill that follows an attack cancel enters with the longer default blend.
+   public string lastKind;public bool afterCancel;
+   public Vector3 weaponBaseLocal=new Vector3(0,.13f,0),weaponTipLocal=new Vector3(0,.73f,0);
   }
   public Battle3DAssets assets;
+  // Hero kit display (local test builds). assets = the kit asset when present; legacyAssets = the original hero for a snapshot without heroKit.
+  public Battle3DAssets legacyAssets;public string HeroKit;public JObject HeroMotion;public float SnapshotElapsed;
+  public bool KitHeroActive=>assets&&assets.IsKit&&HeroKit==assets.kit;
+  Battle3DAssets HeroSet=>assets&&assets.IsKit&&!KitHeroActive&&legacyAssets?legacyAssets:assets;
+  public float HeroHeight=>HeroSet?HeroSet.heroHeight:1.3f;
   readonly Dictionary<string,Actor> actors=new Dictionary<string,Actor>();
   readonly Stack<Actor> slimePool=new Stack<Actor>();
   readonly List<string> retired=new List<string>();
@@ -38,18 +49,29 @@ namespace IslandGame {
   public CombatFeedbackRouter ContactFeedback=>contactFeedback;
   public ViewPresentationCoordinator Presentation{get;private set;}
   public int HeroAttackId{get;private set;}public float HeroAttackProgress{get;private set;}public bool HeroAttackActive{get;private set;}
-  public Vector3 HeroWeaponBase=>actors.TryGetValue("hero",out var a)&&a.weapon?a.weapon.TransformPoint(new Vector3(0,.13f,0)):Vector3.zero;
-  public Vector3 HeroWeaponTip=>actors.TryGetValue("hero",out var a)&&a.weapon?a.weapon.TransformPoint(new Vector3(0,.73f,0)):Vector3.zero;
+  // REV2-PORT-HOOK(BLADE-TRAIL): the trail follows these points; with the kit they come from the baked blade bone (guard / tip).
+  public Vector3 HeroWeaponBase=>actors.TryGetValue("hero",out var a)&&a.weapon?a.weapon.TransformPoint(a.weaponBaseLocal):Vector3.zero;
+  public Vector3 HeroWeaponTip=>actors.TryGetValue("hero",out var a)&&a.weapon?a.weapon.TransformPoint(a.weaponTipLocal):Vector3.zero;
   public void PreparePresentation(JObject state,JObject hero,float time,BattleCameraController rig){
    if(Presentation==null)Presentation=new ViewPresentationCoordinator();Presentation.Sync(rig);bossView?.SetPresentation(Presentation);
    var m=hero?["motion"] as JObject;HeroAttackId=(int?)m?["attackId"]??0;HeroAttackProgress=m==null?0:Mathf.Clamp01((time-NativeCombatPresentation.N(m["start"]))/Mathf.Max(.001f,NativeCombatPresentation.N(m["duration"])));
-   HeroAttackActive=(string)m?["kind"]=="attack"&&HeroAttackProgress>=.32f&&HeroAttackProgress<=HeroMeleePose.ActiveTo((string)hero["action"]);
+   var window=(m?["timeline"]?["active"] as JArray)?.Count>0?m["timeline"]["active"][0]:null;bool kitRow=m?["kit"]!=null&&window!=null;
+   HeroAttackActive=(string)m?["kind"]=="attack"&&(kitRow?HeroAttackProgress>=NativeCombatPresentation.N(window["from"])&&HeroAttackProgress<=NativeCombatPresentation.N(window["to"]):HeroAttackProgress>=.32f&&HeroAttackProgress<=HeroMeleePose.ActiveTo((string)hero["action"]));
   }
   Transform FeedbackTarget(string id){if(id=="boss")return BossTarget;if(actors.TryGetValue(id,out var a))return a.root.transform;return null;}
   public BossContactDebug ContactDebug=>contactDebug;
   public bool BossEnvironmentReady=>!mountMode&&bossView!=null&&HeroTarget&&(zoneTenArena?MountZoneStream.Current&&MountZoneStream.Current.ActiveZone==9&&!MountZoneStream.Current.Busy&&MountZoneStream.Current.LoadedCount==1:authored&&authored.IsReadyNear(HeroTarget.position)&&(!MountZoneStream.Current||MountZoneStream.Current.LoadedCount==0));
   public Transform HeroTarget=>actors.TryGetValue("hero",out var actor)?actor.root.transform:null;
-  public void UpdateContact(JObject state,float visualTime){if(!HeroTarget)return;if(referenceVfx==null)referenceVfx=new ReferenceCombatVfx(world);referenceVfx.Update(state,visualTime,HeroTarget,HeroWeaponBase,HeroWeaponTip);if(mountMode){if(contactFeedback==null)contactFeedback=new CombatFeedbackRouter(gameObject,battleCamera.GetComponentInParent<BattleCameraController>(),Presentation??(Presentation=new ViewPresentationCoordinator()),FeedbackTarget);contactFeedback.Update(state,visualTime);contactFeedback.Smear(0,HeroAttackId,HeroAttackActive,HeroWeaponTip,visualTime);return;}if(bossView==null)return;if(diorama)diorama.ProtectAttack(bossView.ContactPoint(1),bossView.ContactPoint(3),bossView.WarningTarget,bossView.BossVisible&&bossView.HookActive);if(contactFeedback==null)contactFeedback=new CombatFeedbackRouter(gameObject,battleCamera.GetComponentInParent<BattleCameraController>(),Presentation??(Presentation=new ViewPresentationCoordinator()),FeedbackTarget);contactFeedback.Update(state,visualTime);
+  // REV2-PORT-HOOK(HIT-FLASH): normal-zone hit flash/spark/sound/shake run in contactFeedback.Update (CombatFeedbackRouter); the test scene burst would be styled there.
+  // REV2-PORT-HOOK(DEBUG-HITBOX): the normal-zone branch below has no hero/mob hitbox drawing (BossContactDebug is boss only); a kit hitbox view (test scene F4) goes here.
+  // V2 (BLADE-TRAIL / HIT-FLASH): the kit hero in a normal zone uses IaiBladeVfx (arc, star, embers, 3rd hit, sheathe glint) instead of
+  // the crescent, tip smear and contact spark. Zone 10 (boss branch below), the old hero and a missing kit keep the old effect.
+  IaiBladeVfx iaiVfx;
+  public void UpdateContact(JObject state,float visualTime){if(!HeroTarget)return;IaiAllocProbe.Begin();try{UpdateContactCore(state,visualTime);}finally{IaiAllocProbe.End();}}
+  void UpdateContactCore(JObject state,float visualTime){if(referenceVfx==null)referenceVfx=new ReferenceCombatVfx(world);
+   bool iai=mountMode&&KitHeroActive&&IaiBladeVfx.Enabled&&battleCamera;if(iai&&iaiVfx==null)iaiVfx=new IaiBladeVfx();iai&=iaiVfx!=null&&iaiVfx.Ready;if(!iai&&iaiVfx!=null&&iaiVfx.Ready){iaiVfx.Dispose();iaiVfx=null;}
+   referenceVfx.SuppressHeroSlash=iai;referenceVfx.Update(state,visualTime,HeroTarget,HeroWeaponBase,HeroWeaponTip);if(mountMode){if(contactFeedback==null)contactFeedback=new CombatFeedbackRouter(gameObject,battleCamera.GetComponentInParent<BattleCameraController>(),Presentation??(Presentation=new ViewPresentationCoordinator()),FeedbackTarget);contactFeedback.SuppressKitSpark=iai;contactFeedback.Update(state,visualTime);contactFeedback.Smear(0,HeroAttackId,HeroAttackActive&&!iai,HeroWeaponTip,visualTime);if(iai)iaiVfx.Update(state,visualTime,battleCamera,HeroTarget,HeroWeaponBase,HeroWeaponTip,HeroHeight,HeroClipName,HeroSampleTime);return;}
+   if(contactFeedback!=null)contactFeedback.SuppressKitSpark=false;if(bossView==null)return;if(diorama)diorama.ProtectAttack(bossView.ContactPoint(1),bossView.ContactPoint(3),bossView.WarningTarget,bossView.BossVisible&&bossView.HookActive);if(contactFeedback==null)contactFeedback=new CombatFeedbackRouter(gameObject,battleCamera.GetComponentInParent<BattleCameraController>(),Presentation??(Presentation=new ViewPresentationCoordinator()),FeedbackTarget);contactFeedback.Update(state,visualTime);
    if(actors.TryGetValue("hero",out var readable)&&readable.occlusionSkin){
     // Imported skinned bounds include the full animation envelope and falsely cover nearby heroes.
     // Use the calibrated torso volume as a conservative gate; the shader checks actual rendered depth.
@@ -72,7 +94,7 @@ namespace IslandGame {
   public void PresentLightning(JObject map,float time){referenceVfx?.PresentLightning(battleCamera,map,time,Presentation);}
   public int ActiveReferenceEffects=>referenceVfx?.ActiveEffects??0;public int ReferenceParticles=>referenceVfx?.ParticleCount??0;public int ActorCount=>actors.Count;
   Material ground,edge,bark,leaves,rock,steel,grip,shadow;
-  public void Clear(){referenceVfx?.Dispose();referenceVfx=null;if((mountMode||zoneTenArena)&&MountZoneStream.Current)MountZoneStream.Current.Release();mountMode=zoneTenArena=false;Presentation=null;HeroAttackId=0;HeroAttackActive=false;contactFeedback?.Dispose();contactFeedback=null;contactDebug?.Dispose();contactDebug=null;if(authored){authored.VisualChunkCreated-=OnVisualBranch;authored.VisualChunkRemoving-=OnVisualRemoving;}if(diorama){diorama.Dispose();diorama=null;}foreach(var a in actors.Values)a.animation?.Dispose();foreach(var a in slimePool)a.animation?.Dispose();if(authored){Destroy(authored.gameObject);authored=null;}if(bossView!=null){bossView.Dispose();bossView=null;}if(Stream!=null){Stream.Dispose();Stream=null;}actors.Clear();slimePool.Clear();displayMeshes.Clear();world=null;hasFrustum=false;foreach(var o in owned)if(o)Destroy(o);owned.Clear();}
+  public void Clear(){referenceVfx?.Dispose();referenceVfx=null;iaiVfx?.Dispose();iaiVfx=null;if((mountMode||zoneTenArena)&&MountZoneStream.Current)MountZoneStream.Current.Release();mountMode=zoneTenArena=false;Presentation=null;HeroAttackId=0;HeroAttackActive=false;contactFeedback?.Dispose();contactFeedback=null;contactDebug?.Dispose();contactDebug=null;if(authored){authored.VisualChunkCreated-=OnVisualBranch;authored.VisualChunkRemoving-=OnVisualRemoving;}if(diorama){diorama.Dispose();diorama=null;}foreach(var a in actors.Values)a.animation?.Dispose();foreach(var a in slimePool)a.animation?.Dispose();if(authored){Destroy(authored.gameObject);authored=null;}if(bossView!=null){bossView.Dispose();bossView=null;}if(Stream!=null){Stream.Dispose();Stream=null;}actors.Clear();slimePool.Clear();displayMeshes.Clear();world=null;hasFrustum=false;foreach(var o in owned)if(o)Destroy(o);owned.Clear();}
   Material Mat(string name,Color color,float metallic=0){var m=new Material(Shader.Find("Standard")){name=name,color=color};m.SetFloat("_Glossiness",.2f);m.SetFloat("_Metallic",metallic);owned.Add(m);return m;}
   GameObject Shape(string name,PrimitiveType type,Transform parent,Vector3 p,Vector3 scale,Material material){
    Mesh mesh;if(!displayMeshes.TryGetValue(type,out mesh)){mesh=IslandDisplayMeshes.Create(type);displayMeshes.Add(type,mesh);owned.Add(mesh);}
@@ -123,20 +145,22 @@ namespace IslandGame {
   }
   Actor Create(string id,bool hero){
    if(!hero&&slimePool.Count>0){var pooled=slimePool.Pop();pooled.root.name=id+" · pooled slime visual";pooled.clip=null;pooled.serial=null;pooled.time=0;pooled.lastSampleSlot=int.MinValue;pooled.phase=Phase(id);pooled.placed=false;pooled.model.transform.localPosition=Vector3.zero;pooled.model.transform.localScale=Vector3.one*pooled.scale;pooled.root.SetActive(true);actors[id]=pooled;ReusedModels++;return pooled;}
-   var prefab=hero?assets.hero:assets.slime;if(!prefab)return null;
+   var set=hero?HeroSet:assets;var prefab=hero?set.hero:assets.slime;if(!prefab)return null;bool kit=hero&&set.IsKit;
    var root=new GameObject(hero?"Pink Glass · server hero":id+" · slime visual");root.transform.SetParent(world,false);
    var visual=new GameObject("Presentation deformation (grounded)");visual.transform.SetParent(root.transform,false);var model=Instantiate(prefab,visual.transform,false);model.name="Model";
    foreach(var t in model.GetComponentsInChildren<Transform>(true))t.gameObject.layer=30;root.layer=30;
    foreach(var animator in model.GetComponentsInChildren<Animator>())animator.enabled=false;
    var skin=model.GetComponentInChildren<SkinnedMeshRenderer>();
-   var animation=new RuntimeAnimationPlayer(model);var clip=hero?assets.idle:assets.slimeIdle;if(clip)animation.Sample(clip,0);
-   var profile=hero?groundingProfile?.Hero:groundingProfile?.Slime;
+   var animation=new RuntimeAnimationPlayer(model);var clip=hero?set.idle:assets.slimeIdle;if(clip)animation.Sample(clip,0);
+   var profile=kit?null:hero?groundingProfile?.Hero:groundingProfile?.Slime;
    if(profile!=null&&profile.Vertices!=skin.sharedMesh.vertexCount)profile=null;
    var bound=skin.localBounds;float height=Mathf.Max(.001f,profile!=null?profile.ReferenceHeight:bound.size.y*Mathf.Abs(skin.transform.lossyScale.y));
+   // Kit: the first skinned renderer is a hand, so the height is a bone height (idle pose, model root space; the root is the ground).
+   Transform heightBone=kit&&!string.IsNullOrEmpty(set.heightBone)?Find(model.transform,set.heightBone):null;if(heightBone)height=Mathf.Max(.001f,model.transform.InverseTransformPoint(heightBone.position).y);
    if(profile!=null)skin.localBounds=profile.Bounds;
-   var a=new Actor{root=root,model=model,presentationRoot=visual.transform,skin=skin,animation=animation,grounding=profile,phase=Phase(id),scale=(hero?assets.heroHeight:assets.slimeHeight*(mountMode?.5f:1f))/height};CreatedModels++;
+   var a=new Actor{root=root,model=model,presentationRoot=visual.transform,skin=skin,animation=animation,grounding=profile,phase=Phase(id),scale=(hero?set.heroHeight:assets.slimeHeight*(mountMode?.5f:1f))/height,set=set,kit=kit};CreatedModels++;
    foreach(var renderer in model.GetComponentsInChildren<Renderer>()){
-    renderer.sharedMaterial=hero?assets.heroMaterial:assets.slimeMaterial;
+    if(!(kit&&set.keepModelMaterials))renderer.sharedMaterial=hero?set.heroMaterial:assets.slimeMaterial;
     renderer.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.On;renderer.receiveShadows=true;
    }
    skin.updateWhenOffscreen=false;
@@ -146,7 +170,13 @@ namespace IslandGame {
    var low=skin.transform.TransformPoint(new Vector3(bound.center.x,bound.min.y,bound.center.z));
    a.baseFoot=profile!=null?profile.BaseFoot:root.transform.InverseTransformPoint(low).y;
    if(a.leftFoot&&a.rightFoot)a.soleOffset=Mathf.Min(root.transform.InverseTransformPoint(a.leftFoot.position).y,root.transform.InverseTransformPoint(a.rightFoot.position).y)-a.baseFoot;
-   if(hero){
+   if(kit){
+    // Baked clips stand on the model root. Body clips (groundedClips) are pinned by their lowest bone instead; soleOffset = that height when standing.
+    a.baseFoot=0;var pins=new List<Transform>();foreach(var t in model.GetComponentsInChildren<Transform>())if(!t.GetComponent<Renderer>()&&(t.name.EndsWith("Foot")||t.name.EndsWith("ToeBase")||t.name.EndsWith("Toe_End")||t.name.EndsWith(":Hips")||t.name.EndsWith(":Head")||t.name.EndsWith(":HeadTop_End")||t.name.EndsWith("Hand")))pins.Add(t);a.pins=pins.ToArray();
+    float sole=float.PositiveInfinity;foreach(var t in a.pins)sole=Mathf.Min(sole,model.transform.InverseTransformPoint(t.position).y);a.soleOffset=float.IsInfinity(sole)?0:sole;
+    var blade=string.IsNullOrEmpty(set.bladeBone)?null:set.bladeBone.Contains("/")?model.transform.Find(set.bladeBone):Find(model.transform,set.bladeBone);if(blade){a.weapon=blade;a.weaponBaseLocal=set.bladeGuardLocal;a.weaponTipLocal=set.bladeTipLocal;}
+   }
+   if(hero&&!kit){
     Transform hand=null;foreach(var t in model.GetComponentsInChildren<Transform>())if(t.name.EndsWith(":RightHand")){hand=t;break;}
     if(hand){var sword=new GameObject("Presentation sword");a.weapon=sword.transform;sword.transform.SetParent(hand,false);sword.transform.localRotation=Quaternion.Euler(0,0,90);
      Shape("Leather grip",PrimitiveType.Cube,sword.transform,new Vector3(0,.02f,0),new Vector3(.055f,.18f,.055f),grip);
@@ -156,7 +186,7 @@ namespace IslandGame {
    }
    Shape("Contact shadow",PrimitiveType.Cylinder,root.transform,new Vector3(0,.005f,0),new Vector3(hero?.48f:.6f,.004f,hero?.20f:.4f),shadow);
    if(diorama)diorama.ApplyBranch(root.transform);
-   if(hero){var mat=Resources.Load<Material>("CombatPresentation/HeroOccluded");if(mat){
+   if(hero&&!kit){var mat=Resources.Load<Material>("CombatPresentation/HeroOccluded");if(mat){
     // Reuse the original skin/bones. Depth-only visibility keeps the hero readable behind the boss.
     // Created once per actor; never BakeMesh, no extra animation graph or gameplay transform.
     var overlay=new GameObject("Occluded hero silhouette");overlay.layer=30;overlay.transform.SetParent(skin.transform,false);
@@ -170,20 +200,52 @@ namespace IslandGame {
   public void BeginFrame(float heroX){if(authored)authored.Tick(new Vector3(heroX/100,0,HeroDepth),battleCamera);if(Stream!=null){var rig=battleCamera.GetComponentInParent<BattleCameraController>();Stream.ConfigureGround(rig&&rig.Mode!=ViewMode.Side25D?32:4,24,12);Stream.Tick(rig?rig.FocusWorldX:heroX/100,IslandFrameBudget.Current,rig?rig.VisibleGroundHalfWidth:6);}if(!battleCamera)return;GeometryUtility.CalculateFrustumPlanes(battleCamera,frustum);hasFrustum=true;}
   public float HeroRequestedSpeed;
   public float Draw(string id,string action,float x,float elevation,float facing,string serial,float age,float duration,float hitAt,string kind,float advance,float visualTime){
-   bool hero=id=="hero";Actor a;if(!actors.TryGetValue(id,out a))a=Create(id,hero);if(a==null)return 0;
-   var clip=hero&&bossAssets&&bossAssets.knockback&&(action=="knockback"||action=="knockdown"||action=="getup")?bossAssets.knockback:hero?assets.HeroClip(action):assets.slimeIdle;if(!clip)return 0;
-   bool loop=!hero||clip==assets.idle||clip==assets.run||clip==assets.walk||clip==assets.jumpLoop||clip==assets.slide;
+   bool hero=id=="hero";Actor a;
+   // Zone 10 (boss engine) drops heroKit from the snapshot: swap the kit model for the original hero, and back.
+   if(hero&&actors.TryGetValue(id,out a)&&a.set!=HeroSet){actors.Remove(id);if(diorama)diorama.ForgetBranch(a.root.transform);a.animation?.Dispose();Destroy(a.root);}
+   if(!actors.TryGetValue(id,out a))a=Create(id,hero);if(a==null)return 0;
+   var set=hero?a.set:assets;bool kit=hero&&a.kit;
+   var clip=hero&&!kit&&bossAssets&&bossAssets.knockback&&(action=="knockback"||action=="knockdown"||action=="getup")?bossAssets.knockback:hero?set.HeroClip(action,kit?(string)HeroMotion?["after"]:null):assets.slimeIdle;if(!clip)return 0;
+   bool loop=!hero||set.Loops(clip);
    bool changed=a.clip!=clip||a.serial!=serial;
    if(a.clip!=clip||(!loop&&a.serial!=serial))a.time=0;
    a.clip=clip;a.serial=serial;
    // Use intended stride as a floor: collision stops translation, not a held run cycle.
    // Partial stick input scales cadence; idle/action clips and pause keep their own clocks.
    float gaitAdvance=advance;
-   if(hero&&clip==assets.run&&a.placed){float dt=Mathf.Max(0,advance);float distance=Vector2.Distance(new Vector2(x/100,HeroDepth),new Vector2(a.root.transform.position.x,a.root.transform.position.z));gaitAdvance=Mathf.Min(Mathf.Max(distance,HeroRequestedSpeed*dt)/3.8f,dt*2);}
+   // Stride: metres per run-clip second (kit: one baked cycle = runStrideMeters, port_manifest; original: 3.8).
+   float stride=set.runStrideMeters>0?set.runStrideMeters/Mathf.Max(.01f,clip.length):3.8f;
+   if(hero&&clip==set.run&&a.placed){float dt=Mathf.Max(0,advance);float distance=Vector2.Distance(new Vector2(x/100,HeroDepth),new Vector2(a.root.transform.position.x,a.root.transform.position.z));gaitAdvance=Mathf.Min(Mathf.Max(distance,HeroRequestedSpeed*dt)/stride,dt*2);}
    a.time+=Mathf.Max(0,gaitAdvance);
    float sample=loop?Mathf.Repeat(hero?a.time:visualTime,clip.length):Mathf.Min(a.time,clip.length);
-   if(hero&&kind=="knockback"&&bossAssets&&clip==bossAssets.knockback)sample=Mathf.Clamp(age,0,clip.length);
-   if(hero&&age>=0&&duration>0){
+   if(hero&&kind=="knockback"&&(kit?clip==set.knockback:bossAssets&&clip==bossAssets.knockback))sample=Mathf.Clamp(age,0,clip.length);
+   if(kit&&age>=0&&duration>0){
+    if(kind=="attack"||kind=="recover"||kind=="skill"){
+     // REV2-PORT-HOOK(READY-HOLD): kit clips are baked 1:1 with kernel time at tempo stage 0 (iai1 holds the ready entry, recover the hold/release). elapsed - start is the kernel age;
+     // clipFrom 0.12 arrives as a start already moved back, so the sample begins at 0.12 and blends from the previous pose. No MotionTime remap.
+     float clipAge=age;
+     // REV2-PORT-HOOK(HITSTOP): during the kernel hitstop the motion start moves 0.02 s per tick; hold the snapshot clock so the pose does not shake.
+     bool held=NativeCombatPresentation.N(HeroMotion?["hitstopUntil"],-1)>visualTime;
+     if(held)clipAge=SnapshotElapsed-(visualTime-age);
+     // K6 tempo: kernel age -> clip time by the motion's clipMap (stage 1/2 rows and recover). Read once per motion; no map = 1:1.
+     if(a.mapSerial!=serial){a.mapSerial=serial;a.mapCount=NativeCombatPresentation.ReadClipMap(HeroMotion?["clipMap"] as JArray,ref a.mapAge,ref a.mapClip);}
+     clipAge=NativeCombatPresentation.ClipAt(a.mapAge,a.mapClip,a.mapCount,clipAge);
+     // Kernel and clip lengths differ by one frame: the clip stops on its last key.
+     sample=Mathf.Clamp(clipAge,0,clip.length);
+     // One motion never plays backwards. The snapshot clock lags VisualTime, so the held time is behind the pose already shown
+     // (Editor: 0.28 -> 0.24 s at the iai1 contact); hold the shown pose during the stop, and do not step back after it.
+     // With a tempo map the windup covers more clip per frame, so the shown pose can be well before the cut (Editor stage 1: iai1 0.240, iai2 0.150 vs activeFrom 0.287 / 0.183).
+     // A hitstop only follows a contact, and contact is at or after hitAt: there the held pose is never before ClipAt(hitAt) = activeFrom. Constant during the stop.
+     // T1: the floor holds at every stage (stage 0: no map, ClipAt = 1:1 = activeFrom) and on the first frame of a new serial too (the row can already be
+     // in its hitstop when the display first draws it). Attack rows only; the skill and the recover keep their hold.
+     float hitFloor=held&&kind=="attack"?Mathf.Min(clip.length,NativeCombatPresentation.ClipAt(a.mapAge,a.mapClip,a.mapCount,hitAt)):0;
+     if(a.kitClip==clip&&a.kitSerial==serial)sample=held?(kind=="attack"||a.mapCount>0?Mathf.Max(Mathf.Max(sample,a.kitSample),hitFloor):a.kitSample):Mathf.Max(sample,a.kitSample);
+     else if(held)sample=Mathf.Max(sample,hitFloor);
+     a.kitClip=clip;a.kitSerial=serial;a.kitSample=sample;
+    }
+    else if(kind=="rush"||kind=="dodge"||kind=="slide")sample=Mathf.Clamp01(age/duration)*clip.length;
+   }
+   else if(hero&&age>=0&&duration>0){
     if(kind=="attack"||kind=="skill"){
      float displayAge=age;
      if(kind=="attack"&&action=="attack1"&&Presentation!=null)displayAge=CombatPoseTiming.Limited(Mathf.Clamp01(age/duration),.32f,.58f,Presentation.SidePoseWeight)*duration;
@@ -208,31 +270,35 @@ namespace IslandGame {
     if(budget&&!budget.AllowOptionalPose()){ThrottledSamples++;return sample;}a.lastSampleSlot=slot;
    }
    long poseStart=System.Diagnostics.Stopwatch.GetTimestamp();
-   CombatPoseBlend policy=!hero?CombatPoseBlend.Locomotion:(kind=="dodge"||kind=="cancel"||kind=="jump"||kind=="slide")?CombatPoseBlend.DodgeCancel:kind=="knockback"?CombatPoseBlend.HitReaction:kind=="rush"?CombatPoseBlend.DodgeCancel:kind=="skill"?CombatPoseBlend.AttackEntry:kind=="attack"?HeroAttackActive?CombatPoseBlend.AttackContact:HeroAttackProgress<.32f?CombatPoseBlend.AttackEntry:CombatPoseBlend.AttackRecovery:CombatPoseBlend.Locomotion;
+   // K5 (U0): cut -> 0.04 s cancel (idle) -> skill snapped in 0.03 + 0.045 s in the Editor; after a cancel the kit skill blends over the default 0.12 s instead.
+   if(hero&&kind!=a.lastKind){a.afterCancel=kit&&kind=="skill"&&a.lastKind=="cancel";a.lastKind=kind;}
+   CombatPoseBlend policy=!hero?CombatPoseBlend.Locomotion:(kind=="dodge"||kind=="cancel"||kind=="jump"||kind=="slide")?CombatPoseBlend.DodgeCancel:kind=="knockback"?CombatPoseBlend.HitReaction:kind=="rush"?CombatPoseBlend.DodgeCancel:kind=="skill"?(a.afterCancel?CombatPoseBlend.Locomotion:CombatPoseBlend.AttackEntry):kind=="attack"?HeroAttackActive?CombatPoseBlend.AttackContact:HeroAttackProgress<.32f?CombatPoseBlend.AttackEntry:CombatPoseBlend.AttackRecovery:CombatPoseBlend.Locomotion;
    if(!a.animation.Sample(clip,sample,advance,policy))return sample;
    a.presentationRoot.localScale=Vector3.one;SampleCalls++;if(!hero&&budget)budget.RecordPose(poseStart);
    // Mirror the side-on presentation without rotating the asymmetric rig through its back view.
    a.model.transform.localScale=new Vector3(a.scale,a.scale,a.scale*(hero&&!Planar&&facing<0?-1:1));
    a.model.transform.localRotation=Quaternion.Euler(0,hero?(Planar?HeroHeading:assets.heroYaw):0,0);
    a.model.transform.localPosition=Vector3.zero;
-   float feet=a.baseFoot*a.scale,sourceHeight=0;
+   float feet=a.baseFoot*a.scale,sourceHeight=0;bool grounded=kit&&set.Grounded(clip);
    bool cached=a.grounding!=null&&a.grounding.TryHeight(clip,sample,out sourceHeight);
-   if(hero&&bossAssets&&clip==bossAssets.knockback&&bossAssets.knockbackGround.length>0){sourceHeight=bossAssets.knockbackGround.Evaluate(sample);cached=true;}
-   if(cached)feet=sourceHeight*a.scale;
+   if(hero&&!kit&&bossAssets&&clip==bossAssets.knockback&&bossAssets.knockbackGround.length>0){sourceHeight=bossAssets.knockbackGround.Evaluate(sample);cached=true;}
+   if(kit){if(grounded){float low=float.PositiveInfinity;foreach(var t in a.pins)low=Mathf.Min(low,a.root.transform.InverseTransformPoint(t.position).y);if(!float.IsInfinity(low))feet=low-a.soleOffset*a.scale;}}
+   else if(cached)feet=sourceHeight*a.scale;
    else if(hero&&a.leftFoot&&a.rightFoot){
     var lp=a.root.transform.InverseTransformPoint(a.leftFoot.position);var rp=a.root.transform.InverseTransformPoint(a.rightFoot.position);
     feet=Mathf.Min(lp.y,rp.y)-a.soleOffset*a.scale;
    }
-   if(hero&&a.pelvis){var p=a.root.transform.InverseTransformPoint(a.pelvis.position);a.model.transform.localPosition=new Vector3(-p.x,0,-p.z);}
+   // Kit core clips keep their baked hip offsets (travel was removed at bake time); body clips are centred like the original hero.
+   if(hero&&a.pelvis&&(!kit||grounded)){var p=a.root.transform.InverseTransformPoint(a.pelvis.position);a.model.transform.localPosition=new Vector3(-p.x,0,-p.z);}
    a.model.transform.localPosition+=Vector3.down*feet;
-   if(hero&&kind=="skill")ReferenceSkillPose.Apply(action,duration>0?age/duration:0,a.pelvis,a.shoulder);
-   if(hero&&mountMode&&kind=="attack")HeroMeleePose.Apply(action,duration>0?age/duration:0,a.shoulder,a.weapon,elevation/100);
+   if(hero&&!kit&&kind=="skill")ReferenceSkillPose.Apply(action,duration>0?age/duration:0,a.pelvis,a.shoulder);
+   if(hero&&!kit&&mountMode&&kind=="attack")HeroMeleePose.Apply(action,duration>0?age/duration:0,a.shoulder,a.weapon,elevation/100);
 
    if(!hero){
     float bounce=action.Contains("attack")?.06f:0;a.model.transform.localPosition+=Vector3.up*(Mathf.Abs(Mathf.Sin(visualTime*5))*bounce);
     if(action.Contains("death")||action.Contains("die"))a.model.transform.localScale=new Vector3(a.scale*1.25f,a.scale*.3f,a.scale*1.25f);
    }
-   if(hero){if(kind=="attack"&&action=="attack1"&&Presentation!=null)a.presentationRoot.localScale=Presentation.Scale(HeroAttackProgress,.32f,.58f);HeroClipName=clip.name;HeroSampleTime=sample;HeroGroundError=a.model.transform.localPosition.y+feet;}
+   if(hero){if(!kit&&kind=="attack"&&action=="attack1"&&Presentation!=null)a.presentationRoot.localScale=Presentation.Scale(HeroAttackProgress,.32f,.58f);HeroClipName=clip.name;HeroSampleTime=sample;HeroGroundError=a.model.transform.localPosition.y+feet;}
    return sample;
   }
   static Transform Find(Transform root,string name){foreach(var t in root.GetComponentsInChildren<Transform>())if(t.name==name)return t;return null;}
