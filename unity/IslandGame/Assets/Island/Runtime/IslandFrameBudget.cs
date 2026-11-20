@@ -3,19 +3,44 @@ using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.Rendering;
 namespace IslandGame {
+ // A = the default rule (Q1, user's choice 2026-11-19). Old = the pre-Q1 rule kept for comparison. Pin = level held at 0
+ // (counted with A). Old and Pin are picked only by the development button (IslandBattleHud); nothing is saved, a new app runs A.
+ public enum IslandBudgetRule{A,Old,Pin}
  // Cooperative presentation budget. Never changes simulation time or input frequency.
  public sealed class IslandBudgetPolicy {
   public const double TargetMilliseconds=1000.0/60*.65;
+  // Rule A. Counted in frame-timing samples (one per rendered frame; 60 = 1 s at 60 fps).
+  //  up   : unchanged, 8 samples in a row over the target -> +1.
+  //  down : the last WindowSamples (2 s) hold at most WindowOverAllowed (6 = 5 %) samples over the target, and at least
+  //         `hold` samples have passed since the last level change -> -1. No 78 % band and no "in a row": a lone hitch or a
+  //         load between 78 % and 100 % of the target no longer blocks the way down.
+  //  flap : a step down that is followed by a step up within FailSamples (10 s) failed; the next try waits twice as long
+  //         (2 -> 4 -> 8 -> 16 -> 30 s). A step down that holds FailSamples puts the wait back to 2 s.
+  public const int WindowSamples=120,WindowOverAllowed=6,HoldMinSamples=120,HoldMaxSamples=1800,FailSamples=600,UpRun=8;
   public int Level{get;private set;} int over,under;
-  // T1b development pin (Editor / Development builds, IslandBattleHud): holds Level at 0 while the counters keep running for the
-  // perf line. Never saved. Unpinning starts the rule again from 0 with fresh counters. The rule below is unchanged.
-  public bool Pinned{get;private set;} public int Over=>over; public int Under=>under;
-  public void Pin(bool on){Pinned=on;Level=0;over=under=0;}
+  readonly bool[] window=new bool[WindowSamples];int windowAt,windowFilled,windowOvers,sinceChange,sinceDescent=-1,hold=HoldMinSamples;
+  public IslandBudgetRule Rule{get;private set;}
+  public bool Pinned=>Rule==IslandBudgetRule.Pin;
+  // Over = the current run over the target (both rules). Under = Old: its run below 78 %; A / Pin: samples since the last level change.
+  public int Over=>over; public int Under=>Rule==IslandBudgetRule.Old?under:sinceChange;
+  public int WindowOvers=>windowOvers; public int HoldSamples=>hold;
+  // Switching the rule starts again from level 0 with fresh counters.
+  public void SetRule(IslandBudgetRule rule){Rule=rule;Level=0;over=under=0;Array.Clear(window,0,WindowSamples);windowAt=windowFilled=windowOvers=sinceChange=0;sinceDescent=-1;hold=HoldMinSamples;}
+  public void Pin(bool on){SetRule(on?IslandBudgetRule.Pin:IslandBudgetRule.A);}
   public void Observe(double cpu,double gpu){
    double load=Math.Max(cpu,gpu);if(double.IsNaN(load)||double.IsInfinity(load)||load<=0)return;
-   if(load>TargetMilliseconds){under=0;if(++over>=8){Level=Math.Min(3,Level+1);over=0;}}
-   else if(load<TargetMilliseconds*.78){over=0;if(++under>=120){Level=Math.Max(0,Level-1);under=0;}}
-   else {over=under=0;}
+   if(Rule==IslandBudgetRule.Old){
+    if(load>TargetMilliseconds){under=0;if(++over>=8){Level=Math.Min(3,Level+1);over=0;}}
+    else if(load<TargetMilliseconds*.78){over=0;if(++under>=120){Level=Math.Max(0,Level-1);under=0;}}
+    else {over=under=0;}
+    return;
+   }
+   bool hot=load>TargetMilliseconds;
+   if(window[windowAt])windowOvers--;window[windowAt]=hot;if(hot)windowOvers++;windowAt=(windowAt+1)%WindowSamples;if(windowFilled<WindowSamples)windowFilled++;
+   if(sinceChange<int.MaxValue)sinceChange++;
+   if(sinceDescent>=0&&++sinceDescent>=FailSamples){sinceDescent=-1;hold=HoldMinSamples;}
+   if(hot){if(++over>=UpRun){over=0;if(Level<3){Level++;sinceChange=0;if(sinceDescent>=0){sinceDescent=-1;hold=Math.Min(HoldMaxSamples,hold*2);}}}}
+   else{over=0;if(Level>0&&sinceChange>=hold&&windowFilled>=WindowSamples&&windowOvers<=WindowOverAllowed){Level--;sinceChange=0;sinceDescent=0;}}
    if(Pinned)Level=0;
   }
   public int HudHz=>Level==0?20:Level==1?15:Level==2?10:8;
@@ -45,6 +70,9 @@ namespace IslandGame {
   // T1b perf line (IslandPerfLog, once per second): mean FrameTiming parts since the last call, and load = max(cpu, gpu) as Observe gets it.
   double winMain,winWait,winRender,winGpu,winLoad;int winCount;
   public bool Pinned{get=>Policy.Pinned;set{if(value!=Policy.Pinned)Policy.Pin(value);}}
+  // Q1 development button: A -> Old -> Pin -> A. Each switch starts again from level 0 (ApplyScenery follows next Update).
+  public IslandBudgetRule Rule{get=>Policy.Rule;set{if(value!=Policy.Rule)Policy.SetRule(value);}}
+  public IslandBudgetRule CycleRule(){Rule=Rule==IslandBudgetRule.A?IslandBudgetRule.Old:Rule==IslandBudgetRule.Old?IslandBudgetRule.Pin:IslandBudgetRule.A;return Rule;}
   public bool TakeWindow(out double main,out double wait,out double render,out double gpu,out double load){
    int n=winCount;main=n>0?winMain/n:0;wait=n>0?winWait/n:0;render=n>0?winRender/n:0;gpu=n>0?winGpu/n:0;load=n>0?winLoad/n:0;
    winMain=winWait=winRender=winGpu=winLoad=0;winCount=0;return n>0;

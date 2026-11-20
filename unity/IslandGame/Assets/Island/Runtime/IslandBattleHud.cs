@@ -37,10 +37,10 @@ namespace IslandGame {
   // U0-4 development kit tempo buttons (K6 stage 0/1/2). The chosen stage is remembered for the next boot (Battle3DAssets.WithRunOptions).
   readonly UnityEngine.UI.Button[] tempoButtons=new UnityEngine.UI.Button[3];TextMeshProUGUI tempoLabel;int tempoChosen=-1,tempoShown=-2;bool tempoVisible=true;
   public int DevKitTempoChosen=>tempoChosen;
-  // T1b development quality readout (IslandFrameBudget level 0-3) and the auto / 0-pin switch. Shown whenever DevControls is on
+  // T1b development quality readout (IslandFrameBudget level 0-3) and (Q1) the rule switch A -> old -> 0-pin. Shown whenever DevControls is on
   // (any hero), under the tempo row. The pin is not saved: a new app starts on auto. Text changes only when the level or pin changes.
-  TextMeshProUGUI qualityLabel,qualityPinText;UnityEngine.UI.Button qualityPin;int qualityShown=-2;bool qualityPinShown;
-  static readonly string[] QualityText={"품질 0","품질 1","품질 2","품질 3"};
+  TextMeshProUGUI qualityLabel,qualityPinText;UnityEngine.UI.Button qualityPin;int qualityShown=-2;int qualityRuleShown=-1;
+  static readonly string[] QualityText={"품질 0","품질 1","품질 2","품질 3"},QualityRuleText={"자동 A","옛 규칙","0고정"};
   public void Initialize(IslandApp owner){
    app=owner;font=IslandFonts.CreateSdfFont();
    root=new GameObject("RpgBattleCanvas",typeof(RectTransform),typeof(Canvas),typeof(UnityEngine.UI.CanvasScaler),typeof(UnityEngine.UI.GraphicRaycaster));
@@ -78,7 +78,7 @@ namespace IslandGame {
    if(Battle3DAssets.DevControls){tempoChosen=Battle3DAssets.DevKitTempo;tempoLabel=Label(stage,"DevTempoLabel","템포",11,TextAlignmentOptions.MidlineRight);tempoLabel.color=Color.white;tempoLabel.fontStyle=FontStyles.Bold;
     for(int i=0;i<3;i++){int n=i;tempoButtons[i]=Button(stage,"DevTempo"+i,i.ToString(),()=>Dispatch("tempo:"+n,()=>ChooseKitTempo(n)),new Color(.09f,.18f,.21f));}
     qualityLabel=Label(stage,"DevQualityLabel","품질",11,TextAlignmentOptions.MidlineRight);qualityLabel.color=Color.white;qualityLabel.fontStyle=FontStyles.Bold;
-    qualityPin=Button(stage,"DevQualityPin","자동",()=>Dispatch("quality-pin",ToggleQualityPin),new Color(.09f,.18f,.21f));qualityPinText=qualityPin.GetComponentInChildren<TextMeshProUGUI>();}
+    qualityPin=Button(stage,"DevQualityPin","자동 A",()=>Dispatch("quality-rule",CycleQualityRule),new Color(.09f,.18f,.21f));qualityPinText=qualityPin.GetComponentInChildren<TextMeshProUGUI>();}
    controls=Rect("ThumbControls",lower);
    jump=RoundButton("Jump","↑",()=>app.HudJump());slide=RoundButton("Slide","→",()=>app.HudSlide());
    evadeLeft=RoundButton("EvadeLeft","‹",()=>app.HudEvade(-1));evadeRight=RoundButton("EvadeRight","›",()=>app.HudEvade(1));
@@ -109,7 +109,7 @@ namespace IslandGame {
   void Dispatch(string id,Action action){if(!app.HudCanInput)return;app.GetComponent<RpgAudio>()?.Click();UiDispatches++;LastInput=id;action();}
   // The kernel applies the stage from the next row (the running row keeps its map). Kept for "다시 도전" and the next practice.
   void ChooseKitTempo(int n){Battle3DAssets.DevKitTempo=n;tempoChosen=n;app.HudSession.Command("tick",new JObject{{"kitTempo",n}});}
-  void ToggleQualityPin(){var b=IslandFrameBudget.Current;if(b)b.Pinned=!b.Pinned;nextRefresh=0;}
+  void CycleQualityRule(){var b=IslandFrameBudget.Current;if(b)b.CycleRule();nextRefresh=0;}
   UnityEngine.UI.Button RoundButton(string id,string text,Action action){var r=Rect(id,controls);var art=Art(r,IslandHudArt.Kind.Circle,Color.white);art.raycastTarget=true;var b=r.gameObject.AddComponent<UnityEngine.UI.Button>();b.targetGraphic=art;b.navigation=new UnityEngine.UI.Navigation{mode=UnityEngine.UI.Navigation.Mode.None};b.onClick.AddListener(()=>Dispatch(id,action));var t=Label(r,id+"Label",text,25,TextAlignmentOptions.Center);Stretch((RectTransform)t.transform);var caption=Label(r,id+"Caption",id=="Jump"?"점프":id=="Slide"?"슬라이드":"구르기",9,TextAlignmentOptions.Center);Box((RectTransform)caption.transform,-5,43,50,16);return b;}
   UnityEngine.UI.Button Potion(string id,Transform parent,string kind,Color color,out TextMeshProUGUI text){var b=Button(parent,id,"",()=>Dispatch("potion:"+kind,()=>app.HudDrink(kind)),new Color(.07f,.14f,.19f));var art=Art(Rect("Flask",b.transform),IslandHudArt.Kind.Flask,color);Box((RectTransform)art.transform,2,3,26,36);text=Label(b.transform,"Charges","3",11,TextAlignmentOptions.BottomRight);Box((RectTransform)text.transform,26,3,17,36);return b;}
   void Update(){
@@ -178,9 +178,9 @@ namespace IslandGame {
    if(tempoLabel){bool kitHero=state?["heroKit"]!=null;if(kitHero!=tempoVisible){tempoVisible=kitHero;tempoLabel.gameObject.SetActive(kitHero);foreach(var b in tempoButtons)b.gameObject.SetActive(kitHero);}
     foreach(var b in tempoButtons)b.interactable=active;
     if(tempoShown!=tempoChosen){tempoShown=tempoChosen;tempoLabel.text=tempoChosen<0?"템포 기본":"템포";for(int i=0;i<3;i++){var img=(UnityEngine.UI.Image)tempoButtons[i].targetGraphic;Skin(img,i==tempoChosen?"ui-buttons/btn-purple":"ui-buttons/btn-blue",32,4);if(i==tempoChosen)img.color=new Color(1,.78f,.3f);}}}
-   if(qualityLabel){var fb=IslandFrameBudget.Current;int level=fb?fb.Policy.Level:-1;bool pinned=fb&&fb.Pinned;
-    if(level!=qualityShown||pinned!=qualityPinShown){qualityShown=level;qualityPinShown=pinned;qualityLabel.text=level<0?"품질 -":QualityText[level];qualityPinText.text=pinned?"0고정":"자동";
-     var img=(UnityEngine.UI.Image)qualityPin.targetGraphic;Skin(img,pinned?"ui-buttons/btn-purple":"ui-buttons/btn-blue",32,4);if(pinned)img.color=new Color(1,.78f,.3f);}}
+   if(qualityLabel){var fb=IslandFrameBudget.Current;int level=fb?fb.Policy.Level:-1,rule=fb?(int)fb.Rule:0;
+    if(level!=qualityShown||rule!=qualityRuleShown){qualityShown=level;qualityRuleShown=rule;qualityLabel.text=level<0?"품질 -":QualityText[level];qualityPinText.text=QualityRuleText[rule];
+     var img=(UnityEngine.UI.Image)qualityPin.targetGraphic;Skin(img,rule==0?"ui-buttons/btn-blue":"ui-buttons/btn-purple",32,4);if(rule==2)img.color=new Color(1,.78f,.3f);}}
    jump.interactable=active&&(app.HudCampaign||(bool?)state?["jumpReady"]==true);slide.interactable=active&&(app.HudCampaign||(bool?)state?["slideReady"]==true);evadeLeft.interactable=evadeRight.interactable=active&&(app.HudCampaign||(bool?)state?["dodgeReady"]==true);
    PotionState(hpPotion,hpPotionText,"health",hero?["hp"],hero?["maxHP"]);PotionState(manaPotion,manaPotionText,"mana",resources?["mana"],resources?["maxMana"]);
    notice.text=app.HudNotice;

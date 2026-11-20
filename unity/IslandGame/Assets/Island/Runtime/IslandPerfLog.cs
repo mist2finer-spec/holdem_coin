@@ -52,8 +52,11 @@ namespace IslandGame {
    if(budget){line.Append(" pin=").Append(budget.Pinned?1:0).Append(" over=").Append(budget.Policy.Over).Append(" under=").Append(budget.Policy.Under);
     if(budget.TakeWindow(out double main,out double wait,out double render,out double gpu,out double load))
      line.Append(" main=").Append(main.ToString("F2")).Append(" wait=").Append(wait.ToString("F2")).Append(" render=").Append(render.ToString("F2")).Append(" gpu=").Append(gpu.ToString("F2")).Append(" load=").Append(load.ToString("F2"));
-    else line.Append(" main=- wait=- render=- gpu=- load=-");}
-   else line.Append(" pin=- over=- under=- main=- wait=- render=- gpu=- load=-");
+    else line.Append(" main=- wait=- render=- gpu=- load=-");
+    // Q1 (appended at the end): rule = A | old (a pin counts with A: rule=A pin=1), win = samples over the target in A's last
+    // 2 s window, hold = samples A waits after a level change before its next step down (120 = 2 s .. 1800 = 30 s).
+    line.Append(" rule=").Append(budget.Rule==IslandBudgetRule.Old?"old":"A").Append(" win=").Append(budget.Policy.WindowOvers).Append(" hold=").Append(budget.Policy.HoldSamples);}
+   else line.Append(" pin=- over=- under=- main=- wait=- render=- gpu=- load=- rule=- win=- hold=-");
    Debug.LogFormat(LogType.Log,LogOption.NoStacktrace,null,"{0}",line.ToString());
    lastGc=gc;windowStart=now;frames=0;maxFrame=0;arrivals=0;maxGap=0;maxAge=0;capFrames=0;
   }

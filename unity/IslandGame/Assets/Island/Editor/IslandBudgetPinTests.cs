@@ -1,14 +1,15 @@
 using NUnit.Framework;
 
 namespace IslandGame.Tests {
- // T1b development 0-pin of the presentation budget: the level rule itself is unchanged; the pin only holds Level at 0
- // while the run counters keep counting, and unpinning starts the rule again from 0 with fresh counters.
+ // T1b development 0-pin of the presentation budget: the pin only holds Level at 0 while the run counters keep counting,
+ // and unpinning starts the rule again from 0 with fresh counters. Q1: the old rule is kept as IslandBudgetRule.Old (checked
+ // here unchanged); the default rule is A (IslandBudgetRuleATests).
  public sealed class IslandBudgetPinTests {
   const double Heavy=IslandBudgetPolicy.TargetMilliseconds+1,Light=IslandBudgetPolicy.TargetMilliseconds*.5,Middle=IslandBudgetPolicy.TargetMilliseconds*.9;
   static void Feed(IslandBudgetPolicy p,double load,int n){for(int i=0;i<n;i++)p.Observe(load,0);}
 
-  [Test] public void Rule_is_unchanged_without_the_pin(){
-   var p=new IslandBudgetPolicy();Feed(p,Heavy,7);Assert.AreEqual(0,p.Level);Assert.AreEqual(7,p.Over);
+  [Test] public void Old_rule_is_unchanged(){
+   var p=new IslandBudgetPolicy();Assert.AreEqual(IslandBudgetRule.A,p.Rule,"default rule");p.SetRule(IslandBudgetRule.Old);Feed(p,Heavy,7);Assert.AreEqual(0,p.Level);Assert.AreEqual(7,p.Over);
    Feed(p,Heavy,1);Assert.AreEqual(1,p.Level);Assert.AreEqual(0,p.Over);Feed(p,Heavy,16);Assert.AreEqual(3,p.Level);Feed(p,Heavy,8);Assert.AreEqual(3,p.Level);
    Feed(p,Light,119);Assert.AreEqual(3,p.Level);Assert.AreEqual(119,p.Under);Feed(p,Light,1);Assert.AreEqual(2,p.Level);
    Feed(p,Light,60);Feed(p,Middle,1);Assert.AreEqual(0,p.Under);Assert.AreEqual(0,p.Over);Assert.AreEqual(2,p.Level);
