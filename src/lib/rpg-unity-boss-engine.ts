@@ -1,6 +1,6 @@
 // Unity-only training encounter. The web RogueEngine, economy and its stage kernel stay unchanged.
 import {ElementalCombat,elementalVariant,swordAction,elementLineClear} from './rpg-elemental-combat';
-import {referenceSkill,skillAim,skillContains} from './rpg-reference-skills';
+import {referenceSkill,skillAim,skillTarget,skillContains} from './rpg-reference-skills';
 import {BOSS_CONTACT,hookContact} from './rpg-boss-contact';
 import {HERO_CONTACT,heroAttackDefinition,weaponContact} from './rpg-hero-contact';
 import {blocksAt,clearLanding,settleLanding} from './rpg-traversal';
@@ -23,6 +23,8 @@ export class UnityBossEngine {
  public bossDefeated=false;private defeatedAt=-1;private exitWaypoint=0;
  public introStage:'none'|'approach'|'reveal'='none';private introAt=0;private introStartX=0;
  public traversal?:TraversalProfile;
+ // Opt-in AUTO skills (boot `autoSkills:true`, or handed over by MountSundayEngine at zone 10). Off = unchanged.
+ public autoSkills=false;
  readonly rules:UnityRules;readonly map:any;elapsed=0;room=0;kills=0;status='playing';phase='combat';paused=false;auto=true;
  hero={x:1200,y:LANE_Y,elevation:0,airHeight:0,facing:1,direction:{x:1,y:0},hp:0,maxHP:0,action:'stay1',serial:0,motion:null as Motion|null};
  boss={id:9001,species:9001,unityBoss:true,room:1,x:3500,y:LANE_Y,elevation:0,hp:0,maxHP:0,radius:140,direction:{x:-1,y:0},state:'idle',action:'idle',facing:-1,motion:null as Motion|null};
@@ -82,10 +84,15 @@ export class UnityBossEngine {
    this.hero.motion={kind,attackId:++this.attackSerial,definitionId:'hero-'+kind,timeline:{active:[],cancelFrom:1},start:this.elapsed,duration,hitAt:0,from:point(this.hero.x,this.hero.y),to:point(clamp(this.hero.x+dir.x*distance,b.minX,b.maxX),clamp(this.hero.y+dir.y*distance,b.minY,b.maxY))};if(input.jump&&this.traversal){this.hero.motion.jump=beginJump(this.hero.elevation);this.hero.motion.flightDuration=duration;this.hero.motion.duration+=JUMP_LANDING_SECONDS;}this.faceHero(dir.x,dir.y);this.hero.action=input.jump?'jump1':input.slide?'sliding1':'avoid1';this.hero.serial++;
    if(input.jump)this.jumpAt=this.elapsed+1.05;else this.dodgeAt=this.elapsed+1.2;if(input.dodge)this.rollRecoveryUntil=this.elapsed+.72;return true;
   }
-  if(input.skill!==undefined){const slot=input.skill;if(!Number.isInteger(slot)||slot<0||slot>=6||!this.skillEnabled[slot]||this.cooldowns[slot]>0||this.resources.mana<50)return false;
-   const spec=referenceSkill(this.skillIds[slot]);if(this.resources.mana<spec.mana)return false;const targets=this.room===0?this.slimes:[this.boss];const center=skillAim(this.hero,targets,spec);this.faceHero(center.x-this.hero.x,this.room===1?center.y-this.hero.y:0);this.resources.mana-=spec.mana;this.cooldowns[slot]=this.cooldownTotals[slot]=spec.cooldown;this.hero.motion={kind:'skill',slot,skillId:spec.id,variant:elementalVariant(this.skillIds[slot]),linkedSupports:this.skillSupportCounts[slot],target:center,radius:spec.radius,damage:spec.damage,attackId:++this.attackSerial,definitionId:spec.id,start:this.elapsed,duration:spec.duration,hitAt:spec.hitAt,from:point(this.hero.x,this.hero.y),to:point(this.hero.x,this.hero.y),done:0};this.hero.action=spec.id==='sun-cleave'?'skill1':'skill2';this.hero.serial++;return true;}
+  if(input.skill!==undefined){const slot=input.skill,spec=this.castSpec(slot);if(!spec)return false;
+   const targets=this.skillTargets;const center=skillAim(this.hero,targets,spec);this.faceHero(center.x-this.hero.x,this.room===1?center.y-this.hero.y:0);this.resources.mana-=spec.mana;this.cooldowns[slot]=this.cooldownTotals[slot]=spec.cooldown;this.hero.motion={kind:'skill',slot,skillId:spec.id,variant:elementalVariant(this.skillIds[slot]),linkedSupports:this.skillSupportCounts[slot],target:center,radius:spec.radius,damage:spec.damage,attackId:++this.attackSerial,definitionId:spec.id,start:this.elapsed,duration:spec.duration,hitAt:spec.hitAt,from:point(this.hero.x,this.hero.y),to:point(this.hero.x,this.hero.y),done:0};this.hero.action=spec.id==='sun-cleave'?'skill1':'skill2';this.hero.serial++;return true;}
   if(input.attack&&this.elapsed>=this.attackAt){this.attackAt=this.elapsed+.55;this.hero.motion={kind:'attack',start:this.elapsed,duration:.55,hitAt:.22,from:point(this.hero.x,this.hero.y),to:point(this.hero.x,this.hero.y),done:0};this.hero.action=swordAction(++this.heroComboStep);this.hero.motion.comboStep=(this.heroComboStep-1)%5+1;this.hero.motion.hitIds=[];this.hero.motion.attackId=++this.attackSerial;this.hero.motion.definitionId='hero-'+this.hero.action;const d=heroAttackDefinition(this.hero.action);this.hero.motion.timeline={active:[{strike:0,from:d.activeFrom,to:d.activeTo}],cancelFrom:d.cancelFrom,contactRevision:HERO_CONTACT.revision};const dir=this.inputDirection(input);if(Math.hypot(dir.x,dir.y)>.1)this.faceHero(dir.x,dir.y);this.hero.serial++;return true;}return false;
  }
+ // The manual cast rule (slot 0-5, enabled, cooled down, mana >= 50 and >= the skill's); null = no. Targets as the manual aim.
+ private castSpec(slot:number){if(!Number.isInteger(slot)||slot<0||slot>=6||!this.skillEnabled[slot]||this.cooldowns[slot]>0||this.resources.mana<50)return null;const spec=referenceSkill(this.skillIds[slot]);return this.resources.mana>=spec.mana?spec:null;}
+ private get skillTargets():any[]{return this.room===0?this.slimes:[this.boss];}
+ // AUTO skill pick: the leftmost castable slot with a living target in its reach (skillTarget, the skillAim rule); -1 = none.
+ autoSkillSlot(){for(let s=0;s<6;s++){const spec=this.castSpec(s);if(spec&&skillTarget(this.hero,this.skillTargets,spec))return s;}return -1;}
  private damageHero(amount:number,kind:string,contact:any={}){if(this.hero.motion?.kind==='dodge'||this.hero.motion?.kind==='knockback')return false;this.hero.hp=Math.max(1,this.hero.hp-amount);this.effect('damage',this.hero.x,amount,{target:'hero',damageKind:kind,...contact});return true;}
  private heroHit(skill:boolean){
   const motion=this.hero.motion;if(!skill||!motion?.target)return;if(motion.skillId!=='sun-cleave'){this.elemental.cast(motion.skillId!,motion.variant??1,this.hero,{...motion.target,elevation:this.groundAt(motion.target.x,motion.target.y)},motion.start+motion.hitAt,motion.attackId!,motion.damage!,this.elementWorld(),motion.linkedSupports);return;}
@@ -117,6 +124,7 @@ export class UnityBossEngine {
   }
   let direction=this.inputDirection(input);
   if(this.auto&&Math.hypot(direction.x,direction.y)<.1&&this.elapsed<this.rollRecoveryUntil){this.hero.action='stay1';return;}
+  if(this.auto&&this.autoSkills&&Math.hypot(direction.x,direction.y)<.1){const s=this.autoSkillSlot();if(s>=0&&this.command({...input,skill:s}))return;}
   if(this.auto&&Math.hypot(direction.x,direction.y)<.1){const target=this.room===0?this.slimes.filter(m=>m.hp>0).sort((a,b)=>distance(a,this.hero)-distance(b,this.hero))[0]:this.boss.hp>0?this.boss:null;
    if(target){if(distance(target,this.hero)<(target.unityBoss?185:95)){this.command({...input,attack:true});return;}direction=normalized(target.x-this.hero.x,this.room===1?target.y-this.hero.y:0);}else if(this.room===0&&this.slimeCleared)direction={x:1,y:0};}
   if(Math.hypot(direction.x,direction.y)>.1){this.moveHero(this.hero.x+direction.x*(this.traversal?.run??210)*dt,this.hero.y+direction.y*(this.traversal?.run??210)*dt);this.faceHero(direction.x,direction.y);this.hero.action='run1';}else this.hero.action='stay1';

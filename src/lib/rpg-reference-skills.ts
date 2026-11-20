@@ -7,13 +7,19 @@ export const REFERENCE_SKILLS={
  water:{id:'water-ring',duration:1.05,hitAt:.48,cooldown:4.5,mana:50,radius:18,reach:600,damage:120},
 } as const;
 export function referenceSkill(activeId:string){return ['icespear','icenova','frostshot'].includes(activeId)?REFERENCE_SKILLS.water:['stormcall','arc','spark','lightningstrike'].includes(activeId)?REFERENCE_SKILLS.stormcall:REFERENCE_SKILLS.cleave;}
-export function skillAim(hero:SkillPoint&{direction:SkillPoint},targets:ReadonlyArray<SkillPoint&{hp:number}>,skill:ReturnType<typeof referenceSkill>){
- const target=targets.filter(t=>t.hp>0&&Math.hypot(t.x-hero.x,t.y-hero.y)<=skill.reach).sort((a,b)=>Math.hypot(a.x-hero.x,a.y-hero.y)-Math.hypot(b.x-hero.x,b.y-hero.y))[0];
+// REV2-PORT-HOOK(LIGHTNING-TARGET): the trial scene picks the lightning point at the slash contact; the kernel locks it at cast start.
+// `ahead` is the fallback distance in front of the hero (the pink-iai kit passes its body-scaled 88 for storm-call only).
+// The nearest living target inside the skill's reach (undefined = none). skillAim and the AUTO skill pick share it.
+export function skillTarget<T extends SkillPoint&{hp:number}>(hero:SkillPoint,targets:ReadonlyArray<T>,skill:{readonly reach:number}):T|undefined{
+ return targets.filter(t=>t.hp>0&&Math.hypot(t.x-hero.x,t.y-hero.y)<=skill.reach).sort((a,b)=>Math.hypot(a.x-hero.x,a.y-hero.y)-Math.hypot(b.x-hero.x,b.y-hero.y))[0];
+}
+export function skillAim(hero:SkillPoint&{direction:SkillPoint},targets:ReadonlyArray<SkillPoint&{hp:number}>,skill:{readonly id:string;readonly reach:number},ahead=130){
+ const target=skillTarget(hero,targets,skill);
  // Lock the ground target at cast start: movement during the wind-up can evade it.
  if(skill.id==='storm-call'&&target)return {x:target.x,y:target.y};
  const d=target?Math.hypot(target.x-hero.x,target.y-hero.y):0;
  const direction=target&&d>.001?{x:(target.x-hero.x)/d,y:(target.y-hero.y)/d}:hero.direction;
- return {x:hero.x+direction.x*130,y:hero.y+direction.y*130};
+ return {x:hero.x+direction.x*ahead,y:hero.y+direction.y*ahead};
 }
 export function skillContains(target:SkillPoint&{radius?:number;elevation?:number},center:SkillPoint,radius:number){return Math.hypot(target.x-center.x,target.y-center.y)<=radius+(target.radius??0);}
 // A visible, low horizontal sword crescent supplements the imported narrow blade
