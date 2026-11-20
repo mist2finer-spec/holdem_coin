@@ -21,6 +21,28 @@ TEXTURE2D(_Noisemap); SAMPLER(sampler_Noisemap);
 float4 _StudyWind; // direction xz, amplitude, explicitly provisional clock
 float4 _StudyInteractor[4]; // authored local-field producer; original native producer unknown
 float _StudyInteractionRadius;
+// Battle foreground clearing (same input as ZoneGround ClipForeground): hero centre (+.65 m), w=1 while side-view protection is on.
+float4 _MountOcclusionHero;
+float _SourceGrassForegroundOff; // debug global: 1 disables the clearing
+// Returns k (0 = untouched, 1 = collapsed) for one blade. Only blades close to the camera (full <6 m, none >8 m)
+// and at least 2 m in front of the hero are touched. Such a blade is shrunk about its root just enough that its tip,
+// seen from the camera, stays below the lane line (hero feet +.1 m on the hero plane), so it no longer covers
+// the hero/enemies; a blade whose root already sits above that line collapses. Vertex-only (no clip/discard),
+// so opaque early-Z stays intact on mobile GPUs.
+float ForegroundClear(float3 rootWS,float3 tipWS){
+ if(_MountOcclusionHero.w<.5||_SourceGrassForegroundOff>.5)return 0;
+ float3 heroVS=TransformWorldToView(_MountOcclusionHero.xyz);float heroDepth=-heroVS.z;if(heroDepth<=0)return 0;
+ float3 r=TransformWorldToView(rootWS);float depth=-r.z;
+ float gate=saturate((heroDepth-2-depth)/.5)*saturate((8-depth)/2);
+ if(gate<=0)return 0;
+ if(depth<=.05)return gate;
+ float3 d=TransformWorldToView(tipWS)-r;
+ // projected height on the hero plane: y(s)=(r.y+s*d.y)*heroDepth/(depth-s*d.z); keep y(s)<=lane
+ float lane=heroVS.y-.65+.10;
+ float num=lane*depth-r.y*heroDepth,den=d.y*heroDepth+lane*d.z;
+ float s=den>1e-4?num/den:(num>=0?1:0);
+ return gate*(1-saturate(s));
+}
 UNITY_INSTANCING_BUFFER_START(BladeProps)
 UNITY_DEFINE_INSTANCED_PROP(float4,_RootTint)
 UNITY_DEFINE_INSTANCED_PROP(float4,_TipTint)
@@ -55,6 +77,7 @@ V vert(A i){
  // Source GLSL: independent XZ shrink 1-(scale-1)^2 and Y scale.
  float shrink=min((scale-1)*(scale-1),1);
  float3 p=anchor+offset+bent-flat+offset*float3(-shrink,scale-1,-shrink);
+ p=lerp(p,anchor,ForegroundClear(root,TransformObjectToWorld(anchor+float3(0,scale,0))));
  o.world=TransformObjectToWorld(p);o.pos=TransformWorldToHClip(o.world);
  o.normal=TransformObjectToWorldNormal(normalize(i.normal+float3(-wind.x,0,-wind.y)));
  o.height=i.height.y;o.fog=ComputeFogFactor(o.pos.z);o.color=i.color;return o;
