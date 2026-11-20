@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "id": "dbfz-trunks-standing-k-20261120",
+  "version": "1",
+  "owner_role": "reverse_eng_designer",
+  "storage": "local-only",
+  "status": "verified",
+  "review_status": "user-review-pending",
+  "task": "https://github.com/mist2finer-spec/holdem_coin/issues/29",
+  "verified_at": "2026-11-20T23:42:24+00:00",
+  "local_root": "G:/holdem_coin-workspace/island/maintenance/ggxrd-followup-dbfz-view-20261120",
+  "entries": {
+    "snapshot": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/local-checkpoints/issue-29/standing-k-20261120T234224Z.zip",
+      "sha256": "9953c50126643e6bb56a931dc5c561623ef3a74c04f1b064e3fb646af63f8cd5",
+      "bytes": 157602189
+    },
+    "review": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/ggxrd-followup-dbfz-view-20261120/standing-k-resource-rebuild/review.html",
+      "sha256": "b7a3ae312d933992e3988e4f588651332031df9e5e86d18361c98283d4d1a365",
+      "bytes": 6372
+    },
+    "resources": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/ggxrd-followup-dbfz-view-20261120/standing-k-resource-rebuild/resources.json",
+      "sha256": "2b4658895886cd336b6e2507651265e7ebeba84ca34fd5a9b97ed027cbe8533e",
+      "bytes": 24541
+    },
+    "extraction_receipt": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/ggxrd-followup-dbfz-view-20261120/standing-k-resource-rebuild/craft-receipt.json",
+      "sha256": "293fc9403161588f67602056e23a75df361ed4d748526524a4763e5091b542f1",
+      "bytes": 974
+    },
+    "scene": {
+      "path": "G:/holdem_coin-workspace/island/branches/current-10zone/unity/IslandGame/Assets/LocalRev2Reconstruction/ReverseEngVfxLab/TrunksStandingK_01/StandingKMeasurements.unity",
+      "sha256": "3eaebbf8f61136295a06163d834007763025e4fdde181ce661f083756e3d49df",
+      "bytes": 1718810
+    },
+    "game_view": {
+      "path": "G:/holdem_coin-workspace/island/maintenance/ggxrd-followup-dbfz-view-20261120/standing-k-resource-rebuild/reference/unity-measurement-gameview.mp4",
+      "sha256": "630f5fb3efc3a5390b8d1b295669c56a0fb2ec91f07347baa33841cf1e01daf1",
+      "bytes": 81249
+    }
+  }
+}
