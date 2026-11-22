@@ -24,6 +24,7 @@ const normalized=(x:number,y:number)=>{const n=Math.hypot(x,y);return n>1e-8?{x:
 import {cancelAttack,stepAttackCancel} from './rpg-action-cancel';
 import {type TraversalProfile,jumpDuration,jumpHeight,actionDistance,beginJump,sampleJump,landJump,JUMP_LANDING_SECONDS} from './rpg-traversal-profile';
 import {type HeroKit,type IaiHost,iaiCommand,iaiPress,iaiStep,iaiCanReach,iaiSkill} from './rpg-hero-kit-iai';
+import {BOSS_BEAM_RULES,type BossBeam,makeBeam,beamAngle,beamContact,beamView} from './rpg-boss-beam';
 export class UnityBossEngine {
  private elemental=new ElementalCombat();
  public bossDefeated=false;private defeatedAt=-1;private exitWaypoint=0;
@@ -40,6 +41,11 @@ export class UnityBossEngine {
  // Kit tempo stage override (as MountSundayEngine.kitTempo); undefined = the kit's switches.tempo.
  kitTempo?:number;
  setKitTempo(v:unknown){if(!this.heroKit||!Number.isInteger(v)||(v as number)<0||(v as number)>=this.heroKit.tempo.stages.length)return false;this.kitTempo=v as number;return true;}
+ // Kit boss rune beams (rpg-boss-beam.ts): the straight beam every third attack and the last-stand ring, kit only (no kit = none,
+ // no view key). beamGuardUntil = the hero's short invulnerability after a ring hit.
+ beams:BossBeam[]=[];private ringDone=false;private beamGuardUntil=-1;
+ // Development start HP (boot `bossStartHP`, kit only): the boss starts at min(maxHP, v) so the last-stand ring is one hit away.
+ setStartHP(v:unknown){if(!this.heroKit||typeof v!=='number'||!Number.isFinite(v)||v<1)return false;this.boss.hp=Math.min(this.boss.maxHP,Math.floor(v));return true;}
  readonly rules:UnityRules;readonly map:any;elapsed=0;room=0;kills=0;status='playing';phase='combat';paused=false;auto=true;
  hero={x:1200,y:LANE_Y,elevation:0,airHeight:0,facing:1,direction:{x:1,y:0},hp:0,maxHP:0,action:'stay1',serial:0,motion:null as Motion|null};
  boss={id:9001,species:9001,unityBoss:true,room:1,x:3500,y:LANE_Y,elevation:0,hp:0,maxHP:0,radius:140,direction:{x:-1,y:0},state:'idle',action:'idle',facing:-1,motion:null as Motion|null};
@@ -186,19 +192,42 @@ export class UnityBossEngine {
      }
     }
    }
-   if(age>=m.duration){this.boss.motion=null;this.boss.action='idle';this.bossIdleUntil=this.elapsed+(m.kind==='boss-combo'?1.25:1.6);this.bossChaseUntil=this.bossIdleUntil+1.35;this.bossAt=this.bossChaseUntil+.3;}return;
+   if(m.kind==='boss-beam'&&m.definitionId==='boss-beam-ring'){const lead=this.beams.find(b=>b.attackId===m.attackId&&b.index===0);if(lead){const a=beamAngle(lead,this.elapsed);this.boss.direction={x:Math.cos(a),y:Math.sin(a)};if(Math.abs(this.boss.direction.x)>.01)this.boss.facing=Math.sign(this.boss.direction.x);}}
+   if(age>=m.duration){this.boss.motion=null;this.boss.action='idle';this.bossIdleUntil=this.elapsed+(m.kind==='boss-combo'?1.25:m.kind==='boss-beam'?BOSS_BEAM_RULES.rest:1.6);this.bossChaseUntil=this.bossIdleUntil+1.35;this.bossAt=this.bossChaseUntil+.3;}return;
   }
+  if(this.heroKit&&!this.ringDone&&this.boss.hp<=this.boss.maxHP*BOSS_BEAM_RULES.ring.hpFraction){this.startBeams('ring');return;}
   if(this.elapsed<this.bossIdleUntil){this.boss.action='idle';return;}
   this.boss.direction=normalized(this.hero.x-this.boss.x,this.hero.y-this.boss.y);this.boss.facing=this.hero.x<this.boss.x?-1:1;
-  const s=this.bossScale;
-  if(distance(this.hero,this.boss)>190*s&&(this.elapsed<this.bossChaseUntil||this.bossTurn%2===0&&distance(this.hero,this.boss)>360*s)){
+  const s=this.bossScale,cycle=this.heroKit?BOSS_BEAM_RULES.cycle:2;
+  if(distance(this.hero,this.boss)>190*s&&(this.elapsed<this.bossChaseUntil||this.bossTurn%cycle===0&&distance(this.hero,this.boss)>360*s)){
    const b=this.bounds(),nx=clamp(this.boss.x+this.boss.direction.x*110*dt,b.minX+150*s,b.maxX-150*s),ny=clamp(this.boss.y+this.boss.direction.y*110*dt,b.minY+150*s,b.maxY-150*s);
    if(!this.blocked(nx,ny,100*s)){this.boss.x=nx;this.boss.y=ny;}else if(!this.blocked(nx,this.boss.y,100*s))this.boss.x=nx;else if(!this.blocked(this.boss.x,ny,100*s))this.boss.y=ny;
    this.bossAt=Math.max(this.bossAt,this.elapsed+.55);this.boss.action='walk';this.boss.elevation=this.groundAt(this.boss.x,this.boss.y);if(distance(this.hero,this.boss)>450*s)return;
   }else this.boss.action='idle';
   if(this.elapsed<this.bossAt)return;
-  if(this.bossTurn++%2===0){this.boss.motion={kind:'boss-combo',definitionId:'boss-hook-pair',timeline:{active:BOSS_CONTACT.windows,cancelFrom:1,contactRevision:BOSS_CONTACT.revision},attackId:++this.attackSerial,hitMask:0,start:this.elapsed,duration:this.rules.comboDuration,hitAt:this.rules.comboHitTimes[0],hits:[...this.rules.comboHitTimes],done:0,from:point(this.boss.x,this.boss.y),to:point(this.boss.x,this.boss.y)};this.boss.action='combo';}
+  const turn=this.bossTurn++%cycle;if(turn===2){this.startBeams('line');return;}
+  if(turn===0){this.boss.motion={kind:'boss-combo',definitionId:'boss-hook-pair',timeline:{active:BOSS_CONTACT.windows,cancelFrom:1,contactRevision:BOSS_CONTACT.revision},attackId:++this.attackSerial,hitMask:0,start:this.elapsed,duration:this.rules.comboDuration,hitAt:this.rules.comboHitTimes[0],hits:[...this.rules.comboHitTimes],done:0,from:point(this.boss.x,this.boss.y),to:point(this.boss.x,this.boss.y)};this.boss.action='combo';}
   else {this.boss.motion={kind:'boss-throw',definitionId:'boss-throw',timeline:{active:[{strike:0,from:1/1.65,to:1/1.65}],cancelFrom:1},attackId:++this.attackSerial,start:this.elapsed,duration:1.65,hitAt:1,from:point(this.boss.x,this.boss.y),to:point(this.boss.x,this.boss.y)};this.boss.action='throw';this.warning={id:++this.effectSerial,attackId:this.boss.motion.attackId!,x:this.hero.x,z:this.hero.y-LANE_Y,radius:this.rules.blastRadius,born:this.elapsed,explodeAt:this.elapsed+this.rules.warningSeconds};}
+ }
+ // Beam cast: the direction is fixed now (toward the hero), the boss stands still for the whole cast. Line = one beam from the
+ // boss front; ring = count beams evenly around the boss that turn clockwise on screen after the fire (rpg-boss-beam.ts).
+ private startBeams(kind:'line'|'ring'){
+  const R=BOSS_BEAM_RULES,ring=kind==='ring',attackId=++this.attackSerial,base=Math.atan2(this.hero.y-this.boss.y,this.hero.x-this.boss.x),n=ring?R.ring.count:1;
+  for(let i=0;i<n;i++)this.beams.push(makeBeam({id:++this.effectSerial,attackId,kind,index:i,x:this.boss.x,y:this.boss.y,elevation:this.boss.elevation,angle:base+i*Math.PI*2/n,at:this.elapsed,...(ring?{sustain:R.ring.sustain,turn:-R.ring.turnDegPerSecond*Math.PI/180}:{})}));
+  const lead=this.beams[this.beams.length-n];if(ring)this.ringDone=true;
+  this.boss.direction={x:Math.cos(base),y:Math.sin(base)};if(Math.abs(this.boss.direction.x)>.01)this.boss.facing=Math.sign(this.boss.direction.x);
+  this.boss.motion={kind:'boss-beam',definitionId:ring?'boss-beam-ring':'boss-beam',timeline:{active:[],cancelFrom:1},attackId,start:this.elapsed,duration:lead.endAt-this.elapsed,hitAt:lead.fireAt-this.elapsed,from:point(this.boss.x,this.boss.y),to:point(this.boss.x,this.boss.y)};this.boss.action='beam';
+ }
+ // Beam judgement: only between fireAt and stopAt (the charge seals are the warning). Line: one hit per cast. Ring: after a hit
+ // the hero is safe for ring.invulnerable seconds. Dodge/knockback (damageHero) and a jump over jumpClear avoid it.
+ private stepBeams(){
+  if(!this.beams.length)return;this.beams=this.beams.filter(b=>this.elapsed<b.endAt);if(this.room!==1||this.boss.hp<=0||this.hero.airHeight>BOSS_BEAM_RULES.jumpClear)return;
+  for(const b of this.beams){if(b.kind==='line'?b.hit:this.elapsed<this.beamGuardUntil)continue;const c=beamContact(b,this.elapsed,this.hero,BOSS_CONTACT.heroRadius);if(!c)continue;
+   const damage=this.rules.blastDamage*BOSS_BEAM_RULES.damageScale;
+   if(!this.damageHero(damage,'skill',{attackId:b.attackId,definitionId:b.kind==='ring'?'boss-beam-ring':'boss-beam',beamId:b.id,contactAt:this.elapsed,point:{x:c.x,y:b.elevation+b.height,z:c.y}}))continue;
+   b.hit=true;if(b.kind==='ring')this.beamGuardUntil=this.elapsed+BOSS_BEAM_RULES.ring.invulnerable;
+   const dir=normalized(this.hero.x-this.boss.x,this.hero.y-this.boss.y),bd=this.bounds();this.hero.motion={kind:'knockback',start:this.elapsed,duration:this.rules.knockbackSeconds,hitAt:0,from:point(this.hero.x,this.hero.y),to:point(clamp(this.hero.x+dir.x*260,bd.minX,bd.maxX),clamp(this.hero.y+dir.y*260,bd.minY,bd.maxY))};this.hero.action='knockback';this.hero.serial++;break;
+  }
  }
  private detonate(){const w=this.warning;if(!w||this.elapsed+1e-8<w.explodeAt)return;this.warning=null;this.effect('explosion',w.x,this.rules.blastDamage,{radius:w.radius,z:w.z,damageKind:'skill',warningId:w.id,attackId:w.attackId,contactAt:w.explodeAt});
   if(Math.hypot(this.hero.x-w.x,this.hero.y-LANE_Y-w.z)>w.radius||this.hero.airHeight>120||this.hero.motion?.kind==='dodge')return;
@@ -208,7 +237,7 @@ export class UnityBossEngine {
   for(let i=0;i<6;i++)this.cooldowns[i]=Math.max(0,this.cooldowns[i]-dt);for(const k of ['health','mana'] as const)this.resources.potionCooldowns[k]=Math.max(0,this.resources.potionCooldowns[k]-dt);
   if(this.introStage!=='none'){this.stepIntro(dt);return;}
   if(this.bossDefeated&&this.arena){this.stepVillageExit(dt,input);this.fx=this.fx.filter(f=>this.elapsed-f.born<2.5);return;}
-  this.previousHero={x:this.hero.x,y:this.hero.y,elevation:this.hero.elevation,airHeight:this.hero.airHeight};this.stepHero(dt,input);this.separateBody();this.hero.elevation=this.groundAt(this.hero.x,this.hero.y);this.stepSlimes(dt);this.stepBoss(dt);this.elemental.step(this.elapsed,dt,this.elementWorld());this.separateBody();this.detonate();this.hero.elevation=this.groundAt(this.hero.x,this.hero.y);this.fx=this.fx.filter(f=>this.elapsed-f.born<2.5);
+  this.previousHero={x:this.hero.x,y:this.hero.y,elevation:this.hero.elevation,airHeight:this.hero.airHeight};this.stepHero(dt,input);this.separateBody();this.hero.elevation=this.groundAt(this.hero.x,this.hero.y);this.stepSlimes(dt);this.stepBoss(dt);this.elemental.step(this.elapsed,dt,this.elementWorld());this.separateBody();this.detonate();this.stepBeams();this.hero.elevation=this.groundAt(this.hero.x,this.hero.y);this.fx=this.fx.filter(f=>this.elapsed-f.born<2.5);
  }
  groundAt(x:number,y=LANE_Y){const t=this.map.terrain,z=(y-LANE_Y)/100,gx=clamp((x/100-t.originX)/t.step,0,t.width-1),gz=clamp((z-t.originZ)/t.step,0,t.height-1),ix=Math.min(t.width-2,Math.floor(gx)),iz=Math.min(t.height-2,Math.floor(gz)),a=t.heights;
   const low=a[iz*t.width+ix]+(a[iz*t.width+ix+1]-a[iz*t.width+ix])*(gx-ix),high=a[(iz+1)*t.width+ix]+(a[(iz+1)*t.width+ix+1]-a[(iz+1)*t.width+ix])*(gx-ix);let ground=(low+(high-low)*(gz-iz))*100;
@@ -220,7 +249,7 @@ export class UnityBossEngine {
   const path=[a.center,...a.exitWaypoints];for(let i=1;i<path.length;i++){const p=path[i-1],q=path[i],dx=q.x-p.x,dy=q.y-p.y,t=clamp(((x-p.x)*dx+(y-p.y)*dy)/(dx*dx+dy*dy),0,1);if(Math.hypot(x-p.x-dx*t,y-p.y-dy*t)<=220-radius)return false;}return true;
  }
  private defeatBoss(){
-  if(this.bossDefeated)return;this.bossDefeated=true;this.defeatedAt=this.elapsed;this.warning=null;this.boss.motion=null;this.boss.action='death';this.elemental.clear();this.effect('boss-defeated',this.boss.x);
+  if(this.bossDefeated)return;this.bossDefeated=true;this.defeatedAt=this.elapsed;this.warning=null;this.beams=[];this.boss.motion=null;this.boss.action='death';this.elemental.clear();this.effect('boss-defeated',this.boss.x);
   if(this.arena){this.phase='village-exit';this.exitWaypoint=0;}else{this.status='won';this.phase='complete';}
  }
  private get villageExitProgress(){return this.bossDefeated?clamp((this.elapsed-this.defeatedAt)/VILLAGE_EXIT_OPEN_SECONDS,0,1):0;}
@@ -234,5 +263,5 @@ export class UnityBossEngine {
   if(distance(this.hero,waypoints[waypoints.length-1])<100){this.status='won';this.phase='complete';this.hero.action='stay1';this.effect('village-arrived',this.hero.x);}
  }
 
- view(){const b=this.bounds();return {...(this.arena?{zoneTenArena:true,bossDefeated:this.bossDefeated,bossDefeatedAt:this.defeatedAt,villageExitProgress:this.villageExitProgress,villageExitOpen:this.villageExitProgress>=1,villageEntered:this.status==='won',exitTarget:this.arena.exitWaypoints.at(-1)}:{}),...(this.traversal?{traversalProfile:this.traversal.id,movementSpeed:this.traversal.run}:{}),presentationRevision:'combat-view-v1',inputSpace:'world-xz',movementMode:this.room===1&&this.introStage!=='approach'?'plane':'lane',bossCadence:{idleUntil:this.bossIdleUntil,chaseUntil:this.bossChaseUntil,nextAttackAt:this.bossAt},contactRevision:BOSS_CONTACT.revision,bodyRadius:this.bodyRadius,heroRadius:BOSS_CONTACT.heroRadius,heroHeight:BOSS_CONTACT.heroHeight,unityBossMode:true,protocol:UNITY_BOSS_PROTOCOL,totalRooms:2,training:true,room:this.room,status:this.status,phase:this.phase,elapsed:this.elapsed,paused:this.paused,auto:this.auto,kills:this.kills,gold:0,hero:{...this.hero,direction:{...this.hero.direction},motion:this.hero.motion?JSON.parse(JSON.stringify(this.hero.motion)):null},mobs:[...this.slimes.map(m=>({...m})),{...this.boss,motion:this.boss.motion?JSON.parse(JSON.stringify(this.boss.motion)):null}],warning:this.warning?{...this.warning}:null,fx:this.fx.map(f=>({...f})),walkBounds:b,cleared:this.slimeCleared?[0]:[],visited:this.room===1?[0,1]:[0],cameraMode:this.room===1&&this.boss.hp>0&&this.introStage!=='approach'?'QuarterView':'Side25D',bossVisible:this.room===1&&this.introStage!=='approach'&&(!this.arena||!this.bossDefeated||this.elapsed-this.defeatedAt<3.5),bossIntroActive:this.introStage!=='none',bossIntroStage:this.introStage,bossRevealAt:this.introAt,elementalProjectiles:this.elemental.view(this.elapsed),resources:JSON.parse(JSON.stringify(this.resources)),cooldowns:[...this.cooldowns],cooldownTotals:[...this.cooldownTotals],jumpReady:this.elapsed>=this.jumpAt&&(!this.hero.motion||this.hero.motion.kind==='attack'||!!this.heroKit&&this.hero.motion.kind==='recover'),dodgeReady:this.elapsed>=this.dodgeAt&&(!this.hero.motion||this.hero.motion.kind==='attack'||!!this.heroKit&&this.hero.motion.kind==='recover'),slideReady:this.elapsed>=this.dodgeAt&&(!this.hero.motion||this.hero.motion.kind==='attack'||!!this.heroKit&&this.hero.motion.kind==='recover'),...(this.heroKit?{heroKit:this.heroKit.id,bossScale:this.bossScale}:{})};}
+ view(){const b=this.bounds();return {...(this.arena?{zoneTenArena:true,bossDefeated:this.bossDefeated,bossDefeatedAt:this.defeatedAt,villageExitProgress:this.villageExitProgress,villageExitOpen:this.villageExitProgress>=1,villageEntered:this.status==='won',exitTarget:this.arena.exitWaypoints.at(-1)}:{}),...(this.traversal?{traversalProfile:this.traversal.id,movementSpeed:this.traversal.run}:{}),presentationRevision:'combat-view-v1',inputSpace:'world-xz',movementMode:this.room===1&&this.introStage!=='approach'?'plane':'lane',bossCadence:{idleUntil:this.bossIdleUntil,chaseUntil:this.bossChaseUntil,nextAttackAt:this.bossAt},contactRevision:BOSS_CONTACT.revision,bodyRadius:this.bodyRadius,heroRadius:BOSS_CONTACT.heroRadius,heroHeight:BOSS_CONTACT.heroHeight,unityBossMode:true,protocol:UNITY_BOSS_PROTOCOL,totalRooms:2,training:true,room:this.room,status:this.status,phase:this.phase,elapsed:this.elapsed,paused:this.paused,auto:this.auto,kills:this.kills,gold:0,hero:{...this.hero,direction:{...this.hero.direction},motion:this.hero.motion?JSON.parse(JSON.stringify(this.hero.motion)):null},mobs:[...this.slimes.map(m=>({...m})),{...this.boss,motion:this.boss.motion?JSON.parse(JSON.stringify(this.boss.motion)):null}],warning:this.warning?{...this.warning}:null,fx:this.fx.map(f=>({...f})),walkBounds:b,cleared:this.slimeCleared?[0]:[],visited:this.room===1?[0,1]:[0],cameraMode:this.room===1&&this.boss.hp>0&&this.introStage!=='approach'?'QuarterView':'Side25D',bossVisible:this.room===1&&this.introStage!=='approach'&&(!this.arena||!this.bossDefeated||this.elapsed-this.defeatedAt<3.5),bossIntroActive:this.introStage!=='none',bossIntroStage:this.introStage,bossRevealAt:this.introAt,elementalProjectiles:this.elemental.view(this.elapsed),resources:JSON.parse(JSON.stringify(this.resources)),cooldowns:[...this.cooldowns],cooldownTotals:[...this.cooldownTotals],jumpReady:this.elapsed>=this.jumpAt&&(!this.hero.motion||this.hero.motion.kind==='attack'||!!this.heroKit&&this.hero.motion.kind==='recover'),dodgeReady:this.elapsed>=this.dodgeAt&&(!this.hero.motion||this.hero.motion.kind==='attack'||!!this.heroKit&&this.hero.motion.kind==='recover'),slideReady:this.elapsed>=this.dodgeAt&&(!this.hero.motion||this.hero.motion.kind==='attack'||!!this.heroKit&&this.hero.motion.kind==='recover'),...(this.heroKit?{heroKit:this.heroKit.id,bossScale:this.bossScale,beams:this.beams.map(b=>beamView(b,LANE_Y))}:{})};}
 }

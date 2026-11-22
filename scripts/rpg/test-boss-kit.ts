@@ -179,6 +179,9 @@ test('15. kit boss spacing: the boss keeps walking in until 190 cm x scale (it w
  old.step(.02,{x:0,y:0,auto:false});assert.notEqual(old.boss.action,'walk','6.5 m boss: already close enough at 150 cm');
 });
 // Kit boss golden (brief 3, after the hitbox scale): 78d6c762 at bb9c61e8 (6.5 m hitbox) -> a277f884 with the 3.2 m hitbox.
-test('16. kit zone-10 boss golden (3.2 m hitbox)',()=>{
- const r=mountBossDigest(g=>{g.heroKit=PINK_IAI;});assert.equal(r.status,'won');assert.equal(r.digest,'a277f884dae3cc828a64a41ab7619e021246be1053b6fdd652ccf0e527dbf4ac');
+// Boss beams (2026-11-22, boss-beam-camera-20261122): the kit cycle hook/throw/beam + the beams view key -> cec86c9c. Recorded with
+// maintenance/boss-beam-camera-20261122/work/kitgolden.mts (mountBossDigest verbatim): a `git archive a7fabb2c src` copy prints a277f884,
+// the changed tree prints cec86c9c (legacy and no kit stay 89ae8859 = GOLDEN.mount9 on both).
+test('16. kit zone-10 boss golden (3.2 m hitbox, rune beams)',()=>{
+ const r=mountBossDigest(g=>{g.heroKit=PINK_IAI;});assert.equal(r.status,'won');assert.equal(r.digest,'cec86c9cc720d053854c90e05bccb4c6e25e047142c15cbb9a8c379ddbcdeb72');
 });

@@ -52,7 +52,14 @@ namespace IslandGame {
    get=>DevControls&&PlayerPrefs.HasKey(DevKitTempoKey)?PlayerPrefs.GetInt(DevKitTempoKey):-1;
    set{if(value<0)PlayerPrefs.DeleteKey(DevKitTempoKey);else PlayerPrefs.SetInt(DevKitTempoKey,value);PlayerPrefs.Save();}
   }
-  public static JObject WithRunOptions(JObject boot){if(boot==null)return boot;boot["autoSkills"]=true;int tempo=DevKitTempo;if(tempo>=0&&boot["heroKit"]!=null)boot["kitTempo"]=tempo;return boot;}
+  // Boss beams test (2026-11-22): a development build may start the kit boss at a lower HP (pref island.dev.bossStartHP, e.g. 520 of
+  // 2000 = just above the 25 % last-stand ring). No pref = no key = the kernel default. Kit boots only (legacy ignores it in the kernel).
+  public const string DevBossStartHPKey="island.dev.bossStartHP";
+  public static int DevBossStartHP{
+   get=>DevControls&&PlayerPrefs.HasKey(DevBossStartHPKey)?PlayerPrefs.GetInt(DevBossStartHPKey):-1;
+   set{if(value<=0)PlayerPrefs.DeleteKey(DevBossStartHPKey);else PlayerPrefs.SetInt(DevBossStartHPKey,value);PlayerPrefs.Save();}
+  }
+  public static JObject WithRunOptions(JObject boot){if(boot==null)return boot;boot["autoSkills"]=true;int tempo=DevKitTempo;if(tempo>=0&&boot["heroKit"]!=null)boot["kitTempo"]=tempo;int hp=DevBossStartHP;if(hp>0&&boot["heroKit"]!=null)boot["bossStartHP"]=hp;return boot;}
 
   public bool Loops(AnimationClip c)=>c&&(c==idle||c==run||c==walk||c==jumpLoop||c==slide);
   public bool Grounded(AnimationClip c){if(!c||groundedClips==null)return false;foreach(var g in groundedClips)if(g==c)return true;return false;}

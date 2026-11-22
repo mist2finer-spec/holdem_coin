@@ -1,7 +1,7 @@
 {
   "protocol": "island-training-local-v1",
-  "sha256": "cdd2012081cd79880c77ccbe053726d147653cdc5085369729e49174498c07f3",
-  "bytes": 589444,
+  "sha256": "f988ac2cf0838761db713b51acccb3437b1968bb6243dbd21432a08841983968",
+  "bytes": 594334,
   "sourceFiles": [
     "src/lib/generated/mount-sunday-zones.json",
     "src/lib/generated/unity-boss-contact.json",
@@ -9,6 +9,7 @@
     "src/lib/generated/unity-nature-map.json",
     "src/lib/generated/zone-ten-arena.json",
     "src/lib/rpg-action-cancel.ts",
+    "src/lib/rpg-boss-beam.ts",
     "src/lib/rpg-boss-contact.ts",
     "src/lib/rpg-elemental-combat.ts",
     "src/lib/rpg-hero-contact.ts",

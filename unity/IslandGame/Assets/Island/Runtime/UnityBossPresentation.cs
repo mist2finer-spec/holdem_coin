@@ -7,6 +7,8 @@ namespace IslandGame {
   ViewPresentationCoordinator presentation;readonly Transform visualRoot;public void SetPresentation(ViewPresentationCoordinator value){presentation=value;}
   readonly RuntimeAnimationPlayer animation;float previousVisualTime,walkClock;Vector3 previousBossPosition;bool bossPlaced;JObject map;readonly Material warningMaterial,blastMaterial;int explosionId=-1;
   readonly Transform[] contactBones=new Transform[4];
+  // Kit boss rune beams (state "beams", kernel rpg-boss-beam.ts); none in the legacy fight (no key).
+  public readonly BossBeamPresentation Beams;
   public Vector3 ContactPoint(int n)=>contactBones[n]?contactBones[n].TransformPoint(n%2==1?BossContactProfile.HandOffsets[n/2]:Vector3.zero):Vector3.zero;
   public Transform BossTarget=>bossRoot.transform;public bool BossVisible=>bossRoot.activeSelf;
   public Transform WarningTarget=>warning.transform;public bool HookActive{get;private set;}
@@ -28,6 +30,7 @@ namespace IslandGame {
    warningMaterial=new Material(a.telegraphMaterial){name="Boss warning yellow"};warningMaterial.color=new Color(1,.84f,.03f,.4f);
    blastMaterial=new Material(a.explosionMaterial){name="Boss blast orange"};blastMaterial.color=new Color(1,.27f,.025f,.65f);
    warning=Visual("Warning circle · 2 seconds",disc,warningMaterial);explosion=Visual("Explosion",sphere,blastMaterial);warning.SetActive(false);explosion.SetActive(false);
+   Beams=new BossBeamPresentation(root.transform);
   }
   GameObject Visual(string name,Mesh mesh,Material material){var go=new GameObject(name,typeof(MeshFilter),typeof(MeshRenderer));go.layer=30;go.transform.SetParent(root.transform,false);go.GetComponent<MeshFilter>().sharedMesh=mesh;var r=go.GetComponent<MeshRenderer>();r.sharedMaterial=material;r.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;r.receiveShadows=false;return go;}
   public void Update(JObject state,float visualTime){
@@ -45,12 +48,13 @@ namespace IslandGame {
    previousVisualTime=visualTime;var w=state["warning"] as JObject;warning.SetActive(w!=null);if(w!=null){float radius=N(w["radius"])/100;warning.transform.localPosition=new Vector3(N(w["x"])/100,NativeCombatPresentation.UnityGroundHeight(map,N(w["x"]),N(w["z"])/100)/100+.035f,N(w["z"])/100);warning.transform.localScale=new Vector3(radius,1,radius);float age=Mathf.Clamp01((visualTime-N(w["born"]))/Mathf.Max(.01f,N(w["explodeAt"])-N(w["born"])));warningMaterial.color=new Color(1,.82f,.015f,.22f+age*.35f);}
    JObject latest=null;foreach(var f in state["fx"] as JArray??new JArray())if((string)f["kind"]=="explosion")latest=f as JObject;
    float blastAge=latest==null?10:visualTime-N(latest["born"]);bool blast=blastAge>=0&&blastAge<.55f;explosion.SetActive(blast);if(blast){explosionId=(int)N(latest["id"]);float radius=N(latest["radius"])/100;explosion.transform.localPosition=new Vector3(N(latest["x"])/100,NativeCombatPresentation.UnityGroundHeight(map,N(latest["x"]),N(latest["z"])/100)/100+.6f,N(latest["z"])/100);float s=Mathf.Lerp(.2f,radius*2,Mathf.Clamp01(blastAge/.3f));explosion.transform.localScale=new Vector3(s,s*.65f,s);blastMaterial.color=new Color(1,.28f,.025f,Mathf.Clamp01(1-blastAge/.55f)*.8f);}
+   Beams.Update(state,visualTime);
   }
   static float N(JToken t,float fallback=0)=>NativeCombatPresentation.N(t,fallback);
   // Triangles wind clockwise seen from above (normal +Y): the diorama look converts the telegraph to URP Unlit with Cull Back, which
   // culled the old downward-facing disc, so the warning never showed from the battle cameras (2026-11-22).
   static Mesh Disc(){const int count=64;var v=new Vector3[count+1];var colors=new Color[count+1];var indices=new int[count*3];colors[0]=new Color(1,1,1,.18f);for(int i=0;i<count;i++){float a=i*Mathf.PI*2/count;v[i+1]=new Vector3(Mathf.Cos(a),0,Mathf.Sin(a));colors[i+1]=Color.white;indices[i*3]=0;indices[i*3+1]=(i+1)%count+1;indices[i*3+2]=i+1;}var mesh=new Mesh{name="Warning ground disc"};mesh.vertices=v;mesh.colors=colors;mesh.triangles=indices;mesh.RecalculateBounds();mesh.RecalculateNormals();return mesh;}
-  public void Dispose(){animation.Dispose();Destroy(root);Destroy(disc);Destroy(sphere);Destroy(warningMaterial);Destroy(blastMaterial);}
+  public void Dispose(){Beams?.Dispose();animation.Dispose();Destroy(root);Destroy(disc);Destroy(sphere);Destroy(warningMaterial);Destroy(blastMaterial);}
   static void Destroy(UnityEngine.Object o){if(!o)return;if(Application.isPlaying)UnityEngine.Object.Destroy(o);else UnityEngine.Object.DestroyImmediate(o);}
  }
 }

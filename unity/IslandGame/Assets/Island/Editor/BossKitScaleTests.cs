@@ -46,7 +46,7 @@ namespace IslandGame.Tests {
    }finally{view.Dispose();Object.DestroyImmediate(parent.gameObject);}
   }
   [Test] public void Kit_boss_camera_is_the_tuned_quarter_view(){
-   var q=Battle3DView.KitBossQuarter;Assert.AreEqual(55f,q.pitch);Assert.AreEqual(70f,q.yaw);Assert.AreEqual(12f,q.verticalFov);Assert.AreEqual(14f,q.distance);
+   var q=Battle3DView.KitBossQuarter;Assert.AreEqual(55f,q.pitch);Assert.AreEqual(70f,q.yaw);Assert.AreEqual(12f,q.verticalFov);Assert.AreEqual(28f,q.distance,"boss beams brief: about twice as far (was 14)");
    Assert.AreEqual(new Vector3(-.8f,.8f,0),q.pivotOffset,"brief 4 Editor sweep values (55 deg, hero-centred, hero >= 10 %)");
   }
   // Hero-centred framing vs the old whole-boss framing, same rig, same pose: hero 2 m from a 3.2 m boss (a box ~ its skinned bounds).
@@ -70,7 +70,10 @@ namespace IslandGame.Tests {
    var whole=Frame(false,false);var hero=Frame(true,false);var warned=Frame(true,true);
    TestContext.WriteLine($"whole-boss: dist {whole.dist:F2} hero {whole.heroFrac:F3} head {whole.headIn}; hero-centred: dist {hero.dist:F2} hero {hero.heroFrac:F3} head {hero.headIn}; warning: dist {warned.dist:F2} hero {warned.heroFrac:F3}");
    Assert.IsTrue(whole.headIn,"old framing fits the whole boss");Assert.IsTrue(hero.heroIn&&hero.footIn,"hero and boss feet in view");
-   Assert.Greater(hero.heroFrac,whole.heroFrac*1.2f,"hero-centred framing does not push the camera out for the boss head");Assert.Less(hero.dist,whole.dist*.85f,"closer camera");
+   // Boss beams brief (distance 14 -> 28): the preset distance now covers the whole 3.2 m boss too, so both framings sit at the preset
+   // distance; hero-centred framing must still never be farther or make the hero smaller than the whole-boss framing.
+   Assert.GreaterOrEqual(hero.heroFrac,whole.heroFrac*.999f,"hero-centred framing does not push the camera out for the boss head");Assert.LessOrEqual(hero.dist,whole.dist+1e-3f,"not farther");
+   Assert.AreEqual(Battle3DView.KitBossQuarter.distance,hero.dist,.05f,"hero-centred = the preset distance");
    Assert.IsTrue(warned.heroIn&&warned.footIn,"warning disc, hero and boss feet in view while a warning is up");
   }
   [Test] public void Kit_boss_visible_hands_sit_on_the_kernel_hook_points(){
