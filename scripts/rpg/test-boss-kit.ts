@@ -1,6 +1,6 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {createHash} from 'node:crypto';
 import {MountSundayEngine} from '../../src/lib/rpg-mount-sunday-engine';
-import {UnityBossEngine,KIT_BOSS_SCALE,KIT_BOSS_HEIGHT} from '../../src/lib/rpg-unity-boss-engine';
+import {UnityBossEngine,KIT_BOSS_SCALE,KIT_BOSS_HEIGHT,KIT_BOSS_LEASH} from '../../src/lib/rpg-unity-boss-engine';
 import {BOSS_CONTACT,hookContact,sampleArm,worldPoint} from '../../src/lib/rpg-boss-contact';
 import {SOURCE_TRAVERSAL as p} from '../../src/lib/rpg-traversal-profile';
 import {PINK_IAI,iaiContact} from '../../src/lib/rpg-hero-kit-iai';
@@ -187,6 +187,29 @@ test('15. kit boss spacing: the boss keeps walking in until 190 cm x scale (it w
 // maintenance/boss-beam-camera-20261122/work/kitgolden.mts (mountBossDigest verbatim): a `git archive a7fabb2c src` copy prints a277f884,
 // the changed tree prints cec86c9c (legacy and no kit stay 89ae8859 = GOLDEN.mount9 on both).
 // Boulder confine (brief 3, v3/work/golden3.mts): from the 2nd knockback on (tick 1930, motion.to radius 1087 cm > wall) -> c26218e7.
+// Boss leash (brief 4, same script): the kit boss stops at 400 cm from the arena centre (it walked out to ~680 cm here) -> 72e55465.
+// arena / two rooms / mount zone 10 / legacy keep their digests (no kit, or legacy: no leash).
 test('16. kit zone-10 boss golden (3.2 m hitbox, rune beams)',()=>{
- const r=mountBossDigest(g=>{g.heroKit=PINK_IAI;});assert.equal(r.status,'won');assert.equal(r.digest,'c26218e7ba4aa02f23c60df7d6e6f6cdfd8b6a6bb2db7a3ac0e76c05a3afd8fa');
+ const r=mountBossDigest(g=>{g.heroKit=PINK_IAI;});assert.equal(r.status,'won');assert.equal(r.digest,'72e55465dd0acfc8b7a2fb14685e10d8c9f3f6dd5d860b994bb6337cca26f389');
+});
+// Brief 4 (2026-11-22, user: "make the boss's movement range smaller"; boss-beam-camera-20261122/v4): the kit boss walks only inside a
+// small circle around the arena centre (KIT_BOSS_LEASH). A hero beyond it: the boss stops at the edge and waits facing the hero; the
+// throw (warning disc on the hero) and the beam still come, the hook only when the hero is within reach. Legacy / no kit: unchanged.
+const AC=zoneTenArena.center,fromCentre=(o:{x:number;y:number})=>Math.hypot(o.x-AC.x,o.y-AC.y);
+test('17. kit boss leash: the boss never walks out of the centre circle, even after a hero that runs around the rocks',()=>{
+ for(const tempo of [0,2]){const g=zone10(x=>{x.heroKit=PINK_IAI;x.kitTempo=tempo;});let max=0,walkedAtEdge=0;
+  for(let t=0;t<15000&&g.status==='playing';t++){const input={x:Math.cos(t/300),y:Math.sin(t/300),auto:t%1200>=600,readyZone:9,readyBoss:true};g.acceptClientHints(input);g.step(.02,input);
+   const e=g.bossEncounter;if(!e||e.room!==1)continue;max=Math.max(max,fromCentre(e.boss));}
+  assert.ok(max<=KIT_BOSS_LEASH.radius+1e-6,'tempo '+tempo+': boss reached '+max+' cm from the centre');assert.ok(max>KIT_BOSS_LEASH.radius-5,'the boss did go to the edge');}
+});
+test('18. kit boss leash: a hero out at the rocks still gets the warning disc and the beam; the boss waits at the edge, facing the hero',()=>{
+ const b=arena(PINK_IAI);b.bossIdleUntil=b.bossChaseUntil=b.bossAt=0;b.step(.02,{x:0,y:0,auto:false});place(b,AC.x-1000,AC.y+20);b.hero.motion=null;
+ let warnings=0,beams=0,combos=0,lastWarn:any=null,idleAtEdge=0,max=0;const seenBeam=new Set<number>();
+ for(let i=0;i<2500;i++){if(b.hero.hp<b.hero.maxHP*.5)b.hero.hp=b.hero.maxHP;if(!b.hero.motion){place(b,AC.x-1000,AC.y+20);}b.step(.02,{x:0,y:0,auto:false});
+  if(b.warning&&b.warning!==lastWarn){warnings++;lastWarn=b.warning;assert.ok(Math.hypot(b.warning.x-b.hero.x,b.warning.z+5000-b.hero.y)<1,'disc on the hero');}
+  for(const x of b.beams)if(!seenBeam.has(x.id)){seenBeam.add(x.id);beams++;}
+  if(b.boss.motion?.kind==='boss-combo'&&b.boss.motion.start===b.elapsed)combos++;max=Math.max(max,fromCentre(b.boss));
+  if(Math.abs(fromCentre(b.boss)-KIT_BOSS_LEASH.radius)<1&&b.boss.action==='idle'&&!b.boss.motion){idleAtEdge++;assert.ok(b.boss.direction.x<0,'facing the hero');}}
+ assert.ok(max<=KIT_BOSS_LEASH.radius+1e-6,'boss stayed in the circle: '+max);assert.ok(warnings>=2,'warning discs: '+warnings);assert.ok(beams>=1,'beams: '+beams);
+ assert.equal(combos,0,'no hook swing at a hero out of reach');assert.ok(idleAtEdge>50,'waits at the edge: '+idleAtEdge);
 });

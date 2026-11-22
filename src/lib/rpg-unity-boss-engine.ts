@@ -14,6 +14,10 @@ export type UnityRules={playerHP:number;bossHP:number;slimeCount:number;slimeHP:
 // obstacle radius) all scale by this one factor; the warning disc, damage, timing and pattern order do not. No kit = factor 1.
 export const KIT_BOSS_HEIGHT=320;
 export const KIT_BOSS_SCALE=KIT_BOSS_HEIGHT/(BOSS_CONTACT.bossHeight*100);
+// Kit boss leash (brief 4, 2026-11-22, user: "make the boss's movement range smaller"): with a kit hero in the zone-10 arena the boss
+// walks only inside this circle around the arena centre (cm; ~39% of the 1030 cm walking wall, so a hero knocked back from beside the
+// boss lands well inside the rocks). Legacy / no kit / no arena: no leash.
+export const KIT_BOSS_LEASH=Object.freeze({radius:400});
 export const UNITY_BOSS_RULES:Readonly<UnityRules>=Object.freeze({playerHP:1_000_000,bossHP:1_000_000_000,slimeCount:8,slimeHP:120,attackDamage:60,comboDuration:2.2,comboHitTimes:[.85,1.55],warningSeconds:2,blastDamage:10000,blastRadius:120,knockbackSeconds:1.8});
 const clamp=(n:number,a:number,b:number)=>Math.max(a,Math.min(b,n));
 const LANE_Y=5000,ARENA_X=2670;
@@ -198,17 +202,24 @@ export class UnityBossEngine {
   if(this.heroKit&&!this.ringDone&&this.boss.hp<=this.boss.maxHP*BOSS_BEAM_RULES.ring.hpFraction){this.startBeams('ring');return;}
   if(this.elapsed<this.bossIdleUntil){this.boss.action='idle';return;}
   this.boss.direction=normalized(this.hero.x-this.boss.x,this.hero.y-this.boss.y);this.boss.facing=this.hero.x<this.boss.x?-1:1;
-  const s=this.bossScale,cycle=this.heroKit?BOSS_BEAM_RULES.cycle:2;
-  if(distance(this.hero,this.boss)>190*s&&(this.elapsed<this.bossChaseUntil||this.bossTurn%cycle===0&&distance(this.hero,this.boss)>360*s)){
-   const b=this.bounds(),nx=clamp(this.boss.x+this.boss.direction.x*110*dt,b.minX+150*s,b.maxX-150*s),ny=clamp(this.boss.y+this.boss.direction.y*110*dt,b.minY+150*s,b.maxY-150*s);
+  const s=this.bossScale,cycle=this.heroKit?BOSS_BEAM_RULES.cycle:2,goal=this.leashGoal(),out=this.heroBeyondLeash();
+  if(distance(this.hero,this.boss)>190*s&&(this.elapsed<this.bossChaseUntil||this.bossTurn%cycle===0&&distance(this.hero,this.boss)>360*s)&&(goal===this.hero||distance(goal,this.boss)>.5)){
+   const d=goal===this.hero?this.boss.direction:normalized(goal.x-this.boss.x,goal.y-this.boss.y),f=goal===this.hero?1:Math.min(1,distance(goal,this.boss)/(110*dt));
+   const b=this.bounds(),nx=clamp(this.boss.x+d.x*110*dt*f,b.minX+150*s,b.maxX-150*s),ny=clamp(this.boss.y+d.y*110*dt*f,b.minY+150*s,b.maxY-150*s);
    if(!this.blocked(nx,ny,100*s)){this.boss.x=nx;this.boss.y=ny;}else if(!this.blocked(nx,this.boss.y,100*s))this.boss.x=nx;else if(!this.blocked(this.boss.x,ny,100*s))this.boss.y=ny;
    this.bossAt=Math.max(this.bossAt,this.elapsed+.55);this.boss.action='walk';this.boss.elevation=this.groundAt(this.boss.x,this.boss.y);if(distance(this.hero,this.boss)>450*s)return;
   }else this.boss.action='idle';
   if(this.elapsed<this.bossAt)return;
-  const turn=this.bossTurn++%cycle;if(turn===2){this.startBeams('line');return;}
+  let turn=this.bossTurn++%cycle;if(turn===0&&out)turn=this.bossTurn++%cycle;if(turn===2){this.startBeams('line');return;}
   if(turn===0){this.boss.motion={kind:'boss-combo',definitionId:'boss-hook-pair',timeline:{active:BOSS_CONTACT.windows,cancelFrom:1,contactRevision:BOSS_CONTACT.revision},attackId:++this.attackSerial,hitMask:0,start:this.elapsed,duration:this.rules.comboDuration,hitAt:this.rules.comboHitTimes[0],hits:[...this.rules.comboHitTimes],done:0,from:point(this.boss.x,this.boss.y),to:point(this.boss.x,this.boss.y)};this.boss.action='combo';}
   else {this.boss.motion={kind:'boss-throw',definitionId:'boss-throw',timeline:{active:[{strike:0,from:1/1.65,to:1/1.65}],cancelFrom:1},attackId:++this.attackSerial,start:this.elapsed,duration:1.65,hitAt:1,from:point(this.boss.x,this.boss.y),to:point(this.boss.x,this.boss.y)};this.boss.action='throw';this.warning={id:++this.effectSerial,attackId:this.boss.motion.attackId!,x:this.hero.x,z:this.hero.y-LANE_Y,radius:this.rules.blastRadius,born:this.elapsed,explodeAt:this.elapsed+this.rules.warningSeconds};}
  }
+ // Kit boss leash: where the boss walks to (the hero, or the point of the leash circle nearest the hero) and the one place that
+ // decides "hero out of the boss's range" (beyond hook start range from that edge: the hook turn is skipped, throw and beam still come).
+ // A later ranged attack for this case belongs here (heroBeyondLeash).
+ private leashGoal():{x:number;y:number}{if(!this.heroKit||!this.arena)return this.hero;const c=this.arena.center,R=KIT_BOSS_LEASH.radius,dx=this.hero.x-c.x,dy=this.hero.y-c.y,d=Math.hypot(dx,dy);
+  return d<=R?this.hero:point(c.x+dx/d*R,c.y+dy/d*R);}
+ heroBeyondLeash(){const g=this.leashGoal();return g!==this.hero&&distance(this.hero,g)>450*this.bossScale;}
  // Beam cast: the direction is fixed now (toward the hero), the boss stands still for the whole cast. Line = one beam from the
  // boss front; ring = count beams evenly around the boss that turn clockwise on screen after the fire (rpg-boss-beam.ts).
  private startBeams(kind:'line'|'ring'){
