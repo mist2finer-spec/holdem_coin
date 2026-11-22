@@ -134,7 +134,7 @@ namespace IslandGame {
     threeD.HeroDepth=unity?depth/100:0;threeD.Planar=session.PlanarMovement;
     threeD.HeroRequestedSpeed=playing?Mathf.Clamp01(new Vector2(previewMove,session.PlanarMovement?previewDepth:0).magnitude)*NativeCombatPresentation.N(state["movementSpeed"],210)/100:0;
     threeD.HeroHeading=Mathf.Atan2(NativeCombatPresentation.N(hero["direction"]?["x"],1),NativeCombatPresentation.N(hero["direction"]?["y"]))*Mathf.Rad2Deg;
-    // Kit display follows the snapshot: no heroKit (server path without the kit, zone 10 boss engine) = the original hero.
+    // Kit display follows the snapshot: no heroKit (server path without the kit, or the boss with bossHero legacy) = the original hero.
     threeD.HeroKit=(string)state["heroKit"];threeD.HeroMotion=motion;threeD.SnapshotElapsed=elapsed;
     
     if(CameraRig){

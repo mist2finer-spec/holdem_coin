@@ -35,7 +35,14 @@ namespace IslandGame {
   public static Battle3DAssets LoadForBattle()=>LoadKit()??LoadDefault();
   // The one helper both boot builders use: the kit id when the kit asset is present, else null (no key).
   public static string HeroKitBootId(){var k=LoadKit();return k?k.kit:null;}
-  public static JObject WithHeroKit(JObject boot){if(boot==null||(string)boot["mode"]!="mount")return boot;var id=HeroKitBootId();if(!string.IsNullOrEmpty(id))boot["heroKit"]=id;return boot;}
+  // boss-kit-hero-20261121: the boss mode and the zone-10 boss take the kit hero too. The old hero of the boss fight is kept behind
+  // one option (event maps later): BossHeroOverride="legacy" from code, or the dev pref island.dev.bossHero="legacy" (Editor /
+  // development build). Then the boot carries bossHero:"legacy" and the boss mode carries no heroKit (kernel: the pre-kit boss).
+  public const string DevBossHeroKey="island.dev.bossHero";
+  public static string BossHeroOverride;
+  public static bool BossHeroLegacy=>BossHeroOverride=="legacy"||BossHeroOverride==null&&DevControls&&PlayerPrefs.GetString(DevBossHeroKey,"")=="legacy";
+  public static JObject WithHeroKit(JObject boot){if(boot==null)return boot;var mode=(string)boot["mode"];if(mode!="mount"&&mode!="boss")return boot;var id=HeroKitBootId();if(string.IsNullOrEmpty(id))return boot;
+   if(BossHeroLegacy){boot["bossHero"]="legacy";if(mode=="boss")return boot;}boot["heroKit"]=id;return boot;}
   // Run options for both boot builders, called after WithHeroKit (U0). AUTO also casts the skill slots, left first (K1), in mount and boss modes.
   // A development build may carry the kit tempo stage chosen on the HUD (K6, 0/1/2); no choice = no key = the kernel default.
   // Forks stay off until U1 (same build as the MountZoneStream nextZone change).

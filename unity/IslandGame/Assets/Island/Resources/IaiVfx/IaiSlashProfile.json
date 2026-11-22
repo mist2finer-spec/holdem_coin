@@ -1,0 +1,327 @@
+{
+ "version": 2,
+ "note": "Kit hero blade arc life (IaiBladeVfx). Structure read from the DBFZ Trunks standing K particle values (reverse_eng, docs/agents/references/dbfz-trunks-standing-k-20261120.json); no source asset is used. mode legacy = the V2b arc (grain erosion).",
+ "modes": "mode = C (art_helper 백광 플립북, export/C) | ember (EmberSlash package, Assets/EmberSlash) | flipbook (DBFZ, keys texture..localSpace below) | legacy (V2b arc). C and ember run on every kit sword motion listed under motions; flipbook and legacy only on the rows iai1-3.",
+ "mode": "ember",
+ "texture": "IaiVfx/R10_arc_flip",
+ "cols": 4,
+ "rows": 2,
+ "cellInset": [
+  0.0078125,
+  0.03125
+ ],
+ "life": 0.165,
+ "subImageEnd": 7.99,
+ "alphaHold": 0.25,
+ "colorStart": [
+  1.0,
+  1.0,
+  1.0
+ ],
+ "colorEnd": [
+  2.0,
+  2.0,
+  2.0
+ ],
+ "colorSourceRaw": "DBFZ ColorOverLife (R,G,B) t0 = (1, 1.5, 2), t1 = (1, 2, 2); applied here as one scalar 1 -> 2 so the R0 palette keeps its hue",
+ "growDuringSwing": false,
+ "spawnOnHitstop": true,
+ "localSpace": true,
+ "C": {
+  "source": "maintenance/vfx-slash-redesign-art-helper-20261121/export/C/spec.json (art_helper 2026-11-21). Meshes are real size at heightM; the slash is scaled by hero height / heightM.",
+  "texture": "IaiVfx/C/C_arc_flip_2x4",
+  "flash": "IaiVfx/C/C_hit_flash",
+  "meshes": [
+   "IaiVfx/C/C_arc1_draw",
+   "IaiVfx/C/C_arc2_fall",
+   "IaiVfx/C/C_arc3_finish"
+  ],
+  "cols": 2,
+  "rows": 4,
+  "cellInset": [
+   0.0009765625,
+   0.00390625
+  ],
+  "heightM": 1.217,
+  "growHead": [
+   0.6,
+   1.0
+  ],
+  "growNote": "head = 0.6 + 0.4 x, x = progress of the clip time the hero pose shows through the motion window (tempo follows)",
+  "holdFrames": [
+   5,
+   5,
+   8
+  ],
+  "dissolveCells": [
+   1,
+   1,
+   2,
+   2,
+   3,
+   3,
+   4,
+   4,
+   4,
+   5,
+   5,
+   6,
+   6,
+   7,
+   7,
+   7
+  ],
+  "flashFx": {
+   "at": "hit",
+   "sizeH": 1.3,
+   "towardCameraM": 0.3,
+   "scale": [
+    0.55,
+    0.85,
+    1.0,
+    1.08,
+    1.12,
+    1.15,
+    1.17,
+    1.18,
+    1.19
+   ],
+   "alpha": [
+    1,
+    1,
+    1,
+    0.85,
+    0.65,
+    0.45,
+    0.28,
+    0.14,
+    0.05
+   ],
+   "centerH": [
+    [
+     0.95,
+     0.45
+    ],
+    [
+     1.0,
+     0.35
+    ],
+    [
+     1.25,
+     0.55
+    ]
+   ]
+  },
+  "extras": {
+   "stars": false,
+   "embers": false,
+   "finish": false,
+   "glint": true
+  }
+ },
+ "ember": {
+  "source": "G:/holdem_coin-workspace/island/ref/EmberSlash_VFX.zip (user), imported to Assets/EmberSlash without Demo; IaiVfx/EmberSlash_Island.prefab = the package prefab with playOnEnable off.",
+  "prefab": "IaiVfx/EmberSlash_Island",
+  "budgetOffLevel": 1,
+  "budgetNote": "IslandFrameBudget level >= budgetOffLevel: the next slash is drawn with C instead (98 additive sparks per slash)",
+  "extras": {
+   "stars": false,
+   "embers": false,
+   "finish": false,
+   "glint": true
+  }
+ },
+ "motions": {
+  "iai1": {
+   "note": "1타 발도(뒤 아래 -> 앞 위). window null = ArcClipFrom/To row 1",
+   "clip": null,
+   "window": null,
+   "C": {
+    "arc": 1,
+    "posH": [
+     0,
+     0,
+     0
+    ],
+    "rotDeg": [
+     -90,
+     180,
+     0
+    ],
+    "rollDeg": 0,
+    "scale": 1.0,
+    "mirror": false
+   },
+   "ember": {
+    "pivotH": [
+     0.35,
+     0.6,
+     0
+    ],
+    "rotDeg": [
+     0,
+     0,
+     0
+    ],
+    "rollDeg": 176,
+    "mirror": false,
+    "size": 0.7,
+    "duration": 0.6,
+    "sweep": 0.25,
+    "persistence": 0.5,
+    "intensity": 1.0,
+    "tint": [
+     1,
+     1,
+     1
+    ],
+    "groundGlow": 1.0,
+    "floorDistance": "auto"
+   }
+  },
+  "iai2": {
+   "note": "2타 내려베기(뒤 위 -> 앞 아래)",
+   "clip": null,
+   "window": null,
+   "C": {
+    "arc": 2,
+    "posH": [
+     0,
+     0,
+     0
+    ],
+    "rotDeg": [
+     -90,
+     180,
+     0
+    ],
+    "rollDeg": 0,
+    "scale": 1.0,
+    "mirror": false
+   },
+   "ember": {
+    "pivotH": [
+     0.45,
+     0.9,
+     0
+    ],
+    "rotDeg": [
+     -90,
+     0,
+     0
+    ],
+    "rollDeg": 0,
+    "mirror": true,
+    "size": 0.6,
+    "duration": 0.6,
+    "sweep": 0.25,
+    "persistence": 0.5,
+    "intensity": 1.0,
+    "tint": [
+     1,
+     1,
+     1
+    ],
+    "groundGlow": 1.0,
+    "floorDistance": "auto"
+   }
+  },
+  "iai3": {
+   "note": "3타 마무리(몸 둘레 고리)",
+   "clip": null,
+   "window": null,
+   "C": {
+    "arc": 3,
+    "posH": [
+     0,
+     0,
+     0
+    ],
+    "rotDeg": [
+     -90,
+     180,
+     0
+    ],
+    "rollDeg": 0,
+    "scale": 1.0,
+    "mirror": false
+   },
+   "ember": {
+    "pivotH": [
+     0.35,
+     0.6,
+     0
+    ],
+    "rotDeg": [
+     -25,
+     0,
+     0
+    ],
+    "rollDeg": 176,
+    "mirror": false,
+    "size": 0.7,
+    "duration": 0.65,
+    "sweep": 0.25,
+    "persistence": 0.5,
+    "intensity": 1.0,
+    "tint": [
+     1,
+     1,
+     1
+    ],
+    "groundGlow": 1.0,
+    "floorDistance": "auto"
+   }
+  },
+  "skill": {
+   "note": "스킬 6칸 공통 PG_mist_finer: 0.40 -> 0.42 s 한 프레임에 칼이 뽑혀 지나가고(발도) 히트스톱. 보이는 칼 궤적이 거의 없어 1타(발도) 호를 그 순간 띄움",
+   "clip": "mist_finer",
+   "window": [
+    0.4,
+    0.42
+   ],
+   "C": {
+    "arc": 1,
+    "posH": [
+     0,
+     0,
+     0
+    ],
+    "rotDeg": [
+     -90,
+     180,
+     0
+    ],
+    "rollDeg": 0,
+    "scale": 0.9,
+    "mirror": false
+   },
+   "ember": {
+    "pivotH": [
+     0.35,
+     0.6,
+     0
+    ],
+    "rotDeg": [
+     0,
+     0,
+     0
+    ],
+    "rollDeg": 176,
+    "mirror": false,
+    "size": 0.7,
+    "duration": 0.6,
+    "sweep": 0.25,
+    "persistence": 0.5,
+    "intensity": 1.0,
+    "tint": [
+     1,
+     1,
+     1
+    ],
+    "groundGlow": 1.0,
+    "floorDistance": "auto"
+   }
+  }
+ }
+}

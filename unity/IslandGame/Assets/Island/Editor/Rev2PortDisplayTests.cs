@@ -24,14 +24,43 @@ namespace IslandGame.Tests {
    Assert.AreEqual("mount",(string)practice["mode"]);Assert.AreEqual(0,(int)practice["previewZone"]);Assert.AreEqual("source-run-v2",(string)server["traversalProfile"]);
   }
 
-  [Test] public void Present_kit_asset_is_chosen_and_both_mount_boots_carry_heroKit(){
+  [Test] public void Present_kit_asset_is_chosen_and_the_mount_and_boss_boots_carry_heroKit(){
    var kit=Battle3DAssets.LoadKit();
    if(!kit)Assert.Ignore("local kit asset not present in this checkout (expected on machines without the local-only port)");
    Assert.AreSame(kit,Battle3DAssets.LoadForBattle());Assert.AreEqual("pink-iai",kit.kit);
    Assert.AreEqual("pink-iai",(string)RpgSession.ReferenceBoot(0,false,Build())["heroKit"]);
    Assert.AreEqual("pink-iai",(string)RpgSession.TrainingBoot(true,Build())["heroKit"]);
-   Assert.IsNull(RpgSession.ReferenceBoot(9,true,Build())["heroKit"],"boss practice boot stays without the kit");
-   Assert.IsNull(RpgSession.TrainingBoot(false,Build())["heroKit"],"boss training boot stays without the kit");
+   // boss-kit-hero-20261121 (user): the boss fight runs on the kit hero. Before, both boss boots stayed without the kit.
+   var was=Battle3DAssets.BossHeroOverride;
+   try{
+    Battle3DAssets.BossHeroOverride="kit";
+    Assert.AreEqual("pink-iai",(string)RpgSession.ReferenceBoot(9,true,Build())["heroKit"],"boss practice boot takes the kit");
+    Assert.AreEqual("pink-iai",(string)RpgSession.TrainingBoot(false,Build())["heroKit"],"boss training boot takes the kit");
+    Assert.IsNull(RpgSession.ReferenceBoot(9,true,Build())["bossHero"]);
+   }finally{Battle3DAssets.BossHeroOverride=was;}
+  }
+
+  // The old (3-head) hero of the boss fight stays one option away: boss boots lose heroKit, every boot says bossHero legacy.
+  // Boss scale/camera (2026-11-21): the kit boss fight passes a smaller display height; without one the asset height is kept (legacy).
+  [Test] public void Kit_boss_is_shown_smaller_and_the_legacy_boss_keeps_the_asset_height(){
+   var a=Resources.Load<UnityBossAssets>("UnityBossAssets");if(!a||!a.boss)Assert.Ignore("boss assets not present");
+   var parent=new GameObject("boss scale test").transform;var map=new JObject{{"laneY",192}};
+   var legacy=new UnityBossPresentation(parent,a,map);var kit=new UnityBossPresentation(parent,a,map,Battle3DView.KitBossHeight);
+   try{Assert.AreEqual(a.bossHeight,legacy.Height,1e-6f,"legacy keeps the asset height");Assert.AreEqual(Battle3DView.KitBossHeight,kit.Height,1e-6f);
+    Assert.Less(kit.Height,a.bossHeight*.6f,"kit boss is clearly smaller");Assert.Greater(kit.Height,2f,"still a giant next to the 1.2 m kit hero");
+    var q=Battle3DView.KitBossQuarter;Assert.Less(q.verticalFov,38f,"narrower than the old zone-10 preset (80 deg in portrait)");Assert.Less(q.distance,19f);}
+   finally{legacy.Dispose();kit.Dispose();Object.DestroyImmediate(parent.gameObject);}
+  }
+  [Test] public void Boss_hero_legacy_option_keeps_the_old_boss_fight(){
+   if(!Battle3DAssets.LoadKit())Assert.Ignore("local kit asset not present in this checkout");
+   var was=Battle3DAssets.BossHeroOverride;
+   try{
+    Battle3DAssets.BossHeroOverride="legacy";Assert.IsTrue(Battle3DAssets.BossHeroLegacy);
+    var bossPractice=RpgSession.ReferenceBoot(9,true,Build());var bossServer=RpgSession.TrainingBoot(false,Build());var mount=RpgSession.ReferenceBoot(9,false,Build());
+    Assert.IsNull(bossPractice["heroKit"]);Assert.IsNull(bossServer["heroKit"]);Assert.IsNull(bossPractice["kitTempo"]);
+    Assert.AreEqual("legacy",(string)bossPractice["bossHero"]);Assert.AreEqual("legacy",(string)bossServer["bossHero"]);
+    Assert.AreEqual("pink-iai",(string)mount["heroKit"],"zones 1-9 keep the kit");Assert.AreEqual("legacy",(string)mount["bossHero"],"the kernel keeps the zone-10 boss on the old hero");
+   }finally{Battle3DAssets.BossHeroOverride=was;}
   }
 
   [Test] public void Kit_asset_missing_a_required_clip_is_not_used(){

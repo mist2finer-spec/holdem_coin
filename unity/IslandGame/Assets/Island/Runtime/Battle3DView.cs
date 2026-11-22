@@ -69,20 +69,29 @@ namespace IslandGame {
   IaiBladeVfx iaiVfx;
   public void UpdateContact(JObject state,float visualTime){if(!HeroTarget)return;IaiAllocProbe.Begin();try{UpdateContactCore(state,visualTime);}finally{IaiAllocProbe.End();}}
   void UpdateContactCore(JObject state,float visualTime){if(referenceVfx==null)referenceVfx=new ReferenceCombatVfx(world);
-   bool iai=mountMode&&KitHeroActive&&IaiBladeVfx.Enabled&&battleCamera;if(iai&&iaiVfx==null)iaiVfx=new IaiBladeVfx();iai&=iaiVfx!=null&&iaiVfx.Ready;if(!iai&&iaiVfx!=null&&iaiVfx.Ready){iaiVfx.Dispose();iaiVfx=null;}
+   // boss-kit-hero-20261121: the kit hero in the boss fight (zone 10 / boss mode) uses the same blade effect; the old hero keeps the old one.
+   bool iai=KitHeroActive&&IaiBladeVfx.Enabled&&battleCamera;if(iai&&iaiVfx==null)iaiVfx=new IaiBladeVfx();iai&=iaiVfx!=null&&iaiVfx.Ready;if(!iai&&iaiVfx!=null&&iaiVfx.Ready){iaiVfx.Dispose();iaiVfx=null;}if(iai)iaiVfx.PlanarYaw=Planar?HeroHeading-90:float.NaN;
    referenceVfx.SuppressHeroSlash=iai;referenceVfx.Update(state,visualTime,HeroTarget,HeroWeaponBase,HeroWeaponTip);if(mountMode){if(contactFeedback==null)contactFeedback=new CombatFeedbackRouter(gameObject,battleCamera.GetComponentInParent<BattleCameraController>(),Presentation??(Presentation=new ViewPresentationCoordinator()),FeedbackTarget);contactFeedback.SuppressKitSpark=iai;contactFeedback.Update(state,visualTime);contactFeedback.Smear(0,HeroAttackId,HeroAttackActive&&!iai,HeroWeaponTip,visualTime);if(iai)iaiVfx.Update(state,visualTime,battleCamera,HeroTarget,HeroWeaponBase,HeroWeaponTip,HeroHeight,HeroClipName,HeroSampleTime);return;}
-   if(contactFeedback!=null)contactFeedback.SuppressKitSpark=false;if(bossView==null)return;if(diorama)diorama.ProtectAttack(bossView.ContactPoint(1),bossView.ContactPoint(3),bossView.WarningTarget,bossView.BossVisible&&bossView.HookActive);if(contactFeedback==null)contactFeedback=new CombatFeedbackRouter(gameObject,battleCamera.GetComponentInParent<BattleCameraController>(),Presentation??(Presentation=new ViewPresentationCoordinator()),FeedbackTarget);contactFeedback.Update(state,visualTime);
+   if(contactFeedback!=null)contactFeedback.SuppressKitSpark=false;if(bossView==null)return;if(diorama)diorama.ProtectAttack(bossView.ContactPoint(1),bossView.ContactPoint(3),bossView.WarningTarget,bossView.BossVisible&&bossView.HookActive);if(contactFeedback==null)contactFeedback=new CombatFeedbackRouter(gameObject,battleCamera.GetComponentInParent<BattleCameraController>(),Presentation??(Presentation=new ViewPresentationCoordinator()),FeedbackTarget);contactFeedback.SuppressKitSpark=iai;contactFeedback.Update(state,visualTime);
    if(actors.TryGetValue("hero",out var readable)&&readable.occlusionSkin){
     // Imported skinned bounds include the full animation envelope and falsely cover nearby heroes.
     // Use the calibrated torso volume as a conservative gate; the shader checks actual rendered depth.
-    bool blocked=false;if(bossView.BossVisible&&BossTarget&&battleCamera){var cameraPosition=battleCamera.transform.position;float height=bossAssets?bossAssets.bossHeight:6.5f;float radius=NativeCombatPresentation.N(state["bodyRadius"],140)/100;var bounds=new Bounds(BossTarget.position+Vector3.up*(height*.5f),new Vector3(radius*2,height,radius*2));
+    bool blocked=false;if(bossView.BossVisible&&BossTarget&&battleCamera){var cameraPosition=battleCamera.transform.position;float height=bossView.Height;float radius=NativeCombatPresentation.N(state["bodyRadius"],140)/100;var bounds=new Bounds(BossTarget.position+Vector3.up*(height*.5f),new Vector3(radius*2,height,radius*2));
      for(int i=0;i<3&&!blocked;i++){var delta=HeroTarget.position+Vector3.up*(.2f+i*.4f)-cameraPosition;float distance=delta.magnitude;blocked=distance>.01f&&bounds.IntersectRay(new Ray(cameraPosition,delta/distance),out float near)&&near<distance-.15f;}
     }readable.occlusionSkin.enabled=blocked;
    }
-   contactFeedback.Smear(0,HeroAttackId,HeroAttackActive,HeroWeaponTip,visualTime);
+   contactFeedback.Smear(0,HeroAttackId,HeroAttackActive&&!iai,HeroWeaponTip,visualTime);if(iai)iaiVfx.Update(state,visualTime,battleCamera,HeroTarget,HeroWeaponBase,HeroWeaponTip,HeroHeight,HeroClipName,HeroSampleTime);
    var bm=BossContactProfile.Boss(state)?["motion"] as JObject;int bid=(int?)bm?["attackId"]??0;float bp=bm==null?0:(visualTime-NativeCombatPresentation.N(bm["start"]))/Mathf.Max(.001f,NativeCombatPresentation.N(bm["duration"]));
    for(int h=0;h<2;h++)contactFeedback.Smear(h+1,bid,bossView.BossVisible&&bossView.HookActive&&BossContactProfile.Active(bp,h),bossView.ContactPoint(h*2+1),visualTime);if(contactDebug==null)contactDebug=new BossContactDebug(world);contactDebug.Update(state,visualTime,bossView.BossTarget,HeroTarget,bossView.ContactPoint(0),bossView.ContactPoint(1),bossView.ContactPoint(2),bossView.ContactPoint(3),HeroWeaponBase,HeroWeaponTip,HeroAttackId,HeroAttackProgress,HeroAttackActive,Presentation.State.ToString());}
   UnityBossPresentation bossView;UnityBossAssets bossAssets;
+  // Kit boss fight look (2026-11-21, user: the boss is too big): display height and the zone-10 QuarterView preset used when the kit hero
+  // fights the boss. Display only: the kernel contact numbers (body radius, hook frames, warning radius) are unchanged.
+  // The legacy hero option (bossHero "legacy") keeps the asset height and the old preset.
+  // Values from the Editor sweep (portrait 1080x2340): kit hero ~10 % of the screen height (median over a scripted fight), boss, warning
+  // disc and hero inside the view on every frame; the old preset (38,25,38,19) gave ~3 % with a 6.5 m boss and an 80 deg portrait fov.
+  public static float KitBossHeight=3.2f;
+  public static BattleCameraController.Preset KitBossQuarter=new BattleCameraController.Preset(40,75,22,8,new Vector3(-.6f,1.5f,-.15f));
+  bool KitBoss=>assets&&assets.IsKit&&!Battle3DAssets.BossHeroLegacy;
   public Transform BossTarget=>bossView!=null?bossView.BossTarget:null;
   public string BossClipName=>bossView?.BossClipName;
   public float BossSampleTime=>bossView?.BossSampleTime??0;
@@ -132,10 +141,10 @@ namespace IslandGame {
    }else Floor(-10,60,0);
    }
    var nature=Resources.Load<NatureEnvironmentAssets>("NatureEnvironmentAssets");camera.backgroundColor=nature?nature.skyColor:new Color(.52f,.63f,.64f);if(!camera.GetComponentInParent<BattleCameraController>())camera.transform.rotation=Quaternion.Euler(9,0,0);camera.nearClipPlane=.1f;camera.farClipPlane=180;
-   if((bool?)map?["unityBossMode"]==true&&bossAssets&&!mountMode)bossView=new UnityBossPresentation(root,bossAssets,map);
+   if((bool?)map?["unityBossMode"]==true&&bossAssets&&!mountMode)bossView=new UnityBossPresentation(root,bossAssets,map,KitBoss?KitBossHeight:0);
    
    IslandFrameBudget.Current.BindScenery(null);
-   diorama=GetComponent<BattleDioramaLook>()??gameObject.AddComponent<BattleDioramaLook>();diorama.Initialize(world,camera);if(mountMode||zoneTenArena){var rig=camera.GetComponentInParent<BattleCameraController>();rig.side=new BattleCameraController.Preset(10,0,20,24,new Vector3(0,2,0));rig.quarter=zoneTenArena?new BattleCameraController.Preset(38,25,38,19,new Vector3(0,2.2f,.6f)):new BattleCameraController.Preset(40,35,35,17,new Vector3(0,1.2f,1.8f));rig.lookAheadDistanceX=1.6f;rig.maxVelocityLookAhead=.7f;rig.velocityLookAheadMultiplier=.10f;rig.playerEdgePadding=1.2f;rig.lookAheadAccelSmoothTime=.08f;rig.verticalSmoothTime=.10f;rig.GetComponent<BattleForegroundOcclusion>().protectSideView=true;MountZoneStream.Ensure().Bind(camera,null,(int?)map["zone"]??0);}if(authored){authored.VisualChunkCreated+=OnVisualBranch;authored.VisualChunkRemoving+=OnVisualRemoving;}
+   diorama=GetComponent<BattleDioramaLook>()??gameObject.AddComponent<BattleDioramaLook>();diorama.Initialize(world,camera);if(mountMode||zoneTenArena){var rig=camera.GetComponentInParent<BattleCameraController>();rig.side=new BattleCameraController.Preset(10,0,20,24,new Vector3(0,2,0));rig.quarter=zoneTenArena?(KitBoss?KitBossQuarter:new BattleCameraController.Preset(38,25,38,19,new Vector3(0,2.2f,.6f))):new BattleCameraController.Preset(40,35,35,17,new Vector3(0,1.2f,1.8f));rig.lookAheadDistanceX=1.6f;rig.maxVelocityLookAhead=.7f;rig.velocityLookAheadMultiplier=.10f;rig.playerEdgePadding=1.2f;rig.lookAheadAccelSmoothTime=.08f;rig.verticalSmoothTime=.10f;rig.GetComponent<BattleForegroundOcclusion>().protectSideView=true;MountZoneStream.Ensure().Bind(camera,null,(int?)map["zone"]??0);}if(authored){authored.VisualChunkCreated+=OnVisualBranch;authored.VisualChunkRemoving+=OnVisualRemoving;}
   }
   void OnVisualBranch(Transform branch){if(diorama)diorama.ApplyBranch(branch);}
   void OnVisualRemoving(Transform branch){if(diorama)diorama.ForgetBranch(branch);}
@@ -201,7 +210,7 @@ namespace IslandGame {
   public float HeroRequestedSpeed;
   public float Draw(string id,string action,float x,float elevation,float facing,string serial,float age,float duration,float hitAt,string kind,float advance,float visualTime){
    bool hero=id=="hero";Actor a;
-   // Zone 10 (boss engine) drops heroKit from the snapshot: swap the kit model for the original hero, and back.
+   // A snapshot without heroKit (server path without the kit, or the boss with bossHero legacy) shows the original hero: swap the kit model, and back.
    if(hero&&actors.TryGetValue(id,out a)&&a.set!=HeroSet){actors.Remove(id);if(diorama)diorama.ForgetBranch(a.root.transform);a.animation?.Dispose();Destroy(a.root);}
    if(!actors.TryGetValue(id,out a))a=Create(id,hero);if(a==null)return 0;
    var set=hero?a.set:assets;bool kit=hero&&a.kit;

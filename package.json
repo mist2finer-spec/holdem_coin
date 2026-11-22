@@ -72,6 +72,7 @@
     "test:rpg:auto-skills": "node --import ./mini-services/poker-server/node_modules/tsx/dist/loader.mjs --test scripts/rpg/test-auto-skills.ts",
     "test:rpg:forks": "node --import ./mini-services/poker-server/node_modules/tsx/dist/loader.mjs --test scripts/rpg/test-mount-forks.ts",
     "test:rpg:kit-tempo": "node --import ./mini-services/poker-server/node_modules/tsx/dist/loader.mjs --test scripts/rpg/test-kit-tempo.ts",
+    "test:rpg:boss-kit": "node scripts/build-unity-training-kernel.cjs --check && node --import ./mini-services/poker-server/node_modules/tsx/dist/loader.mjs --test scripts/rpg/test-boss-kit.ts",
     "test:rpg:mount": "node --import ./mini-services/poker-server/node_modules/tsx/dist/loader.mjs --test scripts/rpg/test-mount-sunday.ts scripts/rpg/test-mount-route.ts scripts/rpg/test-mount-traversal.ts scripts/rpg/test-hero-combo.ts"
   },
   "dependencies": {

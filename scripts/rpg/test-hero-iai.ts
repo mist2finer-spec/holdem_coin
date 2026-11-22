@@ -316,11 +316,14 @@ test('training bundle, practice-path boot (referencePreview, zone 1, six practic
   assert.equal(k.hero.action,'skill2');near(k.hero.motion.duration,kit?58/60:.94,1e-9,'skill duration');}
 });
 
-test('training bundle: boot heroKit selects the kit in mount mode only, and stays the same engine',()=>{
+test('training bundle: boot heroKit selects the kit (mount, and the boss mode unless bossHero legacy), and stays the same engine',()=>{
  const source=readFileSync('unity/IslandGame/Assets/Island/Resources/TrainingCombatKernel.js.txt','utf8');
  const boot=(extra:any)=>{const c:any=vm.createContext({});vm.runInContext(source,c);return {c,view:JSON.parse(c.stageInitialize(JSON.stringify({mode:'mount',seed:111,traversalProfile:'source-run-v2',...extra})))};};
  assert.equal(boot({}).view.heroKit,undefined);assert.equal(boot({heroKit:'pink-iai'}).view.heroKit,'pink-iai');assert.equal(boot({heroKit:'other'}).view.heroKit,undefined);
- {const c:any=vm.createContext({});vm.runInContext(source,c);assert.equal(JSON.parse(c.stageInitialize(JSON.stringify({mode:'boss',seed:111,heroKit:'pink-iai'}))).heroKit,undefined,'boss zone does not know the kit');}
+ {const c:any=vm.createContext({});vm.runInContext(source,c);assert.equal(JSON.parse(c.stageInitialize(JSON.stringify({mode:'boss',seed:111,heroKit:'pink-iai',bossHero:'legacy'}))).heroKit,undefined,'boss zone, bossHero legacy: the old hero');}
+ // boss-kit-hero-20261121 (user: the boss fight is rebuilt on the current kit hero; the old hero stays behind bossHero:'legacy').
+ // Before: the boss mode never took the kit (this assert read heroKit undefined without the legacy key).
+ {const c:any=vm.createContext({});vm.runInContext(source,c);assert.equal(JSON.parse(c.stageInitialize(JSON.stringify({mode:'boss',seed:111,heroKit:'pink-iai'}))).heroKit,'pink-iai','boss zone takes the kit');}
  // K6: both sides at tempo stage 0 (before: boot {heroKit} vs g.heroKit=PINK_IAI). The frozen Unity bundle predates K6 and
  // ignores kitTempo (stage 0 = its timing); after the U0 rebuild the same boot key selects stage 0 there too.
  const k=boot({heroKit:'pink-iai',kitTempo:0}),g:any=new MountSundayEngine(111,undefined,0);g.traversal=p;g.heroKit=PINK_IAI;assert.equal(g.setKitTempo(0),true);

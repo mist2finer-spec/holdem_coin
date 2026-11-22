@@ -1,0 +1,137 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {createHash} from 'node:crypto';
+import {MountSundayEngine} from '../../src/lib/rpg-mount-sunday-engine';
+import {UnityBossEngine} from '../../src/lib/rpg-unity-boss-engine';
+import {SOURCE_TRAVERSAL as p} from '../../src/lib/rpg-traversal-profile';
+import {PINK_IAI,iaiContact} from '../../src/lib/rpg-hero-kit-iai';
+import zoneTenArena from '../../src/lib/generated/zone-ten-arena.json';
+import '../../src/lib/training-client-kernel';
+// Zone-10 boss with the kit hero (maintenance/boss-kit-hero-20261121, PLAN_KO.md). The boss engine takes the hero kit
+// (heroKit/kitTempo) from MountSundayEngine; boot `bossHero:'legacy'` keeps the pre-kit boss fight (the engine's own hero).
+// Without a kit the boss engine must not change by a single tick (goldens below).
+const G=globalThis as any;
+const near=(a:number,b:number,tol=1e-6,msg='')=>assert.ok(Math.abs(a-b)<=tol,`${msg} ${a} != ${b} (±${tol})`);
+const PRACTICE=['icespear','icenova','frostshot','stormcall','arc','spark'],SUPPORTS=[0,0,0,0,2,4];
+const KIT0={...PINK_IAI,switches:{...PINK_IAI.switches,tempo:0}};
+
+// --- no-kit goldens ------------------------------------------------------------------------------------------------------
+// Recorded 2026-11-21 with maintenance/boss-kit-hero-20261121/work/boss_golden.mts (these two functions verbatim) on a
+// `git archive 1b5675f0 src` copy (work/head) and on the changed tree: both printed the values below. Not to be edited to make
+// a run pass; a mismatch means the boss engine without a kit changed.
+function bossDigest(withArena:boolean){
+ const g:any=withArena?new UnityBossEngine(111,{slimeCount:0,bossHP:2000,playerHP:100000},zoneTenArena):new UnityBossEngine(111);
+ g.traversal=p;if(withArena)g.enterArena(true);for(let i=0;i<6;i++){g.skillEnabled[i]=true;g.skillIds[i]=PRACTICE[i];g.skillSupportCounts[i]=SUPPORTS[i];}g.autoSkills=true;
+ const h=createHash('sha256');
+ for(let t=0;t<6000&&g.status==='playing';t++){
+  const input={x:t%500<120?1:t%500<200?-.5:0,y:t%700<150?.6:0,auto:t>=900};
+  if(t%37===5)g.command({...input,attack:true});if(t%211===100)g.command({...input,dodge:true});if(t%313===200)g.command({...input,jump:true});
+  if(t%401===300)g.command({...input,skill:t%6});if(t%503===50)g.command({...input,slide:true});
+  g.step(.02,input);if(t%10===0)h.update(JSON.stringify(g.view()));
+ }
+ return {digest:h.digest('hex'),status:g.status,elapsed:+g.elapsed.toFixed(2),bossHP:g.boss.hp};
+}
+// setup(g) runs after the engine is built (used below to give the kit + legacy switch; nothing for the golden itself).
+function mountBossDigest(setup:(g:any)=>void=()=>{}){
+ const g:any=new MountSundayEngine(111,p,9);setup(g);for(let i=0;i<6;i++){g.skillEnabled[i]=true;g.skillIds[i]=PRACTICE[i];g.skillSupportCounts[i]=SUPPORTS[i];}g.autoSkills=true;
+ const h=createHash('sha256');
+ for(let t=0;t<6000&&g.status==='playing';t++){
+  const input={x:t%500<120?1:0,y:t%700<150?.6:0,auto:t>=900,readyZone:9,readyBoss:true};g.acceptClientHints(input);
+  if(t%37===5)g.command({...input,attack:true});if(t%229===90)g.command({...input,dodge:true});if(t%401===300)g.command({...input,skill:t%6});
+  g.step(.02,input);if(t%10===0)h.update(JSON.stringify(g.view()));
+ }
+ return {digest:h.digest('hex'),status:g.status,phase:g.phase};
+}
+const GOLDEN={arena:'058575e53caaed5b4dc3196af852c2d622efc412d49e5cff3e11729117e76725',rooms:'514a468f5514cc96236a9c5a5fe7af3251efa4a9459ae87dc204e23780ade855',mount9:'89ae88591c36c2e64406335d74d4aaa1b2bee6d46a7d4ad307a8f7891d227cce'};
+test('1. no kit: the boss engine is tick-for-tick the 1b5675f0 engine (arena, two rooms, mount zone 10)',()=>{
+ const a=bossDigest(true),r=bossDigest(false),m=mountBossDigest();
+ assert.equal(a.digest,GOLDEN.arena,'arena');assert.equal(r.digest,GOLDEN.rooms,'two rooms');assert.equal(m.digest,GOLDEN.mount9,'mount zone 10');
+ assert.equal('heroKit' in new UnityBossEngine(111).view(),false);
+});
+test('2. bossHero legacy: kit + legacy switch is the pre-kit zone-10 boss fight tick for tick (kept for event maps)',()=>{
+ const m=mountBossDigest(g=>{g.heroKit=PINK_IAI;g.bossHeroLegacy=true;g.syncBoss();});
+ assert.equal(m.digest,GOLDEN.mount9);assert.equal(m.status,'won');
+});
+
+// --- kit contact turned to a ground direction ------------------------------------------------------------------------------
+test('3. iaiContact: dir (+-1, 0) gives the lane result exactly (every row, both facings, a grid of targets)',()=>{
+ let hits=0,n=0;
+ for(const row of Object.values(PINK_IAI.rows))for(const facing of [1,-1])for(let dx=-200;dx<=200;dx+=10)for(let dy=-160;dy<=160;dy+=10)for(let i=0;i<=8;i++){
+  const u=i/8,hero={x:0,y:0,facing,elevation:0,airHeight:0},target={x:dx,y:dy,elevation:0,radius:20};
+  const lane=iaiContact(row.contact,u,hero,target),turned=iaiContact(row.contact,u,{...hero,dir:{x:facing,y:0}},target);
+  assert.deepEqual(turned,lane,`dx ${dx} dy ${dy} u ${u} facing ${facing}`);n++;if(lane)hits++;
+ }
+ assert.ok(hits>100&&hits<n,'the grid has hits and misses');
+});
+test('4. iaiContact: a direction turns the same fan (a target straight ahead along dir is cut like one ahead on the lane)',()=>{
+ const row=PINK_IAI.rows.iai1,hero={x:0,y:0,facing:1,elevation:0,airHeight:0},body={elevation:0,radius:20};
+ for(const deg of [0,37,90,145,200,270,333]){const a=deg*Math.PI/180,dir={x:Math.cos(a),y:Math.sin(a)};
+  for(const dist of [60,110,150]){let lane=false,turned=false;for(let i=0;i<=16;i++){const u=i/16;
+   lane||=!!iaiContact(row.contact,u,hero,{...body,x:dist,y:0});turned||=!!iaiContact(row.contact,u,{...hero,dir},{...body,x:dir.x*dist,y:dir.y*dist});}
+   assert.equal(turned,lane,`deg ${deg} dist ${dist}`);}
+ }
+});
+
+// --- the boss arena with the kit -------------------------------------------------------------------------------------------
+function arena(kit:any=KIT0){const b:any=new UnityBossEngine(111,{slimeCount:0,bossHP:2000,playerHP:100000},zoneTenArena);b.traversal=p;b.enterArena(false);b.heroKit=kit;
+ b.bossIdleUntil=b.bossChaseUntil=b.bossAt=1e9;return b;}// boss AI parked (idle) so the hero tests are about the hero
+function place(b:any,x:number,y:number){b.hero.x=x;b.hero.y=y;b.hero.elevation=b.groundAt(x,y);}
+function collect(b:any,seen:Set<number>,out:any[]){for(const f of b.fx)if(f.kind==='damage'&&!seen.has(f.id)){seen.add(f.id);out.push(f);}}
+test('5. arena, kit: pressing chains iai1 -> iai2 -> iai3 on the boss with the kit damage 60/60/105, then the recover',()=>{
+ const b=arena();place(b,b.boss.x-200,b.boss.y);const hp=b.boss.hp,seen=new Set<number>(),hits:any[]=[],rows:string[]=[];
+ for(let t=0;t<200;t++){const input={x:0,y:0,auto:false};b.command({...input,attack:true,x:1});b.step(.02,input);collect(b,seen,hits);const a=b.hero.action;if(rows.at(-1)!==a)rows.push(a);if(a==='iai_recover')break;}
+ assert.deepEqual(rows.filter(r=>r.startsWith('iai')),['iai1','iai2','iai3','iai_recover']);
+ assert.deepEqual(hits.map(h=>[h.definitionId,h.value,h.target]),[['pink-iai-iai1',60,'boss'],['pink-iai-iai2',60,'boss'],['pink-iai-iai3',105,'boss']]);
+ assert.equal(hp-b.boss.hp,225);assert.equal(b.view().heroKit,'pink-iai');
+ assert.ok(Math.hypot(b.hero.x-b.boss.x,b.hero.y-b.boss.y)>=162-1e-6,'the advance stops at the boss body');
+});
+test('6. arena, planar: a press toward a boss standing in depth turns the row to it and cuts it (the lane fan would miss)',()=>{
+ for(const sy of [1,-1]){
+  const b=arena();place(b,b.boss.x,b.boss.y+sy*320);const seen=new Set<number>(),hits:any[]=[];
+  b.command({x:0,y:-sy,auto:false,attack:true});const m=b.hero.motion;assert.equal(m.row,'iai1');near(m.dir.x,0,1e-9);near(m.dir.y,-sy,1e-9);
+  // the same hero with the lane formula (facing only) never reaches a body straight up/down the depth axis
+  const row=PINK_IAI.rows.iai1;let lane=false;for(let i=0;i<=16;i++)lane||=!!iaiContact(row.contact,i/16,{...b.hero,facing:1,dir:undefined,y:b.hero.y-sy*47.17},b.boss);
+  assert.equal(lane,false,'lane fan misses the depth target');
+  for(let t=0;t<60;t++){b.step(.02,{x:0,y:0,auto:false});collect(b,seen,hits);}
+  assert.equal(hits.length,1,'iai1 cut the boss in depth');assert.equal(hits[0].definitionId,'pink-iai-iai1');
+  assert.ok(Math.abs(b.hero.x-b.boss.x)<1e-6,'the advance ran along the depth direction only');
+ }
+});
+test('7. arena, kit skill: the kit timing (58/60 s, contact 28/60 s), action skill2, kit key, the skill damages the boss',()=>{
+ const b=arena();place(b,b.boss.x-260,b.boss.y);b.skillEnabled[3]=true;b.skillIds[3]='stormcall';const hp=b.boss.hp;
+ assert.equal(b.command({x:0,y:0,auto:false,skill:3}),true);const m=b.hero.motion;
+ assert.equal(m.kind,'skill');assert.equal(m.kit,'pink-iai');assert.equal(b.hero.action,'skill2');near(m.duration,58/60);near(m.hitAt,28/60);
+ for(let t=0;t<80;t++)b.step(.02,{x:0,y:0,auto:false});assert.ok(b.boss.hp<hp,'storm-call hit the boss');
+});
+test('8. arena: dodge cuts the kit recover (kit cancel) and becomes the engine dodge',()=>{
+ const b=arena();place(b,b.boss.x-200,b.boss.y);b.command({x:1,y:0,auto:false,attack:true});
+ for(let t=0;t<3;t++)b.step(.02,{x:0,y:0,auto:false});
+ let t=0;while(b.hero.action!=='iai_recover'&&t++<200)b.step(.02,{x:0,y:0,auto:false});
+ assert.equal(b.hero.action,'iai_recover');assert.equal(b.command({x:-1,y:0,auto:false,dodge:true}),true,'dodge from the recover');
+ for(let i=0;i<4;i++)b.step(.02,{x:0,y:0,auto:false});assert.equal(b.hero.motion?.kind,'dodge');
+});
+
+// --- the zone-10 boss through MountSundayEngine ----------------------------------------------------------------------------
+function zone10(setup:(g:any)=>void){const g:any=new MountSundayEngine(111,p,9);setup(g);g.syncBoss();for(let i=0;i<6;i++){g.skillIds[i]=PRACTICE[i];g.skillSupportCounts[i]=SUPPORTS[i];}return g;}
+test('9. zone 10, kit, AUTO (no skills): the kit hero walks in and defeats the boss with 1-2-3 only; the boss still hits it; the view carries heroKit',()=>{
+ const g=zone10(x=>{x.heroKit=PINK_IAI;});const seen=new Set<number>(),hits:any[]=[];
+ for(let t=0;t<20000&&g.status==='playing';t++){const input={x:0,y:0,auto:true,readyZone:9,readyBoss:true};g.acceptClientHints(input);g.step(.02,input);collect(g.bossEncounter,seen,hits);}
+ assert.equal(g.status,'won');assert.equal(g.view().heroKit,'pink-iai');assert.equal(g.bossEncounter.heroKit,PINK_IAI);
+ const defs=new Set(hits.filter(h=>h.target==='boss').map(h=>h.definitionId));assert.deepEqual([...defs].sort(),['pink-iai-iai1','pink-iai-iai2','pink-iai-iai3']);
+ assert.equal(hits.filter(h=>h.target==='boss').reduce((s,h)=>s+h.value,0)>=2000,true);
+ assert.ok(hits.some(h=>h.target==='hero'),'the boss attacks reach the kit hero');
+});
+test('10. zone 10: the tempo command reaches the boss motion (stage 0 = no clipMap, default stage 1 = clipMap)',()=>{
+ const g=zone10(x=>{x.heroKit=PINK_IAI;});const b=g.bossEncounter;g.acceptClientHints({readyBoss:true});
+ for(let t=0;t<200&&b.introStage!=='none';t++)g.step(.02,{x:0,y:0,auto:false});
+ assert.equal(g.command({x:1,y:0,auto:false,attack:true}),true);assert.ok(b.hero.motion.clipMap,'default stage 1 maps the clip');
+ for(let t=0;t<150&&b.hero.motion;t++)g.step(.02,{x:0,y:0,auto:false});
+ assert.equal(g.command({kitTempo:0} as any),true);g.step(.02,{x:0,y:0,auto:false});assert.equal(b.kitTempo,0);
+ assert.equal(g.command({x:1,y:0,auto:false,attack:true}),true);assert.equal(b.hero.motion.row,'iai1');assert.equal(b.hero.motion.clipMap,undefined,'stage 0: the trial clock');
+});
+test('11. boot: heroKit reaches the zone-10 boss in the first snapshot; bossHero:"legacy" keeps it out; the boss mode takes it too',()=>{
+ const skills=PRACTICE.map(a=>({activeId:a,enabled:true,supportIds:[]}));const base={seed:111,traversalProfile:'source-run-v2',heroKit:'pink-iai',build:{skills},autoSkills:true};
+ let v=JSON.parse(G.stageInitialize(JSON.stringify({...base,mode:'mount',referencePreview:true,previewZone:9})));assert.equal(v.heroKit,'pink-iai');assert.equal(v.routeStage,'boss');
+ v=JSON.parse(G.stageInitialize(JSON.stringify({...base,mode:'mount',referencePreview:true,previewZone:9,bossHero:'legacy'})));assert.equal('heroKit' in v,false);assert.equal(v.routeStage,'boss');
+ v=JSON.parse(G.stageInitialize(JSON.stringify({...base,mode:'mount',referencePreview:true,previewZone:3,bossHero:'legacy'})));assert.equal(v.heroKit,'pink-iai','legacy touches only the boss');
+ v=JSON.parse(G.stageInitialize(JSON.stringify({...base,mode:'boss',referencePreview:true,previewArena:true})));assert.equal(v.heroKit,'pink-iai');
+ v=JSON.parse(G.stageInitialize(JSON.stringify({...base,mode:'boss',referencePreview:true,previewArena:true,bossHero:'legacy'})));assert.equal('heroKit' in v,false);
+});

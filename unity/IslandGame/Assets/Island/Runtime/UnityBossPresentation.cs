@@ -11,13 +11,15 @@ namespace IslandGame {
   public Transform BossTarget=>bossRoot.transform;public bool BossVisible=>bossRoot.activeSelf;
   public Transform WarningTarget=>warning.transform;public bool HookActive{get;private set;}
   public string BossClipName{get;private set;}public float BossSampleTime{get;private set;}
-  public UnityBossPresentation(Transform parent,UnityBossAssets a,JObject mapData){
+  // Display height in metres (the asset bossHeight unless the caller passes one; the kit boss fight passes a smaller one).
+  public float Height{get;}readonly float a_height;
+  public UnityBossPresentation(Transform parent,UnityBossAssets a,JObject mapData,float height=0){
    BossContactProfile.Load();map=mapData;assets=a;root=new GameObject("Unity boss encounter presentation");root.transform.SetParent(parent,false);
    bossRoot=new GameObject("Giant Boss 1");bossRoot.transform.SetParent(root.transform,false);bossRoot.layer=30;visualRoot=new GameObject("Presentation deformation (grounded)").transform;visualRoot.SetParent(bossRoot.transform,false);bossModel=UnityEngine.Object.Instantiate(a.boss,visualRoot,false);bossModel.name="Boss model";
    foreach(var r in bossModel.GetComponentsInChildren<Renderer>()){r.sharedMaterial=a.bossMaterial;r.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.On;}
    foreach(var t in bossModel.GetComponentsInChildren<Transform>(true)){t.gameObject.layer=30;if(t.name=="Hips")hips=t;if(t.name=="Foot.L")leftFoot=t;if(t.name=="Foot.R")rightFoot=t;}
    var contactNames=new[]{"Forearm.R","Hand.R","Forearm.L","Hand.L"};foreach(var t in bossModel.GetComponentsInChildren<Transform>(true))for(int i=0;i<4;i++)if(t.name==contactNames[i])contactBones[i]=t;
-   animation=new RuntimeAnimationPlayer(bossModel,.18f);animation.Sample(a.idle?a.idle:a.combo,0);scale=a.bossHeight/a.bossReferenceHeight;var skin=bossModel.GetComponentInChildren<SkinnedMeshRenderer>();sole=(leftFoot&&rightFoot?Mathf.Min(leftFoot.position.y,rightFoot.position.y):0)-skin.bounds.min.y;bossRoot.SetActive(false);
+   animation=new RuntimeAnimationPlayer(bossModel,.18f);animation.Sample(a.idle?a.idle:a.combo,0);a_height=a.bossHeight;Height=height>0?height:a.bossHeight;scale=Height/a.bossReferenceHeight;var skin=bossModel.GetComponentInChildren<SkinnedMeshRenderer>();sole=(leftFoot&&rightFoot?Mathf.Min(leftFoot.position.y,rightFoot.position.y):0)-skin.bounds.min.y;bossRoot.SetActive(false);
    // Bridge is part of the authored Nature map; never duplicate or resize it.
 
    disc=Disc();sphere=IslandDisplayMeshes.Create(PrimitiveType.Sphere);var colors=new Color[sphere.vertexCount];for(int i=0;i<colors.Length;i++)colors[i]=Color.white;sphere.colors=colors;
@@ -31,7 +33,7 @@ namespace IslandGame {
    foreach(var m in state["mobs"] as JArray??new JArray())if((bool?)m["unityBoss"]==true){boss=m as JObject;break;}
    bool show=(bool?)state["bossVisible"]==true&&boss!=null;bossRoot.SetActive(show);
    if(show){bossRoot.transform.localPosition=new Vector3(N(boss["x"])/100,N(boss["elevation"])/100,(N(boss["y"])-N(map?["laneY"],192))/100);bossRoot.transform.localRotation=Quaternion.Euler(0,Mathf.Atan2(N(boss["direction"]?["x"],-1),N(boss["direction"]?["y"]))*Mathf.Rad2Deg,0);
-    var motion=boss["motion"] as JObject;string action=(string)boss["action"];var clip=action=="throw"?assets.throwClip:action=="combo"?assets.combo:action=="walk"?assets.walk:assets.idle;float step=Mathf.Clamp(visualTime-previousVisualTime,0,.1f);if(action=="walk"&&bossPlaced)walkClock+=Vector3.Distance(bossRoot.transform.localPosition,previousBossPosition)/1.8f;else if(action!="walk")walkClock=0;previousBossPosition=bossRoot.transform.localPosition;bossPlaced=true;float time=motion==null?Mathf.Repeat(action=="walk"?walkClock:visualTime,clip.length):Mathf.Clamp01((visualTime-N(motion["start"]))/Mathf.Max(.001f,N(motion["duration"])))*clip.length;
+    var motion=boss["motion"] as JObject;string action=(string)boss["action"];var clip=action=="throw"?assets.throwClip:action=="combo"?assets.combo:action=="walk"?assets.walk:assets.idle;float step=Mathf.Clamp(visualTime-previousVisualTime,0,.1f);if(action=="walk"&&bossPlaced)walkClock+=Vector3.Distance(bossRoot.transform.localPosition,previousBossPosition)/(1.8f*Height/a_height);else if(action!="walk")walkClock=0;previousBossPosition=bossRoot.transform.localPosition;bossPlaced=true;float time=motion==null?Mathf.Repeat(action=="walk"?walkClock:visualTime,clip.length):Mathf.Clamp01((visualTime-N(motion["start"]))/Mathf.Max(.001f,N(motion["duration"])))*clip.length;
     float phase=time/clip.length;HookActive=action=="combo"&&(BossContactProfile.Active(phase,0)||BossContactProfile.Active(phase,1));
     if(action=="combo"&&presentation!=null)time=CombatPoseTiming.Limited(phase,.18f,.84f,presentation.SidePoseWeight)*clip.length;
     bool newPose=animation.Sample(clip,time,Mathf.Clamp(visualTime-previousVisualTime,0,.1f),action=="combo"?(phase>=.18f&&phase<=.84f?CombatPoseBlend.AttackContact:CombatPoseBlend.AttackEntry):CombatPoseBlend.Locomotion);if(newPose){visualRoot.localRotation=Quaternion.identity;visualRoot.localPosition=Vector3.zero;visualRoot.localScale=Vector3.one;bossModel.transform.localScale=Vector3.one*scale;bossModel.transform.localPosition=Vector3.zero;

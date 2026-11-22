@@ -112,7 +112,8 @@ export type HeroKit=typeof PINK_IAI;
 export function heroKitFor(id:unknown):HeroKit|undefined{return id===PINK_IAI.id?PINK_IAI:undefined;}
 
 export interface IaiHost{hero:any;mobs:any[];elapsed:number;planar:boolean;heroRadius:number;
- nextAttackId():number;face(x:number,y:number):void;advance(dx:number):void;strike(mob:any,damage:number,point:any,contactAt:number):void;
+ // advance: dx along the lane (planar=false). planar (boss arena): (dx, dy) along the row's direction (motion.dir).
+ nextAttackId():number;face(x:number,y:number):void;advance(dx:number,dy?:number):void;strike(mob:any,damage:number,point:any,contactAt:number):void;
  clear(mob:any):boolean;command(input:any):boolean;skillReady(slot:number):boolean;
  // K6: the engine's tempo stage override (boot / command); undefined = kit.switches.tempo.
  tempo?:number;
@@ -126,10 +127,13 @@ function advanceAt(list:ReadonlyArray<IaiAdvance>,t:number){let s=0;for(const a 
 
 // Edge of the row at fraction u of its active window vs a target body (circle on the ground, vertical extent).
 // floor: the kit's switches.heightFloor (see there); the default is the kit's.
-export function iaiContact(c:IaiContactSpec,u:number,hero:{x:number;y:number;facing:number;elevation:number;airHeight:number},target:{x:number;y:number;elevation:number;radius:number;bodyHeight?:number},floor:number|null=PINK_IAI.switches.heightFloor){
+// dir (planar boss arena only): the row's ground direction. The same fan is turned to it; the lateral axis follows the lane
+// mirror rule (facing -1 keeps +y as +y), so dir (+-1, 0) gives the lane numbers. No dir = the lane formula as before.
+export function iaiContact(c:IaiContactSpec,u:number,hero:{x:number;y:number;facing:number;elevation:number;airHeight:number;dir?:{x:number;y:number}},target:{x:number;y:number;elevation:number;radius:number;bodyHeight?:number},floor:number|null=PINK_IAI.switches.heightFloor){
  const lo=target.elevation-hero.elevation-hero.airHeight,hi=lo+(target.bodyHeight??62),h0=floor===null?c.height[0]:Math.min(c.height[0],floor);
  if(hi<h0||lo>c.height[1])return null;
- const a=(c.sweep[0]+(c.sweep[1]-c.sweep[0])*clamp01(u))*Math.PI/180,ux=Math.cos(a)*hero.facing,uy=Math.sin(a);
+ const a=(c.sweep[0]+(c.sweep[1]-c.sweep[0])*clamp01(u))*Math.PI/180,f=hero.dir;let ux=Math.cos(a)*hero.facing,uy=Math.sin(a);
+ if(f){const lx=f.x>=0?-f.y:f.y,ly=f.x>=0?f.x:-f.x;ux=f.x*Math.cos(a)+lx*Math.sin(a);uy=f.y*Math.cos(a)+ly*Math.sin(a);}
  const dx=target.x-hero.x,dy=target.y-hero.y,along=Math.max(c.reach[0],Math.min(c.reach[1],dx*ux+dy*uy));
  return Math.hypot(dx-ux*along,dy-uy*along)<=target.radius+c.width?{point:{x:target.x,y:target.elevation+20,z:target.y},part:'iai-edge'}:null;
 }
@@ -155,8 +159,9 @@ export function ageAt(map:ClipMap,clip:number){if(!map)return clip;if(clip<=0)re
  const [a,c]=map[map.length-1];return a+(clip-c);}
 const tempoOf=(host:IaiHost,kit:HeroKit)=>{const s=kitTempoStage(host,kit);return {stage:s,t:kit.tempo.stages[s]};};
 
-function startRow(host:IaiHost,kit:HeroKit,name:RowName,clipFrom:number,x:number,pendingSkill:number|null=null){
- const h=host.hero,r=kit.rows[name];if(Math.abs(x)>.001)host.face(x,0);
+// y (planar only): the press direction's depth part. Planar rows face (x, y) and keep that direction (motion.dir, savedY).
+function startRow(host:IaiHost,kit:HeroKit,name:RowName,clipFrom:number,x:number,pendingSkill:number|null=null,y=0){
+ const h=host.hero,r=kit.rows[name];if(host.planar){if(Math.hypot(x,y)>.001)host.face(x,y);}else if(Math.abs(x)>.001)host.face(x,0);
  h.action=name;
  // K6: times on the motion are kernel ages (what the display and the effects read); the kit's own logic runs on the clip
  // clock (clipAt). With no map both are the trial table's numbers.
@@ -166,7 +171,7 @@ function startRow(host:IaiHost,kit:HeroKit,name:RowName,clipFrom:number,x:number
   attackId:host.nextAttackId(),definitionId:kit.id+'-'+name,hitIds:[],facing:h.facing,from:{x:h.x,y:h.y},to:{x:h.x,y:h.y},advanced:advanceAt(r.advance,clipFrom),lastClip:clipFrom,
   saved:false,savedX:0,pendingSkill,hitstop:r.hitstop*kit.switches.hitstopScale,hitstopLeft:0,hitstopUntil:null,
   timeline:{active:[{strike:0,from:A(r.activeFrom)/D,to:A(r.activeTo)/D}],inputFrom:r.inputFrom===null?null:A(r.inputFrom)/D,cancelFrom:r.cancelAt===null?1:A(r.cancelAt)/D,contactRevision:kit.revision},
-  ...(map?{tempoStage:stage,clipMap:map}:{})};
+  ...(map?{tempoStage:stage,clipMap:map}:{}),...(host.planar?{dir:{x:h.direction.x,y:h.direction.y},savedY:0}:{})};
  h.serial++;return true;
 }
 function startRecover(host:IaiHost,kit:HeroKit,row:any){
@@ -174,22 +179,23 @@ function startRecover(host:IaiHost,kit:HeroKit,row:any){
  const {stage,t}=tempoOf(host,kit),map=recoverClipMap(k,t),A=(c:number)=>ageAt(map,c);
  h.motion={kind:'recover',kit:kit.id,after:row.row,start:host.elapsed,duration:A(k.duration),hitAt:0,sheatheAt:A(k.sheathe),holdUntil:A(k.sheathe+k.hold),moveReleaseAt:A(k.moveReleaseAt),
   next:r.next,grace:r.next?A(r.grace):0,pendingPress:false,pendingSkill:row.pendingSkill??null,savedX:0,attackId:host.nextAttackId(),from:{x:h.x,y:h.y},to:{x:h.x,y:h.y},facing:row.facing??h.facing,advanced:0,
-  ...(map?{tempoStage:stage,clipMap:map}:{})};
+  ...(map?{tempoStage:stage,clipMap:map}:{}),...(row.dir?{dir:row.dir,savedY:0}:{})};
  h.serial++;
 }
 // Clip time of a kit motion now.
 const clipNow=(host:IaiHost,m:any)=>clipAt(m.clipMap??null,host.elapsed-m.start);
 
 // Attack button. True when the press did something (started a row or was kept for later).
-export function iaiPress(host:IaiHost,kit:HeroKit,x:number){
+// y: the press direction's depth part, used only when host.planar (boss arena).
+export function iaiPress(host:IaiHost,kit:HeroKit,x:number,y=0){
  const h=host.hero,m=h.motion;
- if(!m)return startRow(host,kit,'iai1',0,x);
+ if(!m)return startRow(host,kit,'iai1',0,x,null,y);
  if(m.kit!==kit.id)return false;
- if(m.kind==='attack'){const r=kit.rows[m.row as RowName];if(r.next&&r.inputFrom!==null&&clipNow(host,m)>=r.inputFrom-1e-9){m.saved=true;m.savedX=x;return true;}return false;}
+ if(m.kind==='attack'){const r=kit.rows[m.row as RowName];if(r.next&&r.inputFrom!==null&&clipNow(host,m)>=r.inputFrom-1e-9){m.saved=true;m.savedX=x;if(m.dir)m.savedY=y;return true;}return false;}
  if(m.kind==='recover'){const age=host.elapsed-m.start;
-  if(m.next&&age<m.grace-1e-9)return startRow(host,kit,m.next,0,x,m.pendingSkill);// still inside the combo grace: the chain goes on
-  if(age<m.sheatheAt-1e-9){m.pendingPress=true;m.savedX=x;return true;}// sheathing: row 1 when the sword is home
-  return startRow(host,kit,'iai1',kit.entry,x);}// ready stance (hold / release): row 1 at once, no entry
+  if(m.next&&age<m.grace-1e-9)return startRow(host,kit,m.next,0,x,m.pendingSkill,y);// still inside the combo grace: the chain goes on
+  if(age<m.sheatheAt-1e-9){m.pendingPress=true;m.savedX=x;if(m.dir)m.savedY=y;return true;}// sheathing: row 1 when the sword is home
+  return startRow(host,kit,'iai1',kit.entry,x,null,y);}// ready stance (hold / release): row 1 at once, no entry
  return false;
 }
 function replace(host:IaiHost,input:any){const h=host.hero,prev=h.motion,action=h.action;h.motion=null;h.action='stay1';if(host.command(input))return true;h.motion=prev;h.action=action;return false;}
@@ -213,7 +219,7 @@ export function iaiCommand(host:IaiHost,kit:HeroKit,input:any):boolean|undefined
   if(!host.skillReady(input.skill))return false;
   m.pendingSkill=input.skill;m.pendingPress=false;m.saved=false;return true;// fires when the sword is home
  }
- if(input.attack)return iaiPress(host,kit,input.x??0);
+ if(input.attack)return host.planar?iaiPress(host,kit,input.x??0,input.y??0):iaiPress(host,kit,input.x??0);
  return undefined;
 }
 
@@ -223,11 +229,16 @@ export function iaiCanReach(host:IaiHost,kit:HeroKit,target:any){
  // Same numbers as stepRow: the edge at fraction u of the window, from where the row's advance has put the hero by then
  // (a forward push stops at the body, a step back does not).
  const h=host.hero,r=kit.rows[rowFor(host,kit)],face=Math.sign(target.x-h.x)||1,gap=Math.max(0,Math.abs(target.x-h.x)-host.heroRadius-target.radius);
+ // planar (boss arena): the same check along the ground direction to the target (the row faces it when pressed).
+ if(host.planar){const dx=target.x-h.x,dy=target.y-h.y,d=Math.hypot(dx,dy),dir=d>1e-6?{x:dx/d,y:dy/d}:{x:h.facing<0?-1:1,y:0},pgap=Math.max(0,d-host.heroRadius-target.radius);
+  for(let i=0;i<=12;i++){const u=i/12,adv=advanceAt(r.advance,r.activeFrom+(r.activeTo-r.activeFrom)*u),shift=adv>0?Math.min(adv,pgap):adv;
+   if(iaiContact(r.contact,u,{x:h.x+dir.x*shift,y:h.y+dir.y*shift,elevation:h.elevation,airHeight:h.airHeight,facing:dir.x<0?-1:1,dir},target,kit.switches.heightFloor))return true;}
+  return false;}
  for(let i=0;i<=12;i++){const u=i/12,adv=advanceAt(r.advance,r.activeFrom+(r.activeTo-r.activeFrom)*u),shift=adv>0?Math.min(adv,gap):adv;
   if(iaiContact(r.contact,u,{x:h.x+face*shift,y:h.y,elevation:h.elevation,airHeight:h.airHeight,facing:face},target,kit.switches.heightFloor))return true;}
  return false;
 }
-function autoTarget(host:IaiHost,kit:HeroKit){let best:any=null;for(const mob of host.mobs)if(mob.hp>0&&iaiCanReach(host,kit,mob)&&(!best||Math.abs(mob.x-host.hero.x)<Math.abs(best.x-host.hero.x)))best=mob;return best;}
+function autoTarget(host:IaiHost,kit:HeroKit){const h=host.hero,dist=(m:any)=>host.planar?Math.hypot(m.x-h.x,m.y-h.y):Math.abs(m.x-h.x);let best:any=null;for(const mob of host.mobs)if(mob.hp>0&&iaiCanReach(host,kit,mob)&&(!best||dist(mob)<dist(best)))best=mob;return best;}
 
 function freeze(host:IaiHost,m:any,seconds:number,struck:any[]){
  // REV2-PORT-HOOK(HITSTOP): kernel hitstop. The hero motion clock and the struck bodies stop; Unity reads hitstopUntil / frozenUntil.
@@ -238,29 +249,29 @@ const SWEEP_SAMPLES=32;
 function stepRow(host:IaiHost,kit:HeroKit,dt:number,m:any){
  if(m.hitstopLeft>1e-9){m.start+=dt;m.hitstopLeft-=dt;return true;}
  const h=host.hero,r=kit.rows[m.row as RowName],c=Math.min(clipNow(host,m),r.duration);
- const adv=advanceAt(r.advance,c);if(adv!==m.advanced){host.advance(m.facing*(adv-m.advanced));m.advanced=adv;}
+ const adv=advanceAt(r.advance,c);if(adv!==m.advanced){if(m.dir)host.advance(m.dir.x*(adv-m.advanced),m.dir.y*(adv-m.advanced));else host.advance(m.facing*(adv-m.advanced));m.advanced=adv;}
  const lo=Math.max(r.activeFrom,m.lastClip),hi=Math.min(r.activeTo,c),struck:any[]=[];
  // T1: at least SWEEP_SAMPLES points over the whole window as well as 120 per clip second. The T1 windows are short (iai1
  // 0.05 s) and the edge fan turns 120-200 degrees in them; 120/s alone left 20-degree gaps that a far target fell through.
  // T1b (same results, cheaper): the hero copy is made once per tick, not per sample and mob, and a mob farther than the
  // edge can reach (reach end + its radius + edge half width, ground plane) is left out of the samples of this tick.
  if(hi>=lo){const n=Math.max(1,Math.ceil((hi-lo)*120),Math.ceil((hi-lo)/Math.max(1e-6,r.activeTo-r.activeFrom)*SWEEP_SAMPLES));
-  const edge={...h,facing:m.facing},near=host.mobs.filter(mob=>Math.hypot(mob.x-h.x,mob.y-h.y)<=r.contact.reach[1]+mob.radius+r.contact.width+1e-6);
+  const edge=m.dir?{...h,facing:m.facing,dir:m.dir}:{...h,facing:m.facing},near=host.mobs.filter(mob=>Math.hypot(mob.x-h.x,mob.y-h.y)<=r.contact.reach[1]+mob.radius+r.contact.width+1e-6);
   if(near.length)for(let i=0;i<=n;i++){const t=lo+(hi-lo)*i/n,u=(t-r.activeFrom)/Math.max(1e-6,r.activeTo-r.activeFrom);
   for(const mob of near){if(mob.hp<=0||m.hitIds.includes(mob.id))continue;const hit=iaiContact(r.contact,u,edge,mob,kit.switches.heightFloor);
    if(hit&&host.clear(mob)){m.hitIds.push(mob.id);host.strike(mob,r.damage,hit.point,m.start+ageAt(m.clipMap??null,t));struck.push(mob);}}}}
  m.lastClip=c;if(struck.length)freeze(host,m,m.hitstop,struck);
- if(m.saved&&r.next&&r.cancelAt!==null&&c>=r.cancelAt-1e-9)return startRow(host,kit,r.next,0,m.savedX,m.pendingSkill);
+ if(m.saved&&r.next&&r.cancelAt!==null&&c>=r.cancelAt-1e-9)return startRow(host,kit,r.next,0,m.savedX,m.pendingSkill,m.savedY??0);
  if(c>=r.duration-1e-9)startRecover(host,kit,m);
  return true;
 }
 function stepRecover(host:IaiHost,kit:HeroKit,input:any,m:any,stick:boolean){
  const h=host.hero,age=host.elapsed-m.start;
  // the measured flick+sheathe step (back), along the facing of the row it follows; it stops when the recover is left
- const adv=advanceAt(kit.recover.advance,clipAt(m.clipMap??null,Math.min(age,m.duration)));if(adv!==m.advanced){host.advance(m.facing*(adv-m.advanced));m.advanced=adv;}
+ const adv=advanceAt(kit.recover.advance,clipAt(m.clipMap??null,Math.min(age,m.duration)));if(adv!==m.advanced){if(m.dir)host.advance(m.dir.x*(adv-m.advanced),m.dir.y*(adv-m.advanced));else host.advance(m.facing*(adv-m.advanced));m.advanced=adv;}
  if(age>=m.sheatheAt-1e-9){
   if(m.pendingSkill!==null&&m.pendingSkill!==undefined){const slot=m.pendingSkill;m.pendingSkill=null;m.pendingPress=false;if(replace(host,{x:0,y:0,auto:false,skill:slot}))return true;}
-  if(m.pendingPress){m.pendingPress=false;return startRow(host,kit,'iai1',kit.entry,m.savedX);}
+  if(m.pendingPress){m.pendingPress=false;return startRow(host,kit,'iai1',kit.entry,m.savedX,null,m.savedY??0);}
  }
  // The stick (or AUTO with nothing in reach) leaves the ready hold once its blend is done; the engine moves on this tick.
  if(age>=m.moveReleaseAt-1e-9&&(stick||input.auto&&host.mobs.some(mob=>mob.hp>0))){h.motion=null;h.action='stay1';return false;}
@@ -292,7 +303,7 @@ export function iaiStep(host:IaiHost,kit:HeroKit,dt:number,input:any){
  if(h.motion.kind==='skill')return stepSkill(host,kit,dt,h.motion);
  const stick=Math.hypot(input.x??0,host.planar?input.y??0:0)>.1;
  // AUTO skills (only with host.autoSkill): checked before the next cut is pressed. 'wait' = a skill waits for the sheathe, so no cut.
- if(input.auto&&!stick&&(h.motion.kind==='attack'||h.motion.kind==='recover')){const s=autoSkill(host,kit,h.motion);if(s==='cast')return true;if(s!=='wait'){const t=autoTarget(host,kit);if(t)iaiPress(host,kit,Math.sign(t.x-h.x)||1);else if(h.motion.kind==='recover'&&host.elapsed-h.motion.start>=h.motion.moveReleaseAt-1e-9)return stepRecover(host,kit,input,h.motion,false);}}
+ if(input.auto&&!stick&&(h.motion.kind==='attack'||h.motion.kind==='recover')){const s=autoSkill(host,kit,h.motion);if(s==='cast')return true;if(s!=='wait'){const t=autoTarget(host,kit);if(t){if(host.planar)iaiPress(host,kit,t.x-h.x,t.y-h.y);else iaiPress(host,kit,Math.sign(t.x-h.x)||1);}else if(h.motion.kind==='recover'&&host.elapsed-h.motion.start>=h.motion.moveReleaseAt-1e-9)return stepRecover(host,kit,input,h.motion,false);}}
  const m=h.motion;if(!m||m.kit!==kit.id)return false;
  if(m.kind==='attack')return stepRow(host,kit,dt,m);
  if(m.kind==='recover')return stepRecover(host,kit,{...input,auto:false},m,stick);
