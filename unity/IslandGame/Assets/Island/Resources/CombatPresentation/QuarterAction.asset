@@ -15,9 +15,12 @@ MonoBehaviour:
   limitedAttackPoses: 0
   poseEmphasis: 0
   silhouetteExaggeration: 0
-  flashSeconds: 0.09
-  flashStrength: 0.45
+  flashSeconds: 0.11
+  flashStrength: 0.59
+  flashColor: {r: 1.15, g: 1, b: 0.85, a: 1}
   soundVolume: 0.14
+  shakeEnabled: 0
+  shakeAllowSources: []
   shakeMeters: 0.018
   fovPunchDegrees: 0.18
   smearSeconds: 0.045

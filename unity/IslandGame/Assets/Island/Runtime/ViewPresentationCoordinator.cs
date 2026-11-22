@@ -23,6 +23,9 @@ namespace IslandGame {
   public float FlashSeconds=>Blend(Side?Side.flashSeconds:.12f,Quarter?Quarter.flashSeconds:.09f);
   public float FlashStrength=>Blend(Side?Side.flashStrength:.6f,Quarter?Quarter.flashStrength:.45f);
   public float SoundVolume=>Blend(Side?Side.soundVolume:.16f,Quarter?Quarter.soundVolume:.14f);
+  public Color FlashColor=>Color.Lerp(Side?Side.flashColor:new Color(1,.85f,.7f,1),Quarter?Quarter.flashColor:new Color(1,.85f,.7f,1),QuarterWeight);
+  // Camera shake gate: the profile of the view that dominates now (Side below half the transition, Quarter above).
+  public bool ShakeAllowed(string source)=>CombatShakeGate.Allows(QuarterWeight>=.5f?Quarter:Side,source);
   public float Shake=>Blend(Side?Side.shakeMeters:.035f,Quarter?Quarter.shakeMeters:.018f)*ImpactWeight;
   public float FovPunch=>Blend(Side?Side.fovPunchDegrees:.45f,Quarter?Quarter.fovPunchDegrees:.18f)*ImpactWeight;
   public float SmearLife=>Blend(Side?Side.smearSeconds:.09f,Quarter?Quarter.smearSeconds:.045f)*ImpactWeight;
