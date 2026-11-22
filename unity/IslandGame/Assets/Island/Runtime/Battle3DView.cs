@@ -95,7 +95,10 @@ namespace IslandGame {
   // perspective. Before: (45,90,22,6,(-.6,.8,-.15)) with whole-boss framing.
   // Boss beams (2026-11-22, brief: "about twice as far, the portrait screen can show more"): same angle and lens, distance 14 -> 28,
   // so the hero is about half the screen height it was (editor fight median 11.6 % -> 6.2 %) and more of the arena and the beams is in view.
-  public static BattleCameraController.Preset KitBossQuarter=new BattleCameraController.Preset(55,70,12,28,new Vector3(-.8f,.8f,0));
+  // Camera diagonal brief 2 (2026-11-22, user: "a little more diagonal"): yaw 70 -> 55. yaw is Unity Euler y (0 = looking along +z, 90 = along
+  // +x, the hero-boss line), so 45 is the world diagonal; 55 lays the arena floor and the hero-boss line diagonally across the portrait
+  // screen (line ~50 deg from horizontal on screen, was ~66). Pitch, lens and distance unchanged (hero height does not depend on yaw).
+  public static BattleCameraController.Preset KitBossQuarter=new BattleCameraController.Preset(55,55,12,28,new Vector3(-.8f,.8f,0));
   bool KitBoss=>assets&&assets.IsKit&&!Battle3DAssets.BossHeroLegacy;
   public Transform BossTarget=>bossView!=null?bossView.BossTarget:null;
   public string BossClipName=>bossView?.BossClipName;

@@ -46,7 +46,7 @@ namespace IslandGame.Tests {
    }finally{view.Dispose();Object.DestroyImmediate(parent.gameObject);}
   }
   [Test] public void Kit_boss_camera_is_the_tuned_quarter_view(){
-   var q=Battle3DView.KitBossQuarter;Assert.AreEqual(55f,q.pitch);Assert.AreEqual(70f,q.yaw);Assert.AreEqual(12f,q.verticalFov);Assert.AreEqual(28f,q.distance,"boss beams brief: about twice as far (was 14)");
+   var q=Battle3DView.KitBossQuarter;Assert.AreEqual(55f,q.pitch);Assert.AreEqual(55f,q.yaw,"camera diagonal brief 2: yaw 70 -> 55, toward the 45 deg diagonal of the world axes");Assert.AreEqual(12f,q.verticalFov);Assert.AreEqual(28f,q.distance,"boss beams brief: about twice as far (was 14)");
    Assert.AreEqual(new Vector3(-.8f,.8f,0),q.pivotOffset,"brief 4 Editor sweep values (55 deg, hero-centred, hero >= 10 %)");
   }
   // Hero-centred framing vs the old whole-boss framing, same rig, same pose: hero 2 m from a 3.2 m boss (a box ~ its skinned bounds).
@@ -75,6 +75,28 @@ namespace IslandGame.Tests {
    Assert.GreaterOrEqual(hero.heroFrac,whole.heroFrac*.999f,"hero-centred framing does not push the camera out for the boss head");Assert.LessOrEqual(hero.dist,whole.dist+1e-3f,"not farther");
    Assert.AreEqual(Battle3DView.KitBossQuarter.distance,hero.dist,.05f,"hero-centred = the preset distance");
    Assert.IsTrue(warned.heroIn&&warned.footIn,"warning disc, hero and boss feet in view while a warning is up");
+  }
+  // Camera diagonal brief 2, A: the boss 10 m away across the portrait width (screen right at the kit yaw) needs ~50 m to keep its feet in
+  // view; hero-centred framing stops at heroCentricBossMaxDistance (34) and still keeps the hero and the warning disc in view.
+  static (float dist,float maxStep,bool heroIn,bool warnIn) FarBoss(float cap){
+   var rigGo=new GameObject("rig cap test");var camGo=new GameObject("cam");camGo.transform.SetParent(rigGo.transform,false);var cam=camGo.AddComponent<Camera>();
+   var q=Battle3DView.KitBossQuarter;var right=Quaternion.Euler(0,q.yaw,0)*Vector3.right;
+   var bossGo=GameObject.CreatePrimitive(PrimitiveType.Cube);var bossRoot=new GameObject("boss root").transform;bossRoot.position=right*10;bossGo.transform.position=bossRoot.position+Vector3.up*1.6f;bossGo.transform.localScale=new Vector3(2.4f,3.2f,2.4f);bossGo.transform.SetParent(bossRoot,true);
+   try{
+    cam.aspect=1080f/2340f;var rig=rigGo.AddComponent<BattleCameraController>();rig.Bind(cam);rig.externallyDriven=true;rig.maxBossDistance=40;rig.quarter=q;rig.heroCentricBoss=true;rig.heroCentricBossMaxDistance=cap;
+    rig.SetPose(Vector3.zero,1,0,0);rig.SetViewMode(ViewMode.QuarterView,bossRoot);rig.ResetPose();
+    rig.WarningActive=true;rig.WarningBounds=new Bounds(new Vector3(0,.05f,0),new Vector3(2.4f,.1f,2.4f));
+    float last=rig.CurrentDistance,maxStep=0;for(int i=0;i<240;i++){rig.Tick(1/60f);maxStep=Mathf.Max(maxStep,Mathf.Abs(rig.CurrentDistance-last));last=rig.CurrentDistance;}
+    bool In(Vector3 p){var v=cam.WorldToViewportPoint(p);return v.z>0&&v.x>=0&&v.x<=1&&v.y>=0&&v.y<=1;}
+    return (rig.CurrentDistance,maxStep,In(Vector3.zero)&&In(Vector3.up*1.2f),In(new Vector3(-1.2f,0,-1.2f))&&In(new Vector3(1.2f,0,1.2f))&&In(new Vector3(-1.2f,0,1.2f))&&In(new Vector3(1.2f,0,-1.2f)));
+   }finally{Object.DestroyImmediate(rigGo);Object.DestroyImmediate(bossRoot.gameObject);}
+  }
+  [Test] public void Hero_centred_boss_feet_distance_is_capped_so_the_camera_stays_in_front_of_the_backdrop(){
+   var free=FarBoss(1000);var capped=FarBoss(34);
+   TestContext.WriteLine($"uncapped dist {free.dist:F2} (max step {free.maxStep:F3}); capped dist {capped.dist:F2} (max step {capped.maxStep:F3})");
+   Assert.Greater(free.dist,40f,"the far boss really needs more than the cap (test setup)");
+   Assert.LessOrEqual(capped.dist,34.01f,"boss-feet distance capped at heroCentricBossMaxDistance");Assert.GreaterOrEqual(capped.dist,Battle3DView.KitBossQuarter.distance-.01f,"never below the preset");
+   Assert.IsTrue(capped.heroIn&&capped.warnIn,"hero and warning disc stay in view under the cap");
   }
   [Test] public void Kit_boss_visible_hands_sit_on_the_kernel_hook_points(){
    var a=Resources.Load<UnityBossAssets>("UnityBossAssets");if(!a||!a.boss||!a.combo)Assert.Ignore("boss assets not present");

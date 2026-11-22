@@ -33,7 +33,7 @@ namespace IslandGame.Tests {
    for(float t=0;t<=end;t+=.01f){float p=BossBeamPresentation.Phase(t,0,fire,stop,3.6f,.36f);Assert.GreaterOrEqual(p,last-1e-6f);Assert.Less(p-last,.02f);last=p;}
    Assert.AreEqual(1f,BossBeamPresentation.Angle(0,1,-.5f,1,7),1e-6f,"no turn while charging");Assert.AreEqual(-2f,BossBeamPresentation.Angle(9,1,-.5f,1,7),1e-6f,"6 s x -0.5 rad/s, then held");
   }
-  // Clockwise on the screen of the kit boss camera (55 deg pitch, 70 deg yaw, portrait): a falling kernel angle turns clockwise.
+  // Clockwise on the screen of the kit boss camera (55 deg pitch, 55 deg yaw since camera diagonal brief 2, portrait): a falling kernel angle turns clockwise.
   [Test] public void Falling_kernel_angle_turns_clockwise_on_the_boss_camera_screen(){
    var go=new GameObject("beam cam");var cam=go.AddComponent<Camera>();
    try{

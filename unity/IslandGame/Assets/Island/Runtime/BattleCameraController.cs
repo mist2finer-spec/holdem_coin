@@ -54,6 +54,11 @@ namespace IslandGame {
   // the boss, and only guarantees the hero, the warning disc and the boss feet (a bossFootRadius x bossFootHeight box at the boss root).
   // The boss head may leave the top of the screen. Off = the old whole-boss framing (legacy boss, mountain path).
   public bool heroCentricBoss;public float heroCentricBossWeight=.1f,bossFootRadius=.5f,bossFootHeight=1.2f;
+  // Camera diagonal brief 2, A (2026-11-22, director): at a more diagonal yaw the hero-boss gap spreads across the narrow portrait width, so
+  // the boss-feet guarantee alone pushed the camera to 45-55 m, behind the arena backdrop (whole screen hidden). Hero-centred framing caps
+  // the boss-feet distance here (never below the preset distance); past it the boss feet may leave the screen. Hero and warning stay uncapped.
+  public float heroCentricBossMaxDistance=34;
+  float BossDistanceCap=>heroCentricBoss?Mathf.Max(current.distance,heroCentricBossMaxDistance):float.PositiveInfinity;
   Bounds BossFootBounds=>new Bounds(boss.position+Vector3.up*bossFootHeight*.5f,new Vector3(bossFootRadius*2,bossFootHeight,bossFootRadius*2));
   float BossFrameDistance(Vector3 pivot){if(heroCentricBoss)return RequiredDistance(BossFootBounds,pivot,transform.rotation,view.fieldOfView,view.aspect);float d=0;foreach(var r in bossRenderers)if(r&&r.enabled)d=Mathf.Max(d,RequiredDistance(r.bounds,pivot,transform.rotation,view.fieldOfView,view.aspect));return d;}
   BattleForegroundOcclusion occlusion;
@@ -120,7 +125,7 @@ namespace IslandGame {
     var heroBounds=new Bounds(new Vector3(pose.x,ground+.65f,pose.z),new Vector3(.9f,1.5f,.7f));
     float required=RequiredDistance(heroBounds,target,transform.rotation,view.fieldOfView,view.aspect);
     required=Mathf.Max(required,Mathf.Lerp(current.distance,BossFrameDistance(target),bossInfluence));
-    distance=Mathf.Clamp(Mathf.Max(current.distance,required),current.distance,maxBossDistance);
+    distance=Mathf.Clamp(Mathf.Max(current.distance,required),current.distance,Mathf.Min(maxBossDistance,BossDistanceCap));
    }
    if(WarningActive)distance=Mathf.Max(distance,RequiredDistance(WarningBounds,target,transform.rotation,view.fieldOfView,view.aspect));
    if(initialized&&t<1){target=Vector3.Lerp(transitionFromPosition,target,t);distance=Mathf.Lerp(from.distance,distance,t);}
@@ -136,7 +141,7 @@ namespace IslandGame {
    // Recheck framing after transition smoothing and offsets. Threats never depend on preset timing.
    float safe=RequiredDistance(new Bounds(new Vector3(pose.x,ground+.7f,pose.z),new Vector3(1,1.6f,1)),transform.position,transform.rotation,view.fieldOfView,view.aspect);
    if(WarningActive)safe=Mathf.Max(safe,RequiredDistance(WarningBounds,transform.position,transform.rotation,view.fieldOfView,view.aspect));
-   if(boss&&boss.gameObject.activeInHierarchy&&Vector3.Distance(pose,boss.position)<12)safe=Mathf.Max(safe,BossFrameDistance(transform.position));
+   if(boss&&boss.gameObject.activeInHierarchy&&Vector3.Distance(pose,boss.position)<12)safe=Mathf.Max(safe,Mathf.Min(BossFrameDistance(transform.position),BossDistanceCap));
    CurrentDistance=Mathf.Max(CurrentDistance,safe+ImpactOffset.magnitude);
    view.transform.localPosition=new Vector3(0,0,-CurrentDistance)+ImpactOffset;view.transform.localRotation=Quaternion.identity;
    if(occlusion)occlusion.Apply(view,new Vector3(pose.x,ground,pose.z),current.pitch);
