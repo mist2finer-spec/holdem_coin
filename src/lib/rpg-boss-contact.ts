@@ -11,9 +11,10 @@ export function segmentDistanceSq(p1:V3,q1:V3,p2:V3,q2:V3){
  const v={x:r.x+d1.x*s-d2.x*t,y:r.y+d1.y*s-d2.y*t,z:r.z+d1.z*s-d2.z*t};return dot(v,v);
 }
 export function worldPoint(p:V3,boss:{x:number;y:number;elevation:number;direction:{x:number;y:number}}):V3{return {x:boss.x+p.x*boss.direction.y+p.z*boss.direction.x,y:boss.elevation+p.y,z:boss.y-p.x*boss.direction.x+p.z*boss.direction.y};}
-export function hookContact(phase:number,hand:number,boss:Parameters<typeof worldPoint>[1],hero:{x:number;y:number;elevation:number;airHeight:number;action:string}){
- const shape=sampleArm(phase,hand),a=worldPoint(shape.elbow,boss),b=worldPoint(shape.hand,boss),radius=profile.heroRadius,base=hero.elevation+hero.airHeight,height=hero.action.startsWith('sliding')?65:profile.heroHeight;
+// scale: boss display size / the 6.5 m profile (1 = the profile as measured). Arm points, hand and arm radii scale with it; the hero capsule does not.
+export function hookContact(phase:number,hand:number,boss:Parameters<typeof worldPoint>[1],hero:{x:number;y:number;elevation:number;airHeight:number;action:string},scale=1){
+ const shape=sampleArm(phase,hand),k=(p:V3):V3=>scale===1?p:{x:p.x*scale,y:p.y*scale,z:p.z*scale},a=worldPoint(k(shape.elbow),boss),b=worldPoint(k(shape.hand),boss),radius=profile.heroRadius,base=hero.elevation+hero.airHeight,height=hero.action.startsWith('sliding')?65:profile.heroHeight;
  const lo={x:hero.x,y:base+radius,z:hero.y},hi={x:hero.x,y:base+height-radius,z:hero.y};
- const fist=segmentDistanceSq(b,b,lo,hi)<=(radius+profile.handRadii[hand])**2,arm=segmentDistanceSq(a,b,lo,hi)<=(radius+profile.armRadius)**2;
+ const fist=segmentDistanceSq(b,b,lo,hi)<=(radius+profile.handRadii[hand]*scale)**2,arm=segmentDistanceSq(a,b,lo,hi)<=(radius+profile.armRadius*scale)**2;
  return fist||arm?{point:b,part:fist?'hand':'forearm'}:null;
 }

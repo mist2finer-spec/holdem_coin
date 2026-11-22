@@ -9,6 +9,11 @@ export const UNITY_BOSS_PROTOCOL='island-unity-boss-v2';
 export type UnityInput={x:number;y:number;auto:boolean;paused?:boolean;attack?:boolean;jump?:boolean;slide?:boolean;dodge?:boolean;skill?:number;potion?:'health'|'mana'};
 type Motion={next?:Motion;nextAction?:string;cancelledAttackId?:number;jump?:ReturnType<typeof beginJump>;flightDuration?:number;linkedSupports?:number;variant?:number;skillId?:string;target?:{x:number;y:number};radius?:number;damage?:number;kind:string;start:number;duration:number;hitAt:number;from:{x:number;y:number};to:{x:number;y:number};hits?:number[];done?:number;slot?:number;attackId?:number;hitMask?:number;definitionId?:string;timeline?:any;hitIds?:number[];comboStep?:number};
 export type UnityRules={playerHP:number;bossHP:number;slimeCount:number;slimeHP:number;attackDamage:number;comboDuration:number;comboHitTimes:number[];warningSeconds:number;blastDamage:number;blastRadius:number;knockbackSeconds:number};
+// Kit boss fight (2026-11-21): the boss is shown 3.2 m tall instead of the 6.5 m the contact profile was measured at. With a kit hero
+// the boss body, hook arms (points and radii), body height and boss spacing (chase stop/re-engage, attack start, arena margin,
+// obstacle radius) all scale by this one factor; the warning disc, damage, timing and pattern order do not. No kit = factor 1.
+export const KIT_BOSS_HEIGHT=320;
+export const KIT_BOSS_SCALE=KIT_BOSS_HEIGHT/(BOSS_CONTACT.bossHeight*100);
 export const UNITY_BOSS_RULES:Readonly<UnityRules>=Object.freeze({playerHP:1_000_000,bossHP:1_000_000_000,slimeCount:8,slimeHP:120,attackDamage:60,comboDuration:2.2,comboHitTimes:[.85,1.55],warningSeconds:2,blastDamage:10000,blastRadius:120,knockbackSeconds:1.8});
 const clamp=(n:number,a:number,b:number)=>Math.max(a,Math.min(b,n));
 const LANE_Y=5000,ARENA_X=2670;
@@ -30,6 +35,8 @@ export class UnityBossEngine {
  // own hero rules, unchanged. With a kit the attack rows, the kit skill timing and the kit AUTO reach come from rpg-hero-kit-iai
  // (planar in the boss room); dodge/jump/slide, knockback, the boss AI, HP and contacts stay this engine's.
  heroKit?:HeroKit;
+ get bossScale(){return this.heroKit?KIT_BOSS_SCALE:1;}
+ private get bodyRadius(){return BOSS_CONTACT.bodyRadius*this.bossScale;}
  // Kit tempo stage override (as MountSundayEngine.kitTempo); undefined = the kit's switches.tempo.
  kitTempo?:number;
  setKitTempo(v:unknown){if(!this.heroKit||!Number.isInteger(v)||(v as number)<0||(v as number)>=this.heroKit.tempo.stages.length)return false;this.kitTempo=v as number;return true;}
@@ -56,10 +63,10 @@ export class UnityBossEngine {
  get slimeCleared(){return this.slimes.every(m=>m.hp<=0);}
  private bounds(){if(this.arena){const t=this.map.terrain;return {minX:t.originX*100,maxX:(t.originX+(t.width-1)*t.step)*100,minY:LANE_Y+t.originZ*100,maxY:LANE_Y+(t.originZ+(t.height-1)*t.step)*100};}return this.room===1?{minX:ARENA_X,maxX:8700,minY:1200,maxY:10300}:this.slimeCleared?{minX:1100,maxX:8700,minY:LANE_Y,maxY:LANE_Y}:{minX:1100,maxX:2140,minY:LANE_Y,maxY:LANE_Y};}
  private blocked(x:number,y:number,radius=18){return this.outsideArena(x,y,radius)||this.map.obstacles.some((o:any)=>Math.hypot(o.x-x,o.y-y)<o.radius+radius);}
- private heroBlocked(x:number,y:number){if(this.outsideArena(x,y,20))return true;const kind=this.hero.motion?.kind;if(kind==='dodge')return this.traversal?this.blocked(x,y):false;const feet=this.hero.motion?.jump?.worldY??this.groundAt(x,y)+this.hero.airHeight;if(kind==='jump')return this.map.obstacles.some((o:any)=>blocksAt(x,y,feet,o,(a,b)=>this.groundAt(a,b)))||this.room===1&&this.boss.hp>0&&blocksAt(x,y,feet,{...this.boss,bodyHeight:650},(a,b)=>this.groundAt(a,b));return this.blocked(x,y)||this.room===1&&this.boss.hp>0&&Math.hypot(x-this.boss.x,y-this.boss.y)<BOSS_CONTACT.bodyRadius+BOSS_CONTACT.heroRadius;}
+ private heroBlocked(x:number,y:number){if(this.outsideArena(x,y,20))return true;const kind=this.hero.motion?.kind;if(kind==='dodge')return this.traversal?this.blocked(x,y):false;const feet=this.hero.motion?.jump?.worldY??this.groundAt(x,y)+this.hero.airHeight;if(kind==='jump')return this.map.obstacles.some((o:any)=>blocksAt(x,y,feet,o,(a,b)=>this.groundAt(a,b)))||this.room===1&&this.boss.hp>0&&blocksAt(x,y,feet,{...this.boss,bodyHeight:650*this.bossScale},(a,b)=>this.groundAt(a,b));return this.blocked(x,y)||this.room===1&&this.boss.hp>0&&Math.hypot(x-this.boss.x,y-this.boss.y)<this.bodyRadius+BOSS_CONTACT.heroRadius;}
  private separateBody(){
   if(this.room!==1||this.boss.hp<=0||this.hero.motion?.kind==='dodge')return;
-  const dx=this.hero.x-this.boss.x,dy=this.hero.y-this.boss.y,r=BOSS_CONTACT.bodyRadius+BOSS_CONTACT.heroRadius,d=Math.hypot(dx,dy);if(d>=r)return;
+  const dx=this.hero.x-this.boss.x,dy=this.hero.y-this.boss.y,r=this.bodyRadius+BOSS_CONTACT.heroRadius,d=Math.hypot(dx,dy);if(d>=r)return;
   const angle=d>1e-6?Math.atan2(dy,dx):Math.atan2(-this.boss.direction.y,-this.boss.direction.x),bounds=this.bounds();
   // A radial correction may be outside the arena or inside a tree. Search a bounded ring,
   // preferring the nearest direction, rather than clamping back into the boss cylinder.
@@ -82,7 +89,7 @@ export class UnityBossEngine {
  private inputDirection(input:UnityInput){let x=clamp(input.x,-1,1),y=this.room===1?clamp(input.y,-1,1):0;const length=Math.hypot(x,y);if(length>1){x/=length;y/=length;}return {x,y};}
  private faceHero(x:number,y:number){this.hero.direction=normalized(x,y);if(Math.abs(x)>.01)this.hero.facing=Math.sign(x);}
  // Kit host: the same contract MountSundayEngine gives the kit. planar = the boss room (QuarterView plane movement).
- private kitHost():IaiHost{const h=this.hero,planar=this.room===1;return {hero:h,mobs:this.room===0?this.slimes:[this.boss],elapsed:this.elapsed,planar,heroRadius:BOSS_CONTACT.heroRadius,nextAttackId:()=>++this.attackSerial,
+ private kitHost():IaiHost{this.boss.radius=this.bodyRadius;const h=this.hero,planar=this.room===1;return {hero:h,mobs:this.room===0?this.slimes:[this.boss],elapsed:this.elapsed,planar,heroRadius:BOSS_CONTACT.heroRadius,nextAttackId:()=>++this.attackSerial,
   face:(x,y)=>this.faceHero(x,planar?y:0),advance:(dx,dy=0)=>this.moveHero(h.x+dx,h.y+dy),strike:(m,d,p,at)=>this.kitStrike(m,d,p,at),
   clear:m=>elementLineClear({...h,elevation:h.elevation+35},{...m,elevation:m.elevation+35},this.map.obstacles,(x,y)=>this.groundAt(x,y)),command:i=>this.command(i),
   skillReady:s=>this.castSpec(s)!==null,...(this.autoSkills?{autoSkill:()=>this.autoSkillSlot()}:{}),tempo:this.kitTempo};}
@@ -173,7 +180,7 @@ export class UnityBossEngine {
      const lo=Math.max(start,w.from),hi=Math.min(end,w.to),samples=Math.max(1,Math.ceil((hi-lo)*BOSS_CONTACT.segments*2));
      for(let i=0;i<=samples;i++){const phase=lo+(hi-lo)*i/samples,t=dt>0?clamp((m.start+phase*m.duration-(this.elapsed-dt))/dt,0,1):1,from=this.previousHero;
       const hero={...this.hero,x:from.x+(this.hero.x-from.x)*t,y:from.y+(this.hero.y-from.y)*t,elevation:from.elevation+(this.hero.elevation-from.elevation)*t,airHeight:from.airHeight+(this.hero.airHeight-from.airHeight)*t};
-      const hit=hookContact(phase,w.hand,this.boss,hero);if(!hit)continue;
+      const hit=hookContact(phase,w.hand,this.boss,hero,this.bossScale);if(!hit)continue;
       const contactAt=m.start+phase*m.duration,contact={attackId:m.attackId,strike:w.strike,contactAt,contactRevision:BOSS_CONTACT.revision,point:hit.point,part:hit.part};
       if(this.damageHero(1000,'hook',contact)){m.hitMask|=1<<w.strike;this.effect('boss-hook',hit.point.x,w.strike+1,{...contact,z:hit.point.z-LANE_Y,elevation:hit.point.y,damageKind:'attack'});}break;
      }
@@ -183,10 +190,11 @@ export class UnityBossEngine {
   }
   if(this.elapsed<this.bossIdleUntil){this.boss.action='idle';return;}
   this.boss.direction=normalized(this.hero.x-this.boss.x,this.hero.y-this.boss.y);this.boss.facing=this.hero.x<this.boss.x?-1:1;
-  if(distance(this.hero,this.boss)>190&&(this.elapsed<this.bossChaseUntil||this.bossTurn%2===0&&distance(this.hero,this.boss)>360)){
-   const b=this.bounds(),nx=clamp(this.boss.x+this.boss.direction.x*110*dt,b.minX+150,b.maxX-150),ny=clamp(this.boss.y+this.boss.direction.y*110*dt,b.minY+150,b.maxY-150);
-   if(!this.blocked(nx,ny,100)){this.boss.x=nx;this.boss.y=ny;}else if(!this.blocked(nx,this.boss.y,100))this.boss.x=nx;else if(!this.blocked(this.boss.x,ny,100))this.boss.y=ny;
-   this.bossAt=Math.max(this.bossAt,this.elapsed+.55);this.boss.action='walk';this.boss.elevation=this.groundAt(this.boss.x,this.boss.y);if(distance(this.hero,this.boss)>450)return;
+  const s=this.bossScale;
+  if(distance(this.hero,this.boss)>190*s&&(this.elapsed<this.bossChaseUntil||this.bossTurn%2===0&&distance(this.hero,this.boss)>360*s)){
+   const b=this.bounds(),nx=clamp(this.boss.x+this.boss.direction.x*110*dt,b.minX+150*s,b.maxX-150*s),ny=clamp(this.boss.y+this.boss.direction.y*110*dt,b.minY+150*s,b.maxY-150*s);
+   if(!this.blocked(nx,ny,100*s)){this.boss.x=nx;this.boss.y=ny;}else if(!this.blocked(nx,this.boss.y,100*s))this.boss.x=nx;else if(!this.blocked(this.boss.x,ny,100*s))this.boss.y=ny;
+   this.bossAt=Math.max(this.bossAt,this.elapsed+.55);this.boss.action='walk';this.boss.elevation=this.groundAt(this.boss.x,this.boss.y);if(distance(this.hero,this.boss)>450*s)return;
   }else this.boss.action='idle';
   if(this.elapsed<this.bossAt)return;
   if(this.bossTurn++%2===0){this.boss.motion={kind:'boss-combo',definitionId:'boss-hook-pair',timeline:{active:BOSS_CONTACT.windows,cancelFrom:1,contactRevision:BOSS_CONTACT.revision},attackId:++this.attackSerial,hitMask:0,start:this.elapsed,duration:this.rules.comboDuration,hitAt:this.rules.comboHitTimes[0],hits:[...this.rules.comboHitTimes],done:0,from:point(this.boss.x,this.boss.y),to:point(this.boss.x,this.boss.y)};this.boss.action='combo';}
@@ -196,7 +204,7 @@ export class UnityBossEngine {
   if(Math.hypot(this.hero.x-w.x,this.hero.y-LANE_Y-w.z)>w.radius||this.hero.airHeight>120||this.hero.motion?.kind==='dodge')return;
   if(this.damageHero(this.rules.blastDamage,'skill',{attackId:w.attackId,contactAt:w.explodeAt,warningId:w.id})){const dir=normalized(this.hero.x-this.boss.x,this.hero.y-this.boss.y),b=this.bounds();this.hero.motion={kind:'knockback',start:this.elapsed,duration:this.rules.knockbackSeconds,hitAt:0,from:point(this.hero.x,this.hero.y),to:point(clamp(this.hero.x+dir.x*260,b.minX,b.maxX),clamp(this.hero.y+dir.y*260,b.minY,b.maxY))};this.hero.action='knockback';this.hero.serial++;}
  }
- step(dt:number,input:UnityInput){this.paused=!!input.paused;this.auto=input.auto;if(this.status!=='playing'||this.paused)return;dt=clamp(dt,0,.02);this.elapsed+=dt;
+ step(dt:number,input:UnityInput){this.boss.radius=this.bodyRadius;this.paused=!!input.paused;this.auto=input.auto;if(this.status!=='playing'||this.paused)return;dt=clamp(dt,0,.02);this.elapsed+=dt;
   for(let i=0;i<6;i++)this.cooldowns[i]=Math.max(0,this.cooldowns[i]-dt);for(const k of ['health','mana'] as const)this.resources.potionCooldowns[k]=Math.max(0,this.resources.potionCooldowns[k]-dt);
   if(this.introStage!=='none'){this.stepIntro(dt);return;}
   if(this.bossDefeated&&this.arena){this.stepVillageExit(dt,input);this.fx=this.fx.filter(f=>this.elapsed-f.born<2.5);return;}
@@ -226,5 +234,5 @@ export class UnityBossEngine {
   if(distance(this.hero,waypoints[waypoints.length-1])<100){this.status='won';this.phase='complete';this.hero.action='stay1';this.effect('village-arrived',this.hero.x);}
  }
 
- view(){const b=this.bounds();return {...(this.arena?{zoneTenArena:true,bossDefeated:this.bossDefeated,bossDefeatedAt:this.defeatedAt,villageExitProgress:this.villageExitProgress,villageExitOpen:this.villageExitProgress>=1,villageEntered:this.status==='won',exitTarget:this.arena.exitWaypoints.at(-1)}:{}),...(this.traversal?{traversalProfile:this.traversal.id,movementSpeed:this.traversal.run}:{}),presentationRevision:'combat-view-v1',inputSpace:'world-xz',movementMode:this.room===1&&this.introStage!=='approach'?'plane':'lane',bossCadence:{idleUntil:this.bossIdleUntil,chaseUntil:this.bossChaseUntil,nextAttackAt:this.bossAt},contactRevision:BOSS_CONTACT.revision,bodyRadius:BOSS_CONTACT.bodyRadius,heroRadius:BOSS_CONTACT.heroRadius,heroHeight:BOSS_CONTACT.heroHeight,unityBossMode:true,protocol:UNITY_BOSS_PROTOCOL,totalRooms:2,training:true,room:this.room,status:this.status,phase:this.phase,elapsed:this.elapsed,paused:this.paused,auto:this.auto,kills:this.kills,gold:0,hero:{...this.hero,direction:{...this.hero.direction},motion:this.hero.motion?JSON.parse(JSON.stringify(this.hero.motion)):null},mobs:[...this.slimes.map(m=>({...m})),{...this.boss,motion:this.boss.motion?JSON.parse(JSON.stringify(this.boss.motion)):null}],warning:this.warning?{...this.warning}:null,fx:this.fx.map(f=>({...f})),walkBounds:b,cleared:this.slimeCleared?[0]:[],visited:this.room===1?[0,1]:[0],cameraMode:this.room===1&&this.boss.hp>0&&this.introStage!=='approach'?'QuarterView':'Side25D',bossVisible:this.room===1&&this.introStage!=='approach'&&(!this.arena||!this.bossDefeated||this.elapsed-this.defeatedAt<3.5),bossIntroActive:this.introStage!=='none',bossIntroStage:this.introStage,bossRevealAt:this.introAt,elementalProjectiles:this.elemental.view(this.elapsed),resources:JSON.parse(JSON.stringify(this.resources)),cooldowns:[...this.cooldowns],cooldownTotals:[...this.cooldownTotals],jumpReady:this.elapsed>=this.jumpAt&&(!this.hero.motion||this.hero.motion.kind==='attack'||!!this.heroKit&&this.hero.motion.kind==='recover'),dodgeReady:this.elapsed>=this.dodgeAt&&(!this.hero.motion||this.hero.motion.kind==='attack'||!!this.heroKit&&this.hero.motion.kind==='recover'),slideReady:this.elapsed>=this.dodgeAt&&(!this.hero.motion||this.hero.motion.kind==='attack'||!!this.heroKit&&this.hero.motion.kind==='recover'),...(this.heroKit?{heroKit:this.heroKit.id}:{})};}
+ view(){const b=this.bounds();return {...(this.arena?{zoneTenArena:true,bossDefeated:this.bossDefeated,bossDefeatedAt:this.defeatedAt,villageExitProgress:this.villageExitProgress,villageExitOpen:this.villageExitProgress>=1,villageEntered:this.status==='won',exitTarget:this.arena.exitWaypoints.at(-1)}:{}),...(this.traversal?{traversalProfile:this.traversal.id,movementSpeed:this.traversal.run}:{}),presentationRevision:'combat-view-v1',inputSpace:'world-xz',movementMode:this.room===1&&this.introStage!=='approach'?'plane':'lane',bossCadence:{idleUntil:this.bossIdleUntil,chaseUntil:this.bossChaseUntil,nextAttackAt:this.bossAt},contactRevision:BOSS_CONTACT.revision,bodyRadius:this.bodyRadius,heroRadius:BOSS_CONTACT.heroRadius,heroHeight:BOSS_CONTACT.heroHeight,unityBossMode:true,protocol:UNITY_BOSS_PROTOCOL,totalRooms:2,training:true,room:this.room,status:this.status,phase:this.phase,elapsed:this.elapsed,paused:this.paused,auto:this.auto,kills:this.kills,gold:0,hero:{...this.hero,direction:{...this.hero.direction},motion:this.hero.motion?JSON.parse(JSON.stringify(this.hero.motion)):null},mobs:[...this.slimes.map(m=>({...m})),{...this.boss,motion:this.boss.motion?JSON.parse(JSON.stringify(this.boss.motion)):null}],warning:this.warning?{...this.warning}:null,fx:this.fx.map(f=>({...f})),walkBounds:b,cleared:this.slimeCleared?[0]:[],visited:this.room===1?[0,1]:[0],cameraMode:this.room===1&&this.boss.hp>0&&this.introStage!=='approach'?'QuarterView':'Side25D',bossVisible:this.room===1&&this.introStage!=='approach'&&(!this.arena||!this.bossDefeated||this.elapsed-this.defeatedAt<3.5),bossIntroActive:this.introStage!=='none',bossIntroStage:this.introStage,bossRevealAt:this.introAt,elementalProjectiles:this.elemental.view(this.elapsed),resources:JSON.parse(JSON.stringify(this.resources)),cooldowns:[...this.cooldowns],cooldownTotals:[...this.cooldownTotals],jumpReady:this.elapsed>=this.jumpAt&&(!this.hero.motion||this.hero.motion.kind==='attack'||!!this.heroKit&&this.hero.motion.kind==='recover'),dodgeReady:this.elapsed>=this.dodgeAt&&(!this.hero.motion||this.hero.motion.kind==='attack'||!!this.heroKit&&this.hero.motion.kind==='recover'),slideReady:this.elapsed>=this.dodgeAt&&(!this.hero.motion||this.hero.motion.kind==='attack'||!!this.heroKit&&this.hero.motion.kind==='recover'),...(this.heroKit?{heroKit:this.heroKit.id,bossScale:this.bossScale}:{})};}
 }

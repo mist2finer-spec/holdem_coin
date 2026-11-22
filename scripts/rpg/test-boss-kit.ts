@@ -1,6 +1,7 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {createHash} from 'node:crypto';
 import {MountSundayEngine} from '../../src/lib/rpg-mount-sunday-engine';
-import {UnityBossEngine} from '../../src/lib/rpg-unity-boss-engine';
+import {UnityBossEngine,KIT_BOSS_SCALE,KIT_BOSS_HEIGHT} from '../../src/lib/rpg-unity-boss-engine';
+import {BOSS_CONTACT,hookContact,sampleArm,worldPoint} from '../../src/lib/rpg-boss-contact';
 import {SOURCE_TRAVERSAL as p} from '../../src/lib/rpg-traversal-profile';
 import {PINK_IAI,iaiContact} from '../../src/lib/rpg-hero-kit-iai';
 import zoneTenArena from '../../src/lib/generated/zone-ten-arena.json';
@@ -73,19 +74,20 @@ test('4. iaiContact: a direction turns the same fan (a target straight ahead alo
 // --- the boss arena with the kit -------------------------------------------------------------------------------------------
 function arena(kit:any=KIT0){const b:any=new UnityBossEngine(111,{slimeCount:0,bossHP:2000,playerHP:100000},zoneTenArena);b.traversal=p;b.enterArena(false);b.heroKit=kit;
  b.bossIdleUntil=b.bossChaseUntil=b.bossAt=1e9;return b;}// boss AI parked (idle) so the hero tests are about the hero
+const KIT_BODY=BOSS_CONTACT.bodyRadius*KIT_BOSS_SCALE+BOSS_CONTACT.heroRadius;
 function place(b:any,x:number,y:number){b.hero.x=x;b.hero.y=y;b.hero.elevation=b.groundAt(x,y);}
 function collect(b:any,seen:Set<number>,out:any[]){for(const f of b.fx)if(f.kind==='damage'&&!seen.has(f.id)){seen.add(f.id);out.push(f);}}
 test('5. arena, kit: pressing chains iai1 -> iai2 -> iai3 on the boss with the kit damage 60/60/105, then the recover',()=>{
- const b=arena();place(b,b.boss.x-200,b.boss.y);const hp=b.boss.hp,seen=new Set<number>(),hits:any[]=[],rows:string[]=[];
+ const b=arena();place(b,b.boss.x-(KIT_BODY+38),b.boss.y);const hp=b.boss.hp,seen=new Set<number>(),hits:any[]=[],rows:string[]=[];
  for(let t=0;t<200;t++){const input={x:0,y:0,auto:false};b.command({...input,attack:true,x:1});b.step(.02,input);collect(b,seen,hits);const a=b.hero.action;if(rows.at(-1)!==a)rows.push(a);if(a==='iai_recover')break;}
  assert.deepEqual(rows.filter(r=>r.startsWith('iai')),['iai1','iai2','iai3','iai_recover']);
  assert.deepEqual(hits.map(h=>[h.definitionId,h.value,h.target]),[['pink-iai-iai1',60,'boss'],['pink-iai-iai2',60,'boss'],['pink-iai-iai3',105,'boss']]);
  assert.equal(hp-b.boss.hp,225);assert.equal(b.view().heroKit,'pink-iai');
- assert.ok(Math.hypot(b.hero.x-b.boss.x,b.hero.y-b.boss.y)>=162-1e-6,'the advance stops at the boss body');
+ assert.ok(Math.hypot(b.hero.x-b.boss.x,b.hero.y-b.boss.y)>=KIT_BODY-1e-6,'the advance stops at the (kit-scaled) boss body');
 });
 test('6. arena, planar: a press toward a boss standing in depth turns the row to it and cuts it (the lane fan would miss)',()=>{
  for(const sy of [1,-1]){
-  const b=arena();place(b,b.boss.x,b.boss.y+sy*320);const seen=new Set<number>(),hits:any[]=[];
+  const b=arena();place(b,b.boss.x,b.boss.y+sy*(KIT_BODY+158));const seen=new Set<number>(),hits:any[]=[];
   b.command({x:0,y:-sy,auto:false,attack:true});const m=b.hero.motion;assert.equal(m.row,'iai1');near(m.dir.x,0,1e-9);near(m.dir.y,-sy,1e-9);
   // the same hero with the lane formula (facing only) never reaches a body straight up/down the depth axis
   const row=PINK_IAI.rows.iai1;let lane=false;for(let i=0;i<=16;i++)lane||=!!iaiContact(row.contact,i/16,{...b.hero,facing:1,dir:undefined,y:b.hero.y-sy*47.17},b.boss);
@@ -134,4 +136,49 @@ test('11. boot: heroKit reaches the zone-10 boss in the first snapshot; bossHero
  v=JSON.parse(G.stageInitialize(JSON.stringify({...base,mode:'mount',referencePreview:true,previewZone:3,bossHero:'legacy'})));assert.equal(v.heroKit,'pink-iai','legacy touches only the boss');
  v=JSON.parse(G.stageInitialize(JSON.stringify({...base,mode:'boss',referencePreview:true,previewArena:true})));assert.equal(v.heroKit,'pink-iai');
  v=JSON.parse(G.stageInitialize(JSON.stringify({...base,mode:'boss',referencePreview:true,previewArena:true,bossHero:'legacy'})));assert.equal('heroKit' in v,false);
+});
+
+// Boss hitbox at the kit display size (brief 3): one factor = 3.2 m / 6.5 m for body, hook arms and spacing; legacy stays 1.
+test('12. kit boss hitbox: one scale (3.2 m / 6.5 m) for the body, the hook arms and the boss view; legacy and no kit stay 1',()=>{
+ near(KIT_BOSS_SCALE,320/650,1e-12);assert.equal(KIT_BOSS_HEIGHT,320);
+ const kit=arena();kit.step(.02,{x:0,y:0,auto:false});near(kit.bossScale,KIT_BOSS_SCALE,1e-12);near(kit.boss.radius,140*KIT_BOSS_SCALE,1e-9);
+ const v=kit.view();near(v.bossScale,KIT_BOSS_SCALE,1e-12);near(v.bodyRadius,140*KIT_BOSS_SCALE,1e-9);
+ const plain=arena(undefined);plain.heroKit=undefined;plain.step(.02,{x:0,y:0,auto:false});assert.equal(plain.bossScale,1);assert.equal(plain.boss.radius,140);
+ const pv=plain.view();assert.equal(pv.bossScale,undefined,'no kit: no bossScale key (goldens unchanged)');assert.equal(pv.bodyRadius,140);
+ const g:any=zone10(g=>{g.heroKit=PINK_IAI;g.bossHeroLegacy=true;});g.acceptClientHints({x:0,y:0,auto:true,readyZone:9,readyBoss:true});
+ for(let t=0;t<400&&!g.bossEncounter;t++)g.step(.02,{x:0,y:0,auto:true,readyZone:9,readyBoss:true});
+ if(g.bossEncounter){assert.equal(g.bossEncounter.bossScale,1,'legacy option keeps the 6.5 m hitbox');}
+});
+test('13. kit boss hook: the hand the kernel tests is the profile hand x scale; a hero standing at it is hit at the kit scale, not at the 6.5 m scale',()=>{
+ const boss={x:3000,y:5000,elevation:0,direction:{x:0,y:1}},s=KIT_BOSS_SCALE;let checked=0;
+ for(const w of BOSS_CONTACT.windows)for(let i=0;i<=8;i++){const phase=w.from+(w.to-w.from)*i/8;
+  const shape=sampleArm(phase,w.hand),full=worldPoint(shape.hand,boss),scaled=worldPoint({x:shape.hand.x*s,y:shape.hand.y*s,z:shape.hand.z*s},boss);
+  near(scaled.x-boss.x,(full.x-boss.x)*s,1e-9);near(scaled.y,full.y*s,1e-9);near(scaled.z-boss.y,(full.z-boss.y)*s,1e-9);
+  if(scaled.y>BOSS_CONTACT.heroHeight)continue;
+  const at={x:scaled.x,y:scaled.z,elevation:0,airHeight:0,action:'stay1'};
+  assert.equal(hookContact(phase,w.hand,boss,at,s)?.part,'hand',`phase ${phase} hand ${w.hand}: the 3.2 m fist hits a hero standing at it`);
+  assert.equal(hookContact(phase,w.hand,boss,at),null,`phase ${phase}: the 6.5 m arm passes over that hero`);
+  const side=BOSS_CONTACT.heroRadius+BOSS_CONTACT.handRadii[w.hand]*s+3,dx=scaled.x-boss.x,dz=scaled.z-boss.y,dl=Math.hypot(dx,dz)||1;
+  assert.notEqual(hookContact(phase,w.hand,boss,{...at,x:scaled.x+dx/dl*side,y:scaled.z+dz/dl*side},s)?.part,'hand',`phase ${phase}: 3 cm past the scaled fist radius is not a fist hit`);checked++;}
+ assert.ok(checked>=8,'enough low-hand samples in the two active windows');
+});
+test('14. kit boss fight: the scaled hook reaches the 1.2 m kit hero (the 6.5 m hook passes over it); legacy keeps 0 hook hits',()=>{
+ const run=(legacy:boolean)=>{const g:any=zone10(g=>{g.heroKit=PINK_IAI;if(legacy)g.bossHeroLegacy=true;});g.autoSkills=false;const seen=new Set<number>();let hooks=0,minD=1e9;
+  for(let t=0;t<30000&&g.status==='playing';t++){const input={x:0,y:0,auto:true,readyZone:9,readyBoss:true};g.acceptClientHints(input);g.step(.02,input);const b=g.bossEncounter;if(!b)continue;
+   if(b.room===1&&b.boss.hp>0)minD=Math.min(minD,Math.hypot(b.hero.x-b.boss.x,b.hero.y-b.boss.y));
+   for(const f of b.fx)if(!seen.has(f.id)){seen.add(f.id);if(f.kind==='damage'&&f.target==='hero'&&f.damageKind==='hook')hooks++;}}
+  return {hooks,minD,won:g.status==='won'||g.phase==='complete'||!!g.bossEncounter?.bossDefeated};};
+ const kit=run(false),old=run(true);
+ assert.ok(kit.hooks>0,'kit: boss hooks land');assert.ok(kit.minD<162&&kit.minD>=BOSS_CONTACT.bodyRadius*KIT_BOSS_SCALE+BOSS_CONTACT.heroRadius-1e-6,`kit: the hero stands at the smaller body (${kit.minD})`);assert.ok(kit.won);
+ assert.equal(old.hooks,0,'legacy: unchanged (no hook hits in this run)');
+});
+test('15. kit boss spacing: the boss keeps walking in until 190 cm x scale (it would stop at 190 cm at the 6.5 m size)',()=>{
+ const b=arena();b.step(.02,{x:0,y:0,auto:false});const d=150;place(b,b.boss.x-d,b.boss.y);b.boss.motion=null;b.bossIdleUntil=0;b.bossChaseUntil=b.elapsed+5;b.bossAt=b.elapsed+5;
+ assert.ok(d>190*KIT_BOSS_SCALE&&d<190);b.step(.02,{x:0,y:0,auto:false});assert.equal(b.boss.action,'walk','still closing in at 150 cm');
+ const old=arena(undefined);old.heroKit=undefined;old.step(.02,{x:0,y:0,auto:false});place(old,old.boss.x-d,old.boss.y);old.boss.motion=null;old.bossIdleUntil=0;old.bossChaseUntil=old.elapsed+5;old.bossAt=old.elapsed+5;
+ old.step(.02,{x:0,y:0,auto:false});assert.notEqual(old.boss.action,'walk','6.5 m boss: already close enough at 150 cm');
+});
+// Kit boss golden (brief 3, after the hitbox scale): 78d6c762 at bb9c61e8 (6.5 m hitbox) -> a277f884 with the 3.2 m hitbox.
+test('16. kit zone-10 boss golden (3.2 m hitbox)',()=>{
+ const r=mountBossDigest(g=>{g.heroKit=PINK_IAI;});assert.equal(r.status,'won');assert.equal(r.digest,'a277f884dae3cc828a64a41ab7619e021246be1053b6fdd652ccf0e527dbf4ac');
 });

@@ -84,13 +84,14 @@ namespace IslandGame {
    var bm=BossContactProfile.Boss(state)?["motion"] as JObject;int bid=(int?)bm?["attackId"]??0;float bp=bm==null?0:(visualTime-NativeCombatPresentation.N(bm["start"]))/Mathf.Max(.001f,NativeCombatPresentation.N(bm["duration"]));
    for(int h=0;h<2;h++)contactFeedback.Smear(h+1,bid,bossView.BossVisible&&bossView.HookActive&&BossContactProfile.Active(bp,h),bossView.ContactPoint(h*2+1),visualTime);if(contactDebug==null)contactDebug=new BossContactDebug(world);contactDebug.Update(state,visualTime,bossView.BossTarget,HeroTarget,bossView.ContactPoint(0),bossView.ContactPoint(1),bossView.ContactPoint(2),bossView.ContactPoint(3),HeroWeaponBase,HeroWeaponTip,HeroAttackId,HeroAttackProgress,HeroAttackActive,Presentation.State.ToString());}
   UnityBossPresentation bossView;UnityBossAssets bossAssets;
-  // Kit boss fight look (2026-11-21, user: the boss is too big): display height and the zone-10 QuarterView preset used when the kit hero
-  // fights the boss. Display only: the kernel contact numbers (body radius, hook frames, warning radius) are unchanged.
-  // The legacy hero option (bossHero "legacy") keeps the asset height and the old preset.
-  // Values from the Editor sweep (portrait 1080x2340): kit hero ~10 % of the screen height (median over a scripted fight), boss, warning
-  // disc and hero inside the view on every frame; the old preset (38,25,38,19) gave ~3 % with a 6.5 m boss and an 80 deg portrait fov.
-  public static float KitBossHeight=3.2f;
-  public static BattleCameraController.Preset KitBossQuarter=new BattleCameraController.Preset(40,75,22,8,new Vector3(-.6f,1.5f,-.15f));
+  // Kit boss fight look (2026-11-21, user: the boss is too big): the zone-10 QuarterView preset used when the kit hero fights the boss.
+  // The boss display height comes from the kernel (state bossScale: 3.2 m / 6.5 m with the kit, which also scales the boss hitbox).
+  // The legacy hero option (bossHero "legacy") keeps the 6.5 m boss and the old preset.
+  // Values from the Editor sweep (portrait 1080x2340, brief 3): pitched up toward the reference (a high, hero-centred isometric view,
+  // ~55 deg) as far as the kit hero stays >= 10 % of the screen height (median 10.3 % over a scripted fight) while the camera framing
+  // still keeps the whole boss, the warning disc and the hero in view on every frame. At 55 deg the hero drops to ~7 %.
+  // yaw 90 puts the hero-boss line (world x) up the portrait screen. Before: (40,75,22,8,(-.6,1.5,-.15)).
+  public static BattleCameraController.Preset KitBossQuarter=new BattleCameraController.Preset(45,90,22,6,new Vector3(-.6f,.8f,-.15f));
   bool KitBoss=>assets&&assets.IsKit&&!Battle3DAssets.BossHeroLegacy;
   public Transform BossTarget=>bossView!=null?bossView.BossTarget:null;
   public string BossClipName=>bossView?.BossClipName;
@@ -141,7 +142,7 @@ namespace IslandGame {
    }else Floor(-10,60,0);
    }
    var nature=Resources.Load<NatureEnvironmentAssets>("NatureEnvironmentAssets");camera.backgroundColor=nature?nature.skyColor:new Color(.52f,.63f,.64f);if(!camera.GetComponentInParent<BattleCameraController>())camera.transform.rotation=Quaternion.Euler(9,0,0);camera.nearClipPlane=.1f;camera.farClipPlane=180;
-   if((bool?)map?["unityBossMode"]==true&&bossAssets&&!mountMode)bossView=new UnityBossPresentation(root,bossAssets,map,KitBoss?KitBossHeight:0);
+   if((bool?)map?["unityBossMode"]==true&&bossAssets&&!mountMode)bossView=new UnityBossPresentation(root,bossAssets,map);
    
    IslandFrameBudget.Current.BindScenery(null);
    diorama=GetComponent<BattleDioramaLook>()??gameObject.AddComponent<BattleDioramaLook>();diorama.Initialize(world,camera);if(mountMode||zoneTenArena){var rig=camera.GetComponentInParent<BattleCameraController>();rig.side=new BattleCameraController.Preset(10,0,20,24,new Vector3(0,2,0));rig.quarter=zoneTenArena?(KitBoss?KitBossQuarter:new BattleCameraController.Preset(38,25,38,19,new Vector3(0,2.2f,.6f))):new BattleCameraController.Preset(40,35,35,17,new Vector3(0,1.2f,1.8f));rig.lookAheadDistanceX=1.6f;rig.maxVelocityLookAhead=.7f;rig.velocityLookAheadMultiplier=.10f;rig.playerEdgePadding=1.2f;rig.lookAheadAccelSmoothTime=.08f;rig.verticalSmoothTime=.10f;rig.GetComponent<BattleForegroundOcclusion>().protectSideView=true;MountZoneStream.Ensure().Bind(camera,null,(int?)map["zone"]??0);}if(authored){authored.VisualChunkCreated+=OnVisualBranch;authored.VisualChunkRemoving+=OnVisualRemoving;}

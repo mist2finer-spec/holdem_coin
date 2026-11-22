@@ -3,7 +3,7 @@ using UnityEngine;
 using Newtonsoft.Json.Linq;
 namespace IslandGame {
  public sealed class UnityBossPresentation:IDisposable {
-  readonly UnityBossAssets assets;readonly GameObject root,bossRoot,bossModel,bridge,warning,explosion;readonly Mesh disc,sphere;readonly Transform hips,leftFoot,rightFoot;readonly float scale,sole;
+  readonly UnityBossAssets assets;readonly GameObject root,bossRoot,bossModel,bridge,warning,explosion;readonly Mesh disc,sphere;readonly Transform hips,leftFoot,rightFoot;float scale;readonly float sole;
   ViewPresentationCoordinator presentation;readonly Transform visualRoot;public void SetPresentation(ViewPresentationCoordinator value){presentation=value;}
   readonly RuntimeAnimationPlayer animation;float previousVisualTime,walkClock;Vector3 previousBossPosition;bool bossPlaced;JObject map;readonly Material warningMaterial,blastMaterial;int explosionId=-1;
   readonly Transform[] contactBones=new Transform[4];
@@ -11,15 +11,17 @@ namespace IslandGame {
   public Transform BossTarget=>bossRoot.transform;public bool BossVisible=>bossRoot.activeSelf;
   public Transform WarningTarget=>warning.transform;public bool HookActive{get;private set;}
   public string BossClipName{get;private set;}public float BossSampleTime{get;private set;}
-  // Display height in metres (the asset bossHeight unless the caller passes one; the kit boss fight passes a smaller one).
-  public float Height{get;}readonly float a_height;
-  public UnityBossPresentation(Transform parent,UnityBossAssets a,JObject mapData,float height=0){
+  // Display height in metres = asset bossHeight x the kernel bossScale (state "bossScale", absent = 1). The kernel scales the boss body,
+  // hook arms and spacing by the same factor (kit boss fight: 3.2 m / 6.5 m), so what is shown is what is hit.
+  public float Height{get;private set;}readonly float a_height;
+  public static float DisplayHeight(UnityBossAssets a,JObject state)=>a.bossHeight*N(state?["bossScale"],1);
+  public UnityBossPresentation(Transform parent,UnityBossAssets a,JObject mapData){
    BossContactProfile.Load();map=mapData;assets=a;root=new GameObject("Unity boss encounter presentation");root.transform.SetParent(parent,false);
    bossRoot=new GameObject("Giant Boss 1");bossRoot.transform.SetParent(root.transform,false);bossRoot.layer=30;visualRoot=new GameObject("Presentation deformation (grounded)").transform;visualRoot.SetParent(bossRoot.transform,false);bossModel=UnityEngine.Object.Instantiate(a.boss,visualRoot,false);bossModel.name="Boss model";
    foreach(var r in bossModel.GetComponentsInChildren<Renderer>()){r.sharedMaterial=a.bossMaterial;r.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.On;}
    foreach(var t in bossModel.GetComponentsInChildren<Transform>(true)){t.gameObject.layer=30;if(t.name=="Hips")hips=t;if(t.name=="Foot.L")leftFoot=t;if(t.name=="Foot.R")rightFoot=t;}
    var contactNames=new[]{"Forearm.R","Hand.R","Forearm.L","Hand.L"};foreach(var t in bossModel.GetComponentsInChildren<Transform>(true))for(int i=0;i<4;i++)if(t.name==contactNames[i])contactBones[i]=t;
-   animation=new RuntimeAnimationPlayer(bossModel,.18f);animation.Sample(a.idle?a.idle:a.combo,0);a_height=a.bossHeight;Height=height>0?height:a.bossHeight;scale=Height/a.bossReferenceHeight;var skin=bossModel.GetComponentInChildren<SkinnedMeshRenderer>();sole=(leftFoot&&rightFoot?Mathf.Min(leftFoot.position.y,rightFoot.position.y):0)-skin.bounds.min.y;bossRoot.SetActive(false);
+   animation=new RuntimeAnimationPlayer(bossModel,.18f);animation.Sample(a.idle?a.idle:a.combo,0);a_height=a.bossHeight;Height=a.bossHeight;scale=Height/a.bossReferenceHeight;var skin=bossModel.GetComponentInChildren<SkinnedMeshRenderer>();sole=(leftFoot&&rightFoot?Mathf.Min(leftFoot.position.y,rightFoot.position.y):0)-skin.bounds.min.y;bossRoot.SetActive(false);
    // Bridge is part of the authored Nature map; never duplicate or resize it.
 
    disc=Disc();sphere=IslandDisplayMeshes.Create(PrimitiveType.Sphere);var colors=new Color[sphere.vertexCount];for(int i=0;i<colors.Length;i++)colors[i]=Color.white;sphere.colors=colors;
@@ -32,7 +34,7 @@ namespace IslandGame {
    var boss=(state["mobs"] as JArray)?.First as JObject;
    foreach(var m in state["mobs"] as JArray??new JArray())if((bool?)m["unityBoss"]==true){boss=m as JObject;break;}
    bool show=(bool?)state["bossVisible"]==true&&boss!=null;bossRoot.SetActive(show);
-   if(show){bossRoot.transform.localPosition=new Vector3(N(boss["x"])/100,N(boss["elevation"])/100,(N(boss["y"])-N(map?["laneY"],192))/100);bossRoot.transform.localRotation=Quaternion.Euler(0,Mathf.Atan2(N(boss["direction"]?["x"],-1),N(boss["direction"]?["y"]))*Mathf.Rad2Deg,0);
+   if(show){float shown=DisplayHeight(assets,state);if(shown!=Height){Height=shown;scale=Height/assets.bossReferenceHeight;}bossRoot.transform.localPosition=new Vector3(N(boss["x"])/100,N(boss["elevation"])/100,(N(boss["y"])-N(map?["laneY"],192))/100);bossRoot.transform.localRotation=Quaternion.Euler(0,Mathf.Atan2(N(boss["direction"]?["x"],-1),N(boss["direction"]?["y"]))*Mathf.Rad2Deg,0);
     var motion=boss["motion"] as JObject;string action=(string)boss["action"];var clip=action=="throw"?assets.throwClip:action=="combo"?assets.combo:action=="walk"?assets.walk:assets.idle;float step=Mathf.Clamp(visualTime-previousVisualTime,0,.1f);if(action=="walk"&&bossPlaced)walkClock+=Vector3.Distance(bossRoot.transform.localPosition,previousBossPosition)/(1.8f*Height/a_height);else if(action!="walk")walkClock=0;previousBossPosition=bossRoot.transform.localPosition;bossPlaced=true;float time=motion==null?Mathf.Repeat(action=="walk"?walkClock:visualTime,clip.length):Mathf.Clamp01((visualTime-N(motion["start"]))/Mathf.Max(.001f,N(motion["duration"])))*clip.length;
     float phase=time/clip.length;HookActive=action=="combo"&&(BossContactProfile.Active(phase,0)||BossContactProfile.Active(phase,1));
     if(action=="combo"&&presentation!=null)time=CombatPoseTiming.Limited(phase,.18f,.84f,presentation.SidePoseWeight)*clip.length;

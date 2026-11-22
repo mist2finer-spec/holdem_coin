@@ -41,16 +41,6 @@ namespace IslandGame.Tests {
   }
 
   // The old (3-head) hero of the boss fight stays one option away: boss boots lose heroKit, every boot says bossHero legacy.
-  // Boss scale/camera (2026-11-21): the kit boss fight passes a smaller display height; without one the asset height is kept (legacy).
-  [Test] public void Kit_boss_is_shown_smaller_and_the_legacy_boss_keeps_the_asset_height(){
-   var a=Resources.Load<UnityBossAssets>("UnityBossAssets");if(!a||!a.boss)Assert.Ignore("boss assets not present");
-   var parent=new GameObject("boss scale test").transform;var map=new JObject{{"laneY",192}};
-   var legacy=new UnityBossPresentation(parent,a,map);var kit=new UnityBossPresentation(parent,a,map,Battle3DView.KitBossHeight);
-   try{Assert.AreEqual(a.bossHeight,legacy.Height,1e-6f,"legacy keeps the asset height");Assert.AreEqual(Battle3DView.KitBossHeight,kit.Height,1e-6f);
-    Assert.Less(kit.Height,a.bossHeight*.6f,"kit boss is clearly smaller");Assert.Greater(kit.Height,2f,"still a giant next to the 1.2 m kit hero");
-    var q=Battle3DView.KitBossQuarter;Assert.Less(q.verticalFov,38f,"narrower than the old zone-10 preset (80 deg in portrait)");Assert.Less(q.distance,19f);}
-   finally{legacy.Dispose();kit.Dispose();Object.DestroyImmediate(parent.gameObject);}
-  }
   [Test] public void Boss_hero_legacy_option_keeps_the_old_boss_fight(){
    if(!Battle3DAssets.LoadKit())Assert.Ignore("local kit asset not present in this checkout");
    var was=Battle3DAssets.BossHeroOverride;
