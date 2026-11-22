@@ -41,7 +41,11 @@ function mountBossDigest(setup:(g:any)=>void=()=>{}){
  }
  return {digest:h.digest('hex'),status:g.status,phase:g.phase};
 }
-const GOLDEN={arena:'058575e53caaed5b4dc3196af852c2d622efc412d49e5cff3e11729117e76725',rooms:'514a468f5514cc96236a9c5a5fe7af3251efa4a9459ae87dc204e23780ade855',mount9:'89ae88591c36c2e64406335d74d4aaa1b2bee6d46a7d4ad307a8f7891d227cce'};
+// Brief 3 boulder confine (2026-11-22): a knockback now ends where its straight path meets the walking wall (knockbackTo), instead of
+// keeping an unreachable motion.to past the boulders. The arena run's one knockback (tick 1427, motion.to radius 1047 cm > wall 1030)
+// changes, so arena 058575e5 -> 156ae8bb; the two rooms (no arena) and mount zone 10 (its knockback ends inside) are unchanged.
+// Recorded with maintenance/boss-beam-camera-20261122/v3/work/golden3.mts on a `git archive 1cc4e683 src` copy and the changed tree.
+const GOLDEN={arena:'156ae8bba998f11f11f421bd2e061c42aa2da698ebfc48de9c32756a64ac079a',rooms:'514a468f5514cc96236a9c5a5fe7af3251efa4a9459ae87dc204e23780ade855',mount9:'89ae88591c36c2e64406335d74d4aaa1b2bee6d46a7d4ad307a8f7891d227cce'};
 test('1. no kit: the boss engine is tick-for-tick the 1b5675f0 engine (arena, two rooms, mount zone 10)',()=>{
  const a=bossDigest(true),r=bossDigest(false),m=mountBossDigest();
  assert.equal(a.digest,GOLDEN.arena,'arena');assert.equal(r.digest,GOLDEN.rooms,'two rooms');assert.equal(m.digest,GOLDEN.mount9,'mount zone 10');
@@ -182,6 +186,7 @@ test('15. kit boss spacing: the boss keeps walking in until 190 cm x scale (it w
 // Boss beams (2026-11-22, boss-beam-camera-20261122): the kit cycle hook/throw/beam + the beams view key -> cec86c9c. Recorded with
 // maintenance/boss-beam-camera-20261122/work/kitgolden.mts (mountBossDigest verbatim): a `git archive a7fabb2c src` copy prints a277f884,
 // the changed tree prints cec86c9c (legacy and no kit stay 89ae8859 = GOLDEN.mount9 on both).
+// Boulder confine (brief 3, v3/work/golden3.mts): from the 2nd knockback on (tick 1930, motion.to radius 1087 cm > wall) -> c26218e7.
 test('16. kit zone-10 boss golden (3.2 m hitbox, rune beams)',()=>{
- const r=mountBossDigest(g=>{g.heroKit=PINK_IAI;});assert.equal(r.status,'won');assert.equal(r.digest,'cec86c9cc720d053854c90e05bccb4c6e25e047142c15cbb9a8c379ddbcdeb72');
+ const r=mountBossDigest(g=>{g.heroKit=PINK_IAI;});assert.equal(r.status,'won');assert.equal(r.digest,'c26218e7ba4aa02f23c60df7d6e6f6cdfd8b6a6bb2db7a3ac0e76c05a3afd8fa');
 });

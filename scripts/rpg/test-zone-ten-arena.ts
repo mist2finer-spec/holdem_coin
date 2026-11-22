@@ -35,3 +35,30 @@ test('village corridor stays blocked while the rocks descend, then admits manual
  for(let i=0;i<40;i++){g.step(.02,dir);assert(Math.hypot(g.hero.x-arena.center.x,g.hero.y-arena.center.y)<=arena.radius-19.9);}
  for(let i=0;i<60;i++)g.step(.02,dir);assert(g.view().villageExitOpen);assert(Math.hypot(g.hero.x-arena.center.x,g.hero.y-arena.center.y)>arena.radius+100);
 });
+// Brief 3 (2026-11-22): a knockback next to the boulders must not carry the hero past them. The kernel hero already stopped at the
+// walking wall, but motion.to kept the unreachable point, and Unity draws a knockback as from -> to over .45 s
+// (NativeCombatPresentation.ProjectHero), so the drawn hero flew through the boulders. Both the kernel path and that drawn path
+// must stay inside the walking wall at every angle (entrance and closed exit included); mid-arena knockbacks keep their 260 cm.
+const LANE=5000,C=arena.center,WALL=arena.radius-20,radiusOf=(p:{x:number;y:number})=>Math.hypot(p.x-C.x,p.y-C.y);
+// Walk out from the centre along the angle until the wall stops the hero (as a player would), put the boss behind, then blast.
+function blastAtWall(g:UnityBossEngine,angle:number){const d={x:Math.cos(angle),y:Math.sin(angle)};g.boss.x=C.x-d.x*600;g.boss.y=C.y-d.y*600;
+ g.hero.x=C.x;g.hero.y=C.y;for(let i=0;i<400;i++)g.step(.02,{...d,auto:false});const heroR=radiusOf(g.hero);
+ g.hero.motion=null;g.hero.action='stay1';g.boss.x=C.x+d.x*(heroR-450);g.boss.y=C.y+d.y*(heroR-450);
+ g.warning={id:1,attackId:1,x:g.hero.x,z:g.hero.y-LANE,radius:150,born:g.elapsed,explodeAt:g.elapsed+.01};const from={x:g.hero.x,y:g.hero.y};let maxR=0,m:any=null;
+ for(let i=0;i<30;i++){g.step(.02,idle);if(g.hero.motion?.kind==='knockback')m=g.hero.motion;maxR=Math.max(maxR,radiusOf(g.hero));}return {from,maxR,m,end:{x:g.hero.x,y:g.hero.y}};}
+test('a knockback next to the boulders stops at the wall in the kernel and in the drawn path',()=>{
+ for(let a=0;a<360;a+=15){const g=new UnityBossEngine(111,{slimeCount:0},arena);g.enterArena();const r=blastAtWall(g,a*Math.PI/180);
+  assert(r.m,'knockback at '+a);assert(radiusOf(r.from)>WALL-40,'walked up to the wall at '+a+': '+radiusOf(r.from));
+  assert(r.maxR<=WALL+1e-6,'kernel never past the wall at '+a+': '+r.maxR);
+  for(let f=0;f<=1;f+=.05){const p={x:r.m.from.x+(r.m.to.x-r.m.from.x)*f,y:r.m.from.y+(r.m.to.y-r.m.from.y)*f};assert(radiusOf(p)<=WALL+1e-6,'drawn path past the wall at '+a+': '+radiusOf(p));}
+  assert(Math.hypot(r.end.x-r.m.to.x,r.end.y-r.m.to.y)<1e-6,'kernel ends where it is drawn at '+a);}
+ const g=new UnityBossEngine(111,{slimeCount:0},arena);g.enterArena();g.hero.x=C.x-200;g.hero.y=C.y;g.boss.x=C.x+200;g.boss.y=C.y;
+ g.warning={id:1,attackId:1,x:g.hero.x,z:g.hero.y-LANE,radius:150,born:g.elapsed,explodeAt:g.elapsed+.01};for(let i=0;i<2;i++)g.step(.02,idle);
+ const m:any=g.hero.motion;assert.equal(m?.kind,'knockback');assert(Math.abs(Math.hypot(m.to.x-m.from.x,m.to.y-m.from.y)-260)<1e-6,'mid-arena knockback keeps 260 cm');
+});
+test('after the boss falls the exit corridor still lets the hero walk out past the boulders',()=>{
+ const g=new UnityBossEngine(111,{slimeCount:0,bossHP:60},arena);g.enterArena();
+ for(let i=0;i<5000&&!g.bossDefeated;i++)g.step(.02,{...idle,auto:true});assert(g.bossDefeated);for(let i=0;i<60;i++)g.step(.02,idle);assert(g.view().villageExitOpen);
+ const e=arena.exitWaypoints[0],d=Math.hypot(e.x-C.x,e.y-C.y),dir={x:(e.x-C.x)/d,y:(e.y-C.y)/d,auto:false};g.hero.x=C.x;g.hero.y=C.y;
+ for(let i=0;i<400;i++)g.step(.02,dir);assert(radiusOf(g.hero)>arena.radius+300,'walked out through the opened exit: '+radiusOf(g.hero));
+});

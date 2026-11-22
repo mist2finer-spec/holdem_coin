@@ -226,12 +226,20 @@ export class UnityBossEngine {
    const damage=this.rules.blastDamage*BOSS_BEAM_RULES.damageScale;
    if(!this.damageHero(damage,'skill',{attackId:b.attackId,definitionId:b.kind==='ring'?'boss-beam-ring':'boss-beam',beamId:b.id,contactAt:this.elapsed,point:{x:c.x,y:b.elevation+b.height,z:c.y}}))continue;
    b.hit=true;if(b.kind==='ring')this.beamGuardUntil=this.elapsed+BOSS_BEAM_RULES.ring.invulnerable;
-   const dir=normalized(this.hero.x-this.boss.x,this.hero.y-this.boss.y),bd=this.bounds();this.hero.motion={kind:'knockback',start:this.elapsed,duration:this.rules.knockbackSeconds,hitAt:0,from:point(this.hero.x,this.hero.y),to:point(clamp(this.hero.x+dir.x*260,bd.minX,bd.maxX),clamp(this.hero.y+dir.y*260,bd.minY,bd.maxY))};this.hero.action='knockback';this.hero.serial++;break;
+   const dir=normalized(this.hero.x-this.boss.x,this.hero.y-this.boss.y);this.hero.motion={kind:'knockback',start:this.elapsed,duration:this.rules.knockbackSeconds,hitAt:0,from:point(this.hero.x,this.hero.y),to:this.knockbackTo(dir)};this.hero.action='knockback';this.hero.serial++;break;
   }
  }
+ // Brief 3 (2026-11-22, user: "the boulders are the map edge: a hit still throws the hero, but never past them"). Knockback (blast,
+ // line beam, ring beam; 260 cm and 1.8 s unchanged) ends at the last point of its straight path that the walking wall (arena circle
+ // less the hero radius, boulder obstacles; the exit corridor once open) allows. The kernel already stopped the hero there, but motion.to
+ // kept the unreachable point and the Unity knockback projection (NativeCombatPresentation, from -> to over .45 s) drew the hero flying
+ // through the boulders, then snapping back. No arena (two rooms): the old bounds clamp only.
+ private knockbackTo(dir:{x:number;y:number}){const b=this.bounds(),to=point(clamp(this.hero.x+dir.x*260,b.minX,b.maxX),clamp(this.hero.y+dir.y*260,b.minY,b.maxY));
+  if(!this.arena)return to;const px=this.hero.x,py=this.hero.y,steps=Math.max(1,Math.ceil(Math.hypot(to.x-px,to.y-py)/8));let end=point(px,py);
+  for(let i=1;i<=steps;i++){const x=px+(to.x-px)*i/steps,y=py+(to.y-py)*i/steps;if(this.outsideArena(x,y,20)||this.blocked(x,y))break;end=point(x,y);}return end;}
  private detonate(){const w=this.warning;if(!w||this.elapsed+1e-8<w.explodeAt)return;this.warning=null;this.effect('explosion',w.x,this.rules.blastDamage,{radius:w.radius,z:w.z,damageKind:'skill',warningId:w.id,attackId:w.attackId,contactAt:w.explodeAt});
   if(Math.hypot(this.hero.x-w.x,this.hero.y-LANE_Y-w.z)>w.radius||this.hero.airHeight>120||this.hero.motion?.kind==='dodge')return;
-  if(this.damageHero(this.rules.blastDamage,'skill',{attackId:w.attackId,contactAt:w.explodeAt,warningId:w.id})){const dir=normalized(this.hero.x-this.boss.x,this.hero.y-this.boss.y),b=this.bounds();this.hero.motion={kind:'knockback',start:this.elapsed,duration:this.rules.knockbackSeconds,hitAt:0,from:point(this.hero.x,this.hero.y),to:point(clamp(this.hero.x+dir.x*260,b.minX,b.maxX),clamp(this.hero.y+dir.y*260,b.minY,b.maxY))};this.hero.action='knockback';this.hero.serial++;}
+  if(this.damageHero(this.rules.blastDamage,'skill',{attackId:w.attackId,contactAt:w.explodeAt,warningId:w.id})){const dir=normalized(this.hero.x-this.boss.x,this.hero.y-this.boss.y);this.hero.motion={kind:'knockback',start:this.elapsed,duration:this.rules.knockbackSeconds,hitAt:0,from:point(this.hero.x,this.hero.y),to:this.knockbackTo(dir)};this.hero.action='knockback';this.hero.serial++;}
  }
  step(dt:number,input:UnityInput){this.boss.radius=this.bodyRadius;this.paused=!!input.paused;this.auto=input.auto;if(this.status!=='playing'||this.paused)return;dt=clamp(dt,0,.02);this.elapsed+=dt;
   for(let i=0;i<6;i++)this.cooldowns[i]=Math.max(0,this.cooldowns[i]-dt);for(const k of ['health','mana'] as const)this.resources.potionCooldowns[k]=Math.max(0,this.resources.potionCooldowns[k]-dt);
