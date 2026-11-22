@@ -87,11 +87,13 @@ namespace IslandGame {
   // Kit boss fight look (2026-11-21, user: the boss is too big): the zone-10 QuarterView preset used when the kit hero fights the boss.
   // The boss display height comes from the kernel (state bossScale: 3.2 m / 6.5 m with the kit, which also scales the boss hitbox).
   // The legacy hero option (bossHero "legacy") keeps the 6.5 m boss and the old preset.
-  // Values from the Editor sweep (portrait 1080x2340, brief 3): pitched up toward the reference (a high, hero-centred isometric view,
-  // ~55 deg) as far as the kit hero stays >= 10 % of the screen height (median 10.3 % over a scripted fight) while the camera framing
-  // still keeps the whole boss, the warning disc and the hero in view on every frame. At 55 deg the hero drops to ~7 %.
-  // yaw 90 puts the hero-boss line (world x) up the portrait screen. Before: (40,75,22,8,(-.6,1.5,-.15)).
-  public static BattleCameraController.Preset KitBossQuarter=new BattleCameraController.Preset(45,90,22,6,new Vector3(-.6f,.8f,-.15f));
+  // Brief 4 (2026-11-22, user: "like the video, higher"): a high telephoto view like the reference (~55 deg, fixed, hero-centred). The rig's
+  // heroCentricBoss framing (set below for the kit boss fight) keeps the hero, the warning disc and the boss feet in view and lets the boss
+  // head leave the top. Editor sweep (1080x2340, one scripted fight): hero median 10.8 % (standing 11.3 %), warning disc and hero 100 %,
+  // boss feet 100 % and below the top HUD. yaw 70 runs the hero-boss line (world x) diagonally up the portrait screen; 60 and 45 push the
+  // camera out (the boss leaves the narrow portrait width). fov 12 (28.8 deg in portrait) at distance 14 = the old hero size with less
+  // perspective. Before: (45,90,22,6,(-.6,.8,-.15)) with whole-boss framing.
+  public static BattleCameraController.Preset KitBossQuarter=new BattleCameraController.Preset(55,70,12,14,new Vector3(-.8f,.8f,0));
   bool KitBoss=>assets&&assets.IsKit&&!Battle3DAssets.BossHeroLegacy;
   public Transform BossTarget=>bossView!=null?bossView.BossTarget:null;
   public string BossClipName=>bossView?.BossClipName;
@@ -145,7 +147,7 @@ namespace IslandGame {
    if((bool?)map?["unityBossMode"]==true&&bossAssets&&!mountMode)bossView=new UnityBossPresentation(root,bossAssets,map);
    
    IslandFrameBudget.Current.BindScenery(null);
-   diorama=GetComponent<BattleDioramaLook>()??gameObject.AddComponent<BattleDioramaLook>();diorama.Initialize(world,camera);if(mountMode||zoneTenArena){var rig=camera.GetComponentInParent<BattleCameraController>();rig.side=new BattleCameraController.Preset(10,0,20,24,new Vector3(0,2,0));rig.quarter=zoneTenArena?(KitBoss?KitBossQuarter:new BattleCameraController.Preset(38,25,38,19,new Vector3(0,2.2f,.6f))):new BattleCameraController.Preset(40,35,35,17,new Vector3(0,1.2f,1.8f));rig.lookAheadDistanceX=1.6f;rig.maxVelocityLookAhead=.7f;rig.velocityLookAheadMultiplier=.10f;rig.playerEdgePadding=1.2f;rig.lookAheadAccelSmoothTime=.08f;rig.verticalSmoothTime=.10f;rig.GetComponent<BattleForegroundOcclusion>().protectSideView=true;MountZoneStream.Ensure().Bind(camera,null,(int?)map["zone"]??0);}if(authored){authored.VisualChunkCreated+=OnVisualBranch;authored.VisualChunkRemoving+=OnVisualRemoving;}
+   diorama=GetComponent<BattleDioramaLook>()??gameObject.AddComponent<BattleDioramaLook>();diorama.Initialize(world,camera);if(mountMode||zoneTenArena){var rig=camera.GetComponentInParent<BattleCameraController>();rig.side=new BattleCameraController.Preset(10,0,20,24,new Vector3(0,2,0));rig.quarter=zoneTenArena?(KitBoss?KitBossQuarter:new BattleCameraController.Preset(38,25,38,19,new Vector3(0,2.2f,.6f))):new BattleCameraController.Preset(40,35,35,17,new Vector3(0,1.2f,1.8f));rig.heroCentricBoss=zoneTenArena&&KitBoss;rig.lookAheadDistanceX=1.6f;rig.maxVelocityLookAhead=.7f;rig.velocityLookAheadMultiplier=.10f;rig.playerEdgePadding=1.2f;rig.lookAheadAccelSmoothTime=.08f;rig.verticalSmoothTime=.10f;rig.GetComponent<BattleForegroundOcclusion>().protectSideView=true;MountZoneStream.Ensure().Bind(camera,null,(int?)map["zone"]??0);}if(authored){authored.VisualChunkCreated+=OnVisualBranch;authored.VisualChunkRemoving+=OnVisualRemoving;}
   }
   void OnVisualBranch(Transform branch){if(diorama)diorama.ApplyBranch(branch);}
   void OnVisualRemoving(Transform branch){if(diorama)diorama.ForgetBranch(branch);}

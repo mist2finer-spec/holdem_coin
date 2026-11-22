@@ -46,8 +46,32 @@ namespace IslandGame.Tests {
    }finally{view.Dispose();Object.DestroyImmediate(parent.gameObject);}
   }
   [Test] public void Kit_boss_camera_is_the_tuned_quarter_view(){
-   var q=Battle3DView.KitBossQuarter;Assert.AreEqual(45f,q.pitch);Assert.AreEqual(90f,q.yaw);Assert.AreEqual(22f,q.verticalFov);Assert.AreEqual(6f,q.distance);
-   Assert.AreEqual(new Vector3(-.6f,.8f,-.15f),q.pivotOffset,"brief 3 Editor sweep values (hero >= 10 %, boss/warning/hero in view)");
+   var q=Battle3DView.KitBossQuarter;Assert.AreEqual(55f,q.pitch);Assert.AreEqual(70f,q.yaw);Assert.AreEqual(12f,q.verticalFov);Assert.AreEqual(14f,q.distance);
+   Assert.AreEqual(new Vector3(-.8f,.8f,0),q.pivotOffset,"brief 4 Editor sweep values (55 deg, hero-centred, hero >= 10 %)");
+  }
+  // Hero-centred framing vs the old whole-boss framing, same rig, same pose: hero 2 m from a 3.2 m boss (a box ~ its skinned bounds).
+  static (float dist,float heroFrac,bool footIn,bool headIn,bool heroIn) Frame(bool heroCentric,bool warning){
+   var rigGo=new GameObject("rig test");var camGo=new GameObject("cam");camGo.transform.SetParent(rigGo.transform,false);var cam=camGo.AddComponent<Camera>();
+   var bossGo=GameObject.CreatePrimitive(PrimitiveType.Cube);bossGo.transform.position=new Vector3(2f,1.6f,0);bossGo.transform.localScale=new Vector3(2.4f,3.2f,2.4f); // ~ the skinned bounds of the 3.2 m boss
+   var bossRoot=new GameObject("boss root").transform;bossRoot.position=new Vector3(2f,0,0);bossGo.transform.SetParent(bossRoot,true);
+   try{
+    cam.aspect=1080f/2340f;var rig=rigGo.AddComponent<BattleCameraController>();rig.Bind(cam);rig.externallyDriven=true;rig.quarter=Battle3DView.KitBossQuarter;rig.heroCentricBoss=heroCentric;
+    rig.SetPose(Vector3.zero,1,0,0);rig.SetViewMode(ViewMode.QuarterView,bossRoot);rig.ResetPose();
+    if(warning){rig.WarningActive=true;rig.WarningBounds=new Bounds(new Vector3(0,.05f,0),new Vector3(2.4f,.1f,2.4f));}
+    for(int i=0;i<240;i++)rig.Tick(1/60f);
+    bool In(Vector3 p){var v=cam.WorldToViewportPoint(p);return v.z>0&&v.x>=0&&v.x<=1&&v.y>=0&&v.y<=1;}
+    float hf=Mathf.Abs(cam.WorldToViewportPoint(Vector3.up*1.2f).y-cam.WorldToViewportPoint(Vector3.zero).y);
+    bool foot=In(new Vector3(1.5f,0,-.5f))&&In(new Vector3(2.5f,0,.5f))&&In(new Vector3(2f,.4f,0));
+    bool warn=!warning||In(new Vector3(-1.2f,0,-1.2f))&&In(new Vector3(1.2f,0,1.2f))&&In(new Vector3(-1.2f,0,1.2f))&&In(new Vector3(1.2f,0,-1.2f));
+    return (rig.CurrentDistance,hf,foot&&warn,In(new Vector3(2f,3.2f,0)),In(Vector3.zero)&&In(Vector3.up*1.2f));
+   }finally{Object.DestroyImmediate(rigGo);Object.DestroyImmediate(bossRoot.gameObject);}
+  }
+  [Test] public void Hero_centred_boss_framing_keeps_the_hero_big_and_the_boss_feet_and_warning_in_view(){
+   var whole=Frame(false,false);var hero=Frame(true,false);var warned=Frame(true,true);
+   TestContext.WriteLine($"whole-boss: dist {whole.dist:F2} hero {whole.heroFrac:F3} head {whole.headIn}; hero-centred: dist {hero.dist:F2} hero {hero.heroFrac:F3} head {hero.headIn}; warning: dist {warned.dist:F2} hero {warned.heroFrac:F3}");
+   Assert.IsTrue(whole.headIn,"old framing fits the whole boss");Assert.IsTrue(hero.heroIn&&hero.footIn,"hero and boss feet in view");
+   Assert.Greater(hero.heroFrac,whole.heroFrac*1.2f,"hero-centred framing does not push the camera out for the boss head");Assert.Less(hero.dist,whole.dist*.85f,"closer camera");
+   Assert.IsTrue(warned.heroIn&&warned.footIn,"warning disc, hero and boss feet in view while a warning is up");
   }
   [Test] public void Kit_boss_visible_hands_sit_on_the_kernel_hook_points(){
    var a=Resources.Load<UnityBossAssets>("UnityBossAssets");if(!a||!a.boss||!a.combo)Assert.Ignore("boss assets not present");

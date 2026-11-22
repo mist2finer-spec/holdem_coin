@@ -49,6 +49,13 @@ namespace IslandGame {
   public float VisibleGroundHalfWidth=>view?CurrentDistance*Mathf.Tan(view.fieldOfView*Mathf.Deg2Rad*.5f)*view.aspect+3:9;
   public float FocusWorldX=>transform.position.x;
   Transform boss;Renderer[] bossRenderers=Array.Empty<Renderer>();
+  // Hero-centred boss framing (kit boss fight, 2026-11-22, brief 4): a high fixed camera like the reference video. Instead of fitting the
+  // whole boss (which pushes a high camera far out and shrinks the hero), the view centres on the hero, leans heroCentricBossWeight toward
+  // the boss, and only guarantees the hero, the warning disc and the boss feet (a bossFootRadius x bossFootHeight box at the boss root).
+  // The boss head may leave the top of the screen. Off = the old whole-boss framing (legacy boss, mountain path).
+  public bool heroCentricBoss;public float heroCentricBossWeight=.1f,bossFootRadius=.5f,bossFootHeight=1.2f;
+  Bounds BossFootBounds=>new Bounds(boss.position+Vector3.up*bossFootHeight*.5f,new Vector3(bossFootRadius*2,bossFootHeight,bossFootRadius*2));
+  float BossFrameDistance(Vector3 pivot){if(heroCentricBoss)return RequiredDistance(BossFootBounds,pivot,transform.rotation,view.fieldOfView,view.aspect);float d=0;foreach(var r in bossRenderers)if(r&&r.enabled)d=Mathf.Max(d,RequiredDistance(r.bounds,pivot,transform.rotation,view.fieldOfView,view.aspect));return d;}
   BattleForegroundOcclusion occlusion;
   Vector3 pose,previousPose;float ground,rawFacing=1,velocityX,facing=1,candidate=1,turnAge,turnX;
   float lookVelocity,xVelocity,yVelocity,zVelocity,zoomVelocity,offsetY;bool initialized,hasPose,clamp;
@@ -107,12 +114,12 @@ namespace IslandGame {
    }
    if(boss&&boss.gameObject.activeInHierarchy){
     float separation=Vector3.Distance(new Vector3(pose.x,ground,pose.z),boss.position);float bossInfluence=1-Mathf.SmoothStep(0,1,Mathf.InverseLerp(12,24,separation));
-    Vector3 center=Vector3.Lerp(new Vector3(pose.x,ground,pose.z),boss.position,bossWeight*bossInfluence);
+    Vector3 center=Vector3.Lerp(new Vector3(pose.x,ground,pose.z),boss.position,(heroCentricBoss?heroCentricBossWeight:bossWeight)*bossInfluence);
     target=center+current.pivotOffset+new Vector3(FacingWorld.x,0,FacingWorld.y)*(.65f*QuarterWeight);
     // The giant's bounds determine zoom; root-only distance misses its head and shoulders.
     var heroBounds=new Bounds(new Vector3(pose.x,ground+.65f,pose.z),new Vector3(.9f,1.5f,.7f));
     float required=RequiredDistance(heroBounds,target,transform.rotation,view.fieldOfView,view.aspect);
-    foreach(var r in bossRenderers)if(r&&r.enabled)required=Mathf.Max(required,Mathf.Lerp(current.distance,RequiredDistance(r.bounds,target,transform.rotation,view.fieldOfView,view.aspect),bossInfluence));
+    required=Mathf.Max(required,Mathf.Lerp(current.distance,BossFrameDistance(target),bossInfluence));
     distance=Mathf.Clamp(Mathf.Max(current.distance,required),current.distance,maxBossDistance);
    }
    if(WarningActive)distance=Mathf.Max(distance,RequiredDistance(WarningBounds,target,transform.rotation,view.fieldOfView,view.aspect));
@@ -129,7 +136,7 @@ namespace IslandGame {
    // Recheck framing after transition smoothing and offsets. Threats never depend on preset timing.
    float safe=RequiredDistance(new Bounds(new Vector3(pose.x,ground+.7f,pose.z),new Vector3(1,1.6f,1)),transform.position,transform.rotation,view.fieldOfView,view.aspect);
    if(WarningActive)safe=Mathf.Max(safe,RequiredDistance(WarningBounds,transform.position,transform.rotation,view.fieldOfView,view.aspect));
-   if(boss&&boss.gameObject.activeInHierarchy&&Vector3.Distance(pose,boss.position)<12)foreach(var r in bossRenderers)if(r&&r.enabled)safe=Mathf.Max(safe,RequiredDistance(r.bounds,transform.position,transform.rotation,view.fieldOfView,view.aspect));
+   if(boss&&boss.gameObject.activeInHierarchy&&Vector3.Distance(pose,boss.position)<12)safe=Mathf.Max(safe,BossFrameDistance(transform.position));
    CurrentDistance=Mathf.Max(CurrentDistance,safe+ImpactOffset.magnitude);
    view.transform.localPosition=new Vector3(0,0,-CurrentDistance)+ImpactOffset;view.transform.localRotation=Quaternion.identity;
    if(occlusion)occlusion.Apply(view,new Vector3(pose.x,ground,pose.z),current.pitch);
