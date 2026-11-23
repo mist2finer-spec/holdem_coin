@@ -24,6 +24,9 @@ namespace IslandGame {
   public AnimationClip iai1, iai2, iai3, iaiRecover, iaiRecoverFrom1, iaiRecoverFrom2, skill, avoid, knockback;
   // Clips that keep their feet on the ground by the lowest bone (body clips, kernel owns height and travel).
   public AnimationClip[] groundedClips;
+  // quarter-run-v1 (2026-11-23): the run of the QuarterView (Planar) display. Side25D keeps run (PG_dash_loop). Empty = run in both views.
+  // PG_quarter_run = art #32 v3 (legs, hips, torso) + reference-jog arms, baked on the kit tracks; one cycle = runQuarterStrideMeters (game metres).
+  public AnimationClip runQuarter;public float runQuarterStrideMeters;
   public bool IsKit=>!string.IsNullOrEmpty(kit);
   public bool KitComplete=>IsKit&&hero&&slime&&slimeIdle&&idle&&run&&iai1&&iai2&&iai3&&iaiRecover&&skill;
 
@@ -61,7 +64,12 @@ namespace IslandGame {
   }
   public static JObject WithRunOptions(JObject boot){if(boot==null)return boot;boot["autoSkills"]=true;int tempo=DevKitTempo;if(tempo>=0&&boot["heroKit"]!=null)boot["kitTempo"]=tempo;int hp=DevBossStartHP;if(hp>0&&boot["heroKit"]!=null)boot["bossStartHP"]=hp;return boot;}
 
-  public bool Loops(AnimationClip c)=>c&&(c==idle||c==run||c==walk||c==jumpLoop||c==slide);
+  public bool Loops(AnimationClip c)=>c&&(c==idle||c==run||c==walk||c==jumpLoop||c==slide||c==runQuarter);
+  // The run clip the view shows: runQuarter replaces run in the QuarterView (planar) when present; every other clip as given.
+  public AnimationClip ViewClip(AnimationClip c,bool planar)=>planar&&runQuarter&&c&&c==run?runQuarter:c;
+  public bool IsRun(AnimationClip c)=>c&&(c==run||c==runQuarter);
+  // Metres per clip second of a run clip (gait sync): kit = one baked cycle per stride; the original hero 3.8.
+  public float StridePerClipSecond(AnimationClip c){if(c&&c==runQuarter&&runQuarterStrideMeters>0)return runQuarterStrideMeters/Mathf.Max(.01f,c.length);return runStrideMeters>0&&c?runStrideMeters/Mathf.Max(.01f,c.length):3.8f;}
   public bool Grounded(AnimationClip c){if(!c||groundedClips==null)return false;foreach(var g in groundedClips)if(g==c)return true;return false;}
   public AnimationClip HeroClip(string action,string after=null) {
    if(IsKit)return KitClip(action,after);

@@ -223,16 +223,20 @@ namespace IslandGame {
    if(!actors.TryGetValue(id,out a))a=Create(id,hero);if(a==null)return 0;
    var set=hero?a.set:assets;bool kit=hero&&a.kit;
    var clip=hero&&!kit&&bossAssets&&bossAssets.knockback&&(action=="knockback"||action=="knockdown"||action=="getup")?bossAssets.knockback:hero?set.HeroClip(action,kit?(string)HeroMotion?["after"]:null):assets.slimeIdle;if(!clip)return 0;
+   // quarter-run-v1: the QuarterView shows the quarter run instead of the side run (kit only; Side25D unchanged).
+   if(hero&&kit)clip=set.ViewClip(clip,Planar);
    bool loop=!hero||set.Loops(clip);
    bool changed=a.clip!=clip||a.serial!=serial;
-   if(a.clip!=clip||(!loop&&a.serial!=serial))a.time=0;
+   // Side <-> quarter while running: keep the gait phase (both cycles start on the left foot contact); the 0.12 s blend does the rest.
+   if(hero&&kit&&a.clip!=clip&&set.IsRun(a.clip)&&set.IsRun(clip))a.time=Mathf.Repeat(a.time,a.clip.length)/a.clip.length*clip.length;
+   else if(a.clip!=clip||(!loop&&a.serial!=serial))a.time=0;
    a.clip=clip;a.serial=serial;
    // Use intended stride as a floor: collision stops translation, not a held run cycle.
    // Partial stick input scales cadence; idle/action clips and pause keep their own clocks.
    float gaitAdvance=advance;
    // Stride: metres per run-clip second (kit: one baked cycle = runStrideMeters, port_manifest; original: 3.8).
-   float stride=set.runStrideMeters>0?set.runStrideMeters/Mathf.Max(.01f,clip.length):3.8f;
-   if(hero&&clip==set.run&&a.placed){float dt=Mathf.Max(0,advance);float distance=Vector2.Distance(new Vector2(x/100,HeroDepth),new Vector2(a.root.transform.position.x,a.root.transform.position.z));gaitAdvance=Mathf.Min(Mathf.Max(distance,HeroRequestedSpeed*dt)/stride,dt*2);}
+   float stride=set.StridePerClipSecond(clip);
+   if(hero&&set.IsRun(clip)&&a.placed){float dt=Mathf.Max(0,advance);float distance=Vector2.Distance(new Vector2(x/100,HeroDepth),new Vector2(a.root.transform.position.x,a.root.transform.position.z));gaitAdvance=Mathf.Min(Mathf.Max(distance,HeroRequestedSpeed*dt)/stride,dt*2);}
    a.time+=Mathf.Max(0,gaitAdvance);
    float sample=loop?Mathf.Repeat(hero?a.time:visualTime,clip.length):Mathf.Min(a.time,clip.length);
    if(hero&&kind=="knockback"&&(kit?clip==set.knockback:bossAssets&&clip==bossAssets.knockback))sample=Mathf.Clamp(age,0,clip.length);

@@ -61,3 +61,5 @@ MonoBehaviour:
   - {fileID: 7400000, guid: ec2d688d9b9292f499fe8ae0db01ebae, type: 2}
   - {fileID: 7400000, guid: f2e251e07adf4f64a9353f20f30c37b9, type: 2}
   - {fileID: 7400000, guid: 68daab953039dd140b884993d858edfb, type: 2}
+  runQuarter: {fileID: 7400000, guid: 52630128c6d2c0747b71626274f95cdf, type: 2}
+  runQuarterStrideMeters: 2.2103
