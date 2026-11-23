@@ -1,0 +1,89 @@
+{
+  "result": "PASS",
+  "fbx_bone_count": 65,
+  "names_and_hierarchy_match": true,
+  "objects": [
+    {
+      "name": "Armature.001",
+      "type": "ARMATURE"
+    }
+  ],
+  "actions": [
+    {
+      "name": "Armature.001|AN_PG_QuarterRun_v3",
+      "frame_range": [
+        1.0,
+        57.0
+      ]
+    }
+  ],
+  "max_bone_head_error_m": 9.060347147917903e-07,
+  "max_deformation_matrix_error": 2.8908252716064453e-05,
+  "rest_head_error_m": 6.970574630022978e-07,
+  "worst": {
+    "bone": "mixamorig:LeftHandMiddle2",
+    "frame": 37.5
+  },
+  "worst_matrix": {
+    "bone": "mixamorig:RightHandPinky4",
+    "frame": 37.5,
+    "source_rest": [
+      [
+        0.9753128886222839,
+        0.054789986461400986,
+        -0.21391849219799042,
+        -0.5088998675346375
+      ],
+      [
+        0.19745168089866638,
+        0.2173679918050766,
+        0.955909788608551,
+        0.02200004830956459
+      ],
+      [
+        0.09887333959341049,
+        -0.9745505452156067,
+        0.20118378102779388,
+        0.9890003204345703
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "fbx_rest": [
+      [
+        0.9753133058547974,
+        0.05478985607624054,
+        -0.21391913294792175,
+        -0.5089002847671509
+      ],
+      [
+        0.19745101034641266,
+        0.21737974882125854,
+        0.9559075832366943,
+        0.022000178694725037
+      ],
+      [
+        0.09887587279081345,
+        -0.9745481014251709,
+        0.20119507610797882,
+        0.9890007972717285
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  "seam_position_error_m": 0.0,
+  "sample_count": 225,
+  "sample_step_frames": 0.25,
+  "engine_import": "UNAVAILABLE - Claude must validate Unity binding",
+  "source_mesh_changed": false,
+  "fbx_contains_meshes": false
+}

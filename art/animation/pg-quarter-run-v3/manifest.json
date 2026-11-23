@@ -1,0 +1,72 @@
+{
+  "schema": 1,
+  "asset": "pg-quarter-run-v3",
+  "author": "art-lead",
+  "cycle_seconds": 0.9333333333333333,
+  "cycle_distance_m": 2.24,
+  "hip_forward_pitch_deg": 8,
+  "default_review_view": "quarter",
+  "reference_sha256": "e8ea3b9f4aee193cda1c435f7149686340186d017d63d0b569c7c4029818f64d",
+  "files": {
+    ".gitattributes": {
+      "bytes": 83,
+      "sha256": "00371458f393404ec44b82cda25ead12a03454748a42b5cfd00061bc9011e915"
+    },
+    "compare_v2_v3_quarter.png": {
+      "bytes": 404480,
+      "sha256": "78281135c7d7bede511149a82345f8cd1e6a0031cd9edae3b55d6656f7bd15ce"
+    },
+    "compare_v2_v3_side.png": {
+      "bytes": 215048,
+      "sha256": "06ece33821b7850c7db79667999b55d500f0e45a920edce97d4255d3938a809c"
+    },
+    "fbx_roundtrip_report.json": {
+      "bytes": 1907,
+      "sha256": "77b7082a8f7eac417ef78991729252ff0c6292720f64f7fc0cc9d2a87fe375d0"
+    },
+    "motion_validation.json": {
+      "bytes": 1186,
+      "sha256": "cba415978195db607dc7ca91026a9f3f1d33c210ed014ede43c87f125e74ee64"
+    },
+    "pg_quarter_run_v3.blend": {
+      "bytes": 4830911,
+      "sha256": "5ae63e3cfa474d09413394e4a82124e2b67b091e4611c6666bcbc561468863d8"
+    },
+    "pg_quarter_run_v3.fbx": {
+      "bytes": 1211068,
+      "sha256": "5c5cf8c1598aaf6ad38d66fddabe7a4d3566a3deeb4c2440adef30e2947379df"
+    },
+    "poses_quarter.png": {
+      "bytes": 424445,
+      "sha256": "03b0e28f271cfcd5508c8b96af667b8640b0bd5243733b54f818df71c7629f74"
+    },
+    "poses_side.png": {
+      "bytes": 244135,
+      "sha256": "1179071f2899adb268d7135906e73cbab7bbdbae631614488b0526a482a810e9"
+    },
+    "posture_comparison.json": {
+      "bytes": 26319,
+      "sha256": "2e1c0e7099605291f97a792dc428b456e9257f9636ebe276bfd6fbe3ffde994e"
+    },
+    "preview_quarter.gif": {
+      "bytes": 2206403,
+      "sha256": "6a25c3220056b1f4081707d23f6d4300150731f70b1868b0384ab2fc04d6c35d"
+    },
+    "preview_side.gif": {
+      "bytes": 1478641,
+      "sha256": "92ea7218f3fa49bb6a649550159baff32a32c6e10616e9209e919dfea1ca8fd0"
+    },
+    "README_KO.md": {
+      "bytes": 5964,
+      "sha256": "093201f12799672fcb47f647214b32485bbac8edaefca65d8ccd63114adc27e0"
+    },
+    "reference_usage.json": {
+      "bytes": 1159,
+      "sha256": "9f4af32dc6b7459a1cb4317df2e2dc71b082543f374ae18ae2b87aed4fb477e4"
+    },
+    "review.html": {
+      "bytes": 4686017,
+      "sha256": "7107a22336743b7118a21cf283554d6d15e20aec9ad01e4980822b7c5bacf347"
+    }
+  }
+}

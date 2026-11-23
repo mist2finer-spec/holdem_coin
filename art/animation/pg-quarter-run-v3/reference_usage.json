@@ -1,0 +1,26 @@
+{
+  "reference_file": "art/animation/pg-quarter-run-v1/jog_fwd_loop_anim_only.glb",
+  "sha256": "e8ea3b9f4aee193cda1c435f7149686340186d017d63d0b569c7c4029818f64d",
+  "metadata_from_file": {
+    "version": "2.0",
+    "generator": "THREE.GLTFExporter r165",
+    "copyright": "Animations from ActionForge — https://actionforge.app | Rig and animations created by Quaternius — https://quaternius.com · https://www.patreon.com/quaternius | Source material: quaternius | Animation dedicated to the public domain under CC0 1.0 — no attribution required.",
+    "extras": {
+      "generator": "ActionForge",
+      "url": "https://actionforge.app",
+      "author": "Quaternius",
+      "authorUrl": "https://quaternius.com",
+      "clips": [
+        "jog_fwd_loop"
+      ],
+      "license": "CC0-1.0",
+      "resaleRestricted": []
+    }
+  },
+  "observed_bones": 71,
+  "observed_cycle_seconds": 0.9333333333333333,
+  "observed_root_distance_m": 5.0,
+  "usage": "User-authorized local visual observation and manually revised pose/timing design",
+  "copied_or_retargeted_source_curves": false,
+  "reference_embedded_in_blend_or_fbx": false
+}

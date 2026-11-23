@@ -1,0 +1,2 @@
+# Keep reviewed artifact bytes and SHA-256 hashes stable across checkouts.
+* -text

@@ -1,0 +1,40 @@
+{
+  "bone_count": 65,
+  "names_and_hierarchy_match": true,
+  "rest_matrix_max_error": 0.0,
+  "loop_seam_matrix_max_error": 0.0,
+  "scale_curve_count": 0,
+  "hips_horizontal_range_m": [
+    2.7193154394922203e-09,
+    4.078972604126818e-09
+  ],
+  "hips_vertical_range_m": [
+    0.6430445909500122,
+    0.744951069355011
+  ],
+  "max_torso_heading_error_deg": 1.8651784058757994e-05,
+  "planted_foot_world_drift_mm": {
+    "Left": 0.4751002788543901,
+    "Right": 0.47511518001552844
+  },
+  "planted_foot_height_variation_mm": {
+    "Left": 0.495225191116333,
+    "Right": 0.49558281898498535
+  },
+  "floor_z_m": 0.0,
+  "min_shoe_z_m": 0.00016814935952425003,
+  "max_floor_penetration_mm": 0,
+  "fps": 60,
+  "sample_step_frames": 0.25,
+  "sample_count": 225,
+  "cycle_seconds": 0.9333333333333333,
+  "cycle_distance_m": 2.24,
+  "native_speed_mps": 2.4,
+  "authored_action": "AN_PG_QuarterRun_v3",
+  "channels": 263,
+  "copied_animation_inputs": [],
+  "visual_reference": "User-supplied jog_fwd_loop_anim_only.glb",
+  "unity_import": "UNAVAILABLE - not run; Claude integration",
+  "user_art_approval": "PENDING",
+  "geometry_and_motion_gate": "PASS"
+}
