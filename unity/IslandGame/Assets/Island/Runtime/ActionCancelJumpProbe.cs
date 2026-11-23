@@ -27,7 +27,7 @@ namespace IslandGame {
     app.StartReferenceTraining(zone);session=app.HudSession;session.Auto=true;
     float timeout=Time.realtimeSinceStartup+30;while((State==null||(int?)State["routeZone"]!=zone||(string)State["phase"]=="boss-loading"||(bool?)State["bossIntroActive"]==true)&&Time.realtimeSinceStartup<timeout)yield return null;
     view=FindFirstObjectByType<Battle3DView>();battle=app.HudBattle;
-    foreach(var pair in new[]{("Jump","jump"),("EvadeRight","dodge"),("Slide","slide"),("Skill3","skill")}){yield return Case(zone,pair.Item1,pair.Item2);if(failed)break;}
+    foreach(var pair in new[]{("Jump","jump"),("Roll","dodge"),("Slide","slide"),("Skill0","skill")}){yield return Case(zone,pair.Item1,pair.Item2);if(failed)break;}
     if(failed)break;
    }
    Finished=true;Save(failed||errors>0?"FAIL":"PASS");Application.logMessageReceived-=Log;Debug.Log("ACTION_CANCEL_JUMP "+(failed||errors>0?"FAIL":"PASS"));
@@ -39,10 +39,12 @@ namespace IslandGame {
    if((string)Motion?["kind"]!="attack"||!button.interactable){failed=true;cases.Add(new JObject{{"zone",zone},{"action",expected},{"failure","No interruptible AUTO attack/button"}});yield break;}
    int oldId=(int)Motion["attackId"];float sent=N(State["elapsed"]),launch=N(State["hero"]["elevation"]);var hud=FindFirstObjectByType<IslandBattleHud>();int dispatch=hud.UiDispatches;
    ExecuteEvents.Execute<IPointerClickHandler>(button.gameObject,new PointerEventData(EventSystem.current){button=PointerEventData.InputButton.Left},ExecuteEvents.pointerClickHandler);
-   bool idle=false,accepted=false,landed=false,rendered=false,riseShot=false,apexShot=false,fallShot=false;float peak=0,firstAction=-1,landAt=-1;var trace=new JArray();float previousTime=-1;until=Time.realtimeSinceStartup+3;
+   bool idle=false,named=false,accepted=false,landed=false,rendered=false,riseShot=false,apexShot=false,fallShot=false;float peak=0,firstAction=-1,landAt=-1;var trace=new JArray();float previousTime=-1;until=Time.realtimeSinceStartup+3;
    while(Time.realtimeSinceStartup<until){
     var m=Motion;string kind=(string)m?["kind"],action=(string)State?["hero"]?["action"];float time=N(State?["elapsed"]);int serial=(int?)State?["hero"]?["serial"]??0;
     if(kind=="cancel"&&action=="stay1")idle=true;
+    // instant evade (2026-11-23): roll / jump / slide replace the attack on the press tick and name it; only a skill goes through stay1
+    if(kind==expected&&(int?)m?["cancelledAttackId"]==oldId)named=true;
     if(kind==expected){accepted=true;if(firstAction<0)firstAction=time;rendered|=expected=="jump"?battle.HeroAction?.StartsWith("jump")==true:expected=="slide"?battle.HeroAction?.StartsWith("sliding")==true:expected=="dodge"?battle.HeroAction=="avoid1":battle.HeroAction?.StartsWith("skill")==true;
      if(expected=="jump"){peak=Mathf.Max(peak,N(m?["jump"]?["worldY"])-launch);float velocity=N(m?["jump"]?["velocityY"]);if(velocity>250&&velocity<450&&!riseShot){riseShot=true;Shot("zone"+zone+"-rise");}if(Mathf.Abs(velocity)<80&&!apexShot){apexShot=true;Shot("zone"+zone+"-apex");}if(velocity< -350&&!fallShot){fallShot=true;Shot("zone"+zone+"-fall");}if(m?["jump"]?["landedAt"]?.Type==JTokenType.Float||m?["jump"]?["landedAt"]?.Type==JTokenType.Integer){landed=true;landAt=N(m["jump"]["landedAt"]);}}
     }
@@ -51,8 +53,8 @@ namespace IslandGame {
     if(accepted&&expected=="jump"&&landed&&kind!="jump")break;
     yield return null;
    }
-   bool valid=idle&&accepted&&rendered&&hud.UiDispatches==dispatch+1&&firstAction-sent<.16f&&(expected!="jump"||landed&&peak>95&&peak<106&&landAt<1.1f);
-   var row=new JObject{{"zone",zone},{"camera",battle.CameraRig.Mode.ToString()},{"action",expected},{"valid",valid},{"auto",session.Auto},{"cancelledAttackId",oldId},{"idleObserved",idle},{"rendered",rendered},{"latency",firstAction-sent},{"jumpPeakCm",peak},{"landingAge",landAt},{"trace",trace}};cases.Add(row);failed|=!valid;Save("RUNNING");
+   bool valid=(expected=="skill"?idle:named&&!idle)&&accepted&&rendered&&hud.UiDispatches==dispatch+1&&firstAction-sent<.16f&&(expected!="jump"||landed&&peak>95&&peak<106&&landAt<1.1f);
+   var row=new JObject{{"zone",zone},{"camera",battle.CameraRig.Mode.ToString()},{"action",expected},{"valid",valid},{"auto",session.Auto},{"cancelledAttackId",oldId},{"idleObserved",idle},{"namedCut",named},{"rendered",rendered},{"latency",firstAction-sent},{"jumpPeakCm",peak},{"landingAge",landAt},{"trace",trace}};cases.Add(row);failed|=!valid;Save("RUNNING");
    Shot("zone"+zone+"-"+expected);
    yield return new WaitForSecondsRealtime(1.3f);
   }

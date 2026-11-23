@@ -31,7 +31,9 @@ namespace IslandGame {
   public Preset quarter=new Preset(42,35,35,20,new Vector3(0,1.2f,2.5f));
   public Preset top=new Preset(82,0,40,24,new Vector3(0,0,3));
   [Header("Portrait projection and ground")]
-  public float referenceAspect=9f/16f;[Range(.05f,.4f)]public float groundViewportY=.18f;
+  // ui-ref4 (2026-11-21): the battle view became the whole portrait screen instead of the upper half. referenceAspect 9/16 -> 9/8 keeps the
+  // old horizontal coverage (same pixels per metre); groundViewportY .18 -> .36 lifts the ground line above the bottom HUD.
+  public float referenceAspect=9f/8f;[Range(.05f,.4f)]public float groundViewportY=.36f;
   public bool keepGroundFraming=true;public float verticalDeadzone=1.2f,verticalSmoothTime=.15f;
   [Header("Directional anticipation")]
   public float lookAheadDistanceX=2.8f,turnConfirmDelay=.12f,turnConfirmTravel=.35f;
@@ -41,7 +43,8 @@ namespace IslandGame {
   public float transitionDuration=1.2f,maxBossDistance=32,bossWeight=.35f,framingMargin=1.15f;
   [Header("Side hero framing (0 = use side.distance)")]
   // Hero height as a fraction of the visible battle area (the rect minus the header band); the side distance is solved from it.
-  public float heroScreenFraction,heroScreenHeight=1.3f,visibleFraction=.88f;
+  // ui-ref4: visibleFraction .88 -> .44 = the old battle band (88 % of the upper half) measured on the full screen, so the hero keeps its size.
+  public float heroScreenFraction,heroScreenHeight=1.3f,visibleFraction=.44f;
   public float maxCameraStep=.05f;
   public float CurrentLookAhead{get;private set;}public float CurrentDistance{get;private set;}
   public float ConfirmedFacing=>facing;public bool ChamberClampActive=>clamp;
