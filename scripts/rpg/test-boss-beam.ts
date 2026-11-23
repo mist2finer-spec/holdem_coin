@@ -8,7 +8,10 @@ import {PINK_IAI} from '../../src/lib/rpg-hero-kit-iai';
 import zoneTenArena from '../../src/lib/generated/zone-ten-arena.json';
 import '../../src/lib/training-client-kernel';
 // Kit boss rune beams (maintenance/boss-beam-camera-20261122). No hit while the seals charge, hit from the fire to the stop,
-// one hit per straight beam, the last-stand ring of 8 turning clockwise on screen. Without a kit nothing changes (test-boss-kit 1-2).
+// the last-stand ring of 8 turning clockwise on screen. Without a kit nothing changes (test-boss-kit 1-2).
+// Damage while touching (2026-11-23, maintenance/boss-beam-dot-20261123, user: no knockback, HP drains while the beam touches):
+// no knockback, no stagger; one shared tick clock, 2,000 every .1 s (= 20,000/s) while touching a firing beam; dodge = no damage.
+// The floor blast (warning disc) keeps its knockback / knockdown (user: "the floor attack must still knock down"), test 15.
 const G=globalThis as any;
 const near=(a:number,b:number,tol=1e-6,msg='')=>assert.ok(Math.abs(a-b)<=tol,`${msg} ${a} != ${b} (±${tol})`);
 const LANE=5000,HR=BOSS_CONTACT.heroRadius;
@@ -37,20 +40,25 @@ test('2. judgement: segment-circle, width = the shader core at that distance, no
  // The half width grows along the beam like the painted core (narrow at the seals, about 1 m wide at the end with width 1.4, size .8).
  assert.ok(beamHalfWidth(b,0)<20&&beamHalfWidth(b,R.length)>40&&beamHalfWidth(b,R.length)<50);
 });
-test('3. straight beam in the arena: 0 hits while charging (hero in the line), 1 hit on fire, 2 x blast damage, knockback, then none',()=>{
+const TICK=R.tick,PER_TICK=UNITY_BOSS_RULES.blastDamage*R.damageScale*R.tick;
+test('3. straight beam: 0 while charging, 2,000 every .1 s while standing in it (20,000/s), no knockback, no stagger, 0 in the fade',()=>{
+ near(PER_TICK,2000,1e-9,'2,000 per tick');near(UNITY_BOSS_RULES.blastDamage*R.damageScale,20000,0,'20,000 per second');
  const b=arena();place(b,b.boss.x-500,b.boss.y);b.startBeams('line');const beam=b.beams[0];
  near(beam.angle,Math.PI,1e-9,'aimed at the hero');assert.equal(b.boss.action,'beam');const seen=new Set<number>(),hits:any[]=[];
  while(b.elapsed<beam.fireAt-1e-9){b.step(.02,idle);heroHits(b,seen,hits);place(b,b.boss.x-500,b.boss.y);}
- assert.equal(hits.length,0,'charge: no judgement');
+ assert.equal(hits.length,0,'charge: no judgement');const hp0=b.hero.hp;let lastIn=-1;
+ while(b.elapsed<beam.stopAt-1e-9){b.step(.02,idle);heroHits(b,seen,hits);
+  assert.equal(b.hero.motion,null,'no knockback, no stagger motion');assert.equal(b.hero.action,'stay1');assert.equal(b.hero.airHeight,0);
+  if(beamContact(beam,b.elapsed,b.hero,HR))lastIn=b.elapsed;place(b,b.boss.x-500,b.boss.y);}
  // The front reaches 5 m about .15 s after the fire (shader runeFront, ~.27 s to full length).
- while(b.elapsed<beam.fireAt+.3){b.step(.02,idle);heroHits(b,seen,hits);if(!hits.length)place(b,b.boss.x-500,b.boss.y);}
- assert.equal(hits.length,1,'the fire hits');assert.equal(hits[0].value,UNITY_BOSS_RULES.blastDamage*2);assert.equal(hits[0].definitionId,'boss-beam');
- assert.ok(hits[0].contactAt>=beam.fireAt-1e-9&&hits[0].contactAt<beam.fireAt+.25,`contact ${hits[0].contactAt-beam.fireAt} s after the fire`);assert.equal(b.hero.motion?.kind,'knockback');
- // Knockback cut by hand (motion, air height) so the hero stands in the beam again: still no second hit.
- while(b.elapsed<beam.stopAt){b.hero.motion=null;b.hero.airHeight=0;b.hero.action='stay1';place(b,b.boss.x-500,b.boss.y);b.step(.02,idle);heroHits(b,seen,hits);}
- assert.equal(hits.length,1,'one hit per cast even when standing in it again');
+ const first=hits[0].contactAt;assert.ok(first>=beam.fireAt-1e-9&&first<beam.fireAt+.25,`first contact ${first-beam.fireAt} s after the fire`);
+ for(let i=0;i<hits.length;i++){const h=hits[i];assert.equal(h.value,PER_TICK);assert.equal(h.definitionId,'boss-beam');assert.equal(h.target,'hero');
+  if(i)near(h.contactAt-hits[i-1].contactAt,TICK,1e-6,'one tick per .1 s');assert.equal(h.dotId,hits[0].id,'one streak');near(h.dotTotal,PER_TICK*(i+1),1e-9,'running total');}
+ const total=hits.reduce((s,h)=>s+h.value,0),dwell=lastIn-first+.02;near(hp0-b.hero.hp,total,1e-9,'HP = the ticks');
+ assert.ok(Math.abs(total-dwell*20000)<=PER_TICK+1e-6,`dwell ${dwell.toFixed(2)} s x 20,000 = ${dwell*20000} vs ${total}`);
  assert.deepEqual(b.view().beams.map((v:any)=>[v.kind,v.originX,v.originZ]),[['line',b.boss.x,b.boss.y-LANE]]);
- while(b.elapsed<beam.endAt+.05)b.step(.02,idle);assert.equal(b.view().beams.length,0,'gone after the fade');
+ const n=hits.length;while(b.elapsed<beam.endAt+.05){b.step(.02,idle);heroHits(b,seen,hits);place(b,b.boss.x-500,b.boss.y);}
+ assert.equal(hits.length,n,'fade: no damage');assert.equal(b.view().beams.length,0,'gone after the fade');
 });
 test('4. straight beam: the direction is fixed at the cast start; stepping out during the charge avoids it; dodge and a high jump too',()=>{
  const b=arena();place(b,b.boss.x-500,b.boss.y);b.startBeams('line');const a0=b.beams[0].angle,seen=new Set<number>(),hits:any[]=[];
@@ -82,13 +90,14 @@ test('6. last stand: at <= 25 % HP once, 8 beams 45 deg apart, fire after the ch
  while(b.boss.motion)b.step(.02,idle);b.boss.hp=300;b.bossIdleUntil=b.bossAt=0;let again=false;for(let t=0;t<600;t++){b.step(.02,idle);if(b.boss.motion?.definitionId==='boss-beam-ring')again=true;}
  assert.equal(again,false,'only once');
 });
-test('7. last stand: no hit while charging; a ring hit; .6 s safe after it; hit again by the next beam',()=>{
+test('7. last stand: no hit while charging; riding a turning ring beam = 2,000 every .1 s (no .6 s guard), no knockback',()=>{
+ assert.equal('invulnerable' in R.ring,false,'the .6 s ring guard is replaced by the tick');
  const b=arena();place(b,b.boss.x-600,b.boss.y);b.startBeams('ring');const r0=b.beams[0],seen=new Set<number>(),hits:any[]=[];
  while(b.elapsed<r0.fireAt-1e-9){b.step(.02,idle);heroHits(b,seen,hits);place(b,b.boss.x-600,b.boss.y);}assert.equal(hits.length,0,'charge: no judgement');
- while(b.elapsed<r0.fireAt+.3&&!hits.length){b.step(.02,idle);heroHits(b,seen,hits);}assert.equal(hits.length,1);assert.equal(hits[0].definitionId,'boss-beam-ring');const first=hits[0].contactAt;
- // Without the knockback, standing in the turning beam: no second hit for .6 s, then the guard is over.
- for(let t=0;t<60;t++){b.hero.motion=null;b.hero.airHeight=0;b.hero.action='stay1';const a=beamAngle(r0,b.elapsed+.02);place(b,b.boss.x+Math.cos(a)*600,b.boss.y+Math.sin(a)*600);b.step(.02,idle);heroHits(b,seen,hits);if(hits.length>1)break;}
- assert.equal(hits.length,2);near(hits[1].contactAt-first,R.ring.invulnerable,.021,'guard');
+ // Standing in beam 0 while it turns (moved with it by hand): one tick per .1 s for 2 s, never a knockback.
+ for(let t=0;t<100;t++){const a=beamAngle(r0,b.elapsed+.02);place(b,b.boss.x+Math.cos(a)*600,b.boss.y+Math.sin(a)*600);b.step(.02,idle);heroHits(b,seen,hits);assert.equal(b.hero.motion,null);}
+ assert.ok(hits.length>=18&&hits.length<=21,`ticks in 2 s: ${hits.length}`);
+ for(let i=0;i<hits.length;i++){assert.equal(hits[i].definitionId,'boss-beam-ring');assert.equal(hits[i].value,PER_TICK);if(i)near(hits[i].contactAt-hits[i-1].contactAt,TICK,1e-6);}
  assert.equal(b.view().beams.length,8);assert.ok(b.view().beams.every((v:any)=>v.kind==='ring'&&v.turn<0));
 });
 test('8. beams leave with the boss defeat; legacy zone-10 boss and no-kit views have no beams key',()=>{
@@ -111,4 +120,73 @@ test('10. zone 10 kit AUTO run with the dev start HP: the ring fires, the hero i
  for(let t=0;t<30000&&g.status==='playing';t++){const input={x:0,y:0,auto:true,readyZone:9,readyBoss:true};g.acceptClientHints(input);g.step(.02,input);const b=g.bossEncounter;if(!b)continue;
   if(b.boss.motion?.definitionId==='boss-beam-ring')ring++;heroHits(b,seen,hits);}
  assert.ok(ring>0,'the ring was cast');assert.ok(g.status==='won'||g.bossEncounter?.bossDefeated,'the boss falls');
+});
+// --- damage while touching (2026-11-23, boss-beam-dot-20261123) ---------------------------------------------------------------------
+// One straight beam with the hero 5 m in front of the boss. mode: 'graze' = one step in the line .3 s after the fire (beam at full
+// length), 2 m aside otherwise; 'stay' = in the line the whole time; 'exit' = in the line, then walks out sideways from .5 s after the fire.
+function drill(mode:'graze'|'stay'|'exit'){
+ const b=arena();place(b,b.boss.x-500,b.boss.y);b.startBeams('line');const beam=b.beams[0],seen=new Set<number>(),hits:any[]=[],hp0=b.hero.hp;
+ let inside=0,walked=0,lastY=0,graze=false,walk=false;const curve:[number,number][]=[];
+ while(b.elapsed<beam.endAt+.05){
+  let input:any=idle;
+  if(mode==='graze'){const now=!graze&&b.elapsed>=beam.fireAt+.3;place(b,b.boss.x-500,b.boss.y+(now?0:200));graze||=now;}
+  else if(mode==='stay'||b.elapsed<beam.fireAt+.5)place(b,b.boss.x-500,b.boss.y);
+  else {input={x:0,y:1,auto:false};if(!walk){walk=true;lastY=b.hero.y;}}
+  b.step(.02,input);heroHits(b,seen,hits);if(beamContact(beam,b.elapsed,b.hero,HR))inside++;
+  if(walk){assert.ok(b.hero.y>lastY,'walks while touched (no stagger)');walked+=b.hero.y-lastY;lastY=b.hero.y;}
+  assert.notEqual(b.hero.motion?.kind,'knockback');curve.push([+(b.elapsed-beam.fireAt).toFixed(2),hp0-b.hero.hp]);
+ }
+ return {total:hp0-b.hero.hp,ticks:hits.length,dwell:inside*.02,walked,hits,curve};
+}
+test('11. graze / stay / walk out: damage = time touching x 20,000/s (± 1 tick), walking works while touched',()=>{
+ const g=drill('graze'),s=drill('stay'),e=drill('exit');
+ assert.equal(g.total,PER_TICK,'a graze (one step) = one tick');assert.equal(g.ticks,1);
+ for(const [name,r] of [['stay',s],['exit',e]] as const){assert.ok(Math.abs(r.total-r.dwell*20000)<=PER_TICK+1e-6,`${name}: ${r.dwell.toFixed(2)} s touching -> ${r.total}`);
+  assert.equal(r.hits.reduce((a:number,h:any)=>a+h.value,0),r.total);}
+ assert.ok(e.total<s.total&&e.total>=.5*20000-PER_TICK,`exit ${e.total} < stay ${s.total}`);assert.ok(e.walked>50,'walked out');
+ // The numbers the report quotes (old rule: one 20,000 hit + 1.8 s knockback in every case).
+ console.log(JSON.stringify({graze:{total:g.total,dwell:g.dwell},stay:{total:s.total,dwell:+s.dwell.toFixed(2)},exit:{total:e.total,dwell:+e.dwell.toFixed(2)}}));
+});
+test('12. touched by the beam: a dodge is taken at once and its invulnerability holds (0 during the roll), ticks resume after it',()=>{
+ const b=arena();place(b,b.boss.x-500,b.boss.y);b.startBeams('line');const beam=b.beams[0],seen=new Set<number>(),hits:any[]=[];
+ while(b.elapsed<beam.fireAt+.4){b.step(.02,idle);heroHits(b,seen,hits);place(b,b.boss.x-500,b.boss.y);}
+ assert.ok(hits.length>=2,'touched');
+ // A roll along the beam (away from the boss) keeps the hero in the line.
+ assert.equal(b.command({x:-1,y:0,auto:false,dodge:true}),true,'dodge taken while touched');const n=hits.length;let rolled=0;
+ // (the step that ends the roll may tick: the hero is no longer rolling on that step)
+ for(;;){b.step(.02,idle);if(b.hero.motion?.kind!=='dodge')break;heroHits(b,seen,hits);rolled++;}
+ assert.ok(rolled>5);assert.equal(hits.length,n,'no damage while rolling');assert.ok(beamContact(beam,b.elapsed,b.hero,HR),'still in the line after the roll');
+ for(let t=0;t<10;t++){b.step(.02,idle);heroHits(b,seen,hits);}assert.ok(hits.length>n,'ticks again after the roll');
+ assert.ok(hits.every((h:any)=>h.value===PER_TICK));
+});
+test('13. overlapping beams: still one tick per .1 s (2,000), not one per beam',()=>{
+ const b=arena();place(b,b.boss.x-500,b.boss.y);b.startBeams('line');b.startBeams('line');assert.equal(b.beams.length,2);
+ const fire=b.beams[0].fireAt,stop=b.beams[0].stopAt,seen=new Set<number>(),hits:any[]=[];
+ while(b.elapsed<stop){const before=hits.length;b.step(.02,idle);heroHits(b,seen,hits);place(b,b.boss.x-500,b.boss.y);assert.ok(hits.length-before<=1,'one damage event per step');}
+ assert.ok(hits.length>10&&b.elapsed>fire);for(let i=1;i<hits.length;i++){near(hits[i].contactAt-hits[i-1].contactAt,TICK,1e-6);assert.equal(hits[i].value,PER_TICK);}
+});
+test('14. a jump over jumpClear and the knockdown of a floor blast still take no beam damage',()=>{
+ const b=arena();place(b,b.boss.x-500,b.boss.y);b.startBeams('line');const beam=b.beams[0],seen=new Set<number>(),hits:any[]=[];
+ while(b.elapsed<beam.fireAt+.3){b.step(.02,idle);heroHits(b,seen,hits);place(b,b.boss.x-500,b.boss.y);}const n=hits.length;assert.ok(n>=1);
+ for(let t=0;t<10;t++){b.hero.airHeight=R.jumpClear+1;b.step(.02,idle);b.hero.airHeight=R.jumpClear+1;heroHits(b,seen,hits);}assert.equal(hits.length,n,'over the beam');
+ b.hero.airHeight=0;b.hero.motion={kind:'knockback',start:b.elapsed,duration:1.8,hitAt:0,from:{x:b.hero.x,y:b.hero.y},to:{x:b.hero.x,y:b.hero.y}};
+ for(let t=0;t<20;t++){b.step(.02,idle);heroHits(b,seen,hits);}assert.equal(hits.length,n,'knocked down by a blast: the beam does not add damage (rule unchanged)');
+});
+// Floor blast (the warning disc of the throw) keeps the knockback / knockdown / get-up (director 2026-11-23, user). Same with and without
+// the kit: the disc on the hero, 10,000 at the explosion, knockback 1.8 s (flight .45 s, knockdown to 1.2 s, get-up), input ignored.
+function blast(kit:any){
+ const b=arena(kit);b.heroKit=kit;place(b,b.boss.x-300,b.boss.y);b.bossTurn=1;b.bossIdleUntil=b.bossChaseUntil=b.bossAt=0;b.step(.02,idle);
+ assert.equal(b.boss.motion?.definitionId,'boss-throw');const w=b.warning;assert.ok(w,'warning disc');const seen=new Set<number>(),hits:any[]=[];
+ while(!hits.length&&b.elapsed<w.explodeAt+.1){b.step(.02,idle);heroHits(b,seen,hits);}
+ const at=b.elapsed,m=b.hero.motion,from={x:b.hero.x,y:b.hero.y},actions:string[]=[];let flight=null as any;
+ for(let t=0;t<100&&b.hero.motion;t++){b.step(.02,{x:1,y:1,auto:false});heroHits(b,seen,hits);const a=b.hero.action;if(actions.at(-1)!==a)actions.push(a);
+  if(b.elapsed-at>.5&&b.elapsed-at<1.7){if(!flight)flight={x:b.hero.x,y:b.hero.y};else{near(b.hero.x,flight.x,1e-9,'knocked down: input ignored');near(b.hero.y,flight.y,1e-9);}}}
+ return {hit:hits[0],motion:m&&{kind:m.kind,duration:m.duration,to:Math.hypot(m.to.x-from.x,m.to.y-from.y)},actions,ticks:hits.length,end:+(b.elapsed-at).toFixed(2)};
+}
+test('15. floor blast unchanged: knockback, knockdown and get-up with the kit as without it (only the beams lost the knockback)',()=>{
+ const k=blast(PINK_IAI),o=blast(undefined);
+ for(const r of [k,o]){assert.equal(r.hit.value,UNITY_BOSS_RULES.blastDamage);assert.ok(r.hit.warningId!==undefined,'the blast');assert.equal(r.hit.dotId,undefined,'not a beam tick');
+  assert.equal(r.motion.kind,'knockback');assert.equal(r.motion.duration,UNITY_BOSS_RULES.knockbackSeconds);near(r.motion.to,260,1,'260 cm');
+  assert.deepEqual(r.actions,['knockback','knockdown','getup','stay1']);assert.equal(r.ticks,1);}
+ assert.deepEqual(k.motion,o.motion);assert.equal(k.end,o.end);
 });

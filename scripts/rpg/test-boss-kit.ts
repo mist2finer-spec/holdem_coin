@@ -193,8 +193,11 @@ test('15. kit boss spacing: the boss keeps walking in until 190 cm x scale (it w
 // Boss leash (brief 4, same script): the kit boss stops at 400 cm from the arena centre (it walked out to ~680 cm here) -> 72e55465.
 // arena / two rooms / mount zone 10 / legacy keep their digests (no kit, or legacy: no leash).
 // Instant evade (2026-11-23, same script): 72e55465 -> 7e175909 (first difference tick 1006, a roll during iai2).
+// Beam damage while touching (2026-11-23, boss-beam-dot-20261123/tools/golden.mts, mountBossDigest verbatim; a `git archive 46096afb src`
+// copy prints 7e175909, that copy + the two changed files and the tree print 8363dc71): first difference tick 745 = the first beam
+// hit (old: 7 hits x 20,000 + knockback; new: 31 ticks x 2,000, no knockback). Every other golden is unchanged (no beams there).
 test('16. kit zone-10 boss golden (3.2 m hitbox, rune beams)',()=>{
- const r=mountBossDigest(g=>{g.heroKit=PINK_IAI;});assert.equal(r.status,'won');assert.equal(r.digest,'7e1759098fecf1b4ee8bfbfbacd1e26f36f4415a13bd726ae6e61fde511796e1');
+ const r=mountBossDigest(g=>{g.heroKit=PINK_IAI;});assert.equal(r.status,'won');assert.equal(r.digest,'8363dc7138f043b2e59825df5dfb189467c1bb8650ba8378d73a1f1312c0ec52');
 });
 // Brief 4 (2026-11-22, user: "make the boss's movement range smaller"; boss-beam-camera-20261122/v4): the kit boss walks only inside a
 // small circle around the arena centre (KIT_BOSS_LEASH). A hero beyond it: the boss stops at the edge and waits facing the hero; the

@@ -28,7 +28,7 @@ const normalized=(x:number,y:number)=>{const n=Math.hypot(x,y);return n>1e-8?{x:
 import {cancelAttack,stepAttackCancel} from './rpg-action-cancel';
 import {type TraversalProfile,jumpDuration,jumpHeight,actionDistance,beginJump,sampleJump,landJump,JUMP_LANDING_SECONDS} from './rpg-traversal-profile';
 import {type HeroKit,type IaiHost,iaiCommand,iaiPress,iaiStep,iaiCanReach,iaiSkill} from './rpg-hero-kit-iai';
-import {BOSS_BEAM_RULES,type BossBeam,makeBeam,beamAngle,beamContact,beamView} from './rpg-boss-beam';
+import {BOSS_BEAM_RULES,type BossBeam,makeBeam,beamAngle,beamContact,beamView,beamTickDamage} from './rpg-boss-beam';
 export class UnityBossEngine {
  private elemental=new ElementalCombat();
  public bossDefeated=false;private defeatedAt=-1;private exitWaypoint=0;
@@ -46,8 +46,9 @@ export class UnityBossEngine {
  kitTempo?:number;
  setKitTempo(v:unknown){if(!this.heroKit||!Number.isInteger(v)||(v as number)<0||(v as number)>=this.heroKit.tempo.stages.length)return false;this.kitTempo=v as number;return true;}
  // Kit boss rune beams (rpg-boss-beam.ts): the straight beam every third attack and the last-stand ring, kit only (no kit = none,
- // no view key). beamGuardUntil = the hero's short invulnerability after a ring hit.
- beams:BossBeam[]=[];private ringDone=false;private beamGuardUntil=-1;
+ // no view key). beamTickAt = the earliest time of the next beam damage tick (one clock for all beams); beamStreak = the running
+ // touch (first tick fx id, total so far, last tick time) that the HUD shows as one number.
+ beams:BossBeam[]=[];private ringDone=false;private beamTickAt=-1;private beamStreak:{id:number;total:number;at:number}|null=null;
  // Development start HP (boot `bossStartHP`, kit only): the boss starts at min(maxHP, v) so the last-stand ring is one hit away.
  setStartHP(v:unknown){if(!this.heroKit||typeof v!=='number'||!Number.isFinite(v)||v<1)return false;this.boss.hp=Math.min(this.boss.maxHP,Math.floor(v));return true;}
  readonly rules:UnityRules;readonly map:any;elapsed=0;room=0;kills=0;status='playing';phase='combat';paused=false;auto=true;
@@ -229,15 +230,18 @@ export class UnityBossEngine {
   this.boss.direction={x:Math.cos(base),y:Math.sin(base)};if(Math.abs(this.boss.direction.x)>.01)this.boss.facing=Math.sign(this.boss.direction.x);
   this.boss.motion={kind:'boss-beam',definitionId:ring?'boss-beam-ring':'boss-beam',timeline:{active:[],cancelFrom:1},attackId,start:this.elapsed,duration:lead.endAt-this.elapsed,hitAt:lead.fireAt-this.elapsed,from:point(this.boss.x,this.boss.y),to:point(this.boss.x,this.boss.y)};this.boss.action='beam';
  }
- // Beam judgement: only between fireAt and stopAt (the charge seals are the warning). Line: one hit per cast. Ring: after a hit
- // the hero is safe for ring.invulnerable seconds. Dodge/knockback (damageHero) and a jump over jumpClear avoid it.
+ // Beam judgement: only between fireAt and stopAt (the charge seals are the warning). While the hero touches a firing beam: one
+ // damage tick (beamTickDamage) every BOSS_BEAM_RULES.tick seconds on one clock for all beams; no knockback, no stagger (2026-11-23,
+ // boss-beam-dot-20261123). Dodge / knockdown (damageHero refuses) and a jump over jumpClear take nothing. Tick fx carry dotId (fx id
+ // of the first tick of this touch) and dotTotal (damage of this touch so far) so the HUD can show one running number.
  private stepBeams(){
   if(!this.beams.length)return;this.beams=this.beams.filter(b=>this.elapsed<b.endAt);if(this.room!==1||this.boss.hp<=0||this.hero.airHeight>BOSS_BEAM_RULES.jumpClear)return;
-  for(const b of this.beams){if(b.kind==='line'?b.hit:this.elapsed<this.beamGuardUntil)continue;const c=beamContact(b,this.elapsed,this.hero,BOSS_CONTACT.heroRadius);if(!c)continue;
-   const damage=this.rules.blastDamage*BOSS_BEAM_RULES.damageScale;
-   if(!this.damageHero(damage,'skill',{attackId:b.attackId,definitionId:b.kind==='ring'?'boss-beam-ring':'boss-beam',beamId:b.id,contactAt:this.elapsed,point:{x:c.x,y:b.elevation+b.height,z:c.y}}))continue;
-   b.hit=true;if(b.kind==='ring')this.beamGuardUntil=this.elapsed+BOSS_BEAM_RULES.ring.invulnerable;
-   const dir=normalized(this.hero.x-this.boss.x,this.hero.y-this.boss.y);this.hero.motion={kind:'knockback',start:this.elapsed,duration:this.rules.knockbackSeconds,hitAt:0,from:point(this.hero.x,this.hero.y),to:this.knockbackTo(dir)};this.hero.action='knockback';this.hero.serial++;break;
+  if(this.elapsed+1e-6<this.beamTickAt)return;
+  for(const b of this.beams){const c=beamContact(b,this.elapsed,this.hero,BOSS_CONTACT.heroRadius);if(!c)continue;
+   const R=BOSS_BEAM_RULES,damage=beamTickDamage(this.rules.blastDamage),s=this.beamStreak,go=s!==null&&this.elapsed-s.at<=R.tick*1.5+1e-6,id=this.effectSerial+1;
+   const total=(go?s!.total:0)+damage,dotId=go?s!.id:id;
+   if(!this.damageHero(damage,'skill',{attackId:b.attackId,definitionId:b.kind==='ring'?'boss-beam-ring':'boss-beam',beamId:b.id,contactAt:this.elapsed,point:{x:c.x,y:b.elevation+b.height,z:c.y},dotId,dotTotal:total}))break;
+   b.hit=true;this.beamTickAt=this.elapsed+R.tick;this.beamStreak={id:dotId,total,at:this.elapsed};break;
   }
  }
  // Brief 3 (2026-11-22, user: "the boulders are the map edge: a hit still throws the hero, but never past them"). Knockback (blast,

@@ -11,8 +11,10 @@ export const BOSS_BEAM_RULES=Object.freeze({
  clip:3.6,charge:.36,
  // Single beam: the hit ends at phase .84 (the package fades the beam from .77 to .91; .84 = half bright).
  stopPhase:.84,
- // Damage = blastDamage x damageScale, with the blast knockback.
- damageScale:2,
+ // Damage while touching (2026-11-23, boss-beam-dot-20261123, user): blastDamage x damageScale per second (20,000/s), dealt as
+ // ticks of tick seconds (2,000 every .1 s) while the hero touches a firing beam. No knockback, no stagger (the hero walks / rolls
+ // out). One tick clock for all beams: overlapping beams still deal one tick per tick seconds. Dodge / knockdown: no damage.
+ damageScale:2,tick:.1,
  // Geometry: length from the pivot, RuneBeam beamWidth and Size, pivot height above the boss feet, pivot ahead of the boss centre.
  length:1800,width:1.4,size:.8,height:100,forward:90,
  // A hero higher than this over the ground clears the beam (same as the blast rule).
@@ -20,13 +22,16 @@ export const BOSS_BEAM_RULES=Object.freeze({
  // Single straight beam: every third kit boss attack (hook pair, throw + disc, beam).
  cycle:3,
  // Last stand: the first time the boss HP is at or under hpFraction of max, once: count beams (360/count apart) charge,
- // fire and turn clockwise on screen at turnDegPerSecond for sustain seconds. A hit gives the hero invulnerable seconds.
- ring:{count:8,hpFraction:.25,sustain:6,turnDegPerSecond:20,invulnerable:.6},
+ // fire and turn clockwise on screen at turnDegPerSecond for sustain seconds. Same ticks as the line (the .6 s guard after a
+ // ring hit was removed with the knockback, 2026-11-23).
+ ring:{count:8,hpFraction:.25,sustain:6,turnDegPerSecond:20},
  // Boss rest after a beam (as after the throw).
  rest:1.6,
 });
 export type BossBeam={id:number;attackId:number;kind:'line'|'ring';index:number;x:number;y:number;elevation:number;forward:number;height:number;
  angle:number;turn:number;chargeAt:number;fireAt:number;stopAt:number;endAt:number;length:number;width:number;size:number;clip:number;charge:number;hit:boolean};
+// Damage of one tick: blastDamage x damageScale x tick (2,000 with blastDamage 10,000).
+export const beamTickDamage=(blastDamage:number,R=BOSS_BEAM_RULES)=>Math.round(blastDamage*R.damageScale*R.tick);
 type BeamSpec={id:number;attackId:number;kind:'line'|'ring';index:number;x:number;y:number;elevation:number;angle:number;at:number;sustain?:number;turn?:number};
 // One beam starting now (at). Line: package timing (fire at charge x clip, stop at stopPhase x clip, end at clip).
 // Ring: fire at the same time, then sustain seconds of fire (turning), then the package fade (1 - stopPhase of the clip).

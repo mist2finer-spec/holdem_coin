@@ -2,7 +2,7 @@ using System;using System.Collections.Generic;using Newtonsoft.Json.Linq;using U
 namespace IslandGame {
  // One authoritative damage event -> flash, sound, bounded camera offset and pooled contact spark.
  public sealed class CombatFeedbackRouter:IDisposable {
-  sealed class Flash {public Renderer renderer;public MaterialPropertyBlock saved=new MaterialPropertyBlock(),block=new MaterialPropertyBlock();public int colorId;public Color color;public float at=-100;public bool active;}
+  sealed class Flash {public Renderer renderer;public MaterialPropertyBlock saved=new MaterialPropertyBlock(),block=new MaterialPropertyBlock();public int colorId;public Color color;public float at=-100,amp=1;public bool active;}
   sealed class Trail {public LineRenderer line;public Vector3[] points=new Vector3[4];public float[] times=new float[4];public int attack=-1;public bool active;}
   readonly GameObject root;readonly Material material;readonly AudioSource audio;readonly AudioClip clip;readonly AudioListener ownedListener;readonly BattleCameraController camera;readonly ViewPresentationCoordinator profile;readonly Func<string,Transform> resolve;
   readonly Dictionary<string,Flash[]> targets=new Dictionary<string,Flash[]>();readonly Trail[] trails=new Trail[3];readonly LineRenderer[] sparks=new LineRenderer[6];readonly float[] sparkAt=new float[6];readonly Vector3[] sparkPoints=new Vector3[9];
@@ -27,12 +27,15 @@ namespace IslandGame {
    foreach(var strike in state["fx"] as JArray??Empty){if((string)strike["kind"]!="elemental-strike"||(bool?)strike["blocked"]==true)continue;int key=(int?)strike["id"]??0;float born=NativeCombatPresentation.N(strike["born"]);if(key<=lastLightning||time<born)continue;lastLightning=key;if(time-born<.24f&&profile.ShakeAllowed("hero:"+((string)strike["element"]??"lightning")))hitAt=Mathf.Max(hitAt,born);}
    foreach(var token in state["fx"] as JArray??Empty){if((string)token["kind"]!="damage"||token["attackId"]==null||token["contactAt"]==null)continue;int eventId=(int?)token["id"]??0;float contact=(float)token["contactAt"];if(eventId<=lastEvent||time<contact)continue;lastEvent=eventId;float late=time-contact;MaximumLateSeconds=Mathf.Max(MaximumLateSeconds,late);if(late>.45f)continue;
     // 2026-11-22: camera shake only for allowed sources (profile shakeEnabled + shakeAllowSources, default none). Flash and sound stay.
-    if(profile.ShakeAllowed(ShakeSource(token,state)))hitAt=contact;LastAttackId=(int)token["attackId"];LastStrike=(int?)token["strike"]??0;LastContactAt=contact;ConsumedContacts++;
-    var target=Target((string)token["target"]??"hero");if(target!=null)foreach(var f in target)f.at=contact;
-    if(SoundEnabled&&time-soundAt>=.04f){audio.volume=profile.SoundVolume;audio.Play();soundAt=time;}
-    var p=token["point"];var def=SuppressKitSpark?(string)token["definitionId"]:null;if(p!=null&&!(def!=null&&def.StartsWith("pink-iai",StringComparison.Ordinal))){int n=nextSpark++%sparks.Length;var center=new Vector3(NativeCombatPresentation.N(p["x"])/100,NativeCombatPresentation.N(p["y"])/100,(NativeCombatPresentation.N(p["z"])-5000)/100);for(int i=0;i<9;i++){float angle=i*Mathf.PI/4;sparkPoints[i]=center+new Vector3(Mathf.Cos(angle),Mathf.Sin(angle),0)*.11f;}sparks[n].SetPositions(sparkPoints);sparkAt[n]=contact;}
+    // 2026-11-23 (boss-beam-dot): a beam damage tick (every .1 s while touching) flashes lightly (DotFlash); only the first tick of a
+    // touch shakes, sounds and sparks. Other damage is unchanged.
+    int dot=DotTick(token);
+    if(dot!=2&&profile.ShakeAllowed(ShakeSource(token,state)))hitAt=contact;LastAttackId=(int)token["attackId"];LastStrike=(int?)token["strike"]??0;LastContactAt=contact;ConsumedContacts++;
+    var target=Target((string)token["target"]??"hero");if(target!=null)foreach(var f in target){f.at=contact;f.amp=dot==0?1:DotFlash;}
+    if(dot!=2&&SoundEnabled&&time-soundAt>=.04f){audio.volume=profile.SoundVolume;audio.Play();soundAt=time;}
+    var p=token["point"];var def=SuppressKitSpark?(string)token["definitionId"]:null;if(dot!=2&&p!=null&&!(def!=null&&def.StartsWith("pink-iai",StringComparison.Ordinal))){int n=nextSpark++%sparks.Length;var center=new Vector3(NativeCombatPresentation.N(p["x"])/100,NativeCombatPresentation.N(p["y"])/100,(NativeCombatPresentation.N(p["z"])-5000)/100);for(int i=0;i<9;i++){float angle=i*Mathf.PI/4;sparkPoints[i]=center+new Vector3(Mathf.Cos(angle),Mathf.Sin(angle),0)*.11f;}sparks[n].SetPositions(sparkPoints);sparkAt[n]=contact;}
    }
-   foreach(var ts in targets.Values)foreach(var f in ts){if(!f.renderer)continue;float age=time-f.at,amount=FlashEnabled&&age>=0?Mathf.Clamp01(1-age/Mathf.Max(.001f,profile.FlashSeconds)):0;if(amount>0){f.block.SetColor(f.colorId,Color.Lerp(f.color,profile.FlashColor,amount*profile.FlashStrength));f.renderer.SetPropertyBlock(f.block);f.active=true;}else if(f.active){f.renderer.SetPropertyBlock(f.saved);f.active=false;}}
+   foreach(var ts in targets.Values)foreach(var f in ts){if(!f.renderer)continue;float age=time-f.at,amount=FlashEnabled&&age>=0?Mathf.Clamp01(1-age/Mathf.Max(.001f,profile.FlashSeconds)):0;if(amount>0){f.block.SetColor(f.colorId,Color.Lerp(f.color,profile.FlashColor,amount*profile.FlashStrength*f.amp));f.renderer.SetPropertyBlock(f.block);f.active=true;}else if(f.active){f.renderer.SetPropertyBlock(f.saved);f.active=false;}}
    bool low=IslandFrameBudget.Current&&IslandFrameBudget.Current.Policy.Level>=1;
    for(int i=0;i<sparks.Length;i++){float age=time-sparkAt[i];sparks[i].enabled=DecorationsEnabled&&!low&&age>=0&&age<.14f;if(sparks[i].enabled){var c=new Color(1,.8f,.4f,1-age/.14f);sparks[i].startColor=sparks[i].endColor=c;}}
    float hitAge=time-hitAt,a=CameraEnabled&&hitAge>=0&&hitAge<.18f?Mathf.Pow(1-hitAge/.18f,2):0;
@@ -45,6 +48,10 @@ namespace IslandGame {
    t.line.startWidth=profile.SmearWidth;t.line.endWidth=.008f;t.line.startColor=new Color(1,.84f,.45f,profile.SmearOpacity);t.line.endColor=new Color(1,.84f,.45f,0);t.line.enabled=profile.SmearOpacity>.01f;
   }
   void Reset(){lastEvent=lastLightning=-1;hitAt=soundAt=-100;foreach(var ts in targets.Values)foreach(var f in ts)if(f.renderer){f.renderer.SetPropertyBlock(f.saved);f.at=-100;f.active=false;}foreach(var t in trails){t.active=false;t.line.enabled=false;}for(int i=0;i<sparks.Length;i++){sparks[i].enabled=false;sparkAt[i]=-100;}if(camera)camera.SetPresentationImpact(Vector3.zero,0);audio.Stop();}
+  // Beam damage ticks (kernel rpg-unity-boss-engine stepBeams: dotId = fx id of the first tick of the touch). 0 = not a tick,
+  // 1 = first tick of a touch, 2 = a later tick. DotFlash = share of the normal hit flash for every tick.
+  public float DotFlash=.3f;
+  public static int DotTick(JToken token){var d=token?["dotId"];if(d==null||d.Type==JTokenType.Null)return 0;return (int?)token["id"]==(int)d?1:2;}
   // Allow-list key of a damage fx (keys: CombatShakeGate). target hero = an enemy hit the hero (the boss in the boss phase).
   public static string ShakeSource(JToken token,JObject state){
    string target=(string)token["target"]??"hero",def=(string)token["definitionId"],kind=(string)token["damageKind"]??"attack";
