@@ -122,8 +122,8 @@
  "ember": {
   "source": "G:/holdem_coin-workspace/island/ref/EmberSlash_VFX.zip (user), imported to Assets/EmberSlash without Demo; IaiVfx/EmberSlash_Island.prefab = the package prefab with playOnEnable off.",
   "prefab": "IaiVfx/EmberSlash_Island",
-  "budgetOffLevel": 1,
-  "budgetNote": "IslandFrameBudget level >= budgetOffLevel: the next slash is drawn with C instead (98 additive sparks per slash)",
+  "budgetOffLevel": 4,
+  "budgetNote": "IslandFrameBudget level >= budgetOffLevel: the next slash is drawn with C instead (98 additive sparks per slash). 4 = never (levels are 0-3): user 2026-11-23 wants the Ember slash on every device (BlueStacks hit level 3 and fell back to C).",
   "extras": {
    "stars": false,
    "embers": false,
