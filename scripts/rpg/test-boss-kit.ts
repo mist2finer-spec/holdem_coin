@@ -45,7 +45,10 @@ function mountBossDigest(setup:(g:any)=>void=()=>{}){
 // keeping an unreachable motion.to past the boulders. The arena run's one knockback (tick 1427, motion.to radius 1047 cm > wall 1030)
 // changes, so arena 058575e5 -> 156ae8bb; the two rooms (no arena) and mount zone 10 (its knockback ends inside) are unchanged.
 // Recorded with maintenance/boss-beam-camera-20261122/v3/work/golden3.mts on a `git archive 1cc4e683 src` copy and the changed tree.
-const GOLDEN={arena:'156ae8bba998f11f11f421bd2e061c42aa2da698ebfc48de9c32756a64ac079a',rooms:'514a468f5514cc96236a9c5a5fe7af3251efa4a9459ae87dc204e23780ade855',mount9:'89ae88591c36c2e64406335d74d4aaa1b2bee6d46a7d4ad307a8f7891d227cce'};
+// Instant evade (2026-11-23, maintenance/evade-skillbar-20261123/tools/golden.mts, bossDigest/mountBossDigest verbatim; dacb07ee copy prints the old values, the changed copy
+// and the tree the new ones): arena 156ae8bb -> 47fb4c53 (first difference tick 200, a jump during an attack), two rooms 514a468f ->
+// d20ca93b (tick 50, slide), mount zone 10 89ae8859 -> 27c2570c (tick 548, roll; the legacy run is the same run and prints the same).
+const GOLDEN={arena:'47fb4c53954aa497076dd553cfe4550209efccc5c89fe8016047e5eabb04fd7b',rooms:'d20ca93bd3f5a227f3711c4eb7fd811c12c1199e3f854d6e0eebb2a6dc5d09fe',mount9:'27c2570c2dd80f966309f2f79161fbe277821bc66bc83cb8d4423613e90b2ac4'};
 test('1. no kit: the boss engine is tick-for-tick the 1b5675f0 engine (arena, two rooms, mount zone 10)',()=>{
  const a=bossDigest(true),r=bossDigest(false),m=mountBossDigest();
  assert.equal(a.digest,GOLDEN.arena,'arena');assert.equal(r.digest,GOLDEN.rooms,'two rooms');assert.equal(m.digest,GOLDEN.mount9,'mount zone 10');
@@ -189,8 +192,9 @@ test('15. kit boss spacing: the boss keeps walking in until 190 cm x scale (it w
 // Boulder confine (brief 3, v3/work/golden3.mts): from the 2nd knockback on (tick 1930, motion.to radius 1087 cm > wall) -> c26218e7.
 // Boss leash (brief 4, same script): the kit boss stops at 400 cm from the arena centre (it walked out to ~680 cm here) -> 72e55465.
 // arena / two rooms / mount zone 10 / legacy keep their digests (no kit, or legacy: no leash).
+// Instant evade (2026-11-23, same script): 72e55465 -> 7e175909 (first difference tick 1006, a roll during iai2).
 test('16. kit zone-10 boss golden (3.2 m hitbox, rune beams)',()=>{
- const r=mountBossDigest(g=>{g.heroKit=PINK_IAI;});assert.equal(r.status,'won');assert.equal(r.digest,'72e55465dd0acfc8b7a2fb14685e10d8c9f3f6dd5d860b994bb6337cca26f389');
+ const r=mountBossDigest(g=>{g.heroKit=PINK_IAI;});assert.equal(r.status,'won');assert.equal(r.digest,'7e1759098fecf1b4ee8bfbfbacd1e26f36f4415a13bd726ae6e61fde511796e1');
 });
 // Brief 4 (2026-11-22, user: "make the boss's movement range smaller"; boss-beam-camera-20261122/v4): the kit boss walks only inside a
 // small circle around the arena centre (KIT_BOSS_LEASH). A hero beyond it: the boss stops at the edge and waits facing the hero; the

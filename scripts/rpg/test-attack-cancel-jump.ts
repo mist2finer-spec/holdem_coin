@@ -5,10 +5,13 @@ import {SOURCE_TRAVERSAL as p,jumpDuration,jumpHeight,jumpVelocity,jumpDisplacem
 const idle={x:0,y:0,auto:false};
 function make(mode:string):any {const g:any=mode==='side'?new MountSundayEngine(111,p):new UnityBossEngine(111,{slimeCount:0});g.traversal=p;if(mode==='side'){g.readyZone=0;g.spawned=30;}else g.enterArena();g.skillEnabled[0]=true;g.skillIds[0]='water-ring';return g;}
 for(const mode of ['side','quarter']){
- for(const action of ['jump','dodge','slide','skill'])for(const age of [.02,.22,.46])test(`${mode}: AUTO attack at ${age}s yields to ${action} through idle, with no ghost hits`,()=>{
+ for(const action of ['jump','dodge','slide','skill'])for(const age of [.02,.22,.46])test(`${mode}: AUTO attack at ${age}s yields to ${action} ${action==='skill'?'through idle':'at once'}, with no ghost hits`,()=>{
   const g=make(mode);assert(g.command({...idle,attack:true}));const attack=g.hero.motion.attackId;for(let t=0;t<age-.001;t+=.02)g.step(.02,idle);
-  const before=g.fx.filter((f:any)=>f.attackId===attack).length;const input=action==='skill'?{skill:0}:{[action]:true};assert(g.command({...idle,auto:true,...input}));assert.equal(g.hero.action,'stay1');assert.equal(g.hero.motion.kind,'cancel');
-  g.step(.02,{...idle,auto:true});assert.equal(g.hero.motion.kind,'cancel');g.step(.02,{...idle,auto:true});assert.equal(g.hero.motion.kind,action);assert.notEqual(g.hero.motion.attackId,attack);
+  const before=g.fx.filter((f:any)=>f.attackId===attack).length;const input=action==='skill'?{skill:0}:{[action]:true};assert(g.command({...idle,auto:true,...input}));
+  // 2026-11-23 instant evade: roll / jump / slide start on the press tick (no 0.04 s stay1); a skill still goes through it.
+  if(action==='skill'){assert.equal(g.hero.action,'stay1');assert.equal(g.hero.motion.kind,'cancel');g.step(.02,{...idle,auto:true});assert.equal(g.hero.motion.kind,'cancel');g.step(.02,{...idle,auto:true});}
+  else{assert.notEqual(g.hero.action,'stay1');assert.equal(g.hero.motion.cancelledAttackId,attack);}
+  assert.equal(g.hero.motion.kind,action);assert.notEqual(g.hero.motion.attackId,attack);
   for(let i=0;i<8;i++)g.step(.02,{...idle,auto:true});assert.equal(g.hero.motion.kind,action);assert.equal(g.fx.filter((f:any)=>f.attackId===attack).length,before);
  });
  test(`${mode}: rejected skill/cooldown/pause does not consume or cancel attack`,()=>{const g=make(mode);g.command({...idle,attack:true});const before=JSON.stringify(g.hero),mana=g.resources.mana;for(const input of [{skill:7},{skill:1},{jump:true,paused:true}]){assert.equal(g.command({...idle,...input}),false);assert.equal(JSON.stringify(g.hero),before);assert.equal(g.resources.mana,mana);}g.cooldowns[0]=2;assert.equal(g.command({...idle,skill:0}),false);assert.equal(JSON.stringify(g.hero),before);});

@@ -51,8 +51,12 @@ function noKitWide(){
  }
  return {digest:h.digest('hex'),boss,room:g.room,actions:[...actions].sort()};
 }
-const GOLDEN={plain:'38e305be44aea585ef166145cd09188061fabc0e94a93688dc847a66960fa87f',source:'de2ec4b88f2c7939a20c996516a92eec5778a14e5b4bbda640be484e2ad2c2ca',
- wide:'b8f7739211a94f0d65043299e0f4a606a67f6fa1a0be707b0bff1f29ec4c0a92'};
+// Instant evade (2026-11-23, maintenance/evade-skillbar-20261123): roll / jump / slide replace a normal attack on the press tick
+// (no 0.04 s stay1). plain 38e305be -> 832fa27b, source de2ec4b8 -> 259d5701, wide b8f77392 -> 77fe88b9, recorded with maintenance/evade-skillbar-20261123/tools/golden.mts
+// (these drives verbatim) on a `git archive dacb07ee src` copy (prints the old values), that copy + the change and the tree (both
+// print the new ones). First difference = the first evade press during an attack (plain/source tick 50, wide tick 548).
+const GOLDEN={plain:'832fa27b6f527434241fa7800bd8b1fff04044c015d1dc9fbf17b6c859ba6bf1',source:'259d5701367d4e3f5c79046467fc60098ebad0707b235ea9e6d1c02d61f741dc',
+ wide:'77fe88b939452028c82d8dfb47b3d4da6f30939d3fc5801cabbe5b92d3877239'};
 test('no kit: the engine is tick-for-tick the pre-kit engine (golden digest of 6000 ticks)',()=>{
  assert.equal(noKitDigest(),GOLDEN.plain,'default traversal');assert.equal(noKitDigest(p),GOLDEN.source,'source-run-v2');
  const g:any=new MountSundayEngine(111,p);assert.equal(g.heroKit,undefined);assert.equal('heroKit' in g.view(),false);
@@ -85,7 +89,8 @@ function kitNoSkillDigest(){
 // T1b (iai2 window from F(18)): same script (qa_T1b/work/golden). The T1 copy (backup_before_T1b/srclib_copy) still prints
 // 3910ad9f..., the T1b tree and its source copy (qa_T1b/work/golden/src_T1b2) print the value below (room 3, kills 90). The
 // two same-result changes in stepRow alone keep 3910ad9f at stage 0 and the T1 digests at stages 1 and 2.
-const KIT_GOLDEN={noSkills:'782d84d8a7cf1101478cf9e1777af633b3c5c1f3e17a614326147202f28d4543'};
+// Instant evade (same script): 782d84d8 -> 976b0204 (first difference tick 90 = the first roll during the recover).
+const KIT_GOLDEN={noSkills:'976b0204b7c15fc9e3fd9dea0600b5bed2a3b531c616138f1e39423d42a38189'};
 test('kit on, no skill presses: the kit path is the recorded one (kit golden digest of 6000 ticks)',()=>{
  const k=kitNoSkillDigest();assert.equal(k.room,3);assert.equal(k.kills,90);assert.equal(k.digest,KIT_GOLDEN.noSkills);
 });
@@ -288,8 +293,9 @@ test('K5 button: an unusable skill (cooldown, mana, disabled) cuts nothing: the 
 });
 
 test('dodge, jump and slide still cut the rows and the recover (game rule)',()=>{
+ // instant evade (2026-11-23): the move starts on the press tick and names the cut motion (cancelledAttackId)
  for(const k of ['dodge','jump','slide'])for(const where of ['row','recover']){const g=make();g.command({...idle,attack:true});if(where==='row')steps(g,10);else until(g,()=>g.hero.action==='iai_recover');
-  assert(g.command({...idle,[k]:true}),k+' '+where);assert.equal(g.hero.motion.kind,'cancel');steps(g,2);assert.equal(g.hero.motion.kind,k);}
+  const cut=g.hero.motion.attackId;assert(g.command({...idle,[k]:true}),k+' '+where);assert.equal(g.hero.motion.kind,k);assert.equal(g.hero.motion.cancelledAttackId,cut);steps(g,2);assert.equal(g.hero.motion.kind,k);}
 });
 
 test('AUTO with the kit chains iai1-3 and clears slimes; no old attack names appear',()=>{

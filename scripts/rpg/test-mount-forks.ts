@@ -41,8 +41,9 @@ function noKitWide(){
  }
  return {digest:h.digest('hex'),boss,room:g.room,actions:[...actions].sort()};
 }
-const GOLDEN={plain:'38e305be44aea585ef166145cd09188061fabc0e94a93688dc847a66960fa87f',source:'de2ec4b88f2c7939a20c996516a92eec5778a14e5b4bbda640be484e2ad2c2ca',
- wide:'b8f7739211a94f0d65043299e0f4a606a67f6fa1a0be707b0bff1f29ec4c0a92'};
+// Instant evade (2026-11-23): re-recorded like test-hero-iai.ts (same values, maintenance/evade-skillbar-20261123/tools/golden.mts).
+const GOLDEN={plain:'832fa27b6f527434241fa7800bd8b1fff04044c015d1dc9fbf17b6c859ba6bf1',source:'259d5701367d4e3f5c79046467fc60098ebad0707b235ea9e6d1c02d61f741dc',
+ wide:'77fe88b939452028c82d8dfb47b3d4da6f30939d3fc5801cabbe5b92d3877239'};
 const ROUTE_KEYS=['segment','nextZone','forkRoute','forkSeed'];
 const G:any=globalThis;
 test('1. no forks switch: golden digests unchanged, no new snapshot or map keys, the 10-zone route as before',()=>{

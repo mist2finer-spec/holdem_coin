@@ -426,7 +426,8 @@ namespace IslandGame {
    // attack -> next attack and attack -> recover are the combo / sheathe: the arc there finishes and breaks up normally.
    bool attacking = kit && kind == "attack";
    // A skill cast also cuts the attack: its own effect takes over, no arc of the cut hit is left on screen.
-   if (kind == "cancel" || kind == "skill") { foreach (var a in arcs) if (a.live) a.Kill(); for (int i = 0; i < finishPool.Length; i++) finishPool[i].live = false; }
+   // Instant evade (2026-11-23): a roll / jump / slide that replaced an attack starts at once and names it (cancelledAttackId): same cut.
+   if (kind == "cancel" || kind == "skill" || motion?["cancelledAttackId"] != null) { foreach (var a in arcs) if (a.live) a.Kill(); for (int i = 0; i < finishPool.Length; i++) finishPool[i].live = false; }
    else if (!attacking && kind != "recover") foreach (var a in arcs) if (a.recording) a.Kill();
 
    // Blade arc. Window = the row's ArcClipFrom/To (clip seconds), compared with the clip time the hero shows this frame,
@@ -513,7 +514,7 @@ namespace IslandGame {
    if (m != null && !float.IsNaN(m.from)) { from = m.from; to = m.to; }
    if (m == null || float.IsNaN(from) || float.IsNaN(to) || to <= from) shown = false;
    // Cut off: a cancel (into a move or a skill), a hurt or a dodge leaves no row slash that is still growing; a skill start ends the rows.
-   bool cut = kind == "cancel" || kind == "skill";
+   bool cut = kind == "cancel" || kind == "skill" || motion?["cancelledAttackId"] != null;
    for (int s = 0; s < 4; s++) {
     var f = s < 2 ? cSlots[s] : emberSlots[s - 2]; if (f == null || !f.live) continue;
     bool same = f.attack == attack && f.key == key;

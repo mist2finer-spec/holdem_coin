@@ -3,7 +3,7 @@
 // (`heroKit:"pink-iai"`); without it nothing here runs. World units: 100 = one Unity metre, seconds.
 // Times are the trial scene's seconds as they are; distances are trial metres x k (body height 1.30 / 1.917).
 // Only a few spec numbers per action are kept here. No per-frame blade trajectory is carried.
-import {ATTACK_CANCEL_SECONDS} from './rpg-action-cancel';
+import {ATTACK_CANCEL_SECONDS,evadeInput} from './rpg-action-cancel';
 import {skillContains} from './rpg-reference-skills';
 
 export const IAI_K=.678;
@@ -203,6 +203,7 @@ function replace(host:IaiHost,input:any){const h=host.hero,prev=h.motion,action=
 function cancelInto(host:IaiHost,input:any){
  const h=host.hero,prev=h.motion,action=h.action;h.motion=null;h.action='stay1';
  if(!host.command(input)){h.motion=prev;h.action=action;return false;}
+ if(evadeInput(input)){h.motion.cancelledAttackId=prev.attackId;return true;}// instant evade (rpg-action-cancel)
  const next=h.motion,nextAction=h.action;next.start=host.elapsed+ATTACK_CANCEL_SECONDS;
  h.motion={kind:'cancel',start:host.elapsed,duration:ATTACK_CANCEL_SECONDS,hitAt:0,from:{x:h.x,y:h.y},to:{x:h.x,y:h.y},next,nextAction,cancelledAttackId:prev.attackId};
  h.action='stay1';h.serial++;return true;
