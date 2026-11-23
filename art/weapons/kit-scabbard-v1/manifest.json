@@ -1,0 +1,62 @@
+{
+    "asset":  "kit_scabbard_v1",
+    "revision":  "1.0",
+    "created_utc":  "2026-11-23T02:34:28.091596+00:00",
+    "author_role":  "art-lead",
+    "source":  "Original mesh, UV and albedo authored in Blender. No extracted content in deliverables.",
+    "target_sword_fbx_sha256":  "3731c5fc4c5b0d743e560c17c0d83b83eed5a57383ff4e86354a0c029e658232",
+    "branch":  "codex/genshin-environment-20261110",
+    "observed_head":  "f310ffea8a4dc913e7bdbe1b87d3ea1910295af8",
+    "files":  [
+                  {
+                      "path":  ".gitignore",
+                      "bytes":  176,
+                      "sha256":  "1e6ec12ad42895f623913c0e3af09f1ce139150c10973faae0859f31c576448c"
+                  },
+                  {
+                      "path":  "export_report.json",
+                      "bytes":  1741,
+                      "sha256":  "658a4397aa8070c4681a91e7de7a060dfece285c2eb4d1a68dcecaf278c907ab"
+                  },
+                  {
+                      "path":  "fit_report.json",
+                      "bytes":  2126,
+                      "sha256":  "af73e01614ef3363cd9a31257e74aff30244d5b841e8cf3e0d8316414685a1cc"
+                  },
+                  {
+                      "path":  "kit_scabbard_v1.blend",
+                      "bytes":  74930,
+                      "sha256":  "4c379bd2a141bb78069198081a326b967d252414458a3e3efaf049ea5793fc1c"
+                  },
+                  {
+                      "path":  "kit_scabbard_v1.fbx",
+                      "bytes":  55100,
+                      "sha256":  "db059bebfbe0bc7c8f1a3e674dc40650a9822664159fd1a8cf7c5d1ce56cc505"
+                  },
+                  {
+                      "path":  "kit_scabbard_v1_albedo.png",
+                      "bytes":  53139,
+                      "sha256":  "aeec9a3463e7aaef8ae33c760263d4bf37d3b778d0defcaec56077cec03a2c60"
+                  },
+                  {
+                      "path":  "kit_scabbard_v1_preview.png",
+                      "bytes":  1339155,
+                      "sha256":  "ef345670d77a1470e4c50057ac9c820e7734aa3a42c8f865ed0825c7cff3e2b0"
+                  },
+                  {
+                      "path":  "README_KO.md",
+                      "bytes":  6862,
+                      "sha256":  "a0882c1682469e5e3c02f08e19682b735b5b1d8bc5389dbbd7c7fdb4505f4eb3"
+                  },
+                  {
+                      "path":  "sheathed_check.png",
+                      "bytes":  2009581,
+                      "sha256":  "107ac8e95b67d26d30db528d2600682a806d4ce5bd0e959b0eda97d9e702f20f"
+                  }
+              ],
+    "excluded_local_only":  [
+                                "compare_current_vs_new.png"
+                            ],
+    "approval":  "pending",
+    "unity_integration":  "not performed by art-lead"
+}

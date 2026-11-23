@@ -1,0 +1,73 @@
+{
+  "status": "PASS",
+  "checks": {
+    "export_preflight": true,
+    "roundtrip_one_mesh": true,
+    "roundtrip_588_triangles": true,
+    "roundtrip_one_material": true,
+    "roundtrip_world_error_under_1e_6m": true,
+    "blend_only_original_scabbard": true
+  },
+  "export": {
+    "exported": true,
+    "path": "G:\\holdem_coin-workspace\\island\\branches\\current-10zone\\art\\weapons\\kit-scabbard-v1\\kit_scabbard_v1.fbx",
+    "bytes": 55100,
+    "checks": {
+      "SM_KitScabbard_V1": {
+        "transforms_applied": "PASS",
+        "uvs": "PASS",
+        "materials": "PASS",
+        "collider_naming": "PASS"
+      }
+    },
+    "verify": {
+      "checked": true,
+      "nodes": [
+        "SM_KitScabbard_V1"
+      ],
+      "missing": [],
+      "leaked": [],
+      "ok": true
+    },
+    "import_tips": "Unity: Model > Scale Factor 1, Convert Units on; Materials > Extract; Rig per asset type."
+  },
+  "roundtrip_max_vertex_error_m": 1.043081283569336e-07,
+  "roundtrip_rotation_degrees": [
+    89.999995674289,
+    -0.0,
+    0.0
+  ],
+  "roundtrip_scale": [
+    1.0,
+    1.0,
+    1.0
+  ],
+  "roundtrip_triangles": 588,
+  "saved_blend_contents": {
+    "objects": [
+      "SM_KitScabbard_V1"
+    ],
+    "scenes": [
+      "KitScabbard_Original_Only"
+    ],
+    "materials": [
+      "MAT_KitScabbard_V1"
+    ],
+    "images": [
+      "kit_scabbard_v1_albedo"
+    ]
+  },
+  "native_fbx_bounds_m": [
+    [
+      -0.01899999938905239,
+      -0.027499999850988388,
+      0.1899999976158142
+    ],
+    [
+      0.01899999938905239,
+      0.0820000022649765,
+      1.3353333473205566
+    ]
+  ],
+  "unity_import_execution": "UNAVAILABLE: no Unity import performed by art-lead"
+}

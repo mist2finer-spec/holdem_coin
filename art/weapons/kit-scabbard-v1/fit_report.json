@@ -1,0 +1,68 @@
+{
+  "status": "PASS",
+  "checks": {
+    "triangle_budget": true,
+    "one_material": true,
+    "texture_512": true,
+    "manifold_components": true,
+    "uv_non_degenerate": true,
+    "surface_intersections_zero": true,
+    "blade_inside_all_sampled_sections": true,
+    "closed_tip_clearance": true,
+    "length_within_5_percent": true,
+    "sword_source_unchanged": true
+  },
+  "triangles": 588,
+  "vertices": 296,
+  "material_count": 1,
+  "mesh_surface_intersections": 0,
+  "intersection_triangle_pairs": [],
+  "native_bounds_m": [
+    [
+      -0.01899999938905239,
+      -0.027499999850988388,
+      0.1899999976158142
+    ],
+    [
+      0.01899999938905239,
+      0.0820000022649765,
+      1.3353333473205566
+    ]
+  ],
+  "length_native_m": 1.1453333497047424,
+  "length_at_prefab_scale_m": 0.7869795041824281,
+  "length_delta_percent": 5.204130992808587e-06,
+  "section_count": 526,
+  "minimum_section_clearance_native_mm": 1.9121418207490999,
+  "minimum_section_clearance_at_scale_mm": 1.3138676372320262,
+  "minimum_at_native_z": 0.19,
+  "tip_clearance_native_mm": 13.281753540039132,
+  "tip_clearance_at_scale_mm": 9.12613591345067,
+  "selected_sections": [
+    {
+      "native_z": 0.195,
+      "clearance_native_mm": 4.705649067130354,
+      "clearance_at_scale_mm": 3.2333375874031947
+    },
+    {
+      "native_z": 0.33,
+      "clearance_native_mm": 4.6999998434782215,
+      "clearance_at_scale_mm": 3.229455902451021
+    },
+    {
+      "native_z": 0.78,
+      "clearance_native_mm": 4.800000034645176,
+      "clearance_at_scale_mm": 3.298167863805334
+    },
+    {
+      "native_z": 1.27,
+      "clearance_native_mm": 4.200000802014797,
+      "clearance_at_scale_mm": 2.8858974110790436
+    }
+  ],
+  "nonmanifold_edges": 0,
+  "loose_vertices": 0,
+  "zero_area_uv_triangles": 0,
+  "sword_sha256": "3731c5fc4c5b0d743e560c17c0d83b83eed5a57383ff4e86354a0c029e658232",
+  "scope": "Blender authored rigid meshes in common grip coordinates; direct triangle intersection + sampled section containment. Does not certify Unity import or animation poses."
+}
