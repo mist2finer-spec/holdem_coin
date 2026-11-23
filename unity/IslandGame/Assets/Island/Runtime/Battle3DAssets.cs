@@ -27,8 +27,8 @@ namespace IslandGame {
   public bool IsKit=>!string.IsNullOrEmpty(kit);
   public bool KitComplete=>IsKit&&hero&&slime&&slimeIdle&&idle&&run&&iai1&&iai2&&iai3&&iaiRecover&&skill;
 
-  // Loading. Tracked code reaches the local-only kit by this resource path string only.
-  public const string DefaultResource="Battle3DAssets",KitResource="IslandRev2Port/Battle3DAssets";
+  // Loading. The kit lives in Assets/Island/Characters/PinkGlass (Resources/PinkGlassKit; moved out of LocalRev2Reconstruction 2026-11-23).
+  public const string DefaultResource="Battle3DAssets",KitResource="PinkGlassKit/Battle3DAssets";
   public static string KitResourcePath=KitResource; // test hook: point at a missing name to see the fallback
   public static Battle3DAssets LoadKit(){var k=Resources.Load<Battle3DAssets>(KitResourcePath);return k&&k.KitComplete?k:null;}
   public static Battle3DAssets LoadDefault()=>Resources.Load<Battle3DAssets>(DefaultResource);

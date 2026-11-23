@@ -1,0 +1,63 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bd897306a692644e9958cbd2fbc0e61, type: 3}
+  m_Name: Battle3DAssets
+  m_EditorClassIdentifier: 
+  hero: {fileID: 7343734252161578129, guid: 113054ed595b8164aaf659fb55f6f0eb, type: 3}
+  slime: {fileID: 8771091787928289351, guid: c7e6d957f0d9cdd46933fde58bd05f9d, type: 3}
+  heroMaterial: {fileID: 2100000, guid: 59b1c85305dc4604ab4495e99445b9e1, type: 2}
+  slimeMaterial: {fileID: 2100000, guid: 565c9bf00ef54d146959d279de3a3c65, type: 2}
+  idle: {fileID: 7400000, guid: 1a321bd174680cc4085f799148c8cc08, type: 2}
+  run: {fileID: 7400000, guid: 05414d2a3359f1a409302aec14a483e4, type: 2}
+  walk: {fileID: 7400000, guid: 88e66e672811b51439343565f999bdd8, type: 2}
+  jumpStart: {fileID: 7400000, guid: f34ec55cae65f68458929a17621dd4fd, type: 2}
+  jumpLoop: {fileID: 7400000, guid: 73d841b13ac7d2445a7565d7d06559ed, type: 2}
+  jumpLand: {fileID: 7400000, guid: 5fc1a8aaee4ab9b43a7c61c40570c0c2, type: 2}
+  roll: {fileID: 0}
+  slide: {fileID: 7400000, guid: bf7314c7c6f74cc4cb84131a671e8ff1, type: 2}
+  death: {fileID: 7400000, guid: f2e251e07adf4f64a9353f20f30c37b9, type: 2}
+  hit: {fileID: 7400000, guid: ec2d688d9b9292f499fe8ae0db01ebae, type: 2}
+  attack1: {fileID: 0}
+  attack2: {fileID: 0}
+  attack3: {fileID: 0}
+  combo: {fileID: 0}
+  heavy: {fileID: 0}
+  dash: {fileID: 0}
+  spell: {fileID: 0}
+  slimeIdle: {fileID: -9057470511964926544, guid: c7e6d957f0d9cdd46933fde58bd05f9d, type: 3}
+  heroHeight: 1.2172658
+  slimeHeight: 0.62
+  heroYaw: 90
+  kit: pink-iai
+  keepModelMaterials: 1
+  runStrideMeters: 2.0917
+  bladeBone: Mirror/Katana/G_weapon_root/G_katana_ha_grip
+  bladeTipLocal: {x: 0.00004713207, y: -1.3147182, z: 0.062285002}
+  bladeGuardLocal: {x: 0, y: 0, z: 0}
+  heightBone: mixamorig:HeadTop_End
+  iai1: {fileID: 7400000, guid: 3f2951f7a96213a4584acf8c410b8dba, type: 2}
+  iai2: {fileID: 7400000, guid: e4a03c1d9d39aac4e88a28a47d73feef, type: 2}
+  iai3: {fileID: 7400000, guid: ad36d02fec3639543b675025e91fc3bd, type: 2}
+  iaiRecover: {fileID: 7400000, guid: 9435f0adf107f1543a1f1e851c8d102d, type: 2}
+  iaiRecoverFrom1: {fileID: 7400000, guid: eb7902d56a717cc408d3d0ede093aba6, type: 2}
+  iaiRecoverFrom2: {fileID: 7400000, guid: 595087811141a0847a13432cfcff0344, type: 2}
+  skill: {fileID: 7400000, guid: bc246b892aa3d454191f29ac77e5bc70, type: 2}
+  avoid: {fileID: 7400000, guid: 4ea4ac978ec270c4980bcc9b442ca947, type: 2}
+  knockback: {fileID: 7400000, guid: 68daab953039dd140b884993d858edfb, type: 2}
+  groundedClips:
+  - {fileID: 7400000, guid: f34ec55cae65f68458929a17621dd4fd, type: 2}
+  - {fileID: 7400000, guid: 73d841b13ac7d2445a7565d7d06559ed, type: 2}
+  - {fileID: 7400000, guid: 5fc1a8aaee4ab9b43a7c61c40570c0c2, type: 2}
+  - {fileID: 7400000, guid: bf7314c7c6f74cc4cb84131a671e8ff1, type: 2}
+  - {fileID: 7400000, guid: ec2d688d9b9292f499fe8ae0db01ebae, type: 2}
+  - {fileID: 7400000, guid: f2e251e07adf4f64a9353f20f30c37b9, type: 2}
+  - {fileID: 7400000, guid: 68daab953039dd140b884993d858edfb, type: 2}

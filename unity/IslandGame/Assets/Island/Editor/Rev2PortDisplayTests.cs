@@ -14,7 +14,7 @@ namespace IslandGame.Tests {
   static JObject Build()=>new JObject{{"skills",new JArray()}};
 
   [Test] public void Missing_kit_asset_selects_the_original_hero_and_the_old_boot(){
-   Battle3DAssets.KitResourcePath="IslandRev2Port/__missing_kit_asset__";
+   Battle3DAssets.KitResourcePath="PinkGlassKit/__missing_kit_asset__";
    var chosen=Battle3DAssets.LoadForBattle();var original=Battle3DAssets.LoadDefault();
    Assert.IsNotNull(original,"Resources/Battle3DAssets");
    Assert.AreSame(original,chosen);Assert.IsFalse(chosen.IsKit);

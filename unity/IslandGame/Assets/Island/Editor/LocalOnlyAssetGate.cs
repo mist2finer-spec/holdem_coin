@@ -28,7 +28,19 @@ namespace IslandGame.Editor {
   public sealed class Verdict {
    public string utc, mode, result; public bool development, releaseDefine; public string[] defines, reasons, scenes;
    public int localOnlyCount; public long localOnlyBytes; public Dictionary<string, object> byKind; public Item[] items;
-   public int localScriptsCompiledIntoPlayer; public int rootsChecked;
+   public int localScriptsCompiledIntoPlayer; public int localScriptsGuarded; public string[] localScriptsInPlayer; public int rootsChecked;
+  }
+
+  // A script whose whole body sits in one "#if UNITY_EDITOR ... #endif" block compiles to nothing in a player build.
+  public static bool EditorOnlyGuarded(string text) {
+   var lines = (text ?? "").Split('\n').Select(l => l.Trim()).Where(l => l.Length > 0).ToArray();
+   if (lines.Length < 2 || !System.Text.RegularExpressions.Regex.IsMatch(lines[0], @"^#if\s+UNITY_EDITOR\s*(//.*)?$")) return false;
+   int depth = 0;
+   for (int i = 0; i < lines.Length; i++) {
+    if (lines[i].StartsWith("#if", StringComparison.Ordinal)) depth++;
+    else if (lines[i].StartsWith("#endif", StringComparison.Ordinal) && --depth == 0) return i == lines.Length - 1;
+   }
+   return false;
   }
 
   // ---- evaluation (pure: collects and judges, writes nothing) ----
@@ -69,22 +81,29 @@ namespace IslandGame.Editor {
      found[d] = new Item { path = d, kind = Kind(d, type), type = type, via = g.Key, bytes = File.Exists(full) ? new FileInfo(full).Length : 0 };
     }
    var items = found.Values.OrderBy(i => i.kind).ThenBy(i => i.path, StringComparer.Ordinal).ToArray();
-   // Code in the folder outside Editor folders compiles into the player (no asmdef). Reported, not judged:
-   // it is project-written code, not extracted material. A scene that references it shows up above as a dependency.
-   int scripts = AssetDatabase.GetAllAssetPaths().Count(p => IsLocalOnly(p) && p.EndsWith(".cs", StringComparison.OrdinalIgnoreCase) && ("/" + p).IndexOf("/Editor/", StringComparison.OrdinalIgnoreCase) < 0);
+   // Code in the folder outside Editor folders compiles into the player (no asmdef: it uses game types, so it cannot sit in
+   // its own assembly) unless the whole file is guarded by #if UNITY_EDITOR. A release build refuses unguarded ones.
+   var localScripts = AssetDatabase.GetAllAssetPaths().Where(p => IsLocalOnly(p) && p.EndsWith(".cs", StringComparison.OrdinalIgnoreCase) && ("/" + p).IndexOf("/Editor/", StringComparison.OrdinalIgnoreCase) < 0).OrderBy(p => p, StringComparer.Ordinal).ToArray();
+   string ScriptText(string p) { var full = Path.Combine(Path.GetDirectoryName(Application.dataPath), p); return File.Exists(full) ? File.ReadAllText(full) : ""; }
+   var inPlayer = localScripts.Where(p => !EditorOnlyGuarded(ScriptText(p))).ToArray();
    bool release = !development || releaseDefine;
    var reasons = new List<string>();
    if (!development) reasons.Add("not a Development build");
    if (releaseDefine) reasons.Add(ReleaseDefine + " is defined");
    string result;
-   if (release && items.Length > 0) { result = "FAIL"; reasons.Add($"release build would carry {items.Length} local-only asset(s) under {Prefix}"); }
-   else if (items.Length > 0) { result = "PASS"; reasons.Add($"test build: {items.Length} local-only asset(s) allowed (Development, no {ReleaseDefine}); do not distribute this build"); }
-   else { result = "PASS"; reasons.Add("no local-only assets reached"); }
+   if (release && (items.Length > 0 || inPlayer.Length > 0)) {
+    result = "FAIL";
+    if (items.Length > 0) reasons.Add($"release build would carry {items.Length} local-only asset(s) under {Prefix}");
+    if (inPlayer.Length > 0) reasons.Add($"release build would compile {inPlayer.Length} local-only script(s) under {Prefix} (guard each with #if UNITY_EDITOR)");
+   }
+   else if (items.Length > 0 || inPlayer.Length > 0) { result = "PASS"; reasons.Add($"test build: {items.Length} local-only asset(s), {inPlayer.Length} local-only player script(s) allowed (Development, no {ReleaseDefine}); do not distribute this build"); }
+   else { result = "PASS"; reasons.Add("no local-only assets reached, no local-only scripts in the player"); }
    return new Verdict {
     utc = DateTime.UtcNow.ToString("o"), mode = mode, result = result, development = development, releaseDefine = releaseDefine, defines = defs,
     reasons = reasons.ToArray(), scenes = scenes, localOnlyCount = items.Length, localOnlyBytes = items.Sum(i => i.bytes), items = items,
     byKind = items.GroupBy(i => i.kind).OrderBy(g => g.Key).ToDictionary(g => g.Key, g => (object)new { count = g.Count(), bytes = g.Sum(i => i.bytes) }),
-    localScriptsCompiledIntoPlayer = scripts, rootsChecked = scenes.Length + resources.Length,
+    localScriptsCompiledIntoPlayer = inPlayer.Length, localScriptsGuarded = localScripts.Length - inPlayer.Length, localScriptsInPlayer = inPlayer,
+    rootsChecked = scenes.Length + resources.Length,
    };
   }
 
