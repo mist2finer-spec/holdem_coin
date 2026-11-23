@@ -1,0 +1,69 @@
+﻿{
+    "issue":  30,
+    "revision":  "1.1-root-alignment",
+    "status":  "LOCAL_DRAFT_AWAITING_ART_APPROVAL",
+    "branch":  "codex/genshin-environment-20261110",
+    "head":  "ddf4a9e55c216c2fd18504a3c7ba64344dc681f7",
+    "files":  [
+                  {
+                      "file":  "kit_sword_v1_albedo.png",
+                      "bytes":  16121,
+                      "sha256":  "dab0119e5462c3609db2dcdc0b3f43f893f74ffe13444c3388398ea09157b1dc",
+                      "local_reference_review":  false
+                  },
+                  {
+                      "file":  "kit_sword_v1.fbx",
+                      "bytes":  47820,
+                      "sha256":  "3731c5fc4c5b0d743e560c17c0d83b83eed5a57383ff4e86354a0c029e658232",
+                      "local_reference_review":  false
+                  },
+                  {
+                      "file":  "compare_current_vs_new.png",
+                      "bytes":  1457329,
+                      "sha256":  "dfbcfe50c06e8f45c946e37206449dc0b6e7177b615d21f19aef84b44d0286ec",
+                      "local_reference_review":  true
+                  },
+                  {
+                      "file":  "kit_sword_v1_in_hand.png",
+                      "bytes":  1384158,
+                      "sha256":  "62c343617c8f4080d87fa9406a65043b45ec768605affd2a591f2196e63a895b",
+                      "local_reference_review":  false
+                  },
+                  {
+                      "file":  "README_KO.md",
+                      "bytes":  6805,
+                      "sha256":  "c50dc41b3b54190c9ba835295584c1e2f33a0d62d1d83b4582cc73a31ba88069",
+                      "local_reference_review":  true
+                  },
+                  {
+                      "file":  ".gitignore",
+                      "bytes":  115,
+                      "sha256":  "9e67aa40e6cce08e533e0d38630467f57ea9361e1b5b6ad7edf90326326feffb",
+                      "local_reference_review":  false
+                  },
+                  {
+                      "file":  "review.html",
+                      "bytes":  2370,
+                      "sha256":  "5b70c024f5d03253136883f928581bd69a09bbe1bb3c25ea5c1a6ae185ba1bf5",
+                      "local_reference_review":  true
+                  },
+                  {
+                      "file":  "validation.json",
+                      "bytes":  1906,
+                      "sha256":  "20df3ee76c9b148b478d0fbae695ec088dca5de371f7511afc82f5f233781b7d",
+                      "local_reference_review":  false
+                  },
+                  {
+                      "file":  "kit_sword_v1.blend",
+                      "bytes":  73308,
+                      "sha256":  "c4116e288cc5fabeb7e6fad910f869e18f10699cb1fbb9bea10d17e5fe2d99e8",
+                      "local_reference_review":  false
+                  },
+                  {
+                      "file":  "root_alignment_before_after.png",
+                      "bytes":  951195,
+                      "sha256":  "50fc3b84323a8db3af92e9a08ae794c53fbd7a9b1a0eee52d8180ad2072517b2",
+                      "local_reference_review":  false
+                  }
+              ]
+}

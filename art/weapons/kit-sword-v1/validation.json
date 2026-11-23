@@ -1,0 +1,72 @@
+{
+  "fbx_imported": true,
+  "mesh_count": 1,
+  "triangles": 492,
+  "material_slots": 1,
+  "uv_layer_count": 1,
+  "nonmanifold_edges": 0,
+  "zero_area_triangles": 0,
+  "signed_volume": 0.0005101970314920777,
+  "uv_outside_01": 0,
+  "bounds_blender_min": [
+    -0.016629831865429878,
+    -1.314718246459961,
+    -0.02679249458014965
+  ],
+  "bounds_blender_max": [
+    0.016629831865429878,
+    0.17341460287570953,
+    0.06625009328126907
+  ],
+  "object_location": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "object_scale": [
+    1.0,
+    1.0,
+    1.0
+  ],
+  "object_rotation": [
+    1.570796251296997,
+    -0.0,
+    0.0
+  ],
+  "texture_paths": [
+    "G:\\holdem_coin-workspace\\island\\branches\\current-10zone\\art\\weapons\\kit-sword-v1\\kit_sword_v1_albedo.png"
+  ],
+  "fixed_spine_uv_faces": 9,
+  "Unity_import": "UNAVAILABLE: reserved for Claude after art approval",
+  "fbx_geometry_local_min": [
+    -0.016629831865429878,
+    -0.026792505756020546,
+    -0.17341460287570953
+  ],
+  "fbx_geometry_local_max": [
+    0.016629831865429878,
+    0.06624999642372131,
+    1.314718246459961
+  ],
+  "fbx_geometry_tip_axis": "+Z",
+  "blender_import_rotation_explanation": "Blender importer adds +90 degrees X to map FBX Y-up coordinates to Blender Z-up; native FBX mesh is +Z longitudinal.",
+  "blend_object_names": [
+    "SM_KitSword_V1"
+  ],
+  "blend_scene_names": [
+    "KitSword_Original_Only"
+  ],
+  "blend_image_names": [
+    "kit_sword_v1_albedo"
+  ],
+  "no_reference_in_blend": true,
+  "revision": "1.1-root-alignment",
+  "blade_root_center_y_m": -4.656612873077393e-10,
+  "root_centered": true,
+  "albedo_sha256_unchanged": true,
+  "geometry_topology_uv_unchanged": true,
+  "only_spine_direction_coordinates_changed": true,
+  "grip_vertices_unchanged": true,
+  "length_source_m": 1.4881328493356705,
+  "root_alignment_validation": "PASS"
+}
