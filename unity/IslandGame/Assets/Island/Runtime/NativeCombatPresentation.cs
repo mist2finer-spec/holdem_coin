@@ -77,13 +77,13 @@ namespace IslandGame {
     return hero;
    }
    if((bool?)state["unityBossMode"]==true){
-    bool planar=(string)state["movementMode"]=="plane"||(bool?)state["mountSunday"]!=true&&(int?)state["room"]==1;float moveSpeed=N(state["movementSpeed"],210);
+    bool planar=(string)state["movementMode"]=="plane"||(bool?)state["mountSunday"]!=true&&(int?)state["room"]==1;
     var input=Vector2.ClampMagnitude(new Vector2(move,planar?moveY:0),1);
     if(input.magnitude>.1f){
-     float lead=Mathf.Clamp(visualTime-N(state["elapsed"]),0,.15f);float px=N(hero["x"])+input.x*moveSpeed*lead,py=N(hero["y"])+input.y*moveSpeed*lead;
-     var bounds=state["walkBounds"];px=Mathf.Clamp(px,N(bounds?["minX"]),N(bounds?["maxX"]));py=planar?Mathf.Clamp(py,N(bounds?["minY"]),N(bounds?["maxY"])):N(map?["laneY"],192);
-     if((bool?)state["mountSunday"]==true){var p=MountRoute.Clamp(map,state,new Vector2(px,py),planar);px=p.x;py=p.y;}bool blocked=false;foreach(var o in map?["obstacles"] as JArray??EmptyArray)if(Vector2.Distance(new Vector2(px,py),new Vector2(N(o["x"]),N(o["y"])))<N(o["radius"])+18){blocked=true;break;}
-     if(!blocked){hero["x"]=px;hero["y"]=py;}if(Mathf.Abs(input.x)>.01f)hero["facing"]=Mathf.Sign(input.x);SetDirection(hero,input.normalized.x,input.normalized.y);hero["action"]="run1";
+     // A-3 (quarter pad fix, 2026-11-23): boss-mode state comes from CombatSnapshotBuffer, whose hero x/y are already blended to
+     // visualTime. The old input*speed*(visualTime-elapsed) lead was added on top of that and reset at every snapshot (a sawtooth with
+     // backward frames, both views). Position is now the buffer's; the input only turns the hero and picks the run clip.
+     if(Mathf.Abs(input.x)>.01f)hero["facing"]=Mathf.Sign(input.x);SetDirection(hero,input.normalized.x,input.normalized.y);hero["action"]="run1";
     }else if(!auto)hero["action"]="stay1";
     return hero;
    }
