@@ -415,7 +415,9 @@ namespace IslandGame {
   public delegate bool AttackSlashHandler(int attack, int row, float facing, Vector3 ground, float height, SlashPose pose);
   // The Ember slash of a motion as FixedSlot.Place builds it: root on the feet (side: X scale = facing; QuarterView: yaw), scale H / heightM;
   // body at pivotH x heightM, rotation Euler(rotDeg) x roll about its own Y, X mirrored; the EmberSlash shader scales the path by size.
-  public struct SlashPose { public Vector3 pivotH, rotDeg; public float rollDeg, size, heightM, yaw; public bool mirror; }
+  // 3rd adjustment (2026-11-24): with the Ember timing of the row (duration s, sweep and persistence as fractions of it), so the electric
+  // slash shows the same part of the path at the same moment.
+  public struct SlashPose { public Vector3 pivotH, rotDeg; public float rollDeg, size, heightM, yaw, duration, sweep, persistence; public bool mirror; }
   // 2nd adjustment item 2 (2026-11-24): an electric skill (storm-call, lightning-ball, arc-discharge) casts with no kit skill slash
   // (Ember / C), equipped or not; its own electric effect is the whole show. Other skills keep the slash.
   public static bool SkillSlash(string skillId) => !ElectricErtelVfx.IsElectricSkill(skillId);
@@ -535,7 +537,7 @@ namespace IslandGame {
    // Spawn once per motion when the shown clip time enters the window.
    if (key != null && shown && heroSample >= from && fixedAttack != attack) {
     fixedAttack = attack;
-    if (!(attacking && AttackSlash != null && AttackSlash(attack, row, facing, ground, H, new SlashPose { pivotH = m.ePivot, rotDeg = m.eRot, rollDeg = m.eRoll, size = m.eSize, heightM = slash.cHeightM, yaw = PlanarYaw, mirror = m.eMirror }))) {
+    if (!(attacking && AttackSlash != null && AttackSlash(attack, row, facing, ground, H, new SlashPose { pivotH = m.ePivot, rotDeg = m.eRot, rollDeg = m.eRoll, size = m.eSize, heightM = slash.cHeightM, yaw = PlanarYaw, mirror = m.eMirror, duration = m.eDuration, sweep = m.eSweep, persistence = m.ePersist }))) {
     var lvl = IslandFrameBudget.Current ? IslandFrameBudget.Current.Policy.Level : 0;
     bool useEmber = slash.ember && emberReady && lvl < slash.emberBudgetOffLevel;
     var pool = useEmber ? emberSlots : cSlots;

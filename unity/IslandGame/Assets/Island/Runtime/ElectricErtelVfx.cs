@@ -61,6 +61,9 @@ namespace IslandGame {
   // roll, mirror, Size.
   static readonly Vector3 SweepCentre=new Vector3(0,1.15f,0),SweepH=new Vector3(1,.21f,.05f),SweepV=new Vector3(.04f,.29f,1),SweepOffset=new Vector3(-.1537f,0,.1733f);
   const float SweepFit=1.0117f,SweepTurn=-175.86f,ArmedArc=.5f;
+  // 3rd adjustment: rows 1 and 2 brighter than the prefab (intensity 1): the thin violet sheet read much fainter than the Ember arc (side
+  // view row 1 edge-on, the quarter view from above). Row 3 keeps the prefab brightness.
+  public const float RowGlow=1.6f;
   static readonly Quaternion SweepAlign=AlignSweep();
   static Quaternion AlignSweep(){
    var e1=SweepH.normalized;var e3=(SweepV-Vector3.Dot(SweepV,e1)*e1).normalized;float d=SweepTurn*Mathf.Deg2Rad;
@@ -98,7 +101,9 @@ namespace IslandGame {
   // The row slash runs on the same effect clock as the Ember slash it replaces (IaiBladeVfx: frame time of the snapshot clock, held while
   // the kernel hitstop holds the pose), so at one pose both are at the same point of their life; Time.deltaTime ran ahead of the snapshot
   // clock when frames were slow (Editor). born = the effect clock at the spawn moment.
-  sealed class SlashRun{public LightningEffect fx;public Vector3 offset;public float born;}
+  // 3rd adjustment (2026-11-24), rows 1 and 2: the sweep follows the Ember slash of the row on that clock (RowTime): its head is where the
+  // Ember head is, its tail where the Ember glow has gone, and it is gone when the Ember slash is. Row 3 keeps the plain clock.
+  sealed class SlashRun{public LightningEffect fx;public Vector3 offset;public float born,duration,sweep,persistence;public bool follow;}
   readonly List<SlashRun> attackSlashes=new List<SlashRun>();
   LightningEffect charge;Transform chargeWeapon,chargeBase,chargeTip,sheathHero,sheathGrip;GameObject aura;Transform auraRoot;
   string session;float previous=-1,clock;int lastDamage,lastLaunch,lastThrow,lastBurst,castAttack;
@@ -137,8 +142,11 @@ namespace IslandGame {
    // Cut off (cancel into a move or a skill, an evade that replaced an attack): no electric row slash stays in the air.
    bool cut=kind=="cancel"||kind=="skill"||motion?["cancelledAttackId"]!=null;
    foreach(var s in attackSlashes){if(!s.fx||!s.fx.gameObject.activeSelf)continue;
-    if(cut||clock-s.born>=s.fx.Duration){s.fx.Stop();s.fx.gameObject.SetActive(false);continue;}
-    if(heroRoot)s.fx.transform.position=heroRoot.position+s.offset;s.fx.Seek(clock-s.born);}
+    float age=clock-s.born,at=s.follow?RowTime(age,s.duration,s.sweep,s.persistence):age;
+    // A following row is over once its tail reached the end of the path (RowTime .72: nothing left to draw), so its pool slot is free
+    // for the next rows (the pool steals round robin when full).
+    if(cut||at>=s.fx.Duration||s.follow&&(age>=s.duration||at>=RowEnd)){s.fx.Stop();s.fx.gameObject.SetActive(false);continue;}
+    if(heroRoot)s.fx.transform.position=heroRoot.position+s.offset;s.fx.Seek(at);}
    UpdateCharge(heroModel,weapon,baseLocal,tipLocal);UpdateAura(heroRoot);
    // Strike cue: the slot-1 lightning cast (kit storm-call) starts its Electric_StormSkill so the first bolt is on start + hitAt.
    int attack=(int?)motion?["attackId"]??0;
@@ -183,11 +191,28 @@ namespace IslandGame {
    var offset=pivot+G.MultiplyVector(SweepOffset*K)-L.MultiplyVector(SweepCentre*size);
    // A mirrored frame (facing left xor the row mirror): rotation x scale (-1, 1, 1); the stormglass shaders draw both faces.
    bool flip=f*m<0;if(flip)L=L*Matrix4x4.Scale(new Vector3(-1,1,1));
-   s.slashForm=SlashForm.Horizontal;s.size=size;s.transform.localScale=new Vector3(flip?-1:1,1,1);
+   s.slashForm=SlashForm.Horizontal;s.size=size;s.intensity=row<2?RowGlow:1;s.transform.localScale=new Vector3(flip?-1:1,1,1);
    s.PlayAt(ground+offset,Quaternion.LookRotation(L.GetColumn(2),L.GetColumn(1)));s.Pause();
    SlashRun run=null;foreach(var a in attackSlashes)if(a.fx==s)run=a;if(run==null){run=new SlashRun{fx=s};attackSlashes.Add(run);}
-   run.offset=offset;run.born=clock;LastSlash=s;return true;
+   run.offset=offset;run.born=clock;run.follow=row<2&&pose.duration>0;run.duration=pose.duration;
+   run.sweep=Mathf.Clamp(pose.sweep,.16f,.58f);run.persistence=Mathf.Clamp(pose.persistence,.18f,.72f);LastSlash=s;return true;
   }
+  // Electric_Slash time (s) at Ember clock age (s) of a row slash (rows 1 and 2). The Horizontal sweep is fitted onto the Ember path with
+  // the same u (electric u = Ember u). Ember (EmberCommon.cginc, settings clamped as IaiBladeVfx.FixedSlot.Ember): phase = age / duration;
+  // u is lit at phase sweep x (1 - (1 - u)^0.8) and down to 0.3 of its glow at age 0.03 + 0.633 x (persistence x (0.68 + 0.39 u) - 0.03). Electric (LightningScore.
+  // Sweep): head = smoothstep((t - .005) / .215), tail = smoothstep((t - .145) / .575). t = the later of the time its head reaches the Ember
+  // head and the time its tail reaches the Ember tail (both rise with age, so t never goes back).
+  public const float RowEnd=.7199f;
+  public static float RowTime(float age,float duration,float sweep,float persistence){
+   if(age<=0)return 0;float phase=age/Mathf.Max(.05f,duration);
+   float head=phase>=sweep?1:1-Mathf.Pow(1-phase/sweep,1.25f);
+   float headT=.005f+.215f*SmoothInverse(head);
+   float Gap(float u)=>phase-sweep*(1-Mathf.Pow(1-u,.8f))-(.03f+.633f*(persistence*(.68f+.39f*u)-.03f));
+   float tail;if(Gap(0)<=0)tail=0;else if(Gap(1)>0)tail=1;else{float lo=0,hi=1;for(int i=0;i<24;i++){float m=(lo+hi)*.5f;if(Gap(m)>0)lo=m;else hi=m;}tail=(lo+hi)*.5f;}
+   float tailT=tail<=0?0:.145f+.575f*SmoothInverse(Mathf.Min(1,tail/.998f));
+   return Mathf.Max(headT,tailT);
+  }
+  static float SmoothInverse(float y){if(y<=0)return 0;if(y>=1)return 1;float lo=0,hi=1;for(int i=0;i<24;i++){float m=(lo+hi)*.5f;if(m*m*(3-2*m)<y)lo=m;else hi=m;}return (lo+hi)*.5f;}
   // QA: discharges shown since the session started (one per discharging damage event).
   public int DischargesShown{get;private set;}
   void PlayHit(Vector3 point,float scale){var e=hits.Take();if(!e)return;DischargesShown++;e.size=.65f*scale;e.PlayAt(point,Quaternion.identity);}

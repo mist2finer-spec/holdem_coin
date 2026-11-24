@@ -90,6 +90,56 @@ namespace IslandGame.Tests {
    });
   }
 
+  // 3rd adjustment (2026-11-24): rows 1 and 2 show the part of the Ember arc the Ember slash shows at that moment (head where its head is,
+  // tail where its glow is gone, same length and direction, gone with it). Ember visible part: EmberCommon.cginc envelope x tips x end
+  // fade > .3; electric: LightningScore.Sweep [tail, head] at RowTime(age), alpha > .15; both through the transforms of the row.
+  static float Sm(float a,float b,float x){x=Mathf.Clamp01((x-a)/(b-a));return x*x*(3-2*x);}
+  static Vector3 EmberAt(float u,float phase){float a=.39f+4.55f*u,r=(1.66f+.17f*Mathf.Sin(4.3f*u-.35f))*(.934f+.08f*Sm(0,.46f,phase));return new Vector3(r*Mathf.Cos(a)+.075f*u,.10f*Mathf.Sin(a-.45f)+.068f*Mathf.Cos(a*1.61f),r*.85f*Mathf.Sin(a));}
+  static Vector3 SweepAt(float u){float an=-2.93f+4.93f*u,r=1.49f*(.87f+.19f*u);return new Vector3(0,1.15f,0)+(new Vector3(1,.21f,.05f)*Mathf.Cos(an)+new Vector3(.04f,.29f,1)*Mathf.Sin(an))*r;}
+  static bool EmberShown(float phase,float sweep,float pers,out float lo,out float hi){lo=hi=-1;
+   for(int i=0;i<=400;i++){float u=i/400f,age=phase-sweep*(1-Mathf.Pow(Mathf.Max(0,1-u),.8f));
+    if(Sm(-.009f,.014f,age)*(1-Sm(.03f,pers*(.68f+.39f*u),age))*Sm(0,.08f,u)*(1-Sm(.885f,1,u))*(1-Sm(.86f,1,phase))>.3f){if(lo<0)lo=u;hi=u;}}return lo>=0;}
+  static bool SweepShown(float t,out float lo,out float hi){lo=Sm(.145f,.72f,t)*.998f;hi=Sm(.005f,.22f,t);return t>0&&t<.76f&&Sm(0,.055f,t)*(1-Sm(.43f,.75f,t))>.15f&&hi-lo>.007f;}
+  static float ArcLength(System.Func<float,Vector3> p,float lo,float hi){float L=0;var a=p(lo);for(int i=1;i<=60;i++){var b=p(lo+(hi-lo)*i/60f);L+=(b-a).magnitude;a=b;}return L;}
+  [Test] public void Rows_1_and_2_show_the_ember_arc_of_each_moment(){
+   var profile=JObject.Parse(Resources.Load<TextAsset>("IaiVfx/IaiSlashProfile").text);float heightM=(float)profile["C"]["heightM"];
+   var kit=Battle3DAssets.LoadKit();float H=kit?kit.heroHeight:1.2172658f;var report=new System.Text.StringBuilder();
+   foreach(float yaw in new[]{float.NaN,35f})foreach(float facing in new[]{1f,-1f})for(int row=0;row<3;row++){
+    if(!float.IsNaN(yaw)&&facing<0)continue;
+    var em=profile["motions"]["iai"+(row+1)]["ember"];
+    var pose=new IaiBladeVfx.SlashPose{pivotH=V3(em["pivotH"]),rotDeg=V3(em["rotDeg"]),rollDeg=(float)em["rollDeg"],size=(float)em["size"],mirror=(bool)em["mirror"],heightM=heightM,yaw=yaw,
+     duration=(float)em["duration"],sweep=(float)em["sweep"],persistence=(float)em["persistence"]};
+    var rootGo=new GameObject("ember root");var bodyGo=new GameObject("ember body");bodyGo.transform.SetParent(rootGo.transform,false);
+    var heroGo=new GameObject("hero root");var host=new GameObject("electric test");var e=new ElectricErtelVfx(host.transform);
+    try{
+     float k=H/heightM;rootGo.transform.rotation=float.IsNaN(yaw)?Quaternion.identity:Quaternion.Euler(0,yaw,0);rootGo.transform.localScale=new Vector3((float.IsNaN(yaw)?facing:1)*k,k,k);
+     bodyGo.transform.localPosition=pose.pivotH*heightM;bodyGo.transform.localRotation=Quaternion.Euler(pose.rotDeg)*Quaternion.AngleAxis(pose.rollDeg,Vector3.up);bodyGo.transform.localScale=new Vector3(pose.mirror?-1:1,1,1);
+     JObject At(float t)=>State(t,null,new JObject{{"kind","attack"},{"attackId",7}},null,"electric");
+     e.Update(At(2),2,heroGo.transform,null,null,default,default,H,!float.IsNaN(yaw));Assert.IsTrue(e.PlaySlash(7,row,facing,Vector3.zero,H,pose));var fx=e.LastSlash;var T=fx.transform;float size=fx.size;
+     Assert.AreEqual(row<2?ElectricErtelVfx.RowGlow:1,fx.intensity,1e-5f,"row "+(row+1)+" brightness");
+     // the effect time each frame: RowTime for rows 1 and 2, the plain clock for row 3 (kept)
+     e.Update(At(2.1f),2.1f,heroGo.transform,null,null,default,default,H,!float.IsNaN(yaw));
+     Assert.AreEqual(row<2?ElectricErtelVfx.RowTime(.1f,pose.duration,pose.sweep,pose.persistence):.1f,fx.TimeSeconds,1e-3f,"row "+(row+1)+" effect time");
+     if(row==2)continue;
+     foreach(float a in new[]{.033f,.07f,.11f,.15f,.2f,.25f}){
+      float phase=a/pose.duration;Assert.IsTrue(EmberShown(phase,pose.sweep,pose.persistence,out float elo,out float ehi),"Ember shown at "+a);
+      Assert.IsTrue(SweepShown(ElectricErtelVfx.RowTime(a,pose.duration,pose.sweep,pose.persistence),out float xlo,out float xhi),"row "+(row+1)+" electric shown at "+a);
+      System.Func<float,Vector3> E=u=>bodyGo.transform.TransformPoint(EmberAt(u,phase)*pose.size);System.Func<float,Vector3> X=u=>T.TransformPoint(SweepAt(u)*size);
+      var ed=E(ehi)-E(elo);var xd=X(xhi)-X(xlo);float eL=ArcLength(E,elo,ehi),xL=ArcLength(X,xlo,xhi),dir=Vector3.Angle(xd,ed),headGap=(X(xhi)-E(ehi)).magnitude,tailGap=(X(xlo)-E(elo)).magnitude;
+      string tag="row "+(row+1)+" facing "+facing+" yaw "+yaw+" age "+a;
+      report.Append(tag+": direction diff "+dir.ToString("F0")+" deg, length ember "+eL.ToString("F2")+" electric "+xL.ToString("F2")+", head gap "+headGap.ToString("F2")+", tail gap "+tailGap.ToString("F2")+"\n");
+      Assert.Less(dir,15,tag+": same direction (start to end)");Assert.That(xL/eL,Is.InRange(.85f,1.25f),tag+": same length");
+      Assert.Less(headGap,.25f*H,tag+": head on the Ember head");Assert.Less(tailGap,.2f*H,tag+": tail on the Ember tail");
+     }
+     // gone with the Ember slash (nothing drawn past it), its pool slot freed
+     Assert.IsFalse(EmberShown(.36f/pose.duration,pose.sweep,pose.persistence,out _,out _),"Ember gone");
+     Assert.IsFalse(SweepShown(ElectricErtelVfx.RowTime(.37f,pose.duration,pose.sweep,pose.persistence),out _,out _),"row "+(row+1)+" electric gone with it");
+     for(float t=2.15f;t<2.5f;t+=.05f)e.Update(At(t),t,heroGo.transform,null,null,default,default,H,!float.IsNaN(yaw));Assert.AreEqual(0,e.ActiveSlashes,"row "+(row+1)+" slot freed");
+    }finally{e.Dispose();Object.DestroyImmediate(host);Object.DestroyImmediate(heroGo);Object.DestroyImmediate(rootGo);}
+   }
+   TestContext.WriteLine(report.ToString());
+  }
+
   // 2nd adjustment item 2: while an electric skill (slot 1 storm-call, 3 lightning-ball, 4 arc-discharge) is cast, none of the old warm
   // effects come with it, equipped or not: no Ember / C skill slash, the cast ring is violet (not the orange one), and its hits get no
   // orange contact spark (the violet discharge instead). Other skills (water-ring, sun-cleave) keep theirs.
