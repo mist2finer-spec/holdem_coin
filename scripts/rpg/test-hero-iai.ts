@@ -55,8 +55,11 @@ function noKitWide(){
 // (no 0.04 s stay1). plain 38e305be -> 832fa27b, source de2ec4b8 -> 259d5701, wide b8f77392 -> 77fe88b9, recorded with maintenance/evade-skillbar-20261123/tools/golden.mts
 // (these drives verbatim) on a `git archive dacb07ee src` copy (prints the old values), that copy + the change and the tree (both
 // print the new ones). First difference = the first evade press during an attack (plain/source tick 50, wide tick 548).
-const GOLDEN={plain:'832fa27b6f527434241fa7800bd8b1fff04044c015d1dc9fbf17b6c859ba6bf1',source:'259d5701367d4e3f5c79046467fc60098ebad0707b235ea9e6d1c02d61f741dc',
- wide:'77fe88b939452028c82d8dfb47b3d4da6f30939d3fc5801cabbe5b92d3877239'};
+// ertel-electric (2026-11-23, maintenance/ertel-electric-20261123/gd/tools: strip.mts + record.mts + patch_goldens.py): electric/water kills now
+// carry killElement (the dead mob/boss, its kill damage event, boss-defeated). With those added keys stripped every old digest still
+// matches (strip.mts run on the tree); the new values below are the same runs with the keys. No damage, timing or contact changed.
+const GOLDEN={plain:'8516eaa8bbc8576bb63bdda7e4261567c292fc0c43f7588cfb29d1a0c74e0a58',source:'31f9478314acb9e54fbb3099c276a3fddebc0b3b0d7b3974c70b122cb48958b1',
+ wide:'f7db24336f6a65678afa467bcd601d66b77f1e9658d7855c42b68f098cadf47d'};
 test('no kit: the engine is tick-for-tick the pre-kit engine (golden digest of 6000 ticks)',()=>{
  assert.equal(noKitDigest(),GOLDEN.plain,'default traversal');assert.equal(noKitDigest(p),GOLDEN.source,'source-run-v2');
  const g:any=new MountSundayEngine(111,p);assert.equal(g.heroKit,undefined);assert.equal('heroKit' in g.view(),false);

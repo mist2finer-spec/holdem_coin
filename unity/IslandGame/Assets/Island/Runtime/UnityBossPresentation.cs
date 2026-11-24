@@ -9,6 +9,10 @@ namespace IslandGame {
   readonly Transform[] contactBones=new Transform[4];
   // Kit boss rune beams (state "beams", kernel rpg-boss-beam.ts); none in the legacy fight (no key).
   public readonly BossBeamPresentation Beams;
+  // ertel-electric-20261123: a boss killed by electricity (boss killElement "electric", action death) burns away (BurnDissolve on the boss
+  // model renderers, BurnSeconds) during its death fall, inside the 3.5 s the kernel keeps it visible. Alive again (new fight) = restored.
+  public const float BurnSeconds=1.6f;IslandVfx.BurnDissolveRun burn;System.Collections.Generic.List<Renderer> burned;
+  public bool Burning=>burn!=null&&!burn.Finished;public bool Burned=>burn!=null;
   public Vector3 ContactPoint(int n)=>contactBones[n]?contactBones[n].TransformPoint(n%2==1?BossContactProfile.HandOffsets[n/2]:Vector3.zero):Vector3.zero;
   public Transform BossTarget=>bossRoot.transform;public bool BossVisible=>bossRoot.activeSelf;
   public Transform WarningTarget=>warning.transform;public bool HookActive{get;private set;}
@@ -37,6 +41,8 @@ namespace IslandGame {
    var boss=(state["mobs"] as JArray)?.First as JObject;
    foreach(var m in state["mobs"] as JArray??new JArray())if((bool?)m["unityBoss"]==true){boss=m as JObject;break;}
    bool show=(bool?)state["bossVisible"]==true&&boss!=null;bossRoot.SetActive(show);
+   if(show&&(string)boss["action"]=="death"&&(string)boss["killElement"]==ElectricErtelVfx.Electric){if(burn==null){burned=new System.Collections.Generic.List<Renderer>();foreach(var r in bossModel.GetComponentsInChildren<Renderer>(false))if((r is MeshRenderer||r is SkinnedMeshRenderer)&&r.enabled)burned.Add(r);burn=IslandVfx.BurnDissolve.Play(burned,BurnSeconds);}}
+   else if(burn!=null&&(boss==null||N(boss["hp"])>0||!show)){if(!burn.Finished)burn.Cancel();if(boss!=null&&N(boss["hp"])>0)RestoreBurn();}
    if(show){float shown=DisplayHeight(assets,state);if(shown!=Height){Height=shown;scale=Height/assets.bossReferenceHeight;}bossRoot.transform.localPosition=new Vector3(N(boss["x"])/100,N(boss["elevation"])/100,(N(boss["y"])-N(map?["laneY"],192))/100);bossRoot.transform.localRotation=Quaternion.Euler(0,Mathf.Atan2(N(boss["direction"]?["x"],-1),N(boss["direction"]?["y"]))*Mathf.Rad2Deg,0);
     var motion=boss["motion"] as JObject;string action=(string)boss["action"];var clip=action=="throw"?assets.throwClip:action=="combo"?assets.combo:action=="walk"?assets.walk:assets.idle;float step=Mathf.Clamp(visualTime-previousVisualTime,0,.1f);if(action=="walk"&&bossPlaced)walkClock+=Vector3.Distance(bossRoot.transform.localPosition,previousBossPosition)/(1.8f*Height/a_height);else if(action!="walk")walkClock=0;previousBossPosition=bossRoot.transform.localPosition;bossPlaced=true;float time=motion==null?Mathf.Repeat(action=="walk"?walkClock:visualTime,clip.length):Mathf.Clamp01((visualTime-N(motion["start"]))/Mathf.Max(.001f,N(motion["duration"])))*clip.length;
     float phase=time/clip.length;HookActive=action=="combo"&&(BossContactProfile.Active(phase,0)||BossContactProfile.Active(phase,1));
@@ -54,7 +60,8 @@ namespace IslandGame {
   // Triangles wind clockwise seen from above (normal +Y): the diorama look converts the telegraph to URP Unlit with Cull Back, which
   // culled the old downward-facing disc, so the warning never showed from the battle cameras (2026-11-22).
   static Mesh Disc(){const int count=64;var v=new Vector3[count+1];var colors=new Color[count+1];var indices=new int[count*3];colors[0]=new Color(1,1,1,.18f);for(int i=0;i<count;i++){float a=i*Mathf.PI*2/count;v[i+1]=new Vector3(Mathf.Cos(a),0,Mathf.Sin(a));colors[i+1]=Color.white;indices[i*3]=0;indices[i*3+1]=(i+1)%count+1;indices[i*3+2]=i+1;}var mesh=new Mesh{name="Warning ground disc"};mesh.vertices=v;mesh.colors=colors;mesh.triangles=indices;mesh.RecalculateBounds();mesh.RecalculateNormals();return mesh;}
-  public void Dispose(){Beams?.Dispose();animation.Dispose();Destroy(root);Destroy(disc);Destroy(sphere);Destroy(warningMaterial);Destroy(blastMaterial);}
+  void RestoreBurn(){if(burned!=null)foreach(var r in burned)if(r)r.enabled=true;burned=null;burn=null;}
+  public void Dispose(){if(burn!=null&&!burn.Finished)burn.Cancel();Beams?.Dispose();animation.Dispose();Destroy(root);Destroy(disc);Destroy(sphere);Destroy(warningMaterial);Destroy(blastMaterial);}
   static void Destroy(UnityEngine.Object o){if(!o)return;if(Application.isPlaying)UnityEngine.Object.Destroy(o);else UnityEngine.Object.DestroyImmediate(o);}
  }
 }

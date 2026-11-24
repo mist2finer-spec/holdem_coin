@@ -162,7 +162,7 @@ namespace IslandGame {
     float mx=NativeCombatPresentation.N(m["x"]),height=NativeCombatPresentation.N(m["elevation"]);if(!campaign&&(bool?)state["unityBossMode"]!=true)height=NativeCombatPresentation.N(session.Map?["rooms"]?[(int)NativeCombatPresentation.N(m["room"])]?["elevation"]);
     string id=MobIdText(m["id"]??m["slot"]),mode=m.Value<string>("state")??"idle",clip=dead?(string)profile["clips"]?["death"]:m.Value<string>("castClip")??profile["clips"]?[mode=="windup"?"attack":mode=="walk"?"move":"idle"]?.Value<string>()??"stay1";
     if(Uses3D&&!threeD.ShouldPresent(mx))continue;
-    if(Uses3D)threeD.MobDepth=(bool?)state["mountSunday"]==true?(NativeCombatPresentation.N(m["y"])-NativeCombatPresentation.N(session.Map?["laneY"],5000))/100:0;DrawActor(id,profile.Value<string>("skeleton"),clip??"stay1",mx,height,(bool?)m["boss"]==true?94:species==1102?68:40,mx>x?-1:1,ModeText(id,mode,m["until"]));shown.Add(id);
+    if(Uses3D){threeD.MobDepth=(bool?)state["mountSunday"]==true?(NativeCombatPresentation.N(m["y"])-NativeCombatPresentation.N(session.Map?["laneY"],5000))/100:0;threeD.MobBurn=dead&&(string)m["killElement"]==ElectricErtelVfx.Electric;}DrawActor(id,profile.Value<string>("skeleton"),clip??"stay1",mx,height,(bool?)m["boss"]==true?94:species==1102?68:40,mx>x?-1:1,ModeText(id,mode,m["until"]));shown.Add(id);
    }
    foreach(var actor in actors)actor.Value.gameObject.SetActive(shown.Contains(actor.Key));
    if(Uses3D){threeD.ShowOnly(shown);threeD.UpdateContact(state,VisualTime);threeD.Follow(view,x,e,frameAdvance);threeD.PresentLightning(session.Map,VisualTime);return;}

@@ -15,6 +15,9 @@ namespace IslandGame {
   readonly LightningStrikeVfx lightning;public LightningStrikeVfx Lightning=>lightning;readonly Burst[] pool=new Burst[Capacity];readonly Material ribbons,embers,water;readonly Transform[] drops=new Transform[48];readonly LineRenderer[] tails=new LineRenderer[48];int cursor,lastAttack,lastImpact;float previous=-1;string session;int room=-1;
   // V2: the kit hero in a normal zone draws its own blade arc (IaiBladeVfx); the attack crescent is skipped then.
   public bool SuppressHeroSlash;
+  // ertel-electric-20261123: a lightning strike (kind 2: elemental-strike, storm-call impact) shown by another display (ground point,
+  // fx born). true = shown there, the old strike is not spawned. null or false = the old LightningStrikeVfx strike.
+  public Func<Vector3,float,bool> StrikeDisplay;
   public int ActiveEffects{get;private set;}public int ActiveDrops{get;private set;}public int PoolCapacity=>Capacity;public int ParticleCount{get;private set;}
   static float N(JToken t,float f=0)=>NativeCombatPresentation.N(t,f);
   public ReferenceCombatVfx(Transform parent){
@@ -37,7 +40,7 @@ namespace IslandGame {
   }
   LineRenderer NewLine(Transform parent,string name,int count,bool world){var g=new GameObject(name);g.layer=30;g.transform.SetParent(parent,false);var l=g.AddComponent<LineRenderer>();l.sharedMaterial=ribbons;l.useWorldSpace=world;l.positionCount=count;l.numCapVertices=3;l.shadowCastingMode=ShadowCastingMode.Off;l.receiveShadows=false;return l;}
   void Spawn(int kind,Vector3 position,float born,float radius,int facing=1,float yaw=0,float height=5.5f,int tier=1,float life=0){
-   if(kind==2){lightning.Spawn(position,born,radius,Mathf.RoundToInt(born*1000),tier);return;}
+   if(kind==2){if(StrikeDisplay!=null&&StrikeDisplay(position,born))return;lightning.Spawn(position,born,radius,Mathf.RoundToInt(born*1000),tier);return;}
    var b=pool[cursor++%Capacity];b.active=true;b.kind=kind;b.born=born;b.life=life>0?life:kind==0?.25f:kind==3?.34f:kind==8?1.1f:kind>=4?.48f:.72f;b.tier=tier;b.radius=radius;b.facing=facing;
    b.color=kind==2||kind==4?new Color(.85f,.44f,2.1f):kind==6||kind==7?new Color(.16f,1.05f,1.6f):kind==3?new Color(.55f,.9f,1.1f):new Color(2.1f,1.1f,.26f);
    b.root.transform.position=position;b.root.transform.rotation=Quaternion.Euler(0,yaw,0);b.root.SetActive(true);b.bolt.enabled=kind==1||kind==2||kind==3;b.core.enabled=kind==0||kind==2;b.inner.enabled=kind==0;b.core.positionCount=kind==2?13:49;

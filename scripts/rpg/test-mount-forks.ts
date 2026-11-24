@@ -42,8 +42,11 @@ function noKitWide(){
  return {digest:h.digest('hex'),boss,room:g.room,actions:[...actions].sort()};
 }
 // Instant evade (2026-11-23): re-recorded like test-hero-iai.ts (same values, maintenance/evade-skillbar-20261123/tools/golden.mts).
-const GOLDEN={plain:'832fa27b6f527434241fa7800bd8b1fff04044c015d1dc9fbf17b6c859ba6bf1',source:'259d5701367d4e3f5c79046467fc60098ebad0707b235ea9e6d1c02d61f741dc',
- wide:'77fe88b939452028c82d8dfb47b3d4da6f30939d3fc5801cabbe5b92d3877239'};
+// ertel-electric (2026-11-23, maintenance/ertel-electric-20261123/gd/tools: strip.mts + record.mts + patch_goldens.py): electric/water kills now
+// carry killElement (the dead mob/boss, its kill damage event, boss-defeated). With those added keys stripped every old digest still
+// matches (strip.mts run on the tree); the new values below are the same runs with the keys. No damage, timing or contact changed.
+const GOLDEN={plain:'8516eaa8bbc8576bb63bdda7e4261567c292fc0c43f7588cfb29d1a0c74e0a58',source:'31f9478314acb9e54fbb3099c276a3fddebc0b3b0d7b3974c70b122cb48958b1',
+ wide:'f7db24336f6a65678afa467bcd601d66b77f1e9658d7855c42b68f098cadf47d'};
 const ROUTE_KEYS=['segment','nextZone','forkRoute','forkSeed'];
 const G:any=globalThis;
 test('1. no forks switch: golden digests unchanged, no new snapshot or map keys, the 10-zone route as before',()=>{
@@ -152,6 +155,8 @@ test('10. the bundle (built in memory, same esbuild options; the Unity file is n
   {name:'session',boot:{mode:'mount',seed:111,traversalProfile:'source-run-v2',forks:{enabled:true,seed:5}},preview:0,kit:null,skills:false}];
  for(const s of shapes){const c:any=vm.createContext({});vm.runInContext(source,c);c.stageInitialize(JSON.stringify(s.boot));
   const g=engine({preview:s.preview,kit:s.kit,skills:s.skills,seed:5});let picked=false;
+  // ertel-electric (2026-11-23): the practice boot (referencePreview) equips the electric ertel, so the source engine does too.
+  if(s.boot.referencePreview)g.setErtel('electric');
   for(let t=0;t<4500;t++){const input=autoIn(g);const a=JSON.parse(c.stageAdvance(JSON.stringify({steps:1,input,commands:[],snapshot:true})));tick(g,input);picked||=!!g.route.picks.A;
    if(t%50===0||t===4499){const v=JSON.parse(JSON.stringify(g.view()));for(const k of ['hero','mobs','room','phase','segment','nextZone','forkRoute','zoneKills','resources'])assert.deepEqual(a[k],v[k],s.name+' '+k+' @'+t);}}
   if(s.name==='practice')assert.ok(picked,'the practice run reaches fork A');}

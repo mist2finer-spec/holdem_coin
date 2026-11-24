@@ -19,7 +19,8 @@ namespace IslandGame.Editor {
   static string Pick(int i,string fallback){var v=Variant[i];return string.IsNullOrEmpty(v)?fallback:v;}
   static string Task=>Path.Combine(Root,Pick(0,"maintenance/rev2-android-port-20261119/build"));
   static string Apk=>Path.Combine(Root,"builds/"+Pick(1,"IslandGame-Rev2Port-20261119.apk"));
-  static string KernelSha=>Pick(2,"19eee6d25f674219a59f09cc6f50e7322e5685a7d4c45d96d361658857bf6d9b");
+  // ertel-electric-20261123: kernel bundle 7eeae909 (electric ertel + trial skills lightningball / arcdischarge). Before: 19eee6d2.
+  static string KernelSha=>Pick(2,"7eeae909a4213aba50e9ad4b3a2721c4dcf9a6dbd2a60ed2b0e885cd010dae0b");
   static int VersionCode=>int.Parse(Pick(3,"2026111901"));
   static string VersionName=>Pick(4,"0.1.0-test.20261119.1");
   const string Pending="Island.Rev2PortBuild.Pending";

@@ -408,6 +408,9 @@ namespace IslandGame {
   // Set by Battle3DView every frame: NaN in the side view; in the boss QuarterView the hero heading - 90 (degrees about +Y), so the
   // fixed C / Ember slash spawned now turns with the kit hero instead of the world X axis.
   public float PlanarYaw = float.NaN;
+  // ertel-electric-20261123: at the row slash spawn moment of an attack (fixed C / Ember modes), this display may take the slash over
+  // (attackId, row 0-2, facing, ground, standing height H); true = taken (no C / Ember slash for this attack). The skill slash keeps its own.
+  public Func<int, int, float, Vector3, float, bool> AttackSlash;
   public void Update(JObject state, float visualTime, Camera cam, Transform hero, Vector3 guard, Vector3 tip, float heroHeight, string heroClip, float heroSample) {
    if (!Ready || !hero || !cam) return;
    if (Palette != shown) ApplyPalette();
@@ -524,12 +527,14 @@ namespace IslandGame {
    // Spawn once per motion when the shown clip time enters the window.
    if (key != null && shown && heroSample >= from && fixedAttack != attack) {
     fixedAttack = attack;
+    if (!(attacking && AttackSlash != null && AttackSlash(attack, row, facing, ground, H))) {
     var lvl = IslandFrameBudget.Current ? IslandFrameBudget.Current.Policy.Level : 0;
     bool useEmber = slash.ember && emberReady && lvl < slash.emberBudgetOffLevel;
     var pool = useEmber ? emberSlots : cSlots;
     if (pool[0] != null) {
      var f = !pool[0].live ? pool[0] : !pool[1].live ? pool[1] : pool[0].spawnAt <= pool[1].spawnAt ? pool[0] : pool[1];
      f.Kill(); f.live = f.growing = true; f.key = key; f.attack = attack; f.m = m; f.arc = m.arc; f.facing = facing; f.yaw = PlanarYaw; f.spawnAt = clock; f.grow = 0;
+    }
     }
    }
    foreach (var f in cSlots) if (f != null && f.live) {

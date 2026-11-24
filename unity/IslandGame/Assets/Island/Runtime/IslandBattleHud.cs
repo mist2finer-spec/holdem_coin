@@ -35,6 +35,12 @@ namespace IslandGame {
   bool outputDirty=true;bool outputWas3D;NativeBattle outputBattle;Vector2 outputSize;
   float oldWidth=-1,oldHeight=-1;Rect oldSafe;bool ownsEventSystem;GameObject events;
   bool menuOpen,autoShown;int autoSkin=-1;
+  // ertel-electric-20261123: practice only, menu toggle "전기 에르텔 장착/해제" -> kernel command {ertel:'electric'|null}; the label reads the
+  // view key ertel. Trial skills without a catalog gem (lightningball, arcdischarge) reuse the electric skill icon.
+  UnityEngine.UI.Button ertelToggle;TextMeshProUGUI ertelToggleText;int ertelShown=-1;
+  public UnityEngine.UI.Button ErtelToggle=>ertelToggle;
+  static string TrialIcon(string id)=>id=="lightningball"||id=="arcdischarge"?"HolyWrath2":null;
+  public void ToggleErtel(){var session=app?app.HudSession:null;if(session==null||session.State==null||!session.ReferencePreview)return;bool on=(string)session.State["ertel"]==ElectricErtelVfx.Electric;session.Command("tick",new JObject{{"ertel",on?JValue.CreateNull():(JToken)ElectricErtelVfx.Electric}});}
   public bool Visible=>root&&root.activeInHierarchy;
   public bool EscapePopupVisible=>escapePopup&&escapePopup.activeInHierarchy;
   public bool MenuOpen=>menuOpen;
@@ -111,6 +117,7 @@ namespace IslandGame {
    var blockerButton=menuBlocker.gameObject.AddComponent<UnityEngine.UI.Button>();blockerButton.targetGraphic=shade;blockerButton.transition=UnityEngine.UI.Selectable.Transition.None;blockerButton.navigation=new UnityEngine.UI.Navigation{mode=UnityEngine.UI.Navigation.Mode.None};blockerButton.onClick.AddListener(()=>SetMenu(false));
    menuPopup=Place(Rect("MenuPopup",top),false,360,216,680,592);var popupArt=Slot(menuPopup,"menu_popup_panel",IslandHudArt.Kind.Plate,new Color(.05f,.075f,.1f,.95f));popupArt.raycastTarget=true;
    var menuTitle=Label(menuPopup,"MenuTitle","메뉴",30,TextAlignmentOptions.MidlineLeft);Box((RectTransform)menuTitle.transform,32,24,300,52);menuTitle.color=Ink;
+   ertelToggle=Button(menuPopup,"MenuErtel","전기 에르텔 장착",()=>{app.GetComponent<RpgAudio>()?.Click();ToggleErtel();},new Color(.22f,.12f,.38f));ertelToggleText=TextOf(ertelToggle);ertelToggleText.fontSize=26;Box((RectTransform)ertelToggle.transform,340,22,312,58);ertelToggle.gameObject.SetActive(false);
    var panels=new[]{"growth","equipment","tavern","dungeon","summon","bag"};var names=new[]{"성장","소지품","주점","던전","소환","가방"};
    for(int i=0;i<6;i++){string panel=panels[i];var item=Rect("Menu"+panel,menuPopup);Box(item,28+(i%2)*324,100+(i/2)*148,292,128);var g=Slot(item,"menu_item_button",IslandHudArt.Kind.Plate,new Color(.09f,.13f,.17f,.96f));g.raycastTarget=true;
     var b=item.gameObject.AddComponent<UnityEngine.UI.Button>();b.targetGraphic=g;b.navigation=new UnityEngine.UI.Navigation{mode=UnityEngine.UI.Navigation.Mode.None};b.onClick.AddListener(()=>{app.GetComponent<RpgAudio>()?.Click();SetMenu(false);stick.ResetInput();app.HudMenu(panel);});
@@ -213,6 +220,7 @@ namespace IslandGame {
    JToken boss=null;foreach(var mob in state?["mobs"] as JArray??new JArray())if((bool?)mob["unityBoss"]==true){boss=mob;break;}bossBar.gameObject.SetActive(boss!=null&&(bool?)state?["bossVisible"]==true);bossFill.gameObject.SetActive(boss!=null&&NativeCombatPresentation.N(boss["hp"])>0);if(boss!=null)bossFill.rectTransform.anchorMax=new Vector2(Mathf.Clamp01(NativeCombatPresentation.N(boss["hp"])/Mathf.Max(1,NativeCombatPresentation.N(boss["maxHP"]))),1);
    bool escaped=(bool?)state?["mountCampaign"]==true&&(int?)state?["routeZone"]==9&&(string)state?["status"]=="won";
    escapePopup.SetActive(escaped);
+   if(ertelToggle){bool practice=session.ReferencePreview;if(ertelToggle.gameObject.activeSelf!=practice)ertelToggle.gameObject.SetActive(practice);int on=(string)state?["ertel"]==ElectricErtelVfx.Electric?1:0;if(practice&&on!=ertelShown){ertelShown=on;ertelToggleText.text=on==1?"전기 에르텔 해제":"전기 에르텔 장착";}}
    // Interaction remains current every frame; only visual text/icon work is throttled.
    for(int i=0;i<6;i++)skillButtons[i].interactable=active&&RpgContracts.CanCast(state,i);
    autoButton.interactable=active;attackButton.interactable=active;
@@ -238,7 +246,7 @@ namespace IslandGame {
    hpText.text=hero==null?"HP —":"HP "+RpgContracts.Amount(hero["hp"])+" / "+RpgContracts.Amount(hero["maxHP"]);manaText.text=resources==null?"MP —":"MP "+RpgContracts.Amount(resources["mana"])+" / "+RpgContracts.Amount(resources["maxMana"]);
    levelText.text="Lv."+Value(progress?["level"],1);
    for(int i=0;i<6;i++){bool equipped=RpgContracts.SkillEnabled(state,i);var skill=RpgContracts.Skill(state,i);string id=equipped?(string)skill?["activeId"]:null;
-    if(id!=iconIds[i]){iconIds[i]=id;string icon=(string)app.HudGem(id)?["icon"];icons[i].sprite=string.IsNullOrEmpty(icon)?null:SpriteFor("SkillIcon_"+icon);}
+    if(id!=iconIds[i]){iconIds[i]=id;string icon=(string)app.HudGem(id)?["icon"]??TrialIcon(id);icons[i].sprite=string.IsNullOrEmpty(icon)?null:SpriteFor("SkillIcon_"+icon);}
     icons[i].gameObject.SetActive(equipped&&icons[i].sprite!=null);locks[i].SetActive(!equipped&&!session.ReferencePreview);skillButtons[i].interactable=active&&RpgContracts.CanCast(state,i);
     float cd=Value(state?["cooldowns"]?[i]),total=Value(state?["cooldownTotals"]?[i],cd);bool cooling=equipped&&cd>0;
     sweeps[i].gameObject.SetActive(cooling);sweeps[i].fillAmount=total>0?Mathf.Clamp01(cd/total):0;icons[i].color=cooling?new Color(.55f,.55f,.55f):Color.white;

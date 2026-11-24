@@ -35,7 +35,9 @@ namespace IslandGame {
     if(dot!=2&&SoundEnabled&&time-soundAt>=.04f){audio.volume=profile.SoundVolume;audio.Play();soundAt=time;}
     var p=token["point"];var def=SuppressKitSpark?(string)token["definitionId"]:null;if(dot!=2&&p!=null&&!(def!=null&&def.StartsWith("pink-iai",StringComparison.Ordinal))){int n=nextSpark++%sparks.Length;var center=new Vector3(NativeCombatPresentation.N(p["x"])/100,NativeCombatPresentation.N(p["y"])/100,(NativeCombatPresentation.N(p["z"])-5000)/100);for(int i=0;i<9;i++){float angle=i*Mathf.PI/4;sparkPoints[i]=center+new Vector3(Mathf.Cos(angle),Mathf.Sin(angle),0)*.11f;}sparks[n].SetPositions(sparkPoints);sparkAt[n]=contact;}
    }
-   foreach(var ts in targets.Values)foreach(var f in ts){if(!f.renderer)continue;float age=time-f.at,amount=FlashEnabled&&age>=0?Mathf.Clamp01(1-age/Mathf.Max(.001f,profile.FlashSeconds)):0;if(amount>0){f.block.SetColor(f.colorId,Color.Lerp(f.color,profile.FlashColor,amount*profile.FlashStrength*f.amp));f.renderer.SetPropertyBlock(f.block);f.active=true;}else if(f.active){f.renderer.SetPropertyBlock(f.saved);f.active=false;}}
+   // ertel-electric-20261123: a renderer in a burn death (BurnDissolve) keeps the burn material free of the hit-flash block.
+   bool burning=IslandVfx.BurnDissolve.ActiveCount>0;
+   foreach(var ts in targets.Values)foreach(var f in ts){if(!f.renderer||burning&&IslandVfx.BurnDissolve.IsBurning(f.renderer))continue;float age=time-f.at,amount=FlashEnabled&&age>=0?Mathf.Clamp01(1-age/Mathf.Max(.001f,profile.FlashSeconds)):0;if(amount>0){f.block.SetColor(f.colorId,Color.Lerp(f.color,profile.FlashColor,amount*profile.FlashStrength*f.amp));f.renderer.SetPropertyBlock(f.block);f.active=true;}else if(f.active){f.renderer.SetPropertyBlock(f.saved);f.active=false;}}
    bool low=IslandFrameBudget.Current&&IslandFrameBudget.Current.Policy.Level>=1;
    for(int i=0;i<sparks.Length;i++){float age=time-sparkAt[i];sparks[i].enabled=DecorationsEnabled&&!low&&age>=0&&age<.14f;if(sparks[i].enabled){var c=new Color(1,.8f,.4f,1-age/.14f);sparks[i].startColor=sparks[i].endColor=c;}}
    float hitAge=time-hitAt,a=CameraEnabled&&hitAge>=0&&hitAge<.18f?Mathf.Pow(1-hitAge/.18f,2):0;

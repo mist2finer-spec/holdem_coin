@@ -22,6 +22,8 @@ namespace IslandGame {
    public string lastKind;public bool afterCancel;
    public Vector3 weaponBaseLocal=new Vector3(0,.13f,0),weaponTipLocal=new Vector3(0,.73f,0);
    public Transform contactShadow;public Vector3 contactShadowScale;
+   // ertel-electric-20261123: burn death (BurnDissolve) of a mob killed by electricity; burned = the renderers it hides at the end.
+   public IslandVfx.BurnDissolveRun burn;public List<Renderer> burned;
   }
   public Battle3DAssets assets;
   // Hero kit display (local test builds). assets = the kit asset when present; legacyAssets = the original hero for a snapshot without heroKit.
@@ -70,11 +72,21 @@ namespace IslandGame {
   // V2 (BLADE-TRAIL / HIT-FLASH): the kit hero in a normal zone uses IaiBladeVfx (arc, star, embers, 3rd hit, sheathe glint) instead of
   // the crescent, tip smear and contact spark. Zone 10 (boss branch below), the old hero and a missing kit keep the old effect.
   IaiBladeVfx iaiVfx;
+  // ertel-electric-20261123 (ElectricErtelVfx): ertel sword charge / slash / hit / aura, the strike as Electric_StormSkill, ball and arc mines.
+  // MobBurn: set by NativeBattle before a mob Draw (as MobDepth): the mob is dead with killElement "electric". Its visual then burns
+  // (MobBurnSeconds) instead of the death squash and stays alive and active until the burn ends (ShowOnly keeps it).
+  ElectricErtelVfx electric;Func<Vector3,float,bool> strikeHook;Func<int,int,float,Vector3,float,bool> slashHook;
+  public ElectricErtelVfx Electric=>electric;public bool MobBurn;public const float MobBurnSeconds=1.2f;
+  void UpdateElectric(JObject state,float visualTime,bool iai){
+   actors.TryGetValue("hero",out var h);
+   electric.Update(state,visualTime,h!=null?h.root.transform:null,h!=null&&h.model?h.model.transform:null,h?.weapon,h!=null?h.weaponBaseLocal:default,h!=null?h.weaponTipLocal:default,HeroHeight,Planar);
+   if(iai)iaiVfx.AttackSlash=electric.Equipped?slashHook:null;
+  }
   public void UpdateContact(JObject state,float visualTime){if(!HeroTarget)return;IaiAllocProbe.Begin();try{UpdateContactCore(state,visualTime);}finally{IaiAllocProbe.End();}}
-  void UpdateContactCore(JObject state,float visualTime){if(referenceVfx==null)referenceVfx=new ReferenceCombatVfx(world);
+  void UpdateContactCore(JObject state,float visualTime){if(referenceVfx==null)referenceVfx=new ReferenceCombatVfx(world);if(electric==null){electric=new ElectricErtelVfx(world);strikeHook=electric.Strike;slashHook=electric.PlaySlash;}
    // boss-kit-hero-20261121: the kit hero in the boss fight (zone 10 / boss mode) uses the same blade effect; the old hero keeps the old one.
    bool iai=KitHeroActive&&IaiBladeVfx.Enabled&&battleCamera;if(iai&&iaiVfx==null)iaiVfx=new IaiBladeVfx();iai&=iaiVfx!=null&&iaiVfx.Ready;if(!iai&&iaiVfx!=null&&iaiVfx.Ready){iaiVfx.Dispose();iaiVfx=null;}if(iai)iaiVfx.PlanarYaw=Planar?HeroHeading-90:float.NaN;
-   referenceVfx.SuppressHeroSlash=iai;referenceVfx.Update(state,visualTime,HeroTarget,HeroWeaponBase,HeroWeaponTip);if(mountMode){if(contactFeedback==null)contactFeedback=new CombatFeedbackRouter(gameObject,battleCamera.GetComponentInParent<BattleCameraController>(),Presentation??(Presentation=new ViewPresentationCoordinator()),FeedbackTarget);contactFeedback.SuppressKitSpark=iai;contactFeedback.Update(state,visualTime);contactFeedback.Smear(0,HeroAttackId,HeroAttackActive&&!iai,HeroWeaponTip,visualTime);if(iai)iaiVfx.Update(state,visualTime,battleCamera,HeroTarget,HeroWeaponBase,HeroWeaponTip,HeroHeight,HeroClipName,HeroSampleTime);return;}
+   referenceVfx.SuppressHeroSlash=iai;referenceVfx.StrikeDisplay=strikeHook;referenceVfx.Update(state,visualTime,HeroTarget,HeroWeaponBase,HeroWeaponTip);UpdateElectric(state,visualTime,iai);if(mountMode){if(contactFeedback==null)contactFeedback=new CombatFeedbackRouter(gameObject,battleCamera.GetComponentInParent<BattleCameraController>(),Presentation??(Presentation=new ViewPresentationCoordinator()),FeedbackTarget);contactFeedback.SuppressKitSpark=iai;contactFeedback.Update(state,visualTime);contactFeedback.Smear(0,HeroAttackId,HeroAttackActive&&!iai,HeroWeaponTip,visualTime);if(iai)iaiVfx.Update(state,visualTime,battleCamera,HeroTarget,HeroWeaponBase,HeroWeaponTip,HeroHeight,HeroClipName,HeroSampleTime);return;}
    if(contactFeedback!=null)contactFeedback.SuppressKitSpark=false;if(bossView==null)return;if(diorama)diorama.ProtectAttack(bossView.ContactPoint(1),bossView.ContactPoint(3),bossView.WarningTarget,bossView.BossVisible&&bossView.HookActive);if(contactFeedback==null)contactFeedback=new CombatFeedbackRouter(gameObject,battleCamera.GetComponentInParent<BattleCameraController>(),Presentation??(Presentation=new ViewPresentationCoordinator()),FeedbackTarget);contactFeedback.SuppressKitSpark=iai;contactFeedback.Update(state,visualTime);
    if(actors.TryGetValue("hero",out var readable)&&readable.occlusionSkin){
     // Imported skinned bounds include the full animation envelope and falsely cover nearby heroes.
@@ -114,7 +126,7 @@ namespace IslandGame {
   public void PresentLightning(JObject map,float time){referenceVfx?.PresentLightning(battleCamera,map,time,Presentation);}
   public int ActiveReferenceEffects=>referenceVfx?.ActiveEffects??0;public int ReferenceParticles=>referenceVfx?.ParticleCount??0;public int ActorCount=>actors.Count;
   Material ground,edge,bark,leaves,rock,steel,grip,shadow;
-  public void Clear(){referenceVfx?.Dispose();referenceVfx=null;iaiVfx?.Dispose();iaiVfx=null;if((mountMode||zoneTenArena)&&MountZoneStream.Current)MountZoneStream.Current.Release();mountMode=zoneTenArena=false;Presentation=null;HeroAttackId=0;HeroAttackActive=false;contactFeedback?.Dispose();contactFeedback=null;contactDebug?.Dispose();contactDebug=null;if(authored){authored.VisualChunkCreated-=OnVisualBranch;authored.VisualChunkRemoving-=OnVisualRemoving;}if(diorama){diorama.Dispose();diorama=null;}foreach(var a in actors.Values)a.animation?.Dispose();foreach(var a in slimePool)a.animation?.Dispose();if(authored){Destroy(authored.gameObject);authored=null;}if(bossView!=null){bossView.Dispose();bossView=null;}if(Stream!=null){Stream.Dispose();Stream=null;}actors.Clear();slimePool.Clear();displayMeshes.Clear();world=null;hasFrustum=false;foreach(var o in owned)if(o)Destroy(o);owned.Clear();}
+  public void Clear(){foreach(var a in actors.Values)if(a.burn!=null&&!a.burn.Finished)a.burn.Cancel();electric?.Dispose();electric=null;referenceVfx?.Dispose();referenceVfx=null;iaiVfx?.Dispose();iaiVfx=null;if((mountMode||zoneTenArena)&&MountZoneStream.Current)MountZoneStream.Current.Release();mountMode=zoneTenArena=false;Presentation=null;HeroAttackId=0;HeroAttackActive=false;contactFeedback?.Dispose();contactFeedback=null;contactDebug?.Dispose();contactDebug=null;if(authored){authored.VisualChunkCreated-=OnVisualBranch;authored.VisualChunkRemoving-=OnVisualRemoving;}if(diorama){diorama.Dispose();diorama=null;}foreach(var a in actors.Values)a.animation?.Dispose();foreach(var a in slimePool)a.animation?.Dispose();if(authored){Destroy(authored.gameObject);authored=null;}if(bossView!=null){bossView.Dispose();bossView=null;}if(Stream!=null){Stream.Dispose();Stream=null;}actors.Clear();slimePool.Clear();displayMeshes.Clear();world=null;hasFrustum=false;foreach(var o in owned)if(o)Destroy(o);owned.Clear();}
   Material Mat(string name,Color color,float metallic=0){var m=new Material(Shader.Find("Standard")){name=name,color=color};m.SetFloat("_Glossiness",.2f);m.SetFloat("_Metallic",metallic);owned.Add(m);return m;}
   GameObject Shape(string name,PrimitiveType type,Transform parent,Vector3 p,Vector3 scale,Material material){
    Mesh mesh;if(!displayMeshes.TryGetValue(type,out mesh)){mesh=IslandDisplayMeshes.Create(type);displayMeshes.Add(type,mesh);owned.Add(mesh);}
@@ -164,7 +176,7 @@ namespace IslandGame {
    Shape("Server room · grass lip",PrimitiveType.Cube,world,new Vector3((a+b)/2,y-.025f,.5f),new Vector3(b-a,.05f,3),ground);
   }
   Actor Create(string id,bool hero){
-   if(!hero&&slimePool.Count>0){var pooled=slimePool.Pop();pooled.root.name=id+" · pooled slime visual";pooled.clip=null;pooled.serial=null;pooled.time=0;pooled.lastSampleSlot=int.MinValue;pooled.phase=Phase(id);pooled.placed=false;pooled.model.transform.localPosition=Vector3.zero;pooled.model.transform.localScale=Vector3.one*pooled.scale;pooled.root.SetActive(true);actors[id]=pooled;ReusedModels++;return pooled;}
+   if(!hero&&slimePool.Count>0){var pooled=slimePool.Pop();pooled.root.name=id+" · pooled slime visual";pooled.clip=null;pooled.serial=null;pooled.time=0;pooled.lastSampleSlot=int.MinValue;pooled.phase=Phase(id);pooled.placed=false;pooled.model.transform.localPosition=Vector3.zero;pooled.model.transform.localScale=Vector3.one*pooled.scale;if(pooled.burn!=null&&!pooled.burn.Finished)pooled.burn.Cancel();if(pooled.burned!=null)foreach(var r in pooled.burned)if(r)r.enabled=true;pooled.burn=null;pooled.burned=null;pooled.root.SetActive(true);actors[id]=pooled;ReusedModels++;return pooled;}
    var set=hero?HeroSet:assets;var prefab=hero?set.hero:assets.slime;if(!prefab)return null;bool kit=hero&&set.IsKit;
    var root=new GameObject(hero?"Pink Glass · server hero":id+" · slime visual");root.transform.SetParent(world,false);
    var visual=new GameObject("Presentation deformation (grounded)");visual.transform.SetParent(root.transform,false);var model=Instantiate(prefab,visual.transform,false);model.name="Model";
@@ -359,14 +371,18 @@ namespace IslandGame {
 
    if(!hero){
     float bounce=action.Contains("attack")?.06f:0;a.model.transform.localPosition+=Vector3.up*(Mathf.Abs(Mathf.Sin(visualTime*5))*bounce);
-    if(action.Contains("death")||action.Contains("die"))a.model.transform.localScale=new Vector3(a.scale*1.25f,a.scale*.3f,a.scale*1.25f);
+    if(MobBurn&&a.burn==null)StartBurn(a);
+    if(a.burn==null&&(action.Contains("death")||action.Contains("die")))a.model.transform.localScale=new Vector3(a.scale*1.25f,a.scale*.3f,a.scale*1.25f);
    }
    if(hero){if(!kit&&kind=="attack"&&action=="attack1"&&Presentation!=null)a.presentationRoot.localScale=Presentation.Scale(HeroAttackProgress,.32f,.58f);HeroClipName=clip.name;HeroSampleTime=sample;HeroGroundError=a.model.transform.localPosition.y+feet;}
    return sample;
   }
   static Transform Find(Transform root,string name){foreach(var t in root.GetComponentsInChildren<Transform>())if(t.name==name)return t;return null;}
+  // A burning mob (killed by electricity) is not retired (deactivated / pooled) until its burn has ended.
+  void StartBurn(Actor a){var list=new List<Renderer>();foreach(var r in a.root.GetComponentsInChildren<Renderer>(false))if((r is MeshRenderer||r is SkinnedMeshRenderer)&&r.enabled)list.Add(r);a.burned=list;a.burn=IslandVfx.BurnDissolve.Play(list,MobBurnSeconds);}
+  public int BurningMobs{get{int n=0;foreach(var a in actors.Values)if(a.burn!=null&&!a.burn.Finished)n++;return n;}}
   public void ShowOnly(HashSet<string> shown){
-   retired.Clear();foreach(var pair in actors){if(shown.Contains(pair.Key)){if(!pair.Value.root.activeSelf)pair.Value.root.SetActive(true);continue;}if(pair.Key=="hero"){pair.Value.root.SetActive(false);continue;}retired.Add(pair.Key);}
+   retired.Clear();foreach(var pair in actors){if(shown.Contains(pair.Key)){if(!pair.Value.root.activeSelf)pair.Value.root.SetActive(true);continue;}if(pair.Key=="hero"){pair.Value.root.SetActive(false);continue;}if(pair.Value.burn!=null&&!pair.Value.burn.Finished)continue;retired.Add(pair.Key);}
    foreach(var id in retired){var a=actors[id];actors.Remove(id);a.root.SetActive(false);if(slimePool.Count<MaximumPooledSlimes)slimePool.Push(a);else {if(diorama)diorama.ForgetBranch(a.root.transform);a.animation.Dispose();Destroy(a.root);}}
   }
   public void Follow(Camera camera,float x,float elevation,float delta){

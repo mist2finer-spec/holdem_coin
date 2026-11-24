@@ -279,9 +279,11 @@ function stepRecover(host:IaiHost,kit:HeroKit,input:any,m:any,stick:boolean){
  if(age>=m.duration-1e-9){h.motion=null;h.airHeight=0;h.action='stay1';}
  return true;
 }
+const DELAYED_SKILLS=['water-ring','lightning-ball','arc-discharge'];
 function stepSkill(host:IaiHost,kit:HeroKit,dt:number,m:any){
  if(m.hitstopLeft>1e-9){m.start+=dt;m.hitstopLeft-=dt;return true;}
- if(!m.done&&host.elapsed-m.start>=m.hitAt&&m.skillId!=='water-ring'){const struck=host.mobs.filter(mob=>mob.hp>0&&skillContains(mob,m.target,m.radius));if(struck.length)freeze(host,m,kit.skill.hitstop*kit.switches.hitstopScale,struck);}
+ // water drops, the lightning ball and the arc mine hit later than the cast: no cast-time hitstop for them.
+ if(!m.done&&host.elapsed-m.start>=m.hitAt&&!DELAYED_SKILLS.includes(m.skillId)){const struck=host.mobs.filter(mob=>mob.hp>0&&skillContains(mob,m.target,m.radius));if(struck.length)freeze(host,m,kit.skill.hitstop*kit.switches.hitstopScale,struck);}
  return false;// the engine casts on this tick as usual
 }
 // AUTO skill while a kit row or the recover runs, sent through host.command like the skill button (so the kit's

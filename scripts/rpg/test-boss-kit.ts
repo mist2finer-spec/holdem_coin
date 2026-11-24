@@ -48,7 +48,10 @@ function mountBossDigest(setup:(g:any)=>void=()=>{}){
 // Instant evade (2026-11-23, maintenance/evade-skillbar-20261123/tools/golden.mts, bossDigest/mountBossDigest verbatim; dacb07ee copy prints the old values, the changed copy
 // and the tree the new ones): arena 156ae8bb -> 47fb4c53 (first difference tick 200, a jump during an attack), two rooms 514a468f ->
 // d20ca93b (tick 50, slide), mount zone 10 89ae8859 -> 27c2570c (tick 548, roll; the legacy run is the same run and prints the same).
-const GOLDEN={arena:'47fb4c53954aa497076dd553cfe4550209efccc5c89fe8016047e5eabb04fd7b',rooms:'d20ca93bd3f5a227f3711c4eb7fd811c12c1199e3f854d6e0eebb2a6dc5d09fe',mount9:'27c2570c2dd80f966309f2f79161fbe277821bc66bc83cb8d4423613e90b2ac4'};
+// ertel-electric (2026-11-23, maintenance/ertel-electric-20261123/gd/tools: strip.mts + record.mts + patch_goldens.py): electric/water kills now
+// carry killElement (the dead mob/boss, its kill damage event, boss-defeated). With those added keys stripped every old digest still
+// matches (strip.mts run on the tree); the new values below are the same runs with the keys. No damage, timing or contact changed.
+const GOLDEN={arena:'1384f6f1e38f215dc217ed581ce92bc0690440e3ce181df46c813564b1b96634',rooms:'f062584bd84f518a43fcdc261649c650b41fadccc72e4cffdffe70c4dc73fd59',mount9:'25392b6a01219e0c3f88175becf029d20ba760aacf62f0d7fc366d2922f66730'};
 test('1. no kit: the boss engine is tick-for-tick the 1b5675f0 engine (arena, two rooms, mount zone 10)',()=>{
  const a=bossDigest(true),r=bossDigest(false),m=mountBossDigest();
  assert.equal(a.digest,GOLDEN.arena,'arena');assert.equal(r.digest,GOLDEN.rooms,'two rooms');assert.equal(m.digest,GOLDEN.mount9,'mount zone 10');
