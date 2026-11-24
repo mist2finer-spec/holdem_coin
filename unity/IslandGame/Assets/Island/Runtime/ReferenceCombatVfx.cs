@@ -42,13 +42,17 @@ namespace IslandGame {
   void Spawn(int kind,Vector3 position,float born,float radius,int facing=1,float yaw=0,float height=5.5f,int tier=1,float life=0){
    if(kind==2){if(StrikeDisplay!=null&&StrikeDisplay(position,born))return;lightning.Spawn(position,born,radius,Mathf.RoundToInt(born*1000),tier);return;}
    var b=pool[cursor++%Capacity];b.active=true;b.kind=kind;b.born=born;b.life=life>0?life:kind==0?.25f:kind==3?.34f:kind==8?1.1f:kind>=4?.48f:.72f;b.tier=tier;b.radius=radius;b.facing=facing;
-   b.color=kind==2||kind==4?new Color(.85f,.44f,2.1f):kind==6||kind==7?new Color(.16f,1.05f,1.6f):kind==3?new Color(.55f,.9f,1.1f):new Color(2.1f,1.1f,.26f);
+   b.color=EffectColor(kind);
    b.root.transform.position=position;b.root.transform.rotation=Quaternion.Euler(0,yaw,0);b.root.SetActive(true);b.bolt.enabled=kind==1||kind==2||kind==3;b.core.enabled=kind==0||kind==2;b.inner.enabled=kind==0;b.core.positionCount=kind==2?13:49;
    b.particles.Stop(true,ParticleSystemStopBehavior.StopEmittingAndClear);
    if(kind<4||kind==6||kind==8){var main=b.particles.main;main.startColor=b.color;b.particles.Play();b.particles.Emit(kind==0?8:kind==3?12:40);b.particles.Pause();}
    if(kind==3)for(int i=0;i<13;i++)b.bolt.SetPosition(i,new Vector3(-facing*i*.12f,.2f+Mathf.Sin(i*.2f)*.1f,0));
    if(kind==1)for(int i=0;i<13;i++){float u=i/12f;b.bolt.SetPosition(i,new Vector3(facing*(1-u)*.8f,(1-u)*3.6f,0));}
   }
+  public static Color EffectColor(int kind)=>kind==2||kind==4?new Color(.85f,.44f,2.1f):kind==6||kind==7?new Color(.16f,1.05f,1.6f):kind==3?new Color(.55f,.9f,1.1f):new Color(2.1f,1.1f,.26f);
+  // Cast ring of a skill (telegraph, life = hitAt): water-ring 7 (cyan), electric skills 4 (violet; 2nd adjustment 2026-11-24: lightning-ball and
+  // arc-discharge had the orange 5 of sun-cleave), the rest 5 (orange).
+  public static int CastEffect(string skillId)=>skillId=="water-ring"?7:ElectricErtelVfx.IsElectricSkill(skillId)?4:5;
   public void Update(JObject state,float time,Transform hero,Vector3 bladeBase,Vector3 bladeTip){
    RpgAudio.Current?.Present(state,time);
    float delta=previous<0?0:Mathf.Clamp(time-previous,0,.1f);int nextRoom=(int?)state["room"]??0;string id=(string)state["id"];
@@ -59,7 +63,7 @@ namespace IslandGame {
    if(attack!=lastAttack&&age>=0){
     if(kind=="attack"&&age>=duration*N(motion?["timeline"]?["active"]?[0]?["from"],.32f)){lastAttack=attack;var active=motion["timeline"]?["active"]?[0];float start=N(active?["from"],.32f),end=N(active?["to"],.58f);if(!SuppressHeroSlash)Spawn(0,hero.position+Vector3.up*.25f,N(motion["start"])+duration*start,1.05f,1,yaw,5.5f,(int)N(motion["comboStep"],1),duration*(end-start)+.10f);}
     else if(kind=="rush"){lastAttack=attack;Spawn(3,hero.position,time,.8f,facing);}
-    else if(kind=="skill"){lastAttack=attack;var target=motion["target"];bool storm=(string)motion["skillId"]=="storm-call",waterCast=(string)motion["skillId"]=="water-ring";Spawn(waterCast?7:storm?4:5,new Vector3(N(target?["x"])/100,hero.position.y+.05f,(N(target?["y"],5000)-5000)/100),N(motion["start"]),waterCast?1.1f:N(motion["radius"])/100,1,yaw,5.5f,1,N(motion["hitAt"],.48f));}
+    else if(kind=="skill"){lastAttack=attack;var target=motion["target"];bool waterCast=(string)motion["skillId"]=="water-ring";Spawn(CastEffect((string)motion["skillId"]),new Vector3(N(target?["x"])/100,hero.position.y+.05f,(N(target?["y"],5000)-5000)/100),N(motion["start"]),waterCast?1.1f:N(motion["radius"])/100,1,yaw,5.5f,1,N(motion["hitAt"],.48f));}
    }
    foreach(var fx in state["fx"] as JArray??new JArray()){
     int eventId=(int?)fx["id"]??0;string eventKind=(string)fx["kind"];

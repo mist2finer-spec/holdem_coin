@@ -11,10 +11,16 @@ namespace IslandGame {
  //  Equipped (view key ertel == "electric"):
  //   - Electric_SwordCharge on the kit blade only while the blade is out of the scabbard (Sheathed: scabbard rig geometry, so the side
  //     view, the quarter view and the kit skill PG_mist_finer all follow the pose on screen). Shown from the draw, gone when sheathed.
- //   - Electric_Slash instead of the Ember row slash (IaiBladeVfx.AttackSlash, same spawn moment). The skill slash keeps its own.
+ //   - Electric_Slash instead of the Ember row slash (IaiBladeVfx.AttackSlash, same spawn moment), drawn where that Ember slash is
+ //     (2nd adjustment 2026-11-24: the row's Ember pivot H, rotation, roll, mirror and Size; the root on the feet, following them).
  //   - Electric_HitDischarge at the contact point of damage events with element "electric" (normal attacks; mobs and the boss).
  //   - Electric_GroundAura under the hero (child of the hero root).
- //  Always (electric skills):
+ //  Always (electric skills: storm-call, lightning-ball, arc-discharge; 2nd adjustment 2026-11-24):
+ //   - Electric_HitDischarge on every target an electric skill hits (damage events damageKind skill, element "lightning" / "electric"),
+ //     once per event at its contact point and time. The lightning ball burst adds none of its own (no second discharge).
+ //   - No Ember / warm effect comes with their cast (IaiBladeVfx.SkillSlash, ReferenceCombatVfx.CastEffect, CombatFeedbackRouter.ContactSpark).
+ //   - Discharge game effect (later: elemental resistance down, value not decided): not implemented. Its place is the kernel contact()
+ //     in src/lib/rpg-elemental-combat.ts (every electric skill hit passes there; the ertel normal attack: the engines' attackElement hit).
  //   - The lightning strike (slot 1 spark) as Electric_StormSkill: the effect is driven so its first bolt (StormStrikeAt) lands on the
  //     kernel strike time (fx born); the cast starts the cue early (born = cast start + hitAt), the strike event then pins it.
  //   - Lightning balls: elemental-launch / lightningBalls place the flight (driven by the kernel clock), elemental-burst ends it.
@@ -36,16 +42,30 @@ namespace IslandGame {
    float home=Vector3.Dot(-SheathMouth,axis),dg=Vector3.Dot(g,axis),dt=Vector3.Dot(t,axis),side=(t-axis*dt).magnitude;
    return dg>=home-DrawOut&&dt>0&&dt<=length+.05f&&side<=TubeRadius;
   }
+  // Electric skills (kernel REFERENCE_SKILLS ids) and the elements their hits carry (storm 'lightning', ball / arc 'electric').
+  public static bool IsElectricSkill(string id)=>id=="storm-call"||id=="lightning-ball"||id=="arc-discharge";
+  public static bool IsElectricElement(string element)=>element==Electric||element=="lightning";
+  // A damage event that shows the hit discharge: an electric normal attack (ertel equipped) or a hit of an electric skill.
+  public static bool Discharges(JToken damage){string kind=(string)damage["damageKind"],element=(string)damage["element"];return kind=="attack"?element==Electric:kind=="skill"&&IsElectricElement(element);}
   public static Transform FindSheathGrip(Transform hero){
    if(!hero)return null;
    foreach(var t in hero.GetComponentsInChildren<Transform>(true))if(t.name=="G_katana_saya_grip"&&!t.GetComponent<Renderer>()&&t.parent&&t.parent.parent&&t.parent.parent.name=="Scabbard")return t;
    return null;
   }
-  // Electric_Slash form per combo row (1st, 2nd, 3rd) and size against the prefab (its sweeps are centred 1.15-1.55 m up at size 1,
-  // a 1.7 m figure): the kit hero height scales it.
-  static readonly SlashForm[] RowForm={SlashForm.Overhead,SlashForm.Cross,SlashForm.Cross};
-  static readonly float[] RowSize={1,1,1.2f};
-  const float FigureHeight=1.7f,ArmedArc=.5f;
+  // Row slash on the Ember row slash (2nd adjustment 2026-11-24; before: forms Overhead / Cross / Cross, size .82 x H / 1.7, centred
+  // 1.15-1.55 x size up and .18 H ahead, i.e. above the head). Electric_Slash form Horizontal (LightningScore.SweepPath form 0: centre
+  // (0, 1.15, 0), plane basis h (1, .21, .05) / v (.04, .29, 1)) is laid in the Ember slash plane (local XZ, EmberCommon.cginc emberPath)
+  // and fitted onto the Ember path by least squares in that plane (gd/2nd/tools/fit.js): scale SweepFit, in-plane turn SweepTurn and the
+  // offset SweepOffset (Ember-local, before Size); rms .15 before Size. Then the Ember transforms of the row (IaiBladeVfx.FixedSlot.Place)
+  // place it: root on the feet (facing mirror in the side view, yaw in the boss QuarterView), scale H / heightM, body = pivot, rotation x
+  // roll, mirror, Size.
+  static readonly Vector3 SweepCentre=new Vector3(0,1.15f,0),SweepH=new Vector3(1,.21f,.05f),SweepV=new Vector3(.04f,.29f,1),SweepOffset=new Vector3(-.1537f,0,.1733f);
+  const float SweepFit=1.0117f,SweepTurn=-175.86f,ArmedArc=.5f;
+  static readonly Quaternion SweepAlign=AlignSweep();
+  static Quaternion AlignSweep(){
+   var e1=SweepH.normalized;var e3=(SweepV-Vector3.Dot(SweepV,e1)*e1).normalized;float d=SweepTurn*Mathf.Deg2Rad;
+   return Quaternion.LookRotation(new Vector3(-Mathf.Sin(d),0,Mathf.Cos(d)),Vector3.up)*Quaternion.Inverse(Quaternion.LookRotation(e3,Vector3.Cross(e3,e1)));
+  }
 
   // Destroy in play mode, DestroyImmediate in an EditMode test.
   static void Kill(UnityEngine.Object o){if(!o)return;if(Application.isPlaying)UnityEngine.Object.Destroy(o);else UnityEngine.Object.DestroyImmediate(o);}
@@ -74,14 +94,21 @@ namespace IslandGame {
   readonly Transform parent;
   readonly Pool<LightningEffect> slashes,hits,storms,armedPool;readonly Pool<LightningBall> ballPool;readonly Pool<ArcDischarge> arcPool;
   readonly List<Storm> stormRuns=new List<Storm>();readonly List<Ball> ballRuns=new List<Ball>();readonly List<Mine> mineRuns=new List<Mine>();
-  readonly List<LightningEffect> attackSlashes=new List<LightningEffect>();
+  // Row slashes on screen: the effect and its place against the hero feet (the Ember root follows the feet every frame).
+  // The row slash runs on the same effect clock as the Ember slash it replaces (IaiBladeVfx: frame time of the snapshot clock, held while
+  // the kernel hitstop holds the pose), so at one pose both are at the same point of their life; Time.deltaTime ran ahead of the snapshot
+  // clock when frames were slow (Editor). born = the effect clock at the spawn moment.
+  sealed class SlashRun{public LightningEffect fx;public Vector3 offset;public float born;}
+  readonly List<SlashRun> attackSlashes=new List<SlashRun>();
   LightningEffect charge;Transform chargeWeapon,chargeBase,chargeTip,sheathHero,sheathGrip;GameObject aura;Transform auraRoot;
-  string session;float previous=-1;int lastDamage,lastLaunch,lastThrow,lastBurst,castAttack;
-  Vector3 heroForward=Vector3.right;float heroHeight=1.2f;
+  string session;float previous=-1,clock;int lastDamage,lastLaunch,lastThrow,lastBurst,castAttack;
+  float heroHeight=1.2f;
   public bool Equipped{get;private set;}
   public bool BladeOut{get;private set;}
   public bool ChargeVisible=>charge&&charge.gameObject.activeSelf;
   public bool AuraVisible=>aura&&aura.activeSelf;
+  // Tests / QA: the row slash spawned last.
+  public LightningEffect LastSlash{get;private set;}
   public int ActiveStorms=>stormRuns.Count;public int ActiveBalls=>ballRuns.Count;public int ActiveMines=>mineRuns.Count;
   public int ActiveSlashes=>slashes.Active;public int ActiveHits=>hits.Active;
   // Tests / QA: clock of the first storm, of the first ball and the arc discharge of a mine (-1 = none).
@@ -98,16 +125,20 @@ namespace IslandGame {
    ballPool=new Pool<LightningBall>("Electric_LightningBall",parent,4);arcPool=new Pool<ArcDischarge>("Electric_ArcDischarge",parent,4);
   }
 
-  // Called by Battle3DView after the hero pose of this frame (blade bone valid) and before IaiBladeVfx.Update (AttackSlash uses heroForward).
+  // Called by Battle3DView after the hero pose of this frame (blade bone valid) and before IaiBladeVfx.Update. planar: kept for the call
+  // signature (the row slash takes the QuarterView yaw from IaiBladeVfx.SlashPose).
   public void Update(JObject state,float time,Transform heroRoot,Transform heroModel,Transform weapon,Vector3 baseLocal,Vector3 tipLocal,float height,bool planar){
    string id=(string)state["id"];
-   if(id!=session||time<previous-.5f){Reset();session=id;}previous=time;
+   if(id!=session||time<previous-.5f){Reset();session=id;}
+   float dt=previous<0||time<previous?0:Mathf.Min(time-previous,.1f);previous=time;
    Equipped=(string)state["ertel"]==Electric;heroHeight=height>.1f?height:1.2f;
    var h=state["hero"];var motion=h?["motion"] as JObject;string kind=(string)motion?["kind"];
-   float facing=N(h?["facing"],1)<0?-1:1;
-   if(planar){var d=new Vector3(N(h?["direction"]?["x"],facing),0,N(h?["direction"]?["y"]));heroForward=d.sqrMagnitude>1e-6f?d.normalized:new Vector3(facing,0,0);}else heroForward=new Vector3(facing,0,0);
+   if(!(N(motion?["hitstopUntil"],-1)>time))clock+=dt;
    // Cut off (cancel into a move or a skill, an evade that replaced an attack): no electric row slash stays in the air.
-   if(kind=="cancel"||kind=="skill"||motion?["cancelledAttackId"]!=null)foreach(var s in attackSlashes)if(s&&s.gameObject.activeSelf)s.Stop();
+   bool cut=kind=="cancel"||kind=="skill"||motion?["cancelledAttackId"]!=null;
+   foreach(var s in attackSlashes){if(!s.fx||!s.fx.gameObject.activeSelf)continue;
+    if(cut||clock-s.born>=s.fx.Duration){s.fx.Stop();s.fx.gameObject.SetActive(false);continue;}
+    if(heroRoot)s.fx.transform.position=heroRoot.position+s.offset;s.fx.Seek(clock-s.born);}
    UpdateCharge(heroModel,weapon,baseLocal,tipLocal);UpdateAura(heroRoot);
    // Strike cue: the slot-1 lightning cast (kit storm-call) starts its Electric_StormSkill so the first bolt is on start + hitAt.
    int attack=(int?)motion?["attackId"]??0;
@@ -120,8 +151,8 @@ namespace IslandGame {
    for(int i=0;i<count;i++){
     var t=fx[i];string k=(string)t["kind"];int eventId=(int?)t["id"]??0;
     if(k=="damage"){
-     // Normal attacks only (damageKind attack): ball / arc / spark damage has its own burst on screen.
-     if(eventId<=lastDamage||(string)t["element"]!=Electric||(string)t["damageKind"]!="attack")continue;var p=t["point"];if(p==null)continue;
+     // Electric normal attacks and every target an electric skill hits (one discharge per damage event).
+     if(eventId<=lastDamage||!Discharges(t))continue;var p=t["point"];if(p==null)continue;
      float contact=N(t["contactAt"],N(t["born"]));if(time<contact)continue;lastDamage=eventId;if(time-contact>.45f)continue;
      PlayHit(new Vector3(N(p["x"])/100,N(p["y"])/100,(N(p["z"])-5000)/100),1);
     }
@@ -130,26 +161,36 @@ namespace IslandGame {
     else if(k=="elemental-burst"){
      float born=N(t["born"]);if(eventId<=lastBurst||time<born)continue;lastBurst=eventId;var pos=P(N(t["x"]),N(t["elevation"]),N(t["z"],5000));
      if(t["mineId"]!=null){var m=MineOf((int)t["mineId"],true);if(float.IsNaN(m.burstAt)){m.burstAt=born;m.burstPos=pos;if(m.to==Vector3.zero)m.to=pos;m.lastSeen=time;}}
-     else if(t["ballId"]!=null){EndBall((int)t["ballId"],born,time);if((string)t["reason"]!="range")PlayHit(pos,1.3f);}
+     else if(t["ballId"]!=null)EndBall((int)t["ballId"],born,time); // its targets' damage events show the discharge
     }
    }
    // View fallback (a launch or throw event not seen, e.g. joined late): the flight and the placed mines from lightningBalls / arcMines.
    if(state["lightningBalls"] is JArray balls)foreach(var b in balls){int bid=(int?)b["id"]??0;if(FindBall(bid)!=null)continue;var dir=new Vector3(N(b["dirX"],1),0,N(b["dirY"]));var now=P(N(b["x"]),N(b["elevation"]),N(b["y"],5000));LaunchBall(bid,now-dir.normalized*N(b["travelled"])/100,dir,N(b["range"])/100,N(b["range"])/Mathf.Max(1,N(b["speed"],880)),N(b["radius"],22)/100,N(b["born"]));}
    if(state["arcMines"] is JArray mines)foreach(var v in mines){var m=MineOf((int?)v["id"]??0,true);m.lastSeen=time;if(m.landAt<=0){var f=v["from"];m.from=P(N(f?["x"]),N(f?["elevation"]),N(f?["y"],5000));m.to=P(N(v["x"]),N(v["elevation"]),N(v["y"],5000));m.thrownAt=N(v["thrownAt"]);m.landAt=N(v["landAt"]);m.fuseAt=N(v["fuseAt"]);}}
    StepStorms(time);StepBalls(time);StepMines(time);
-   slashes.RetireFinished();hits.RetireFinished();
+   hits.RetireFinished();
   }
 
-  // IaiBladeVfx.AttackSlash: the row slash spawn moment of an attack. true = taken over (no Ember slash).
-  public bool PlaySlash(int attack,int row,float facing,Vector3 ground,float height){
+  // IaiBladeVfx.AttackSlash: the row slash spawn moment of an attack, with the place of that row's Ember slash. true = taken over (no
+  // Ember slash). Placed against the feet now; Update keeps it on the feet.
+  public bool PlaySlash(int attack,int row,float facing,Vector3 ground,float height,IaiBladeVfx.SlashPose pose){
    if(!Equipped)return false;var s=slashes.Take();if(!s)return false;
-   int r=Mathf.Clamp(row,0,2);float H=height>.1f?height:heroHeight;
-   s.slashForm=RowForm[r];s.size=.82f*RowSize[r]*H/FigureHeight;
-   var forward=heroForward.sqrMagnitude>1e-6f?heroForward:new Vector3(facing,0,0);
-   s.PlayAt(ground+forward*(.18f*H),Quaternion.LookRotation(forward,Vector3.up));
-   if(!attackSlashes.Contains(s))attackSlashes.Add(s);return true;
+   float H=height>.1f?height:heroHeight,heightM=Mathf.Max(.1f,pose.heightM),k=H/heightM,K=k*Mathf.Max(.05f,pose.size),size=K*SweepFit;
+   bool side=float.IsNaN(pose.yaw);var rootRot=side?Quaternion.identity:Quaternion.Euler(0,pose.yaw,0);float f=side&&facing<0?-1:1,m=pose.mirror?-1:1;
+   var G=Matrix4x4.Rotate(rootRot)*Matrix4x4.Scale(new Vector3(f,1,1))*Matrix4x4.Rotate(Quaternion.Euler(pose.rotDeg)*Quaternion.AngleAxis(pose.rollDeg,Vector3.up))*Matrix4x4.Scale(new Vector3(m,1,1));
+   var L=G*Matrix4x4.Rotate(SweepAlign);
+   var pivot=rootRot*new Vector3(f*k*pose.pivotH.x*heightM,k*pose.pivotH.y*heightM,k*pose.pivotH.z*heightM);
+   var offset=pivot+G.MultiplyVector(SweepOffset*K)-L.MultiplyVector(SweepCentre*size);
+   // A mirrored frame (facing left xor the row mirror): rotation x scale (-1, 1, 1); the stormglass shaders draw both faces.
+   bool flip=f*m<0;if(flip)L=L*Matrix4x4.Scale(new Vector3(-1,1,1));
+   s.slashForm=SlashForm.Horizontal;s.size=size;s.transform.localScale=new Vector3(flip?-1:1,1,1);
+   s.PlayAt(ground+offset,Quaternion.LookRotation(L.GetColumn(2),L.GetColumn(1)));s.Pause();
+   SlashRun run=null;foreach(var a in attackSlashes)if(a.fx==s)run=a;if(run==null){run=new SlashRun{fx=s};attackSlashes.Add(run);}
+   run.offset=offset;run.born=clock;LastSlash=s;return true;
   }
-  void PlayHit(Vector3 point,float scale){var e=hits.Take();if(!e)return;e.size=.65f*scale;e.PlayAt(point,Quaternion.identity);}
+  // QA: discharges shown since the session started (one per discharging damage event).
+  public int DischargesShown{get;private set;}
+  void PlayHit(Vector3 point,float scale){var e=hits.Take();if(!e)return;DischargesShown++;e.size=.65f*scale;e.PlayAt(point,Quaternion.identity);}
 
   // ReferenceCombatVfx.StrikeDisplay: one lightning strike (fx born, ground point). true = shown here (no old strike).
   public bool Strike(Vector3 ground,float born){
@@ -242,7 +283,7 @@ namespace IslandGame {
    foreach(var m in mineRuns){KillArmed(m);if(m.arc)m.arc.gameObject.SetActive(false);}mineRuns.Clear();
    foreach(var b in ballRuns)if(b.fx)b.fx.gameObject.SetActive(false);ballRuns.Clear();
    foreach(var s in stormRuns)if(s.fx)s.fx.gameObject.SetActive(false);stormRuns.Clear();
-   slashes.Clear();hits.Clear();attackSlashes.Clear();lastDamage=lastLaunch=lastThrow=lastBurst=castAttack=0;previous=-1;
+   slashes.Clear();hits.Clear();attackSlashes.Clear();lastDamage=lastLaunch=lastThrow=lastBurst=castAttack=0;previous=-1;clock=0;
   }
   public void Dispose(){Reset();DestroyCharge();if(aura)Kill(aura);aura=null;slashes.Dispose();hits.Dispose();storms.Dispose();armedPool.Dispose();ballPool.Dispose();arcPool.Dispose();}
  }

@@ -410,7 +410,15 @@ namespace IslandGame {
   public float PlanarYaw = float.NaN;
   // ertel-electric-20261123: at the row slash spawn moment of an attack (fixed C / Ember modes), this display may take the slash over
   // (attackId, row 0-2, facing, ground, standing height H); true = taken (no C / Ember slash for this attack). The skill slash keeps its own.
-  public Func<int, int, float, Vector3, float, bool> AttackSlash;
+  // 2nd adjustment (2026-11-24): with the place of that row's Ember slash (SlashPose), so the electric slash is drawn where it would be.
+  public AttackSlashHandler AttackSlash;
+  public delegate bool AttackSlashHandler(int attack, int row, float facing, Vector3 ground, float height, SlashPose pose);
+  // The Ember slash of a motion as FixedSlot.Place builds it: root on the feet (side: X scale = facing; QuarterView: yaw), scale H / heightM;
+  // body at pivotH x heightM, rotation Euler(rotDeg) x roll about its own Y, X mirrored; the EmberSlash shader scales the path by size.
+  public struct SlashPose { public Vector3 pivotH, rotDeg; public float rollDeg, size, heightM, yaw; public bool mirror; }
+  // 2nd adjustment item 2 (2026-11-24): an electric skill (storm-call, lightning-ball, arc-discharge) casts with no kit skill slash
+  // (Ember / C), equipped or not; its own electric effect is the whole show. Other skills keep the slash.
+  public static bool SkillSlash(string skillId) => !ElectricErtelVfx.IsElectricSkill(skillId);
   public void Update(JObject state, float visualTime, Camera cam, Transform hero, Vector3 guard, Vector3 tip, float heroHeight, string heroClip, float heroSample) {
    if (!Ready || !hero || !cam) return;
    if (Palette != shown) ApplyPalette();
@@ -513,7 +521,7 @@ namespace IslandGame {
   void UpdateFixed(JObject motion, string kind, bool kit, bool attacking, int attack, int row, float rowFrom, float rowTo, bool shownRow, bool held, float facing, float H, Vector3 ground, Vector3 tip, string heroClip, float heroSample) {
    string key = null; float from = rowFrom, to = rowTo; bool shown = false; MotionSlash m = null;
    if (attacking) { key = (string)motion["row"]; m = slash.Motion(key); shown = shownRow; }
-   else if (kit && kind == "skill") { key = "skill"; m = slash.Motion(key); shown = m != null && (m.clip == null || heroClip != null && heroClip.IndexOf(m.clip, StringComparison.OrdinalIgnoreCase) >= 0); }
+   else if (kit && kind == "skill" && SkillSlash((string)motion["skillId"])) { key = "skill"; m = slash.Motion(key); shown = m != null && (m.clip == null || heroClip != null && heroClip.IndexOf(m.clip, StringComparison.OrdinalIgnoreCase) >= 0); }
    if (m != null && !float.IsNaN(m.from)) { from = m.from; to = m.to; }
    if (m == null || float.IsNaN(from) || float.IsNaN(to) || to <= from) shown = false;
    // Cut off: a cancel (into a move or a skill), a hurt or a dodge leaves no row slash that is still growing; a skill start ends the rows.
@@ -527,7 +535,7 @@ namespace IslandGame {
    // Spawn once per motion when the shown clip time enters the window.
    if (key != null && shown && heroSample >= from && fixedAttack != attack) {
     fixedAttack = attack;
-    if (!(attacking && AttackSlash != null && AttackSlash(attack, row, facing, ground, H))) {
+    if (!(attacking && AttackSlash != null && AttackSlash(attack, row, facing, ground, H, new SlashPose { pivotH = m.ePivot, rotDeg = m.eRot, rollDeg = m.eRoll, size = m.eSize, heightM = slash.cHeightM, yaw = PlanarYaw, mirror = m.eMirror }))) {
     var lvl = IslandFrameBudget.Current ? IslandFrameBudget.Current.Policy.Level : 0;
     bool useEmber = slash.ember && emberReady && lvl < slash.emberBudgetOffLevel;
     var pool = useEmber ? emberSlots : cSlots;

@@ -75,7 +75,7 @@ namespace IslandGame {
   // ertel-electric-20261123 (ElectricErtelVfx): ertel sword charge / slash / hit / aura, the strike as Electric_StormSkill, ball and arc mines.
   // MobBurn: set by NativeBattle before a mob Draw (as MobDepth): the mob is dead with killElement "electric". Its visual then burns
   // (MobBurnSeconds) instead of the death squash and stays alive and active until the burn ends (ShowOnly keeps it).
-  ElectricErtelVfx electric;Func<Vector3,float,bool> strikeHook;Func<int,int,float,Vector3,float,bool> slashHook;
+  ElectricErtelVfx electric;Func<Vector3,float,bool> strikeHook;IaiBladeVfx.AttackSlashHandler slashHook;
   public ElectricErtelVfx Electric=>electric;public bool MobBurn;public const float MobBurnSeconds=1.2f;
   void UpdateElectric(JObject state,float visualTime,bool iai){
    actors.TryGetValue("hero",out var h);

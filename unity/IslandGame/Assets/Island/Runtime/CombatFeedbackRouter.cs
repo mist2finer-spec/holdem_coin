@@ -10,6 +10,9 @@ namespace IslandGame {
   public bool FlashEnabled=true,SoundEnabled=true,CameraEnabled=true,DecorationsEnabled=true;
   // V2: the kit hero's own hit star (IaiBladeVfx) replaces the orange contact spark for its hits (definitionId pink-iai-*). Flash, shake and sound stay.
   public bool SuppressKitSpark;
+  // The orange contact spark of a damage event: not for a kit hit when the kit star replaces it, and not for an electric hit (2nd adjustment
+  // 2026-11-24: an electric skill or ertel attack hit shows the violet hit discharge, ElectricErtelVfx, instead of this warm spark).
+  public static bool ContactSpark(JToken token,bool suppressKit){string def=suppressKit?(string)token["definitionId"]:null;return !(def!=null&&def.StartsWith("pink-iai",StringComparison.Ordinal))&&!ElectricErtelVfx.IsElectricElement((string)token["element"]);}
   public int ConsumedContacts{get;private set;}public int LastAttackId{get;private set;}public int LastStrike{get;private set;}public float LastContactAt{get;private set;}public float MaximumLateSeconds{get;private set;}
   public CombatFeedbackRouter(GameObject host,BattleCameraController rig,ViewPresentationCoordinator profiles,Func<string,Transform> targetResolver){
    camera=rig;profile=profiles;resolve=targetResolver;root=new GameObject("Combat feedback · pooled");root.transform.SetParent(host.transform,false);
@@ -33,7 +36,7 @@ namespace IslandGame {
     if(dot!=2&&profile.ShakeAllowed(ShakeSource(token,state)))hitAt=contact;LastAttackId=(int)token["attackId"];LastStrike=(int?)token["strike"]??0;LastContactAt=contact;ConsumedContacts++;
     var target=Target((string)token["target"]??"hero");if(target!=null)foreach(var f in target){f.at=contact;f.amp=dot==0?1:DotFlash;}
     if(dot!=2&&SoundEnabled&&time-soundAt>=.04f){audio.volume=profile.SoundVolume;audio.Play();soundAt=time;}
-    var p=token["point"];var def=SuppressKitSpark?(string)token["definitionId"]:null;if(dot!=2&&p!=null&&!(def!=null&&def.StartsWith("pink-iai",StringComparison.Ordinal))){int n=nextSpark++%sparks.Length;var center=new Vector3(NativeCombatPresentation.N(p["x"])/100,NativeCombatPresentation.N(p["y"])/100,(NativeCombatPresentation.N(p["z"])-5000)/100);for(int i=0;i<9;i++){float angle=i*Mathf.PI/4;sparkPoints[i]=center+new Vector3(Mathf.Cos(angle),Mathf.Sin(angle),0)*.11f;}sparks[n].SetPositions(sparkPoints);sparkAt[n]=contact;}
+    var p=token["point"];if(dot!=2&&p!=null&&ContactSpark(token,SuppressKitSpark)){int n=nextSpark++%sparks.Length;var center=new Vector3(NativeCombatPresentation.N(p["x"])/100,NativeCombatPresentation.N(p["y"])/100,(NativeCombatPresentation.N(p["z"])-5000)/100);for(int i=0;i<9;i++){float angle=i*Mathf.PI/4;sparkPoints[i]=center+new Vector3(Mathf.Cos(angle),Mathf.Sin(angle),0)*.11f;}sparks[n].SetPositions(sparkPoints);sparkAt[n]=contact;}
    }
    // ertel-electric-20261123: a renderer in a burn death (BurnDissolve) keeps the burn material free of the hit-flash block.
    bool burning=IslandVfx.BurnDissolve.ActiveCount>0;
