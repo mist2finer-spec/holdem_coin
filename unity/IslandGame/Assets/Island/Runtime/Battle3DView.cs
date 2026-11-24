@@ -21,6 +21,7 @@ namespace IslandGame {
    // K5: a kit skill that follows an attack cancel enters with the longer default blend.
    public string lastKind;public bool afterCancel;
    public Vector3 weaponBaseLocal=new Vector3(0,.13f,0),weaponTipLocal=new Vector3(0,.73f,0);
+   public Transform contactShadow;public Vector3 contactShadowScale;
   }
   public Battle3DAssets assets;
   // Hero kit display (local test builds). assets = the kit asset when present; legacyAssets = the original hero for a snapshot without heroKit.
@@ -42,7 +43,9 @@ namespace IslandGame {
   public int ThrottledSamples {get;private set;}
   readonly List<UnityEngine.Object> owned=new List<UnityEngine.Object>();
   readonly Dictionary<PrimitiveType,Mesh> displayMeshes=new Dictionary<PrimitiveType,Mesh>();
-  Transform world;NatureAuthoredEnvironment authored;public float HeroDepth,HeroHeading,MobDepth;bool mountMode,zoneTenArena;public bool Planar;
+  // HeroAir: the jump / knockback height above the ground (m) included in the hero elevation Draw gets. HeroShadowOnGround (side view):
+  // the hero contact shadow stays on the ground below it; off (quarter view) it keeps riding with the hero as before (see PlaceContactShadow).
+  Transform world;NatureAuthoredEnvironment authored;public float HeroDepth,HeroHeading,MobDepth,HeroAir;public bool HeroShadowOnGround=true;bool mountMode,zoneTenArena;public bool Planar;
   public NatureEnvironmentStream Stream{get;private set;}
   ReferenceCombatVfx referenceVfx;BossContactDebug contactDebug;CombatFeedbackRouter contactFeedback;BattleDioramaLook diorama;
   public BattleDioramaLook Diorama=>diorama;
@@ -152,7 +155,7 @@ namespace IslandGame {
    if((bool?)map?["unityBossMode"]==true&&bossAssets&&!mountMode)bossView=new UnityBossPresentation(root,bossAssets,map);
    
    IslandFrameBudget.Current.BindScenery(null);
-   diorama=GetComponent<BattleDioramaLook>()??gameObject.AddComponent<BattleDioramaLook>();diorama.Initialize(world,camera);if(mountMode||zoneTenArena){var rig=camera.GetComponentInParent<BattleCameraController>();rig.side=new BattleCameraController.Preset(10,0,20,24,new Vector3(0,2,0));rig.quarter=zoneTenArena?(KitBoss?KitBossQuarter:new BattleCameraController.Preset(38,25,38,19,new Vector3(0,2.2f,.6f))):new BattleCameraController.Preset(40,35,35,17,new Vector3(0,1.2f,1.8f));rig.heroCentricBoss=zoneTenArena&&KitBoss;rig.lookAheadDistanceX=1.6f;rig.maxVelocityLookAhead=.7f;rig.velocityLookAheadMultiplier=.10f;rig.playerEdgePadding=1.2f;rig.lookAheadAccelSmoothTime=.08f;rig.verticalSmoothTime=.10f;rig.GetComponent<BattleForegroundOcclusion>().protectSideView=true;MountZoneStream.Ensure().Bind(camera,null,(int?)map["zone"]??0);}if(authored){authored.VisualChunkCreated+=OnVisualBranch;authored.VisualChunkRemoving+=OnVisualRemoving;}
+   diorama=GetComponent<BattleDioramaLook>()??gameObject.AddComponent<BattleDioramaLook>();diorama.Initialize(world,camera);if(mountMode||zoneTenArena){var rig=camera.GetComponentInParent<BattleCameraController>();rig.side=new BattleCameraController.Preset(10,0,20,24,new Vector3(0,2,0));rig.quarter=zoneTenArena?(KitBoss?KitBossQuarter:new BattleCameraController.Preset(38,25,38,19,new Vector3(0,2.2f,.6f))):new BattleCameraController.Preset(40,35,35,17,new Vector3(0,1.2f,1.8f));rig.heroCentricBoss=zoneTenArena&&KitBoss;rig.fixedQuarterDistance=zoneTenArena&&KitBoss?KitBossQuarter.distance:0;rig.lookAheadDistanceX=1.6f;rig.maxVelocityLookAhead=.7f;rig.velocityLookAheadMultiplier=.10f;rig.playerEdgePadding=1.2f;rig.lookAheadAccelSmoothTime=.08f;rig.verticalSmoothTime=.10f;rig.GetComponent<BattleForegroundOcclusion>().protectSideView=true;MountZoneStream.Ensure().Bind(camera,null,(int?)map["zone"]??0);}if(authored){authored.VisualChunkCreated+=OnVisualBranch;authored.VisualChunkRemoving+=OnVisualRemoving;}
   }
   void OnVisualBranch(Transform branch){if(diorama)diorama.ApplyBranch(branch);}
   void OnVisualRemoving(Transform branch){if(diorama)diorama.ForgetBranch(branch);}
@@ -165,6 +168,7 @@ namespace IslandGame {
    var set=hero?HeroSet:assets;var prefab=hero?set.hero:assets.slime;if(!prefab)return null;bool kit=hero&&set.IsKit;
    var root=new GameObject(hero?"Pink Glass · server hero":id+" · slime visual");root.transform.SetParent(world,false);
    var visual=new GameObject("Presentation deformation (grounded)");visual.transform.SetParent(root.transform,false);var model=Instantiate(prefab,visual.transform,false);model.name="Model";
+   if(kit)foreach(var s in model.GetComponentsInChildren<SkinnedMeshRenderer>(true)){var clean=CleanKitMesh(s.sharedMesh);if(clean)s.sharedMesh=clean;}
    foreach(var t in model.GetComponentsInChildren<Transform>(true))t.gameObject.layer=30;root.layer=30;
    foreach(var animator in model.GetComponentsInChildren<Animator>())animator.enabled=false;
    var skin=model.GetComponentInChildren<SkinnedMeshRenderer>();
@@ -201,7 +205,7 @@ namespace IslandGame {
      Shape("Blade",PrimitiveType.Cube,sword.transform,new Vector3(0,.43f,0),new Vector3(.075f,.60f,.025f),steel);
     }
    }
-   Shape("Contact shadow",PrimitiveType.Cylinder,root.transform,new Vector3(0,.005f,0),new Vector3(hero?.48f:.6f,.004f,hero?.20f:.4f),shadow);
+   a.contactShadowScale=new Vector3(hero?.48f:.6f,.004f,hero?.20f:.4f);a.contactShadow=Shape("Contact shadow",PrimitiveType.Cylinder,root.transform,new Vector3(0,.005f,0),a.contactShadowScale,shadow).transform;
    if(diorama)diorama.ApplyBranch(root.transform);
    if(hero&&!kit){var mat=Resources.Load<Material>("CombatPresentation/HeroOccluded");if(mat){
     // Reuse the original skin/bones. Depth-only visibility keeps the hero readable behind the boss.
@@ -211,6 +215,42 @@ namespace IslandGame {
     var materials=new Material[skin.sharedMesh.subMeshCount];for(int i=0;i<materials.Length;i++)materials[i]=mat;silhouette.sharedMaterials=materials;
     silhouette.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;silhouette.receiveShadows=false;silhouette.lightProbeUsage=UnityEngine.Rendering.LightProbeUsage.Off;silhouette.reflectionProbeUsage=UnityEngine.Rendering.ReflectionProbeUsage.Off;
    }}actors[id]=a;return a;
+  }
+  // Contact shadow (camera-shadow-slide brief, 2026-11-23, user: "in the side view the shadow stays in the air when she jumps"): the disc
+  // (from the old small hero) is a child of the actor root, and the root carries the jump / knockback height (Draw gets elevation + air), so
+  // it rode up with the hero: in the side view a disc under the feet in mid-air. Side view: keep it on the ground under the hero (root -
+  // air) and shrink it with height (1 -> .55 at 1.2 m). Standing (air 0): unchanged. The quarter view keeps the riding disc on purpose:
+  // from the high 55 deg camera it sits by the feet and reads as the shadow the user called natural; on the ground it would be ~80 px
+  // below the feet and hidden in the arena grass (Editor, apex).
+  public static void PlaceContactShadow(Transform shadow,Vector3 baseScale,float air){
+   air=Mathf.Max(0,air);float k=Mathf.Lerp(1,.55f,Mathf.Clamp01(air/1.2f));
+   shadow.localPosition=new Vector3(0,.005f-air,0);shadow.localScale=new Vector3(baseScale.x*k,baseScale.y,baseScale.z*k);
+  }
+  // Kit hair stray chips (camera-shadow-slide brief, 2026-11-23, user: "something like particles behind her back while sliding"): the hair
+  // mesh of the kit hero (PinkGlass_ArtLead_cloth_review.glb, SM_Hair) has three tiny islands (4 + 4 + 6 vertices, 100 % mixamorig:Head)
+  // 15-20 cm below the hair, inside the jacket at the nape. In the slide pose the head pitches against the torso and they show behind the
+  // back as floating specks. Display only: a copy of the mesh without the triangles of islands of at most StrayMaxVertices vertices whose
+  // centre lies more than StrayMinGap (mesh units = m) outside the bounds of the mesh's biggest island. Vertices, weights and blend shapes
+  // are kept. Checked over every kit mesh: only these three hair islands match (next nearest small island: 3.6 cm out). The source asset
+  // is unchanged (the art fix belongs to the glb); once the glb drops them this finds nothing and the original mesh is used.
+  public const int StrayMaxVertices=8;public const float StrayMinGap=.1f;
+  static readonly Dictionary<Mesh,Mesh> cleanKitMeshes=new Dictionary<Mesh,Mesh>();
+  static Mesh CleanKitMesh(Mesh source){if(!source||!source.isReadable)return null;if(cleanKitMeshes.TryGetValue(source,out var known)&&(ReferenceEquals(known,null)||known))return known;var clean=WithoutStrayIslands(source,out _,out _);cleanKitMeshes[source]=clean;return clean;}
+  public static Mesh WithoutStrayIslands(Mesh source,out int removedVertices,out int removedTriangles){
+   removedVertices=removedTriangles=0;if(!source||!source.isReadable)return null;var v=source.vertices;int n=v.Length;if(n==0)return null;
+   var parent=new int[n];for(int i=0;i<n;i++)parent[i]=i;
+   int Root(int i){while(parent[i]!=i){parent[i]=parent[parent[i]];i=parent[i];}return i;}
+   void Join(int a,int b){a=Root(a);b=Root(b);if(a!=b)parent[a]=b;}
+   var at=new Dictionary<Vector3,int>(n);for(int i=0;i<n;i++){if(at.TryGetValue(v[i],out var j))Join(i,j);else at[v[i]]=i;}
+   var tris=new int[source.subMeshCount][];for(int m=0;m<tris.Length;m++){tris[m]=source.GetTriangles(m);var t=tris[m];for(int i=0;i+2<t.Length;i+=3){Join(t[i],t[i+1]);Join(t[i+1],t[i+2]);}}
+   var count=new Dictionary<int,int>();var sum=new Dictionary<int,Vector3>();for(int i=0;i<n;i++){int r=Root(i);count[r]=count.TryGetValue(r,out var c)?c+1:1;sum[r]=(sum.TryGetValue(r,out var p)?p:Vector3.zero)+v[i];}
+   int big=-1;foreach(var e in count)if(big<0||e.Value>count[big])big=e.Key;
+   var bounds=new Bounds(v[big],Vector3.zero);for(int i=0;i<n;i++)if(Root(i)==big)bounds.Encapsulate(v[i]);
+   var drop=new HashSet<int>();foreach(var e in count)if(e.Key!=big&&e.Value<=StrayMaxVertices&&bounds.SqrDistance(sum[e.Key]/e.Value)>StrayMinGap*StrayMinGap){drop.Add(e.Key);removedVertices+=e.Value;}
+   if(drop.Count==0)return null;
+   var clean=Instantiate(source);clean.name=source.name+" (stray chips dropped)";
+   for(int m=0;m<tris.Length;m++){var t=tris[m];var keep=new List<int>(t.Length);for(int i=0;i+2<t.Length;i+=3){if(drop.Contains(Root(t[i]))){removedTriangles++;continue;}keep.Add(t[i]);keep.Add(t[i+1]);keep.Add(t[i+2]);}clean.SetTriangles(keep,m,false);}
+   return clean;
   }
   static int Phase(string id){unchecked{int h=17;foreach(char c in id)h=h*31+c;return h&0x7fffffff;}}
   public bool ShouldPresent(float coreX)=>!battleCamera||Mathf.Abs(coreX/100-battleCamera.transform.position.x)<14;
@@ -279,6 +319,7 @@ namespace IslandGame {
    if(hero||!a.placed||mountMode||bossView!=null||Vector3.Distance(a.root.transform.position,target)>3)a.root.transform.position=target;
    else a.root.transform.position=Vector3.Lerp(a.root.transform.position,target,1-Mathf.Exp(-Mathf.Max(0,advance)*18));
    a.placed=true;a.root.transform.localScale=Vector3.one;
+   if(a.contactShadow)PlaceContactShadow(a.contactShadow,a.contactShadowScale,hero&&HeroShadowOnGround?HeroAir:0);
    var budget=IslandFrameBudget.Current;
    if(!hero){
     // A dedicated-camera bounds test avoids SceneView/isVisible and inactive-object traps.
