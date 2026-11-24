@@ -5,8 +5,8 @@ using UnityEngine;
 namespace IslandGame.Tests {
  // camera-shadow-slide brief (2026-11-23, user): (1) the quarter-view zoom stays at the "hero next to the boss" level whatever the
  // hero-boss gap; (2) the contact shadow stays on the ground under a jumping hero (it rode up with the actor root); (3) the kit hair mesh
- // carries three stray head-weighted chips ~15-20 cm below the hair that pop out behind the back in the slide pose; they are dropped
- // from the displayed mesh.
+ // carried three stray head-weighted chips ~15-20 cm below the hair that popped out behind the back in the slide pose; #33 removed
+ // them from the glb, and the display-side drop stays as a safety net.
  public sealed class CameraShadowSlideTests {
   static (float dist,float fov,bool heroIn) Quarter(float bossGap,float fixedDistance,bool warning){
    var rigGo=new GameObject("rig fixed zoom test");var camGo=new GameObject("cam");camGo.transform.SetParent(rigGo.transform,false);var cam=camGo.AddComponent<Camera>();
@@ -51,21 +51,35 @@ namespace IslandGame.Tests {
     }
    }finally{Object.DestroyImmediate(root);}
   }
-  [Test] public void Kit_hair_stray_chips_are_dropped_and_nothing_else(){
-   var kit=Battle3DAssets.LoadKit();Assert.IsNotNull(kit,"kit asset");var dropped=new List<string>();int hairTris=0;
+  // #33 (art-lead, 2026-11-23): the glb itself dropped the three nape chips (SM_Hair 9833 -> 9819 vertices, 9874 -> 9866 triangles).
+  // The source now has no stray island, so the display-side safety net drops nothing and every kit mesh is shown as imported.
+  [Test] public void Kit_meshes_have_no_stray_islands_and_are_shown_as_imported(){
+   var kit=Battle3DAssets.LoadKit();Assert.IsNotNull(kit,"kit asset");var lines=new List<string>();bool hair=false;
    foreach(var s in kit.hero.GetComponentsInChildren<SkinnedMeshRenderer>(true)){
-    var src=s.sharedMesh;var clean=Battle3DView.WithoutStrayIslands(src,out int removedVerts,out int removedTris);
-    if(clean==null){Assert.AreEqual(0,removedTris);continue;}
-    try{
-     dropped.Add($"{s.name}: {removedVerts} verts {removedTris} tris");
-     Assert.AreEqual(src.vertexCount,clean.vertexCount,"vertices and weights kept");Assert.AreEqual(src.subMeshCount,clean.subMeshCount);
-     int before=0,after=0;for(int i=0;i<src.subMeshCount;i++){before+=src.GetTriangles(i).Length/3;after+=clean.GetTriangles(i).Length/3;}Assert.AreEqual(before-removedTris,after);
-     if(s.name=="SM_Hair")hairTris=removedTris;
-    }finally{Object.DestroyImmediate(clean);}
+    var src=s.sharedMesh;Assert.IsNotNull(src,s.name+" mesh");Assert.IsTrue(src.isReadable,s.name+" readable (else the safety net cannot look)");
+    var clean=Battle3DView.WithoutStrayIslands(src,out int removedVerts,out int removedTris);
+    if(clean)Object.DestroyImmediate(clean);
+    lines.Add($"{s.name}: {src.vertexCount} verts, stray {removedVerts} verts {removedTris} tris");
+    Assert.IsNull(clean,$"{s.name}: no copy made, the imported mesh is used");Assert.AreEqual(0,removedVerts,s.name);Assert.AreEqual(0,removedTris,s.name);
+    if(s.name=="SM_Hair")hair=true;
    }
-   TestContext.WriteLine(string.Join("\n",dropped));
-   Assert.AreEqual(1,dropped.Count,"only the hair has stray chips: "+string.Join("; ",dropped));
-   StringAssert.StartsWith("SM_Hair: 14 verts",dropped[0],"the three nape chips (4 + 4 + 6 vertices)");Assert.Greater(hairTris,0);
+   TestContext.WriteLine(string.Join("\n",lines));Assert.IsTrue(hair,"SM_Hair present");
+  }
+  // The safety net stays (brief #33): a small island far outside the main body is still dropped; near or bigger islands are kept.
+  [Test] public void Stray_island_safety_net_still_drops_a_far_chip_only(){
+   var v=new List<Vector3>();var t=new List<int>();
+   void Grid(Vector3 o,int nx,int ny,float step){int b=v.Count;for(int y=0;y<ny;y++)for(int x=0;x<nx;x++)v.Add(o+new Vector3(x*step,y*step,0));
+    for(int y=0;y+1<ny;y++)for(int x=0;x+1<nx;x++){int i=b+y*nx+x;t.AddRange(new[]{i,i+nx,i+1,i+1,i+nx,i+nx+1});}}
+   Grid(Vector3.zero,10,10,.1f);            // main body 0.9 x 0.9 m
+   Grid(new Vector3(.4f,-.3f,0),2,2,.02f);  // far chip: 4 vertices, 30 cm below -> dropped
+   Grid(new Vector3(.4f,-.05f,0),2,2,.02f); // near chip: 4 vertices, 3-5 cm below -> kept
+   Grid(new Vector3(.4f,-.6f,0),4,3,.02f);  // far but 12 vertices -> kept
+   var m=new Mesh{name="stray test"};m.SetVertices(v);m.SetTriangles(t,0);
+   try{
+    var clean=Battle3DView.WithoutStrayIslands(m,out int rv,out int rt);Assert.IsNotNull(clean,"a copy is made");
+    try{Assert.AreEqual(4,rv);Assert.AreEqual(2,rt);Assert.AreEqual(m.vertexCount,clean.vertexCount,"vertices kept");Assert.AreEqual(t.Count/3-2,clean.GetTriangles(0).Length/3);}
+    finally{Object.DestroyImmediate(clean);}
+   }finally{Object.DestroyImmediate(m);}
   }
  }
 }

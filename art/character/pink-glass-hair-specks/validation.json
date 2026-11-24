@@ -1,0 +1,176 @@
+{
+  "result": "PASS",
+  "before_sha256": "d52a59d539983d7702ff6161f2702d96ac6433423a432ecb1f8900946686dd85",
+  "after_sha256": "ba7c0cdc3d748fce5683ccb408d6dcedaee7439647bea001f11de998fcfe2181",
+  "meshes": {
+    "RT_Left_Hand": {
+      "before_vertices": 8345,
+      "after_vertices": 8345,
+      "before_triangles": 16576,
+      "after_triangles": 16576,
+      "vertex_delta": 0,
+      "triangle_delta": 0
+    },
+    "RT_Right_Hand": {
+      "before_vertices": 8345,
+      "after_vertices": 8345,
+      "before_triangles": 16576,
+      "after_triangles": 16576,
+      "vertex_delta": 0,
+      "triangle_delta": 0
+    },
+    "SM_CropTop": {
+      "before_vertices": 683,
+      "after_vertices": 683,
+      "before_triangles": 696,
+      "after_triangles": 696,
+      "vertex_delta": 0,
+      "triangle_delta": 0
+    },
+    "CleanGlasses": {
+      "before_vertices": 1551,
+      "after_vertices": 1551,
+      "before_triangles": 2720,
+      "after_triangles": 2720,
+      "vertex_delta": 0,
+      "triangle_delta": 0
+    },
+    "SM_Hair": {
+      "before_vertices": 9833,
+      "after_vertices": 9819,
+      "before_triangles": 9874,
+      "after_triangles": 9866,
+      "removed_islands": [
+        {
+          "vertex_ids": [
+            2095,
+            2096,
+            4258,
+            4259,
+            4260,
+            4261
+          ],
+          "vertices": 6,
+          "centre": [
+            0.43809331953525543,
+            0.8575798571109772,
+            -0.06996658320228259
+          ],
+          "gap_m": 0.20163652300834656
+        },
+        {
+          "vertex_ids": [
+            6257,
+            6258,
+            6259,
+            6260
+          ],
+          "vertices": 4,
+          "centre": [
+            0.4551214575767517,
+            0.9099735915660858,
+            0.06987210549414158
+          ],
+          "gap_m": 0.14924278855323792
+        },
+        {
+          "vertex_ids": [
+            6261,
+            6262,
+            7694,
+            7695
+          ],
+          "vertices": 4,
+          "centre": [
+            0.5087840855121613,
+            0.8575798571109772,
+            0.04353874735534191
+          ],
+          "gap_m": 0.20163652300834656
+        }
+      ],
+      "remaining_stray_islands": [],
+      "retained_all_attributes_exact": true,
+      "vertex_delta": -14,
+      "triangle_delta": -8
+    },
+    "SM_Head.001": {
+      "before_vertices": 7739,
+      "after_vertices": 7739,
+      "before_triangles": 7041,
+      "after_triangles": 7041,
+      "vertex_delta": 0,
+      "triangle_delta": 0
+    },
+    "SM_Jacket": {
+      "before_vertices": 7462,
+      "after_vertices": 7462,
+      "before_triangles": 7728,
+      "after_triangles": 7728,
+      "vertex_delta": 0,
+      "triangle_delta": 0
+    },
+    "SM_Legs_Stockings": {
+      "before_vertices": 1399,
+      "after_vertices": 1399,
+      "before_triangles": 1459,
+      "after_triangles": 1459,
+      "vertex_delta": 0,
+      "triangle_delta": 0
+    },
+    "SM_Shoes.001": {
+      "before_vertices": 15954,
+      "after_vertices": 15954,
+      "before_triangles": 12912,
+      "after_triangles": 12912,
+      "vertex_delta": 0,
+      "triangle_delta": 0
+    },
+    "SM_Skirt_Straps": {
+      "before_vertices": 6681,
+      "after_vertices": 6681,
+      "before_triangles": 5806,
+      "after_triangles": 5806,
+      "vertex_delta": 0,
+      "triangle_delta": 0
+    },
+    "SM_Torso_Skin": {
+      "before_vertices": 749,
+      "after_vertices": 749,
+      "before_triangles": 687,
+      "after_triangles": 687,
+      "vertex_delta": 0,
+      "triangle_delta": 0
+    }
+  },
+  "metadata_checks": {
+    "nodes": true,
+    "skins": true,
+    "materials": true,
+    "textures": true,
+    "samplers": true,
+    "images": true,
+    "scenes": true,
+    "scene": true,
+    "animations": true,
+    "extensionsUsed": true,
+    "extensionsRequired": true
+  },
+  "other_meshes_exact": 10,
+  "texture_bytes_exact": true,
+  "bone_bind_matrices_exact": true,
+  "same_glb_path": true,
+  "meta_sha256": "f55d7e5747fd676d526636495fb8a0acefe410aa7c9b9179e3eefe662c2c75ad",
+  "meta_guid": "9d0941d668f3c6645836c737b210db20",
+  "meta_unchanged": true,
+  "project_settings_unchanged": true,
+  "authoring_source_paths": [
+    "G:\\holdem_coin-workspace\\island\\maintenance\\art-rev2-pinkglass-20261114\\phase2\\cloth-fix-20261115\\local-only_MayShip_cloth_review.blend",
+    "G:\\holdem_coin-workspace\\island\\maintenance\\rev2-2p-pinkglass-20261116\\work\\artlead\\source_cloth_review.blend"
+  ],
+  "authoring_source_before_sha256": "0e65e87a2afa349b9658ae13bc0d2a18e9d6c4e7c28c5349769be964aa977f62",
+  "authoring_source_after_sha256": "063a41a6c19aaa7cad036caaba376b3b33b66b56b1f857568caca8c6f78c64a2",
+  "unity_editor_execution": "UNAVAILABLE - not queried or operated",
+  "game_runtime_review": "UNAVAILABLE - not run",
+  "user_scope": "Delete only the three specks and export to the same GLB path; no game connection changes"
+}

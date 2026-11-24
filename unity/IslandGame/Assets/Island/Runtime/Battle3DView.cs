@@ -227,12 +227,13 @@ namespace IslandGame {
    shadow.localPosition=new Vector3(0,.005f-air,0);shadow.localScale=new Vector3(baseScale.x*k,baseScale.y,baseScale.z*k);
   }
   // Kit hair stray chips (camera-shadow-slide brief, 2026-11-23, user: "something like particles behind her back while sliding"): the hair
-  // mesh of the kit hero (PinkGlass_ArtLead_cloth_review.glb, SM_Hair) has three tiny islands (4 + 4 + 6 vertices, 100 % mixamorig:Head)
+  // mesh of the kit hero (PinkGlass_ArtLead_cloth_review.glb, SM_Hair) had three tiny islands (4 + 4 + 6 vertices, 100 % mixamorig:Head)
   // 15-20 cm below the hair, inside the jacket at the nape. In the slide pose the head pitches against the torso and they show behind the
   // back as floating specks. Display only: a copy of the mesh without the triangles of islands of at most StrayMaxVertices vertices whose
   // centre lies more than StrayMinGap (mesh units = m) outside the bounds of the mesh's biggest island. Vertices, weights and blend shapes
   // are kept. Checked over every kit mesh: only these three hair islands match (next nearest small island: 3.6 cm out). The source asset
-  // is unchanged (the art fix belongs to the glb); once the glb drops them this finds nothing and the original mesh is used.
+  // is unchanged (the art fix belongs to the glb). #33 (2026-11-23) removed them from the glb: this now finds nothing and the imported
+  // mesh is used as is; kept as a safety net.
   public const int StrayMaxVertices=8;public const float StrayMinGap=.1f;
   static readonly Dictionary<Mesh,Mesh> cleanKitMeshes=new Dictionary<Mesh,Mesh>();
   static Mesh CleanKitMesh(Mesh source){if(!source||!source.isReadable)return null;if(cleanKitMeshes.TryGetValue(source,out var known)&&(ReferenceEquals(known,null)||known))return known;var clean=WithoutStrayIslands(source,out _,out _);cleanKitMeshes[source]=clean;return clean;}
